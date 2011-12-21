@@ -1,0 +1,249 @@
+module MpiContext_mod
+   use Assert_mod
+   use ParallelContext_mod
+   implicit none
+   private
+
+   public :: MpiContext
+   public :: newMpiContext
+
+   include 'mpif.h'
+
+   type, extends(ParallelContext) :: MpiContext
+      private
+      integer :: mpiCommunicator = MPI_COMM_NULL
+      integer :: root = 0
+   contains
+      procedure :: amRoot
+      procedure :: isActive
+      procedure :: getNumProcesses
+      procedure :: processRank
+      procedure :: isRootProcess
+      procedure :: makeSubcontext
+      procedure :: barrier
+      procedure :: getMpiCommunicator
+      procedure :: makeMap
+      procedure :: sum
+      procedure :: gatherString
+      procedure :: gatherInteger
+      procedure :: gatherLogical
+
+      final :: clean
+   end type MpiContext
+
+   interface newMpiContext
+      module procedure newMpiContext_world
+      module procedure newMpiContext_comm
+   end interface
+
+contains
+
+   ! Use MPI_COMM_WORLD - avoid except in main program
+   function newMpiContext_world() result(context)
+      type (MpiContext), pointer :: context
+      context => newMpiContext(MPI_COMM_WORLD)
+   end function newMpiContext_world
+
+   ! Make a duplicate of the communicator for internal use
+   function newMpiContext_comm(communicator) result(context)
+      type (MpiContext), pointer :: context
+      integer, intent(in) :: communicator
+      integer :: ier
+
+      allocate(context)
+      call MPI_Comm_dup(communicator, context%mpiCommunicator, ier)
+      context%root = 0
+
+   end function newMpiContext_comm
+
+   logical function isActive(this)
+      class (MpiContext),  intent(in) :: this
+
+      isActive = (this%mpiCommunicator /= MPI_COMM_NULL)
+
+   end function isActive
+
+   logical function amRoot(this)
+      class (MpiContext),  intent(in) :: this
+
+      amRoot = (this%processRank() == this%root)
+
+   end function amRoot
+
+   integer function getNumProcesses(this)
+      class (MpiContext),  intent(in) :: this
+
+      integer :: ier
+      call MPI_Comm_size(this%mpiCommunicator, getNumProcesses, ier)
+!TODO: add msg to asserts
+      call assertEqual(MPI_SUCCESS, ier)! 'failure in MpiContext::numProcesses')
+
+   end function getNumProcesses
+
+   integer function processRank(this)
+      class (MpiContext),  intent(in) :: this
+
+      integer :: ier
+      call MPI_Comm_rank(this%mpiCommunicator, processRank, ier)
+!TODO: add msg to asserts
+      call assertEqual(MPI_SUCCESS, ier)!, 'failure in MpiContext::processRank')
+
+   end function processRank
+
+   logical function isRootProcess(this)
+      class (MpiContext),  intent(in) :: this
+
+      isRootProcess = (this%root == this%processRank())
+
+   end function isRootProcess
+
+   ! Returns a new context which represents just a subset of the
+   ! processes in the current group.
+   function makeSubcontext(this, numSubprocesses) result(subContext)
+      use Exception_mod
+      class (MpiContext), intent(in) :: this
+      integer, intent(in) :: numSubprocesses
+      type (MpiContext) :: subContext
+
+      integer, parameter :: NUM_SUBGROUPS = 1
+      integer :: originalGroup, newGroups(NUM_SUBGROUPS)
+      integer :: ranges(3,NUM_SUBGROUPS)
+      integer :: newCommunicator
+      integer :: ier
+
+      if (numSubprocesses > this%getNumProcesses()) then
+         call throw('Insufficient processes to run this test.')
+         return
+      end if
+      call Mpi_Comm_group(this%mpiCommunicator, originalGroup, ier)
+      ranges(:,1) = [0, numSubprocesses-1, 1]
+      call MPI_Group_range_incl (originalGroup, NUM_SUBGROUPS, ranges, newGroups, ier)
+      call MPI_Comm_create(this%mpiCommunicator, newGroups(1), newCommunicator, ier)
+      subContext%mpiCommunicator = newCommunicator
+
+   end function makeSubcontext
+
+   subroutine barrier(this)
+      use Assert_mod
+      class (MpiContext) :: this
+      integer :: ier
+      call Mpi_barrier(this%mpiCommunicator, ier)
+      call assertEqual(ier, MPI_SUCCESS)
+   end subroutine barrier
+
+   integer function getMpiCommunicator(this) result(mpiCommunicator)
+      class (MpiContext), intent(in) :: this
+      mpiCommunicator = this%mpiCommunicator
+   end function getMpiCommunicator
+
+   integer function sum(this, value)
+      class (MpiContext), intent(in) :: this
+      integer, intent(in) :: value
+
+      integer :: ier
+      integer :: tmp
+      integer :: npes
+
+      call mpi_comm_size(this%mpiCommunicator, npes, ier)
+      call mpi_allreduce(value, tmp, 1, MPI_INTEGER, MPI_SUM, &
+           &     this%mpiCommunicator, ier)
+      sum = tmp
+      
+   end function sum
+
+   subroutine makeMap(this, numEntries, counts, displacements)
+      class (MpiContext), intent(in) :: this
+      integer, intent(in) :: numEntries
+      integer, allocatable :: counts(:)
+      integer, allocatable :: displacements(:)
+
+      integer :: p
+      integer :: npes
+      integer :: ier
+
+      npes = this%getNumProcesses()
+      allocate(counts(0:npes-1), displacements(0:npes-1))
+      
+      call Mpi_Gather(numEntries, 1, MPI_Integer, counts, 1, MPI_Integer, &
+           & this%root, this%mpiCommunicator, ier)
+
+      displacements(0) = 0
+      do p = 1, npes - 1
+         displacements(p) = displacements(p-1) + counts(p-1)
+      end do
+
+   end subroutine makeMap
+
+   subroutine gatherString(this, values, list)
+      class (MpiContext), intent(in) :: this
+      character(len=*), intent(in) :: values(:)
+      character(len=*), intent(out) :: list(:)
+
+      integer, allocatable :: counts(:), displacements(:)
+
+      integer :: numBytes, numEntries
+      integer :: ier
+
+      if (size(list) == 0) return
+
+      numBytes = len(list(1)) ! values may be size 0 on some processes, but not all
+      numEntries = size(values) * numBytes
+
+      call this%makeMap(numEntries, counts, displacements)
+
+      call Mpi_GatherV( &
+           & values, numEntries, MPI_CHARACTER, &
+           & list,   counts, displacements, MPI_CHARACTER, &
+           & this%root, this%mpiCommunicator, ier)
+
+      deallocate(counts, displacements)
+
+   end subroutine gatherString
+
+   subroutine gatherInteger(this, values, list)
+      class (MpiContext), intent(in) :: this
+      integer, intent(in) :: values(:)
+      integer, intent(out) :: list(:)
+
+      integer, allocatable :: counts(:), displacements(:)
+      integer :: ier
+
+      call this%makeMap(size(values), counts, displacements)
+
+      call Mpi_GatherV( &
+           & values, size(values), MPI_INTEGER, &
+           & list,   counts, displacements, MPI_INTEGER, &
+           & this%root, this%mpiCommunicator, ier)
+
+      deallocate(counts, displacements)
+
+   end subroutine gatherInteger
+
+   subroutine gatherLogical(this, values, list)
+      class (MpiContext), intent(in) :: this
+      logical, intent(in) :: values(:)
+      logical, intent(out) :: list(:)
+
+      integer, allocatable :: counts(:), displacements(:)
+      integer :: ier
+
+      call this%makeMap(size(values), counts, displacements)
+
+      call Mpi_GatherV( &
+           & values, size(values), MPI_LOGICAL, &
+           & list,   counts, displacements, MPI_LOGICAL, &
+           & this%root, this%mpiCommunicator, ier)
+
+      deallocate(counts, displacements)
+
+   end subroutine gatherLogical
+
+   subroutine clean(this)
+      type (MpiContext), intent(inout) :: this
+      integer :: ier
+!!$      call debug(__LINE__,__FILE__)
+!!$      call MPI_Comm_free(this%mpiCommunicator, ier)
+!!$      call debug(__LINE__,__FILE__)
+   end subroutine clean
+
+end module MpiContext_mod
