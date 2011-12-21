@@ -58,6 +58,7 @@ AssertComplex_mod.o:		Params_mod.o			\
 Assert_mod.o: 			AssertString_mod.o		\
 				AssertInteger_mod.o		\
 				AssertReal_mod.o		\
+				AssertComplex_mod.o		\
 				Report_mod.o
 ProcedurePointer_mod.o: 	BaseAddress_mod.o		\
 				pFUnitException_mod.o
@@ -66,6 +67,7 @@ TestCase_mod.o: 		Params_mod.o			\
 				BaseAddress_mod.o		\
 				ProcedurePointer_mod.o		\
 				TestResult_mod.o		\
+				TestInfo_mod.o		\
 
 TestCase_mod.o: MpiServices_mod.o
 

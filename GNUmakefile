@@ -58,7 +58,7 @@ LDFLAGS ?=-L$(SOURCE_DIR) -lpfunitStatic
 # F90 Vendor specifics
 ifeq ($(F90_VENDOR),Intel)
   F90 ?=ifort
-  DEBUG_FLAGS += -traceback
+  DEBUG_FLAGS += -traceback -O0
   ifeq ($(F90_VERSION),10)
     CFLAGS+=-m64
   endif
