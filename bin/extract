@@ -1,0 +1,5 @@
+#!/bin/bash
+for file in $* ; do 
+    awk 'match(tolower($0),/^ *module/) {str=tolower($0); sub(/module./,"OPER(",str); print str ")"} ' $file
+done
+

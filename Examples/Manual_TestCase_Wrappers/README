@@ -1,0 +1,21 @@
+To build and run these examples, you must specify a handful of
+environment variables:
+
+F90      - name of F90 compiler command
+MPIF90 - name of MPIf90 compiler command
+F90FLAGS - additional flags needed to compile (e.g. IBM xlf needs to be told about .F90 extensions)
+LDFLAGS  - additonal flags for the load step  (e.g. -lmpi might be needed for some MPI installations)
+
+Depending on the system and the set of tests to be run, you may also
+need to specify the load path for dynamic libraries to include the
+pFUnit library directory.  On must unix systems (using the bash
+shell), this looks like:
+
+% export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PFUNIT/lib
+
+On Macintosh, the environment variable is actually "DYLD_LIBDRARY_PATH":
+
+% export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$PFUNIT/lib
+
+In each subdirectory, you should be able to simply type make and run the executable.
+The executables are all of the form "*.x"

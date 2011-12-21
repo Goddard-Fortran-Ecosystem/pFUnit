@@ -1,0 +1,37 @@
+04/07/2007 
+	* Release astg_internal_0p2 added/corrected examples.  All should work and have
+	  at least minimal directions.
+	
+04/06/2007 
+	* Release astg_internal_0p1 created for use for group project.
+	
+11/02/2005 
+	       * Added support for automatically wrapping MPI tests into test suites.
+	       * Improved formatting for reporting failure messages from MPI tests.
+
+10/16/2005  FUnit 1.0 (cvs tag funit-1p0)
+	* MPI portability has been significantly enhanced - special thanks
+	  to Spencer Swift for his efforts in this direction.  This
+	  release should work with Altix, Tru64, and OSX with IBM
+	  compiler.
+	
+         * MPI test cases can now optionally use fixture/setup/teardown.
+	Use of new/delete methods is mandatory, since the launch mechanism
+	has now means to transfer object handles between the driver and
+	the MPI procs.
+	
+        * An initial attempt at automatically assembling a test suite and
+	driver executable from user provided tests is now in place in the
+	./auto directory.  There is a great deal of functionality there,
+	but the scripts are rather messy and have little documentation.
+	MPI tests cases are _not_ yet supported there - mostly because
+	I've not decided how to determine the number of processors to run
+	the test on.
+
+08/09/2005	FUnit 0.9 (cvs tag funit-0p9) 
+	        * Beta testing of FUnit begins within SIVO/ASTG
+	        * Cleaned up demo directory such that there is a separate
+	          sub directory for each demo.
+	        * Repared bug in MPI_TestCase related to passing arrays of strings
+	          to MPI.  FUnit should now be portable to IBM/Tru64/MipsPro/Intel compilers.
+	

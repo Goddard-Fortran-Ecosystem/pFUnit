@@ -1,0 +1,5 @@
+libautotest.a: $(WRAP_OBJ)
+	ar -r $@ $?
+
+%.o: %.F90
+	-@$(F90) -c $(FFLAGS) $<

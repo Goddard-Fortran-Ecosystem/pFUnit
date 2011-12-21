@@ -1,0 +1,22 @@
+This purpose is to generate the PDF files for the documentations including 
+the User's Guide and API documentations.
+
+Before you start to build via 'make', ensure that the tool 'pdflatex' and 
+'doxygen' are added to the PATH environment variable.  Otherwise, you will
+get the error message.
+
+The following command for building the documentation:
+
+% make all
+
+After building is successful, there are the following outputs:
+
+./UserGuide/UserGuide.pdf
+./API/html
+./API/latex
+./API/ReferenceManual.pdf
+
+
+For removing those output files and directories, the following command is:
+
+% make distclean
