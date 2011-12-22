@@ -49,7 +49,7 @@ $(PFUNIT_SUITE_LIST): $(PFUNIT_TEST_SOURCES)
 $(foreach file,$(basename $(PFUNIT_TEST_OBJECTS)),$(eval $(call MAKE_WRAP_DEPENDENCY,$(file))))
 
 %_wrap.F90 : %.F90
-	@$(PFUNIT)/bin/convert $< $@
+	@$(PFUNIT)/bin/wrapTest $< $@
 
 ifeq ($(PFUNIT_USE_MPI),YES)
   PFUNIT_COMPILER=$(MPI_FC)
