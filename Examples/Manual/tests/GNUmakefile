@@ -1,5 +1,5 @@
-TOP = ../..
-include ../../include/base.mk
+TOP = ../../..
+include ../../../include/base.mk
 .PHONY: all
 
 all: extests
@@ -17,6 +17,7 @@ SRCS_SERIAL=$(filter-out MPI%,$(SRCS))
 OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
 
 F90FLAGS +=$M$(MOD_DIR)
+#F90FLAGS +=$M$(TOP)/tests
 
 #LIB_DIR += $(EX_LIB_DIR)
 LIBS = $L$(EX_LIB_DIR) -lf2kex
@@ -34,5 +35,5 @@ $(EXE): $(OBJS) libf2kex.a
 Test_ModuleTestCase.o: Module1.o
 Test_ModuleProceduresTestCase.o: ModuleProcedures.o
 Test_ExampleTestCase.o: ExampleTestCase.o
-exTests.o: Test_ExampleTestCase.o 
+exTests.o: Test_ExampleTestCase.o Test_ModuleTestCase.o Test_ModuleProceduresTestCase.o
 
