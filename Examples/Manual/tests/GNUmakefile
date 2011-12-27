@@ -34,6 +34,6 @@ $(EXE): $(OBJS) libf2kex.a
 
 Test_ModuleTestCase.o: Module1.o
 Test_ModuleProceduresTestCase.o: ModuleProcedures.o
-Test_ExampleTestCase.o: ExampleTestCase.o
-exTests.o: Test_ExampleTestCase.o Test_ModuleTestCase.o Test_ModuleProceduresTestCase.o
+Test_ClassExampleTestCase.o: ClassExample.o
+exTests.o: Test_ClassExampleTestCase.o Test_ModuleTestCase.o Test_ModuleProceduresTestCase.o
 

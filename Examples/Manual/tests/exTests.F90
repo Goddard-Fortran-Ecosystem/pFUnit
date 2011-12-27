@@ -40,7 +40,7 @@ contains
 !      use Test_TestSuite_mod, only: testSuiteSuite => suite                ! (7)
 
 !      use Test_SimpleTestMethod_mod, only: testSimpleMethodSuite => suite  ! (8)
-      use Test_ExampleTestCase_mod, only: testExampleSuite => suite          ! (9)
+      use Test_ClassExampleTestCase_mod, only: testClassExampleSuite => suite          ! (9)
       use Test_ModuleTestCase_mod, only: testModuleSuite =>suite 
 !      use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
 
@@ -65,7 +65,7 @@ contains
 !      ADD(testSuiteSuite)
 
 !      ADD(testSimpleMethodSuite)
-      ADD(testExampleSuite)
+      ADD(testClassExampleSuite)
       ADD(testModuleSuite)
 !      ADD(testFixtureSuite)
 
