@@ -10,20 +10,32 @@ tests: $(EXE)
 SRCS = $(wildcard *.F90)
 OBJS = $(SRCS:%.F90=%.o)
 
-SRCS_SERIAL=$(filter-out MPI%,$(SRCS))
-OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
+ifneq ($(MPI),YES)
+   SRCS_SERIAL=$(filter-out Test_Mpi%,$(SRCS))
+   OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
+endif
 
 F90FLAGS +=$M$(MOD_DIR)
 
 LIBS = $L$(LIB_DIR) -lf2kunit
 ifeq ($(MPI),YES)
-  LIBS += -lmpi
+   LIBS += -lmpi
 endif
 
+ifeq ($(MPI),YES)
 $(EXE): $(OBJS) libf2kunit.a
 	$(MPIF90) -o $@ $(OBJS) $(LIBS)
+else
+$(EXE): $(OBJS_SERIAL) libf2kunit.a
+	$(MPIF90) -o $@ $(OBJS_SERIAL) $(LIBS)
+endif
 
 Test_SimpleTestCase.o: SimpleTestCase.o
 Test_FixtureTestCase.o: FixtureTestCase.o
 Test_TestResult.o: SimpleTestCase.o
-selfTests.o: Test_StringUtilities.o Test_Exception.o Test_Assert.o Test_MpiTestCase.o Test_TestResult.o Test_TestSuite.o Test_AssertionLocation.o Test_AssertReal.o Test_SimpleTestCase.o Test_SimpleTestMethod.o Test_FixtureTestCase.o 
+EXCLUDE_OBJS = SimpleTestCase.o FixtureTestCase.o
+ifeq ($(MPI),YES)
+   selfTests.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS))
+else
+   selfTests.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS_SERIAL))
+endif

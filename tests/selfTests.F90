@@ -1,3 +1,4 @@
+#ifdef MPI
 subroutine debug(line, file)
    integer, intent(in) :: line
    character(len=*), intent(in) :: file
@@ -8,6 +9,7 @@ subroutine debug(line, file)
    write(20+rank, *) 'here', line, trim(file), MPI_COMM_WORLD
    call flush(20+rank)
 end subroutine debug
+#endif
 
 #include "reflection.h"
 program main
@@ -27,7 +29,11 @@ contains
       use F2kUnit, only: newTestSuite
       use F2kUnit, only: TestSuite
       use F2kUnit, only: TestRunner, newTestRunner
+#ifdef MPI
       use MpiContext_mod
+#else
+      use SerialContext_mod
+#endif
       use ParallelContext_mod
 
       use Test_StringUtilities_mod, only: stringUtilitiesSuite => suite    ! (1)
@@ -43,7 +49,9 @@ contains
       use Test_SimpleTestCase_mod, only: testSimpleSuite => suite          ! (9)
       use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
 
+#ifdef MPI
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (11)
+#endif
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
@@ -67,9 +75,12 @@ contains
       ADD(testSimpleSuite)
       ADD(testFixtureSuite)
 
+#ifdef MPI
       ADD(MpiTestCaseSuite)
-
       call runner%run(allTests, newMpiContext())
+#else
+      call runner%run(allTests, newSerialContext())
+#endif
 
    end subroutine runTests
 

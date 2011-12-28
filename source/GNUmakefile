@@ -7,17 +7,19 @@ all: libf2kunit.a
 SRCS = $(wildcard *.F90)
 OBJS = $(SRCS:%.F90=%.o)
 
-SRCS_SERIAL=$(filter-out MPI%,$(SRCS))
-OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
+EXCLUDE_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90
+ifneq ($(MPI),YES)
+   SRCS_SERIAL=$(filter-out $(EXCLUDE_SRCS),$(SRCS))
+   OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
+endif
 
-libf2kunit.a: $(OBJS)
+ifeq ($(MPI),YES)
+   libf2kunit.a: $(OBJS)
+else
+   libf2kunit.a: $(OBJS_SERIAL)
+endif
 	ar -r $@ $?
 	-@ranlib $@
-
-libmpif2kunit.a: $(OBJS)
-	ar -r $@ $?
-	-@ranlib $@
-
 
 Exception.o : ParallelContext.o
 Assert.o: Exception.o
@@ -47,4 +49,7 @@ TestResult.o: TestFailure.o
 
 F2kUnit.o: TestRunner.o TestSuite.o
 F2kUnit.o: ParallelContext.o
-F2kUnit.o: MpiContext.o
+
+ifeq ($(MPI),YES)
+   F2kUnit.o: MpiContext.o
+endif

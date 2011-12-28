@@ -4,7 +4,9 @@ module F2kUnit
    use TestRunner_mod
    use ParallelContext_mod
    use Assert_mod
+#ifdef MPI
    use MpiContext_mod
+#endif
    implicit none
    private
 
@@ -15,8 +17,10 @@ module F2kUnit
    public :: TestSuite
    public :: TestRunner, newTestRunner
    public :: ParallelContext
+#ifdef MPI
    public :: MpiContext
    public :: newMpiContext
+#endif
 
    public :: assertEqual
    public :: throw
@@ -24,18 +28,20 @@ module F2kUnit
 contains
 
    subroutine initializeF2kUnit()
+#ifdef MPI
       include 'mpif.h'
       integer :: error
-
       call mpi_init(error)
-
+#endif
       call initializeGlobalExceptionList()
 
    end subroutine initializeF2kUnit
 
    subroutine finalizeF2kUnit()
+#ifdef MPI
       integer :: error
       call mpi_finalize(error)
+#endif
    end subroutine finalizeF2kUnit
 
 end module F2kUnit
