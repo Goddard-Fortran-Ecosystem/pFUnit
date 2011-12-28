@@ -184,7 +184,7 @@ install:
 	mkdir -p $(INSTALL_DIR)/include
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
-	cp -p bin/convert     $(INSTALL_DIR)/bin/.
+	cp -p bin/wrapTest    $(INSTALL_DIR)/bin/.
 	cp -p bin/extract     $(INSTALL_DIR)/bin/.
 	cp include/*.h        $(INSTALL_DIR)/include/.
 	cp include/*.F90      $(INSTALL_DIR)/include/.
