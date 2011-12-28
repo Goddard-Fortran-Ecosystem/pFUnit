@@ -32,7 +32,7 @@ $(EXE): $(OBJS) libf2kex.a
 
 #Test_Mod.o: SimpleTestCase.o
 
-Test_ModuleTestCase.o: Module1.o
+Test_ModuleTestCase.o: ModuleExample.o
 Test_ModuleProceduresTestCase.o: ModuleProcedures.o
 Test_ClassExampleTestCase.o: ClassExample.o
 exTests.o: Test_ClassExampleTestCase.o Test_ModuleTestCase.o Test_ModuleProceduresTestCase.o

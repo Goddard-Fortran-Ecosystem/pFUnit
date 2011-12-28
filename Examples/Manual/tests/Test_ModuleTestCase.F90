@@ -1,6 +1,6 @@
 #include 'reflection.h'
 module Test_ModuleTestCase_mod
-   use Module1, only: printout
+   use ModuleExample, only: printout
    use Assert_mod
    implicit none
    private
@@ -15,7 +15,7 @@ contains
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('Module1')
+      suite = newTestSuite('ModuleExample')
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
       ADD(testprintout)

@@ -1,4 +1,4 @@
-module Module1
+module ModuleExample
 
   implicit none
 
@@ -6,9 +6,9 @@ contains
 
   subroutine printout
 
-    print *, "module1"
+    print *, "modulee-xample"
 
   end subroutine 
 
 
-end module Module1
+end module ModuleExample
