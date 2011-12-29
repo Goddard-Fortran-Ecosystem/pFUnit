@@ -163,7 +163,6 @@ distclean: clean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(RM) $(SOURCE_DIR)/AssertReal_mod.F90 
 	$(RM) $(SOURCE_DIR)/AssertComplex_mod.F90
-	$(RM) -rf $(TESTS_DIR)/testData
 	$(RM) *.x
 
 tests: all
