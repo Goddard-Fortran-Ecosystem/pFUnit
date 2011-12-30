@@ -1,4 +1,4 @@
-#include 'reflection.h'
+#include "reflection.h"
 module Test_TestResult_mod
    use TestResult_mod, only: TestResult, newTestResult
    implicit none
@@ -48,7 +48,7 @@ contains
 
    subroutine testGetNumFailed()
       use Assert_mod, only: assertEqual
-      use Exception_mod, only: Exception
+      use Exception_mod, only: Exception, newException
       use SimpleTestCase_mod, only: SimpleTestCase
       type (TestResult) :: aResult
       
@@ -57,10 +57,10 @@ contains
       aResult = newTestResult()
       call assertEqual(0, aResult%failureCount())
 
-      call aResult%addFailure(aTest, Exception('fail'))
+      call aResult%addFailure(aTest, newException('fail'))
       call assertEqual(1, aResult%failureCount())
 
-      call aResult%addFailure(aTest, Exception('fail again'))
+      call aResult%addFailure(aTest, newException('fail again'))
       call assertEqual(2, aResult%failureCount())
 
    end subroutine testGetNumFailed

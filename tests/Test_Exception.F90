@@ -1,6 +1,7 @@
-#include 'reflection.h'
+#include "reflection.h"
 module Test_Exception_mod
    use Exception_mod, only: ExceptionList, Exception
+   use Exception_mod, only: newException
    use Exception_mod, only: newExceptionList
    use Assert_mod, only: assertEqual
    use Assert_mod, only: assertTrue
@@ -416,7 +417,7 @@ contains
       use Exception_mod, only: UNKNOWN_LINE_NUMBER
       type (Exception) :: anException
 
-      anException = Exception()
+      anException = newException()
       call assertEqual(UNKNOWN_LINE_NUMBER, anException%getLineNumber())
 
    end subroutine testGetLineNumberNoInfo
@@ -425,7 +426,7 @@ contains
       type (Exception) :: anException
       integer, parameter :: LINE_NUMBER = 2
 
-      anException = Exception('message', lineNumber=LINE_NUMBER)
+      anException = newException('message', lineNumber=LINE_NUMBER)
       call assertEqual(LINE_NUMBER, anException%getLineNumber())
 
    end subroutine testGetLineNumber
@@ -434,7 +435,7 @@ contains
       use Exception_mod, only: UNKNOWN_FILE_NAME
       type (Exception) :: anException
 
-      anException = Exception()
+      anException = newException()
       call assertEqual(UNKNOWN_FILE_NAME, anException%getFileName())
 
    end subroutine testGetFileNameNoInfo
@@ -442,7 +443,7 @@ contains
    subroutine testGetFileName()
       type (Exception) :: anException
       character(len=*), parameter :: FILE_NAME = 'foo'
-      anException = Exception('message', lineNumber=3, fileName=FILE_NAME)
+      anException = newException('message', lineNumber=3, fileName=FILE_NAME)
       call assertEqual(FILE_NAME, anException%getFileName())
 
    end subroutine testGetFileName
