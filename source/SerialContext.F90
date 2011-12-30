@@ -16,7 +16,8 @@ module SerialContext_mod
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
-      final :: clean
+!TODO - NAG does not yet support FINAL keyword
+!!$$      final :: clean
    end type SerialContext
 
    type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext(1)
