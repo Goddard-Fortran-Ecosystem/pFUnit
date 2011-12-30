@@ -55,8 +55,8 @@ module PrivateException_mod
       procedure :: throwMessageWithLineNumber
       procedure :: throwMessageWithLineAndFile
       procedure :: throwException
-
-      final :: delete
+!TODO - NAG does not yet support FINAL keyword
+!!$$      final :: delete
    end type ExceptionList
 
    interface newException
@@ -301,6 +301,7 @@ module Exception_mod
    private
 
    public :: Exception
+   public :: newException
    public :: ExceptionList
    public :: newExceptionList
 
