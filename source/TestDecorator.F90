@@ -22,7 +22,7 @@ contains
       use TestResult_mod
       use ParallelContext_mod
       class (TestDecorator), intent(inout) :: this
-      class (TestResult), intent(inout) :: tstResult
+      type (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
       call this%basicRun(tstResult, context)
    end subroutine run
