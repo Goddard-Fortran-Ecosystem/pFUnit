@@ -60,6 +60,19 @@ ifeq ($(F90_VENDOR),GFortran)
   FPPFLAGS += -DSTRINGIFY_SIMPLE
 endif
 
+ifeq ($(F90_VENDOR),NAG)
+  F90 ?=nagfor
+  FPPFLAGS += -DSTRINGIFY_SIMPLE
+  FFLAGS +=-f2003
+  FFLAGS += -mismatch_all
+  F90_HAS_CPP=NO
+  CPP =cpp -traditional -C
+  ifeq ($(DSO),YES)
+    FFLAGS +=-PIC
+  endif
+  LDFLAGS+= -ldl
+endif
+
 ifeq ($(MPI),YES)
   MPIF90 ?= mpif90
   F90     = $(MPIF90)
@@ -87,6 +100,7 @@ CFLAGS +=-I$(INCLUDE_DIR)
 ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
+
 
 all: 
 	$(MAKE) -C $(SOURCE_DIR) all

@@ -24,16 +24,16 @@ endif
 
 ifeq ($(MPI),YES)
 $(EXE): $(OBJS) libf2kunit.a
-	$(MPIF90) -o $@ $(OBJS) $(LIBS)
+	$(MPIF90) -o $@ $(OBJS) $(LIBS) -g
 else
 $(EXE): $(OBJS_SERIAL) libf2kunit.a
-	$(MPIF90) -o $@ $(OBJS_SERIAL) $(LIBS)
+	$(MPIF90) -o $@ $(OBJS_SERIAL) $(LIBS) -g
 endif
 
 Test_SimpleTestCase.o: SimpleTestCase.o
 Test_FixtureTestCase.o: FixtureTestCase.o
 Test_TestResult.o: SimpleTestCase.o
-EXCLUDE_OBJS = SimpleTestCase.o FixtureTestCase.o
+EXCLUDE_OBJS = SimpleTestCase.o FixtureTestCase.o selfTests.o
 ifeq ($(MPI),YES)
    selfTests.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS))
 else

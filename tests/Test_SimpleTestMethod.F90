@@ -1,5 +1,4 @@
 module Test_SimpleTestMethod_mod
-   use SimpleTestMethod_mod, only: SimpleTestMethod
    implicit none
    private
 

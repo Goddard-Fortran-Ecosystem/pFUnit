@@ -1,7 +1,7 @@
 #include "reflection.h"
 module Test_FixtureTestCase_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
-   use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+   use SimpleTestMethod_mod, only: newSimpleTestMethod
    use TestResult_mod, only: TestResult, newTestResult
    implicit none
    private
@@ -14,7 +14,7 @@ contains
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('Test_TestCase')
+      suite => newTestSuite('Test_TestCase')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -26,7 +26,7 @@ contains
 
    subroutine testRunWithFixture()
       use FixtureTestCase_mod, only: FixtureTestCase, newFixtureTestCase
-      use FixtureTestCase_mod, only: SimpleTestMethod, delete
+      use FixtureTestCase_mod, only: delete
       use Assert_mod, only: assertEqual
       use SerialContext_mod
       type (FixtureTestCase) :: test

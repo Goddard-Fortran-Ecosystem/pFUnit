@@ -16,12 +16,12 @@ contains
    function suite()
       use TestSuite_mod, only: TestSuite
       use TestSuite_mod, only: newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+      use SimpleTestMethod_mod, only: newSimpleTestMethod!, SimpleTestMethod
 
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('ExceptionTests')
+      suite => newTestSuite('ExceptionTests')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -102,7 +102,6 @@ contains
 
    ! !INTERFACE:
    subroutine testThrow1()
-      use Exception_mod, only: MAXLEN_MESSAGE
 
       !EOP
       !BOC
@@ -165,7 +164,6 @@ contains
       !EOP
       !BOC
       type (ExceptionList) :: list
-      type (Exception) :: anException
       character(len=*), parameter :: message = 'anException'
       list = newExceptionList()
 
@@ -337,7 +335,6 @@ contains
 
    ! !INTERFACE:
    subroutine testCatchAnyButPreserveA()
-      use Exception_mod, only: MAXLEN_MESSAGE
       !EOP
       !BOC
       type (ExceptionList) :: list

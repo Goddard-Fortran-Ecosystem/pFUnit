@@ -8,13 +8,13 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-      use TestCase_mod, only: TestCase
-      use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+!!$$      use TestCase_mod, only: TestCase
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
       use TestSuite_mod, only: newTestSuite, TestSuite
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('TestSuiteSuite')
+      suite => newTestSuite('TestSuiteSuite')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -26,8 +26,7 @@ contains
    end function suite
 
    subroutine testCountTestCases()
-      use TestCase_mod, only: TestCase
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
+      use SimpleTestCase_mod, only: newSimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
       use TestSuite_mod, only: newTestSuite, TestSuite
       use Assert_mod, only: assertEqual
@@ -43,14 +42,11 @@ contains
    end subroutine testCountTestCases
 
    subroutine testCountTestCasesNestedA()
-      use TestCase_mod, only: TestCase
       use TestSuite_mod, only: newTestSuite, TestSuite
       use Assert_mod, only: assertEqual
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
+
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
-
-      type (SimpleTestCase) :: aTest
 
       innerSuite = newTestSuite('inner')
       outerSuite = newTestSuite('outer')
@@ -60,9 +56,8 @@ contains
    end subroutine testCountTestCasesNestedA
 
    subroutine testCountTestCasesNestedB()
-      use TestCase_mod, only: TestCase
       use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
+      use SimpleTestCase_mod, only: SimpleTestCase
       use Assert_mod, only: assertEqual
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
@@ -92,9 +87,8 @@ contains
    !          -> Test2
    !
    subroutine testCountTestCasesNestedC()
-      use TestCase_mod, only: TestCase
       use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
+      use SimpleTestCase_mod, only: SimpleTestCase
       use Assert_mod, only: assertEqual
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest

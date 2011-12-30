@@ -13,11 +13,11 @@ contains
 
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+      use SimpleTestMethod_mod, only: newSimpleTestMethod !, SimpleTestMethod
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('Assert')
+      suite => newTestSuite('Assert')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 

@@ -44,7 +44,7 @@ contains
       tstResult = newTestResult()
     end function createTestResult
 
-   subroutine run(this, aTest, context)
+    subroutine run(this, aTest, context)
       use Test_mod
       use TestResult_mod
       use ParallelContext_mod

@@ -10,8 +10,10 @@ subroutine setName(this, name)
    this%name = trim(name)
 end subroutine setName
 
+!TODO should be deferred; workaround for ifort
 integer function countTestCases(this)
    class (Test), intent(in) :: this
+   countTestCases = -1 ! should be overrridden
 end function countTestCases
 
 subroutine iRun(this, tstResult, context)

@@ -16,11 +16,11 @@ contains
 
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('assertRealSuite')
+      suite => newTestSuite('assertRealSuite')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -187,8 +187,7 @@ contains
    end subroutine testEquals_1D1D_diffB
 
    subroutine assertCatch(string)
-      use Exception_mod, only: getNumExceptions, NEWLINE, Exception, catchAny
-      use Exception_mod, only: MAXLEN_MESSAGE
+      use Exception_mod, only: getNumExceptions, Exception, catchAny
       use Assert_mod, only: assertEqual
       character(len=*), intent(in) :: string
       type (Exception) :: anException

@@ -1,5 +1,6 @@
 module BrokenSetUpCase_mod
    use TestCase_mod, only: TestCase
+   use Exception_mod, only: throw
    implicit none
    private
    
@@ -24,7 +25,6 @@ contains
    end function newBrokenSetUpCase
 
    subroutine setUp(this)
-      use Exception_mod, only: throw, getNumExceptions
       class(BrokenSetUpCase), intent(inOut) :: this
 
       this%runLog = 'broken setUp'

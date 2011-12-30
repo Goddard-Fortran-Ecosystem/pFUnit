@@ -10,11 +10,11 @@ contains
 
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod, SimpleTestMethod
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite = newTestSuite('Exception')
+      suite => newTestSuite('Exception')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -48,7 +48,7 @@ contains
 
    subroutine testGetNumFailed()
       use Assert_mod, only: assertEqual
-      use Exception_mod, only: Exception, newException
+      use Exception_mod, only: newException
       use SimpleTestCase_mod, only: SimpleTestCase
       type (TestResult) :: aResult
       
