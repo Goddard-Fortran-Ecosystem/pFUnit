@@ -1,7 +1,6 @@
-
+*.a
 *.mod
 *.o
-*.a
 /AssertComplex_mod.F90
 /AssertReal_mod.F90
 
