@@ -4,7 +4,7 @@ $(PFUNIT_FFLAGS_VARIABLE) += -$I$(PFUNIT)/include -$(MOD)$(PFUNIT)/mod -$I.
 PFUNIT_CPPFLAGS+=-I$(PFUNIT)/include    # may need additional flags for some CPP variants
 PFUNIT_XLFLAGS+= $(PFUNIT_WRAP_OBJECTS) $(PFUNIT_TEST_OBJECTS)
 PFUNIT_XLFLAGS+= $(PFUNIT_APP_OBJECTS)
-PFUNIT_LFLAGS+= $(PFUNIT_LFLAGS)
+PFUNIT_XLFLAGS+= $(PFUNIT_LFLAGS)
 PFUNIT_XLFLAGS+= -L$(PFUNIT)/lib -lpfunit
 
 # Project tests and object files
