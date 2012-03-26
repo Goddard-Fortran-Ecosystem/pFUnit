@@ -31,6 +31,7 @@ module Assert_mod
    Public :: AssertFalse
    Public :: AssertEqual
    Public :: AssertFailedAssert
+   Public :: Fail
 
 Contains
 
@@ -65,7 +66,6 @@ Contains
    !! @param test -     test to be checked
    !! @param message - message to be sent for information (optional)
    !!
-   !! @return .true. only if the two BaseAddresses are the same.
    !---------------------------------------------------------------------------
    subroutine AssertFalse(test, message)
       Logical,                       Intent(In) :: test
@@ -74,4 +74,29 @@ Contains
       Call AssertTrue(.not. test, message)
 
    end subroutine AssertFalse
+
+   !---------------------------------------------------------------------------
+   !> Fail - cause a test to fail unconditionally.   Usually this is a placeholder until
+   !! additional functionality is added.  E.g., a simple stub.
+   !!
+   !! @param test - test to be checked
+   !! @param message - message to be sent for information  (optional)
+   !!
+   !
+   !---------------------------------------------------------------------------
+   subroutine Fail(message)
+      Character(Len=*),    Optional, Intent(In) :: message
+
+      Character(Len=MAX_LEN_MSG) :: details
+      Character(Len=*), Parameter :: fmt_assertion='(a)'
+
+      if (present(message)) then
+         write(details,fmt_assertion) message
+      else
+         details = ' '
+      end if
+      call throw(Exception(details))
+
+   end subroutine Fail
+
 end module Assert_mod

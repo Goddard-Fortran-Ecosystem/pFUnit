@@ -117,6 +117,9 @@ Contains
     use TestTestResult_mod, only: test_testFailedReport
     use TestTestResult_mod, only: test_summary
 
+    use TestAssert_mod, only: test_Fail
+    use TestAssert_mod, only: test_FailNoMsg
+
     Type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('basic')
@@ -156,6 +159,9 @@ Contains
     call add(aSuite, TestCase1Step(REFLECT(test_testFailed)))
     call add(aSuite, TestCase1Step(REFLECT(test_testFailedReport)))
     call add(aSuite, TestCase1Step(REFLECT(test_summary)))
+
+    call add(aSuite, TestCase1Step(REFLECT(test_Fail)))
+    call add(aSuite, TestCase1Step(REFLECT(test_FailNoMsg)))
 
   End Function basic_tests
 
