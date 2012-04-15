@@ -14,6 +14,7 @@ module Assert_mod
    interface assertTrue
       module procedure assertTrueBasic
       module procedure assertTrueLineNumber
+      module procedure assertTrueMessage
    end interface
 
 contains
@@ -35,6 +36,13 @@ contains
          call throw(message)
       end if
    end subroutine assertTrueLineNumber
+
+   subroutine assertTrueMessage(condition, message)
+      use Exception_mod, only: throw
+      logical, intent(in) :: condition
+      character(len=*), intent(in) :: message
+      if (.not. condition) call throw('Logical assertion failed :: '//trim(message))
+   end subroutine assertTrueMessage
 
    subroutine assertFalse(condition)
       logical, intent(in) :: condition

@@ -32,6 +32,7 @@ module MockSUT_mod
    type, extends(SUT) :: MockSUT
       type (MockRepository), pointer :: mocker => null()
    contains
+      procedure :: method1
       final :: verifyMocking
    end type MOCKSUT
 
@@ -55,6 +56,11 @@ contains
       end if
 
    end subroutine verifyMocking
+
+   subroutine method1(this)
+      class (MockSUT), intent(in) :: this
+      call this%mocker%hasCalled(this, 'method1')
+   end subroutine method1
 
 end module MockSUT_mod
 
@@ -86,6 +92,8 @@ contains
 
       ADD(testNoAction)
       ADD(testExpectMethod_NotCalled)
+      ADD(testExpectMethod_IsCalled)
+      ADD(testExpectMethod_CalledDifferentMethod)
 
    end function suite
 
@@ -118,5 +126,47 @@ contains
       end subroutine internalProcedure
 
    end subroutine testExpectMethod_NotCalled
+
+   subroutine testExpectMethod_IsCalled()
+
+      call internalProcedure() ! verification is when object is final-ized
+
+   contains
+
+      subroutine internalProcedure()
+         class (MockRepository), pointer :: mocker
+         type (SUT) :: object
+         type (MockSUT) :: mockObject
+
+         mocker => newMockRepository()
+         mockObject = newMockSUT(mocker)
+         call mocker%expectCall(mockObject,'method1')
+         call mockObject%method1()
+
+      end subroutine internalProcedure
+
+   end subroutine testExpectMethod_IsCalled
+
+   subroutine testExpectMethod_CalledDifferentMethod()
+
+      call internalProcedure() ! verification is when object is final-ized
+      call assertTrue(catch('Expected method not called: method1() on object of class MockSUT.'), &
+           & 'Failed to distinguish among method names.')
+
+   contains
+
+      subroutine internalProcedure()
+         class (MockRepository), pointer :: mocker
+         type (SUT) :: object
+         type (MockSUT) :: mockObject
+
+         mocker => newMockRepository()
+         mockObject = newMockSUT(mocker)
+         call mocker%expectCall(mockObject,'method2')
+         call mockObject%method1()
+
+      end subroutine internalProcedure
+
+   end subroutine testExpectMethod_CalledDifferentMethod
 
 end module Test_MockRepository_mod
