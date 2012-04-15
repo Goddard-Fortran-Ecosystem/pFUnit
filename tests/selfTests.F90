@@ -49,8 +49,11 @@ contains
       use Test_SimpleTestCase_mod, only: testSimpleSuite => suite          ! (9)
       use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
 
+
+      use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
+
 #ifdef MPI
-      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (11)
+      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 
       type (TestSuite) :: allTests
@@ -74,6 +77,8 @@ contains
       ADD(testSimpleMethodSuite)
       ADD(testSimpleSuite)
       ADD(testFixtureSuite)
+
+      ADD(testMockRepositorySuite)
 
 #ifdef MPI
       ADD(MpiTestCaseSuite)

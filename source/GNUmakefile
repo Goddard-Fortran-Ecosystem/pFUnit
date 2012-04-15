@@ -47,6 +47,8 @@ ResultPrinter.o: TestFailure.o
 TestFailure.o: Exception.o
 TestResult.o: TestFailure.o
 
+MockRepository.o:
+
 F2kUnit.o: TestRunner.o TestSuite.o
 F2kUnit.o: ParallelContext.o
 
