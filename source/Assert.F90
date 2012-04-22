@@ -5,6 +5,7 @@ module Assert_mod
    public :: assertTrue
    public :: assertFalse
    public :: assertEqual
+   public :: assertExceptionRaised
 
    interface assertEqual
       module procedure assertEqualIntegerScalar
@@ -16,6 +17,11 @@ module Assert_mod
       module procedure assertTrueLineNumber
       module procedure assertTrueMessage
    end interface
+
+   interface assertExceptionRaised
+      module procedure assertExceptionRaisedBasic
+      module procedure assertExceptionRaisedMessage
+   end interface assertExceptionRaised
 
 contains
 
@@ -86,5 +92,24 @@ contains
          call throw(throwMessage)
       end if
    end subroutine assertEqualString
+
+   subroutine assertExceptionRaisedBasic()
+      use Exception_mod, only: throw, catch
+
+      if (.not. catch()) then
+         call throw('Failed to throw exception.')
+      end if
+
+   end subroutine assertExceptionRaisedBasic
+
+   subroutine assertExceptionRaisedMessage(message)
+      use Exception_mod, only: throw, catch
+      character(len=*), intent(in) :: message
+
+      if (.not. catch(message)) then
+         call throw('Failed to throw exception: <' // trim(message) // '>')
+      end if
+
+   end subroutine assertExceptionRaisedMessage
 
 end module Assert_mod

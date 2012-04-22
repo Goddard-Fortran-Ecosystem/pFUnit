@@ -41,7 +41,10 @@ module PrivateException_mod
 
       procedure :: catchAny
       procedure :: gather
-      procedure :: catch
+      procedure :: catch_any
+      procedure :: catch_message
+      generic :: catch => catch_any
+      generic :: catch => catch_message
       procedure :: noExceptions
       procedure :: clearAll
       procedure, private :: deleteIthException
@@ -259,7 +262,28 @@ contains
 
    end subroutine deleteIthException
 
-   logical function catch(this, message, preserve) 
+   logical function catch_any(this, preserve) 
+      class (ExceptionList), intent(inOut) :: this
+      logical, optional, intent(in) :: preserve
+
+      integer :: i, n
+      logical :: preserve_ ! for default value
+
+      n = this%getNumExceptions()
+
+      if (n >= 1) then
+         catch_any =.true.
+         preserve_ = .false.
+         if (present(preserve)) preserve_ = preserve
+         if (.not. preserve_) call this%deleteIthException(i, preserve)
+         return
+      end if
+
+      catch_any =.false.
+
+   end function catch_any
+
+   logical function catch_message(this, message, preserve) 
       class (ExceptionList), intent(inOut) :: this
       character(len=*), intent(in) :: message
       logical, optional, intent(in) :: preserve
@@ -271,16 +295,16 @@ contains
 
       do i = 1, n
          if (trim(message) == this%exceptions(i)%getMessage()) then
-            catch =.true.
+            catch_message =.true.
             preserve_ = .false.
             if (present(preserve)) preserve_ = preserve
             if (.not. preserve_) call this%deleteIthException(i, preserve)
             return
          end if
       end do
-      catch =.false.
+      catch_message =.false.
 
-   end function catch
+   end function catch_message
 
    subroutine clearAll(this)
       class (ExceptionList), intent(inOut) :: this
@@ -331,6 +355,11 @@ module Exception_mod
     module procedure throw_messageWithLineAndFile
   end interface
 
+  interface catch
+     module procedure catch_any
+     module procedure catch_message
+  end interface catch
+
 contains
 
    subroutine initializeGlobalExceptionList()
@@ -370,12 +399,17 @@ contains
       anException = globalExceptionList%catchAny(preserve)
    end function catchAny
 
-   logical function catch(message, preserve)
+   logical function catch_any(preserve)
+      logical, optional, intent(in) :: preserve
+      catch_any = globalExceptionList%catch(preserve)
+   end function catch_any
+
+   logical function catch_message(message, preserve)
       character(len=*), intent(in) :: message
       logical, optional, intent(in) :: preserve
 
-      catch = globalExceptionList%catch(message, preserve)
-   end function catch
+      catch_message = globalExceptionList%catch(message, preserve)
+   end function catch_message
 
    logical function noExceptions()
       noExceptions = globalExceptionList%noExceptions()
