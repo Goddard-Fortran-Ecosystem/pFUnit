@@ -71,6 +71,7 @@ module TestCase_mod
       module procedure testCase_setUp
       module procedure testCase_fixture
       module procedure testCase1StepMethod
+      module procedure testCase1StepFixture
       module procedure testCase1StepMpi
    end interface
 
