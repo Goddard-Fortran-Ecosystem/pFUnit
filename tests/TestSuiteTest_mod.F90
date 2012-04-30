@@ -24,8 +24,8 @@ Contains
     suite = TestSuite('suite')
     test_result=NewTestResult()
 
-    call Add(suite, TestCase1StepFixture(setup, teardown, REFLECT(testMethod)))
-    call Add(suite, TestCase1StepFixture(setup, teardown, REFLECT(brokenMethod)))
+    call Add(suite, TestCase(setup, teardown, REFLECT(testMethod)))
+    call Add(suite, TestCase(setup, teardown, REFLECT(brokenMethod)))
 
     Call Run(suite, test_result)
     call assertEqual(2, numRun(test_result),'numRun')
@@ -45,11 +45,11 @@ Contains
     test_result=NewTestResult()
     suite_A = TestSuite('suite')
 
-    call Add(suite_A, TestCase1StepFixture(setup, teardown, REFLECT(testMethod)))
-    call Add(suite_A, TestCase1StepFixture(setup, teardown, REFLECT(brokenMethod)))
+    call Add(suite_A, TestCase(setup, teardown, REFLECT(testMethod)))
+    call Add(suite_A, TestCase(setup, teardown, REFLECT(brokenMethod)))
 
     suite_B = TestSuite('suiteB')
-    call Add(suite_B, TestCase1StepFixture(setup, teardown, REFLECT(testMethod)))
+    call Add(suite_B, TestCase(setup, teardown, REFLECT(testMethod)))
     call Add(suite_B, suite_A)
 
     Call Run(suite_B, test_result)
@@ -72,11 +72,11 @@ Contains
     test_result=NewTestResult()
     suite_A = TestSuite('suite')
 
-    call Add(suite_A, TestCase1StepFixture(setup, teardown, REFLECT(testMethod)))
-    call Add(suite_A, TestCase1StepFixture(setup, teardown, REFLECT(BrokenMethod)))
+    call Add(suite_A, TestCase(setup, teardown, REFLECT(testMethod)))
+    call Add(suite_A, TestCase(setup, teardown, REFLECT(BrokenMethod)))
 
     suite_B = TestSuite('suiteB')
-    call Add(suite_B, TestCase1StepFixture(setup, teardown, REFLECT(testMethod)))
+    call Add(suite_B, TestCase(setup, teardown, REFLECT(testMethod)))
     call Add(suite_B, suite_A)
 
     Call Run(suite_B, test_result)
@@ -98,10 +98,10 @@ Contains
      suite = TestSuite('suite')
      call assertEqual(0, countTests(suite))
      
-     call add(suite, testCase1Step(REFLECT(testMethod)))
+     call add(suite, testCase(REFLECT(testMethod)))
      call assertEqual(1, countTests(suite))
      
-     test = testCase1Step(REFLECT(testMethod))
+     test = testCase(REFLECT(testMethod))
      call addTestMethod(test, REFLECT(testMethod))
      call add(suite, test)
      call assertEqual(3, countTests(suite))
@@ -118,8 +118,8 @@ Contains
      suite_A = TestSuite('suiteA')
      suite_B = TestSuite('suiteB')
      
-     call add(suite_A, testCase1Step(REFLECT(testMethod)))
-     call add(suite_A, testCase1Step(REFLECT(testMethod)))
+     call add(suite_A, testCase(REFLECT(testMethod)))
+     call add(suite_A, testCase(REFLECT(testMethod)))
      
      call add(suite_B, suite_A)
      call assertEqual(2, countTests(suite_B))

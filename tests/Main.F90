@@ -75,11 +75,11 @@ Contains
     Type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('parameterized tests')
-    Call Add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(testWasRun)))
-    Call Add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(testmethod_uni)))
-    Call Add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(testmethod_multi_summary)))
-    Call Add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(testCountTestsA)))
-    Call Add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(testCountTestsB)))
+    Call Add(aSuite, TestCase(setup, teardown, REFLECT(testWasRun)))
+    Call Add(aSuite, TestCase(setup, teardown, REFLECT(testmethod_uni)))
+    Call Add(aSuite, TestCase(setup, teardown, REFLECT(testmethod_multi_summary)))
+    Call Add(aSuite, TestCase(setup, teardown, REFLECT(testCountTestsA)))
+    Call Add(aSuite, TestCase(setup, teardown, REFLECT(testCountTestsB)))
 
   End Function paramtest_tests
 
@@ -127,41 +127,41 @@ Contains
     call add(aSuite, procedureTests())
     call add(aSuite, ioTests())
 
-    call add(aSuite, TestCase1Step(REFLECT(testAssertEqual_unequalLength)))
-    call add(aSuite, TestCase1Step(REFLECT(testAssertEqual_different)))
-    call add(aSuite, TestCase1Step(REFLECT(testAssertEqual_ignoreWhiteSpace)))
-    call add(aSuite, TestCase1Step(REFLECT(test_trimWhiteSpace)))
+    call add(aSuite, TestCase(REFLECT(testAssertEqual_unequalLength)))
+    call add(aSuite, TestCase(REFLECT(testAssertEqual_different)))
+    call add(aSuite, TestCase(REFLECT(testAssertEqual_ignoreWhiteSpace)))
+    call add(aSuite, TestCase(REFLECT(test_trimWhiteSpace)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_areConformableA)))
-    call add(aSuite, TestCase1Step(REFLECT(test_areConformableB)))
-    call add(aSuite, TestCase1Step(REFLECT(test_areConformableC)))
-    call add(aSuite, TestCase1Step(REFLECT(test_areConformableD)))
+    call add(aSuite, TestCase(REFLECT(test_areConformableA)))
+    call add(aSuite, TestCase(REFLECT(test_areConformableB)))
+    call add(aSuite, TestCase(REFLECT(test_areConformableC)))
+    call add(aSuite, TestCase(REFLECT(test_areConformableD)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_scalar)))
-    call add(aSuite, TestCase1Step(REFLECT(test_assertequal_scalar_message)))
-    call add(aSuite, TestCase1Step(REFLECT(test_arrayString)))
-    call add(aSuite, TestCase1Step(REFLECT(test_assertequal_vector)))
-    call add(aSuite, TestCase1Step(REFLECT(test_assertequal_scalar_vector)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_scalar)))
+    call add(aSuite, TestCase(REFLECT(test_assertequal_scalar_message)))
+    call add(aSuite, TestCase(REFLECT(test_arrayString)))
+    call add(aSuite, TestCase(REFLECT(test_assertequal_vector)))
+    call add(aSuite, TestCase(REFLECT(test_assertequal_scalar_vector)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_vectorNorm)))
-    call add(aSuite, TestCase1Step(REFLECT(test_isWithinTolerance)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_float)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_tolerance)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_floatFail)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_floatMessage)))
+    call add(aSuite, TestCase(REFLECT(test_vectorNorm)))
+    call add(aSuite, TestCase(REFLECT(test_isWithinTolerance)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_float)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_tolerance)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_floatFail)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_floatMessage)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_complex)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_complex_failed)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_complex_int)))
-    call add(aSuite, TestCase1Step(REFLECT(test_AssertEqual_complex_real)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_complex)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_complex_failed)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_complex_int)))
+    call add(aSuite, TestCase(REFLECT(test_AssertEqual_complex_real)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_testStarted)))
-    call add(aSuite, TestCase1Step(REFLECT(test_testFailed)))
-    call add(aSuite, TestCase1Step(REFLECT(test_testFailedReport)))
-    call add(aSuite, TestCase1Step(REFLECT(test_summary)))
+    call add(aSuite, TestCase(REFLECT(test_testStarted)))
+    call add(aSuite, TestCase(REFLECT(test_testFailed)))
+    call add(aSuite, TestCase(REFLECT(test_testFailedReport)))
+    call add(aSuite, TestCase(REFLECT(test_summary)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_Fail)))
-    call add(aSuite, TestCase1Step(REFLECT(test_FailNoMsg)))
+    call add(aSuite, TestCase(REFLECT(test_Fail)))
+    call add(aSuite, TestCase(REFLECT(test_FailNoMsg)))
 
   End Function basic_tests
 
@@ -171,23 +171,23 @@ Contains
 
      aSuite = TestSuite('exception')
 
-     call add(aSuite, TestCase1Step(REFLECT(test_catchEmpty)))
-     call add(aSuite, TestCase1Step(REFLECT(test_throw1)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchFail)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchSucceed)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchOnly)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchRethrow)))
-     call add(aSuite, TestCase1Step(REFLECT(test_clearAll)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchOnce)))
-     call add(aSuite, TestCase1Step(REFLECT(test_catchGetException)))
-     call add(aSuite, TestCase1Step(REFLECT(test_ignoreOtherBlock)))
-     call add(aSuite, TestCase1Step(REFLECT(test_nestedTry)))
-     call add(aSuite, TestCase1Step(REFLECT(test_macros)))
-     call add(aSuite, TestCase1Step(REFLECT(test_getMessage)))
-     call add(aSuite, TestCase1Step(REFLECT(test_ignoreSameMessage)))
+     call add(aSuite, TestCase(REFLECT(test_catchEmpty)))
+     call add(aSuite, TestCase(REFLECT(test_throw1)))
+     call add(aSuite, TestCase(REFLECT(test_catchFail)))
+     call add(aSuite, TestCase(REFLECT(test_catchSucceed)))
+     call add(aSuite, TestCase(REFLECT(test_catchOnly)))
+     call add(aSuite, TestCase(REFLECT(test_catchRethrow)))
+     call add(aSuite, TestCase(REFLECT(test_clearAll)))
+     call add(aSuite, TestCase(REFLECT(test_catchOnce)))
+     call add(aSuite, TestCase(REFLECT(test_catchGetException)))
+     call add(aSuite, TestCase(REFLECT(test_ignoreOtherBlock)))
+     call add(aSuite, TestCase(REFLECT(test_nestedTry)))
+     call add(aSuite, TestCase(REFLECT(test_macros)))
+     call add(aSuite, TestCase(REFLECT(test_getMessage)))
+     call add(aSuite, TestCase(REFLECT(test_ignoreSameMessage)))
 #ifdef USE_MPI
-     call add(aSuite, TestCase1Step(REFLECT(test_gatherExceptionsA), passMPI=.true.))
-     call add(aSuite, TestCase1Step(REFLECT(test_gatherExceptionsB), passMPI=.true.))
+     call add(aSuite, TestCase(REFLECT(test_gatherExceptionsA), passMPI=.true.))
+     call add(aSuite, TestCase(REFLECT(test_gatherExceptionsB), passMPI=.true.))
 #endif
   end function exceptionTests
 
@@ -198,14 +198,14 @@ Contains
 
      aSuite = TestSuite('procedurePointer')
 
-     call add(aSuite, TestCase1Step(REFLECT(test_sameAddress)))
-     call add(aSuite, TestCase1Step(REFLECT(test_differentAddress)))
-     call add(aSuite, TestCase1Step(REFLECT(test_isNull)))
+     call add(aSuite, TestCase(REFLECT(test_sameAddress)))
+     call add(aSuite, TestCase(REFLECT(test_differentAddress)))
+     call add(aSuite, TestCase(REFLECT(test_isNull)))
 
-     call add(aSuite, TestCase1Step(REFLECT(test_callUninitialized)))
-     call add(aSuite, TestCase1Step(REFLECT(test_callNoArguments)))
-     call add(aSuite, TestCase1Step(REFLECT(test_callOneIntegerArgument)))
-     call add(aSuite, TestCase1Step(REFLECT(test_callOneRealArgument)))
+     call add(aSuite, TestCase(REFLECT(test_callUninitialized)))
+     call add(aSuite, TestCase(REFLECT(test_callNoArguments)))
+     call add(aSuite, TestCase(REFLECT(test_callOneIntegerArgument)))
+     call add(aSuite, TestCase(REFLECT(test_callOneRealArgument)))
 
   end function procedureTests
 
@@ -216,28 +216,28 @@ Contains
 
      aSuite = TestSuite('IO')
 
-     call add(aSuite, TestCase1Step(REFLECT(test_getUnit)))
-     call add(aSuite, TestCase1Step(REFLECT(test_getUnit2)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openNew)))
-     call add(aSuite, TestCase1Step(REFLECT(test_open2Files)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openNewFailExists)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openFailIsOpen)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openOld)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openOldFail)))
-     call add(aSuite, TestCase1Step(REFLECT(test_deleteFile)))
-     call add(aSuite, TestCase1Step(REFLECT(test_deleteFileIsOpen)))
-     call add(aSuite, TestCase1Step(REFLECT(test_deleteFileDoesNotExist)))
-     call add(aSuite, TestCase1Step(REFLECT(test_deleteFileDoesNotExistIgnore)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openUnformatted)))
-     call add(aSuite, TestCase1Step(REFLECT(test_openFormatted)))
+     call add(aSuite, TestCase(REFLECT(test_getUnit)))
+     call add(aSuite, TestCase(REFLECT(test_getUnit2)))
+     call add(aSuite, TestCase(REFLECT(test_openNew)))
+     call add(aSuite, TestCase(REFLECT(test_open2Files)))
+     call add(aSuite, TestCase(REFLECT(test_openNewFailExists)))
+     call add(aSuite, TestCase(REFLECT(test_openFailIsOpen)))
+     call add(aSuite, TestCase(REFLECT(test_openOld)))
+     call add(aSuite, TestCase(REFLECT(test_openOldFail)))
+     call add(aSuite, TestCase(REFLECT(test_deleteFile)))
+     call add(aSuite, TestCase(REFLECT(test_deleteFileIsOpen)))
+     call add(aSuite, TestCase(REFLECT(test_deleteFileDoesNotExist)))
+     call add(aSuite, TestCase(REFLECT(test_deleteFileDoesNotExistIgnore)))
+     call add(aSuite, TestCase(REFLECT(test_openUnformatted)))
+     call add(aSuite, TestCase(REFLECT(test_openFormatted)))
 
-     call add(aSuite, TestCase1Step(REFLECT(test_isConnected)))
-     call add(aSuite, TestCase1Step(REFLECT(test_isOpenUnit)))
-     call add(aSuite, TestCase1Step(REFLECT(test_isOpenFileName)))
-     call add(aSuite, TestCase1Step(REFLECT(test_getUnitFromName)))
-     call add(aSuite, TestCase1Step(REFLECT(test_getUnitFromNameFail)))
+     call add(aSuite, TestCase(REFLECT(test_isConnected)))
+     call add(aSuite, TestCase(REFLECT(test_isOpenUnit)))
+     call add(aSuite, TestCase(REFLECT(test_isOpenFileName)))
+     call add(aSuite, TestCase(REFLECT(test_getUnitFromName)))
+     call add(aSuite, TestCase(REFLECT(test_getUnitFromNameFail)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_createNamedPipe)))
+    call add(aSuite, TestCase(REFLECT(test_createNamedPipe)))
 
   end function ioTests
 
@@ -249,18 +249,18 @@ Contains
     Type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('new MPI suite')
-!!$    call add(aSuite, TestCase1Step(REFLECT(test_readWrite)))
-!!$    call add(aSuite, TestCase1Step(REFLECT(test_runOnServer)))
+!!$    call add(aSuite, TestCase(REFLECT(test_readWrite)))
+!!$    call add(aSuite, TestCase(REFLECT(test_runOnServer)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_constructor), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_rank), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_subset), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_MPI_HelloWorld1), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_MPI_HelloWorld4), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_Broken_MPI_Method), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_MPI_setup_teardown), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_MPI_Suite), passMPI=.true.))
-    call add(aSuite, TestCase1Step(REFLECT(test_MPI_CountTests)))
+    call add(aSuite, TestCase(REFLECT(test_constructor), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_rank), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_subset), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_MPI_HelloWorld1), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_MPI_HelloWorld4), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_Broken_MPI_Method), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_MPI_setup_teardown), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_MPI_Suite), passMPI=.true.))
+    call add(aSuite, TestCase(REFLECT(test_MPI_CountTests)))
 
  end Function newMpi_tests
 
@@ -272,20 +272,20 @@ Contains
 
     aSuite = TestSuite('testcase')
 
-    call add(aSuite, TestCase1Step(REFLECT(test_runTest)))
-    call add(aSuite, TestCase1Step(REFLECT(test_run2Tests)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSetUp)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSetUpMissing)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runTearDown)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runTearDownMissing)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSimpleTestCase_A)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSimpleTestCase_B)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSimpleTestCase_C)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runSimpleTestCaseFail)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runTestCaseFailSetUp)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runTestCaseFailTearDown)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runTestCaseSpoofFixture)))
-    call add(aSuite, TestCase1Step(REFLECT(test_countTests)))
+    call add(aSuite, TestCase(REFLECT(test_runTest)))
+    call add(aSuite, TestCase(REFLECT(test_run2Tests)))
+    call add(aSuite, TestCase(REFLECT(test_runSetUp)))
+    call add(aSuite, TestCase(REFLECT(test_runSetUpMissing)))
+    call add(aSuite, TestCase(REFLECT(test_runTearDown)))
+    call add(aSuite, TestCase(REFLECT(test_runTearDownMissing)))
+    call add(aSuite, TestCase(REFLECT(test_runSimpleTestCase_A)))
+    call add(aSuite, TestCase(REFLECT(test_runSimpleTestCase_B)))
+    call add(aSuite, TestCase(REFLECT(test_runSimpleTestCase_C)))
+    call add(aSuite, TestCase(REFLECT(test_runSimpleTestCaseFail)))
+    call add(aSuite, TestCase(REFLECT(test_runTestCaseFailSetUp)))
+    call add(aSuite, TestCase(REFLECT(test_runTestCaseFailTearDown)))
+    call add(aSuite, TestCase(REFLECT(test_runTestCaseSpoofFixture)))
+    call add(aSuite, TestCase(REFLECT(test_countTests)))
 
   End Function testcase_tests
 
@@ -295,13 +295,13 @@ Contains
      Type (TestSuite_type) :: aSuite
 
      aSuite = TestSuite('testsuite')
-     Call Add(aSuite, TestCase1Step(REFLECT(test_lowerCase)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_fortranNameMangle_xlf)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_fortranNameMangle_g95)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_fortranNameMangle_nag)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_isModuleProcedure)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_moduleName)))
-     Call Add(aSuite, TestCase1Step(REFLECT(test_procedureName)))
+     Call Add(aSuite, TestCase(REFLECT(test_lowerCase)))
+     Call Add(aSuite, TestCase(REFLECT(test_fortranNameMangle_xlf)))
+     Call Add(aSuite, TestCase(REFLECT(test_fortranNameMangle_g95)))
+     Call Add(aSuite, TestCase(REFLECT(test_fortranNameMangle_nag)))
+     Call Add(aSuite, TestCase(REFLECT(test_isModuleProcedure)))
+     Call Add(aSuite, TestCase(REFLECT(test_moduleName)))
+     Call Add(aSuite, TestCase(REFLECT(test_procedureName)))
   end Function FortranName_tests
 
   Function testsuite_tests() Result (aSuite)
@@ -309,14 +309,14 @@ Contains
     Type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('testsuite')
-    call add(aSuite, TestCase1Step(REFLECT(testRunSuite)))
-    call add(aSuite, TestCase1Step(REFLECT(testAddSuite)))
-    call add(aSuite, TestCase1Step(REFLECT(testReportLineage)))
-    call add(aSuite, TestCase1Step(REFLECT(testCountTestsA)))
-    call add(aSuite, TestCase1Step(REFLECT(testCountTestsB)))
-    call add(aSuite, TestCase1Step(REFLECT(testCountTestsC)))
+    call add(aSuite, TestCase(REFLECT(testRunSuite)))
+    call add(aSuite, TestCase(REFLECT(testAddSuite)))
+    call add(aSuite, TestCase(REFLECT(testReportLineage)))
+    call add(aSuite, TestCase(REFLECT(testCountTestsA)))
+    call add(aSuite, TestCase(REFLECT(testCountTestsB)))
+    call add(aSuite, TestCase(REFLECT(testCountTestsC)))
 #ifdef USE_MPI
-    call add(aSuite, TestCase1Step(REFLECT(testCountTestsD)))
+    call add(aSuite, TestCase(REFLECT(testCountTestsD)))
 #endif
 
   End Function testsuite_tests
@@ -330,23 +330,23 @@ Contains
     type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('dsoUtils')
-    Call Add(aSuite, TestCase1Step(REFLECT(test_cString)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_cStringTrim)))
+    Call Add(aSuite, TestCase(REFLECT(test_cString)))
+    Call Add(aSuite, TestCase(REFLECT(test_cStringTrim)))
 
-    Call Add(aSuite, TestCase1Step(REFLECT(test_openLibrary)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_openLibraryFail)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_getProcedureHandle)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_getProcedureHandleFail)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_ExternalSymbolsA)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_ExternalSymbolsB)))
-    Call Add(aSuite, TestCase1Step(REFLECT(test_F90ModuleSymbols)))
+    Call Add(aSuite, TestCase(REFLECT(test_openLibrary)))
+    Call Add(aSuite, TestCase(REFLECT(test_openLibraryFail)))
+    Call Add(aSuite, TestCase(REFLECT(test_getProcedureHandle)))
+    Call Add(aSuite, TestCase(REFLECT(test_getProcedureHandleFail)))
+    Call Add(aSuite, TestCase(REFLECT(test_ExternalSymbolsA)))
+    Call Add(aSuite, TestCase(REFLECT(test_ExternalSymbolsB)))
+    Call Add(aSuite, TestCase(REFLECT(test_F90ModuleSymbols)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_testCase)))
+    call add(aSuite, TestCase(REFLECT(test_testCase)))
 
-    call add(aSuite, TestCase1Step(REFLECT(test_loadDsoTests)))
-    call add(aSuite, TestCase1Step(REFLECT(test_runDsoTests)))
-    call add(aSuite, TestCase1Step(REFLECT(test_loadTestsFromFile1)))
-    call add(aSuite, TestCase1Step(REFLECT(test_loadTestsFromFile2)))
+    call add(aSuite, TestCase(REFLECT(test_loadDsoTests)))
+    call add(aSuite, TestCase(REFLECT(test_runDsoTests)))
+    call add(aSuite, TestCase(REFLECT(test_loadTestsFromFile1)))
+    call add(aSuite, TestCase(REFLECT(test_loadTestsFromFile2)))
 
   end function dso_tests
 #endif
@@ -356,10 +356,10 @@ Contains
     type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('testinternalfile')
-    call add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(test_NumLines)))
-    call add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(test_AppendLine)))
-    call add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(test_LoadFile)))
-    call add(aSuite, TestCase1StepFixture(setup, teardown, REFLECT(test_WriteFile)))
+    call add(aSuite, TestCase(setup, teardown, REFLECT(test_NumLines)))
+    call add(aSuite, TestCase(setup, teardown, REFLECT(test_AppendLine)))
+    call add(aSuite, TestCase(setup, teardown, REFLECT(test_LoadFile)))
+    call add(aSuite, TestCase(setup, teardown, REFLECT(test_WriteFile)))
 
   End Function internalfile_tests
 
@@ -368,7 +368,7 @@ Contains
     type (TestSuite_type) :: aSuite
 
     aSuite = TestSuite('test_defectReports')
-    call add(aSuite, TestCase1Step(REFLECT(testMixedTypeAssert)))
+    call add(aSuite, TestCase(REFLECT(testMixedTypeAssert)))
 
   end function defect_tests
 

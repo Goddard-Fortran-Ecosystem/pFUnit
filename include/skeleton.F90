@@ -83,9 +83,9 @@ DELEGATE(teardown)
          & suite_name = SUITE_NAME_STRING
     suite = TestSuite(suite_name)
 #ifdef HAS_SETUP
-#define ADDMETHOD(method) call Add(suite, TestCase1StepFixture(setup, teardown, #method, method))
+#define ADDMETHOD(method) call Add(suite, TestCase(setup, teardown, #method, method))
 #else
-#define ADDMETHOD(method) call Add(suite, TestCase1Step(#method, method))
+#define ADDMETHOD(method) call Add(suite, TestCase(#method, method))
 #endif
 #define OPER(method) ADDMETHOD(method)
 #include METHODS_FILE
