@@ -266,7 +266,7 @@ contains
       class (ExceptionList), intent(inOut) :: this
       logical, optional, intent(in) :: preserve
 
-      integer :: i, n
+      integer :: n
       logical :: preserve_ ! for default value
 
       n = this%getNumExceptions()
@@ -275,7 +275,7 @@ contains
          catch_any =.true.
          preserve_ = .false.
          if (present(preserve)) preserve_ = preserve
-         if (.not. preserve_) call this%deleteIthException(i, preserve)
+         if (.not. preserve_) call this%deleteIthException(n, preserve)
          return
       end if
 
