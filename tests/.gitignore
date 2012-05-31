@@ -3,4 +3,5 @@
 *.mod
 *.o
 *~
+/Test_Assert_cpp.F90
 /tests.x
