@@ -763,7 +763,7 @@ When building tests manually, registration of MPI tests require an
 extra parameter specifying the number of processes to use:
 
 \begin{verbatim}
-call add(suite, & &   MpiTestCase('testMPI', testMPI, numProcesses=3))
+call add(suite, MpiTestCase('testMPI', testMPI, numProcesses=3))
 \end{verbatim}
 
 Note that \pfunit creates a new subcommunicator for each MPI test when it is run
