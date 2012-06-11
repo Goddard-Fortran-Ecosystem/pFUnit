@@ -82,12 +82,11 @@ Before installing and building the \pfunit, make sure to follow the system requi
 \subsection{Getting and Installing \pfunit}
 \subsubsection{Obtaining \pfunit}
 
-\pfunit is located at http://sourceforge.net/projects/pfunit/.   The following step of installation 
-using the CVS command to check out the code is:\\
+\pfunit is located at http://sourceforge.net/projects/pfunit/. To obtain the code use the "git clone" command as follows: 
 
 
 \begin{verbatim}
-$ cvs -z3 -d:pserver:anonymous@pfunit.cvs.sourceforge.net:/cvsroot/pfunit co -P pFUnit
+$ git clone git://pfunit.git.sourceforge.net/gitroot/pfunit/pfunit pFUnit
 \end{verbatim}
 
 
@@ -153,7 +152,7 @@ applications are encouraged to use the serial implementation of
 
 \subsubsection{Installing \pfunit}
 \begin{enumerate}
-\item After building the \pfunit is successful, install the build in a
+\item After building \pfunit is successful, install the build in a
   convenient directory and verify that the sub-directories bin,
   include, lib, mod are created.  Note: it it is very important to
   choose a different installation directory than was used for building pFUnit.
@@ -212,7 +211,7 @@ More recently, we have decided to use the C interoperability features
 provided in the 2003 Fortran standard.  Although full implementations
 of the 2003 standard are rare at this time (September 2009), most
 Fortran vendors do now support the C interoperability subset of the
-standard.  (Users with compilers that do not support this
+standard.  Users with compilers that do not support this
 functionality are encouraged to ask their vendors why such support is
 not available nearly 6 years after the standard has been established.
 The need for C interoperability could of course be eliminated
@@ -287,7 +286,7 @@ developers will need to assemble tests via some non-Fortran mechanism.
 
 \pfunit comes with several scripts that can make the assembly and
 compilation of unit tests largely automated.  Using these scripts adds
-some complexity to the makefile but greatly simplify the addition of
+some complexity to the makefile but greatly simplifies the addition of
 all subsequent tests.  Alternatively, a user can write their own test
 executable which explicitly combines all unit-tests within a
 test-suite (possibly with some hierarchical structure of sub-suites).
@@ -310,9 +309,30 @@ test driver will need the test module containing the developed module.
 %\subsection{Manual - how to write a test driver}
 \begin{enumerate}
 \item Adding a test to a suite\\
-(TBD: need to add something)
+An example of a test that tests a cross product implementation is:
+
+\begin{verbatim}
+! cross product of vector with itself is 0
+subroutine testSameVector()
+   use pFUnit
+   use VectorOperations
+   implicit none
+   real :: a(3), c(3)
+
+   a = (/ 1, 2, 3 /)
+   c = vectorCrossProduct(a, a)
+   
+   call assertEqual(0, c) ! vector comparison with 0 tolerance
+   
+end subroutine testSameVector
+\end{verbatim}
+
+Such a test can be implemented in a file that contains various tests
+to test the cross product, say testVectorProduct.F90, or in a
+module,  say testVectorProduct\_mod.F90.
+
 \item An example driver program\\
-You will need the following template of test driver that requires for
+You will need the following template of test driver required for
 performing the test.  Note that \emph{TODO} shows that it will need to
 update the code to follow up with the test module.
 
@@ -320,7 +340,9 @@ update the code to follow up with the test module.
 program TestDriver
    use pFUnit
    !! @TODO: need to include ("use") the test module
-   !! e.g. "use app_mod"
+   !! e.g. "use TestVectorProduct_mod"
+   !! or    "external testSameVector"
+
    implicit none
 
    type (TestSuite_type) :: suite
@@ -333,7 +355,9 @@ program TestDriver
    !! e.g.  suite = TestSuite('name of suite')
 
    !! @TODO: Need to list/accumulate test procedures
+   !! e.g. call add(suite, TestCase1Step('testSameVector',testSameVector))
 
+   !! Run the tests and accumulate the results in "result"
    result = newTestResult(mode=MODE_USE_STDOUT)
    call Run(suite,result)
 
@@ -372,10 +396,10 @@ After declaring data types including these objects above, the method \textbf{\te
 After adding the method  \textbf{\texttt{pFUnit\underline{ }init}}, suite is needed to build from test procedures.
 
 \begin{verbatim}
-   suite = TestSuite('Sum Inverse tests')
+   suite = TestSuite('vector tests')
 \end{verbatim}
 
-The variable \textbf{\texttt{'suite'}} is constructed with the test name 'Sum Inverse tests' for its example.
+The variable \textbf{\texttt{'suite'}} is constructed with the test name 'vector tests' for its example.
 
 \end{enumerate}
 
@@ -391,19 +415,40 @@ a separate test directory.  Further each test procedure is expected to
 begin with the string ``test'' e.g.
 
 \begin{verbatim}
-subroutine testFoo()
-...
-end subroutine testFoo
+module testVectorProduct_mod
+  implicit none
+  private
+
+  public :: testSameVector
+  public :: testOrthogonalVectors
+  !! etc...
+
+! cross product of vector with itself is 0
+subroutine testSameVector()
+   use pFUnit
+   use VectorOperations
+   implicit none
+   real :: a(3), c(3)
+
+   a = (/ 1, 2, 3 /)
+   c = vectorCrossProduct(a, a)
+   
+   call assertEqual(0, c) ! vector comparison with 0 tolerance
+   
+end subroutine testSameVector
+
+!! etc..
+
+end module testVectorProduct_mod
+
 \end{verbatim}
 
-(TBD:  tests in free format modules)
-
-\item Create a Wrapper Module\\
-The script ``convert" in the \pfunit bin directory will use the C
+\item Automatic creation of a wrapper module\\
+The script ``wrapTest" in the \pfunit bin directory will use the C
 preprocessor to create a wrapper module for each such module.  This
 wrapper module essentially adds a function suite() which returns a
 \pfunit testSuite object consisting of one test for each test
-procedure in the original file.  The ``convert" script also appends
+procedure in the original file.  The ``wrapTest" script also appends
 the name of the module to a file called ``suite\underline{ }list" which is used
 by the included driver program to create a master testSuite that
 incorporates all module test suites.
@@ -413,7 +458,7 @@ procedure) with a procedure reference (the unit test), and this
 operation is unfortunately handled in different ways by various C
 preprocessors (and from version-to-version).  \pfunit currently
 supports at least 4 styles of stringification, but the user may need
-to pass a flag to ensure that the scripts attemp the correct style.
+to pass a flag to ensure that the scripts attempt the correct style.
 
 The main driver is in ./include/skeleton.F90 and must be again
 preprocessed by a C preprocessor with similar caveats as above.
@@ -436,13 +481,64 @@ Dependencies:
 Rules:
 \begin{verbatim}
 %_wrap.F90: %.F90
-        $\pfunit/bin/convert $< $@
+        $\pfunit/bin/wrapTest $< $@
 \end{verbatim}
 
 \item Makefile sample for supporting automation
 
-\end{enumerate}
+The following Makefile snippet could be used, with minor
+modifications, to support the automation just described. 
 
+\begin{verbatim}
+COMPONENTS := VectorOperations Integrators 
+
+PFUNIT_TEST_DIRECTORIES = $(foreach ITEM,$(COMPONENTS), ./$(ITEM))
+
+SOURCE_DIR := $HOME/math
+
+PFUNIT_LFLAGS += $(foreach ITEM,$(COMPONENTS), -L$(SOURCE_DIR)/$(ITEM) -l$(ITEM))
+
+EXTRA_FFLAGS += $(foreach ITEM,$(COMPONENTS), -I$(SOURCE_DIR)/$(ITEM))
+
+MPI_FC=mpif90
+CSTRING = $(shell mpif90 --version)
+COMPILER = $(findstring ifort, $(CSTRING))
+
+ifeq ($(COMPILER),ifort)
+  FC =ifort
+  EXTRA_FFLAGS += -g -O0 -traceback -fpp -O2 
+else
+  FC =gfortran
+  EXTRA_FFLAGS += -g -O0 
+endif
+
+EXTRA_FFLAGS += $(CPPFLAGS)
+
+MPIRUN=mpirun
+PFUNIT_USE_MPI=YES
+PFUNIT_NPES=5
+
+clean: 
+        make pfunitdistclean
+        $(RM) *.o *_wrap.F90 *.mod suite_list
+
+distclean:
+        make clean
+
+ifdef PFUNIT
+  include $(PFUNIT)/include/pFUnit.makefile
+endif
+
+EXECS = $(foreach ITEM,$(COMPONENTS), $(SOURCE_DIR)/$(ITEM)/lib$(ITEM).a)
+
+$(PFUNIT_TEST_EXECUTABLE) : $(EXECS)
+
+%.o : %.F90
+        $(FC) -c $(EXTRA_FFLAGS) $($(PFUNIT_FFLAGS_VARIABLE)) $<
+
+\end{verbatim}
+
+\end{enumerate}
 
 
 
@@ -456,7 +552,7 @@ Suppose one wanted to test a function that should calculate
 f = \sum_{i=1}^{n} \frac{1}{A_i}
 \]
 
-One simple test, would be to confirm the behavior for an array of size
+One simple test would be to confirm the behavior for an array of size
 1 with a simple entry.
 \begin{verbatim}
 subroutine testSumInverseEmpty()
@@ -471,8 +567,8 @@ end subroutine testSumInverseEmpy
 This test consisted of 3 (rather simple) parts:
 \begin{enumerate}
 \item establishing a certain state of the system (input arguments)
-\item invoking the system under test (SUT)
-\item checking the postconditions (expected values)
+\item invoking the test, f(array), also referred as system under test (SUT)
+\item checking the post conditions (expected values)
 \end{enumerate}
 
 A slightly more complex case would be to use a small number of
@@ -658,6 +754,29 @@ declares that the test has failed.
 
 \section{Running tests}
 \subsection{Running tests under MPI}
+
+To build and run tests under MPI one must use a configuration of
+\pfunit compiled with MPI=YES and one must launch the \pfunit driver
+with ``mpirun''.
+
+When building tests manually, registration of MPI tests require an
+extra parameter specifying the number of processes to use:
+
+\begin{verbatim}
+call add(suite, & &   MpiTestCase('testMPI', testMPI, numProcesses=3))
+\end{verbatim}
+
+Note that \pfunit creates a new subcommunicator for each MPI test when it is run
+and serial tests are only run on the root process. 
+
+When using the automated build the only requirement to run build/run
+under MPI is that the following string:
+
+\begin{verbatim}
+! *** MPI Test Cases ***
+\end{verbatim}
+
+be the first line in the test module.
 
 \section{FAQ}
 
