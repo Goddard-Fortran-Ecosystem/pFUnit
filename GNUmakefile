@@ -4,6 +4,7 @@ TOP_DIR ?=$(shell pwd)
 
 SOURCE_DIR  = $(TOP_DIR)/source
 TESTS_DIR   = $(TOP_DIR)/tests
+DOC_DIR   = $(TOP_DIR)/Documentation
 INCLUDE_DIR = $(TOP_DIR)/include
 VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 
@@ -157,6 +158,9 @@ endif
 all:
 	$(MAKE) -j -C $(SOURCE_DIR) all
 	$(MAKE) -j -C $(TESTS_DIR) all
+
+doc:
+	$(MAKE) -j -C $(DOC_DIR) all
 
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
