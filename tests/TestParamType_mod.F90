@@ -47,7 +47,7 @@ Contains
   End Subroutine Set
 
   Subroutine setUp(self, params)
-    Use Assert_mod
+    use pFUnit
     Type (Sequence_type) :: self
     Type (Params_type)   :: params
     
@@ -58,7 +58,8 @@ Contains
     x0 = params%x0
     r = params%r
     
-    Call AssertTrue(r /= 0)
+    call AssertTrue(r /= 1.0, 'illegal ratio r=1')
+    if (catch(preserve=.true.)) return
 
     Allocate(self%A(n))
 

@@ -49,7 +49,7 @@ Contains
 
     Call Set(self%params(1), n =  2, x0=1., r = 0.50)
     Call Set(self%params(2), n = 10, x0=1., r = 0.50)
-    Call Set(self%params(3), n =  2, x0=1., r = 0.00)  ! illegal 
+    Call Set(self%params(3), n =  2, x0=1., r = 1.00)  ! illegal 
     Call Set(self%params(4), n = 10, x0=1., r = 0.25)
     Call Set(self%params(5), n = 10, x0=-1., r = 0.25)
 
@@ -100,16 +100,23 @@ Contains
     Type (Fixture_type) :: self
 
     type (Report_type) :: expected, rprt
+    character(len=1000) :: testStr
 
     Call SetReportMode(self%result, MODE_USE_BUFFER)
     Call SetParams(self%test, self%wrap_params )
     Call Run(self%test, self%result)
-    call assertEqual(5, numRun(self%result))
-    call assertEqual(2, numFailed(self%result))
-    call assertEqual(2, numSevere(self%result))
+    call assertEqual(5, numRun(self%result), 'num run')
+    call assertEqual(2, numFailed(self%result),'num failed')
+    call assertEqual(2, numSevere(self%result),'num severe')
     
-    expected = Report( (/ 'Failure in testmethod - parameter set 3 of 5.', &
-         & 'Failure in testmethod - parameter set 5 of 5.'/) )
+    expected = Report()
+    call append(expected, 'Failure in testmethod - parameter set 3 of 5 (setUp()) - illegal ratio r=1')
+    testStr = &
+         & 'Failure in testmethod - parameter set 5 of 5 - Floating point scalar assertion failed:' // new_line('a') // &
+         & '       Expected:      -1.333332062' // new_line('a') // &
+         & '       but found:      1.333332062' // new_line('a') // &
+         & '       delta:          2.666664124 > 0.9999999747E-05 '
+    call append(expected, testStr)
     
     rprt = GenerateReport(self%result)
     Call AssertEqual(expected, rprt)

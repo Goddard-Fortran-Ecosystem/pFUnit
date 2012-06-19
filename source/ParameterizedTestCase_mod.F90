@@ -154,24 +154,64 @@ contains
 
       integer :: i, n
       character(len=MAX_LEN_MSG) :: msg
+      logical :: problem
 
       n = size(self%params)
       do i = 1, n
          call TestStarted(result, self % name)
-         call invoke(self%setup,  self%obj, self%params(i))
-         call invoke(self%method, self%obj, self%params(i))
 
-         ! Except
-         if (catch()) then
-            Write(msg,'(a,i0,a,i0,a)')'parameter set ',i,' of ',n,'.'
-            call testFailed(result, trim(self%name), trim(msg))
-            call clearAll()
+         call invoke(self%setup,  self%obj, self%params(i))
+         if (handleException(self%name, i, 'setUp')) then
+            cycle
          end if
 
+         call invoke(self%method, self%obj, self%params(i))
+         problem = handleException(self%name, i)
+
          call invoke(self%teardown, self%obj)
-         if (mode(result) == MODE_USE_STDOUT) write(*,'("p")',advance='no')
+
+         if (.not. problem) then
+            if (mode(result) == MODE_USE_STDOUT) write(*,'("p")',advance='no')
+         end if
 
       end do
+
+   contains
+
+      !---------------------------------------------------------------------------
+      !> Handles the exception thru the test report
+      !!
+      !! @param name - given name
+      !! @param stage - given stage
+      !!
+      !! @return receiving a problem from the test report
+      !---------------------------------------------------------------------------
+      recursive function handleException(name, ithSet, stage) result(problem)
+         use MpiServices_mod
+         use Report_mod
+         use TestResult_mod
+         character(len=*), intent(in) :: name
+         integer, intent(in) :: ithSet
+         character(len=*), optional, intent(in) :: stage
+         logical :: problem
+         type (Report_type) :: testReport
+         character(len=40) :: buffer
+
+         problem = .false. ! unless
+         if (amRoot()) then
+            if (catch(preserve=.true.)) then
+               testReport = generateExceptionReport()
+               write(buffer,'(i0," of ",i0,1x)') ithSet, n
+               if (present(stage)) buffer = trim(buffer) // ' ('//trim(stage)//'())'
+               call testFailed(result, trim(name) //  ' - parameter set ' // trim(buffer), &
+                    & testReport)
+               call clean(testReport)
+               call clearAll()
+               problem =.true.
+            end if
+         end if
+            
+      end function handleException
 
    end subroutine Run_
 
