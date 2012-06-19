@@ -460,6 +460,7 @@ contains
          logical :: problem
 
          allocate(fixture(FIXTURE_SIZE))
+         fixture = 0
          fixtureAddress = BaseAddress(fixture(1))
 
          if (associated(this%setUp)) then
