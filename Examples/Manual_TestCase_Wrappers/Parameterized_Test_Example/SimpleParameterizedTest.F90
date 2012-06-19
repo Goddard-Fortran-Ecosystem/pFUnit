@@ -23,15 +23,16 @@ contains
    function getTestSuite() result(suite)
       type (TestSuite_type) :: suite
       type (ParameterizedTestCase_type) :: pTest
-      type (MyParams) :: params(13)
-      type (BaseAddress_type) :: wrapParams(13)
+      integer, parameter :: NUM_CASES = 14
+      type (MyParams) :: params(NUM_CASES)
+      type (BaseAddress_type) :: wrapParams(NUM_CASES)
 
       type (Fixture) :: fixtureObj
       external :: BaseAddress
       type (BaseAddress_type) :: BaseAddress
       integer :: i
 
-      suite = TestSuite('fixture Example')
+      suite = TestSuite('parameterized')
 
       pTest = newParameterizedTestCase(BaseAddress(fixtureObj), 'testPrincipleDomain', testPrincipleDomain, setUp, tearDown)
 
@@ -52,7 +53,11 @@ contains
       params(12) = MyParams( 271.0,   0.0, -89.0,   0.0)
       params(13) = MyParams(-271.0,   0.0, +89.0,   0.0)
 
-      do i = 1, size(params)
+      ! intentionally broken case
+      params(14) = MyParams( 0.0,   -1.0, +0.0,   -1.0)
+
+
+      do i = 1, NUM_CASES
          wrapParams(i) = BaseAddress(params(i))
       end do
 
