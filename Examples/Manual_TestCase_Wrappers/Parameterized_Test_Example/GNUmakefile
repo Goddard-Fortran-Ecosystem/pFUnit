@@ -40,4 +40,5 @@ clean:
 distclean: clean
 	$(RM) -f $(EXECUTABLE)
 
-driver.o : SimpleParameterizedTest.o
+SimpleParameterizedTest.o : PrincipleDomain.o
+driver.o : SimpleParameterizedTest.o PrincipleDomain.o
