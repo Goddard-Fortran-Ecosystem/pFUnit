@@ -60,6 +60,11 @@ ifeq ($(F90_VENDOR),GFortran)
   FPPFLAGS += -DSTRINGIFY_SIMPLE
 endif
 
+ifeq ($(F90_VENDOR),GNU)
+  F90 ?=gfortran
+  FPPFLAGS += -DSTRINGIFY_SIMPLE
+endif
+
 ifeq ($(F90_VENDOR),NAG)
   F90 ?=nagfor
   FPPFLAGS += -DSTRINGIFY_SIMPLE
