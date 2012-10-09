@@ -26,7 +26,13 @@ if [ "`uname`" == "OSF1" ]; then
 else
     CPP_EXTRA_FLAGS=-DHAS_CONCATENATION_OPERATOR; 
     if [ "`uname`" == "Darwin" ]; then
-	CPP=cpp-4.0; 
+	version=${OSTYPE//[a-zA-Z]/}
+	if [ $version == 12 ]; then # Mountain Lion
+	    CPP=cpp
+        else
+            CPP=cpp-4.0; 
+
+        fi	
     else
 	CPP=cpp;
     fi
