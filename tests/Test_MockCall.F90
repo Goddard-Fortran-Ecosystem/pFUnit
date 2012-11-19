@@ -43,8 +43,12 @@ contains
       type (MockCall) :: mCall
       class (*), pointer :: q
 
+      integer, target :: one
+
+      one = 1
+
       mCall = newMockCall('methodName')
-      call mCall%expect(1)
+      call mCall%expect(one)
       q => mCall%getExpectedValue()
       select type (p => q)
       type is (integer)
