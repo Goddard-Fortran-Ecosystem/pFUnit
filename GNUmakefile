@@ -70,7 +70,7 @@ ifeq ($(F90_VENDOR),NAG)
   FPPFLAGS += -DSTRINGIFY_SIMPLE
   FFLAGS +=-f2003
   FFLAGS += -mismatch_all
-  F90_HAS_CPP=NO
+  F90_HAS_CPP=YES
   CPP =cpp -traditional -C
   ifeq ($(DSO),YES)
     FFLAGS +=-PIC

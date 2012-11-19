@@ -39,6 +39,11 @@ contains
    subroutine testToString_realPositive()
       call assertEqual('+0.1000000E-01',toString(0.0100000))
       call assertEqual('+0.1000001',toString(0.1000001))
+#ifdef __INTEL_COMPILER
+      call assertEqual('+1.0000000',toString(1.)) ! workaround bug
+#else
+      call assertEqual('+1.000000',toString(1.))
+#endif
       call assertEqual('+1.000001',toString(1.000001))
       call assertEqual('+12.12345',toString(12.12345))
       call assertEqual('+123.1234',toString(123.1234))
@@ -49,6 +54,11 @@ contains
    end subroutine testToString_realPositive
 
    subroutine testToString_realNegative()
+#ifdef __INTEL_COMPILER
+      call assertEqual('-1.0000000',toString(-1.)) ! workaround bug
+#else
+      call assertEqual('-1.000000',toString(-1.))
+#endif
       call assertEqual('-1.000001',toString(-1.000001))
       call assertEqual('-12.12345',toString(-12.12345))
       call assertEqual('-123.1234',toString(-123.1234))
