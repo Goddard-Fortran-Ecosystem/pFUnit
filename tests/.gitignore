@@ -3,5 +3,6 @@
 *.mod
 *.o
 *~
+*.i90
 /Test_Assert_cpp.F90
 /tests.x
