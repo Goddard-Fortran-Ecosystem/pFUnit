@@ -10,59 +10,58 @@ module ParallelContext_mod
    contains
       procedure :: isActive
       procedure :: isRootProcess
-      procedure(I_numProcesses), deferred :: getNumProcesses
-      procedure(I_processRank), deferred :: processRank
-      procedure(I_sum), deferred :: sum
+      procedure(getNumProcesses), deferred :: getNumProcesses
+      procedure(processRank), deferred :: processRank
+      procedure(sum), deferred :: sum
       generic :: gather => gatherString
       generic :: gather => gatherInteger
       generic :: gather => gatherLogical
-      procedure(I_gatherString), deferred :: gatherString
-      procedure(I_gatherInteger), deferred :: gatherInteger
-      procedure(I_gatherLogical), deferred :: gatherLogical
+      procedure(gatherString), deferred :: gatherString
+      procedure(gatherInteger), deferred :: gatherInteger
+      procedure(gatherLogical), deferred :: gatherLogical
    end type ParallelContext
 
    abstract interface
-      integer function I_numProcesses(this)
+      integer function getNumProcesses(this)
          import ParallelContext
          class(ParallelContext), intent(in) :: this
-      end function I_numProcesses
+      end function getNumProcesses
 
-      integer function I_processRank(this)
+      integer function processRank(this)
          import ParallelContext
          class(ParallelContext), intent(in) :: this
-      end function I_processRank
+      end function processRank
 
-      integer function I_sum(this, value)
+      integer function sum(this, value)
          import ParallelContext
          class (ParallelContext), intent(in) :: this
          integer, intent(in) :: value
-      end function I_sum
-
-      subroutine I_GatherString(this, values, list)
+       end function sum
+       
+      subroutine gatherString(this, values, list)
          import ParallelContext
          class (ParallelContext), intent(in) :: this
          character(len=*), intent(in) :: values(:)
          character(len=*), intent(out) :: list(:)
-      end subroutine I_GatherString
+      end subroutine gatherString
 
-      subroutine I_GatherInteger(this, values, list)
+      subroutine gatherInteger(this, values, list)
          import ParallelContext
          class (ParallelContext), intent(in) :: this
          integer, intent(in) :: values(:)
          integer, intent(out) :: list(:)
-      end subroutine I_GatherInteger
+      end subroutine gatherInteger
 
-      subroutine I_GatherLogical(this, values, list)
+      subroutine gatherLogical(this, values, list)
          import ParallelContext
          class (ParallelContext), intent(in) :: this
          logical, intent(in) :: values(:)
          logical, intent(out) :: list(:)
-      end subroutine I_GatherLogical
+      end subroutine gatherLogical
 
    end interface
 
 contains
-
 
    logical function isActive(this)
       class (ParallelContext),  intent(in) :: this

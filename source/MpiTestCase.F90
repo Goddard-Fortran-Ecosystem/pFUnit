@@ -16,16 +16,16 @@ module MpiTestCase_mod
       procedure :: runBare
       procedure :: setUp
       procedure :: tearDown
-      procedure(I_method), deferred :: runTestMethod
+      procedure(runTestMethod), deferred :: runTestMethod
       procedure :: gatherExceptions
       procedure :: getMpiCommunicator
    end type MpiTestCase
 
    abstract interface
-      subroutine I_method(this)
+      subroutine runTestMethod(this)
          import MpiTestCase
          class (MpiTestCase), intent(inOut) :: this
-      end subroutine I_method
+       end subroutine runTestMethod
    end interface
 
 contains

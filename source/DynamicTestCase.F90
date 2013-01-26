@@ -9,16 +9,16 @@ module DynamicTestCase_mod
 
    type, extends(TestCase) :: DynamicTestCase
       integer :: placeholder
-      procedure(I_method), pointer :: testMethod => null()
+      procedure(testMethod), pointer :: testMethod => null()
    contains
       procedure :: runTestMethod
    end type DynamicTestCase
    
    abstract interface
-      subroutine I_method(this)
+      subroutine testmethod(this)
          import DynamicTestCase
          class (DynamicTestCase), intent(inOut) :: this
-      end subroutine I_method
+       end subroutine testMethod
    end interface
    
    interface delete

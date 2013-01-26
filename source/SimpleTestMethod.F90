@@ -6,21 +6,21 @@ module SimpleTestMethod_mod
    public :: newSimpleTestMethod
 
    type, extends(TestCase) :: SimpleTestMethod
-      procedure(I_empty), nopass, pointer :: internalMethod => null()
+      procedure(empty), nopass, pointer :: internalMethod => null()
    contains
      procedure :: runTestMethod
    end type SimpleTestMethod
 
    abstract interface
-      subroutine I_empty()
-      end subroutine I_empty
+      subroutine empty()
+      end subroutine empty
    end interface
    
 contains
 
    function newSimpleTestMethod(testMethod, name) result(this)
       type (SimpleTestMethod), pointer :: this
-      procedure(I_empty) :: testMethod
+      procedure(empty) :: testMethod
       character(len=*), intent(in) :: name
 
       allocate(this)
