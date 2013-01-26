@@ -12,17 +12,17 @@ module SimpleTestCase_mod
 
    type, extends(TestCase) :: SimpleTestCase
       character(len=20), public :: runLog
-      procedure(method1), pointer :: testMethod => null()
+      procedure(method), pointer :: testMethod => null()
    contains
       procedure :: runTestMethod
    end type SimpleTestCase
 
    abstract interface
-      subroutine I_method(this)
+      subroutine method(this)
         use Test_mod
         import SimpleTestCase
         class (SimpleTestCase), intent(inOut) :: this
-      end subroutine I_method
+      end subroutine method
    end interface
 
 contains
@@ -41,13 +41,13 @@ contains
       
    end function suite
 
-   function newSimpleTestCase(method, name) result(this)
+   function newSimpleTestCase(userMethod, name) result(this)
       type(SimpleTestCase), pointer :: this
-      procedure(I_method) :: method
+      procedure(method) :: userMethod
       character(len=*), intent(in) :: name
 
       allocate(this)
-      this%testMethod => method
+      this%testMethod => userMethod
       call this%setName(name)
 
     end function newSimpleTestCase

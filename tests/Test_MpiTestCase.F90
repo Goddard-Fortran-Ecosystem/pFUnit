@@ -11,17 +11,17 @@ module Test_MpiTestCase_mod
 
    type, extends(MpiTestCase) :: Test_MpiTestCase
       character(len=20), public :: runLog
-      procedure(I_method), pointer :: testMethod => null()
+      procedure(method), pointer :: testMethod => null()
    contains
       procedure :: runTestMethod
    end type Test_MpiTestCase
 
    abstract interface
-      subroutine I_method(this)
+      subroutine method(this)
         use Test_mod
         import Test_MpiTestCase
         class (Test_MpiTestCase), intent(inOut) :: this
-      end subroutine I_method
+      end subroutine method
    end interface
 
 contains
@@ -38,14 +38,14 @@ contains
       
    end function suite
 
-   function newTest_MpiTestCase(method, name, numProcesses) result(this)
+   function newTest_MpiTestCase(userMethod, name, numProcesses) result(this)
       type(Test_MpiTestCase), pointer :: this
-      procedure(I_method) :: method
+      procedure(method) :: userMethod
       character(len=*), intent(in) :: name
       integer, intent(in) :: numProcesses
 
       allocate(this)
-      this%testMethod => method
+      this%testMethod => userMethod
       this%numProcesses = numProcesses
       call this%setName(name)
 
