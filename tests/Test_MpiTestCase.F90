@@ -53,7 +53,7 @@ contains
 
    subroutine testWasRun(this)
       use f2kunit, only: assertEqual
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
 
       this%runLog = ' ' ! empty
       call wasRun(this%runLog, this%getMpiCommunicator())
@@ -63,7 +63,7 @@ contains
 
    subroutine testRunOn2Processors(this)
       use f2kunit, only: assertEqual
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
       call Mpi_Comm_Size(this%getMpiCommunicator(), numProcesses, ier)
@@ -73,7 +73,7 @@ contains
 
    subroutine failOn1(this)
       use f2kunit
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
       if (this%context%processRank() == 1) then
          call throw('Intentional fail on process 1.')
       end if
@@ -81,7 +81,7 @@ contains
 
    subroutine failOn2(this)
       use f2kunit
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
       if (this%context%processRank() == 1 .or. this%context%processRank() == 2) then
          call throw('Intentional fail')
       end if
@@ -96,7 +96,7 @@ contains
       use Exception_mod, only: catch
       use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
       type (Test_MpiTestCase) :: failTest
@@ -128,7 +128,7 @@ contains
       use Exception_mod, only: catch
       use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
-      class (Test_MpiTestCase) :: this
+      class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
       type (Test_MpiTestCase) :: failTest
