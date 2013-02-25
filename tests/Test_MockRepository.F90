@@ -30,10 +30,10 @@ module MockSUT_mod
    public :: newMockSUT
 
    type, extends(SUT) :: MockSUT
-      type (MockRepository), pointer :: mocker => null()
+      class (MockRepository), pointer :: mocker => null()
    contains
       procedure :: method1
-      final :: verifyMocking
+      procedure :: verifyMocking
    end type MOCKSUT
 
 contains
@@ -47,9 +47,10 @@ contains
 
    end function newMockSUT
 
+!TODO - make FINAL routine once gfortran supports it
    subroutine verifyMocking(this)
       use Exception_mod
-      type (MockSUT), intent(inout) :: this
+      class (MockSUT), intent(inout) :: this
 
       if (associated(this%mocker)) then
          call this%mocker%verifyMocking(this)
@@ -122,6 +123,7 @@ contains
          mocker => newMockRepository()
          mockObject = newMockSUT(mocker)
          call mocker%expectCall(mockObject,'method1')
+         call mockObject%verifyMocking()
 
       end subroutine internalProcedure
 
@@ -164,6 +166,7 @@ contains
          mockObject = newMockSUT(mocker)
          call mocker%expectCall(mockObject,'method2')
          call mockObject%method1()
+         call mockObject%verifyMocking()
 
       end subroutine internalProcedure
 
