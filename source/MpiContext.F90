@@ -28,7 +28,7 @@ module MpiContext_mod
       procedure :: gatherInteger
       procedure :: gatherLogical
 
-      final :: clean
+!!$      final :: clean
    end type MpiContext
 
    interface newMpiContext
