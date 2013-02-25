@@ -14,7 +14,7 @@ contains
       type (TestSuite), pointer :: suite
 
       allocate(suite)
-      suite => newTestSuite('Exception')
+      suite => newTestSuite('TestResultSuite')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
@@ -77,6 +77,7 @@ contains
       call result%addListener(listener)
       call result%endTest(newSimpleTestCase(method1,'method1'))
       call assertEqual('endTest() was called', listener%log)
+
    end subroutine testAddListenerEnd
 
    subroutine testAddListenerStart()
@@ -91,6 +92,7 @@ contains
       call result%addListener(listener)
       call result%startTest(newSimpleTestCase(method1,'method1'))
       call assertEqual('startTest() was called', trim(listener%log))
+
    end subroutine testAddListenerStart
 
    subroutine testAddListenerFailure()
@@ -108,6 +110,7 @@ contains
       call result%addListener(listener)
       call result%addFailure(newSimpleTestCase(method1,'method1'), anException)
       call assertEqual('addFailure() was called', listener%log)
+
    end subroutine testAddListenerFailure
 
 end module Test_TestResult_mod
