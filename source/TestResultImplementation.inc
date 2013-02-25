@@ -3,6 +3,8 @@ function newTestResult()
    allocate(newTestResult)
    allocate(newTestResult%listeners(0))
    allocate(newTestResult%failures(0))
+   newTestResult%numFailed = 0
+   newTestResult%numRun = 0
 end function newTestResult
 
 subroutine addFailure(this, aTest, anException)
