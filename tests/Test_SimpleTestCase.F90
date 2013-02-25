@@ -43,7 +43,7 @@ contains
       type (TestResult), pointer :: aTestResult
       type (SimpleTestCase), pointer :: aTest
 
-   aTestResult => newTestResult()
+      aTestResult => newTestResult()
       aTest => newSimpleTestCase(method1, 'method1')
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method1', aTest%runLog)
