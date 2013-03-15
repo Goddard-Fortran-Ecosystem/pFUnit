@@ -24,14 +24,13 @@ if [ -n "$USES_MPI" ]; then SKELETON=skeleton_MPI.F90; else SKELETON=skeleton.F9
 if [ "`uname`" == "OSF1" ]; then
     CPP=cpp; CPP_EXTRA_FLAGS=-DNO_CONCATENATION_OPERATOR;
 else
-    CPP_EXTRA_FLAGS=-DHAS_CONCATENATION_OPERATOR; 
     if [ "`uname`" == "Darwin" ]; then
 	version=${OSTYPE//[a-zA-Z]/}
 	if [ $version == 12 ]; then # Mountain Lion
 	    CPP=cpp
         else
+	    CPP_EXTRA_FLAGS=-DHAS_CONCATENATION_OPERATOR; 
             CPP=cpp-4.0; 
-
         fi	
     else
 	CPP=cpp;

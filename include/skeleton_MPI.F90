@@ -12,7 +12,7 @@ module NAME_WRAP_MODULE
   PRIVATIZE(teardown)
 #endif
 
-#define OPER(method) PRIVATIZE(method), NPROC_##method
+#define OPER(method) PRIVATIZE(method), CONCATENATE(NPROC_,method)
 #include METHODS_FILE
 #undef OPER
 
@@ -87,15 +87,15 @@ DELEGATE(teardown)
     suite = TestSuite(suite_name)
 #ifdef HAS_SETUP
 #define ADDMETHOD(method)\
- do i = 1, size(NPROC_##method) \\
-    nproc = NPROC_##method(i) \\
-    call Add(suite, MpiTestCase(#method, method, nproc, setup, teardown, new, delete)) \\
+ do i = 1, size(CONCATENATE(NPROC_,method)) \\
+    nproc = CONCATENATE(NPROC_,method)(i) \\
+    call Add(suite, MpiTestCase("method", method, nproc, setup, teardown, new, delete)) \\
  end do
 #else
 #define ADDMETHOD(method) \
- do i = 1, size(NPROC_##method) \\
-    nproc = NPROC_##method(i) \\
-    call Add(suite, MpiTestCase(#method, method, nproc)) \\
+ do i = 1, size(CONCATENATE(NPROC_,method)) \\
+    nproc = CONCATENATE(NPROC_,method)(i) \\
+    call Add(suite, MpiTestCase("method", method, nproc)) \\
  enddo
 #endif
 #define OPER(method) ADDMETHOD(method)
