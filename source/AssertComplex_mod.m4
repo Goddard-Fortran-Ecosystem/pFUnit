@@ -961,7 +961,7 @@ contains
     real(kind=r32), intent(in)   :: x
     character(LEN=MAX_LEN_FLOAT) :: string
 
-    write(string,'(G15.10)') x
+    write(string,'(G20.10)') x
   end function toString_sp
 
   !---------------------------------------------------------------------------
@@ -975,7 +975,7 @@ contains
     real(kind=r64), intent(in)   :: x
     character(LEN=MAX_LEN_FLOAT) :: string
 
-    write(string,'(G25.17)') x
+    write(string,'(G20.10)') x
   end function toString_dp
 
   !---------------------------------------------------------------------------
@@ -989,7 +989,7 @@ contains
     complex(kind=c32), intent(in)   :: x
     character(LEN=MAX_LEN_COMPLEX) :: string
 
-    write(string,'(2G15.10)') x
+    write(string,'(2G20.10)') x
   end function toString_sp_cmplx
 
   !---------------------------------------------------------------------------
@@ -1003,7 +1003,7 @@ contains
     complex(kind=c64), intent(in)   :: x
     character(LEN=MAX_LEN_COMPLEX) :: string
 
-    write(string,'(2G25.17)') x
+    write(string,'(2G20.10)') x
   end function toString_dp_cmplx
 
   !---------------------------------------------------------------------------
@@ -1051,11 +1051,11 @@ contains
     n = size(x)
     select case (n)
     case (1)
-       write(string,'("(/ ", G15.10, " /)")') x
+       write(string,'("(/ ", G20.10, " /)")') x
     case (2)
-       write(string,'("(/ ", G15.10, ", ", G15.10, " /)")') x
+       write(string,'("(/ ", G20.10, ", ", G20.10, " /)")') x
     case (3:)
-       write(frmt,'("(",a,G15.10,a,")")') '"(/ ",',n-1,'(G15.10,", "),G15.10," /)"'
+       write(frmt,'("(",a,G20.10,a,")")') '"(/ ",',n-1,'(G20.10,", "),G20.10," /)"'
        write(string, frmt) x
     end select
 
@@ -1079,11 +1079,11 @@ contains
     n = size(x)
     select case (n)
     case (1)
-       write(string,'("(/ ", G25.17, " /)")') x
+       write(string,'("(/ ", G20.10, " /)")') x
     case (2)
-       write(string,'("(/ ", G25.17, ", ", G25.17, " /)")') x
+       write(string,'("(/ ", G20.10, ", ", G20.10, " /)")') x
     case (3:)
-       write(frmt,'("(",a,G25.17,a,")")') '"(/ ",',n-1,'(G25.17,", "),G25.17," /)"'
+       write(frmt,'("(",a,G20.10,a,")")') '"(/ ",',n-1,'(G20.10,", "),G20.10," /)"'
        write(string, frmt) x
     end select
 
@@ -1108,11 +1108,11 @@ contains
     n = size(x)
     select case (n)
     case (1)
-       write(string,'("(/ ", 2G15.10, " /)")') x
+       write(string,'("(/ ", 2G20.10, " /)")') x
     case (2)
-       write(string,'("(/ ", 2G15.10, ", ", 2G15.10, " /)")') x
+       write(string,'("(/ ", 2G27.15, ", ", 2G27.15, " /)")') x
     case (3:)
-       write(frmt,'("(",a,2G15.10,a,")")') '"(/ ",',n-1,'(2G15.10,", "),2G15.10," /)"'
+       write(frmt,'("(",a,2G27.15,a,")")') '"(/ ",',n-1,'(2G27.15,", "),2G27.15," /)"'
        write(string, frmt) x
     end select
 
@@ -1137,11 +1137,11 @@ contains
     n = size(x)
     select case (n)
     case (1)
-       write(string,'("(/ ", 2G25.17, " /)")') x
+       write(string,'("(/ ", 2G20.10, " /)")') x
     case (2)
-       write(string,'("(/ ", 2G25.17, ", ", 2G25.17, " /)")') x
+       write(string,'("(/ ", 2G20.10, ", ", 2G20.10, " /)")') x
     case (3:)
-       write(frmt,'("(",a,2G25.17,a,")")') '"(/ ",',n-1,'(2G25.17,", "),2G25.17," /)"'
+       write(frmt,'("(",a,2G20.10,a,")")') '"(/ ",',n-1,'(2G20.10,", "),2G20.10," /)"'
        write(string, frmt) x
     end select
 
