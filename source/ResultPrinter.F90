@@ -59,14 +59,23 @@ contains
      character(len=*), intent(in) :: testName
 
      write(this%unit,'(".")', advance='no')
-     if (DEBUG) write(this%unit,*)trim(testName)
+
+     if (DEBUG) then
+        write(this%unit,*)trim(testName)
+        call flush(this%unit)
+     end if
+
    end subroutine startTest
 
   subroutine endTest(this, testName)
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
 
-     if (DEBUG) write(this%unit,*)trim(testName)
+     if (DEBUG) then
+        write(this%unit,*)trim(testName)
+        call flush(this%unit)
+     end if
+
    end subroutine endTest
 
    subroutine print(this, result, runTime)

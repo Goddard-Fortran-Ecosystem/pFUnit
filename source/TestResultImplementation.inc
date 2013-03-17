@@ -75,6 +75,7 @@ subroutine run_TestResult(this, test, context)
    class (ParallelContext), intent(in) :: context
 
    type (Exception) :: anException
+
    if (context%isRootProcess()) call this%startTest(test)
    call test%runBare()
 

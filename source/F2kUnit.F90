@@ -4,7 +4,7 @@ module F2kUnit
    use TestRunner_mod
    use ParallelContext_mod
    use Assert_mod
-#ifdef MPI
+#ifdef USE_MPI
    use MpiContext_mod
 #endif
    implicit none
@@ -17,7 +17,7 @@ module F2kUnit
    public :: TestSuite
    public :: TestRunner, newTestRunner
    public :: ParallelContext
-#ifdef MPI
+#ifdef USE_MPI
    public :: MpiContext
    public :: newMpiContext
 #endif
@@ -28,7 +28,7 @@ module F2kUnit
 contains
 
    subroutine initializeF2kUnit()
-#ifdef MPI
+#ifdef USE_MPI
       include 'mpif.h'
       integer :: error
       call mpi_init(error)
@@ -38,7 +38,7 @@ contains
    end subroutine initializeF2kUnit
 
    subroutine finalizeF2kUnit()
-#ifdef MPI
+#ifdef USE_MPI
       integer :: error
       call mpi_finalize(error)
 #endif

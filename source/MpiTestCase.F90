@@ -7,7 +7,7 @@ module MpiTestCase_mod
    public :: MpiTestCase
 
    type, abstract, extends(TestCase) :: MpiTestCase
-!!$      integer :: processRank
+      integer :: processRank
       integer :: numProcesses
       type (MpiContext) :: context
    contains

@@ -1,4 +1,4 @@
-#ifdef MPI
+#ifdef USE_MPI
 subroutine debug(line, file)
    integer, intent(in) :: line
    character(len=*), intent(in) :: file
@@ -29,7 +29,7 @@ contains
       use F2kUnit, only: newTestSuite
       use F2kUnit, only: TestSuite
       use F2kUnit, only: TestRunner, newTestRunner
-#ifdef MPI
+#ifdef USE_MPI
       use MpiContext_mod
 #else
       use SerialContext_mod
@@ -53,7 +53,7 @@ contains
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
-#ifdef MPI
+#ifdef USE_MPI
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 
@@ -82,7 +82,7 @@ contains
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
 
-#ifdef MPI
+#ifdef USE_MPI
       ADD(MpiTestCaseSuite)
       call runner%run(allTests, newMpiContext())
 #else

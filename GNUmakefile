@@ -35,7 +35,7 @@ else
 endif
 
 # Other defaults
-USE_MPI ?=NO # do not include MPI capabilities
+MPI ?=NO # do not include MPI capabilities
 
 # F90 Vendor common elements (override below)
 FFLAGS ?=
@@ -150,6 +150,7 @@ export LDFLAGS
 export SOURCE_DIR
 export INCLUDE_DIR
 export VPATH
+export MPI
 export MPI
 export LIBMPI
 

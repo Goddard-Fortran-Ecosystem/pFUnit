@@ -12,7 +12,6 @@ module TestRunner_mod
    contains
       procedure :: run
       procedure :: createTestResult
-!!$      procedure :: start
       procedure :: addFailure
       procedure :: startTest
       procedure :: endTest
@@ -61,19 +60,15 @@ contains
 
       result = this%createTestResult()
       call result%addListener(this%printer)
-!!$      call result%addListener(DebugListener(1))
       call system_clock(clockStart)
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
-      if (context%isRootProcess()) call this%printer%print(result, runTime)
+      if (context%isRootProcess())  then
+         call this%printer%print(result, runTime)
+      end if
 
    end subroutine run
-
-!!$   subroutine start(this, args)
-!!$      class (TestRunner), intent(inout) :: start
-!!$      character(len=*), intent(in) :: args
-!!$   end subroutine start
 
     subroutine startTest(this, testName)
        class (TestRunner), intent(inout) :: this

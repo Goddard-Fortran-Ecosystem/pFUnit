@@ -16,10 +16,10 @@ endif
 
 ifeq ($(F90_HAS_CPP),YES)
 %.o: %.F90
-	$(MPIF90) -c $(F90FLAGS) -o $@ $<
+	$(MPIF90) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
 else
 %.o:%.F90
-	@$(CPP) $(CPPFLAGS) $(FPPFLAGS) $< > $*_cpp.F90
+	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
 	$(F90) -c $(F90FLAGS)  $*_cpp.F90 -o $@
 	$(RM) $*_cpp.F90
 endif
