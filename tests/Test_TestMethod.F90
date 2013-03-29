@@ -1,4 +1,4 @@
-module Test_SimpleTestMethod_mod
+module Test_TestMethod_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
    private
@@ -9,24 +9,24 @@ contains
 
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       type (TestSuite), pointer :: suite
 
-      suite => newTestSuite('Test_SimpleTestMethod')
-      call suite%addTest(newSimpleTestMethod(testMethodWasRun, 'testMethodWasRun'))
+      suite => newTestSuite('Test_TestMethod')
+      call suite%addTest(newTestMethod('testMethodWasRun', testMethodWasRun))
 
    end function suite
 
    subroutine testMethodWasRun()
       use TestCase_mod
       use TestResult_mod, only: TestResult, newTestResult
-      use SimpleTestMethod_mod, only: SimpleTestMethod, newSimpleTestMethod
+      use TestMethod_mod, only: TestMethod, newTestMethod
       use Assert_mod, only: assertEqual
       use SerialContext_mod
-      type (SimpleTestMethod) :: method
+      type (TestMethod) :: method
       type (TestResult) :: aResult
 
-      method = newSimpleTestMethod(testMethod = testWasRun, name = 'testWasRun')
+      method = newTestMethod(name = 'testWasRun', method = testWasRun)
       aResult = newTestResult()
       call method%run(aResult, newSerialContext())
       call assertEqual(1, aResult%runCount())
@@ -39,5 +39,5 @@ contains
       call throw('wasRun')
    end subroutine testWasRun
 
-end module Test_SimpleTestMethod_mod
+end module Test_TestMethod_mod
 

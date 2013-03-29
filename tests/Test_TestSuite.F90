@@ -10,14 +10,14 @@ contains
 
    function suite()
       use TestCase_mod, only: TestCase
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       use TestSuite_mod, only: newTestSuite, TestSuite
       type (TestSuite), pointer :: suite
 
       allocate(suite)
       suite => newTestSuite('TestSuiteSuite')
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testCountTestCases)
       ADD(testCountTestCasesNestedA)
@@ -36,9 +36,9 @@ contains
 
       suite => newTestSuite('aSuite')
       call assertEqual(0, suite%countTestCases())
-      call suite%addTest(newSimpleTestCase(method1, 'method1'))
+      call suite%addTest(newSimpleTestCase('method1', method1))
       call assertEqual(1, suite%countTestCases())
-      call suite%addTest(newSimpleTestCase(method2, 'method2'))
+      call suite%addTest(newSimpleTestCase('method2', method2))
       call assertEqual(2, suite%countTestCases())
 
    end subroutine testCountTestCases

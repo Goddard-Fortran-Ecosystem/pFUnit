@@ -45,7 +45,7 @@ contains
       use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
       use Test_TestSuite_mod, only: testSuiteSuite => suite                ! (7)
 
-      use Test_SimpleTestMethod_mod, only: testSimpleMethodSuite => suite  ! (8)
+      use Test_TestMethod_mod, only: testSimpleMethodSuite => suite  ! (8)
       use Test_SimpleTestCase_mod, only: testSimpleSuite => suite          ! (9)
       use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
 

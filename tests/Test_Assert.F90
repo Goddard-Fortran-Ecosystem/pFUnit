@@ -13,13 +13,13 @@ contains
 
    function suite() result(aSuite)
       use Test_mod
-      use SimpleTestMethod_mod
+      use TestMethod_mod
       use TestSuite_mod
       type (TestSuite), pointer :: aSuite
 
       aSuite => newTestSuite('Assert')
 
-#define ADD(method) call aSuite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testAssertTrueF)
       ADD(testAssertTrueT)

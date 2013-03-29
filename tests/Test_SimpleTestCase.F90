@@ -8,10 +8,10 @@ module Test_SimpleTestCase_mod
 
 contains
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       type (TestSuite), pointer :: suite
 
       suite => newTestSuite('Test_TestCase')
@@ -22,13 +22,13 @@ contains
 
    function internalSuite()
       use TestSuite_mod, only: TestSuite, newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       type (TestSuite), pointer :: internalSuite
 
       internalSuite => newTestSuite('Test_TestCase')
 
-      call internalSuite%addTest(newSimpleTestMethod(REFLECT(testWorks)))
-      call internalSuite%addTest(newSimpleTestMethod(REFLECT(testFails)))
+      call internalSuite%addTest(newTestMethod(REFLECT(testWorks)))
+      call internalSuite%addTest(newTestMethod(REFLECT(testFails)))
 
    end function internalSuite
 
@@ -45,12 +45,12 @@ contains
       type (SimpleTestCase), pointer :: aTest
 
       aTestResult => newTestResult()
-      aTest => newSimpleTestCase(method1, 'method1')
+      aTest => newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method1', aTest%runLog)
       deallocate(aTest)
 
-      aTest => newSimpleTestCase(method2, 'method2')
+      aTest => newSimpleTestCase('method2', method2)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
       deallocate(aTest)
@@ -70,7 +70,7 @@ contains
       type (SimpleTestCase), pointer :: aTest
 
       aTestResult => newTestResult()
-      aTest => newSimpleTestCase(method1, 'method1')
+      aTest => newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
       deallocate(aTest)

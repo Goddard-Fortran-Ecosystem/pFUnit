@@ -17,13 +17,13 @@ contains
    function suite()
       use TestSuite_mod, only: TestSuite
       use TestSuite_mod, only: newTestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod!, SimpleTestMethod
+      use TestMethod_mod, only: newTestMethod!, TestMethod
 
       type (TestSuite), pointer :: suite
 
       suite => newTestSuite('ExceptionTests')
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testGetNumExceptions)
       ADD(testCatchEmpty)

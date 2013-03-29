@@ -106,8 +106,8 @@ contains
       type (Exception) :: anException
 
       if (context%isRootProcess()) call this%startTest(test)
-      call test%runBare()
 
+      call test%runBare()
       call gatherExceptions(context)
 
       do

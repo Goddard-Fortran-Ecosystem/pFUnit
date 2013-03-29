@@ -16,12 +16,12 @@ contains
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestResult_mod, only: TestResult, newTestResult
       use TestCase_mod
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       type (TestSuite), pointer :: suite
 
       suite => newTestSuite('TestResultSuite')
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
 
       ADD(testGetNumRun)
@@ -91,7 +91,7 @@ contains
       
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase(method1,'method1')
+      tstCase => newSimpleTestCase('method1', method1)
       call result%endTest(tstCase%getSurrogate())
       call assertEqual('endTest() was called', listener%log)
 
@@ -109,7 +109,7 @@ contains
 
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase(method1,'method1')
+      tstCase => newSimpleTestCase('method1', method1)
       call result%startTest(tstCase%getSurrogate())
       call assertEqual('startTest() was called', trim(listener%log))
 
@@ -132,7 +132,7 @@ contains
       
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase(method1,'method1')
+      tstCase => newSimpleTestCase('method1', method1)
       call result%addFailure(tstCase%getSurrogate(), anException)
       call assertEqual('addFailure() was called', listener%log)
 

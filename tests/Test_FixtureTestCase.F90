@@ -11,12 +11,12 @@ contains
 
    function suite() result(aSuite)
       use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      use TestMethod_mod, only: newTestMethod
       type (TestSuite), pointer :: aSuite
 
       aSuite => newTestSuite('Test_TestCase')
 
-#define ADD(method) call aSuite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testRunWithFixture)
       ADD(testBrokenTestCase)

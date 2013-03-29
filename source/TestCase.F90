@@ -131,7 +131,6 @@ contains
 
    subroutine setSurrogate(this)
       class (TestCase), target :: this
-
       this%surrogate%tCase => this
    end subroutine setSurrogate
 

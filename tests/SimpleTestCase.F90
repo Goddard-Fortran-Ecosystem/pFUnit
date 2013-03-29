@@ -41,10 +41,10 @@ contains
       
    end function suite
 
-   function newSimpleTestCase(userMethod, name) result(this)
+   function newSimpleTestCase(name, userMethod) result(this)
       type(SimpleTestCase), pointer :: this
-      procedure(method) :: userMethod
       character(len=*), intent(in) :: name
+      procedure(method) :: userMethod
 
       allocate(this)
       call this%setSurrogate()

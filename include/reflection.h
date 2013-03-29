@@ -12,4 +12,4 @@
 #endif
 
 
-#define REFLECT(name) name,TOSTRING(name)
+#define REFLECT(name) TOSTRING(name), name

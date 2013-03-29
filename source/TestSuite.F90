@@ -66,8 +66,8 @@ contains
       
       class (Test), pointer :: aTest
       do i = 1, this%getNumMembers()
-         aTest => this%tests(i)%pTest
-         call aTest%run(tstResult, context)
+!!$         aTest => this%tests(i)%pTest
+         call this%tests(i)%ptest%run(tstResult, context)
       end do
       
    end subroutine run
