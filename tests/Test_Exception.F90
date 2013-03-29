@@ -1,5 +1,6 @@
 #include "reflection.h"
 module Test_Exception_mod
+   use TestSuite_mod
    use Exception_mod, only: ExceptionList, Exception
    use Exception_mod, only: newException
    use Exception_mod, only: newExceptionList
@@ -20,7 +21,6 @@ contains
 
       type (TestSuite), pointer :: suite
 
-      allocate(suite)
       suite => newTestSuite('ExceptionTests')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))

@@ -4,7 +4,7 @@ include ../include/base.mk
 
 all: libf2kunit.a
 
-SRCS = $(wildcard *.F90)
+SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%.o)
 
 EXCLUDE_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90
@@ -25,19 +25,28 @@ Exception.o : ParallelContext.o
 Assert.o: Exception.o
 AssertReal.o: StringUtilities.o
 
-BasicElements.o: TestFailure.o
-BasicElements.o: Test.inc TestImplementation.inc
-BasicElements.o: GenericTestCase.inc GenericTestCaseImplementation.inc
-BasicElements.o: TestResult.inc TestResultImplementation.inc
-BasicElements.o: TestInterface.inc
-BasicElements.o: GenericTestCaseInterface.inc
-BasicElements.o: ParallelContext.o
-BasicElements.o: TestListener.o
+
+SurrogateTestCase.o:
+TestResult.o: SurrogateTestCase.o
+Test.o: TestResult.o
+
+TestCase.o: Test.o TestResult.o SurrogateTestCase.o
+
+#BasicElements.o: TestFailure.o
+#BasicElements.o: Test.inc TestImplementation.inc
+#BasicElements.o: GenericTestCase.inc GenericTestCaseImplementation.inc
+#BasicElements.o: TestResult.inc TestResultImplementation.inc
+#BasicElements.o: TestInterface.inc
+#BasicElements.o: GenericTestCaseInterface.inc
+#BasicElements.o: ParallelContext.o
+#BasicElements.o: TestListener.o
 
 TestCase.o: SerialContext.o
 DynamicTestCase.o: TestCase.o
 
-TestSuite.o: BasicElements.o
+DebugListener.o: TestListener.o
+
+TestSuite.o: Test.o
 
 TestRunner.o: TestSuite.o
 TestRunner.o: ResultPrinter.o

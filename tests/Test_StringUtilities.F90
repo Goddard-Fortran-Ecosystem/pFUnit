@@ -1,5 +1,6 @@
 #include "reflection.h"
 module Test_StringUtilities_mod
+   use TestSuite_mod, only: TestSuite, newTestSuite
    use StringUtilities, only: toString
    use Assert_mod
    implicit none
@@ -14,7 +15,6 @@ contains
       use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
-      allocate(suite)
       suite => newTestSuite('StringUtilities')
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 

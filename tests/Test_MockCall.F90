@@ -13,10 +13,10 @@ contains
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
 
    function suite()
+      use TestSuite_mod, only: newTestSuite, TestSuite
       use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
-      allocate(suite)
       suite => newTestSuite('Test_MockCall')
 
       ADD(testExpectOneIntegerArgument)

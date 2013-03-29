@@ -1,25 +1,25 @@
 #include "reflection.h"
 module Test_Assert_mod
+   use TestSuite_mod
    use Assert_mod
    use Exception_mod, only: catch
    use Exception_mod, only: getNumExceptions
    implicit none
    private
 
-
    public :: suite 
 
 contains
 
-   function suite()
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use SimpleTestMethod_mod, only: newSimpleTestMethod !, SimpleTestMethod
-      type (TestSuite), pointer :: suite
+   function suite() result(aSuite)
+      use Test_mod
+      use SimpleTestMethod_mod
+      use TestSuite_mod
+      type (TestSuite), pointer :: aSuite
 
-      allocate(suite)
-      suite => newTestSuite('Assert')
+      aSuite => newTestSuite('Assert')
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call aSuite%addTest(newSimpleTestMethod(REFLECT(method)))
 
       ADD(testAssertTrueF)
       ADD(testAssertTrueT)

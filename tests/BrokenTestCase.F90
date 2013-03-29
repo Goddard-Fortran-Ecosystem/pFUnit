@@ -10,8 +10,8 @@ module BrokenTestCase_mod
       character(len=40), public :: runLog
    contains
       procedure :: setUp
-      procedure :: runTestMethod
       procedure :: tearDown
+      procedure :: runMethod
    end type BrokenTestCase
    
 contains
@@ -23,14 +23,14 @@ contains
 
    end subroutine setUp
 
-   subroutine runTestMethod(this)
+   subroutine runMethod(this)
       use Exception_mod, only: throw
       class(BrokenTestCase), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' broken run'
       call throw('This test is intentionally broken.')
 
-   end subroutine runTestMethod
+   end subroutine runMethod
 
    subroutine tearDown(this)
       class(BrokenTestCase), intent(inOut) :: this

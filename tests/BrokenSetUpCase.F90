@@ -12,7 +12,7 @@ module BrokenSetUpCase_mod
       character(len=40), public :: runLog
    contains
       procedure :: setUp
-      procedure :: runTestMethod
+      procedure :: runMethod
       procedure :: tearDown
    end type BrokenSetUpCase
    
@@ -21,7 +21,7 @@ contains
    function newBrokenSetUpCase() result(this)
       type (BrokenSetUpCase), pointer :: this
       allocate(this)
-      this%name = 'BrokenSetUpCase'
+      call this%setName('BrokenSetUpCase')
    end function newBrokenSetUpCase
 
    subroutine setUp(this)
@@ -39,11 +39,11 @@ contains
 
    end subroutine tearDown
 
-   subroutine runTestMethod(this)
+   subroutine runMethod(this)
       class(BrokenSetUpCase), intent(inOut) :: this
 
       this%runLog = trim(this%runLog)//' run'
 
-   end subroutine runTestMethod
+   end subroutine runMethod
 
 end module BrokenSetUpCase_mod

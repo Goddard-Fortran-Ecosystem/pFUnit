@@ -13,7 +13,7 @@ module TestDecorator_mod
 
 contains
 
-   integer function countTestCases(this)
+   pure integer function countTestCases(this)
       class (TestDecorator), intent(in) :: this
       countTestCases = this%fTest%countTestCases()
     end function countTestCases
@@ -22,7 +22,7 @@ contains
       use TestResult_mod
       use ParallelContext_mod
       class (TestDecorator), intent(inout) :: this
-      type (TestResult), intent(inout) :: tstResult
+      class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
       call this%basicRun(tstResult, context)
    end subroutine run

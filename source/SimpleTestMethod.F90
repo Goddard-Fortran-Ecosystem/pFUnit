@@ -8,7 +8,7 @@ module SimpleTestMethod_mod
    type, extends(TestCase) :: SimpleTestMethod
       procedure(empty), nopass, pointer :: internalMethod => null()
    contains
-     procedure :: runTestMethod
+     procedure :: runMethod
    end type SimpleTestMethod
 
    abstract interface
@@ -24,13 +24,15 @@ contains
       character(len=*), intent(in) :: name
 
       allocate(this)
+      call this%setSurrogate()
       this%internalMethod => testMethod
       call this%setName(name)
+
    end function newSimpleTestMethod
 
-   subroutine runTestMethod(this)
+   subroutine runMethod(this)
       class (SimpleTestMethod), intent(inOut) :: this
       call this%internalMethod()
-   end subroutine runTestMethod
+   end subroutine runMethod
 
 end module SimpleTestMethod_mod

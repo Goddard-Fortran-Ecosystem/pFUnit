@@ -14,9 +14,9 @@ module FixtureTestCase_mod
       private
       character(len=30), public :: runLog
    contains
-      procedure setUp
-      procedure runTestMethod
-      procedure tearDown
+      procedure :: setUp
+      procedure :: runMethod
+      procedure :: tearDown
    end type FixtureTestCase
 
    interface delete
@@ -28,7 +28,8 @@ contains
    function newFixtureTestCase() result(this)
       type(FixtureTestCase) :: this
 
-      this%name = 'FixtureTestCase'
+      call this%setName('FixtureTestCase')
+      call this%setSurrogate()
       this%runLog = ' '
 
    end function newFixtureTestCase
@@ -43,12 +44,12 @@ contains
       this%runLog = trim(this%runLog) // ' tearDown'
    end subroutine tearDown
 
-   subroutine runTestMethod(this)
+   subroutine runMethod(this)
       class(FixtureTestCase), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' run'
 
-   end subroutine runTestMethod
+   end subroutine runMethod
 
    subroutine simpleTestMethod(this)
       class (FixtureTestCase), intent(inOut) :: this

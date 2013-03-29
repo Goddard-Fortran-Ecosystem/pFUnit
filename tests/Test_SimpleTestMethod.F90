@@ -1,4 +1,5 @@
 module Test_SimpleTestMethod_mod
+   use TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
    private
 
@@ -17,6 +18,7 @@ contains
    end function suite
 
    subroutine testMethodWasRun()
+      use TestCase_mod
       use TestResult_mod, only: TestResult, newTestResult
       use SimpleTestMethod_mod, only: SimpleTestMethod, newSimpleTestMethod
       use Assert_mod, only: assertEqual

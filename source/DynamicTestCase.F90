@@ -11,7 +11,7 @@ module DynamicTestCase_mod
       integer :: placeholder
       procedure(testMethod), pointer :: testMethod => null()
    contains
-      procedure :: runTestMethod
+      procedure :: runMethod
    end type DynamicTestCase
    
    abstract interface
@@ -38,19 +38,19 @@ contains
       end interface
 
       allocate(this)
-      this%name = trim(name)
+      call this%setName(trim(name))
       this%testMethod => testMethod
 
    end function newDynamicTestCase
-
-   subroutine runTestMethod(this)
-      class(DynamicTestCase), intent(inOut) :: this
-      call this%testMethod()
-   end subroutine runTestMethod
 
    subroutine delete_(this)
       type (DynamicTestCase), intent(inOut) :: this
       nullify(this%testMethod)
    end subroutine delete_
+
+   subroutine runMethod(this)
+      class (DynamicTestCase), intent(inout) :: this
+      call this%testMethod
+   end subroutine runMethod
 
 end module DynamicTestCase_mod

@@ -1,5 +1,6 @@
 #include "reflection.h"
 module Test_AssertionLocation_mod
+   use TestSuite_mod
    use Assertionlocation_mod
    implicit none
    private
@@ -13,8 +14,6 @@ contains
       use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
-
-      allocate(suite)
       suite => newTestSuite('assertionLocationSuite')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))

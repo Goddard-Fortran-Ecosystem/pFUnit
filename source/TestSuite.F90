@@ -1,6 +1,5 @@
 module TestSuite_mod
    use Test_mod
-   use TestResult_mod
    implicit none
    private
 
@@ -10,10 +9,15 @@ module TestSuite_mod
    type TestPointer
       class (Test), pointer :: pTest => null()
    end type TestPointer
+   integer, parameter :: MAX_LENGTH_NAME = 32
 
    type, extends(Test) :: TestSuite
+      private
+      character(MAX_LENGTH_NAME) :: name
       type (TestPointer), allocatable :: tests(:)
    contains
+      procedure :: getName 
+      procedure :: setName
       procedure :: countTestCases
       procedure :: run
       procedure :: addTest
@@ -40,7 +44,7 @@ contains
       call newSuite%setName(name)
    end function newTestSuite_named
 
-   recursive integer function countTestCases(this)
+   pure recursive integer function countTestCases(this)
       class (TestSuite), intent(in) :: this
       integer :: i
       
@@ -53,8 +57,9 @@ contains
 
    recursive subroutine run(this, tstResult, context)
       use ParallelContext_mod
+      use TestResult_mod
       class (TestSuite), intent(inout) :: this
-      type (TestResult), intent(inout) :: tstResult
+      class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
       integer :: i
@@ -94,9 +99,21 @@ contains
       
    end subroutine addTest
    
-   integer function getNumMembers(this) 
+   pure integer function getNumMembers(this) 
       class (TestSuite), intent(in) :: this
       getNumMembers = size(this%tests)
    end function getNumMembers
+
+   function getName(this) result(name)
+      class (TestSuite), intent(in) :: this
+      character(MAX_LENGTH_NAME) :: name
+      name = trim(this%name)
+   end function getName
+
+   subroutine setName(this, name)
+      class (TestSuite), intent(inout) :: this
+      character(len=*),intent(in) :: name
+      this%name = trim(name)
+   end subroutine setName
    
 end module TestSuite_mod

@@ -1,7 +1,6 @@
 #include "reflection.h"
 module Test_FixtureTestCase_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
-   use SimpleTestMethod_mod, only: newSimpleTestMethod
+   use TestSuite_mod
    use TestResult_mod, only: TestResult, newTestResult
    implicit none
    private
@@ -10,13 +9,14 @@ module Test_FixtureTestCase_mod
 
 contains
 
-   function suite()
-      type (TestSuite), pointer :: suite
+   function suite() result(aSuite)
+      use TestSuite_mod, only: newTestSuite, TestSuite
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
+      type (TestSuite), pointer :: aSuite
 
-      allocate(suite)
-      suite => newTestSuite('Test_TestCase')
+      aSuite => newTestSuite('Test_TestCase')
 
-#define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
+#define ADD(method) call aSuite%addTest(newSimpleTestMethod(REFLECT(method)))
 
       ADD(testRunWithFixture)
       ADD(testBrokenTestCase)
@@ -25,29 +25,35 @@ contains
    end function suite
 
    subroutine testRunWithFixture()
+      use TestCase_mod
       use FixtureTestCase_mod, only: FixtureTestCase, newFixtureTestCase
       use FixtureTestCase_mod, only: delete
-      use Assert_mod, only: assertEqual
       use SerialContext_mod
-      type (FixtureTestCase) :: test
-      type (TestResult) :: aTestResult
+      use Assert_mod, only: assertEqual
+      type (FixtureTestCase) :: aTest
+      type (TestResult), pointer :: aTestResult
 
-      aTestResult = newTestResult()
-      test = newFixtureTestCase()
-      call test%run(aTestResult, newSerialContext())
-      call assertEqual('setUp run tearDown', test%runLog)
-      call delete(test)
+      aTestResult => newTestResult()
+      aTest = newFixtureTestCase()
+      call aTest%setSurrogate()
+      call aTest%run(aTestResult, newSerialContext())
+      call assertEqual('setUp run tearDown', aTest%runLog)
+      call delete(aTest)
 
    end subroutine testRunWithFixture
 
    subroutine testBrokenTestCase()
+      use TestCase_mod
       use BrokenTestCase_mod, only: BrokenTestCase
       use Assert_mod, only: assertEqual
       use SerialContext_mod
       type (BrokenTestCase) :: test
       type (TestResult) :: aTestResult
 
+      call test%setSurrogate()
+      call test%setName('foo')
       aTestResult = newTestResult()
+
       call test%run(aTestResult, newSerialContext())
       call assertEqual('setUp broken run tearDown', test%runLog)
       call assertEqual(1, aTestResult%failureCount())
@@ -55,12 +61,15 @@ contains
    end subroutine testBrokenTestCase
 
    subroutine testBrokenSetUpCase()
+      use TestCase_mod
       use BrokenSetUpCase_mod, only: BrokenSetUpCase
       use Assert_mod, only: assertEqual
       use SerialContext_mod
       type (BrokenSetUpCase) :: test
       type (TestResult) :: aTestResult
 
+      call test%setSurrogate()
+      call test%setName('foo')
       aTestResult = newTestResult()
       call test%run(aTestResult, newSerialContext())
       call assertEqual('broken setUp', test%runLog)

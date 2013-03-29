@@ -14,7 +14,7 @@ module SimpleTestCase_mod
       character(len=20), public :: runLog
       procedure(method), pointer :: testMethod => null()
    contains
-      procedure :: runTestMethod
+      procedure :: runMethod
    end type SimpleTestCase
 
    abstract interface
@@ -47,15 +47,16 @@ contains
       character(len=*), intent(in) :: name
 
       allocate(this)
+      call this%setSurrogate()
       this%testMethod => userMethod
       call this%setName(name)
 
     end function newSimpleTestCase
 
-   recursive subroutine runTestMethod(this)
+   recursive subroutine runMethod(this)
       class(SimpleTestCase), intent(inOut) :: this
       call this%testMethod()
-   end subroutine runTestMethod
+   end subroutine runMethod
 
    subroutine method1(this)
       class (SimpleTestCase), intent(inOut) :: this

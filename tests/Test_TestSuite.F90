@@ -1,5 +1,6 @@
 #include "reflection.h"
 module Test_TestSuite_mod
+   use TestSuite_mod, only: newTestSuite, TestSuite
    implicit none
    private
 
@@ -8,7 +9,7 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-!!$$      use TestCase_mod, only: TestCase
+      use TestCase_mod, only: TestCase
       use SimpleTestMethod_mod, only: newSimpleTestMethod
       use TestSuite_mod, only: newTestSuite, TestSuite
       type (TestSuite), pointer :: suite
@@ -26,13 +27,14 @@ contains
    end function suite
 
    subroutine testCountTestCases()
+      use TestSuite_mod, only: newTestSuite, TestSuite
       use SimpleTestCase_mod, only: newSimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
       use TestSuite_mod, only: newTestSuite, TestSuite
       use Assert_mod, only: assertEqual
-      type (TestSuite) :: suite
+      type (TestSuite), pointer :: suite
 
-      suite = newTestSuite('aSuite')
+      suite => newTestSuite('aSuite')
       call assertEqual(0, suite%countTestCases())
       call suite%addTest(newSimpleTestCase(method1, 'method1'))
       call assertEqual(1, suite%countTestCases())

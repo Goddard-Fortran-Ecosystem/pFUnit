@@ -1,7 +1,6 @@
 #include "reflection.h"
 module Test_SimpleTestCase_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
-   use SimpleTestMethod_mod, only: newSimpleTestMethod
    implicit none
    private
 
@@ -11,9 +10,10 @@ contains
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
    function suite()
+      use TestSuite_mod, only: TestSuite, newTestSuite
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
-      allocate(suite)
       suite => newTestSuite('Test_TestCase')
 
       ADD(testRunSuite)
@@ -21,9 +21,10 @@ contains
    end function suite
 
    function internalSuite()
+      use TestSuite_mod, only: TestSuite, newTestSuite
+      use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: internalSuite
 
-      allocate(internalSuite)
       internalSuite => newTestSuite('Test_TestCase')
 
       call internalSuite%addTest(newSimpleTestMethod(REFLECT(testWorks)))

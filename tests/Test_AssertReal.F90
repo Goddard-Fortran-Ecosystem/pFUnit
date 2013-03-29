@@ -3,6 +3,7 @@
 !TODO: Tests for 1D array with expected scalar
 
 module Test_AssertReal_mod
+   use TestSuite_mod
    use StringUtilities, only: toString
    use StringUtilities, only: MAXLEN_REAL_STRING
    use AssertReal_mod
@@ -19,7 +20,6 @@ contains
       use SimpleTestMethod_mod, only: newSimpleTestMethod
       type (TestSuite), pointer :: suite
 
-      allocate(suite)
       suite => newTestSuite('assertRealSuite')
 
 #define ADD(method) call suite%addTest(newSimpleTestMethod(REFLECT(method)))
