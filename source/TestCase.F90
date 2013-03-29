@@ -60,7 +60,11 @@ contains
    subroutine setName(this, name)
       class (TestCase), intent(inout) :: this
       character(len=*),intent(in) :: name
+
+      ! Make certain surrogate points back to self
+      call this%setSurrogate()
       this%name = trim(name)
+
    end subroutine setName
 
    pure integer function countTestCases(this)

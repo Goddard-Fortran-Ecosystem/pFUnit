@@ -27,7 +27,6 @@ contains
 
       allocate(this)
 
-      call this%setSurrogate()
       call this%setName(name)
 
       this%userMethod => method

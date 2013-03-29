@@ -47,7 +47,6 @@ contains
       procedure(method) :: userMethod
 
       allocate(this)
-      call this%setSurrogate()
       this%testMethod => userMethod
       call this%setName(name)
 

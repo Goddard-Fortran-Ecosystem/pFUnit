@@ -29,7 +29,6 @@ contains
       type(FixtureTestCase) :: this
 
       call this%setName('FixtureTestCase')
-      call this%setSurrogate()
       this%runLog = ' '
 
    end function newFixtureTestCase
