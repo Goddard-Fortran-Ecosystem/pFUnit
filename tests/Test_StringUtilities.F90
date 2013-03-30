@@ -13,9 +13,9 @@ contains
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('StringUtilities')
+      suite = newTestSuite('StringUtilities')
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testToStringInteger1D)

@@ -8,7 +8,6 @@ module DynamicTestCase_mod
    public :: delete
 
    type, extends(TestCase) :: DynamicTestCase
-      integer :: placeholder
       procedure(testMethod), pointer :: testMethod => null()
    contains
       procedure :: runMethod

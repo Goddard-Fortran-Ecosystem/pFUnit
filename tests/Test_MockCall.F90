@@ -15,9 +15,9 @@ contains
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('Test_MockCall')
+      suite = newTestSuite('Test_MockCall')
 
       ADD(testExpectOneIntegerArgument)
       ADD(testFailExpectOneIntegerArgument)

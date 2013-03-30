@@ -12,9 +12,9 @@ contains
    function suite() result(aSuite)
       use TestSuite_mod, only: newTestSuite, TestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: aSuite
+      type (TestSuite) :: aSuite
 
-      aSuite => newTestSuite('Test_TestCase')
+      aSuite = newTestSuite('Test_TestCase')
 
 #define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 

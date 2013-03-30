@@ -10,9 +10,9 @@ contains
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('Test_TestMethod')
+      suite = newTestSuite('Test_TestMethod')
       call suite%addTest(newTestMethod('testMethodWasRun', testMethodWasRun))
 
    end function suite

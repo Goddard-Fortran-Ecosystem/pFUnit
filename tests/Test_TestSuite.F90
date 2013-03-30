@@ -12,10 +12,9 @@ contains
       use TestCase_mod, only: TestCase
       use TestMethod_mod, only: newTestMethod
       use TestSuite_mod, only: newTestSuite, TestSuite
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      allocate(suite)
-      suite => newTestSuite('TestSuiteSuite')
+      suite = newTestSuite('TestSuiteSuite')
 
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
@@ -32,9 +31,9 @@ contains
       use SimpleTestCase_mod, only: method1, method2
       use TestSuite_mod, only: newTestSuite, TestSuite
       use Assert_mod, only: assertEqual
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('aSuite')
+      suite = newTestSuite('aSuite')
       call assertEqual(0, suite%countTestCases())
       call suite%addTest(newSimpleTestCase('method1', method1))
       call assertEqual(1, suite%countTestCases())

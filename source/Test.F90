@@ -6,6 +6,7 @@ module Test_mod
 
    ! Abstract class from which other Test classes inherit
    type, abstract :: Test
+      integer :: placeholder
    contains
       procedure(countTestCases), deferred :: countTestCases
       procedure(run), deferred :: run
@@ -13,7 +14,7 @@ module Test_mod
 
    abstract interface
 
-      pure integer function countTestCases(this)
+      integer function countTestCases(this)
          import Test
          class (Test), intent(in) :: this
       end function countTestCases

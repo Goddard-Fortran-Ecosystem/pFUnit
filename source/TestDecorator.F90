@@ -13,7 +13,7 @@ module TestDecorator_mod
 
 contains
 
-   pure integer function countTestCases(this)
+   integer function countTestCases(this)
       class (TestDecorator), intent(in) :: this
       countTestCases = this%fTest%countTestCases()
     end function countTestCases

@@ -46,7 +46,7 @@ DynamicTestCase.o: TestCase.o
 
 DebugListener.o: TestListener.o
 
-TestSuite.o: Test.o
+TestSuite.o: Test.o TestMethod.o
 
 TestRunner.o: TestSuite.o
 TestRunner.o: ResultPrinter.o

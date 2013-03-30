@@ -29,9 +29,9 @@ contains
 
    function suite()
      use TestSuite_mod, only: TestSuite, newTestSuite
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('SimpleTestCase')
+      suite = newTestSuite('SimpleTestCase')
 
 #define ADD(method) call suite%addTest(newSimpleTestCase(REFLECT(method)))
 
@@ -42,11 +42,10 @@ contains
    end function suite
 
    function newSimpleTestCase(name, userMethod) result(this)
-      type(SimpleTestCase), pointer :: this
+      type(SimpleTestCase) :: this
       character(len=*), intent(in) :: name
       procedure(method) :: userMethod
 
-      allocate(this)
       this%testMethod => userMethod
       call this%setName(name)
 

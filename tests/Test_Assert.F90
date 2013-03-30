@@ -15,9 +15,9 @@ contains
       use Test_mod
       use TestMethod_mod
       use TestSuite_mod
-      type (TestSuite), pointer :: aSuite
+      type (TestSuite) :: aSuite
 
-      aSuite => newTestSuite('Assert')
+      aSuite = newTestSuite('Assert')
 
 #define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 

@@ -21,14 +21,11 @@ module TestMethod_mod
 contains
 
    function newTestMethod(name, method) result(this)
-      type (TestMethod), pointer :: this
+      type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
 
-      allocate(this)
-
       call this%setName(name)
-
       this%userMethod => method
 
    end function newTestMethod

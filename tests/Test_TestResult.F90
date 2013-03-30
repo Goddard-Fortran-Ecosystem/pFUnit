@@ -17,9 +17,9 @@ contains
       use TestResult_mod, only: TestResult, newTestResult
       use TestCase_mod
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('TestResultSuite')
+      suite = newTestSuite('TestResultSuite')
 
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
@@ -87,11 +87,11 @@ contains
 
       type (TestResult) :: result
       type (MockListener) :: listener
-      type (SimpleTestCase), pointer :: tstCase
+      type (SimpleTestCase) :: tstCase
       
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase('method1', method1)
+      tstCase = newSimpleTestCase('method1', method1)
       call result%endTest(tstCase%getSurrogate())
       call assertEqual('endTest() was called', listener%log)
 
@@ -105,11 +105,11 @@ contains
       type (TestResult) :: result
       type (MockListener) :: listener
       
-      type (SimpleTestCase), pointer :: tstCase
+      type (SimpleTestCase) :: tstCase
 
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase('method1', method1)
+      tstCase = newSimpleTestCase('method1', method1)
       call result%startTest(tstCase%getSurrogate())
       call assertEqual('startTest() was called', trim(listener%log))
 
@@ -128,11 +128,11 @@ contains
       type (MockListener) :: listener
       type (Exception) :: anException
       
-      class(TestCase), pointer :: tstCase
+      class(TestCase), allocatable :: tstCase
       
       result = newTestResult()
       call result%addListener(listener)
-      tstCase => newSimpleTestCase('method1', method1)
+      allocate(tstCase, source = newSimpleTestCase('method1', method1))
       call result%addFailure(tstCase%getSurrogate(), anException)
       call assertEqual('addFailure() was called', listener%log)
 

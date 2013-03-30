@@ -12,9 +12,9 @@ contains
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('Test_TestCase')
+      suite = newTestSuite('Test_TestCase')
 
       ADD(testRunSuite)
 
@@ -23,9 +23,9 @@ contains
    function internalSuite()
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: internalSuite
+      type (TestSuite) :: internalSuite
 
-      internalSuite => newTestSuite('Test_TestCase')
+      internalSuite = newTestSuite('Test_TestCase')
 
       call internalSuite%addTest(newTestMethod(REFLECT(testWorks)))
       call internalSuite%addTest(newTestMethod(REFLECT(testFails)))
@@ -42,18 +42,16 @@ contains
       use SerialContext_mod
 
       type (TestResult), pointer :: aTestResult
-      type (SimpleTestCase), pointer :: aTest
+      type (SimpleTestCase) :: aTest
 
       aTestResult => newTestResult()
-      aTest => newSimpleTestCase('method1', method1)
+      aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method1', aTest%runLog)
-      deallocate(aTest)
 
-      aTest => newSimpleTestCase('method2', method2)
+      aTest = newSimpleTestCase('method2', method2)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
-      deallocate(aTest)
 
    end subroutine testWorks
 
@@ -67,13 +65,12 @@ contains
       use SerialContext_mod
 
       type (TestResult), pointer :: aTestResult
-      type (SimpleTestCase), pointer :: aTest
+      type (SimpleTestCase) :: aTest
 
       aTestResult => newTestResult()
-      aTest => newSimpleTestCase('method1', method1)
+      aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
-      deallocate(aTest)
 
    end subroutine testFails
 
@@ -83,14 +80,13 @@ contains
       use Assert_mod, only: assertEqual
       use SerialContext_mod
       type (TestResult), pointer :: aTestResult
-      type (TestSuite), pointer :: aSuite
+      type (TestSuite) :: aSuite
 
-      aSuite => internalSuite()
+      aSuite = internalSuite()
       aTestResult => newTestResult()
       call aSuite%run(aTestResult, newSerialContext())
       call assertEqual(2, aTestResult%runCount())
       call assertEqual(1, aTestResult%failureCount())
-      deallocate(aSuite)
 
     end subroutine testRunSuite
 

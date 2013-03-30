@@ -21,7 +21,7 @@ module TestSuite_mod
       procedure :: countTestCases
       procedure :: run
       procedure :: addTest
-      procedure :: getNumMembers
+      procedure :: getNumTests
    end type TestSuite
 
    interface newTestSuite
@@ -44,12 +44,12 @@ contains
       call newSuite%setName(name)
    end function newTestSuite_named
 
-   pure recursive integer function countTestCases(this)
+   recursive integer function countTestCases(this)
       class (TestSuite), intent(in) :: this
       integer :: i
       
       countTestCases = 0
-      do i = 1, this%getNumMembers()
+      do i = 1, this%getNumTests()
          countTestCases = countTestCases + this%tests(i)%pTest%countTestCases()
       end do
   
@@ -65,7 +65,7 @@ contains
       integer :: i
       
       class (Test), pointer :: aTest
-      do i = 1, this%getNumMembers()
+      do i = 1, this%getNumTests()
 !!$         aTest => this%tests(i)%pTest
          call this%tests(i)%ptest%run(tstResult, context)
       end do
@@ -74,10 +74,10 @@ contains
    
    subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
-      class (Test), target, intent(in) :: aTest
+      class (Test), intent(in) :: aTest
       
       call extend(this%tests)
-      this%tests(this%getNumMembers())%pTest => aTest
+      allocate(this%tests(this%getNumTests())%pTest, source=aTest)
       
    contains   
       
@@ -99,10 +99,10 @@ contains
       
    end subroutine addTest
    
-   pure integer function getNumMembers(this) 
+   pure integer function getNumTests(this) 
       class (TestSuite), intent(in) :: this
-      getNumMembers = size(this%tests)
-   end function getNumMembers
+      getNumTests = size(this%tests)
+   end function getNumTests
 
    function getName(this) result(name)
       class (TestSuite), intent(in) :: this

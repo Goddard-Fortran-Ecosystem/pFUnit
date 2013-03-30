@@ -67,7 +67,7 @@ contains
 
    end subroutine setName
 
-   pure integer function countTestCases(this)
+   integer function countTestCases(this)
       class (TestCase), intent(in) :: this
       countTestCases = 1
    end function countTestCases
@@ -83,6 +83,7 @@ contains
 
       ! Always run serial tests in a serial context.
       if (context%isRootProcess()) then
+         call this%setSurrogate()
          call tstResult%run(this%surrogate, THE_SERIAL_CONTEXT)
       end if
 

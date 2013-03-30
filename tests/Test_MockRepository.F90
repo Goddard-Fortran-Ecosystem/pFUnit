@@ -87,9 +87,9 @@ contains
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
       use TestMethod_mod, only: newTestMethod
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('Test_MockRepository')
+      suite = newTestSuite('Test_MockRepository')
 
       ADD(testNoAction)
       ADD(testExpectMethod_NotCalled)

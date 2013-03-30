@@ -19,9 +19,9 @@ contains
       use TestSuite_mod, only: newTestSuite
       use TestMethod_mod, only: newTestMethod!, TestMethod
 
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('ExceptionTests')
+      suite = newTestSuite('ExceptionTests')
 
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
