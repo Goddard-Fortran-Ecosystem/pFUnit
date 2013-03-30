@@ -6,15 +6,15 @@ module TestSuite_mod
    public :: TestSuite
    public :: newTestSuite
 
-   type TestPointer
-      class (Test), pointer :: pTest => null()
-   end type TestPointer
+   type TestReference
+      class (Test), allocatable :: pTest
+   end type TestReference
    integer, parameter :: MAX_LENGTH_NAME = 32
 
    type, extends(Test) :: TestSuite
       private
       character(MAX_LENGTH_NAME) :: name
-      type (TestPointer), allocatable :: tests(:)
+      type (TestReference), allocatable :: tests(:)
    contains
       procedure :: getName 
       procedure :: setName
@@ -22,6 +22,8 @@ module TestSuite_mod
       procedure :: run
       procedure :: addTest
       procedure :: getNumTests
+      procedure :: copy
+      generic :: assignment(=) => copy
    end type TestSuite
 
    interface newTestSuite
@@ -32,17 +34,34 @@ module TestSuite_mod
 contains
 
    function newTestSuite_unnamed() result(newSuite)
-      type (TestSuite), pointer :: newSuite
-      allocate(newSuite)
-      allocate(newSuite%tests(0))
+      type (TestSuite) :: newSuite
+      newSuite = newTestSuite_named('<unnamed>')
    end function newTestSuite_unnamed
 
    function newTestSuite_named(name) result(newSuite)
-      type (TestSuite), pointer :: newSuite
+      type (TestSuite) :: newSuite
       character(len=*), intent(in) :: name
-      newSuite => newTestSuite()
+
+      allocate(newSuite%tests(0))
       call newSuite%setName(name)
+
    end function newTestSuite_named
+
+   recursive subroutine copy(this, b)
+      class (TestSuite), intent(out) :: this
+      type (TestSuite), intent(in) :: b
+
+      integer :: i, n
+
+      call this%setName(b%getName())
+      n = b%getNumTests()
+
+      allocate(this%tests(n))
+      do i = 1, n
+         allocate(this%tests(i)%ptest, source=b%tests(i)%ptest)
+      end do
+
+   end subroutine copy
 
    recursive integer function countTestCases(this)
       class (TestSuite), intent(in) :: this
@@ -64,15 +83,13 @@ contains
 
       integer :: i
       
-      class (Test), pointer :: aTest
       do i = 1, this%getNumTests()
-!!$         aTest => this%tests(i)%pTest
          call this%tests(i)%ptest%run(tstResult, context)
       end do
       
    end subroutine run
    
-   subroutine addTest(this, aTest)
+   recursive subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
       
@@ -81,21 +98,28 @@ contains
       
    contains   
       
-      subroutine extend(list)
-         type (TestPointer), allocatable :: list(:)
-         type (TestPointer), allocatable :: temp(:)
-         integer :: n
+      recursive subroutine extend(list)
+         type (TestReference), allocatable :: list(:)
+         type (TestReference), allocatable :: temp(:)
+         integer :: i, n
          
          n = size(list)
-         allocate(temp(n))
-         temp = list
-         
-         deallocate(list)
+         call move_alloc(from=list, to=temp)
+
          allocate(list(n+1))
-         list(:n) = temp
+         do i = 1, n
+            call kludge_move_alloc(from=temp(i)%ptest, to=list(i)%ptest)
+         end do
+
          deallocate(temp)
-         
+
       end subroutine extend
+
+      subroutine kludge_move_alloc(from, to)
+         class (Test), allocatable :: from
+         class (Test), allocatable :: to
+         call move_alloc(from=from, to=to)
+      end subroutine kludge_move_alloc
       
    end subroutine addTest
    
