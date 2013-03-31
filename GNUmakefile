@@ -126,16 +126,18 @@ else
 	./tests/tests.x
 endif
 
-install: libf2kunit.a
+install: libpfunit.a
 INSTALL_DIR ?= $(CURDIR)
 install: 
 	echo Installing pFUnit in $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)/lib
 	mkdir -p $(INSTALL_DIR)/mod
 	mkdir -p $(INSTALL_DIR)/include
+	mkdir -p $(INSTALL_DIR)/bin
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
 	cp include/*        $(INSTALL_DIR)/include/.
+	cp bin/* $(INSTALL_DIR)/bin/.
 
 export UNAME
 export F90

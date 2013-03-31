@@ -13,22 +13,20 @@ end subroutine debug
 
 #include "reflection.h"
 program main
-   use F2kUnit, only: initializeF2kUnit
-   use F2kUnit, only: finalizeF2kUnit
+   use pFUnit_mod, only: initialize
+   use pFUnit_mod, only: finalize
    implicit none
 
-   call initializeF2kUnit()
-
+   call initialize()
    call runTests()
-
-   call finalizeF2kUnit()
+   call finalize()
 
 contains
 
    subroutine runTests()
-      use F2kUnit, only: newTestSuite
-      use F2kUnit, only: TestSuite
-      use F2kUnit, only: TestRunner, newTestRunner
+      use pFUnit_mod, only: newTestSuite
+      use pFUnit_mod, only: TestSuite
+      use pFUnit_mod, only: TestRunner, newTestRunner
 #ifdef USE_MPI
       use MpiContext_mod
 #else

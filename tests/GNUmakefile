@@ -17,16 +17,16 @@ endif
 
 F90FLAGS +=$M$(MOD_DIR)
 
-LIBS = $L$(LIB_DIR) -lf2kunit
+LIBS = $L$(LIB_DIR) -lpfunit
 ifeq ($(MPI),YES)
    LIBS += -lmpi
 endif
 
 ifeq ($(MPI),YES)
-$(EXE): $(OBJS) libf2kunit.a
+$(EXE): $(OBJS) libpfunit.a
 	$(MPIF90) -o $@ $(OBJS) $(LIBS) -g
 else
-$(EXE): $(OBJS_SERIAL) libf2kunit.a
+$(EXE): $(OBJS_SERIAL) libpfunit.a
 	$(MPIF90) -o $@ $(OBJS_SERIAL) $(LIBS) -g
 endif
 
