@@ -130,7 +130,7 @@ contains
 
    function getSurrogate(this) result(surrogate)
       class (TestCase), target, intent(in) :: this
-      type (ConcreteSurrogate), pointer :: surrogate
+      class (SurrogateTestCase), pointer :: surrogate
       surrogate => this%surrogate
    end function getSurrogate
 
