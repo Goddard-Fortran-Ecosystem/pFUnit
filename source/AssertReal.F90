@@ -19,18 +19,22 @@ module AssertReal_mod
 
 contains
 
-   subroutine assertEqualExact(expected, found)
+   subroutine assertEqualExact(expected, found, line, file)
       real, intent(in) :: expected
       real, intent(in) :: found
+      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: file
 
-      call assertEqual(expected, found, tolerance = 0.)
+      call assertEqual(expected, found, tolerance=0., line=line, file=file)
 
    end subroutine assertEqualExact
 
-   subroutine assertEqualTolerance(expected, found, tolerance)
+   subroutine assertEqualTolerance(expected, found, tolerance, line, file)
       real, intent(in) :: expected
       real, intent(in) :: found
       real, intent(in) :: tolerance
+      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: file
 
       if (abs(found-expected) > tolerance) then
          call throw( &
@@ -45,15 +49,17 @@ contains
       integer, intent(in) :: expectedShape(:)
       integer, intent(in) :: foundShape(:)
 
-      shapeReport = NEWLINE // &
-           & '    expected shape: <['//trim(toString(expectedShape))//']>' // NEWLINE // &
+      shapeReport = new_line('$') // &
+           & '    expected shape: <['//trim(toString(expectedShape))//']>' // new_line('$') // &
            & '   but found shape: <['//trim(toString(foundShape))//']>'
 
    end function shapeReport
 
-   subroutine assertEqual_1D1D(expected, found)
+   subroutine assertEqual_1D1D(expected, found, line, file)
       real, intent(in) :: expected(:)
       real, intent(in) :: found(:)
+      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: file
 
       integer :: i
       integer, parameter :: MAXLEN_SHAPE = 80
@@ -74,8 +80,8 @@ contains
          integer, intent(in) :: shapeFound(:)
 
          call throw( &
-              & 'Assertion failed: non-conformbable real arrays.' // NEWLINE //& 
-              & '    expected shape: <['//trim(toString(shapeExpected))//']>' // NEWLINE //&
+              & 'Assertion failed: non-conformbable real arrays.' // new_line('$') //& 
+              & '    expected shape: <['//trim(toString(shapeExpected))//']>' // new_line('$') //&
               & '   but found shape: <['//trim(toString(shapeFound))//']>' &
               & )
       end subroutine throwNonConformable
@@ -100,7 +106,7 @@ contains
          write(location,'("[",i0,"]")') at
 
          call throw( &
-              & 'Assertion failed: unequal real 1D arrays.' // NEWLINE // & 
+              & 'Assertion failed: unequal real 1D arrays.' // new_line('$') // & 
               & '  First difference at element <['//trim(toString(at))//']>' // &
               & trim(valuesReport(expected, found)) // &
               & trim(differenceReport(found - expected, 0.))  &
@@ -113,15 +119,15 @@ contains
       real, intent(in) :: expected
       real, intent(in) :: found
       valuesReport = &
-           & NEWLINE // '    expected: <' // trim(toString(expected)) // '>' // &
-           & NEWLINE // '   but found: <' // trim(toString(found)) // '>'
+           & new_line('$') // '    expected: <' // trim(toString(expected)) // '>' // &
+           & new_line('$') // '   but found: <' // trim(toString(found)) // '>'
    end function valuesReport
 
    character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
       real, intent(in) :: difference
       real, intent(in) :: tolerance
       differenceReport = &
-           & NEWLINE // '  difference: |' // trim(toString(difference)) // '| > ' // trim(toString(tolerance))
+           & new_line('$') // '  difference: |' // trim(toString(difference)) // '| > ' // trim(toString(tolerance))
    end function differenceReport
 
 end module AssertReal_mod
