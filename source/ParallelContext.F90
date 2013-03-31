@@ -19,6 +19,7 @@ module ParallelContext_mod
       procedure(gatherString), deferred :: gatherString
       procedure(gatherInteger), deferred :: gatherInteger
       procedure(gatherLogical), deferred :: gatherLogical
+      procedure :: labelProcess
    end type ParallelContext
 
    abstract interface
@@ -76,5 +77,15 @@ contains
       class (ParallelContext), intent(in) :: this
       isRootProcess = .true.
    end function isRootProcess
+
+   function labelProcess(this, message) result (labeledMessage)
+      class (ParallelContext), intent(in) :: this
+      character(len=*), intent(in) :: message
+      integer, parameter :: MAXLEN_MESSAGE = 80*10
+      character(len=MAXLEN_MESSAGE) :: labeledMessage
+
+      labeledMessage = trim(message)
+
+   end function labelProcess
 
 end module ParallelContext_mod
