@@ -100,7 +100,7 @@ contains
       use Exception_mod
       use ParallelContext_mod
       class (TestResult), intent(inout) :: this
-      class (SurrogateTestCase), intent(inout) :: test
+      class (SurrogateTestCase) :: test
       class (ParallelContext), intent(in) :: context
 
       type (Exception) :: anException

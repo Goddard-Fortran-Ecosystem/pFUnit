@@ -83,8 +83,7 @@ contains
 
       ! Always run serial tests in a serial context.
       if (context%isRootProcess()) then
-         call this%setSurrogate()
-         call tstResult%run(this%surrogate, THE_SERIAL_CONTEXT)
+         call tstResult%run(this%getSurrogate(), THE_SERIAL_CONTEXT)
       end if
 
    end subroutine run
@@ -131,6 +130,7 @@ contains
    function getSurrogate(this) result(surrogate)
       class (TestCase), target, intent(in) :: this
       class (SurrogateTestCase), pointer :: surrogate
+      call this%setSurrogate()
       surrogate => this%surrogate
    end function getSurrogate
 
