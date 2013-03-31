@@ -18,7 +18,6 @@ module Test_MpiTestCase_mod
 
    abstract interface
       subroutine method(this)
-        use Test_mod
         import Test_MpiTestCase
         class (Test_MpiTestCase), intent(inOut) :: this
       end subroutine method
@@ -28,9 +27,9 @@ contains
 
    function suite()
      use TestSuite_mod, only: TestSuite, newTestSuite
-      type (TestSuite), pointer :: suite
+      type (TestSuite) :: suite
 
-      suite => newTestSuite('Test_MpiTestCase')
+      suite = newTestSuite('Test_MpiTestCase')
       call suite%addTest(newTest_MpiTestCase(REFLECT(testWasRun), numProcesses=1))
       call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
       call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn1), numProcesses=3))
@@ -175,7 +174,7 @@ contains
 
    subroutine delete_(this)
       type (Test_MpiTestCase), intent(inOut) :: this
-!!$      nullify(this%testMethod)
+      nullify(this%testMethod)
    end subroutine delete_
 
 end module Test_MpiTestCase_mod
