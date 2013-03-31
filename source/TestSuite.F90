@@ -35,7 +35,7 @@ contains
 
    function newTestSuite_unnamed() result(newSuite)
       type (TestSuite) :: newSuite
-      newSuite = newTestSuite_named('<unnamed>')
+      newSuite = newTestSuite_named('')
    end function newTestSuite_unnamed
 
    function newTestSuite_named(name) result(newSuite)
