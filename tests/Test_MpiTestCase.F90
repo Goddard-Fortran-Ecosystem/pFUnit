@@ -1,6 +1,8 @@
 
 #include "reflection.h"
 module Test_MpiTestCase_mod
+   use Test_mod
+   use TestCase_mod
    use MpiTestCase_mod, only: MpiTestCase
    implicit none
    private
@@ -13,7 +15,7 @@ module Test_MpiTestCase_mod
       character(len=20), public :: runLog
       procedure(method), pointer :: testMethod => null()
    contains
-      procedure :: runTestMethod
+      procedure :: runMethod
    end type Test_MpiTestCase
 
    abstract interface
@@ -37,13 +39,12 @@ contains
       
    end function suite
 
-   function newTest_MpiTestCase(userMethod, name, numProcesses) result(this)
-      type(Test_MpiTestCase), pointer :: this
-      procedure(method) :: userMethod
+   function newTest_MpiTestCase(name, userMethod, numProcesses) result(this)
+      type(Test_MpiTestCase) :: this
       character(len=*), intent(in) :: name
+      procedure(method) :: userMethod
       integer, intent(in) :: numProcesses
 
-      allocate(this)
       this%testMethod => userMethod
       this%numProcesses = numProcesses
       call this%setName(name)
@@ -51,7 +52,7 @@ contains
     end function newTest_MpiTestCase
 
    subroutine testWasRun(this)
-      use f2kunit, only: assertEqual
+      use Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       this%runLog = ' ' ! empty
@@ -61,7 +62,7 @@ contains
    end subroutine testWasRun
 
    subroutine testRunOn2Processors(this)
-      use f2kunit, only: assertEqual
+      use Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
@@ -71,7 +72,7 @@ contains
    end subroutine testRunOn2Processors
 
    subroutine failOn1(this)
-      use f2kunit
+      use Exception_mod
       class (Test_MpiTestCase), intent(inout) :: this
       if (this%context%processRank() == 1) then
          call throw('Intentional fail on process 1.')
@@ -79,7 +80,7 @@ contains
    end subroutine failOn1
 
    subroutine failOn2(this)
-      use f2kunit
+      use Exception_mod
       class (Test_MpiTestCase), intent(inout) :: this
       if (this%context%processRank() == 1 .or. this%context%processRank() == 2) then
          call throw('Intentional fail')
@@ -89,9 +90,9 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn1(this)
-      use f2kunit, only: throw
-      use f2kunit, only: assertEqual
+      use Assert_mod, only: assertEqual
       use TestResult_mod
+      use Exception_mod, only: throw
       use Exception_mod, only: catch
       use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
@@ -121,8 +122,8 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn2(this)
-      use f2kunit, only: throw
-      use f2kunit, only: assertEqual
+      use Exception_mod, only: throw
+      use Assert_mod, only: assertEqual
       use TestResult_mod
       use Exception_mod, only: catch
       use Exception_mod, only: MAXLEN_MESSAGE
@@ -156,10 +157,10 @@ contains
 
    end subroutine testFailOn2
 
-   recursive subroutine runTestMethod(this)
+   recursive subroutine runMethod(this)
       class(Test_MpiTestCase), intent(inOut) :: this
       call this%testMethod()
-   end subroutine runTestMethod
+   end subroutine runMethod
 
    subroutine wasRun(runLog, mpiCommunicator)
       character(len=*), intent(inout) :: runLog

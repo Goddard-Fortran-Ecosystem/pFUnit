@@ -78,6 +78,7 @@ contains
       do i = 1, size(this%listeners)
          call this%listeners(i)%pListener%startTest(aTest%getName())
       end do
+
    end subroutine startTest
 
    subroutine endTest(this, aTest)

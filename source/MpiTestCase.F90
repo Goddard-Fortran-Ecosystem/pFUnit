@@ -16,16 +16,16 @@ module MpiTestCase_mod
       procedure :: runBare
       procedure :: setUp
       procedure :: tearDown
-      procedure(runTestMethod), deferred :: runTestMethod
+      procedure(runMethod), deferred :: runMethod
       procedure :: gatherExceptions
       procedure :: getMpiCommunicator
    end type MpiTestCase
 
    abstract interface
-      subroutine runTestMethod(this)
+      subroutine runMethod(this)
          import MpiTestCase
          class (MpiTestCase), intent(inOut) :: this
-       end subroutine runTestMethod
+      end subroutine runMethod
    end interface
 
 contains
@@ -41,7 +41,7 @@ contains
       use Exception_mod
       use SurrogateTestCase_mod
       class (MpiTestCase), intent(inout) :: this
-      type  (TestResult), intent(inout) :: tstResult
+      class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
       ! create subcommunicator
@@ -55,7 +55,6 @@ contains
       end select
 
       if (this%context%isActive()) then
-         call this%setSurrogate()
          call tstResult%run(this%getSurrogate(), this%context)
       end if
       
@@ -70,7 +69,7 @@ contains
       class (MpiTestCase), intent(inout) :: this
       
       call this%setUp()
-      call this%runTestMethod()
+      call this%runMethod()
       call this%tearDown()
       call this%gatherExceptions()
 
