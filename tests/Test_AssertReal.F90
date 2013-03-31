@@ -44,37 +44,34 @@ contains
    end function suite
 
    subroutine testValuesReport()
-      use Exception_mod, only: NEWLINE
       use Assert_mod, only: assertEqual
       character(len=MAXLEN_REAL_STRING) :: one
       one = toString(1.)
 
       call assertEqual( &
-           & NEWLINE // '    expected: <' // trim(one) // '>' // &
-           & NEWLINE // '   but found: <' // trim(one) // '>', &
+           & new_line('$') // '    expected: <' // trim(one) // '>' // &
+           & new_line('$') // '   but found: <' // trim(one) // '>', &
            & valuesReport(1.,1.))
    end subroutine testValuesReport
 
    subroutine testDifferenceReport()
-      use Exception_mod, only: NEWLINE
       use Assert_mod, only: assertEqual
       character(len=MAXLEN_REAL_STRING) :: one
       one = toString(1.)
 
       call assertEqual( &
-           & NEWLINE // '  difference: |' // trim(one) // '| > ' // trim(one), &
+           & new_line('$') // '  difference: |' // trim(one) // '| > ' // trim(one), &
            & differenceReport(1.,1.))
    end subroutine testDifferenceReport
 
    subroutine testShapeReport()
-      use Exception_mod, only: NEWLINE
       use Assert_mod, only: assertEqual
       integer :: shape1(1) = [2]
       integer :: shape2(2) = [3,2]
 
       call assertEqual( &
-           & NEWLINE // &
-           & '    expected shape: <[' // trim(toString(shape1)) // ']>' // NEWLINE // &
+           & new_line('$') // &
+           & '    expected shape: <[' // trim(toString(shape1)) // ']>' // new_line('$') // &
            & '   but found shape: <[' // trim(toString(shape2)) // ']>', &
            & shapeReport(shape1, shape2))
    end subroutine testShapeReport
@@ -165,10 +162,9 @@ contains
    end subroutine testEquals_1D1D_nonConformableC
 
    subroutine testEquals_1D1D_diffA()
-      use Exception_mod, only: NEWLINE
       call assertEqual([1.,2.], [0.,2.])
       call assertCatch( &
-           & 'Assertion failed: unequal real 1D arrays.' // NEWLINE // & 
+           & 'Assertion failed: unequal real 1D arrays.' // new_line('$') // & 
            & '  First difference at element <[1]>' // &
            &  trim(valuesReport(expected=1., found=0.)) // &
            &  trim(differenceReport(0.-1., tolerance = 0.)) &
@@ -176,10 +172,9 @@ contains
    end subroutine testEquals_1D1D_diffA
 
    subroutine testEquals_1D1D_diffB()
-      use Exception_mod, only: NEWLINE
       call assertEqual([1.,0.], [1.,2.])
       call assertCatch( &
-           & 'Assertion failed: unequal real 1D arrays.' // NEWLINE // & 
+           & 'Assertion failed: unequal real 1D arrays.' // new_line('$') // & 
            & '  First difference at element <[2]>'      //  &
            &  trim(valuesReport(expected=0., found=2.)) // &
            &  trim(differenceReport(2.-0., tolerance = 0.)) &
