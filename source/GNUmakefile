@@ -2,7 +2,7 @@ TOP = ..
 include ../include/base.mk
 .PHONY: all
 
-all: libf2kunit.a
+all: libpfunit.a
 
 SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%.o)
@@ -14,9 +14,9 @@ ifneq ($(MPI),YES)
 endif
 
 ifeq ($(MPI),YES)
-   libf2kunit.a: $(OBJS)
+   libpfunit.a: $(OBJS)
 else
-   libf2kunit.a: $(OBJS_SERIAL)
+   libpfunit.a: $(OBJS_SERIAL)
 endif
 	ar -r $@ $?
 	-@ranlib $@
@@ -27,19 +27,10 @@ AssertReal.o: StringUtilities.o
 
 
 SurrogateTestCase.o:
-TestResult.o: SurrogateTestCase.o
+TestResult.o: SurrogateTestCase.o TestListener.o Exception.o
 Test.o: TestResult.o
 
 TestCase.o: Test.o TestResult.o SurrogateTestCase.o
-
-#BasicElements.o: TestFailure.o
-#BasicElements.o: Test.inc TestImplementation.inc
-#BasicElements.o: GenericTestCase.inc GenericTestCaseImplementation.inc
-#BasicElements.o: TestResult.inc TestResultImplementation.inc
-#BasicElements.o: TestInterface.inc
-#BasicElements.o: GenericTestCaseInterface.inc
-#BasicElements.o: ParallelContext.o
-#BasicElements.o: TestListener.o
 
 TestCase.o: SerialContext.o
 DynamicTestCase.o: TestCase.o
@@ -47,7 +38,6 @@ DynamicTestCase.o: TestCase.o
 DebugListener.o: TestListener.o
 
 TestSuite.o: Test.o TestMethod.o
-
 TestRunner.o: TestSuite.o
 TestRunner.o: ResultPrinter.o
 
@@ -58,9 +48,11 @@ TestResult.o: TestFailure.o
 
 MockRepository.o:
 
-F2kUnit.o: TestRunner.o TestSuite.o
-F2kUnit.o: ParallelContext.o
+pFUnit.o: TestRunner.o TestSuite.o
+pFUnit.o: ParallelContext.o
 
 ifeq ($(MPI),YES)
-   F2kUnit.o: MpiContext.o
+   pFUnit.o: MpiContext.o
 endif
+
+pFUnitPackage.o: pFUnit.o
