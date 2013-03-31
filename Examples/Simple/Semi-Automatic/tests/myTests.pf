@@ -1,0 +1,19 @@
+@test
+subroutine testAdd()
+   use add_mod
+   use pfunit_mod
+
+   @assertEqual(3., add(1.,2.))
+
+end subroutine testAdd
+
+@test
+subroutine testAddBroken()
+   use add_mod
+   use pfunit_mod
+
+   @assertEqual(1., add(1.,2.))
+
+end subroutine testAddBroken
+
+   
