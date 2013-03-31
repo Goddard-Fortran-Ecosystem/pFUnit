@@ -205,9 +205,7 @@ contains
 
          allocate(list%exceptions(globalExceptionCount))
          do i = 1, this%getNumExceptions()
-            write(msg,'(a," (process ",i0," of ",i0,")")') trim(this%exceptions(i)%message), &
-                 & context%processRank(), context%getNumProcesses()
-            this%exceptions(i)%message = msg
+            this%exceptions(i)%message = context%labelProcess(this%exceptions(i)%message)
          end do
          call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
          call context%gather(this%exceptions(:)%fileName, list%exceptions(:)%fileName)
@@ -343,11 +341,8 @@ module Exception_mod
    public :: clearAll
 
    public :: initializeGlobalExceptionList
-   public :: initializeNewLine
-   public :: NEWLINE
 
    type (ExceptionList) :: globalExceptionList ! private
-   character(len=1), protected :: NEWLINE
 
   interface throw
     module procedure throw_message
@@ -365,10 +360,6 @@ contains
    subroutine initializeGlobalExceptionList()
       globalExceptionList = newExceptionList()
    end subroutine initializeGlobalExceptionList
-
-   subroutine initializeNewLine()
-      NEWLINE = new_line('a')
-   end subroutine initializeNewLine
 
    integer function getNumExceptions()
       getNumExceptions = globalExceptionList%getNumExceptions()

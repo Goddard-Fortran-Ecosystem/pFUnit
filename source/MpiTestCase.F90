@@ -39,6 +39,7 @@ contains
       use TestResult_mod, only: TestResult
       use Parallelcontext_mod
       use Exception_mod
+      use SurrogateTestCase_mod
       class (MpiTestCase), intent(inout) :: this
       type  (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
@@ -54,7 +55,8 @@ contains
       end select
 
       if (this%context%isActive()) then
-         call tstResult%run(this, this%context)
+         call this%setSurrogate()
+         call tstResult%run(this%getSurrogate(), this%context)
       end if
       
       select type (context)

@@ -27,6 +27,7 @@ module MpiContext_mod
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
+      procedure :: labelProcess
 
 !!$      final :: clean
    end type MpiContext
@@ -237,6 +238,17 @@ contains
       deallocate(counts, displacements)
 
    end subroutine gatherLogical
+
+   function labelProcess(this, message) result (labeledMessage)
+      class (MpiContext), intent(in) :: this
+      character(len=*), intent(in) :: message
+      integer, parameter :: MAXLEN_MESSAGE = 80*10
+      character(len=MAXLEN_MESSAGE) :: labeledMessage
+
+      write(labeledMessage, '(a," (process ",i0," of ",i0,")")') trim(message), &
+           & this%processRank(), this%getNumProcesses()
+
+   end function labelProcess
 
    subroutine clean(this)
       type (MpiContext), intent(inout) :: this
