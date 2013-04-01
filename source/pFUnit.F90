@@ -10,6 +10,8 @@ module pFUnit_mod
    use SerialContext_mod
 #ifdef USE_MPI
    use MpiContext_mod
+   use MpiTestCase_mod
+   use MpiTestMethod_mod
 #endif
    implicit none
    private
@@ -24,10 +26,12 @@ module pFUnit_mod
    public :: SerialContext, newSerialContext
 #ifdef USE_MPI
    public :: MpiContext,newMpiContext
+   public :: MpiTestCase
+   public :: MpiTestMethod, newMpiTestMethod
 #endif
 
    public :: assertEqual
-   public :: throw
+   public :: throw, catchAny, catch, exceptionWasThrown
 
 contains
 

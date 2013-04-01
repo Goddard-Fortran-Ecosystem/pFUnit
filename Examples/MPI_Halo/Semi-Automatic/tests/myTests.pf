@@ -1,0 +1,59 @@
+! Test that interior is not changed by Halo fill operation.
+
+@mpiTest, npes=[1]
+subroutine testHaloInterior(this)
+   use Halo_mod
+   use pfunit_mod
+   implicit none
+   class (MpiTestMethod) :: this
+
+   integer, parameter :: N = 2
+   real :: a(N,0:N+1)
+   integer :: p
+
+   p = this%getProcessRank()
+   a(:,1:N) = p
+   a(:,0) = -1
+   a(:,N+1) = -1
+
+   call haloFill(a, this%getMpiCommunicator())
+
+   @assertEqual(real(p), a(1,1))
+   @assertEqual(real(p), a(2,1))
+   @assertEqual(real(p), a(1,2))
+   @assertEqual(real(p), a(2,2))
+
+end subroutine testHaloInterior
+
+! Test that exterior is filled with values from appropriate neighbor.
+@mpiTest, npes=[1]
+subroutine testHaloExterior(this)
+   use Halo_mod
+   use pfunit_mod
+   implicit none
+   class (MpiTestCase) :: this
+
+   integer, parameter :: N = 2
+   real :: a(N,0:N+1)
+   integer :: p, leftNeighbor, rightNeighbor
+
+   p = this%getProcessRank()
+
+   a(:,1:N) = p
+   a(:,0) = -1
+   a(:,N+1) = -1
+
+   call haloFill(a, this%getMpiCommunicator())
+
+   leftNeighbor = mod(p-1, this%getNumProcesses())
+   rightNeighbor = mod(p+1, this%getNumProcesses())
+
+   @assertEqual(real(leftNeighbor), a(1,0))
+   @assertEqual(real(leftNeighbor), a(2,0))
+
+   @assertEqual(real(rightNeighbor), a(1,N+1))
+   @assertEqual(real(rightNeighbor), a(2,N+1))
+
+end subroutine testHaloExterior
+
+   

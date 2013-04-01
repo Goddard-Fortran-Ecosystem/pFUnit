@@ -20,23 +20,37 @@ open my $infile, '<', $fname or die "Can't open $ARGV[0]";
 
 my $lineNumber = 0;
 my @tests;
+my @mpiTests;
 (my $file, my $dir, my $ext) = fileparse($fname, qr/\.[^.]*/);
 my $suiteName = $file;
 
 while ( my $line = <$infile> ) {  # process each line in the source file
     $lineNumber++;
     if ($line =~ s/(\s*)\@assertEqual\((.*)\)/\1call assertEqual(\2, &
-    & line=$lineNumber, &
-    & file='$fname')/i) {
+     & line=$lineNumber, &
+     & file='$fname')/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
 	print $line;
+	print "   if (exceptionWasThrown()) return \n";
 	next;
     }
-    if ($line =~ /\@test/) {
+    if ($line =~ /^\@test/) {
         my $nextLine = <$infile>;
 	my $testName = $nextLine;
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
-	push (@tests, $testName);
+	push (@tests, {"name" => $testName});
+	print $nextLine;
+    }
+    elsif ($line =~ /^\@mpiTest/) {
+	my $npesString = $line;
+	$npesString =~ s/.*npes\s*=\s*\[(.*)\]/\1/i;
+	
+	my @npes = split(',',$npesString);
+        my $nextLine = <$infile>;
+	my $testName = $nextLine;
+	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
+	
+	push (@mpiTests, {"name" => $testName, "npes" => \@npes});
 	print $nextLine;
     }
     else {
@@ -56,8 +70,8 @@ print "   implicit none\n";
 print "   type (TestSuite) :: suite\n";
 print " \n";
 
-foreach (@tests) {
-    my $test = $_;
+foreach (@tests,@mpiTests) {
+    my $test = $_->{"name"};
     chomp($test);
     print "  external $test \n";
 }
@@ -67,9 +81,22 @@ print "   suite = newTestSuite('$suiteName')\n";
 print " \n";
 
 foreach (@tests) {
-    my $test = $_;
+    my $test = $_->{"name"};
     chomp($test);
     print "  call suite%addTest(newTestMethod(\"$test\", $test))\n";
+}
+
+foreach (@mpiTests) {
+    my $test = $_->{"name"};
+    chomp($test);
+    my @npes = @{$_->{"npes"}};
+
+    foreach (@npes) {
+	chomp;
+	print "  call suite%addTest(newMpiTestMethod(\"$test\", &
+      &    $test, &
+      &    numProcesses=$_))\n";
+    }
 }
 
 print " \n";

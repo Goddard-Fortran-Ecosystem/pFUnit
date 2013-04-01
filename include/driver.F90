@@ -6,19 +6,25 @@ program main
    type (TestRunner) :: runner
    class (ParallelContext), pointer :: context
 
-
    call initialize()
 
    all = getTestSuites()
    runner = newTestRunner()
 
 #ifdef USE_MPI
-   allocate(context, source = newMpiContext())
+!!$   allocate(context, source=newMpiContext())
 #else
-   allocate(context, source = newSerialContext())
+!!$   allocate(context, source=newSerialContext())
 #endif
 
-   call runner%run(all, context)
+!!$   call runner%run(all, context)
+#ifdef USE_MPI
+   call runner%run(all, newMpiContext())
+#else
+   call runner%run(all, newSerialContext())
+#endif
+
+   call finalize()
 
 contains
 

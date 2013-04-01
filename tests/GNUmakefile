@@ -1,14 +1,17 @@
 TOP = ..
 include ../include/base.mk
-.PHONY: all
-
-all: tests
-VPATH = . ../source
+.PHONY: all tests
 EXE = tests.x
+
+all: $(EXE)
+
+VPATH = . ../source
 tests: $(EXE)
 
 SRCS = $(wildcard *.F90)
 OBJS = $(SRCS:%.F90=%.o)
+
+$(erro $(OBJS))
 
 ifneq ($(MPI),YES)
    SRCS_SERIAL=$(filter-out Test_Mpi%,$(SRCS))

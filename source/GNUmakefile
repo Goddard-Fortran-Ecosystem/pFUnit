@@ -7,9 +7,10 @@ all: libpfunit.a
 SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%.o)
 
-EXCLUDE_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90
+EXCLUDE_MPI_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90 MpiTestMethod.F90
+
 ifneq ($(MPI),YES)
-   SRCS_SERIAL=$(filter-out $(EXCLUDE_SRCS),$(SRCS))
+   SRCS_SERIAL=$(filter-out $(EXCLUDE_MPI_SRCS),$(SRCS))
    OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
 endif
 
@@ -53,6 +54,9 @@ pFUnit.o: ParallelContext.o
 
 ifeq ($(MPI),YES)
    pFUnit.o: MpiContext.o
+
+   MpiTestCase.o : TestCase.o MpiContext.o
+   MpiTestMethod.o: MpiTestCase.o
 endif
 
 pFUnitPackage.o: pFUnit.o

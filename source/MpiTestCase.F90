@@ -16,9 +16,12 @@ module MpiTestCase_mod
       procedure :: runBare
       procedure :: setUp
       procedure :: tearDown
-      procedure(runMethod), deferred :: runMethod
+      procedure :: setNumProcesses
+      procedure :: getNumProcesses
+      procedure :: getProcessRank
       procedure :: gatherExceptions
       procedure :: getMpiCommunicator
+      procedure(runMethod), deferred :: runMethod
    end type MpiTestCase
 
    abstract interface
@@ -91,4 +94,22 @@ contains
       class (MpiTestCase), intent(in) :: this
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator
+
+   subroutine setNumProcesses(this, numProcesses)
+      class (MpiTestCase), intent(inout) :: this
+      integer, intent(in) :: numProcesses
+
+      this%numProcesses = numProcesses
+   end subroutine setNumProcesses
+
+   integer function getNumProcesses(this) result(numProcesses)
+      class (MpiTestCase), intent(in) :: this
+      numProcesses = this%context%getNumProcesses()
+   end function getNumProcesses
+
+   integer function getProcessRank(this) result(processRank)
+      class (MpiTestCase), intent(in) :: this
+      processRank = this%context%processRank()
+   end function getProcessRank
+
 end module MpiTestCase_mod

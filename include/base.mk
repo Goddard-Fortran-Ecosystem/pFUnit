@@ -27,7 +27,7 @@ endif
 .PHONY: clean distclean
 
 clean:
-	$(RM) *.o *.mod
+	$(RM) *.o *.mod *.i90 *~ 
 
 distclean: clean
-	$(RM) *a *.x *~
+	$(RM) *a *.x

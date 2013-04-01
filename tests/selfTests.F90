@@ -52,6 +52,7 @@ contains
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
 #ifdef USE_MPI
+      use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 
@@ -81,7 +82,11 @@ contains
       ADD(testMockRepositorySuite)
 
 #ifdef USE_MPI
+      ADD(MpiContextSuite)
       ADD(MpiTestCaseSuite)
+#endif
+
+#ifdef USE_MPI
       call runner%run(allTests, newMpiContext())
 #else
       call runner%run(allTests, newSerialContext())

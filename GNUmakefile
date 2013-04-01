@@ -1,4 +1,4 @@
-.PHONY: tests
+.PHONY: tests all
 
 TOP_DIR ?=$(shell pwd)
 

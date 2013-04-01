@@ -2,6 +2,7 @@
 subroutine testAdd()
    use add_mod
    use pfunit_mod
+   implicit none
 
    @assertEqual(3., add(1.,2.))
 
@@ -11,6 +12,7 @@ end subroutine testAdd
 subroutine testAddBroken()
    use add_mod
    use pfunit_mod
+   implicit none
 
    @assertEqual(1., add(1.,2.))
 
