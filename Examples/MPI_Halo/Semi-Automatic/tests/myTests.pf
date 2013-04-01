@@ -57,4 +57,21 @@ subroutine testHaloExterior(this)
 
 end subroutine testHaloExterior
 
+! The next test is intentionally broken.
+@mpiTest, npes=[3]
+subroutine testBrokenHalo(this)
+   use Halo_mod
+   use pfunit_mod
+   implicit none
+   class (MpiTestCase) :: this
+
+   integer :: p
+
+   p = this%getProcessRank()
+
+   if (p == 0 .or. p == 2) then
+      call throw('Intentional broken test.')
+   end if
+
+end subroutine testBrokenHalo
    
