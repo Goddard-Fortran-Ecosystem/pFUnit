@@ -25,7 +25,7 @@ contains
       call Mpi_Comm_rank(communicator, PE, ier)
       call Mpi_Comm_size(communicator, NPES, ier)
 
-      PE_left = mod(PE - 1, NPES)
+      PE_left = mod(PE - 1 + NPES, NPES)
       PE_right = mod(PE + 1, NPES)
 
       ! Send right, receive left

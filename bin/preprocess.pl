@@ -26,7 +26,7 @@ my $suiteName = $file;
 
 while ( my $line = <$infile> ) {  # process each line in the source file
     $lineNumber++;
-    if ($line =~ s/(\s*)\@assertEqual\((.*)\)/\1call assertEqual(\2, &
+    if ($line =~ s/^(\s*)\@assertEqual\((.*)\)/\1call assertEqual(\2, &
      & line=$lineNumber, &
      & file='$fname')/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
@@ -39,6 +39,7 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	my $testName = $nextLine;
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	push (@tests, {"name" => $testName});
+	print "!$line";
 	print $nextLine;
     }
     elsif ($line =~ /^\@mpiTest/) {
@@ -51,6 +52,7 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	
 	push (@mpiTests, {"name" => $testName, "npes" => \@npes});
+	print "!$line";
 	print $nextLine;
     }
     else {
@@ -94,7 +96,7 @@ foreach (@mpiTests) {
     foreach (@npes) {
 	chomp;
 	print "  call suite%addTest(newMpiTestMethod(\"$test\", &
-      &    $test, &
+      &    userMethod=$test, &
       &    numProcesses=$_))\n";
     }
 }
