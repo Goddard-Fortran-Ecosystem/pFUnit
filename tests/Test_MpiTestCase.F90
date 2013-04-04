@@ -150,7 +150,7 @@ contains
          if (1 == reslt%failureCount()) then
             failure = reslt%getIthFailure(1)
             call assertEqual('brokenProcess1', failure%testName)
-            call assertEqual('Intentional fail on process 1. (process 1 of 3)', &
+            call assertEqual('Intentional fail on process 1. (PE=1, NPES=3)', &
                  & failure%exception%getMessage())
          end if
       end if
@@ -183,12 +183,12 @@ contains
 
             failure = reslt%getIthFailure(1)
             call assertEqual('brokenOnProcess2', failure%testName)
-            call assertEqual('Intentional fail (process 1 of 3)', &
+            call assertEqual('Intentional fail (PE=1, NPES=3)', &
                  & failure%exception%getMessage())
 
             failure = reslt%getIthFailure(2)
             call assertEqual('brokenOnProcess2', failure%testName)
-            call assertEqual('Intentional fail (process 2 of 3)', &
+            call assertEqual('Intentional fail (PE=2, NPES=3)', &
                  & failure%exception%getMessage())
          end if
       end if
@@ -232,7 +232,9 @@ contains
             if (anyExceptions()) return
             expectedMessage = "Insufficient processes to run this test."
             process = i - 1 ! C numbering convention in MPI process rank
-            write(suffix,'(" (process ",i0," of ",i0,")")') i-1, AVAILABLE_PES
+            suffix=''
+            call this%context%labelProcess(suffix)
+            write(suffix,'(" (PE=",i0,", NPES=",i0,")")') i-1, AVAILABLE_PES
             call assertEqual(trim(expectedMessage) // trim(suffix), failure%exception%getMessage())
             if (anyExceptions()) return
          end do

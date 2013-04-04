@@ -375,15 +375,19 @@ module Exception_mod
      module procedure anyExceptions_local
   end interface anyExceptions
 
+  interface getNumExceptions
+     module procedure getNumExceptions_local
+  end interface getNumExceptions
+
 contains
 
    subroutine initializeGlobalExceptionList()
       globalExceptionList = newExceptionList()
    end subroutine initializeGlobalExceptionList
 
-   integer function getNumExceptions()
-      getNumExceptions = globalExceptionList%getNumExceptions()
-   end function getNumExceptions
+   integer function getNumExceptions_local() result(numExceptions)
+      numExceptions = globalExceptionList%getNumExceptions()
+   end function getNumExceptions_local
 
    subroutine throw_message(message)
       character(len=*), intent(in) :: message

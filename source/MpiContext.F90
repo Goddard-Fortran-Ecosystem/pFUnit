@@ -237,11 +237,10 @@ contains
       integer :: ier
 
       call this%makeMap(size(values), counts, displacements)
-
-      call Mpi_GatherV( &
+      call Mpi_allGatherV( &
            & values, size(values), MPI_INTEGER, &
            & list,   counts, displacements, MPI_INTEGER, &
-           & this%root, this%mpiCommunicator, ier)
+           & this%mpiCommunicator, ier)
 
       deallocate(counts, displacements)
 
@@ -273,7 +272,7 @@ contains
       integer, parameter :: MAXLEN_SUFFIX = 80
       character(len=MAXLEN_SUFFIX) :: suffix
 
-      write(suffix,'(" (process ",i0," of ",i0,")")') this%processRank(), this%getNumProcesses()
+      write(suffix,'(" (PE=",i0,", NPES=",i0,")")') this%processRank(), this%getNumProcesses()
 
       message = trim(message) // trim(suffix)
 
