@@ -97,7 +97,7 @@ contains
       runCount = this%numRun
    end function runCount
 
-   subroutine run(this, test, context)
+   recursive subroutine run(this, test, context)
       use Exception_mod
       use ParallelContext_mod
       class (TestResult), intent(inout) :: this
@@ -109,13 +109,14 @@ contains
       if (context%isRootProcess()) call this%startTest(test)
 
       call test%runBare()
-      call gatherExceptions(context)
 
-      do
-         anException = catchAny()
-         if (anException%isNull()) exit
-         call this%addFailure(test, anException)
-      end do
+      if (context%isRootProcess()) then
+         do
+            anException = catchAny()
+            if (anException%isNull()) exit
+            call this%addFailure(test, anException)
+         end do
+      end if
 
       if (context%isRootProcess()) call this%endTest(test)
 

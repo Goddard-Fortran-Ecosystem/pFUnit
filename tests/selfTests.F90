@@ -7,7 +7,7 @@ subroutine debug(line, file)
    integer :: rank, ier
    call mpi_comm_rank(MPI_COMM_WORLD, rank ,ier)
    write(20+rank, *) 'here', line, trim(file), MPI_COMM_WORLD
-   call flush(20+rank)
+   flush(20+rank)
 end subroutine debug
 #endif
 

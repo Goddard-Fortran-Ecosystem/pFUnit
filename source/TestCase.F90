@@ -43,7 +43,7 @@ module TestCase_mod
    end type TestCase
 
    abstract interface
-      subroutine runMethod(this)
+      recursive subroutine runMethod(this)
          import TestCase
          class (TestCase), intent(inout) :: this
       end subroutine runMethod
@@ -61,8 +61,6 @@ contains
       class (TestCase), intent(inout) :: this
       character(len=*),intent(in) :: name
 
-      ! Make certain surrogate points back to self
-      call this%setSurrogate()
       this%name = trim(name)
 
    end subroutine setName
@@ -85,6 +83,8 @@ contains
       if (context%isRootProcess()) then
          call tstResult%run(this%getSurrogate(), THE_SERIAL_CONTEXT)
       end if
+
+      call context%barrier()
 
    end subroutine run
 
@@ -128,7 +128,7 @@ contains
    end subroutine tearDown
 
    function getSurrogate(this) result(surrogate)
-      class (TestCase), target, intent(in) :: this
+      class (TestCase), target, intent(inout) :: this
       class (SurrogateTestCase), pointer :: surrogate
       call this%setSurrogate()
       surrogate => this%surrogate

@@ -205,17 +205,24 @@ contains
       if (globalExceptionCount > 0) then
 
          allocate(list%exceptions(globalExceptionCount))
+         
          do i = 1, this%getNumExceptions()
-            this%exceptions(i)%message = context%labelProcess(this%exceptions(i)%message)
+            call context%labelProcess(this%exceptions(i)%message)
          end do
-         call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
+
+         call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%fileName, list%exceptions(:)%fileName)
          call context%gather(this%exceptions(:)%lineNumber, list%exceptions(:)%lineNumber)
-         call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
+         call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
 
-         deallocate(this%exceptions)
-         allocate(this%exceptions(globalExceptionCount))
-         this%exceptions(:) = list%exceptions
+         call clearAll(this)
+      
+         if (context%isRootProcess()) then
+            deallocate(this%exceptions)
+            allocate(this%exceptions(globalExceptionCount))
+            this%exceptions(:) = list%exceptions
+         end if
+
          call clearAll(list)
 
       end if

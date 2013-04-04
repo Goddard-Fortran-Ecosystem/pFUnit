@@ -20,6 +20,7 @@ module ParallelContext_mod
       procedure(gatherInteger), deferred :: gatherInteger
       procedure(gatherLogical), deferred :: gatherLogical
       procedure :: labelProcess
+      procedure :: barrier
    end type ParallelContext
 
    abstract interface
@@ -78,14 +79,9 @@ contains
       isRootProcess = .true.
    end function isRootProcess
 
-   function labelProcess(this, message) result (labeledMessage)
+   subroutine labelProcess(this, message)
       class (ParallelContext), intent(in) :: this
-      character(len=*), intent(in) :: message
-      integer, parameter :: MAXLEN_MESSAGE = 80*10
-      character(len=MAXLEN_MESSAGE) :: labeledMessage
-
-      labeledMessage = trim(message)
-
-   end function labelProcess
+      character(len=*), intent(inout) :: message
+   end subroutine labelProcess
 
 end module ParallelContext_mod

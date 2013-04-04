@@ -19,7 +19,7 @@ module Test_mod
          class (Test), intent(in) :: this
       end function countTestCases
 
-      subroutine run(this, tstResult, context)
+      recursive subroutine run(this, tstResult, context)
          use TestResult_mod
          use ParallelContext_mod
          import Test

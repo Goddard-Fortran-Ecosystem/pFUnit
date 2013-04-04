@@ -14,7 +14,6 @@ module MpiContext_mod
       integer :: mpiCommunicator = MPI_COMM_NULL
       integer :: root = 0
    contains
-      procedure :: amRoot
       procedure :: isActive
       procedure :: getNumProcesses
       procedure :: processRank
@@ -63,13 +62,6 @@ contains
       isActive = (this%mpiCommunicator /= MPI_COMM_NULL)
 
    end function isActive
-
-   logical function amRoot(this)
-      class (MpiContext),  intent(in) :: this
-
-      amRoot = (this%processRank() == this%root)
-
-   end function amRoot
 
    integer function getNumProcesses(this)
       class (MpiContext),  intent(in) :: this
@@ -120,13 +112,21 @@ contains
       ranges(:,1) = [0, numSubprocesses-1, 1]
       call MPI_Group_range_incl (originalGroup, NUM_SUBGROUPS, ranges, newGroups, ier)
       call MPI_Comm_create(this%mpiCommunicator, newGroups(1), newCommunicator, ier)
-      subContext%mpiCommunicator = newCommunicator
+
+      if (this%processRank() < numSubprocesses) then
+         subContext%mpiCommunicator = newCommunicator
+         subContext%root = 0
+      else
+         subContext%mpiCommunicator = MPI_COMM_NULL
+         subContext%root = -1
+      end if
+
 
    end function makeSubcontext
 
    subroutine barrier(this)
       use Assert_mod
-      class (MpiContext) :: this
+      class (MpiContext), intent(in) :: this
       integer :: ier
       call Mpi_barrier(this%mpiCommunicator, ier)
       call assertEqual(ier, MPI_SUCCESS)
@@ -143,9 +143,7 @@ contains
 
       integer :: ier
       integer :: tmp
-      integer :: npes
 
-      call mpi_comm_size(this%mpiCommunicator, npes, ier)
       call mpi_allreduce(value, tmp, 1, MPI_INTEGER, MPI_SUM, &
            &     this%mpiCommunicator, ier)
       sum = tmp
@@ -165,8 +163,8 @@ contains
       npes = this%getNumProcesses()
       allocate(counts(0:npes-1), displacements(0:npes-1))
       
-      call Mpi_Gather(numEntries, 1, MPI_Integer, counts, 1, MPI_Integer, &
-           & this%root, this%mpiCommunicator, ier)
+      call Mpi_AllGather(numEntries, 1, MPI_INTEGER, counts, 1, MPI_Integer, &
+           & this%mpiCommunicator, ier)
 
       displacements(0) = 0
       do p = 1, npes - 1
@@ -182,8 +180,15 @@ contains
 
       integer, allocatable :: counts(:), displacements(:)
 
+
       integer :: numBytes, numEntries
       integer :: ier
+      integer :: i, j, jp
+      character(len=1), allocatable :: sendBuffer(:)
+      character(len=1), allocatable :: recvBuffer(:)
+      character(len=len(list)) :: buf
+
+      intrinsic :: sum
 
       if (size(list) == 0) return
 
@@ -192,10 +197,32 @@ contains
 
       call this%makeMap(numEntries, counts, displacements)
 
+      allocate(sendBuffer(max(numEntries,1)))
+      do i = 1, size(values)
+         do j = 1, numBytes
+            jp = j + (i-1)*numBytes
+            sendBuffer(jp:jp) = values(i)(j:j)
+         end do
+      end do
+
+      allocate(recvBuffer(max(sum(counts),1)))
+
       call Mpi_GatherV( &
-           & values, numEntries, MPI_CHARACTER, &
-           & list,   counts, displacements, MPI_CHARACTER, &
+           & sendBuffer, numEntries, MPI_CHARACTER, &
+           & recvBuffer,   counts, displacements, MPI_CHARACTER, &
            & this%root, this%mpiCommunicator, ier)
+
+      if (this%isRootProcess()) then
+         do i = 1, sum(counts)/len(list(1))
+            do j = 1, numBytes
+               jp = j+(i-1)*numBytes
+               buf(j:j) = recvBuffer(jp)
+            end do
+            list(i) = buf
+         end do
+      end if
+
+      deallocate(sendBuffer, recvBuffer)
 
       deallocate(counts, displacements)
 
@@ -230,25 +257,27 @@ contains
 
       call this%makeMap(size(values), counts, displacements)
 
-      call Mpi_GatherV( &
+      call Mpi_AllgatherV( &
            & values, size(values), MPI_LOGICAL, &
            & list,   counts, displacements, MPI_LOGICAL, &
-           & this%root, this%mpiCommunicator, ier)
+           & this%mpiCommunicator, ier)
 
       deallocate(counts, displacements)
 
    end subroutine gatherLogical
 
-   function labelProcess(this, message) result (labeledMessage)
+   subroutine labelProcess(this, message)
       class (MpiContext), intent(in) :: this
-      character(len=*), intent(in) :: message
-      integer, parameter :: MAXLEN_MESSAGE = 80*10
-      character(len=MAXLEN_MESSAGE) :: labeledMessage
+      character(len=*), intent(inout) :: message
 
-      write(labeledMessage, '(a," (process ",i0," of ",i0,")")') trim(message), &
-           & this%processRank(), this%getNumProcesses()
+      integer, parameter :: MAXLEN_SUFFIX = 80
+      character(len=MAXLEN_SUFFIX) :: suffix
 
-   end function labelProcess
+      write(suffix,'(" (process ",i0," of ",i0,")")') this%processRank(), this%getNumProcesses()
+
+      message = trim(message) // trim(suffix)
+
+   end subroutine labelProcess
 
    subroutine clean(this)
       type (MpiContext), intent(inout) :: this

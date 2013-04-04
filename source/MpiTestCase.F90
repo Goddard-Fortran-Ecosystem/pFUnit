@@ -8,8 +8,9 @@ module MpiTestCase_mod
 
    type, abstract, extends(TestCase) :: MpiTestCase
       integer :: processRank
-      integer :: numProcesses
+      integer :: numProcessesRequested
       type (MpiContext) :: context
+      class (MpiContext), allocatable :: parentContext
    contains
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
@@ -19,13 +20,12 @@ module MpiTestCase_mod
       procedure :: setNumProcesses
       procedure :: getNumProcesses
       procedure :: getProcessRank
-      procedure :: gatherExceptions
       procedure :: getMpiCommunicator
       procedure(runMethod), deferred :: runMethod
    end type MpiTestCase
 
    abstract interface
-      subroutine runMethod(this)
+      recursive subroutine runMethod(this)
          import MpiTestCase
          class (MpiTestCase), intent(inOut) :: this
       end subroutine runMethod
@@ -38,7 +38,7 @@ contains
       countTestCases = 1
    end function countTestCases_mpi
 
-   subroutine run(this, tstResult, context)
+   recursive subroutine run(this, tstResult, context)
       use TestResult_mod, only: TestResult
       use Parallelcontext_mod
       use Exception_mod
@@ -46,35 +46,51 @@ contains
       class (MpiTestCase), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
-
+      
       ! create subcommunicator
       select type (context)
       class is (MpiContext)
-         this%context = context%makeSubcontext(this%numProcesses)
-         if (.not. noExceptions()) return
+         allocate(this%parentContext, source=context)
       class default
          call throw('MPI test cannot run in a non-MPI context.')
          return
       end select
 
-      if (this%context%isActive()) then
-         call tstResult%run(this%getSurrogate(), this%context)
-      end if
-      
-      select type (context)
-      class is (MpiContext)
-         call context%barrier()
-      end select
+      call tstResult%run(this%getSurrogate(), context)
+
+      call this%parentContext%barrier()
+      deallocate(this%parentContext)
 
    end subroutine run
 
-   subroutine runBare(this)
+   recursive subroutine runBare(this)
+      use Exception_mod
       class (MpiTestCase), intent(inout) :: this
-      
-      call this%setUp()
-      call this%runMethod()
-      call this%tearDown()
-      call this%gatherExceptions()
+
+      logical, allocatable :: noExcepts(:)
+
+      this%context = this%parentContext%makeSubcontext(this%numProcessesRequested)
+
+      allocate(noExcepts(this%parentContext%getNumProcesses()))
+      call this%parentContext%gather([noExceptions()], noExcepts)
+
+      if (all(noExcepts)) then
+         if (this%context%isActive()) then
+            call this%setUp()
+
+            deallocate(noExcepts)
+            allocate(noExcepts(this%context%getNumProcesses()))
+            call this%context%gather([noExceptions()], noExcepts)
+
+            if (all(noExcepts)) then
+               call this%runMethod()
+               call this%tearDown()
+            end if
+         end if
+
+      end if
+
+      call gatherExceptions(this%parentContext)
 
    end subroutine runBare
 
@@ -86,20 +102,16 @@ contains
       class (MpiTestCase), intent(inout) :: this
    end subroutine tearDown
 
-   subroutine gatherExceptions(this)
-      class (MpiTestCase), intent(inout) :: this
-   end subroutine gatherExceptions
-
    integer function getMpiCommunicator(this) result(mpiCommunicator)
       class (MpiTestCase), intent(in) :: this
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator
 
-   subroutine setNumProcesses(this, numProcesses)
+   subroutine setNumProcesses(this, numProcessesRequested)
       class (MpiTestCase), intent(inout) :: this
-      integer, intent(in) :: numProcesses
+      integer, intent(in) :: numProcessesRequested
 
-      this%numProcesses = numProcesses
+      this%numProcessesRequested = numProcessesRequested
    end subroutine setNumProcesses
 
    integer function getNumProcesses(this) result(numProcesses)

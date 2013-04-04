@@ -26,7 +26,6 @@ contains
    subroutine testNumProcesses1(context)
       class (MpiTestMethod), intent(inout) :: context
       call assertEqual(1, context%getNumProcesses())
-      print*,__LINE__,__FILE__
    end subroutine testNumProcesses1
 
    subroutine testNumProcesses3(context)
