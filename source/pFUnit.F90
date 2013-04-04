@@ -31,7 +31,7 @@ module pFUnit_mod
 #endif
 
    public :: assertEqual
-   public :: throw, catchAny, catch, exceptionWasThrown
+   public :: throw, catchAny, catch, anyExceptions
 
 contains
 

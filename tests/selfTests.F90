@@ -29,6 +29,7 @@ contains
       use pFUnit_mod, only: TestRunner, newTestRunner
 #ifdef USE_MPI
       use MpiContext_mod
+      use ParallelException_mod
 #else
       use SerialContext_mod
 #endif
@@ -53,6 +54,7 @@ contains
 
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
+      use Test_ParallelException_mod, only: ParallelExceptionSuite => suite
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 
@@ -83,6 +85,7 @@ contains
 
 #ifdef USE_MPI
       ADD(MpiContextSuite)
+      ADD(ParallelExceptionSuite)
       ADD(MpiTestCaseSuite)
 #endif
 

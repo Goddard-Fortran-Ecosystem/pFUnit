@@ -203,7 +203,7 @@ contains
       use Assert_mod, only: assertEqual
       use TestResult_mod
       use Exception_mod, only: catch
-      use Exception_mod, only: exceptionWasThrown
+      use Exception_mod, only: anyExceptions
       use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
@@ -224,17 +224,17 @@ contains
 
       if (this%context%isRootProcess()) then
          call assertEqual(AVAILABLE_PES, reslt%failureCount())
-         if (exceptionWasThrown()) return
+         if (anyExceptions()) return
 
          do i = 1, AVAILABLE_PES
             failure = reslt%getIthFailure(i)
             call assertEqual('brokenOnProcess2', failure%testName)
-            if (exceptionWasThrown()) return
+            if (anyExceptions()) return
             expectedMessage = "Insufficient processes to run this test."
             process = i - 1 ! C numbering convention in MPI process rank
             write(suffix,'(" (process ",i0," of ",i0,")")') i-1, AVAILABLE_PES
             call assertEqual(trim(expectedMessage) // trim(suffix), failure%exception%getMessage())
-            if (exceptionWasThrown()) return
+            if (anyExceptions()) return
          end do
 
       end if

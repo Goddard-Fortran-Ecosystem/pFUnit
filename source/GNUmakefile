@@ -23,6 +23,7 @@ endif
 	-@ranlib $@
 
 Exception.o : ParallelContext.o
+ParallelException.o: ParallelContext.o Exception.o
 Assert.o: Exception.o
 AssertReal.o: StringUtilities.o
 

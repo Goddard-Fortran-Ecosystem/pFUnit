@@ -46,7 +46,7 @@ module PrivateException_mod
       generic :: catch => catch_any
       generic :: catch => catch_message
       procedure :: noExceptions
-      procedure :: exceptionWasThrown
+      procedure :: anyExceptions
       procedure :: clearAll
       procedure, private :: deleteIthException
 
@@ -232,16 +232,16 @@ contains
    logical function noExceptions(this)
       class (ExceptionList), intent(inOut) :: this
 
-      noExceptions = .not. this%exceptionWasThrown()
+      noExceptions = .not. this%anyExceptions()
 
    end function noExceptions
 
-   logical function exceptionWasThrown(this)
+   logical function anyExceptions(this)
       class (ExceptionList), intent(inOut) :: this
 
-      exceptionWasThrown = (this%getNumExceptions() > 0)
+      anyExceptions = (this%getNumExceptions() > 0)
 
-   end function exceptionWasThrown
+   end function anyExceptions
 
    ! Fortran does not require "short-circuit" so be careful with 
    ! evaluation of optional arguments.
@@ -353,7 +353,7 @@ module Exception_mod
    public :: catchAny
    public :: catch
    public :: noExceptions
-   public :: exceptionWasThrown
+   public :: anyExceptions
    public :: clearAll
 
    public :: initializeGlobalExceptionList
@@ -370,6 +370,10 @@ module Exception_mod
      module procedure catch_any
      module procedure catch_message
   end interface catch
+
+  interface anyExceptions
+     module procedure anyExceptions_local
+  end interface anyExceptions
 
 contains
 
@@ -422,9 +426,9 @@ contains
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
-   logical function exceptionWasThrown()
-      exceptionWasThrown = globalExceptionList%exceptionWasThrown()
-   end function exceptionWasThrown
+   logical function anyExceptions_local()
+      anyExceptions_local = globalExceptionList%anyExceptions()
+   end function anyExceptions_local
 
    subroutine gatherExceptions(context)
       use ParallelContext_mod

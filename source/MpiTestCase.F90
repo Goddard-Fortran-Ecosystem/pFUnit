@@ -22,6 +22,7 @@ module MpiTestCase_mod
       procedure :: getProcessRank
       procedure :: getMpiCommunicator
       procedure(runMethod), deferred :: runMethod
+      procedure :: getContext
    end type MpiTestCase
 
    abstract interface
@@ -67,22 +68,22 @@ contains
       use Exception_mod
       class (MpiTestCase), intent(inout) :: this
 
-      logical, allocatable :: noExcepts(:)
+      logical, allocatable :: anyExcepts(:)
 
       this%context = this%parentContext%makeSubcontext(this%numProcessesRequested)
 
-      allocate(noExcepts(this%parentContext%getNumProcesses()))
-      call this%parentContext%gather([noExceptions()], noExcepts)
+      allocate(anyExcepts(this%parentContext%getNumProcesses()))
+      call this%parentContext%gather([anyExceptions()], anyExcepts)
 
-      if (all(noExcepts)) then
+      if (.not. any(anyExcepts)) then
          if (this%context%isActive()) then
             call this%setUp()
 
-            deallocate(noExcepts)
-            allocate(noExcepts(this%context%getNumProcesses()))
-            call this%context%gather([noExceptions()], noExcepts)
+            deallocate(anyExcepts)
+            allocate(anyExcepts(this%context%getNumProcesses()))
+            call this%context%gather([anyExceptions()], anyExcepts)
 
-            if (all(noExcepts)) then
+            if (.not. any(anyExcepts)) then
                call this%runMethod()
                call this%tearDown()
             end if
@@ -123,5 +124,13 @@ contains
       class (MpiTestCase), intent(in) :: this
       processRank = this%context%processRank()
    end function getProcessRank
+
+   function getContext(this) result(context)
+      class (MpiTestCase), intent(in) :: this
+      class (MpiContext), allocatable :: context
+
+      allocate(context, source=this%context)
+
+   end function getContext
 
 end module MpiTestCase_mod
