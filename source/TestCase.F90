@@ -71,7 +71,7 @@ contains
    end function countTestCases
 
 ! Implement deferred method from class Test
-   subroutine run(this, tstResult, context)
+   recursive subroutine run(this, tstResult, context)
       use SerialContext_mod
       use TestResult_mod
       use ParallelContext_mod
@@ -88,7 +88,7 @@ contains
 
    end subroutine run
 
-   subroutine runBare(this)
+   recursive subroutine runBare(this)
       use Exception_mod, only: noExceptions
       class (TestCase), intent(inout) :: this
 
@@ -100,7 +100,7 @@ contains
 
    end subroutine runBare
 
-   subroutine runBare_surrogate(this)
+   recursive subroutine runBare_surrogate(this)
       class (ConcreteSurrogate), intent(inout) :: this
       class (TestCase), pointer :: p
       p => this%tCase
