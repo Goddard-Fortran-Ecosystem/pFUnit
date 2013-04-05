@@ -463,7 +463,7 @@ contains
       character(len=*), parameter :: FILE_NAME = 'foo'
 
       list = newExceptionList()
-      call list%throwMessageWithLineAndFile('message', lineNumber=2, fileName=FILE_NAME)
+      call list%throw('message', fileName=FILE_NAME, lineNumber=2)
       anException = list%catchAny()
       call assertEqual(FILE_NAME, anException%getFileName())
 

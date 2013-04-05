@@ -102,18 +102,46 @@ contains
    subroutine printFailures(this, result)
       use TestResult_mod
       use TestFailure_mod
+      use SourceLocation_mod
       class (ResultPrinter), intent(in) :: this
       type (TestResult), intent(in) :: result
 
       type (TestFailure) :: aFailedTest
       integer :: i
+      character(len=80) :: locationString
 
       do i = 1, size(result%failures)
          aFailedTest = result%failures(i)
          write(this%unit,*) 'name: ', trim(aFailedTest%testName)
-         write(this%unit,'(a)') aFailedTest%exception%getMessage()
+
+         locationString = toString(aFailedTest%exception%location)
+         write(this%unit,'(a,1x,a)') aFailedTest%exception%getMessage(), trim(locationString)
       end do
 
+   contains
+
+      function toString(location) result(string)
+         type (SourceLocation), intent(in) :: location
+         character(len=80) :: string
+
+         if (location%fileName == UNKNOWN_FILE_NAME) then
+            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
+               string = '<unknown location>'
+            else
+               write(string,'(a,"::",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
+            end if
+         else
+            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
+               string = trim(location%fileName)
+            else
+               write(string,'(a,"::",i0)') trim(location%fileName), location%lineNumber
+            end if
+         end if
+
+         string = '[' // trim(string) // ']'
+
+      end function toString
+      
    end subroutine printFailures
 
    subroutine printFooter(this, result)

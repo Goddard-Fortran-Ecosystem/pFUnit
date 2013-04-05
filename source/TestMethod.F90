@@ -1,6 +1,7 @@
 module TestMethod_mod
    use TestCase_mod, only: TestCase
    implicit none
+   private
 
    public :: TestMethod
    public :: newTestMethod

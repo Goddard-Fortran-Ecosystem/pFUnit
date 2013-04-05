@@ -68,14 +68,14 @@ contains
          end do
 
          call context%gather(localList%exceptions(:)%nullFlag, globalList%exceptions(:)%nullFlag)
-         call context%gather(localList%exceptions(:)%fileName, globalList%exceptions(:)%fileName)
-         call context%gather(localList%exceptions(:)%lineNumber, globalList%exceptions(:)%lineNumber)
+         call context%gather(localList%exceptions(:)%location%fileName, globalList%exceptions(:)%location%fileName)
+         call context%gather(localList%exceptions(:)%location%lineNumber, globalList%exceptions(:)%location%lineNumber)
          call context%gather(localList%exceptions(:)%message, globalList%exceptions(:)%message)
       
          if (context%isRootProcess()) then ! rethrow
             do i = 1, totalExceptions
                associate(e => globalList%exceptions(i))
-                 call throw(e%message, e%lineNumber, e%fileName)
+                 call throw(e%message, e%location%fileName, e%location%lineNumber)
                end associate
             end do
          end if

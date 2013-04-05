@@ -29,12 +29,12 @@ contains
       ADD(testAssertEqualStringDifferent)
       ADD(testAssertEqualIntegerScalarEqual)
       ADD(testAssertEqualIntegerScalarUnequal)
-      ADD(testAssertWithLineNumber)
+      ADD(testAssertWithLocation)
    end function suite
 
    subroutine testAssertTrueF()
       call assertTrue(.false.)
-      call assertTrue(catch('Logical assertion failed.'))
+      call assertTrue(catch('<>'))
    end subroutine testAssertTrueF
 
    subroutine testAssertTrueT()
@@ -44,7 +44,7 @@ contains
 
    subroutine testAssertFalseT()
       call assertFalse(.true.)
-      call assertTrue(catch('Logical assertion failed.'))
+      call assertTrue(catch('<>'))
    end subroutine testAssertFalseT
 
    subroutine testAssertFalseF()
@@ -85,9 +85,10 @@ contains
            &   '   but found: <1>'))
    end subroutine testAssertEqualIntegerScalarUnequal
 
-   subroutine testAssertWithLineNumber
-      call assertTrue(.false., lineNumber = 5)
-      call assertTrue(catch('Logical assertion failed at line <5>'))
-   end subroutine testAssertWithLineNumber
+   subroutine testAssertWithLocation
+      use SourceLocation_mod
+      call assertTrue(.false., 'intentional fail', SourceLocation(lineNumber=5))
+      call assertTrue(catch('intentional fail'))
+   end subroutine testAssertWithLocation
 
 end module Test_Assert_mod

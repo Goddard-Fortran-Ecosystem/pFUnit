@@ -1,4 +1,6 @@
 module Assert_mod
+   use AssertBasic_mod
+   use AssertInteger_mod
    implicit none
    private
 
@@ -8,67 +10,15 @@ module Assert_mod
    public :: assertExceptionRaised
 
    interface assertEqual
-      module procedure assertEqualIntegerScalar
       module procedure assertEqualString
    end interface
 
-   interface assertTrue
-      module procedure assertTrueBasic
-      module procedure assertTrueLineNumber
-      module procedure assertTrueMessage
-   end interface
-
-   interface assertExceptionRaised
-      module procedure assertExceptionRaisedBasic
-      module procedure assertExceptionRaisedMessage
-   end interface assertExceptionRaised
-
 contains
-
-   subroutine assertTrueBasic(condition)
-      use Exception_mod, only: throw
-      logical, intent(in) :: condition
-      if (.not. condition) call throw('Logical assertion failed.')
-   end subroutine assertTrueBasic
-
-   subroutine assertTrueLineNumber(condition, lineNumber)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      logical, intent(in) :: condition
-      integer, intent(in) :: lineNumber
-      character(len=MAXLEN_MESSAGE) :: message
-
-      if (.not. condition) then
-         write(message,'("Logical assertion failed at line <",i0,">")') lineNumber
-         call throw(message)
-      end if
-   end subroutine assertTrueLineNumber
-
-   subroutine assertTrueMessage(condition, message)
-      use Exception_mod, only: throw
-      logical, intent(in) :: condition
-      character(len=*), intent(in) :: message
-      if (.not. condition) call throw('Logical assertion failed :: '//trim(message))
-   end subroutine assertTrueMessage
 
    subroutine assertFalse(condition)
       logical, intent(in) :: condition
       call assertTrue(.not. condition)
    end subroutine assertFalse
-
-   subroutine assertEqualIntegerScalar(expected, found)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected
-      integer, intent(in) :: found
-
-      character(len=MAXLEN_MESSAGE) :: throwMessage
-
-      if (expected /= found) then
-         write(throwMessage,'((a,a),(a,i0,a,a),(a,i0,a))') 'Integer scalar assertion failed:', new_line('A'), &
-              & '    expected: <', expected, '>', new_line('A'), &
-              & '   but found: <', found, '>'
-         call throw(throwMessage)
-      end if
-   end subroutine assertEqualIntegerScalar
 
    subroutine assertEqualString(expected, found)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
@@ -92,24 +42,5 @@ contains
          call throw(throwMessage)
       end if
    end subroutine assertEqualString
-
-   subroutine assertExceptionRaisedBasic()
-      use Exception_mod, only: throw, catch
-
-      if (.not. catch()) then
-         call throw('Failed to throw exception.')
-      end if
-
-   end subroutine assertExceptionRaisedBasic
-
-   subroutine assertExceptionRaisedMessage(message)
-      use Exception_mod, only: throw, catch
-      character(len=*), intent(in) :: message
-
-      if (.not. catch(message)) then
-         call throw('Failed to throw exception: <' // trim(message) // '>')
-      end if
-
-   end subroutine assertExceptionRaisedMessage
 
 end module Assert_mod

@@ -1,4 +1,5 @@
 module PrivateException_mod
+   use SourceLocation_mod
    implicit none
    private
 
@@ -15,14 +16,11 @@ module PrivateException_mod
 
    integer, parameter :: MAXLEN_MESSAGE = 80*10
    integer, parameter :: MAXLEN_FILE_NAME = 80
-   integer, parameter :: UNKNOWN_LINE_NUMBER = -1
    character(len=*), parameter :: NO_MESSAGE = ''
-   character(len=*), parameter :: UNKNOWN_FILE_NAME = "<unknown file>"
 
    type Exception
       character(len=MAXLEN_MESSAGE) :: message = NO_MESSAGE
-      character(len=MAXLEN_FILE_NAME) :: fileName = UNKNOWN_FILE_NAME
-      integer :: lineNumber = UNKNOWN_LINE_NUMBER
+      type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
       logical :: nullFlag = .true.
    contains
       procedure :: getMessage
@@ -31,7 +29,7 @@ module PrivateException_mod
       procedure :: isNull
    end type Exception
 
-   type (Exception), parameter :: NULL_EXCEPTION = Exception('NULL EXCEPTION', UNKNOWN_FILE_NAME, UNKNOWN_LINE_NUMBER, .true.)
+   type (Exception), parameter :: NULL_EXCEPTION = Exception('NULL EXCEPTION', UNKNOWN_SOURCE_LOCATION, .true.)
 
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
@@ -52,12 +50,12 @@ module PrivateException_mod
 
       generic :: throw => throwMessage
       generic :: throw => throwMessageWithLineNumber
-      generic :: throw => throwMessageWithLineAndFile
+      generic :: throw => throwMessageWithFileAndLine
       generic :: throw => throwException
 
       procedure :: throwMessage
       procedure :: throwMessageWithLineNumber
-      procedure :: throwMessageWithLineAndFile
+      procedure :: throwMessageWithFileAndLine
       procedure :: throwException
 !TODO - NAG does not yet support FINAL keyword
 !!$$      final :: delete
@@ -66,40 +64,42 @@ module PrivateException_mod
    interface newException
       module procedure Exception_
       module procedure Exception_message
-      module procedure Exception_messageAndLineNumber
-      module procedure Exception_messageAndLineAndFile
+      module procedure Exception_messageWithLineNumber
+      module procedure Exception_messageWithFileAndLine
    end interface
 
 contains
 
    type(Exception) function Exception_()
-      Exception_%message = ''
+
+      Exception_%message = NO_MESSAGE
+      Exception_%location = UNKNOWN_SOURCE_LOCATION
       Exception_%nullFlag = .false.
+
    end function Exception_
 
-   type(Exception) function Exception_message(message)
+   type(Exception) function Exception_message(message, location)
       character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
       Exception_message%message = trim(message)
+      if (present(location)) Exception_message%location = location
       Exception_message%nullFlag = .false.
+
    end function Exception_message
 
-   type(Exception) function Exception_messageAndLineNumber(message, lineNumber)
+   type(Exception) function Exception_messageWithLineNumber(message, lineNumber)
       character(len=*), intent(in) :: message
       integer, intent(in) :: lineNumber
-      Exception_messageAndLineNumber%message = message
-      Exception_messageAndLineNumber%lineNumber =  lineNumber
-      Exception_messageAndLineNumber%nullFlag = .false.
-   end function Exception_messageAndLineNumber
+      Exception_messageWithLineNumber = Exception(message, newSourceLocation(lineNumber))
+   end function Exception_messageWithLineNumber
 
-   type(Exception) function Exception_messageAndLineAndFile(message, lineNumber, fileName)
+   type(Exception) function Exception_messageWithFileAndLine(message, fileName, lineNumber)
       character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
       character(len=*), intent(in) :: fileName
-      Exception_messageAndLineAndFile%message = message
-      Exception_messageAndLineAndFile%lineNumber =  lineNumber
-      Exception_messageAndLineAndFile%fileName =  fileName
-      Exception_messageAndLineAndFile%nullFlag = .false.
-   end function Exception_messageAndLineAndFile
+      integer, intent(in) :: lineNumber
+      Exception_messageWithFileAndLine = Exception(message, newSourceLocation(fileName, lineNumber))
+   end function Exception_messageWithFileAndLine
 
    function getMessage(this) result(message)
       class (Exception), intent(in) :: this
@@ -109,12 +109,12 @@ contains
 
    integer function getLineNumber(this) 
       class (Exception), intent(in) :: this
-      getLineNumber = this%lineNumber
+      getLineNumber = this%location%lineNumber
    end function getLineNumber
 
    character(len=MAXLEN_FILE_NAME) function getFileName(this) 
       class (Exception), intent(in) :: this
-      getFileName = trim(this%fileName)
+      getFileName = trim(this%location%fileName)
    end function getFileName
 
    logical function isNull(this) 
@@ -132,11 +132,12 @@ contains
       getNumExceptions = size(this%exceptions)
    end function getNumExceptions
 
-   subroutine throwMessage(this, message)
+   subroutine throwMessage(this, message, location)
       class (ExceptionList), intent(inOut) :: this
       character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
 
-      call this%throw(newException(message))
+      call this%throw(newException(message, location))
 
    end subroutine throwMessage
 
@@ -149,15 +150,15 @@ contains
 
    end subroutine throwMessageWithLineNumber
 
-   subroutine throwMessageWithLineAndFile(this, message, lineNumber, fileName)
+   subroutine throwMessageWithFileAndLine(this, message, fileName, lineNumber)
       class (ExceptionList), intent(inOut) :: this
       character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
       character(len=*), intent(in) :: fileName
+      integer, intent(in) :: lineNumber
 
-      call this%throw(Exception(message, fileName, lineNumber, .false.))
-
-   end subroutine throwMessageWithLineAndFile
+      call this%throw(Exception(message, SourceLocation(fileName, lineNumber)))
+      
+   end subroutine throwMessageWithFileAndLine
 
    subroutine throwException(this, anException)
       class (ExceptionList), intent(inOut) :: this
@@ -211,8 +212,8 @@ contains
          end do
 
          call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
-         call context%gather(this%exceptions(:)%fileName, list%exceptions(:)%fileName)
-         call context%gather(this%exceptions(:)%lineNumber, list%exceptions(:)%lineNumber)
+         call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
+         call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
          call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
 
          call clearAll(this)
@@ -333,6 +334,7 @@ contains
 end module PrivateException_mod
 
 module Exception_mod
+   use SourceLocation_mod
    use PrivateException_mod
    implicit none
    private
@@ -363,7 +365,7 @@ module Exception_mod
   interface throw
     module procedure throw_message
     module procedure throw_messageWithLineNumber
-    module procedure throw_messageWithLineAndFile
+    module procedure throw_messageWithFileAndLine
   end interface
 
   interface catch
@@ -389,10 +391,18 @@ contains
       numExceptions = globalExceptionList%getNumExceptions()
    end function getNumExceptions_local
 
-   subroutine throw_message(message)
+   subroutine throw_message(message, location)
       character(len=*), intent(in) :: message
-      call globalExceptionList%throw(message)
+      type (SourceLocation), optional, intent(in) :: location
+      call globalExceptionList%throw(message, location)
    end subroutine throw_message
+
+   subroutine throw_messageWithLocation(message, location)
+      use SourceLocation_mod
+      character(len=*), intent(in) :: message
+      type (SourceLocation), intent(in) :: location
+      call globalExceptionList%throw(message, location)
+   end subroutine throw_messageWithLocation
 
    subroutine throw_messageWithLineNumber(message, lineNumber)
       character(len=*), intent(in) :: message
@@ -400,12 +410,12 @@ contains
       call globalExceptionList%throw(message, lineNumber)
    end subroutine throw_messageWithLineNumber
 
-   subroutine throw_messageWithLineAndFile(message, lineNumber, fileName)
+   subroutine throw_messageWithFileAndLine(message, fileName, lineNumber)
       character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
       character(len=*), intent(in) :: fileName
-      call globalExceptionList%throw(message, lineNumber, fileName)
-   end subroutine throw_messageWithLineAndFile
+      integer, intent(in) :: lineNumber
+      call globalExceptionList%throw(message, fileName, lineNumber)
+   end subroutine throw_messageWithFileAndLine
 
    function catchAny(preserve) result(anException)
       logical, optional, intent(in) :: preserve

@@ -22,10 +22,12 @@ endif
 	ar -r $@ $?
 	-@ranlib $@
 
-Exception.o : ParallelContext.o
+Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
-Assert.o: Exception.o
-AssertReal.o: StringUtilities.o
+AssertBasic.o: Exception.o
+AssertInteger.o: Exception.o
+Assert.o: Exception.o AssertBasic.o AssertInteger.o
+AssertReal.o: Assert.o StringUtilities.o
 
 
 SurrogateTestCase.o:

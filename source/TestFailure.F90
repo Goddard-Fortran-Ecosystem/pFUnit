@@ -7,7 +7,6 @@ module TestFailure_mod
 
    type TestFailure
       type (Exception) :: exception
-      integer :: processRank
       character(len=40) :: testName
    end type TestFailure
 
