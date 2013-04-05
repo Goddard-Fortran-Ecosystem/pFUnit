@@ -22,6 +22,14 @@ contains
 
       ADD(testAssertEqual_equal)
       ADD(testAssertEqual_unequal)
+      ADD(testAssertEqual1D1D_equal)
+      ADD(testAssertEqual1D1D_nonconforming)
+      ADD(testAssertEqual1D1D_conforming)
+      ADD(testAssertEqual1D1D_unequalA)
+      ADD(testAssertEqual1D1D_unequalB)
+      ADD(testAssertEqual2D2D_equal)
+      ADD(testAssertEqual2D2D_nonconforming)
+      ADD(testAssertEqual2D2D_unequal)
 
    end function suite
 
@@ -31,9 +39,60 @@ contains
 
    subroutine testAssertEqual_unequal()
       call assertEqual(2,3)
-      call assertExceptionRaised('Integer scalar assertion failed:' // new_line('a') // &
-           & '    expected: <2>' // new_line('a') // &
-           & '   but found: <3>')
+      call assertExceptionRaised('expected: <2> but found: <3>')
    end subroutine testAssertEqual_unequal
+
+   subroutine testAssertEqual1D1D_equal()
+      call assertEqual([1,2],[1,2])
+   end subroutine testAssertEqual1D1D_equal
+
+   subroutine testAssertEqual1D1D_nonconforming()
+      call assertEqual([1,2],[1,2,3])
+      call assertExceptionRaised('nonconforming arrays - expected shape: [2] but found shape: [3]')
+   end subroutine testAssertEqual1D1D_nonconforming
+
+   subroutine testAssertEqual1D1D_conforming()
+      call assertEqual(1,[1,1,1])
+   end subroutine testAssertEqual1D1D_conforming
+
+   subroutine testAssertEqual1D1D_unequalA()
+      call assertEqual([1,2,3],[1,3,3])
+      call assertExceptionRaised('expected: <2> but found: <3> at position: [2]')
+   end subroutine testAssertEqual1D1D_unequalA
+
+   subroutine testAssertEqual1D1D_unequalB()
+      call assertEqual(1, [1,2,1])
+      call assertExceptionRaised('expected: <1> but found: <2> at position: [2]')
+   end subroutine testAssertEqual1D1D_unequalB
+
+   subroutine testAssertEqual2D2D_equal()
+      integer :: array(2,3)
+      array = reshape([1,2,3,4,5,6],[2,3])
+      call assertEqual(array, array)
+   end subroutine testAssertEqual2D2D_equal
+
+   subroutine testAssertEqual2D2D_nonconforming()
+      integer :: expected(2,3)
+      integer :: found(3,5)
+
+      expected = 1
+      found = 1
+      call assertEqual(expected, found)
+      call assertExceptionRaised('nonconforming arrays - expected shape: [2,3] but found shape: [3,5]')
+
+   end subroutine testAssertEqual2D2D_nonconforming
+
+   subroutine testAssertEqual2D2D_unequal()
+      integer :: expected(2,3)
+      integer :: found(2,3)
+
+      expected = 1
+      found = 1
+      found(1,2) = -1
+
+      call assertEqual(expected, found)
+      call assertExceptionRaised('expected: <1> but found: <-1> at position: [1,2]')
+
+   end subroutine testAssertEqual2D2D_unequal
 
 end module Test_AssertInteger_mod

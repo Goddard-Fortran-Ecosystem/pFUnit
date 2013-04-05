@@ -27,8 +27,6 @@ contains
       ADD(testAssertFalseF)
       ADD(testAssertEqualStringSame)
       ADD(testAssertEqualStringDifferent)
-      ADD(testAssertEqualIntegerScalarEqual)
-      ADD(testAssertEqualIntegerScalarUnequal)
       ADD(testAssertWithLocation)
    end function suite
 
@@ -72,18 +70,6 @@ contains
            & '   but found: <"string B">' // new_line('A') // &
            & '  first diff:   ^'))
    end subroutine testAssertEqualStringDiffer1st
-
-   subroutine testAssertEqualIntegerScalarEqual()
-      call assertEqual(expected=1, found=1)
-      call assertTrue(0 == getNumExceptions())
-   end subroutine testAssertEqualIntegerScalarEqual
-
-   subroutine testAssertEqualIntegerScalarUnequal()
-      call assertEqual(expected=0, found=1)
-      call assertTrue(catch('Integer scalar assertion failed:' // new_line('A') // &
-           &   '    expected: <0>' // new_line('A') // & 
-           &   '   but found: <1>'))
-   end subroutine testAssertEqualIntegerScalarUnequal
 
    subroutine testAssertWithLocation
       use SourceLocation_mod
