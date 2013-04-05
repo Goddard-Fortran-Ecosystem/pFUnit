@@ -46,23 +46,23 @@ contains
 
       type (ExceptionList) :: globalList
       type (ExceptionList) :: localList
-      integer :: globalExceptionCount
       character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
-      integer :: totalExceptions
+      integer :: totalExceptions, n
 
       totalExceptions = getNumExceptions(context)
       if (totalExceptions > 0) then
 
          if (context%isRootProcess()) then
-            allocate(globalList%exceptions(globalExceptionCount))
+            allocate(globalList%exceptions(totalExceptions))
          else
             allocate(globalList%exceptions(1)) ! mpi does not like 0-sized arrays
          end if
          allocate(localList%exceptions(getNumExceptions()))
 
-         do i = 1, getNumExceptions()
+         n = getNumExceptions()
+         do i = 1, n
             localList%exceptions(i) = catchAny() ! drains singleton exception list on all PEs
             call context%labelProcess(localList%exceptions(i)%message)
          end do
@@ -79,6 +79,8 @@ contains
                end associate
             end do
          end if
+
+         deallocate(globalList%exceptions, localList%exceptions)
 
       end if
 

@@ -54,7 +54,7 @@ contains
 
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
-      use Test_ParallelException_mod, only: ParallelExceptionSuite => suite
+      use Test_MpiException_mod, only: ParallelExceptionSuite => suite
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 

@@ -10,8 +10,9 @@ module MpiTestCase_mod
       integer :: processRank
       integer :: numProcessesRequested
       type (MpiContext) :: context
-      class (MpiContext), allocatable :: parentContext
+      type (MpiContext) :: parentContext
    contains
+      procedure :: setNumProcessesRequested
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
       procedure :: runBare
@@ -47,11 +48,11 @@ contains
       class (MpiTestCase), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
-      
+
       ! create subcommunicator
       select type (context)
-      class is (MpiContext)
-         allocate(this%parentContext, source=context)
+      type is (MpiContext)
+         this%parentContext = context
       class default
          call throw('MPI test cannot run in a non-MPI context.')
          return
@@ -60,30 +61,21 @@ contains
       call tstResult%run(this%getSurrogate(), context)
 
       call this%parentContext%barrier()
-      deallocate(this%parentContext)
 
    end subroutine run
 
    recursive subroutine runBare(this)
       use Exception_mod
+      use ParallelException_mod
       class (MpiTestCase), intent(inout) :: this
-
-      logical, allocatable :: anyExcepts(:)
 
       this%context = this%parentContext%makeSubcontext(this%numProcessesRequested)
 
-      allocate(anyExcepts(this%parentContext%getNumProcesses()))
-      call this%parentContext%gather([anyExceptions()], anyExcepts)
-
-      if (.not. any(anyExcepts)) then
+      if (.not. anyExceptions(this%parentContext)) then
          if (this%context%isActive()) then
             call this%setUp()
 
-            deallocate(anyExcepts)
-            allocate(anyExcepts(this%context%getNumProcesses()))
-            call this%context%gather([anyExceptions()], anyExcepts)
-
-            if (.not. any(anyExcepts)) then
+            if (.not. anyExceptions(this%context)) then
                call this%runMethod()
                call this%tearDown()
             end if
@@ -91,7 +83,7 @@ contains
 
       end if
 
-      call gatherExceptions(this%parentContext)
+      call gather(this%parentContext)
 
    end subroutine runBare
 
@@ -132,5 +124,11 @@ contains
       allocate(context, source=this%context)
 
    end function getContext
+
+   subroutine setNumProcessesRequested(this, numProcesses)
+      class (MpiTestCase), intent(inout) :: this
+      integer, intent(in) :: numProcesses
+      this%numProcessesRequested = numProcesses
+   end subroutine setNumProcessesRequested
 
 end module MpiTestCase_mod

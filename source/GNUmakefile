@@ -56,7 +56,7 @@ pFUnit.o: ParallelContext.o
 ifeq ($(MPI),YES)
    pFUnit.o: MpiContext.o
 
-   MpiTestCase.o : TestCase.o MpiContext.o
+   MpiTestCase.o : TestCase.o MpiContext.o ParallelException.o
    MpiTestMethod.o: MpiTestCase.o
 endif
 

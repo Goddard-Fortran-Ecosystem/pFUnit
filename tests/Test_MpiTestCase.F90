@@ -1,4 +1,3 @@
-
 #include "reflection.h"
 module Test_MpiTestCase_mod
    use Test_mod
@@ -15,7 +14,6 @@ module Test_MpiTestCase_mod
       character(len=20), public :: runLog
       procedure(method), pointer :: testMethod => null()
    contains
-      procedure :: run
       procedure :: runMethod
    end type Test_MpiTestCase
 
@@ -41,45 +39,15 @@ contains
       
    end function suite
 
-   !TODO:  this subroutine should be deleted, as it is identical to the 
-   ! method provided by the parent class.  This is a workaround for a recursion
-   ! error that shows up with Intel 13.0.  GNU 4.8 and NAG 5.3 do not need this
-   ! so I do not think it is a coding error.
-   recursive subroutine run(this, tstResult, context)
-      use TestResult_mod, only: TestResult
-      use Parallelcontext_mod
-      use Exception_mod
-      use SurrogateTestCase_mod
-      use MpiContext_mod
-      class (Test_MpiTestCase), intent(inout) :: this
-      class (TestResult), intent(inout) :: tstResult
-      class (ParallelContext), intent(in) :: context
-      
-      ! create subcommunicator
-      select type (context)
-      class is (MpiContext)
-         allocate(this%parentContext, source=context)
-      class default
-         call throw('MPI test cannot run in a non-MPI context.')
-         return
-      end select
-
-      call tstResult%run(this%getSurrogate(), context)
-
-      call this%parentContext%barrier()
-      deallocate(this%parentContext)
-
-   end subroutine run
-
    function newTest_MpiTestCase(name, userMethod, numProcesses) result(this)
       type(Test_MpiTestCase) :: this
       character(len=*), intent(in) :: name
       procedure(method) :: userMethod
       integer, intent(in) :: numProcesses
 
-      this%testMethod => userMethod
-      this%numProcessesRequested = numProcesses
       call this%setName(name)
+      this%testMethod => userMethod
+      call this%setNumProcessesRequested(numProcesses)
 
     end function newTest_MpiTestCase
 

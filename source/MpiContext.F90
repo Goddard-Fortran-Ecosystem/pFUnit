@@ -110,6 +110,7 @@ contains
       end if
       call Mpi_Comm_group(this%mpiCommunicator, originalGroup, ier)
       ranges(:,1) = [0, numSubprocesses-1, 1]
+
       call MPI_Group_range_incl (originalGroup, NUM_SUBGROUPS, ranges, newGroups, ier)
       call MPI_Comm_create(this%mpiCommunicator, newGroups(1), newCommunicator, ier)
 

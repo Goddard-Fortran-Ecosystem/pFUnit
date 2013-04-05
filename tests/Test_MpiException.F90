@@ -1,5 +1,5 @@
 #include "reflection.h"
-module Test_ParallelException_mod
+module Test_MpiException_mod
    use Test_mod
    use TestCase_mod
    use Exception_mod
@@ -105,4 +105,4 @@ contains
 
    end subroutine test_gather
 
-end module Test_ParallelException_mod
+end module Test_MpiException_mod
