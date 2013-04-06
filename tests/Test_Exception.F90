@@ -1,12 +1,12 @@
 #include "reflection.h"
 module Test_Exception_mod
    use TestSuite_mod
-   use Exception_mod, only: ExceptionList, Exception
    use Exception_mod, only: newException
    use Exception_mod, only: newExceptionList
    use Assert_mod, only: assertEqual
    use Assert_mod, only: assertTrue
    use Assert_mod, only: assertFalse
+   use Exception_mod, only: ExceptionList, Exception
    implicit none
    private
 
@@ -133,6 +133,7 @@ contains
 
    ! !INTERFACE:
    subroutine testCatchFail()
+      use Exception_mod, only: ExceptionList, Exception
       !EOP
       !BOC
       type (ExceptionList) :: list

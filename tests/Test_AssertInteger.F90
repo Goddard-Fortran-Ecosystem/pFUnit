@@ -31,9 +31,22 @@ contains
       ADD(testAssertEqual2D2D_equal)
       ADD(testAssertEqual2D2D_nonconforming)
       ADD(testAssertEqual2D2D_unequal)
-      ADD(testAssertLestThan_falseA)
-!!$      ADD(testAssertLestThan_falseB)
-      ADD(testAssertLestThan_true)
+
+      ADD(testAssertLessThan_falseA)
+      ADD(testAssertLessThan_falseB)
+      ADD(testAssertLessThan_true)
+
+      ADD(testAssertLessThanOrEqual_false)
+      ADD(testAssertLessThanOrEqual_trueA)
+      ADD(testAssertLessThanOrEqual_trueB)
+
+      ADD(testAssertGreaterThan_falseA)
+      ADD(testAssertGreaterThan_falseB)
+      ADD(testAssertGreaterThan_true)
+
+      ADD(testAssertGreaterThanOrEqual_false)
+      ADD(testAssertGreaterThanOrEqual_trueA)
+      ADD(testAssertGreaterThanOrEqual_trueB)
 
    end function suite
 
@@ -110,18 +123,58 @@ contains
 
    end subroutine testAssertEqual2D2D_unequal
 
-   subroutine testAssertLestThan_falseA()
+   subroutine testAssertLessThan_falseA()
       call assertLessThan(1, 1)
       call assertExceptionRaised('expected: <1> to be less than: <1>')
-   end subroutine testAssertLestThan_falseA
+   end subroutine testAssertLessThan_falseA
 
-   subroutine testAssertLestThan_falseB()
+   subroutine testAssertLessThan_falseB()
+      call assertLessThan(2, 1)
+      call assertExceptionRaised('expected: <2> to be less than: <1>')
+   end subroutine testAssertLessThan_falseB
+
+   subroutine testAssertLessThan_true()
       call assertLessThan(1, 2)
-      call assertExceptionRaised('expected: <1> to be less than: <2>')
-   end subroutine testAssertLestThan_falseB
+   end subroutine testAssertLessThan_true
+   
+   subroutine testAssertLessThanOrEqual_false()
+      call assertLessThanOrEqual(2, 1)
+      call assertExceptionRaised('expected: <2> to be less than or equal to: <1>')
+   end subroutine testAssertLessThanOrEqual_false
 
-   subroutine testAssertLestThan_true()
-      call assertLessThan(1, 2)
-   end subroutine testAssertLestThan_true
+   subroutine testAssertLessThanOrEqual_trueA()
+      call assertLessThanOrEqual(2, 2)
+   end subroutine testAssertLessThanOrEqual_trueA
 
+   subroutine testAssertLessThanOrEqual_trueB()
+      call assertLessThanOrEqual(1, 2)
+   end subroutine testAssertLessThanOrEqual_trueB
+   
+   subroutine testAssertGreaterThan_falseA()
+      call assertGreaterThan(1, 1)
+      call assertExceptionRaised('expected: <1> to be greater than: <1>')
+   end subroutine testAssertGreaterThan_falseA
+
+   subroutine testAssertGreaterThan_falseB()
+      call assertGreaterThan(1, 2)
+      call assertExceptionRaised('expected: <1> to be greater than: <2>')
+   end subroutine testAssertGreaterThan_falseB
+
+   subroutine testAssertGreaterThan_true()
+      call assertGreaterThan(2, 1)
+   end subroutine testAssertGreaterThan_true
+   
+   subroutine testAssertGreaterThanOrEqual_false()
+      call assertGreaterThanOrEqual(1, 2)
+      call assertExceptionRaised('expected: <1> to be greater than or equal to: <2>')
+   end subroutine testAssertGreaterThanOrEqual_false
+
+   subroutine testAssertGreaterThanOrEqual_trueA()
+      call assertGreaterThanOrEqual(2, 2)
+   end subroutine testAssertGreaterThanOrEqual_trueA
+
+   subroutine testAssertGreaterThanOrEqual_trueB()
+      call assertGreaterThanOrEqual(2, 1)
+   end subroutine testAssertGreaterThanOrEqual_trueB
+   
 end module Test_AssertInteger_mod

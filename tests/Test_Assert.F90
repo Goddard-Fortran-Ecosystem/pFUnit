@@ -22,47 +22,9 @@ contains
 
 #define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testAssertTrueF)
-      ADD(testAssertTrueT)
-      ADD(testAssertFalseT)
-      ADD(testAssertFalseF)
-      ADD(testAssertEqualStringSame)
-      ADD(testAssertEqualStringDifferent)
       ADD(testAssertWithLocation)
    end function suite
 
-   subroutine testAssertTrueF()
-      call assertTrue(.false.)
-      call assertTrue(catch(NULL_MESSAGE))
-   end subroutine testAssertTrueF
-
-   subroutine testAssertTrueT()
-      call assertTrue(.true.)
-      call assertEqual(0, getNumExceptions())
-   end subroutine testAssertTrueT
-
-   subroutine testAssertFalseT()
-      call assertFalse(.true.)
-      call assertTrue(catch(NULL_MESSAGE))
-   end subroutine testAssertFalseT
-
-   subroutine testAssertFalseF()
-      call assertFalse(.false.)
-      call assertEqual(0, getNumExceptions())
-   end subroutine testAssertFalseF
-
-   subroutine testAssertEqualStringSame()
-      call assertEqual(expected="string A", found="string A")
-      call assertEqual(0, getNumExceptions())
-   end subroutine testAssertEqualStringSame
-
-   subroutine testAssertEqualStringDifferent()
-      call assertEqual(expected="string A", found="string B")
-      call assertTrue(catch('String assertion failed:' // new_line('A') // &
-           & '    expected: <"string A">' // new_line('A') // &
-           & '   but found: <"string B">' // new_line('A') // &
-           & '  first diff:   -------^'))
-   end subroutine testAssertEqualStringDifferent
 
    subroutine testAssertEqualStringDiffer1st()
       call assertEqual(expected="a string A", found="string B")

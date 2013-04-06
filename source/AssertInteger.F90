@@ -7,6 +7,9 @@ module AssertInteger_mod
 
    public :: assertEqual
    public :: assertLessThan
+   public :: assertLessThanOrEqual
+   public :: assertGreaterThan
+   public :: assertGreaterThanOrEqual
 
    interface assertEqual
       module procedure assertEqualIntegerScalar
@@ -25,6 +28,21 @@ module AssertInteger_mod
       module procedure assertLessThan_
       module procedure assertLessThan_withMessage
    end interface assertLessThan
+
+   interface assertLessThanOrEqual
+      module procedure assertLessThanOrEqual_
+      module procedure assertLessThanOrEqual_withMessage
+   end interface assertLessThanOrEqual
+
+   interface assertGreaterThan
+      module procedure assertGreaterThan_
+      module procedure assertGreaterThan_withMessage
+   end interface assertGreaterThan
+
+   interface assertGreaterThanOrEqual
+      module procedure assertGreaterThanOrEqual_
+      module procedure assertGreaterThanOrEqual_withMessage
+   end interface assertGreaterThanOrEqual
 
    interface locationOfFirstNonzero
       module procedure locationOfFirstNonzero_1d
@@ -199,17 +217,90 @@ contains
 
       if ( .not. (a < b) ) then
 
-         if (len_trim(message) > 0) then
-            write(throwMessage,'(a,a,i0,a,i0,a)') trim(message), 'expected: <',a,'> to be less than: <',b,'>'
-         else
-            write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than: <',b,'>'
-         end if
-
-         call throw(throwMessage, location)
+         write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than: <',b,'>'
+         call throw(appendWithSpace(message,throwMessage), location)
 
       end if
 
    end subroutine assertLessThan_withMessage
+
+   subroutine assertLessThanOrEqual_(a, b, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertLessThanOrEqual(a, b, NULL_MESSAGE, location)
+
+   end subroutine assertLessThanOrEqual_
+
+   subroutine assertLessThanOrEqual_withMessage(a, b, message, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+
+      if ( .not. (a <= b) ) then
+
+         write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than or equal to: <',b,'>'
+         call throw(appendWithSpace(message,throwMessage), location)
+
+      end if
+
+   end subroutine assertLessThanOrEqual_withMessage
+
+   subroutine assertGreaterThan_(a, b, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertGreaterThan(a, b, NULL_MESSAGE, location)
+
+   end subroutine assertGreaterThan_
+
+   subroutine assertGreaterThan_withMessage(a, b, message, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+
+      if ( .not. (a > b) ) then
+
+         write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than: <',b,'>'
+         call throw(appendWithSpace(message,throwMessage), location)
+
+      end if
+
+   end subroutine assertGreaterThan_withMessage
+
+   subroutine assertGreaterThanOrEqual_(a, b, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertGreaterThanOrEqual(a, b, NULL_MESSAGE, location)
+
+   end subroutine assertGreaterThanOrEqual_
+
+   subroutine assertGreaterThanOrEqual_withMessage(a, b, message, location)
+      integer, intent(in) :: a
+      integer, intent(in) :: b
+      character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+
+      if ( .not. (a >= b) ) then
+
+         write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than or equal to: <',b,'>'
+         call throw(appendWithSpace(message,throwMessage), location)
+
+      end if
+
+   end subroutine assertGreaterThanOrEqual_withMessage
 
    function locationOfFirstNonzero_1d(array) result(loc)
       integer, intent(in) :: array(:)
