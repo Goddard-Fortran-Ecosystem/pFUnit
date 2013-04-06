@@ -37,8 +37,9 @@ contains
 
       use Test_StringUtilities_mod, only: stringUtilitiesSuite => suite    ! (1)
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
+      use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
-      use Test_AssertInteger_mod, only: assertIntegerSuite => suite                      ! (3)
+      use Test_AssertInteger_mod, only: assertIntegerSuite => suite        !
       use Test_AssertionLocation_mod, only: assertLocationSuite => suite   ! (4)
       use Test_AssertReal_mod, only: assertRealSuite => suite              ! (5)
 
@@ -70,6 +71,7 @@ contains
       ADD(stringUtilitiesSuite)
       ADD(exceptionSuite)
 
+      ADD(assertBasicSuite)
       ADD(assertSuite)
       ADD(assertIntegerSuite)
       ADD(assertLocationSuite)

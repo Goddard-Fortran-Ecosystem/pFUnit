@@ -22,6 +22,7 @@ contains
 
       ADD(testAssertEqual_equal)
       ADD(testAssertEqual_unequal)
+      ADD(testAssertEqual_unequalWithMessage)
       ADD(testAssertEqual1D1D_equal)
       ADD(testAssertEqual1D1D_nonconforming)
       ADD(testAssertEqual1D1D_conforming)
@@ -30,6 +31,9 @@ contains
       ADD(testAssertEqual2D2D_equal)
       ADD(testAssertEqual2D2D_nonconforming)
       ADD(testAssertEqual2D2D_unequal)
+      ADD(testAssertLestThan_falseA)
+!!$      ADD(testAssertLestThan_falseB)
+      ADD(testAssertLestThan_true)
 
    end function suite
 
@@ -41,6 +45,11 @@ contains
       call assertEqual(2,3)
       call assertExceptionRaised('expected: <2> but found: <3>')
    end subroutine testAssertEqual_unequal
+
+   subroutine testAssertEqual_unequalWithMessage()
+      call assertEqual(2,3,'what?')
+      call assertExceptionRaised('what? expected: <2> but found: <3>')
+   end subroutine testAssertEqual_unequalWithMessage
 
    subroutine testAssertEqual1D1D_equal()
       call assertEqual([1,2],[1,2])
@@ -93,6 +102,26 @@ contains
       call assertEqual(expected, found)
       call assertExceptionRaised('expected: <1> but found: <-1> at position: [1,2]')
 
+      found(1,2) = 1
+      found(2,3) = -1
+
+      call assertEqual(expected, found)
+      call assertExceptionRaised('expected: <1> but found: <-1> at position: [2,3]')
+
    end subroutine testAssertEqual2D2D_unequal
+
+   subroutine testAssertLestThan_falseA()
+      call assertLessThan(1, 1)
+      call assertExceptionRaised('expected: <1> to be less than: <1>')
+   end subroutine testAssertLestThan_falseA
+
+   subroutine testAssertLestThan_falseB()
+      call assertLessThan(1, 2)
+      call assertExceptionRaised('expected: <1> to be less than: <2>')
+   end subroutine testAssertLestThan_falseB
+
+   subroutine testAssertLestThan_true()
+      call assertLessThan(1, 2)
+   end subroutine testAssertLestThan_true
 
 end module Test_AssertInteger_mod

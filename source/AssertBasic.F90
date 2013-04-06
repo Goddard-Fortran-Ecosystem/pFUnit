@@ -6,10 +6,15 @@ module AssertBasic_mod
    
    public :: fail
    public :: assertTrue
+!!$   public :: assetFalse
    public :: assertExceptionRaised
+   public :: assertSameShape
+
+   ! Utility procedures
    public :: conformable
    public :: nonConformable
    public :: toString
+   public :: appendWithSpace
 
    interface fail
       module procedure fail_
@@ -30,13 +35,11 @@ module AssertBasic_mod
       module procedure toString_shape
    end interface toString
 
-   character(len=*), parameter :: NULL_MESSAGE = '<>'
-
 contains
 
    subroutine fail_(location)
       type (SourceLocation), optional, intent(in) :: location
-      call fail(NO_MESSAGE, location)
+      call fail(NULL_MESSAGE, location)
    end subroutine fail_
    
    subroutine fail_withMessage(message, location)
@@ -84,6 +87,27 @@ contains
 
    end subroutine assertExceptionRaisedMessage
 
+   subroutine assertSameShape(shapeA, shapeB, message, location)
+      integer, intent(in) :: shapeA(:)
+      integer, intent(in) :: shapeB(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=MAXLEN_MESSAGE) :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      if (nonConformable(shapeA, shapeB)) then
+         throwMessage = 'nonconforming arrays - expected shape: ' // &
+              & trim(toString(shapeA)) // ' but found shape: ' // &
+              & trim(toString(shapeB))
+         call throw(appendWithSpace(message_, throwMessage), location)
+      end if
+         
+   end subroutine assertSameShape
+
    logical function conformable(shapeA, shapeB)
       integer, intent(in) :: shapeA(:)
       integer, intent(in) :: shapeB(:)
@@ -118,12 +142,27 @@ contains
       case (0) ! scalar
          string = '0'
       case (1)
-         write(string,'(i0)'),arrayShape(1)
+         write(string,'(i0)') arrayShape(1)
       case (2:)
          write(string,'(i0,14(",",i0:))') arrayShape(1:)
       end select
 
       string = '[' // trim(string) // ']'
    end function toString_shape
+
+   ! Joins two strings with a space separator unless first string is
+   ! empty.
+   function appendWithSpace(a, b) result(ab)
+      character(len=*), intent(in) :: a
+      character(len=*), intent(in) :: b
+      character(len=MAXLEN_MESSAGE) :: ab
+
+      if (len_trim(a) > 0) then
+         ab = trim(a) // ' ' // trim(b)
+      else
+         ab = trim(b)
+      end if
+
+   end function appendWithSpace
 
 end module AssertBasic_mod

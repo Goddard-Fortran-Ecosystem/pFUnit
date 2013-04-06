@@ -10,16 +10,16 @@ module PrivateException_mod
 
    public :: MAXLEN_MESSAGE
    public :: MAXLEN_FILE_NAME
-   public :: NO_MESSAGE
+   public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
    integer, parameter :: MAXLEN_MESSAGE = 80*10
    integer, parameter :: MAXLEN_FILE_NAME = 80
-   character(len=*), parameter :: NO_MESSAGE = ''
+   character(len=*), parameter :: NULL_MESSAGE = ''
 
    type Exception
-      character(len=MAXLEN_MESSAGE) :: message = NO_MESSAGE
+      character(len=MAXLEN_MESSAGE) :: message = NULL_MESSAGE
       type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
       logical :: nullFlag = .true.
    contains
@@ -72,7 +72,7 @@ contains
 
    type(Exception) function Exception_()
 
-      Exception_%message = NO_MESSAGE
+      Exception_%message = NULL_MESSAGE
       Exception_%location = UNKNOWN_SOURCE_LOCATION
       Exception_%nullFlag = .false.
 
@@ -345,7 +345,7 @@ module Exception_mod
    public :: newExceptionList
 
    public :: MAXLEN_MESSAGE
-   public :: NO_MESSAGE
+   public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 

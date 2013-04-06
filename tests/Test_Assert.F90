@@ -2,6 +2,7 @@
 module Test_Assert_mod
    use TestSuite_mod
    use Assert_mod
+   use Exception_mod, only: NULL_MESSAGE
    use Exception_mod, only: catch
    use Exception_mod, only: getNumExceptions
    implicit none
@@ -32,7 +33,7 @@ contains
 
    subroutine testAssertTrueF()
       call assertTrue(.false.)
-      call assertTrue(catch('<>'))
+      call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertTrueF
 
    subroutine testAssertTrueT()
@@ -42,7 +43,7 @@ contains
 
    subroutine testAssertFalseT()
       call assertFalse(.true.)
-      call assertTrue(catch('<>'))
+      call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertFalseT
 
    subroutine testAssertFalseF()
