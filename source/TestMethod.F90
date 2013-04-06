@@ -12,16 +12,23 @@ module TestMethod_mod
       procedure(empty), nopass, pointer :: userTearDown => null()
    contains
      procedure :: runMethod
+     procedure :: setUp
+     procedure :: tearDown
    end type TestMethod
 
    abstract interface
       subroutine empty()
       end subroutine empty
    end interface
-   
+
+   interface newTestMethod
+      module procedure TestMethod_
+      module procedure TestMethod_setUpTearDown
+   end interface newTestMethod
+
 contains
 
-   function newTestMethod(name, method) result(this)
+   function TestMethod_(name, method) result(this)
       type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
@@ -29,7 +36,21 @@ contains
       call this%setName(name)
       this%userMethod => method
 
-   end function newTestMethod
+   end function TestMethod_
+
+   function TestMethod_setUpTearDown(name, method, setUp, tearDown) result(this)
+      type (TestMethod) :: this
+      character(len=*), intent(in) :: name
+      procedure(empty) :: method
+      procedure(empty) :: setUp
+      procedure(empty) :: tearDown
+
+      call this%setName(name)
+      this%userMethod => method
+      this%userSetUp => setUp
+      this%userTearDown => tearDown
+
+   end function TestMethod_setUpTearDown
 
    subroutine runMethod(this)
       class (TestMethod), intent(inOut) :: this
@@ -37,5 +58,15 @@ contains
       call this%userMethod()
 
    end subroutine runMethod
+
+   subroutine setUp(this)
+      class (TestMethod), intent(inout) :: this
+      if (associated(this%userSetUp)) call this%userSetUp()
+   end subroutine setUp
+
+   subroutine tearDown(this)
+      class (TestMethod), intent(inout) :: this
+      if (associated(this%userTearDown)) call this%userTearDown()
+   end subroutine tearDown
 
 end module TestMethod_mod

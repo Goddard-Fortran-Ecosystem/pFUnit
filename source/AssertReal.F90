@@ -1,5 +1,7 @@
 module AssertReal_mod
-   use StringUtilities
+   use AssertBasic_mod
+   use StringUtilities_mod
+   use SourceLocation_mod
    use Exception_mod
    implicit none
    private
@@ -9,51 +11,70 @@ module AssertReal_mod
    ! exposed for testing purposes only
    public :: valuesReport
    public :: differenceReport
-   public :: shapeReport
 
    interface assertEqual
       module procedure assertEqualExact
+      module procedure assertEqualExact_withMessage
       module procedure assertEqualTolerance
+      module procedure assertEqualTolerance_withMessage
       module procedure assertEqual_1D1D
    end interface
 
 contains
 
-   subroutine assertEqualExact(expected, found, line, file)
+   subroutine assertEqualExact(expected, found, unused, file, line)
       real, intent(in) :: expected
       real, intent(in) :: found
-      integer, optional, intent(in) :: line
+      type (UnusableArgument), optional, intent(in) :: unused
       character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
 
-      call assertEqual(expected, found, tolerance=0., line=line, file=file)
+      call assertEqual(expected, found, tolerance=0., message=NULL_MESSAGE, file=file, line=line)
 
    end subroutine assertEqualExact
 
-   subroutine assertEqualTolerance(expected, found, tolerance, line, file)
+   subroutine assertEqualExact_withMessage(expected, found, message, line, file)
+      real, intent(in) :: expected
+      real, intent(in) :: found
+      character(len=*), intent(in) :: message
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+
+      call assertEqual(expected, found, tolerance=0., message=message, file=file, line=line)
+
+   end subroutine assertEqualExact_withMessage
+
+   subroutine assertEqualTolerance(expected, found, tolerance, unused, file, line)
       real, intent(in) :: expected
       real, intent(in) :: found
       real, intent(in) :: tolerance
-      integer, optional, intent(in) :: line
+      type (UnusableArgument), optional, intent(in) :: unused
       character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
 
-      if (abs(found-expected) > tolerance) then
-         call throw( &
-              & 'Assertion failed: unequal real values.' //  &
-              & trim(valuesReport(expected, found)) // &
-              & trim(differenceReport(found - expected, tolerance)) &
-              & )
-      end if
+      call assertEqual(expected, found, tolerance, NULL_MESSAGE, file=file, line=line)
    end subroutine assertEqualTolerance
 
-   character(len=MAXLEN_MESSAGE) function shapeReport(expectedShape, foundShape)
-      integer, intent(in) :: expectedShape(:)
-      integer, intent(in) :: foundShape(:)
+   subroutine assertEqualTolerance_withMessage(expected, found, tolerance, message, file, line)
+      real, intent(in) :: expected
+      real, intent(in) :: found
+      real, intent(in) :: tolerance
+      character(len=*), intent(in) :: message
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
 
-      shapeReport = new_line('$') // &
-           & '    expected shape: <['//trim(toString(expectedShape))//']>' // new_line('$') // &
-           & '   but found shape: <['//trim(toString(foundShape))//']>'
+      character(len=MAXLEN_MESSAGE) :: throwMessage
 
-   end function shapeReport
+      if (abs(found-expected) > tolerance) then
+
+         throwMessage = trim(valuesReport(expected, found)) // new_line('$') // &
+              & trim(differenceReport(found - expected, tolerance))
+
+         call throw(appendWithSpace(message, throwMessage), SourceLocation(file, line))
+
+      end if
+
+   end subroutine assertEqualTolerance_withMessage
 
    subroutine assertEqual_1D1D(expected, found, line, file)
       real, intent(in) :: expected(:)
@@ -65,13 +86,11 @@ contains
       integer, parameter :: MAXLEN_SHAPE = 80
 
 
-      if (size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found))
-      else
-         do i = 1, size(expected)
-            call compareElements(expected(i), found(i), i)
-         end do
-      end if
+      call assertSameShape(shape(expected), shape(found))
+      if (anyExceptions()) return
+      do i = 1, size(expected)
+         call compareElements(expected(i), found(i), i)
+      end do
 
    contains
 
@@ -118,16 +137,14 @@ contains
    character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
       real, intent(in) :: expected
       real, intent(in) :: found
-      valuesReport = &
-           & new_line('$') // '    expected: <' // trim(toString(expected)) // '>' // &
-           & new_line('$') // '   but found: <' // trim(toString(found)) // '>'
+
+      valuesReport = 'expected: <' // trim(toString(expected)) // '> but found: <' // trim(toString(found)) // '>'
    end function valuesReport
 
    character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
       real, intent(in) :: difference
       real, intent(in) :: tolerance
-      differenceReport = &
-           & new_line('$') // '  difference: |' // trim(toString(difference)) // '| > ' // trim(toString(tolerance))
+      differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))
    end function differenceReport
 
 end module AssertReal_mod

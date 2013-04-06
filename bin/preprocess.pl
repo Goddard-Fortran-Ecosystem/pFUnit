@@ -23,26 +23,28 @@ my @tests;
 my @mpiTests;
 (my $file, my $dir, my $ext) = fileparse($fname, qr/\.[^.]*/);
 my $suiteName = $file;
+my $setUp = "";
+my $tearDown = "";
 
 while ( my $line = <$infile> ) {  # process each line in the source file
     $lineNumber++;
     if ($line =~ s/^(\s*)\@assertEqual\((.*)\)/\1call assertEqual(\2, &
-     & line=$lineNumber, &
-     & file='$fname')/i) {
+     & file='$fname', line=$lineNumber)/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
 	print $line;
-	print "   if (exceptionWasThrown()) return \n";
+	print "   if (anyExceptions()) return \n";
 	next;
     }
-    if ($line =~ /^\@test/) {
+    if ($line =~ /^\@test/i) {
         my $nextLine = <$infile>;
 	my $testName = $nextLine;
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	push (@tests, {"name" => $testName});
 	print "!$line";
 	print $nextLine;
+	$lineNumber++;
     }
-    elsif ($line =~ /^\@mpiTest/) {
+    elsif ($line =~ /^\@mpiTest/i) {
 	my $npesString = $line;
 	$npesString =~ s/.*npes\s*=\s*\[(.*)\]/\1/i;
 	
@@ -54,6 +56,25 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	push (@mpiTests, {"name" => $testName, "npes" => \@npes});
 	print "!$line";
 	print $nextLine;
+	$lineNumber++;
+    }
+    elsif ($line =~ /^\@Before/i) {
+        my $nextLine = <$infile>;
+	$setUp = $nextLine;
+	$setUp =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
+	chomp($setUp);
+	print "!$line";
+	print $nextLine;
+	$lineNumber++;
+    }
+    elsif ($line =~ /^\@After/i) {
+        my $nextLine = <$infile>;
+	$tearDown = $nextLine;
+	$tearDown =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
+	chomp($tearDown);
+	print "!$line";
+	print $nextLine;
+	$lineNumber++;
     }
     else {
 	print $line
@@ -75,17 +96,29 @@ print " \n";
 foreach (@tests,@mpiTests) {
     my $test = $_->{"name"};
     chomp($test);
-    print "  external $test \n";
+    print "   external $test \n";
 }
+
+if ($setUp ne "") {
+    print "   external $setUp \n";
+}
+if ($tearDown ne "") {
+    print "   external $tearDown \n";
+}
+	
 
 print " \n";
 print "   suite = newTestSuite('$suiteName')\n";
 print " \n";
 
+if ($setUp ne "") {$setUp = ", $setUp";}
+if ($tearDown ne "") {$tearDown = ", $tearDown";}
+
 foreach (@tests) {
     my $test = $_->{"name"};
     chomp($test);
-    print "  call suite%addTest(newTestMethod(\"$test\", $test))\n";
+
+    print "  call suite%addTest(newTestMethod(\"$test\", $test $setUp $tearDown))\n";
 }
 
 foreach (@mpiTests) {
@@ -96,7 +129,7 @@ foreach (@mpiTests) {
     foreach (@npes) {
 	chomp;
 	print "  call suite%addTest(newMpiTestMethod(\"$test\", &
-      &    userMethod=$test, &
+      &    $test $setUp $tearDown, &
       &    numProcesses=$_))\n";
     }
 }

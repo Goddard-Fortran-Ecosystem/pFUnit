@@ -49,12 +49,10 @@ module PrivateException_mod
       procedure, private :: deleteIthException
 
       generic :: throw => throwMessage
-      generic :: throw => throwMessageWithLineNumber
       generic :: throw => throwMessageWithFileAndLine
       generic :: throw => throwException
 
       procedure :: throwMessage
-      procedure :: throwMessageWithLineNumber
       procedure :: throwMessageWithFileAndLine
       procedure :: throwException
 !TODO - NAG does not yet support FINAL keyword
@@ -64,7 +62,6 @@ module PrivateException_mod
    interface newException
       module procedure Exception_
       module procedure Exception_message
-      module procedure Exception_messageWithLineNumber
       module procedure Exception_messageWithFileAndLine
    end interface
 
@@ -88,17 +85,11 @@ contains
 
    end function Exception_message
 
-   type(Exception) function Exception_messageWithLineNumber(message, lineNumber)
-      character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
-      Exception_messageWithLineNumber = Exception(message, newSourceLocation(lineNumber))
-   end function Exception_messageWithLineNumber
-
    type(Exception) function Exception_messageWithFileAndLine(message, fileName, lineNumber)
       character(len=*), intent(in) :: message
       character(len=*), intent(in) :: fileName
       integer, intent(in) :: lineNumber
-      Exception_messageWithFileAndLine = Exception(message, newSourceLocation(fileName, lineNumber))
+      Exception_messageWithFileAndLine = Exception(message, SourceLocation(fileName, lineNumber))
    end function Exception_messageWithFileAndLine
 
    function getMessage(this) result(message)
@@ -140,15 +131,6 @@ contains
       call this%throw(newException(message, location))
 
    end subroutine throwMessage
-
-   subroutine throwMessageWithLineNumber(this, message, lineNumber)
-      class (ExceptionList), intent(inOut) :: this
-      character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
-
-      call this%throw(newException(message, lineNumber))
-
-   end subroutine throwMessageWithLineNumber
 
    subroutine throwMessageWithFileAndLine(this, message, fileName, lineNumber)
       class (ExceptionList), intent(inOut) :: this
@@ -364,7 +346,6 @@ module Exception_mod
 
   interface throw
     module procedure throw_message
-    module procedure throw_messageWithLineNumber
     module procedure throw_messageWithFileAndLine
   end interface
 
@@ -403,12 +384,6 @@ contains
       type (SourceLocation), intent(in) :: location
       call globalExceptionList%throw(message, location)
    end subroutine throw_messageWithLocation
-
-   subroutine throw_messageWithLineNumber(message, lineNumber)
-      character(len=*), intent(in) :: message
-      integer, intent(in) :: lineNumber
-      call globalExceptionList%throw(message, lineNumber)
-   end subroutine throw_messageWithLineNumber
 
    subroutine throw_messageWithFileAndLine(message, fileName, lineNumber)
       character(len=*), intent(in) :: message

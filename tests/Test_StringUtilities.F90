@@ -1,7 +1,7 @@
 #include "reflection.h"
 module Test_StringUtilities_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
-   use StringUtilities, only: toString
+   use StringUtilities_mod, only: toString
    use Assert_mod
    implicit none
    private
@@ -26,9 +26,9 @@ contains
    end function suite
 
    subroutine testToStringInteger1D()
-      call assertEqual('2',toString([2]))
-      call assertEqual('2,3',toString([2,3]))
-      call assertEqual('2,3,4',toString([2,3,4]))
+      call assertEqual('[2]',toString([2]))
+      call assertEqual('[2,3]',toString([2,3]))
+      call assertEqual('[2,3,4]',toString([2,3,4]))
    end subroutine testToStringInteger1D
 
 

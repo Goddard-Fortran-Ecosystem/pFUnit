@@ -36,7 +36,7 @@ contains
 
    subroutine testAssertWithLocation
       use SourceLocation_mod
-      call assertTrue(.false., 'intentional fail', SourceLocation(lineNumber=5))
+      call assertTrue(.false., 'intentional fail', file='nowhere', line=5)
       call assertTrue(catch('intentional fail'))
    end subroutine testAssertWithLocation
 

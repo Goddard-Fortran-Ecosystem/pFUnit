@@ -24,7 +24,7 @@ endif
 
 Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
-AssertBasic.o: Exception.o
+AssertBasic.o: Exception.o StringUtilities.o
 AssertInteger.o: Exception.o
 Assert.o: Exception.o AssertBasic.o AssertInteger.o
 AssertReal.o: Assert.o StringUtilities.o

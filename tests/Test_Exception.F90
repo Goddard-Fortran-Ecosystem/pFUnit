@@ -44,7 +44,6 @@ contains
       ADD(testGetFileNameNoInfo)
       ADD(testGetFileName)
 
-      ADD(testThrowWithLineNumber)
       ADD(testThrowWithLineAndFile)
 
    end function suite
@@ -424,7 +423,7 @@ contains
       type (Exception) :: anException
       integer, parameter :: LINE_NUMBER = 2
 
-      anException = newException('message', lineNumber=LINE_NUMBER)
+      anException = newException('message', fileName='foo', lineNumber=LINE_NUMBER)
       call assertEqual(LINE_NUMBER, anException%getLineNumber())
 
    end subroutine testGetLineNumber
@@ -445,18 +444,6 @@ contains
       call assertEqual(FILE_NAME, anException%getFileName())
 
    end subroutine testGetFileName
-
-   subroutine testThrowWithLineNumber()
-      type (ExceptionList) :: list
-      type (Exception) :: anException
-      integer, parameter :: LINE_NUMBER = 2
-
-      list = newExceptionList()
-      call list%throwMessageWithLineNumber('message', lineNumber=LINE_NUMBER)
-      anException = list%catchAny()
-      call assertEqual(LINE_NUMBER, anException%getLineNumber())
-
-   end subroutine testThrowWithLineNumber
 
    subroutine testThrowWithLineAndFile()
       type (ExceptionList) :: list

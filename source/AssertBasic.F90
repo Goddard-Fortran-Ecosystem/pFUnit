@@ -1,6 +1,7 @@
 module AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
+   use StringUtilities_mod
    implicit none
    private
    
@@ -15,17 +16,23 @@ module AssertBasic_mod
    ! Utility procedures
    public :: conformable
    public :: nonConformable
-   public :: toString
-   public :: appendWithSpace
+   
+   public :: UnusableArgument
 
    interface fail
       module procedure fail_
       module procedure fail_withMessage
+      module procedure fail_withMessageFileAndLine
    end interface fail
 
    interface assertTrue
       module procedure assertTrue_
       module procedure assertTrue_withMessage
+   end interface
+
+   interface assertFalse
+      module procedure assertFalse_
+      module procedure assertFalse_withMessage
    end interface
 
    interface assertEqual
@@ -37,9 +44,11 @@ module AssertBasic_mod
       module procedure assertExceptionRaisedMessage
    end interface assertExceptionRaised
 
-   interface toString
-      module procedure toString_shape
-   end interface toString
+   ! Arguments of the type below are used to force keyword arguments
+   ! for optional arguments. 
+   type UnusableArgument
+   end type UnusableArgument
+
 
 contains
 
@@ -48,31 +57,34 @@ contains
       call fail(NULL_MESSAGE, location)
    end subroutine fail_
    
+   subroutine fail_withMessageFileAndLine(message, file, line)
+      character(len=*), intent(in) :: message
+      character(len=*), intent(in) :: file
+      integer, intent(in) :: line
+      call fail(message, SourceLocation(file, line))
+   end subroutine fail_withMessageFileAndLine
+
    subroutine fail_withMessage(message, location)
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       call throw(message, location)
    end subroutine fail_withMessage
 
-   subroutine assertTrue_(condition, location)
+   subroutine assertTrue_(condition, unused, file, line)
       logical, intent(in) :: condition
-      type (SourceLocation), optional, intent(in) :: location
-      call assertTrue(condition, NULL_MESSAGE, location)
+      type (UnusableArgument), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+      call assertTrue(condition, NULL_MESSAGE, file, line)
    end subroutine assertTrue_
 
-   subroutine assertTrue_withMessage(condition, message, location)
+   subroutine assertTrue_withMessage(condition, message, file, line)
       logical, intent(in) :: condition
       character(len=*), intent(in) :: message
-      type (SourceLocation), optional, intent(in) :: location
-      if (.not. condition) call throw(trim(message), location)
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+      if (.not. condition) call throw(trim(message), SourceLocation(file, line))
    end subroutine assertTrue_withMessage
-
-   subroutine assertTrueMessage(condition, message)
-      use Exception_mod, only: throw
-      logical, intent(in) :: condition
-      character(len=*), intent(in) :: message
-      if (.not. condition) call throw('Logical assertion failed :: '//trim(message))
-   end subroutine assertTrueMessage
 
    subroutine assertExceptionRaisedBasic()
       use Exception_mod, only: throw, catch
@@ -93,11 +105,12 @@ contains
 
    end subroutine assertExceptionRaisedMessage
 
-   subroutine assertSameShape(shapeA, shapeB, message, location)
+   subroutine assertSameShape(shapeA, shapeB, message, file, line)
       integer, intent(in) :: shapeA(:)
       integer, intent(in) :: shapeB(:)
       character(len=*), optional, intent(in) :: message
-      type (SourceLocation), optional, intent(in) :: location
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       character(len=MAXLEN_MESSAGE) :: message_
@@ -109,7 +122,8 @@ contains
          throwMessage = 'nonconforming arrays - expected shape: ' // &
               & trim(toString(shapeA)) // ' but found shape: ' // &
               & trim(toString(shapeB))
-         call throw(appendWithSpace(message_, throwMessage), location)
+         call throw(appendWithSpace(message_, throwMessage), &
+              & SourceLocation(file, line))
       end if
          
    end subroutine assertSameShape
@@ -137,44 +151,24 @@ contains
 
    end function nonConformable
 
-   function toString_shape(arrayShape) result(string)
-      integer, intent(in) :: arrayShape(:)
-      integer, parameter :: MAX_LEN_STRING = 80
-      character(len=MAX_LEN_STRING) :: string
 
-      integer :: i
-      
-      select case (size(arrayShape)) ! rank
-      case (0) ! scalar
-         string = '0'
-      case (1)
-         write(string,'(i0)') arrayShape(1)
-      case (2:)
-         write(string,'(i0,14(",",i0:))') arrayShape(1:)
-      end select
-
-      string = '[' // trim(string) // ']'
-   end function toString_shape
-
-   ! Joins two strings with a space separator unless first string is
-   ! empty.
-   function appendWithSpace(a, b) result(ab)
-      character(len=*), intent(in) :: a
-      character(len=*), intent(in) :: b
-      character(len=MAXLEN_MESSAGE) :: ab
-
-      if (len_trim(a) > 0) then
-         ab = trim(a) // ' ' // trim(b)
-      else
-         ab = trim(b)
-      end if
-
-   end function appendWithSpace
-
-   subroutine assertFalse(condition)
+   subroutine assertFalse_(condition, unused, file, line)
       logical, intent(in) :: condition
-      call assertTrue(.not. condition)
-   end subroutine assertFalse
+      type (UnusableArgument), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+
+      call assertFalse(condition, NULL_MESSAGE, file, line)
+   end subroutine assertFalse_
+
+   subroutine assertFalse_withMessage(condition, message, file, line)
+      logical, intent(in) :: condition
+      character(len=*), intent(in) :: message
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+
+      call assertTrue(.not. condition, message, file, line)
+   end subroutine assertFalse_withMessage
 
    subroutine assertEqualString(expected, found)
       use Exception_mod, only: throw, MAXLEN_MESSAGE

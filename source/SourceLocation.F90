@@ -6,7 +6,6 @@ module SourceLocation_mod
    private
 
    public :: SourceLocation
-   public :: newSourceLocation
    public :: UNKNOWN_SOURCE_LOCATION
    public :: UNKNOWN_FILE_NAME
    public :: UNKNOWN_LINE_NUMBER
@@ -23,40 +22,28 @@ module SourceLocation_mod
    type (SourceLocation), parameter :: UNKNOWN_SOURCE_LOCATION = &
         & SourceLocation(UNKNOWN_FILE_NAME, UNKNOWN_LINE_NUMBER)
 
-   interface newSourceLocation
-      module procedure SourceLocation_fileAndLine
-      module procedure SourceLocation_fileName
-      module procedure SourceLocation_lineNumber
-   end interface newSourceLocation
+   interface SourceLocation
+      module procedure newSourceLocation
+   end interface SourceLocation
 
 contains
 
-   function SourceLocation_fileAndLine(fileName, lineNumber) result(location)
+   function newSourceLocation(fileName, lineNumber) result(location)
       type (SourceLocation) :: location
-      character(len=*), intent(in) :: fileName
-      integer, intent(in) :: lineNumber
+      character(len=*), optional,intent(in) :: fileName
+      integer, optional, intent(in) :: lineNumber
 
-      location%fileName = fileName
-      location%lineNumber = lineNumber
+      if (present(fileName)) then
+         location%fileName = fileName
+      else
+         location%fileName = UNKNOWN_FILE_NAME
+      end if
+      if (present(lineNumber)) then
+         location%lineNumber = lineNumber
+      else
+         location%lineNumber = UNKNOWN_LINE_NUMBER
+      end if
 
-   end function SourceLocation_fileAndLine
-
-   function SourceLocation_fileName(fileName) result(location)
-      type (SourceLocation) :: location
-      character(len=*), intent(in) :: fileName
-
-      location%fileName = fileName
-      location%lineNumber = UNKNOWN_LINE_NUMBER
-
-   end function SourceLocation_fileName
-
-   function SourceLocation_lineNumber(lineNumber) result(location)
-      type (SourceLocation) :: location
-      integer, intent(in) :: lineNumber
-
-      location%fileName = UNKNOWN_FILE_NAME
-      location%lineNumber = lineNumber
-
-   end function SourceLocation_lineNumber
+   end function NewSourceLocation
 
 end module SourceLocation_mod

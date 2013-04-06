@@ -4,8 +4,9 @@
 
 module Test_AssertReal_mod
    use TestSuite_mod
-   use StringUtilities, only: toString
-   use StringUtilities, only: MAXLEN_REAL_STRING
+   use StringUtilities_mod, only: toString
+   use StringUtilities_mod, only: MAXLEN_STRING
+   use AssertBasic_mod
    use AssertReal_mod
 
    implicit none
@@ -26,7 +27,6 @@ contains
 
       ADD(testValuesReport)
       ADD(testDifferenceReport)
-      ADD(testShapeReport)
 
       ADD(testExactUnequalA)
       ADD(testExactUnequalB)
@@ -45,36 +45,21 @@ contains
 
    subroutine testValuesReport()
       use Assert_mod, only: assertEqual
-      character(len=MAXLEN_REAL_STRING) :: one
+      character(len=MAXLEN_STRING) :: one
       one = toString(1.)
 
-      call assertEqual( &
-           & new_line('$') // '    expected: <' // trim(one) // '>' // &
-           & new_line('$') // '   but found: <' // trim(one) // '>', &
+      call assertEqual('expected: <' // trim(one) // '> but found: <' // trim(one) // '>', &
            & valuesReport(1.,1.))
    end subroutine testValuesReport
 
    subroutine testDifferenceReport()
       use Assert_mod, only: assertEqual
-      character(len=MAXLEN_REAL_STRING) :: one
+      character(len=MAXLEN_STRING) :: one
       one = toString(1.)
 
-      call assertEqual( &
-           & new_line('$') // '  difference: |' // trim(one) // '| > ' // trim(one), &
+      call assertEqual('    difference: |' // trim(one) // '| > tolerance:' // trim(one), &
            & differenceReport(1.,1.))
    end subroutine testDifferenceReport
-
-   subroutine testShapeReport()
-      use Assert_mod, only: assertEqual
-      integer :: shape1(1) = [2]
-      integer :: shape2(2) = [3,2]
-
-      call assertEqual( &
-           & new_line('$') // &
-           & '    expected shape: <[' // trim(toString(shape1)) // ']>' // new_line('$') // &
-           & '   but found shape: <[' // trim(toString(shape2)) // ']>', &
-           & shapeReport(shape1, shape2))
-   end subroutine testShapeReport
 
    subroutine testExactUnequalA()
       call checkUnequal(1., 1.0001)
@@ -94,8 +79,7 @@ contains
 
       call assertEqual(expected, found)
       call assertCatch( &
-           & 'Assertion failed: unequal real values.' // &
-           & trim(valuesReport(expected, found)) // &
+           & trim(valuesReport(expected, found)) // new_line('$') // &
            & trim(differenceReport(difference, tolerance = 0.)) &
            & )
    end subroutine checkUnequal
@@ -111,8 +95,7 @@ contains
 
       call assertEqual(expected, found, tolerance)
       call assertCatch( &
-           & 'Assertion failed: unequal real values.' // &
-           & trim(valuesReport(expected, found)) // &
+           & trim(valuesReport(expected, found)) // new_line('$') // &
            & trim(differenceReport(difference, tolerance)) &
            & )
    end subroutine checkNotWithinTolerance
@@ -140,18 +123,12 @@ contains
 
    subroutine testEquals_1D1D_nonConformableA()
       call assertEqual([1.], [1.,2.])
-      call assertCatch( &
-           & 'Assertion failed: non-conformbable real arrays.' // &
-           & trim(shapeReport([1],[2])) &
-           & )
+      call assertExceptionRaised('nonconforming arrays - expected shape: [1] but found shape: [2]')
    end subroutine testEquals_1D1D_nonConformableA
 
    subroutine testEquals_1D1D_nonConformableB()
       call assertEqual([1.,2.], [1.])
-      call assertCatch( &
-           & 'Assertion failed: non-conformbable real arrays.' // & 
-           & trim(shapeReport([2],[1])) &
-           & )
+      call assertExceptionRaised('nonconforming arrays - expected shape: [2] but found shape: [1]')
    end subroutine testEquals_1D1D_nonConformableB
 
    subroutine testEquals_1D1D_nonConformableC()

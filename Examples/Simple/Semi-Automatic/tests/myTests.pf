@@ -14,7 +14,7 @@ subroutine testAddBroken()
    use pfunit_mod
    implicit none
 
-   @assertEqual(1., add(1.,2.))
+   @assertEqual(1., add(1.,2.), 'intentional broken test')
 
 end subroutine testAddBroken
 

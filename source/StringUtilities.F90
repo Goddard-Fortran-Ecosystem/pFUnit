@@ -6,15 +6,16 @@
 ! Further control of field width could be added at a later time.
 !
 
-module StringUtilities
+module StringUtilities_mod
    implicit none
    private
    
    public :: toString
-   public :: MAXLEN_REAL_STRING
+   public :: appendWithSpace
+   public :: MAXLEN_STRING
 
 
-   integer, parameter :: MAXLEN_REAL_STRING = 25
+   integer, parameter :: MAXLEN_STRING = 80
    interface toString
       module Procedure toString_realScalar
       module Procedure toString_integerScalar
@@ -23,7 +24,7 @@ module StringUtilities
 
 contains
 
-   character(len=MAXLEN_REAL_STRING) function toString_realScalar(value) result(buffer)
+   character(len=MAXLEN_STRING) function toString_realScalar(value) result(buffer)
       real, intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
@@ -31,7 +32,7 @@ contains
 
    end function toString_realScalar
 
-   character(len=MAXLEN_REAL_STRING) function toString_integerScalar(value) result(buffer)
+   character(len=MAXLEN_STRING) function toString_integerScalar(value) result(buffer)
       integer, intent(in) :: value
       character(len=20) :: fmt
 
@@ -41,22 +42,37 @@ contains
 
    end function toString_integerScalar
 
-   character(len=MAXLEN_REAL_STRING) function toString_integer1D(values) result(buffer)
-      integer, intent(in) :: values(:)
-      character(len=20) :: fmt
+   function toString_integer1D(arrayShape) result(string)
+      integer, intent(in) :: arrayShape(:)
+      character(len=MAXLEN_STRING) :: string
 
-      if (size(values) > 1) then
-         write(fmt,'("(I0,",I0,a)') size(values) - 1, '(",",I0))'
-      else
-         fmt = '(I0)'
-      end if
+      integer :: i
+      
+      select case (size(arrayShape)) ! rank
+      case (0) ! scalar
+         string = '0'
+      case (1)
+         write(string,'(i0)') arrayShape(1)
+      case (2:)
+         write(string,'(i0,14(",",i0:))') arrayShape(1:)
+      end select
 
-      write(buffer,trim(fmt)) values
-      buffer = adjustL(buffer)
-
+      string = '[' // trim(string) // ']'
    end function toString_integer1D
 
+   ! Joins two strings with a space separator unless first string is
+   ! empty.
+   function appendWithSpace(a, b) result(ab)
+      character(len=*), intent(in) :: a
+      character(len=*), intent(in) :: b
+      character(len=len_trim(a)+1+len_trim(b)) :: ab
 
+      if (len_trim(a) > 0) then
+         ab = trim(a) // ' ' // trim(b)
+      else
+         ab = trim(b)
+      end if
 
+   end function appendWithSpace
 
-end module StringUtilities
+end module StringUtilities_mod
