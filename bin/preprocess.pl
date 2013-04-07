@@ -43,6 +43,8 @@ while ( my $line = <$infile> ) {  # process each line in the source file
     elsif ($line =~ /^\s*module\s+/i) {
 	$moduleName = $line;
 	$moduleName =~ s/\s*module\s+(\w*)$/\1/i;
+	chomp($moduleName);
+	$suiteName=$moduleName."_suite";
 	print "$line";
     }
     elsif ($line =~ /^\@TestCase/i) {
@@ -50,7 +52,7 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	$lineNumber++;
 	$constructor = $nextLine;
 	$constructor =~ s/^.*::\s*(\w*)/\1/i;
-	$constructor = new . $constructor;
+	$constructor = $constructor;
 	chomp($constructor);
 	print "!$line";
 	print $nextLine;

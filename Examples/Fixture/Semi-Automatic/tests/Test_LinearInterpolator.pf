@@ -4,11 +4,13 @@ module Test_LinearInterpolator_mod
    implicit none
 
    public :: Test_LinearInterpolator
-   public :: newTest_LinearInterpolator
+
+   interface Test_LinearInterpolator
+      module procedure newTest_LinearInterpolator
+   end interface Test_LinearInterpolator
 
 @TestCase
    type, extends(TestCase) :: Test_LinearInterpolator
-      private
       type (LinearInterpolator) :: interpolator
       procedure(runMethod), pointer :: userMethod => null()
    contains
@@ -16,10 +18,6 @@ module Test_LinearInterpolator_mod
       procedure :: tearDown  ! overrides generic
       procedure :: runMethod ! runs userMethod
    end type Test_LinearInterpolator
-
-   interface Test_LinearInterpolator
-      module procedure newTest_LinearInterpolator
-   end interface Test_LinearInterpolator
 
 contains
 

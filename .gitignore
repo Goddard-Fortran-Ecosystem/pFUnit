@@ -1,3 +1,5 @@
 /.pFUnitLog
 /ex.F90
+/lib
+/mod
 /mpi_pFUnit.x
