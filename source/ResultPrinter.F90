@@ -112,10 +112,10 @@ contains
 
       do i = 1, size(result%failures)
          aFailedTest = result%failures(i)
-         write(this%unit,*) 'Failure in: ', trim(aFailedTest%testName)
-
          locationString = toString(aFailedTest%exception%location)
-         write(this%unit,'(a,1x,a)') aFailedTest%exception%getMessage(), trim(locationString)
+
+         write(this%unit,*) 'Failure in: ', trim(aFailedTest%testName), " ", trim(locationString)
+         write(this%unit,'(a,1x,a)') aFailedTest%exception%getMessage()
       end do
 
    contains
@@ -128,13 +128,13 @@ contains
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
                string = '<unknown location>'
             else
-               write(string,'(a,"::",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
+               write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
             end if
          else
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
                string = trim(location%fileName)
             else
-               write(string,'(a,"::",i0)') trim(location%fileName), location%lineNumber
+               write(string,'(a,":",i0)') trim(location%fileName), location%lineNumber
             end if
          end if
 

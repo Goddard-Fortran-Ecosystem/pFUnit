@@ -9,7 +9,7 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 EXE = tests.x
 
-$(EXE): testSuites.inc myTests.pf add.F90 SUT tests
+$(EXE): testSuites.inc SUT tests
 	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*.o $(SRC_DIR)/*.o -L$(PFUNIT)/lib -lpfunit
 
 clean:

@@ -24,6 +24,7 @@ module pFUnit_mod
    public :: TestSuite, newTestSuite
    public :: TestMethod, newTestMethod
    public :: TestRunner, newTestRunner
+   public :: TestCase
    public :: ParallelContext
    public :: SerialContext, newSerialContext
 #ifdef USE_MPI

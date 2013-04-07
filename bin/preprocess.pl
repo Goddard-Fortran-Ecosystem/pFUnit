@@ -19,6 +19,8 @@ my $fname = $ARGV[0];
 open my $infile, '<', $fname or die "Can't open $ARGV[0]";
 
 my $lineNumber = 0;
+my $moduleName = "";
+my $constructor = "newTestMethod";
 my @tests;
 my @mpiTests;
 (my $file, my $dir, my $ext) = fileparse($fname, qr/\.[^.]*/);
@@ -35,14 +37,32 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	print "   if (anyExceptions()) return \n";
 	next;
     }
-    if ($line =~ /^\@test/i) {
+    elsif ($line =~ /^\s*module\s+procedure/i) { # don't treat as a module
+	print "$line";
+    }
+    elsif ($line =~ /^\s*module\s+/i) {
+	$moduleName = $line;
+	$moduleName =~ s/\s*module\s+(\w*)$/\1/i;
+	print "$line";
+    }
+    elsif ($line =~ /^\@TestCase/i) {
         my $nextLine = <$infile>;
+	$lineNumber++;
+	$constructor = $nextLine;
+	$constructor =~ s/^.*::\s*(\w*)/\1/i;
+	$constructor = new . $constructor;
+	chomp($constructor);
+	print "!$line";
+	print $nextLine;
+    }
+    elsif ($line =~ /^\@test/i) {
+        my $nextLine = <$infile>;
+	$lineNumber++;
 	my $testName = $nextLine;
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	push (@tests, {"name" => $testName});
 	print "!$line";
 	print $nextLine;
-	$lineNumber++;
     }
     elsif ($line =~ /^\@mpiTest/i) {
 	my $npesString = $line;
@@ -50,31 +70,31 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	
 	my @npes = split(',',$npesString);
         my $nextLine = <$infile>;
+	$lineNumber++;
 	my $testName = $nextLine;
 	$testName =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	
 	push (@mpiTests, {"name" => $testName, "npes" => \@npes});
 	print "!$line";
 	print $nextLine;
-	$lineNumber++;
     }
     elsif ($line =~ /^\@Before/i) {
         my $nextLine = <$infile>;
+	$lineNumber++;
 	$setUp = $nextLine;
 	$setUp =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	chomp($setUp);
 	print "!$line";
 	print $nextLine;
-	$lineNumber++;
     }
     elsif ($line =~ /^\@After/i) {
         my $nextLine = <$infile>;
+	$lineNumber++;
 	$tearDown = $nextLine;
 	$tearDown =~ s/ *subroutine *(.*) *\(.*\)/\1/i;
 	chomp($tearDown);
 	print "!$line";
 	print $nextLine;
-	$lineNumber++;
     }
     else {
 	print $line
@@ -89,21 +109,26 @@ print "!--------------------------------------------------\n";
 
 print "function $suiteName() result(suite)\n";
 print "   use pfunit_mod\n";
+if ($moduleName ne "") {
+    print "   use $moduleName\n";
+}
 print "   implicit none\n";
 print "   type (TestSuite) :: suite\n";
 print " \n";
 
-foreach (@tests,@mpiTests) {
-    my $test = $_->{"name"};
-    chomp($test);
-    print "   external $test \n";
-}
+if ($moduleName eq "") {
+    foreach (@tests,@mpiTests) {
+	my $test = $_->{"name"};
+	chomp($test);
+	print "   external $test \n";
+    }
 
-if ($setUp ne "") {
-    print "   external $setUp \n";
-}
-if ($tearDown ne "") {
-    print "   external $tearDown \n";
+    if ($setUp ne "") {
+	print "   external $setUp \n";
+    }
+    if ($tearDown ne "") {
+	print "   external $tearDown \n";
+    }
 }
 	
 
@@ -118,7 +143,7 @@ foreach (@tests) {
     my $test = $_->{"name"};
     chomp($test);
 
-    print "  call suite%addTest(newTestMethod(\"$test\", $test $setUp $tearDown))\n";
+    print "  call suite%addTest($constructor(\"$test\", $test $setUp $tearDown))\n";
 }
 
 foreach (@mpiTests) {

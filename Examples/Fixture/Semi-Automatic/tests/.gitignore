@@ -1,5 +1,4 @@
 *.o
-*.x
 *~
-*.mod
 /testSuites.inc
+*.mod
