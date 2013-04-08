@@ -3,7 +3,6 @@ module Fixture_mod
    public
 
 contains
-   
 
 @Before
    subroutine mySetup()

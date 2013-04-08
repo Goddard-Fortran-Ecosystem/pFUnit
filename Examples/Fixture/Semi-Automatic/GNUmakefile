@@ -1,4 +1,4 @@
-.PHONY: clean tests
+.PHONY: clean tests all
 
 TOP_DIR := $(shell pwd)
 SRC_DIR=$(TOP_DIR)/src
@@ -11,6 +11,9 @@ ifeq ($(F90),nagfor)
 endif
 
 EXE = tests.x
+
+all: $(EXE)
+	./$(EXE)
 
 $(EXE): testSuites.inc SUT tests
 	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*.o $(SRC_DIR)/*.o -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
