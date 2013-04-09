@@ -27,10 +27,10 @@ endif
 
 ifeq ($(MPI),YES)
 $(EXE): $(OBJS) libpfunit.a
-	$(MPIF90) -o $@ $(OBJS) $(LIBS) -g
+	$(FC) -o $@ $(OBJS) $(LIBS) -g
 else
 $(EXE): $(OBJS_SERIAL) libpfunit.a
-	$(MPIF90) -o $@ $(OBJS_SERIAL) $(LIBS) -g
+	$(FC) -o $@ $(OBJS_SERIAL) $(LIBS) -g
 endif
 
 Test_SimpleTestCase.o: SimpleTestCase.o

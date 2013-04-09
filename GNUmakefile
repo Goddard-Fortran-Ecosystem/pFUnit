@@ -20,11 +20,8 @@ ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
 
-# Determine default compiler by architecture
-ifneq ($(findstring $(ARCH),i386 x86_64 ia64),'')
-    F90_VENDOR ?=Intel
-endif
-
+# Default compiler by architecture - always gfortran for now:
+F90 ?=gfortran
 F90_VENDOR ?=UNKNOWN
 
 # 32/64 ABI - almost all architectures are now 64 bit
@@ -46,41 +43,28 @@ F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
 
 # F90 Vendor specifics
-ifeq ($(F90_VENDOR),Intel)
-  F90 ?=ifort
-  DEBUG_FLAGS += -traceback -O0
-  ifeq ($(F90_VERSION),10)
-    CFLAGS+=-m64
+# Possibly F90 defined - makes things simple:
+
+ifneq (,$(findstring $(F90), ifort gfortran nag))
+  ifeq ($(F90),ifort)
+     COMPILER=Intel
+  else ifeq ($(F90),gfortran)
+     COMPILER=GNU
+  else ifeq ($(F90),nagfor)
+     COMPILER=NAG
   endif
-  FPPFLAGS+=-DSTRINGIFY_OPERATOR
-endif
-
-ifeq ($(F90_VENDOR),GFortran)
-  F90 ?=gfortran
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(F90_VENDOR),GNU)
-  F90 ?=gfortran
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(F90_VENDOR),NAG)
-  F90 ?=nagfor
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-  FFLAGS +=-f2003
-  FFLAGS += -mismatch_all
-  F90_HAS_CPP=NO
-  CPP =cpp -traditional -C
-  ifeq ($(DSO),YES)
-    FFLAGS +=-PIC
+else # use F90_VENDOR to specify
+  ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
+    COMPILER=Intel
+  else ifneq (,$(findstring $(F90_VENDOR),GNU gnu gfortran GFortran GFORTRAN))
+    COMPILER=GNU
+  else ifneq (,$(findstring $(F90_VENDOR),nag NAG nagfor))
+    COMPILER=NAG
   endif
-  LDFLAGS+= -ldl
 endif
 
 ifeq ($(MPI),YES)
   MPIF90 ?= mpif90
-  F90     = $(MPIF90)
   FPPFLAGS += $DUSE_MPI
   CPPFLAGS += -DUSE_MPI
   ifeq ($(MPICH),YES)
@@ -155,12 +139,14 @@ export VPATH
 export MPI
 export MPI
 export LIBMPI
+export COMPILER
+
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
   $(warning     UNAME:  $(UNAME))
   $(warning     ARCH:   $(ARCH))
-  $(warning     F90 vendor:     $(F90_VENDOR))
+  $(warning     F90 vendor:     $(COMPILER))
   $(warning     F90 command:    $(F90))
   $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))

@@ -4,23 +4,23 @@ INCLUDE_DIR =$(TOP)/include
 LIB_DIR     =$(TOP)/source
 MOD_DIR     =$(TOP)/source
 
-include $(INCLUDE_DIR)/$(F90_VENDOR).mk
+include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)
 
 ifneq ($(MPI),YES)
-  MPIF90=$(F90)
+  FC=$(F90)
 else
-  MPIF90 ?=mpif90
+  FC=$(MPIF90)
 endif
 
 ifeq ($(F90_HAS_CPP),YES)
 %.o: %.F90
-	$(MPIF90) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
+	$(FC) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
 else
 %.o:%.F90
 	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(F90) -c $(F90FLAGS)  $*_cpp.F90 -o $@
+	$(FC) -c $(F90FLAGS)  $*_cpp.F90 -o $@
 	$(RM) $*_cpp.F90
 endif
 
