@@ -90,7 +90,6 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-
 all: 
 	$(MAKE) -C $(SOURCE_DIR) all
 	$(MAKE) -C $(TESTS_DIR) all
@@ -137,7 +136,7 @@ export SOURCE_DIR
 export INCLUDE_DIR
 export VPATH
 export MPI
-export MPI
+export MPIF90
 export LIBMPI
 export COMPILER
 
