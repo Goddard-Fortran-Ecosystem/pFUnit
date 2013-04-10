@@ -23,6 +23,8 @@ my $moduleName = "";
 my $constructor = "newTestMethod";
 my @tests;
 my @mpiTests;
+my @parameterList;
+my $parameterType;
 (my $file, my $dir, my $ext) = fileparse($fname, qr/\.[^.]*/);
 my $suiteName = $file;
 my $setUp = "";
@@ -80,6 +82,20 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	print "!$line";
 	print $nextLine;
     }
+    elsif ($line =~ /^\@Parameters/i) {
+	my $parameters = $line;
+	$parameters =~ s/.*\{(.*)\}.*/\1/i;
+	chomp($parameters);
+	@parameterList = split(',',$parameters);
+        my $nextLine = <$infile>;
+	$lineNumber++;
+	$parameterType = $nextLine;
+	$parameterType =~ s/\s*type.*::\s*(\w*)/\1/i;
+	chomp($parameterType);
+
+	print "!$line";
+	print $nextLine;
+    }
     elsif ($line =~ /^\@Before/i) {
         my $nextLine = <$infile>;
 	$lineNumber++;
@@ -116,8 +132,17 @@ if ($moduleName ne "") {
 }
 print "   implicit none\n";
 print "   type (TestSuite) :: suite\n";
+if ($parameterType ne "") {
+
+    $myIndent = "   ";
+    print "   type ($parameterType), allocatable :: parameters(:) \n";
+    print "   type ($constructor) :: dummy \n";
+    print "   integer :: iParam \n";
+    print "\n";
+}
 print " \n";
 
+my $extraArgs = "";
 if ($moduleName eq "") {
     foreach (@tests,@mpiTests) {
 	my $test = $_->{"name"};
@@ -138,14 +163,35 @@ print " \n";
 print "   suite = newTestSuite('$suiteName')\n";
 print " \n";
 
-if ($setUp ne "") {$setUp = ", $setUp";}
-if ($tearDown ne "") {$tearDown = ", $tearDown";}
+if ($setUp ne "") {
+    $extraArgs .= ", $setUp";
+}
+if ($tearDown ne "") {
+    $extraArgs .= ", $tearDown";
+}
+
+my $indent = "";
+if ($parameterType ne "") {
+    print "   parameters = dummy%getParameters() \n";
+    print "\n";
+    print "   do iParam = 1, size(parameters) \n";
+    print "      associate( & \n";
+    my $first = $parameterList[0];
+    print "         & $first => parameters(iParam)%$first";
+	$extraArgs .= ",$first";
+    foreach (@parameterList[1..scalar(@parameterList)-1]) {
+	print ", &\n         & $_ => parameters(iParam)%$_";
+	$extraArgs .= ",$_";
+    }
+    print "  &\n         & )\n";
+}
 
 foreach (@tests) {
     my $test = $_->{"name"};
     chomp($test);
 
-    print "  call suite%addTest($constructor(\"$test\", $test $setUp $tearDown))\n";
+    print $myIndent . "   call suite%addTest($constructor(\"$test\", $test & \n";
+    print $myIndent . "      &  $extraArgs))\n";
 }
 
 foreach (@mpiTests) {
@@ -156,10 +202,17 @@ foreach (@mpiTests) {
     foreach (@npes) {
 	chomp;
 	print "  call suite%addTest(newMpiTestMethod(\"$test\", &
-      &    $test $setUp $tearDown, &
+      &    $test $extraArgs, &
       &    numProcesses=$_))\n";
     }
 }
+
+if ($parameterType ne "") {
+    print "      end associate \n";
+    print "   end do \n";
+    print " \n";
+}
+
 
 print " \n";
 print "end function $suiteName\n";

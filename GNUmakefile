@@ -137,7 +137,6 @@ export SOURCE_DIR
 export INCLUDE_DIR
 export VPATH
 export MPI
-export MPI
 export LIBMPI
 export COMPILER
 
