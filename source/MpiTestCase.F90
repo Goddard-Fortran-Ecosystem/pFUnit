@@ -1,12 +1,14 @@
 module MpiTestCase_mod
    use MpiContext_mod
-   use TestCase_mod, only: TestCase
+   use TestCase_mod
+   use ParameterizedTestCase_mod, only: ParameterizedTestCase
+!!$   use ParameterizedTestCase_mod, only: MAX_LEN_LABEL
    implicit none
    private
 
    public :: MpiTestCase
 
-   type, abstract, extends(TestCase) :: MpiTestCase
+   type, abstract, extends(ParameterizedTestCase) :: MpiTestCase
       integer :: processRank
       integer :: numProcessesRequested
       type (MpiContext) :: context
@@ -24,6 +26,7 @@ module MpiTestCase_mod
       procedure :: getMpiCommunicator
       procedure(runMethod), deferred :: runMethod
       procedure :: getContext
+      procedure :: getParameterString
    end type MpiTestCase
 
    abstract interface
@@ -128,5 +131,13 @@ contains
       integer, intent(in) :: numProcesses
       this%numProcessesRequested = numProcesses
    end subroutine setNumProcessesRequested
+
+   function getParameterString(this) result(label)
+      class (MpiTestCase), intent(in) :: this
+      integer, parameter :: MAX_LEN_LABEL = 32
+      character(len=32) :: label
+
+      write(label,'(a,i0)') 'npes=',this%numProcessesRequested
+   end function getParameterString
 
 end module MpiTestCase_mod

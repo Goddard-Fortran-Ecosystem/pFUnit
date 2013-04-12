@@ -58,8 +58,13 @@ contains
       integer :: clockRate
       real :: runTime
 
+      type (DebugListener) :: debug
+
       result = this%createTestResult()
       call result%addListener(this%printer)
+#ifdef DEBUG_ON
+      call result%addListener(debug)
+#endif
       call system_clock(clockStart)
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)

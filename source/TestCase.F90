@@ -31,6 +31,7 @@ module TestCase_mod
 #endif
    contains
       procedure :: setSurrogate
+      procedure :: baseName
       procedure :: getName 
       procedure :: setName
       procedure :: countTestCases
@@ -51,10 +52,16 @@ module TestCase_mod
 
 contains
 
-   function getName(this) result(name)
+   function baseName(this) result(name)
       class (TestCase), intent(in) :: this
       character(:), allocatable :: name
       name = this%name
+   end function baseName
+
+   function getName(this) result(name)
+      class (TestCase), intent(in) :: this
+      character(:), allocatable :: name
+      name = this%baseName()
    end function getName
 
    subroutine setName(this, name)

@@ -162,6 +162,7 @@ contains
       integer :: ier
 
       npes = this%getNumProcesses()
+
       allocate(counts(0:npes-1), displacements(0:npes-1))
       
       call Mpi_AllGather(numEntries, 1, MPI_INTEGER, counts, 1, MPI_Integer, &
@@ -254,11 +255,15 @@ contains
 
       integer, allocatable :: counts(:), displacements(:)
       integer :: ier
+      logical, allocatable :: values_(:) ! mpi hates 0 sized arrays
 
       call this%makeMap(size(values), counts, displacements)
 
+      allocate(values_(max(1, size(values))))
+      values_(:size(values)) = values
+
       call Mpi_AllgatherV( &
-           & values, size(values), MPI_LOGICAL, &
+           & values_, size(values), MPI_LOGICAL, &
            & list,   counts, displacements, MPI_LOGICAL, &
            & this%mpiCommunicator, ier)
 
@@ -273,7 +278,7 @@ contains
       integer, parameter :: MAXLEN_SUFFIX = 80
       character(len=MAXLEN_SUFFIX) :: suffix
 
-      write(suffix,'(" (PE=",i0,", NPES=",i0,")")') this%processRank(), this%getNumProcesses()
+      write(suffix,'(" (PE=",i0,")")') this%processRank()
 
       message = trim(message) // trim(suffix)
 

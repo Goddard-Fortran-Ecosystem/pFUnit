@@ -136,10 +136,6 @@ contains
       call result%addFailure(tstCase%getSurrogate(), [anException])
       call assertEqual('addFailure() was called', listener%log)
 
-      call throw('one')
-      call throw('two')
-      call throw('three')
-
    end subroutine testAddListenerFailure
 
 end module Test_TestResult_mod

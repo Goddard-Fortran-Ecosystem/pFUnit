@@ -35,8 +35,9 @@ TestResult.o: SurrogateTestCase.o TestListener.o Exception.o
 Test.o: TestResult.o
 
 TestCase.o: Test.o TestResult.o SurrogateTestCase.o
-
 TestCase.o: SerialContext.o
+ParameterizedTestCase.o: TestCase.o
+
 DynamicTestCase.o: TestCase.o
 
 DebugListener.o: TestListener.o
@@ -59,6 +60,7 @@ ifeq ($(MPI),YES)
    pFUnit.o: MpiContext.o
 
    MpiTestCase.o : TestCase.o MpiContext.o ParallelException.o
+   MpiTestCase.o : ParameterizedTestCase.o
    MpiTestMethod.o: MpiTestCase.o
 endif
 

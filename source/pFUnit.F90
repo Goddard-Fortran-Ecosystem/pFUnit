@@ -4,6 +4,7 @@ module pFUnit_mod
    use TestSuite_mod
    use TestCase_mod
    use TestMethod_mod
+   use ParameterizedTestCase_mod
    use TestRunner_mod
    use Assert_mod
    use AssertReal_mod
@@ -25,6 +26,7 @@ module pFUnit_mod
    public :: TestMethod, newTestMethod
    public :: TestRunner, newTestRunner
    public :: TestCase
+   public :: ParameterizedTestCase, AbstractTestParameter
    public :: ParallelContext
    public :: SerialContext, newSerialContext
 #ifdef USE_MPI

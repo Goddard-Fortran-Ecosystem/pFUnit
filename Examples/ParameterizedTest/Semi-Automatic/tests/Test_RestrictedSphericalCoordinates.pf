@@ -15,9 +15,6 @@ module Test_RestrictSphericalCoordinates_mod
    use SphericalCoordinates_mod
    implicit none
 
-   type, abstract :: AbstractTestParameter
-   end type AbstractTestParameter
-
 @Parameters{lat,lon,restrictedLat,restrictedLon}
    type, extends(AbstractTestParameter) :: LatLonCase
       real :: lat
@@ -27,7 +24,7 @@ module Test_RestrictSphericalCoordinates_mod
    end type LatLonCase
 
 @TestCase
-   type, extends(TestCase) :: Test_RestrictSphericalCoordinates
+   type, extends(ParameterizedTestCase) :: Test_RestrictSphericalCoordinates
       real :: lat
       real :: lon
       real :: restrictedLat
@@ -37,7 +34,7 @@ module Test_RestrictSphericalCoordinates_mod
       procedure(runMethod), pointer :: userMethod => null()
    contains
       procedure, nopass :: getParameters
-      procedure :: makeMessage ! generate a string to identify parameters in failing tests
+      procedure :: getParameterString ! generate a string to identify parameters in failing tests
       procedure :: runMethod ! runs userMethod
    end type Test_RestrictSphericalCoordinates
 
@@ -96,22 +93,22 @@ contains
       coordinates = SphericalCoordinates(this%lat, this%lon)
       call coordinates%restrict() 
 
-      @assertEqual(this%restrictedLat, coordinates%getLat(), this%makeMessage())
-      @assertEqual(this%restrictedLon, coordinates%getLon(), this%makeMessage())
+      @assertEqual(this%restrictedLat, coordinates%getLat(), this%getParameterString())
+      @assertEqual(this%restrictedLon, coordinates%getLon(), this%getParameterString())
 
    end subroutine testRestrict
 
-   function makeMessage(this) result(message)
+   function getParameterString(this) result(string)
       class (Test_RestrictSphericalCoordinates), intent(in) :: this
-      character(:), allocatable :: message
+      character(:), allocatable :: string
 
       character(len=80) :: buffer
 
       write(buffer,'("(lat,lon)=(",f10.4,",",f10.4,") => (",f10.4,",",f10.4,")")') &
            & this%lat, this%lon, this%restrictedLat, this%restrictedLon
-      message = trim(buffer)
+      string = trim(buffer)
 
-   end function makeMessage
+   end function getParameterString
 
    subroutine runMethod(this)
       class (Test_RestrictSphericalCoordinates), intent(inout) :: this

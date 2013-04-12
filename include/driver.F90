@@ -4,20 +4,12 @@ program main
 
    type (TestSuite) :: all
    type (TestRunner) :: runner
-   class (ParallelContext), pointer :: context
 
    call initialize()
 
    all = getTestSuites()
    runner = newTestRunner()
 
-#ifdef USE_MPI
-!!$   allocate(context, source=newMpiContext())
-#else
-!!$   allocate(context, source=newSerialContext())
-#endif
-
-!!$   call runner%run(all, context)
 #ifdef USE_MPI
    call runner%run(all, newMpiContext())
 #else

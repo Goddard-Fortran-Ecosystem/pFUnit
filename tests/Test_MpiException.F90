@@ -94,10 +94,10 @@ contains
       select case (this%getProcessRank())
       case (0)
          ! remote exceptions now local with added suffix
-         call assertTrue(catch('exception 1 (PE=0, NPES=3)'))
-         call assertTrue(catch('exception 2 (PE=1, NPES=3)'))
-         call assertTrue(catch('exception 3 (PE=1, NPES=3)'))
-         call assertTrue(catch('exception 4 (PE=2, NPES=3)'))
+         call assertTrue(catch('exception 1 (PE=0)'))
+         call assertTrue(catch('exception 2 (PE=1)'))
+         call assertTrue(catch('exception 3 (PE=1)'))
+         call assertTrue(catch('exception 4 (PE=2)'))
       case (1:)
          ! local exceptions gone
          call assertEqual(0, getNumExceptions())

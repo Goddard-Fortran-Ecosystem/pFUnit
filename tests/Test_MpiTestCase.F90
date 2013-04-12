@@ -117,9 +117,16 @@ contains
          call assertEqual(1, reslt%failureCount())
          if (1 == reslt%failureCount()) then
             failure = reslt%getIthFailure(1)
-            call assertEqual('brokenProcess1', failure%testName)
-            call assertEqual('Intentional fail on process 1. (PE=1, NPES=3)', &
-                 & failure%exception%getMessage())
+            select case (this%getNumProcesses())
+            case (1)
+               call assertEqual('brokenProcess1[npes=1]', failure%testName)
+            case (3)
+               call assertEqual('brokenProcess1[npes=3]', failure%testName)
+            case default
+               call throw('this test only to be run for npes=1 or npes=3')
+            end select
+            call assertEqual('Intentional fail on process 1. (PE=1)', &
+                 & failure%exceptions(1)%getMessage())
          end if
       end if
 
@@ -146,18 +153,17 @@ contains
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then
-         call assertEqual(2, reslt%failureCount())
+         call assertEqual(1, reslt%failureCount())
          if (reslt%failureCount() > 0) then
 
             failure = reslt%getIthFailure(1)
-            call assertEqual('brokenOnProcess2', failure%testName)
-            call assertEqual('Intentional fail (PE=1, NPES=3)', &
-                 & failure%exception%getMessage())
+            call assertEqual(2, size(failure%exceptions))
+            call assertEqual('brokenOnProcess2[npes=3]', failure%testName)
+            call assertEqual('Intentional fail (PE=1)', &
+                 & failure%exceptions(1)%getMessage())
 
-            failure = reslt%getIthFailure(2)
-            call assertEqual('brokenOnProcess2', failure%testName)
-            call assertEqual('Intentional fail (PE=2, NPES=3)', &
-                 & failure%exception%getMessage())
+            call assertEqual('Intentional fail (PE=2)', &
+                 & failure%exceptions(2)%getMessage())
          end if
       end if
 
@@ -191,19 +197,20 @@ contains
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then
-         call assertEqual(AVAILABLE_PES, reslt%failureCount())
+         call assertEqual(1, reslt%failureCount())
          if (anyExceptions()) return
 
+         failure = reslt%getIthFailure(1)
+
          do i = 1, AVAILABLE_PES
-            failure = reslt%getIthFailure(i)
-            call assertEqual('brokenOnProcess2', failure%testName)
+            call assertEqual('brokenOnProcess2[npes=5]', failure%testName)
             if (anyExceptions()) return
             expectedMessage = "Insufficient processes to run this test."
             process = i - 1 ! C numbering convention in MPI process rank
             suffix=''
             call this%context%labelProcess(suffix)
-            write(suffix,'(" (PE=",i0,", NPES=",i0,")")') i-1, AVAILABLE_PES
-            call assertEqual(trim(expectedMessage) // trim(suffix), failure%exception%getMessage())
+            write(suffix,'(" (PE=",i0,")")') i-1
+            call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(i)%getMessage())
             if (anyExceptions()) return
          end do
 

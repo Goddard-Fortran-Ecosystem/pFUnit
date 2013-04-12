@@ -54,11 +54,7 @@ contains
       totalExceptions = getNumExceptions(context)
       if (totalExceptions > 0) then
 
-         if (context%isRootProcess()) then
-            allocate(globalList%exceptions(totalExceptions))
-         else
-            allocate(globalList%exceptions(1)) ! mpi does not like 0-sized arrays
-         end if
+         allocate(globalList%exceptions(totalExceptions))
          allocate(localList%exceptions(getNumExceptions()))
 
          n = getNumExceptions()
