@@ -18,12 +18,12 @@ module TestListener_mod
    end type ListenerPointer
 
    abstract interface
-      subroutine addFailure(this, testName, anException)
+      subroutine addFailure(this, testName, exceptions)
          use Exception_mod
          import TestListener
          class (TestListener), intent(inout) :: this
          character(len=*), intent(in) :: testName
-         type (Exception), intent(in) :: anException
+         type (Exception), intent(in) :: exceptions(:)
       end subroutine addFailure
 
       subroutine startTest(this, testName)

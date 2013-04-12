@@ -14,11 +14,11 @@ module DebugListener_mod
 
 contains
 
-  subroutine addFailure(this, testName, anException)
+  subroutine addFailure(this, testName, exceptions)
      use Exception_mod
      class (DebugListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: anException
+     type (Exception), intent(in) :: exceptions(:)
 
      write(*,*)'Failure in ',trim(testName)
 

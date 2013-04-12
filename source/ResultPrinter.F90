@@ -37,11 +37,13 @@ contains
 
   end function newResultPrinter
 
-  subroutine addFailure(this, testName, anException)
+  subroutine addFailure(this, testName, exceptions)
      use Exception_mod
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: anException
+     type (Exception), intent(in) :: exceptions(:)
+
+     integer :: i
 
      write(this%unit,'("F")', advance='no')
      this%column = this%column + 1
@@ -50,7 +52,9 @@ contains
         this%column = 0
      end if
 
-     call this%exceptions%throw(anException)
+     do i = 1, size(exceptions)
+        call this%exceptions%throw(exceptions(i))
+     end do
 
   end subroutine addFailure
 
@@ -107,15 +111,19 @@ contains
       type (TestResult), intent(in) :: result
 
       type (TestFailure) :: aFailedTest
-      integer :: i
+      integer :: i, j
       character(len=80) :: locationString
 
       do i = 1, size(result%failures)
          aFailedTest = result%failures(i)
-         locationString = toString(aFailedTest%exception%location)
 
-         write(this%unit,*) 'Failure in: ', trim(aFailedTest%testName), " ", trim(locationString)
-         write(this%unit,'(a,1x,a)') aFailedTest%exception%getMessage()
+         do j= 1, size(aFailedTest%exceptions)
+            locationString = toString(aFailedTest%exceptions(j)%location)
+            
+            write(this%unit,*) 'Failure in: ', trim(aFailedTest%testName), &
+                 & " ", trim(locationString)
+            write(this%unit,'(a,1x,a)') aFailedTest%exceptions(j)%getMessage()
+         end do
       end do
 
    contains

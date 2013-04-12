@@ -80,11 +80,11 @@ contains
        character(len=*), intent(in) :: testName
     end subroutine endTest
 
-    subroutine addFailure(this, testName, anException)
+    subroutine addFailure(this, testName, exceptions)
        use Exception_mod
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
-       type (Exception), intent(in) :: anException
+       type (Exception), intent(in) :: exceptions(:)
     end subroutine addFailure
 
 end module TestRunner_mod

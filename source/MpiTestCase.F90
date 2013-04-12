@@ -49,7 +49,6 @@ contains
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
-      ! create subcommunicator
       select type (context)
       type is (MpiContext)
          this%parentContext = context
@@ -60,8 +59,6 @@ contains
 
       call tstResult%run(this%getSurrogate(), context)
 
-      call this%parentContext%barrier()
-
    end subroutine run
 
    recursive subroutine runBare(this)
@@ -69,6 +66,7 @@ contains
       use ParallelException_mod
       class (MpiTestCase), intent(inout) :: this
 
+      ! create subcommunicator
       this%context = this%parentContext%makeSubcontext(this%numProcessesRequested)
 
       if (.not. anyExceptions(this%parentContext)) then

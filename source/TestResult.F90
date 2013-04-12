@@ -36,12 +36,12 @@ contains
       newTestResult%numRun = 0
    end function newTestResult
 
-   subroutine addFailure(this, aTest, anException)
+   subroutine addFailure(this, aTest, exceptions)
       use Exception_mod, only: Exception
       use TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
-      type (Exception), intent(in) :: anException
+      type (Exception), intent(in) :: exceptions(:)
 
       integer :: i, n
       type (TestFailure), allocatable :: tmp(:)
@@ -53,12 +53,11 @@ contains
       allocate(this%failures(n+1))
       this%failures(1:n) = tmp
       deallocate(tmp)
-      this%failures(n+1)%exception = anException
-      this%failures(n+1)%testName = aTest%getName()
+      this%failures(n+1) = TestFailure(aTest%getName(), exceptions)
 
       this%numFailed = n + 1
       do i = 1, size(this%listeners)
-         call this%listeners(i)%pListener%addFailure(aTest%getName(), anException)
+         call this%listeners(i)%pListener%addFailure(aTest%getName(), exceptions)
       end do
 
    end subroutine addFailure
@@ -111,11 +110,9 @@ contains
       call test%runBare()
 
       if (context%isRootProcess()) then
-         do
-            anException = catchAny()
-            if (anException%isNull()) exit
-            call this%addFailure(test, anException)
-         end do
+         if (anyExceptions()) then
+            call this%addFailure(test, getExceptions())
+         end if
       end if
 
       if (context%isRootProcess()) call this%endTest(test)

@@ -43,6 +43,7 @@ module PrivateException_mod
       procedure :: catch_message
       generic :: catch => catch_any
       generic :: catch => catch_message
+      procedure :: getExceptions
       procedure :: noExceptions
       procedure :: anyExceptions
       procedure :: clearAll
@@ -302,6 +303,15 @@ contains
 
    end function catch_message
 
+   function getExceptions(this) result(exceptions)
+      type (Exception), allocatable :: exceptions(:)
+      class (ExceptionList), intent(inOut) :: this
+
+      call move_alloc(from=this%exceptions, to=exceptions)
+      allocate(this%exceptions(0))
+      
+   end function getExceptions
+
    subroutine clearAll(this)
       class (ExceptionList), intent(inOut) :: this
       deallocate(this%exceptions)
@@ -336,6 +346,7 @@ module Exception_mod
    public :: gatherExceptions
    public :: catchAny
    public :: catch
+   public :: getExceptions
    public :: noExceptions
    public :: anyExceptions
    public :: clearAll
@@ -410,6 +421,11 @@ contains
 
       catch_message = globalExceptionList%catch(message, preserve)
    end function catch_message
+
+   function getExceptions() result(exceptions)
+      type (Exception), allocatable :: exceptions(:)
+      exceptions = globalExceptionList%getExceptions()
+   end function getExceptions
 
    logical function noExceptions()
       noExceptions = globalExceptionList%noExceptions()

@@ -69,10 +69,10 @@ contains
       aResult = newTestResult()
       call assertEqual(0, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), newException('fail'))
+      call aResult%addFailure(aTest%getSurrogate(), [newException('fail')])
       call assertEqual(1, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), newException('fail again'))
+      call aResult%addFailure(aTest%getSurrogate(), [newException('fail again')])
       call assertEqual(2, aResult%failureCount())
 
    end subroutine testGetNumFailed
@@ -133,8 +133,12 @@ contains
       result = newTestResult()
       call result%addListener(listener)
       allocate(tstCase, source = newSimpleTestCase('method1', method1))
-      call result%addFailure(tstCase%getSurrogate(), anException)
+      call result%addFailure(tstCase%getSurrogate(), [anException])
       call assertEqual('addFailure() was called', listener%log)
+
+      call throw('one')
+      call throw('two')
+      call throw('three')
 
    end subroutine testAddListenerFailure
 
