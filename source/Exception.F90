@@ -349,6 +349,7 @@ module Exception_mod
    public :: getExceptions
    public :: noExceptions
    public :: anyExceptions
+   public :: anyErrors
    public :: clearAll
 
    public :: initializeGlobalExceptionList
@@ -378,6 +379,7 @@ contains
    subroutine initializeGlobalExceptionList()
       globalExceptionList = newExceptionList()
    end subroutine initializeGlobalExceptionList
+
 
    integer function getNumExceptions_local() result(numExceptions)
       numExceptions = globalExceptionList%getNumExceptions()
@@ -434,6 +436,20 @@ contains
    logical function anyExceptions_local()
       anyExceptions_local = globalExceptionList%anyExceptions()
    end function anyExceptions_local
+
+   logical function anyErrors()
+      integer :: i
+      integer :: n
+
+      do i = 1, globalExceptionList%getNumExceptions()
+         n = min(14,len(globalExceptionList%exceptions(i)%message))
+         if (globalExceptionList%exceptions(i)%message(1:n) == 'RUNTIME-ERROR:') then
+            anyErrors = .true.
+            return
+         end if
+      end do
+      anyErrors = .false.
+   end function anyErrors
 
    subroutine gatherExceptions(context)
       use ParallelContext_mod

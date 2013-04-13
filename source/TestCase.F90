@@ -7,6 +7,7 @@ module TestCase_mod
    private
 
    public :: TestCase
+   public :: TestCaseReference
 
    type, extends(SurrogateTestCase) :: ConcreteSurrogate
       private
@@ -42,6 +43,10 @@ module TestCase_mod
       procedure :: getSurrogate
       procedure(runMethod), deferred :: runMethod
    end type TestCase
+
+   type TestCaseReference
+      class (TestCase), allocatable :: test
+   end type TestCaseReference
 
    abstract interface
       recursive subroutine runMethod(this)

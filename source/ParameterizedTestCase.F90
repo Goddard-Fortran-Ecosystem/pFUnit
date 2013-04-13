@@ -22,10 +22,8 @@ module ParameterizedTestCase_mod
    abstract interface
       function getParameterString(this) result(label)
          import ParameterizedTestCase
-         import MAX_LEN_LABEL
          class (ParameterizedTestCase), intent(in) :: this
-         character(len=MAX_LEN_LABEL) :: label
-!!$         character(len=:), allocatable :: label
+         character(len=:), allocatable :: label
       end function getParameterString
    end interface
 

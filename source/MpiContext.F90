@@ -40,17 +40,16 @@ contains
 
    ! Use MPI_COMM_WORLD - avoid except in main program
    function newMpiContext_world() result(context)
-      type (MpiContext), pointer :: context
-      context => newMpiContext(MPI_COMM_WORLD)
+      type (MpiContext) :: context
+      context = newMpiContext(MPI_COMM_WORLD)
    end function newMpiContext_world
 
    ! Make a duplicate of the communicator for internal use
    function newMpiContext_comm(communicator) result(context)
-      type (MpiContext), pointer :: context
+      type (MpiContext) :: context
       integer, intent(in) :: communicator
       integer :: ier
 
-      allocate(context)
       call MPI_Comm_dup(communicator, context%mpiCommunicator, ier)
       context%root = 0
 

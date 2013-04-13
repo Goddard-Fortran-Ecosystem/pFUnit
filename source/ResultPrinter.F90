@@ -10,9 +10,9 @@ module ResultPrinter_mod
    type, extends(TestListener) :: ResultPrinter
       integer :: unit
       integer :: column
-      type (ExceptionList) :: exceptions
    contains
       procedure :: addFailure
+      procedure :: addError
       procedure :: startTest
       procedure :: endTest
       procedure :: print
@@ -33,7 +33,6 @@ contains
 
      newResultPrinter%unit = unit
      newResultPrinter%column = 0
-     newResultPrinter%exceptions = newExceptionList()
 
   end function newResultPrinter
 
@@ -43,8 +42,6 @@ contains
      character(len=*), intent(in) :: testName
      type (Exception), intent(in) :: exceptions(:)
 
-     integer :: i
-
      write(this%unit,'("F")', advance='no')
      this%column = this%column + 1
      if (this%column >= MAX_COLUMN) then
@@ -52,11 +49,22 @@ contains
         this%column = 0
      end if
 
-     do i = 1, size(exceptions)
-        call this%exceptions%throw(exceptions(i))
-     end do
-
   end subroutine addFailure
+
+  subroutine addError(this, testName, exceptions)
+     use Exception_mod
+     class (ResultPrinter), intent(inOut) :: this
+     character(len=*), intent(in) :: testName
+     type (Exception), intent(in) :: exceptions(:)
+
+     write(this%unit,'("E")', advance='no')
+     this%column = this%column + 1
+     if (this%column >= MAX_COLUMN) then
+        write(this%unit,*) ! newline
+        this%column = 0
+     end if
+
+  end subroutine addError
 
   subroutine startTest(this, testName)
      class (ResultPrinter), intent(inOut) :: this
@@ -89,7 +97,8 @@ contains
       real, intent(in) :: runTime
 
       call this%printHeader(runTime)
-      call this%printFailures(result)
+      call this%printFailures('Error', result%errors)
+      call this%printFailures('Failure', result%failures)
       call this%printFooter(result)
 
    end subroutine print
@@ -100,29 +109,32 @@ contains
 
       write(this%unit,*)
       write(this%unit,'(a,1x,f12.3,1x,a)') 'Time: ', runTime, 'seconds'
+      write(this%unit,*)" "
 
    end subroutine printHeader
 
-   subroutine printFailures(this, result)
+   subroutine printFailures(this, label, failures)
       use TestResult_mod
       use TestFailure_mod
       use SourceLocation_mod
       class (ResultPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
+      character(len=*), intent(in) :: label
+      type (TestFailure), intent(in) :: failures(:)
 
       type (TestFailure) :: aFailedTest
       integer :: i, j
       character(len=80) :: locationString
 
-      do i = 1, size(result%failures)
-         aFailedTest = result%failures(i)
+      do i = 1, size(failures)
+         aFailedTest = failures(i)
 
          do j= 1, size(aFailedTest%exceptions)
             locationString = toString(aFailedTest%exceptions(j)%location)
             
-            write(this%unit,*) 'Failure in: ', trim(aFailedTest%testName), &
+            write(this%unit,*) label,' in: ', trim(aFailedTest%testName), &
                  & " ", trim(locationString)
             write(this%unit,'(a,1x,a)') aFailedTest%exceptions(j)%getMessage()
+            write(this%unit,*)' '
          end do
       end do
 
@@ -157,7 +169,6 @@ contains
       class (ResultPrinter), intent(in) :: this
       type (TestResult), intent(in) :: result
 
-      write(this%unit,*)" "
       if (result%wasSuccessful()) then
          write(this%unit,*)"OK"
          write(this%unit,'(a,i0,a)',advance='no')" (", result%runCount(), " test"
@@ -168,8 +179,10 @@ contains
          end if
       else
          write(this%unit,*)"FAILURES!!!"
-         write(this%unit,*)"Tests run: ", result%runCount(), &
-              & ", Failures: ",result%failureCount()
+         write(this%unit,'(a,i0,a,i0,a,i0)')"Tests run: ", result%runCount(), &
+              & ", Failures: ",result%failureCount(), &
+              & ", Errors: ",result%errorCount()
+
       end if
 
    end subroutine printFooter

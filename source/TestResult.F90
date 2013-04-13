@@ -10,12 +10,16 @@ module TestResult_mod
 
    type :: TestResult
       integer :: numFailed
+      integer :: numErrors
       integer :: numRun
       type (ListenerPointer), allocatable :: listeners(:)
       type (TestFailure), allocatable :: failures(:)
+      type (TestFailure), allocatable :: errors(:)
    contains
       procedure :: addFailure
+      procedure :: addError
       procedure :: failureCount
+      procedure :: errorCount
       procedure :: getIthFailure
       procedure :: startTest
       procedure :: endTest
@@ -32,7 +36,9 @@ contains
       allocate(newTestResult)
       allocate(newTestResult%listeners(0))
       allocate(newTestResult%failures(0))
+      allocate(newTestResult%errors(0))
       newTestResult%numFailed = 0
+      newTestResult%numErrors = 0
       newTestResult%numRun = 0
    end function newTestResult
 
@@ -62,10 +68,41 @@ contains
 
    end subroutine addFailure
 
+   subroutine addError(this, aTest, exceptions)
+      use Exception_mod, only: Exception
+      use TestFailure_mod
+      class (TestResult), intent(inout) :: this
+      class (SurrogateTestCase), intent(in) :: aTest
+      type (Exception), intent(in) :: exceptions(:)
+
+      integer :: i, n
+      type (TestFailure), allocatable :: tmp(:)
+
+      n = this%numErrors
+      allocate(tmp(n))
+      tmp(1:n) = this%errors(1:n)
+      deallocate(this%errors)
+      allocate(this%errors(n+1))
+      this%errors(1:n) = tmp
+      deallocate(tmp)
+      this%errors(n+1) = TestFailure(aTest%getName(), exceptions)
+
+      this%numErrors = n + 1
+      do i = 1, size(this%listeners)
+         call this%listeners(i)%pListener%addError(aTest%getName(), exceptions)
+      end do
+
+   end subroutine addError
+
    integer function failureCount(this)
       class (TestResult), intent(in) :: this
       failureCount = this%numFailed
    end function failureCount
+
+   integer function errorCount(this)
+      class (TestResult), intent(in) :: this
+      errorCount = this%numErrors
+   end function errorCount
 
    subroutine startTest(this, aTest)
       class (TestResult), intent(inout) :: this
@@ -110,7 +147,9 @@ contains
       call test%runBare()
 
       if (context%isRootProcess()) then
-         if (anyExceptions()) then
+         if (anyErrors()) then
+            call this%addError(test, getExceptions())
+         elseif (anyExceptions()) then
             call this%addFailure(test, getExceptions())
          end if
       end if
@@ -160,7 +199,7 @@ contains
 
    logical function wasSuccessful(this)
       class (TestResult), intent(in) :: this
-      wasSuccessful = (this%failureCount() ==  0)
+      wasSuccessful = (this%failureCount() ==  0) .and. (this%errorCount() == 0)
    end function wasSuccessful
 
 end module TestResult_mod

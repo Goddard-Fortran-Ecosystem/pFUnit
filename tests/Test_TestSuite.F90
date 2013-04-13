@@ -1,10 +1,21 @@
 #include "reflection.h"
 module Test_TestSuite_mod
    use TestSuite_mod, only: newTestSuite, TestSuite
+   use TestResult_mod
    implicit none
    private
 
    public :: suite
+
+   character(len=80) :: log
+
+   ! Internal mock for TestResult
+   type, extends(TestResult) :: Verbose
+      character(len=80) :: log
+   contains
+      procedure :: run
+   end type Verbose
+
 
 contains
 
@@ -22,6 +33,7 @@ contains
       ADD(testCountTestCasesNestedA)
       ADD(testCountTestCasesNestedB)
       ADD(testCountTestCasesNestedC)
+      ADD(testGetTestCases)
 
    end function suite
 
@@ -114,5 +126,58 @@ contains
       call assertEqual(2+2+1, topSuite%countTestCases())
 
    end subroutine testCountTestCasesNestedC
+
+   subroutine testGetTestCases()
+      use Test_mod
+      use TestCase_mod
+      use TestMethod_mod
+      use SerialContext_mod
+      use Assert_mod
+
+      type (TestSuite) :: top
+      type (TestSuite) :: childA, childB
+      type (Verbose) :: aResult
+      type (TestCaseReference), allocatable :: testCases(:)
+      integer :: i
+
+      childA = newTestSuite('childA')
+      call childA%addTest(newTestMethod('a1', myTestMethod))
+      call childA%addTest(newTestMethod('a2', myTestMethod))
+      call childA%addTest(newTestMethod('a3', myTestMethod))
+
+      childB = newTestSuite('childB')
+      call childB%addTest(newTestMethod('b1', myTestMethod))
+      call childB%addTest(newTestMethod('b2', myTestMethod))
+
+      top = newTestSuite('top')
+      call top%addTest(childA)
+      call top%addTest(childB)
+
+      aResult%TestResult = newTestResult()
+      aResult%log = ''
+
+      testCases = top%getTestCases()
+      do i = 1, size(testCases)
+         call testCases(i)%test%run(aResult, newSerialContext())
+      end do
+
+      call assertEqual('::a1::a2::a3::b1::b2', aResult%log)
+
+   end subroutine testGetTestCases
+
+   subroutine myTestMethod()
+   end subroutine myTestMethod
+
+   recursive subroutine run(this, test, context)
+      use TestCase_mod
+      use SurrogateTestCase_mod
+      use ParallelContext_mod
+      class (Verbose), intent(inout) :: this
+      class (SurrogateTestCase) :: test
+      class (ParallelContext), intent(in) :: context
+
+      this%log = trim(this%log)//'::'//trim(test%getName())
+
+   end subroutine run
 
 end module Test_TestSuite_mod

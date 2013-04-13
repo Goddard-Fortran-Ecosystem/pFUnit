@@ -1,4 +1,5 @@
 module TestRunner_mod
+   use BaseTestRunner_mod
    use TestListener_mod
    use ResultPrinter_mod
    implicit none
@@ -7,7 +8,7 @@ module TestRunner_mod
    public :: TestRunner
    public :: newTestRunner
 
-   type, extends(TestListener) :: TestRunner
+   type, extends(BaseTestRunner) :: TestRunner
       type (ResultPrinter) :: printer
    contains
       procedure :: run
@@ -25,7 +26,7 @@ module TestRunner_mod
 contains
 
    function newTestRunner_default() result(runner)
-      use ISO_FORTRAN_ENV, only: OUTPUT_UNIT
+      use iso_fortran_env, only: OUTPUT_UNIT
       type (TestRunner) :: runner
       runner = newTestRunner(OUTPUT_UNIT)
    end function newTestRunner_default
@@ -60,12 +61,12 @@ contains
 
       type (DebugListener) :: debug
 
+      call system_clock(clockStart)
       result = this%createTestResult()
       call result%addListener(this%printer)
 #ifdef DEBUG_ON
       call result%addListener(debug)
 #endif
-      call system_clock(clockStart)
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate

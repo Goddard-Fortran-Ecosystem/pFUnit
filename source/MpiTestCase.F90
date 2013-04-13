@@ -134,10 +134,11 @@ contains
 
    function getParameterString(this) result(label)
       class (MpiTestCase), intent(in) :: this
-      integer, parameter :: MAX_LEN_LABEL = 32
-      character(len=32) :: label
+      character(len=:), allocatable :: label
 
+      allocate(character(len=100) :: label)
       write(label,'(a,i0)') 'npes=',this%numProcessesRequested
+      label = trim(label)
    end function getParameterString
 
 end module MpiTestCase_mod

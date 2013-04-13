@@ -36,6 +36,7 @@ contains
       use ParallelContext_mod
 
       use Test_StringUtilities_mod, only: stringUtilitiesSuite => suite    ! (1)
+      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
@@ -54,6 +55,8 @@ contains
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
+      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
+
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
       use Test_MpiException_mod, only: ParallelExceptionSuite => suite
@@ -69,6 +72,7 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(stringUtilitiesSuite)
+      ADD(UnixProcessSuite)
       ADD(exceptionSuite)
 
       ADD(assertBasicSuite)
@@ -86,6 +90,8 @@ contains
 
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
+
+      ADD(testRobustRunnerSuite)
 
 #ifdef USE_MPI
       ADD(MpiContextSuite)

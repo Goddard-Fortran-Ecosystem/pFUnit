@@ -11,6 +11,7 @@ module TestListener_mod
      procedure(addFailure), deferred :: addFailure
      procedure(startTest), deferred :: startTest
      procedure(endTest), deferred :: endTest
+     procedure :: addError
    end type TestListener
 
    type ListenerPointer
@@ -38,5 +39,16 @@ module TestListener_mod
          character(len=*), intent(in) :: testName
       end subroutine endTest
    end interface
+
+contains
+
+   ! Most scenarios in Fortran cannot diagnose true errors, so
+   ! an empty stub is provided here for convenience.
+   subroutine addError(this, testName, exceptions)
+      use Exception_mod, only: Exception
+      class (TestListener), intent(inout) :: this
+      character(len=*), intent(in) :: testName
+      type (Exception), intent(in) :: exceptions(:)
+   end subroutine addError
 
  end module TestListener_mod

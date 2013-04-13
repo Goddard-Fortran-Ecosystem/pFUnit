@@ -13,6 +13,7 @@ module StringUtilities_mod
    public :: toString
    public :: appendWithSpace
    public :: MAXLEN_STRING
+   public :: nullTerminate
 
 
    integer, parameter :: MAXLEN_STRING = 80
@@ -74,5 +75,14 @@ contains
       end if
 
    end function appendWithSpace
+
+   function nullTerminate(string) result(nullTerminatedString)
+      use iso_c_binding
+      character(len=*), intent(in) :: string
+      character(len=:), allocatable :: nullTerminatedString
+
+      nullTerminatedString = trim(string) // C_NULL_CHAR
+
+   end function nullTerminate
 
 end module StringUtilities_mod

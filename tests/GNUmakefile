@@ -2,16 +2,18 @@ TOP = ..
 include ../include/base.mk
 .PHONY: all tests
 EXE = tests.x
+REMOTE = remote.x
 
-all: $(EXE)
+all: $(EXE) $(REMOTE)
 
 VPATH = . ../source
 tests: $(EXE)
 
-SRCS = $(wildcard *.F90)
-OBJS = $(SRCS:%.F90=%.o)
+SRCS_BASE = $(wildcard *.F90)
+PROGRAMS = selfTests.F90 RemoteProgram.F90
 
-$(erro $(OBJS))
+SRCS = $(filter-out $(PROGRAMS),$(SRCS_BASE))
+OBJS = $(SRCS:%.F90=%.o)
 
 ifneq ($(MPI),YES)
    SRCS_SERIAL=$(filter-out Test_Mpi%,$(SRCS))
@@ -25,20 +27,32 @@ ifeq ($(MPI),YES)
    LIBS += -lmpi
 endif
 
+$(EXE) $(REMOTE): libpfunit.a
+
 ifeq ($(MPI),YES)
-$(EXE): $(OBJS) libpfunit.a
-	$(FC) -o $@ $(OBJS) $(LIBS) -g
+
+$(EXE): selfTests.o $(OBJS)
+	$(FC) -o $@ $^ $(LIBS) -g
+$(REMOTE): RemoteProgram.o $(OBJS)
+	$(FC) -o $@ $^ $(LIBS) -g
+
 else
-$(EXE): $(OBJS_SERIAL) libpfunit.a
-	$(FC) -o $@ $(OBJS_SERIAL) $(LIBS) -g
+
+$(EXE): selfTests.o $(OBJS_SERIAL)
+	$(FC) -o $@ $^ $(LIBS) -g
+$(REMOTE): RemoteProgram.o $(OBJS_SERIAL)
+	$(FC) -o $@ $^ $(LIBS) -g
+
 endif
 
 Test_SimpleTestCase.o: SimpleTestCase.o
 Test_FixtureTestCase.o: FixtureTestCase.o
 Test_TestResult.o: SimpleTestCase.o
-EXCLUDE_OBJS = SimpleTestCase.o FixtureTestCase.o selfTests.o
+Test_RobustRunner.o: robustTestSuite.o
+
+EXCLUDE_OBJS = selfTests.o RemoteProgram.o
 ifeq ($(MPI),YES)
-   selfTests.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS))
+   selfTests.o RemoteProgram.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS))
 else
-   selfTests.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS_SERIAL))
+   selfTests.o RemoteProgram.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS_SERIAL))
 endif

@@ -22,6 +22,8 @@ endif
 	ar -r $@ $?
 	-@ranlib $@
 
+UnixProcess.o : StringUtilities.o UnixPipeInterfaces.o
+
 Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
 AssertBasic.o: Exception.o StringUtilities.o
@@ -43,8 +45,16 @@ DynamicTestCase.o: TestCase.o
 DebugListener.o: TestListener.o
 
 TestSuite.o: Test.o TestMethod.o
-TestRunner.o: TestSuite.o
-TestRunner.o: ResultPrinter.o
+
+TestCaseDecorator.o :: TestCase.o
+
+BaseTestRunner.o: TestListener.o Test.o ParallelContext.o
+TestRunner.o: TestSuite.o BaseTestRunner.o ResultPrinter.o TestResult.o
+SubsetRunner.o: BaseTestRunner.o TestResult.o TestSuite.o
+RobustRunner.o: BaseTestRunner.o TestResult.o TestSuite.o RemoteProxyTestCase.o UnixProcess.o
+RemoteProxyTestCase.o: TestCase.o UnixProcess.o
+
+
 
 ResultPrinter.o: TestFailure.o
 

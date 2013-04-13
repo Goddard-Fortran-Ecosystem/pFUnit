@@ -5,7 +5,10 @@ module pFUnit_mod
    use TestCase_mod
    use TestMethod_mod
    use ParameterizedTestCase_mod
+   use BaseTestRunner_mod
    use TestRunner_mod
+   use SubsetRunner_mod
+   use RobustRunner_mod
    use Assert_mod
    use AssertReal_mod
    use ParallelContext_mod
@@ -24,7 +27,10 @@ module pFUnit_mod
    public :: SourceLocation
    public :: TestSuite, newTestSuite
    public :: TestMethod, newTestMethod
+   public :: BaseTestRunner
    public :: TestRunner, newTestRunner
+   public :: SubsetRunner
+   public :: RobustRunner
    public :: TestCase
    public :: ParameterizedTestCase, AbstractTestParameter
    public :: ParallelContext
@@ -38,13 +44,22 @@ module pFUnit_mod
    public :: assertEqual
    public :: throw, catchAny, catch, anyExceptions
 
+   logical :: useMpi_
+
 contains
 
-   subroutine initialize()
+   subroutine initialize(useMpi)
+      logical, optional, intent(in) :: useMpi
 #ifdef USE_MPI
       include 'mpif.h'
       integer :: error
-      call mpi_init(error)
+
+      useMpi_ = .true.
+      if (present(useMpi)) useMpi_ = useMpi
+
+      if (useMpi_) then
+         call mpi_init(error)
+      end if
 #endif
       call initializeGlobalExceptionList()
 
@@ -53,7 +68,9 @@ contains
    subroutine finalize()
 #ifdef USE_MPI
       integer :: error
-      call mpi_finalize(error)
+      if (useMpi_) then
+         call mpi_finalize(error)
+      end if
 #endif
    end subroutine finalize
 

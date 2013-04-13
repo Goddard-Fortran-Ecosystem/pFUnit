@@ -24,6 +24,7 @@ module TestSuite_mod
       procedure :: getNumTests
       procedure :: copy
       generic :: assignment(=) => copy
+      procedure :: getTestCases
    end type TestSuite
 
    interface newTestSuite
@@ -139,5 +140,46 @@ contains
       character(len=*),intent(in) :: name
       this%name = trim(name)
    end subroutine setName
+
+   recursive function getTestCases(this) result(testList)
+      use Exception_mod
+      use Test_mod
+      use TestCase_mod
+      class (TestSuite), intent(in) :: this
+      type (TestCaseReference), allocatable :: testList(:)
+      type (TestCaseReference), allocatable :: tmp(:)
+
+      integer :: i, j
+      integer :: n, m
+
+      allocate(testList(this%countTestCases()))
+
+      n = 1
+      do i = 1, size(this%tests)
+         associate (t => this%tests(i)%pTest)
+           select type (t)
+           class is (TestCase)
+              ! ifort 13.1 cannot handle direct assignment of polymorphic here
+              allocate(testList(n)%test, source=t)
+!!$              testList(n) = TestCaseReference(t)
+              n = n + 1
+           class is (TestSuite)
+              m = t%countTestCases()
+              ! ifort 13.1 is incorrectly handling assignment into subrange of tmpList
+              ! It reallocates the array and gets the wrong size as a result.
+              ! Forced to do explict loop over a temporary.
+              tmp = t%getTestCases()
+              do j = 1, m
+                 allocate(testList(n+j-1)%test, source=tmp(j)%test)
+              end do
+!!$              testList(n:n+m-1) = t%getTestCases()
+              n = n + m
+           class default
+              call throw('Unsupportes Test subclass in TestSuite::getTestCases()')
+           end select
+         end associate
+      end do
+
+   end function getTestCases
    
 end module TestSuite_mod
