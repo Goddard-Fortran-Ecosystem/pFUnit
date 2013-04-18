@@ -27,7 +27,7 @@ program main
    call get_command_argument(0, length=length)
    allocate(character(len=length) :: executable)
    call get_command_argument(0, value=executable)
-   write(40,*) __LINE__,__FILE__
+
    i = 0
    do
       i = i + 1
@@ -50,14 +50,12 @@ program main
       end select
       deallocate(argument)
    end do
-   write(40,*) __LINE__,__FILE__
 
    if (useRobustRunner) then
       call initialize(useMPI=.false.)
    else
       call initialize(useMPI=.true.)
    end if
-   write(40,*) __LINE__,__FILE__, useRobustRunner
 
    if (useRobustRunner) then
       allocate(context, source=newSerialContext())
@@ -67,7 +65,6 @@ program main
       allocate(runner, source=RobustRunner(executable))
 #endif
    else if (useSubsetRunner) then
-      write(40,*) __LINE__,__FILE__
       allocate(runner, source=SubsetRunner(numSkip=numSkip))
 
 #ifdef USE_MPI
@@ -77,19 +74,12 @@ program main
 #endif
 
    else
-   write(40,*) __LINE__,__FILE__, useRobustRunner
 #ifdef USE_MPI
-   write(40,*) __LINE__,__FILE__, useRobustRunner
       allocate(context, source=newMpiContext())
-   write(40,*) __LINE__,__FILE__, useRobustRunner
 #else
-   write(40,*) __LINE__,__FILE__, useRobustRunner
       allocate(context, source=newSerialContext())
-   write(40,*) __LINE__,__FILE__, useRobustRunner
 #endif
-   write(40,*) __LINE__,__FILE__, useRobustRunner
       allocate(runner, source=newTestRunner())
-   write(40,*) __LINE__,__FILE__, useRobustRunner
    end if
 
    all = getTestSuites()

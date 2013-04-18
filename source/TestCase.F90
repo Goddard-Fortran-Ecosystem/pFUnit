@@ -19,7 +19,7 @@ module TestCase_mod
    end type ConcreteSurrogate
    
 #ifndef DEFERRED_LENGTH_CHARACTER
-   integer, parameter :: MAX_LENGTH_NAME = 32
+   integer, parameter :: MAX_LENGTH_NAME = 64
 #endif
 
    type, abstract, extends(Test) :: TestCase

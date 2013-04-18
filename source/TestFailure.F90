@@ -6,7 +6,7 @@ module TestFailure_mod
    public :: TestFailure
 
    type TestFailure
-      character(len=40) :: testName
+      character(len=80) :: testName
       type (Exception), allocatable :: exceptions(:)
    end type TestFailure
 

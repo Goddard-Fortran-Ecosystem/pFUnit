@@ -24,7 +24,7 @@ clean:
 
 SUT:
 	make -C $(SRC_DIR) SUT
-tests:
+tests: SUT
 	make -C $(TEST_DIR) tests
 
 export SRC_DIR

@@ -2,12 +2,13 @@ These directories contain working examples of the use of pFUnit to
 perform unit testing.  For each example, multiple approaches to
 unit-testing are provided:
 
-* Manual - developer manually inserts references to each test in the
+* Manual (TBD) - developer manually inserts references to each test in the
   main driver.  Assertions are done with direct Fortran calls to
   pFUnit interfaces.  This approach is the most cumbersome, but also
   provides better understanding of how test assembly is managed.
 
-* Semi-automated - developer indicates tests with semaphores in the
+
+* Semi-automated (should always work) - developer indicates tests with semaphores in the
   source code and uses pFUnit preprocessing scripts to create a
   framework driver.  Assertions are done with macros that
   automatically track source file and line number, which improves
@@ -16,7 +17,11 @@ unit-testing are provided:
   outside the domain of Fortran.  Real applications will likely need
   to adapt some aspects to their particular build system.
 
-* Automated - developer places all test code in a shared object
+  In each Semi-Automated directory, to run the tests:
+  - Set PFUNIT environment variable to directory where you installed pFUnit
+  - % make    # sohuld build and run tests
+
+* Automated (may never happen) - developer places all test code in a shared object
   library (.so).  pFUnit provides a static driver that can
   automatically execute tests in such a library given a regexp that
   indicates test naming conventions.   Default is "test*".
@@ -24,17 +29,21 @@ unit-testing are provided:
 
 The current examples are:
 
-* Vanilla - a very simple example that allows users to gain some
-  confidence in the utility.
+* Simple - a very simple example that allows users to gain some
+  confidence in the utility.  One test is purposefully failing to show what
+  failure messages look like.
 
-* Intermediate - a more complicated example that involves multiple
-  source and test files.
+* Fixture - a more complicated example that involves subclassing TestCase.
 
 * Halo - a very simple example showing how to create tests for MPI based
   procedures and execute them on varying processor counts.
 
 * Parameterized - an example showing how to create and use a
   parameterized test case.
+
+* Robust - demonstrates the use of the "-robust" option for the
+  framework driver that allows for tests that crash or hang.
+
 
 
 

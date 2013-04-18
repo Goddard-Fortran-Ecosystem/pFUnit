@@ -131,8 +131,8 @@ contains
          do j= 1, size(aFailedTest%exceptions)
             locationString = toString(aFailedTest%exceptions(j)%location)
             
-            write(this%unit,*) label,' in: ', trim(aFailedTest%testName), &
-                 & " ", trim(locationString)
+            write(this%unit,*) label,' in: ', trim(aFailedTest%testName)
+            write(this%unit,*) '  Location: ', trim(locationString)
             write(this%unit,'(a,1x,a)') aFailedTest%exceptions(j)%getMessage()
             write(this%unit,*)' '
          end do
