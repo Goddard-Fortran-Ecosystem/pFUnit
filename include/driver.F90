@@ -1,5 +1,6 @@
 program main
    use pfunit_mod
+   use ParallelContext_mod
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
@@ -7,7 +8,6 @@ program main
 
    type (TestSuite) :: all
    class(BaseTestRunner), allocatable :: runner
-   class (ParallelContext), allocatable :: context
    
    integer :: i
    character(len=:), allocatable :: executable
@@ -17,8 +17,9 @@ program main
    logical :: useRobustRunner
    logical :: useSubsetRunner
    integer :: numSkip
+   logical :: useMpi
 
-   integer :: ier, rank, npes
+   class (ParallelContext), allocatable :: context
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
@@ -57,8 +58,14 @@ program main
       call initialize(useMPI=.true.)
    end if
 
+#ifdef USE_MPI
+      useMpi = .true.
+#else
+      useMpi = .false.
+#endif
+
    if (useRobustRunner) then
-      allocate(context, source=newSerialContext())
+      useMpi = .false. ! override build
 #ifdef USE_MPI
       allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable))
 #else
@@ -66,29 +73,33 @@ program main
 #endif
    else if (useSubsetRunner) then
       allocate(runner, source=SubsetRunner(numSkip=numSkip))
-
-#ifdef USE_MPI
-      allocate(context, source=newMpiContext())
-#else
-      allocate(context, source=newSerialContext())
-#endif
-
    else
-#ifdef USE_MPI
-      allocate(context, source=newMpiContext())
-#else
-      allocate(context, source=newSerialContext())
-#endif
       allocate(runner, source=newTestRunner())
    end if
 
    all = getTestSuites()
+   call getContext(context, useMpi)
 
    call runner%run(all, context)
 
    call finalize()
 
 contains
+
+   subroutine getContext(context, useMpi)
+      class (ParallelContext), allocatable :: context
+      logical, intent(in) :: useMpi
+
+#ifdef USE_MPI
+      if (useMpi) then
+         allocate(context, source=newMpiContext())
+         return
+      end if
+#endif
+
+      allocate(context, source=newSerialContext())
+
+   end subroutine getContext
 
    function getTestSuites() result(suite)
       type (TestSuite) :: suite
@@ -105,6 +116,8 @@ contains
 #undef ADD_TEST_SUITE
 
    end function getTestSuites
+
+
 end program main
 
 
