@@ -12,6 +12,9 @@ endif
 
 EXE = tests.x
 
+all: $(EXE)
+	mpirun -np 4 ./$(EXE)
+
 $(EXE): testSuites.inc myTests.pf Halo.F90 SUT tests
 	$(MPIF90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*.o $(SRC_DIR)/*.o -L$(PFUNIT)/lib -lpfunit -DUSE_MPI $(FFLAGS)
 

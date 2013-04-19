@@ -1,3 +1,4 @@
+! Unused - and untested?
 module TestDecorator_mod
    use Test_mod
    implicit none

@@ -36,7 +36,7 @@ module pFUnit_mod
    public :: ParallelContext
    public :: SerialContext, newSerialContext
 #ifdef USE_MPI
-   public :: MpiContext,newMpiContext
+   public :: MpiContext, newMpiContext
    public :: MpiTestCase
    public :: MpiTestMethod, newMpiTestMethod
 #endif
