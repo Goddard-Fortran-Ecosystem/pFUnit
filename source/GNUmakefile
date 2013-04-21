@@ -22,16 +22,18 @@ endif
 	ar -r $@ $?
 	-@ranlib $@
 
-UnixProcess.o : StringUtilities.o UnixPipeInterfaces.o
+UnixProcess.o : StringUtilities.o UnixPipeInterfaces.o Assert.o
 
+SerialContext.o: ParallelContext.o
 Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
 AssertBasic.o: Exception.o StringUtilities.o
-AssertInteger.o: Exception.o
+AssertInteger.o: Exception.o AssertBasic.o
 Assert.o: Exception.o AssertBasic.o AssertInteger.o
-AssertReal.o: Assert.o StringUtilities.o
+AssertReal.o: StringUtilities.o AssertBasic.o
 
 
+TestListener.o: Exception.o
 SurrogateTestCase.o:
 TestResult.o: SurrogateTestCase.o TestListener.o Exception.o
 Test.o: TestResult.o
@@ -44,6 +46,7 @@ DynamicTestCase.o: TestCase.o
 
 DebugListener.o: TestListener.o
 
+TestMethod.o: TestCase.o
 TestSuite.o: Test.o TestMethod.o
 
 TestCaseDecorator.o :: TestCase.o
@@ -56,17 +59,20 @@ RemoteProxyTestCase.o: TestCase.o UnixProcess.o
 
 
 
-ResultPrinter.o: TestFailure.o
+ResultPrinter.o: TestFailure.o TestResult.o
 
 TestFailure.o: Exception.o
 TestResult.o: TestFailure.o
 
-MockRepository.o:
+MockRepository.o: Exception.o
+MockCall.o: Exception.o Assert.o
 
 pFUnit.o: TestRunner.o TestSuite.o
 pFUnit.o: ParallelContext.o
+pFUnit.o: RobustRunner.o SubsetRunner.o
 
 ifeq ($(MPI),YES)
+   MpiContext.o: Assert.o
    pFUnit.o: MpiContext.o
 
    MpiTestCase.o : TestCase.o MpiContext.o ParallelException.o

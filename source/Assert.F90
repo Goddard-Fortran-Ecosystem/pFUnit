@@ -10,6 +10,9 @@ module Assert_mod
    public :: assertExceptionRaised
    public :: assertSameShape
 
+   public :: assertLessThan, assertLessThanOrEqual
+   public :: assertGreaterThan, assertGreaterThanOrEqual
+
 contains
 
 end module Assert_mod

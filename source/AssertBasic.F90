@@ -37,6 +37,7 @@ module AssertBasic_mod
 
    interface assertEqual
       module procedure assertEqualString
+      module procedure assertEqualString_withMessage
    end interface
 
    interface assertExceptionRaised
@@ -170,10 +171,24 @@ contains
       call assertTrue(.not. condition, message, file, line)
    end subroutine assertFalse_withMessage
 
-   subroutine assertEqualString(expected, found)
+   subroutine assertEqualString(expected, found, unused, file, line)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
+      type (UnusableArgument), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
+
+      call assertEqual(expected, found, NULL_MESSAGE, file, line)
+   end subroutine assertEqualString
+
+   subroutine assertEqualString_withMessage(expected, found, message, file, line)
+      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      character(len=*), intent(in) :: expected
+      character(len=*), intent(in) :: found
+      character(len=*), intent(in) :: message
+      character(len=*), optional, intent(in) :: file
+      integer, optional, intent(in) :: line
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: i
@@ -189,8 +204,9 @@ contains
               & '    expected: <"', trim(expected), '">', new_line('A'), &
               & '   but found: <"', trim(found), '">', new_line('A'), &
               & '  first diff:   ', repeat('-', numSameCharacters), '^'
-         call throw(throwMessage)
+         call throw(appendWithSpace(message, throwMessage), SourceLocation(file, line))
       end if
-   end subroutine assertEqualString
+
+   end subroutine assertEqualString_withMessage
 
 end module AssertBasic_mod

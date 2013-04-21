@@ -10,7 +10,7 @@ module SourceLocation_mod
    public :: UNKNOWN_FILE_NAME
    public :: UNKNOWN_LINE_NUMBER
 
-   integer, parameter :: MAXLEN_FILE_NAME = 40
+   integer, parameter :: MAXLEN_FILE_NAME = 100
    character(len=MAXLEN_FILE_NAME), parameter :: UNKNOWN_FILE_NAME= '<unknown file>'
    integer, parameter :: UNKNOWN_LINE_NUMBER = -1
 

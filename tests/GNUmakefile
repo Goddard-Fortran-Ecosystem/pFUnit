@@ -49,6 +49,7 @@ Test_SimpleTestCase.o: SimpleTestCase.o
 Test_FixtureTestCase.o: FixtureTestCase.o
 Test_TestResult.o: SimpleTestCase.o
 Test_RobustRunner.o: robustTestSuite.o
+Test_TestSuite.o: SimpleTestCase.o
 
 EXCLUDE_OBJS = selfTests.o RemoteProgram.o
 ifeq ($(MPI),YES)

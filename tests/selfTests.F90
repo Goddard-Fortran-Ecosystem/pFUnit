@@ -41,7 +41,6 @@ contains
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
       use Test_AssertInteger_mod, only: assertIntegerSuite => suite        !
-      use Test_AssertionLocation_mod, only: assertLocationSuite => suite   ! (4)
       use Test_AssertReal_mod, only: assertRealSuite => suite              ! (5)
 
       use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
@@ -78,7 +77,6 @@ contains
       ADD(assertBasicSuite)
       ADD(assertSuite)
       ADD(assertIntegerSuite)
-      ADD(assertLocationSuite)
       ADD(assertRealSuite)
 
       ADD(testResultSuite)

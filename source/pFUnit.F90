@@ -42,6 +42,12 @@ module pFUnit_mod
 #endif
 
    public :: assertEqual
+   public :: assertTrue, assertFalse
+   public :: assertLessThan, assertLessThanOrEqual
+   public :: assertGreaterThan, assertGreaterThanOrEqual
+   public :: assertExceptionRaised
+   public :: assertSameShape
+
    public :: throw, catchAny, catch, anyExceptions
 
    logical :: useMpi_
