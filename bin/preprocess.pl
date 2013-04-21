@@ -39,6 +39,20 @@ while ( my $line = <$infile> ) {  # process each line in the source file
 	print "   if (anyExceptions()) return \n";
 	next;
     }
+    elsif ($line =~ s/^(\s*)\@assertTrue\((.*)\)/\1call assertTrue(\2, &
+     & file='$fname', line=$lineNumber)/i) {
+	print "#line ", $lineNumber, " \"$fname\"" , "\n";
+	print $line;
+	print "   if (anyExceptions()) return \n";
+	next;
+    }
+    elsif ($line =~ s/^(\s*)\@assertFalse\((.*)\)/\1call assertFalse(\2, &
+     & file='$fname', line=$lineNumber)/i) {
+	print "#line ", $lineNumber, " \"$fname\"" , "\n";
+	print $line;
+	print "   if (anyExceptions()) return \n";
+	next;
+    }
     elsif ($line =~ /^\s*module\s+procedure/i) { # don't treat as a module
 	print "$line";
     }
