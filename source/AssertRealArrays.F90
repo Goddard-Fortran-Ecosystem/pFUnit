@@ -360,17 +360,17 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_0D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -378,10 +378,10 @@ contains
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -391,12 +391,12 @@ contains
      end if
 
      call assertEqual_int_0D_r32_0D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_0D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found
      real(kind=r32), intent(in) :: tolerance
@@ -404,7 +404,7 @@ contains
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -452,7 +452,7 @@ contains
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -460,7 +460,7 @@ contains
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -471,19 +471,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -503,17 +503,17 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_0D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -521,10 +521,10 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -534,12 +534,12 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_0D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_0D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found
      real(kind=r32), intent(in) :: tolerance
@@ -547,7 +547,7 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -595,7 +595,7 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -603,7 +603,7 @@ end subroutine assertEqual_int_0D_r32_0D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -614,19 +614,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -646,17 +646,17 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_0D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -664,10 +664,10 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -677,12 +677,12 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_0D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_0D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found
      real(kind=r64), intent(in) :: tolerance
@@ -690,7 +690,7 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -738,7 +738,7 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -746,7 +746,7 @@ end subroutine assertEqual_r32_0D_r32_0D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -757,19 +757,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -789,17 +789,17 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -807,10 +807,10 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -820,12 +820,12 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_0D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_0D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found
      real(kind=r64), intent(in) :: tolerance
@@ -833,7 +833,7 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -881,7 +881,7 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -889,7 +889,7 @@ end subroutine assertEqual_r64_0D_r32_0D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -900,19 +900,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -932,17 +932,17 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -950,10 +950,10 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -963,12 +963,12 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_0D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_0D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found
      real(kind=r64), intent(in) :: tolerance
@@ -976,7 +976,7 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1024,7 +1024,7 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -1032,7 +1032,7 @@ end subroutine assertEqual_int_0D_r64_0D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1043,19 +1043,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1075,17 +1075,17 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1093,10 +1093,10 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1106,12 +1106,12 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_0D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_0D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found
      real(kind=r64), intent(in) :: tolerance
@@ -1119,7 +1119,7 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1167,7 +1167,7 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
          &       found0, &
          &       idxLocation, &
          &       tolerance_, &
-         &       sourceLoc )
+         &       location )
          return ! bail
       end if
 
@@ -1175,7 +1175,7 @@ end subroutine assertEqual_r32_0D_r64_0D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1186,19 +1186,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1218,17 +1218,17 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1236,10 +1236,10 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1249,12 +1249,12 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
      end if
 
      call assertEqual_int_0D_r32_1D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_1D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), intent(in) :: tolerance
@@ -1262,7 +1262,7 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1311,7 +1311,7 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -1320,7 +1320,7 @@ end subroutine assertEqual_r64_0D_r64_0D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1331,19 +1331,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1363,17 +1363,17 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1381,10 +1381,10 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1394,12 +1394,12 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_1D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_1D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), intent(in) :: tolerance
@@ -1407,7 +1407,7 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1456,7 +1456,7 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -1465,7 +1465,7 @@ end subroutine assertEqual_int_0D_r32_1D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1476,19 +1476,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1508,17 +1508,17 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1526,10 +1526,10 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1539,12 +1539,12 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -1552,7 +1552,7 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1601,7 +1601,7 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -1610,7 +1610,7 @@ end subroutine assertEqual_r32_0D_r32_1D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1621,19 +1621,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1653,17 +1653,17 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_1D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:)
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1671,10 +1671,10 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1684,12 +1684,12 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
      end if
 
      call assertEqual_int_1D_r32_1D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_1D_r32_1D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), intent(in) :: tolerance
@@ -1697,7 +1697,7 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
      integer, intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1731,7 +1731,7 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -1741,7 +1741,7 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -1765,7 +1765,7 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -1774,7 +1774,7 @@ end subroutine assertEqual_r64_0D_r32_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1785,19 +1785,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1817,17 +1817,17 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_1D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:)
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1835,10 +1835,10 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -1848,12 +1848,12 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
      end if
 
      call assertEqual_r32_1D_r32_1D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_1D_r32_1D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r32), intent(in) :: tolerance
@@ -1861,7 +1861,7 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
      real(kind=r32), intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -1895,7 +1895,7 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -1905,7 +1905,7 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -1929,7 +1929,7 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -1938,7 +1938,7 @@ end subroutine assertEqual_int_1D_r32_1D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -1949,19 +1949,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -1981,17 +1981,17 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_1D_r32_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:)
      real(kind=r32), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -1999,10 +1999,10 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2012,12 +2012,12 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
      end if
 
      call assertEqual_r64_1D_r32_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_1D_r32_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2025,7 +2025,7 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
      real(kind=r64), intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2059,7 +2059,7 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -2069,7 +2069,7 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -2093,7 +2093,7 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2102,7 +2102,7 @@ end subroutine assertEqual_r32_1D_r32_1D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2113,19 +2113,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2145,17 +2145,17 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2163,10 +2163,10 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2176,12 +2176,12 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2189,7 +2189,7 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2238,7 +2238,7 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2247,7 +2247,7 @@ end subroutine assertEqual_r64_1D_r32_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2258,19 +2258,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2290,17 +2290,17 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2308,10 +2308,10 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2321,12 +2321,12 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2334,7 +2334,7 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2383,7 +2383,7 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2392,7 +2392,7 @@ end subroutine assertEqual_int_0D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2403,19 +2403,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2435,17 +2435,17 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2453,10 +2453,10 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2466,12 +2466,12 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2479,7 +2479,7 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2528,7 +2528,7 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2537,7 +2537,7 @@ end subroutine assertEqual_r32_0D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2548,19 +2548,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2580,17 +2580,17 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2598,10 +2598,10 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2611,12 +2611,12 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
      end if
 
      call assertEqual_int_1D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_1D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2624,7 +2624,7 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
      integer, intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2658,7 +2658,7 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -2668,7 +2668,7 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -2692,7 +2692,7 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2701,7 +2701,7 @@ end subroutine assertEqual_r64_0D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2712,19 +2712,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2744,17 +2744,17 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2762,10 +2762,10 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2775,12 +2775,12 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
      end if
 
      call assertEqual_r32_1D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_1D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2788,7 +2788,7 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
      real(kind=r32), intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2822,7 +2822,7 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -2832,7 +2832,7 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -2856,7 +2856,7 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -2865,7 +2865,7 @@ end subroutine assertEqual_int_1D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -2876,19 +2876,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -2908,17 +2908,17 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -2926,10 +2926,10 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -2939,12 +2939,12 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
      end if
 
      call assertEqual_r64_1D_r64_1D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_1D_r64_1D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:)
      real(kind=r64), intent(in) :: tolerance
@@ -2952,7 +2952,7 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
      real(kind=r64), intent(in) :: expected(:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -2986,7 +2986,7 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -2996,7 +2996,7 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -3020,7 +3020,7 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
             &       found0, &
             &       idxLocation, &
             &       tolerance_, &
-            &       sourceLoc )
+            &       location )
             return ! bail
          end if
 
@@ -3029,7 +3029,7 @@ end subroutine assertEqual_r32_1D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3040,19 +3040,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3072,17 +3072,17 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3090,10 +3090,10 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3103,12 +3103,12 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
      end if
 
      call assertEqual_int_0D_r32_2D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_2D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -3116,7 +3116,7 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3166,7 +3166,7 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3176,7 +3176,7 @@ end subroutine assertEqual_r64_1D_r64_1D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3187,19 +3187,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3219,17 +3219,17 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3237,10 +3237,10 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3250,12 +3250,12 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_2D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_2D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -3263,7 +3263,7 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3313,7 +3313,7 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3323,7 +3323,7 @@ end subroutine assertEqual_int_0D_r32_2D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3334,19 +3334,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3366,17 +3366,17 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3384,10 +3384,10 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3397,12 +3397,12 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -3410,7 +3410,7 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3460,7 +3460,7 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3470,7 +3470,7 @@ end subroutine assertEqual_r32_0D_r32_2D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3481,19 +3481,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3513,17 +3513,17 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_2D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:)
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3531,10 +3531,10 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3544,12 +3544,12 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
      end if
 
      call assertEqual_int_2D_r32_2D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_2D_r32_2D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -3557,7 +3557,7 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
      integer, intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3591,7 +3591,7 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -3601,7 +3601,7 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -3626,7 +3626,7 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3636,7 +3636,7 @@ end subroutine assertEqual_r64_0D_r32_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3647,19 +3647,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3679,17 +3679,17 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_2D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:)
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3697,10 +3697,10 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3710,12 +3710,12 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
      end if
 
      call assertEqual_r32_2D_r32_2D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_2D_r32_2D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -3723,7 +3723,7 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
      real(kind=r32), intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3757,7 +3757,7 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -3767,7 +3767,7 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -3792,7 +3792,7 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3802,7 +3802,7 @@ end subroutine assertEqual_int_2D_r32_2D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3813,19 +3813,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -3845,17 +3845,17 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_2D_r32_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:)
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -3863,10 +3863,10 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -3876,12 +3876,12 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
      end if
 
      call assertEqual_r64_2D_r32_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_2D_r32_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -3889,7 +3889,7 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
      real(kind=r64), intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -3923,7 +3923,7 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -3933,7 +3933,7 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -3958,7 +3958,7 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -3968,7 +3968,7 @@ end subroutine assertEqual_r32_2D_r32_2D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -3979,19 +3979,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4011,17 +4011,17 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4029,10 +4029,10 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4042,12 +4042,12 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4055,7 +4055,7 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4105,7 +4105,7 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4115,7 +4115,7 @@ end subroutine assertEqual_r64_2D_r32_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4126,19 +4126,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4158,17 +4158,17 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4176,10 +4176,10 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4189,12 +4189,12 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4202,7 +4202,7 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4252,7 +4252,7 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4262,7 +4262,7 @@ end subroutine assertEqual_int_0D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4273,19 +4273,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4305,17 +4305,17 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4323,10 +4323,10 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4336,12 +4336,12 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4349,7 +4349,7 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4399,7 +4399,7 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4409,7 +4409,7 @@ end subroutine assertEqual_r32_0D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4420,19 +4420,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4452,17 +4452,17 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4470,10 +4470,10 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4483,12 +4483,12 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
      end if
 
      call assertEqual_int_2D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_2D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4496,7 +4496,7 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
      integer, intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4530,7 +4530,7 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -4540,7 +4540,7 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -4565,7 +4565,7 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4575,7 +4575,7 @@ end subroutine assertEqual_r64_0D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4586,19 +4586,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4618,17 +4618,17 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4636,10 +4636,10 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4649,12 +4649,12 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
      end if
 
      call assertEqual_r32_2D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_2D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4662,7 +4662,7 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
      real(kind=r32), intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4696,7 +4696,7 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -4706,7 +4706,7 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -4731,7 +4731,7 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4741,7 +4741,7 @@ end subroutine assertEqual_int_2D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4752,19 +4752,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4784,17 +4784,17 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4802,10 +4802,10 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4815,12 +4815,12 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
      end if
 
      call assertEqual_r64_2D_r64_2D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_2D_r64_2D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -4828,7 +4828,7 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
      real(kind=r64), intent(in) :: expected(:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -4862,7 +4862,7 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -4872,7 +4872,7 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -4897,7 +4897,7 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
                &       found0, &
                &       idxLocation, &
                &       tolerance_, &
-               &       sourceLoc )
+               &       location )
                return ! bail
             end if
 
@@ -4907,7 +4907,7 @@ end subroutine assertEqual_r32_2D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -4918,19 +4918,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -4950,17 +4950,17 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -4968,10 +4968,10 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -4981,12 +4981,12 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
      end if
 
      call assertEqual_int_0D_r32_3D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_3D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -4994,7 +4994,7 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5045,7 +5045,7 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5056,7 +5056,7 @@ end subroutine assertEqual_r64_2D_r64_2D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5067,19 +5067,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5099,17 +5099,17 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5117,10 +5117,10 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5130,12 +5130,12 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_3D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_3D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -5143,7 +5143,7 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5194,7 +5194,7 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5205,7 +5205,7 @@ end subroutine assertEqual_int_0D_r32_3D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5216,19 +5216,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5248,17 +5248,17 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5266,10 +5266,10 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5279,12 +5279,12 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -5292,7 +5292,7 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5343,7 +5343,7 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5354,7 +5354,7 @@ end subroutine assertEqual_r32_0D_r32_3D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5365,19 +5365,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5397,17 +5397,17 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_3D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5415,10 +5415,10 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5428,12 +5428,12 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
      end if
 
      call assertEqual_int_3D_r32_3D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_3D_r32_3D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -5441,7 +5441,7 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
      integer, intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5475,7 +5475,7 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -5485,7 +5485,7 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -5511,7 +5511,7 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5522,7 +5522,7 @@ end subroutine assertEqual_r64_0D_r32_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5533,19 +5533,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5565,17 +5565,17 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_3D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5583,10 +5583,10 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5596,12 +5596,12 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
      end if
 
      call assertEqual_r32_3D_r32_3D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_3D_r32_3D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -5609,7 +5609,7 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
      real(kind=r32), intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5643,7 +5643,7 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -5653,7 +5653,7 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -5679,7 +5679,7 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5690,7 +5690,7 @@ end subroutine assertEqual_int_3D_r32_3D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5701,19 +5701,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5733,17 +5733,17 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_3D_r32_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5751,10 +5751,10 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5764,12 +5764,12 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
      end if
 
      call assertEqual_r64_3D_r32_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_3D_r32_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -5777,7 +5777,7 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
      real(kind=r64), intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5811,7 +5811,7 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -5821,7 +5821,7 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -5847,7 +5847,7 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -5858,7 +5858,7 @@ end subroutine assertEqual_r32_3D_r32_3D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -5869,19 +5869,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -5901,17 +5901,17 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -5919,10 +5919,10 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -5932,12 +5932,12 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -5945,7 +5945,7 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -5996,7 +5996,7 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6007,7 +6007,7 @@ end subroutine assertEqual_r64_3D_r32_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6018,19 +6018,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6050,17 +6050,17 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6068,10 +6068,10 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6081,12 +6081,12 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -6094,7 +6094,7 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6145,7 +6145,7 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6156,7 +6156,7 @@ end subroutine assertEqual_int_0D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6167,19 +6167,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6199,17 +6199,17 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6217,10 +6217,10 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6230,12 +6230,12 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -6243,7 +6243,7 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6294,7 +6294,7 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6305,7 +6305,7 @@ end subroutine assertEqual_r32_0D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6316,19 +6316,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6348,17 +6348,17 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6366,10 +6366,10 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6379,12 +6379,12 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
      end if
 
      call assertEqual_int_3D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_3D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -6392,7 +6392,7 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
      integer, intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6426,7 +6426,7 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -6436,7 +6436,7 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -6462,7 +6462,7 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6473,7 +6473,7 @@ end subroutine assertEqual_r64_0D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6484,19 +6484,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6516,17 +6516,17 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6534,10 +6534,10 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6547,12 +6547,12 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
      end if
 
      call assertEqual_r32_3D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_3D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -6560,7 +6560,7 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
      real(kind=r32), intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6594,7 +6594,7 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -6604,7 +6604,7 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -6630,7 +6630,7 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6641,7 +6641,7 @@ end subroutine assertEqual_int_3D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6652,19 +6652,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6684,17 +6684,17 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6702,10 +6702,10 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6715,12 +6715,12 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
      end if
 
      call assertEqual_r64_3D_r64_3D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_3D_r64_3D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -6728,7 +6728,7 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
      real(kind=r64), intent(in) :: expected(:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6762,7 +6762,7 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -6772,7 +6772,7 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -6798,7 +6798,7 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
                   &       found0, &
                   &       idxLocation, &
                   &       tolerance_, &
-                  &       sourceLoc )
+                  &       location )
                   return ! bail
                end if
 
@@ -6809,7 +6809,7 @@ end subroutine assertEqual_r32_3D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6820,19 +6820,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -6852,17 +6852,17 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -6870,10 +6870,10 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -6883,12 +6883,12 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
      end if
 
      call assertEqual_int_0D_r32_4D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_4D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -6896,7 +6896,7 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -6948,7 +6948,7 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -6960,7 +6960,7 @@ end subroutine assertEqual_r64_3D_r64_3D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -6971,19 +6971,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7003,17 +7003,17 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7021,10 +7021,10 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7034,12 +7034,12 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_4D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_4D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -7047,7 +7047,7 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7099,7 +7099,7 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7111,7 +7111,7 @@ end subroutine assertEqual_int_0D_r32_4D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7122,19 +7122,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7154,17 +7154,17 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7172,10 +7172,10 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7185,12 +7185,12 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -7198,7 +7198,7 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7250,7 +7250,7 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7262,7 +7262,7 @@ end subroutine assertEqual_r32_0D_r32_4D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7273,19 +7273,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7305,17 +7305,17 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_4D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7323,10 +7323,10 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7336,12 +7336,12 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
      end if
 
      call assertEqual_int_4D_r32_4D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_4D_r32_4D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -7349,7 +7349,7 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
      integer, intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7383,7 +7383,7 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -7393,7 +7393,7 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -7420,7 +7420,7 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7432,7 +7432,7 @@ end subroutine assertEqual_r64_0D_r32_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7443,19 +7443,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7475,17 +7475,17 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_4D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7493,10 +7493,10 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7506,12 +7506,12 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
      end if
 
      call assertEqual_r32_4D_r32_4D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_4D_r32_4D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -7519,7 +7519,7 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
      real(kind=r32), intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7553,7 +7553,7 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -7563,7 +7563,7 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -7590,7 +7590,7 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7602,7 +7602,7 @@ end subroutine assertEqual_int_4D_r32_4D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7613,19 +7613,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7645,17 +7645,17 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_4D_r32_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7663,10 +7663,10 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7676,12 +7676,12 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
      end if
 
      call assertEqual_r64_4D_r32_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_4D_r32_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -7689,7 +7689,7 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
      real(kind=r64), intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7723,7 +7723,7 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -7733,7 +7733,7 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -7760,7 +7760,7 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7772,7 +7772,7 @@ end subroutine assertEqual_r32_4D_r32_4D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7783,19 +7783,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7815,17 +7815,17 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7833,10 +7833,10 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7846,12 +7846,12 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -7859,7 +7859,7 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -7911,7 +7911,7 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -7923,7 +7923,7 @@ end subroutine assertEqual_r64_4D_r32_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -7934,19 +7934,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -7966,17 +7966,17 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -7984,10 +7984,10 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -7997,12 +7997,12 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -8010,7 +8010,7 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8062,7 +8062,7 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -8074,7 +8074,7 @@ end subroutine assertEqual_int_0D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8085,19 +8085,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8117,17 +8117,17 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8135,10 +8135,10 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8148,12 +8148,12 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -8161,7 +8161,7 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8213,7 +8213,7 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -8225,7 +8225,7 @@ end subroutine assertEqual_r32_0D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8236,19 +8236,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8268,17 +8268,17 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8286,10 +8286,10 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8299,12 +8299,12 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
      end if
 
      call assertEqual_int_4D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_4D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -8312,7 +8312,7 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
      integer, intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8346,7 +8346,7 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -8356,7 +8356,7 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -8383,7 +8383,7 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -8395,7 +8395,7 @@ end subroutine assertEqual_r64_0D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8406,19 +8406,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8438,17 +8438,17 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8456,10 +8456,10 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8469,12 +8469,12 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
      end if
 
      call assertEqual_r32_4D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_4D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -8482,7 +8482,7 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
      real(kind=r32), intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8516,7 +8516,7 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -8526,7 +8526,7 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -8553,7 +8553,7 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -8565,7 +8565,7 @@ end subroutine assertEqual_int_4D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8576,19 +8576,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8608,17 +8608,17 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8626,10 +8626,10 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8639,12 +8639,12 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
      end if
 
      call assertEqual_r64_4D_r64_4D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_4D_r64_4D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -8652,7 +8652,7 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
      real(kind=r64), intent(in) :: expected(:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8686,7 +8686,7 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -8696,7 +8696,7 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -8723,7 +8723,7 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
                      &       found0, &
                      &       idxLocation, &
                      &       tolerance_, &
-                     &       sourceLoc )
+                     &       location )
                      return ! bail
                   end if
 
@@ -8735,7 +8735,7 @@ end subroutine assertEqual_r32_4D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8746,19 +8746,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8778,17 +8778,17 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8796,10 +8796,10 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8809,12 +8809,12 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
      end if
 
      call assertEqual_int_0D_r32_5D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r32_5D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -8822,7 +8822,7 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -8875,7 +8875,7 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -8888,7 +8888,7 @@ end subroutine assertEqual_r64_4D_r64_4D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -8899,19 +8899,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -8931,17 +8931,17 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -8949,10 +8949,10 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -8962,12 +8962,12 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
      end if
 
      call assertEqual_r32_0D_r32_5D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r32_5D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -8975,7 +8975,7 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9028,7 +9028,7 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9041,7 +9041,7 @@ end subroutine assertEqual_int_0D_r32_5D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9052,19 +9052,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9084,17 +9084,17 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r32_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9102,10 +9102,10 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9115,12 +9115,12 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
      end if
 
      call assertEqual_r64_0D_r32_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r32_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -9128,7 +9128,7 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9181,7 +9181,7 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9194,7 +9194,7 @@ end subroutine assertEqual_r32_0D_r32_5D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9205,19 +9205,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9237,17 +9237,17 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_5D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9255,10 +9255,10 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9268,12 +9268,12 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
      end if
 
      call assertEqual_int_5D_r32_5D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_5D_r32_5D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -9281,7 +9281,7 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
      integer, intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9315,7 +9315,7 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -9325,7 +9325,7 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -9353,7 +9353,7 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9366,7 +9366,7 @@ end subroutine assertEqual_r64_0D_r32_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9377,19 +9377,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9409,17 +9409,17 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_5D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9427,10 +9427,10 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9440,12 +9440,12 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
      end if
 
      call assertEqual_r32_5D_r32_5D_tol32_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_5D_r32_5D_tol32_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r32), intent(in) :: tolerance
@@ -9453,7 +9453,7 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9487,7 +9487,7 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -9497,7 +9497,7 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -9525,7 +9525,7 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9538,7 +9538,7 @@ end subroutine assertEqual_int_5D_r32_5D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9549,19 +9549,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r32), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9581,17 +9581,17 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_5D_r32_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9599,10 +9599,10 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
         tolerance_ = real(0.,kind=r32)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9612,12 +9612,12 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
      end if
 
      call assertEqual_r64_5D_r32_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_5D_r32_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -9625,7 +9625,7 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
      real(kind=r64), intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9659,7 +9659,7 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -9669,7 +9669,7 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -9697,7 +9697,7 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9710,7 +9710,7 @@ end subroutine assertEqual_r32_5D_r32_5D_tol32_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9721,19 +9721,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r32) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9753,17 +9753,17 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9771,10 +9771,10 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9784,12 +9784,12 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
      end if
 
      call assertEqual_int_0D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_0D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -9797,7 +9797,7 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
      integer, intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -9850,7 +9850,7 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -9863,7 +9863,7 @@ end subroutine assertEqual_r64_5D_r32_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -9874,19 +9874,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -9906,17 +9906,17 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -9924,10 +9924,10 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -9937,12 +9937,12 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
      end if
 
      call assertEqual_r32_0D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_0D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -9950,7 +9950,7 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
      real(kind=r32), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -10003,7 +10003,7 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -10016,7 +10016,7 @@ end subroutine assertEqual_int_0D_r64_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -10027,19 +10027,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -10059,17 +10059,17 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -10077,10 +10077,10 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -10090,12 +10090,12 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
      end if
 
      call assertEqual_r64_0D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_0D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -10103,7 +10103,7 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
      real(kind=r64), intent(in) :: expected
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -10156,7 +10156,7 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -10169,7 +10169,7 @@ end subroutine assertEqual_r32_0D_r64_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -10180,19 +10180,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -10212,17 +10212,17 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      integer, intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -10230,10 +10230,10 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -10243,12 +10243,12 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
      end if
 
      call assertEqual_int_5D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_int_5D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -10256,7 +10256,7 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
      integer, intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -10290,7 +10290,7 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -10300,7 +10300,7 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -10328,7 +10328,7 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -10341,7 +10341,7 @@ end subroutine assertEqual_r64_0D_r64_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -10352,19 +10352,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -10384,17 +10384,17 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -10402,10 +10402,10 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -10415,12 +10415,12 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
      end if
 
      call assertEqual_r32_5D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r32_5D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -10428,7 +10428,7 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -10462,7 +10462,7 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -10472,7 +10472,7 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -10500,7 +10500,7 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -10513,7 +10513,7 @@ end subroutine assertEqual_int_5D_r64_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -10524,19 +10524,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation
@@ -10556,17 +10556,17 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), optional, intent(in) :: tolerance
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -10574,10 +10574,10 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
         tolerance_ = real(0.,kind=r64)
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -10587,12 +10587,12 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
      end if
 
      call assertEqual_r64_5D_r64_5D_tol64_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 
    subroutine assertEqual_r64_5D_r64_5D_tol64_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
      real(kind=r64), intent(in) :: tolerance
@@ -10600,7 +10600,7 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
      real(kind=r64), intent(in) :: expected(:,:,:,:,:)
 
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -10634,7 +10634,7 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -10644,7 +10644,7 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -10672,7 +10672,7 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
                         &       found0, &
                         &       idxLocation, &
                         &       tolerance_, &
-                        &       sourceLoc )
+                        &       location )
                         return ! bail
                      end if
 
@@ -10685,7 +10685,7 @@ end subroutine assertEqual_r32_5D_r64_5D_tol64_internal
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -10696,19 +10696,19 @@ subroutine throwDifferentValuesWithLocation( &
    real(kind=r64) :: found
 
    real(kind=r64), intent(in) :: tolerance
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation

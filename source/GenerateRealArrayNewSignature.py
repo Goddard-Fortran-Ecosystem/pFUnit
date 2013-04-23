@@ -264,17 +264,17 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         commentPreambleString + \
 """
    subroutine """+subroutineName+"""( &
-   &  expected, found, message, tolerance, sourceLoc )
+   &  expected, found, message, tolerance, location )
      implicit none\n""" + \
 "     " + expectedDescr.DECLARE('expected') + "\n" + \
 "     " + foundDescr.DECLARE('found') + "\n" +\
 "     " + tolDECLARE(tolerance,foundDescr,opts=', optional, intent(in)') + """
      character(len=*), optional, intent(in) :: message  ! not used yet!
-     type (SourceLocation), optional, intent(in) :: sourceLoc
+     type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
      character(len=:), allocatable :: message_
-     type (SourceLocation) :: sourceLoc_
+     type (SourceLocation) :: location_
 
      if(present(tolerance)) then
         tolerance_ = tolerance
@@ -282,10 +282,10 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         tolerance_ = real(0.,"""+KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())+""")
      end if
 
-     if(present(sourceLoc)) then 
-        sourceLoc_ = sourceLoc
+     if(present(location)) then 
+        location_ = location
      else
-        sourceLoc_ = UNKNOWN_SOURCE_LOCATION
+        location_ = UNKNOWN_SOURCE_LOCATION
      end if
 
      if(present(message)) then
@@ -295,13 +295,13 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
      end if
 
      call """+subroutineName+"""_internal ( &
-     &  expected, found, tolerance_, message_, sourceLoc_ )
+     &  expected, found, tolerance_, message_, location_ )
      
    end subroutine
 """ + \
 """
    subroutine """+subroutineName+"""_internal( &
-   &  expected, found, tolerance, message, sourceLoc )
+   &  expected, found, tolerance, message, location )
      implicit none\n""" + \
 "     " + foundDescr.DECLARE('found') + "\n" +\
 "     " + tolDECLARE(tolerance,foundDescr,opts=', intent(in)') + """
@@ -309,7 +309,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 "     " + expectedDescr.DECLARE('expected') + "\n" + \
 """
      character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: sourceLoc
+     type (SourceLocation), intent(in) :: location
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
@@ -354,7 +354,7 @@ elideIfZero(expectedDescr.RANK(), \
    ! The following segment is elided if the expected rank is zero.
    !
       if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), sourceLoc=sourceLoc)
+         call throwNonConformable(shape(expected), shape(found), location=location)
          ! Test failed... So return?
          return
       end if
@@ -364,7 +364,7 @@ elideIfZero(expectedDescr.RANK(), \
    !   foundShape = shape(found)
       do i = 1, size(expectedShape)
          if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, sourceLoc=sourceLoc)
+            call throwNonConformable(expectedShape, foundShape, location=location)
             return ! bail
          end if
       end do
@@ -400,7 +400,7 @@ ifElseString(foundDescr.RANK() > 0, """
       &       found0, &
       &       idxLocation, & 
       &       tolerance_, &
-      &       sourceLoc )
+      &       location )
       return ! bail
    end if
 
@@ -408,7 +408,7 @@ ifElseString(foundDescr.RANK() > 0, """
 contains
 
 subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, sourceLoc )
+&   expected, found, iLocation, tolerance, location )
    use Params_mod
    use StringUtilities_mod
    use Exception_mod
@@ -424,19 +424,19 @@ ifElseString(tolerance == 0,\
    real(kind=r"""+str(tolerance)+"""), intent(in) :: tolerance""" \
 ) + \
 """
-   type (SourceLocation), intent(in) :: sourceLoc
+   type (SourceLocation), intent(in) :: location
    integer, intent(in) :: iLocation(:)
    integer :: iLocationSize
    integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: location
-   write(location,locationFormat(iLocation)) iLocation
+   character(len=MAXLEN_SHAPE) :: locationInArray
+   write(locationInArray,locationFormat(iLocation)) iLocation
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
          & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=sourceLoc &
+         & location=location &
          & )
          
 end subroutine throwDifferentValuesWithLocation

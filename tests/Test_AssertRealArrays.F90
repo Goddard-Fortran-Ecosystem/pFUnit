@@ -16,9 +16,10 @@ module Test_AssertRealArrays_mod ! note name
   use Params_mod, only : r32, r64
   use StringUtilities_mod, only: toString
   use AssertBasic_mod
-  use AssertReal_mod
+  use AssertReal_mod, only: differenceReport, shapeReport, valuesReport
   use AssertRealArrays_mod, only: assertEqual  ! note name
   use ThrowFundamentalTypes_mod, only: locationFormat
+  use SourceLocation_mod
 
   implicit none
   private
@@ -45,13 +46,13 @@ contains
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff1)
     ADD(testEquals_MultiDWithTolerance)
     ADD(testEquals_MultiDWithTolerance64)
+    ADD(testEquals_MultiDSourceLocation)
 
   end function suite
 
   ! Same rank, different shape.
   subroutine testEquals_0D1D()
     use Params_mod
-!    use Exception_mod, only: new_line('$')
 !    use Assert_mod, only: assertEqual
     use AssertRealArrays_mod, only: assertEqual  ! note name
 
@@ -119,7 +120,7 @@ contains
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
 
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
 
     !dbg print *,'2000'
@@ -133,12 +134,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A22,B22,'testEquals_2D_SingleElementDifferent')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -160,7 +161,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -178,12 +179,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A0,B2,'testEquals_MultiD_SingleElementDifferent:Rank0')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -202,12 +203,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A2,B2,'testEquals_MultiD_SingleElementDifferent:Rank2')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -219,12 +220,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A3,B3,'testEquals_MultiD_SingleElementDifferent:Rank3')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -238,12 +239,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A4,B4,'testEquals_MultiD_SingleElementDifferent:Rank4')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -257,12 +258,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A5,B5,'testEquals_MultiD_SingleElementDifferent:Rank5')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -280,8 +281,8 @@ contains
     call assertEqual(A5,B5, & 
          & 'testEquals_MultiD_SingleElementDifferent:nonConformable')
 
-    ! "location" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
+    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
@@ -314,7 +315,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -329,12 +330,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A2,B2,'testEquals_MultiD_SingleElementDifferent:Rank2')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -346,12 +347,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A3,B3,'testEquals_MultiD_SingleElementDifferent:Rank3')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -365,12 +366,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A4,B4,'testEquals_MultiD_SingleElementDifferent:Rank4')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -384,12 +385,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A5,B5,'testEquals_MultiD_SingleElementDifferent:Rank5')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -407,8 +408,8 @@ contains
     call assertEqual(A5,B5, & 
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
-    ! "location" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
+    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
@@ -441,7 +442,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -456,12 +457,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A2,B2,'testEquals_MultiD_SingleElementDifferent:Rank2')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -473,12 +474,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A3,B3,'testEquals_MultiD_SingleElementDifferent:Rank3')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -492,12 +493,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A4,B4,'testEquals_MultiD_SingleElementDifferent:Rank4')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -511,12 +512,12 @@ contains
     ! The following should throw an exception...
     call assertEqual(A5,B5,'testEquals_MultiD_SingleElementDifferent:Rank5')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0.)) &
          & )
@@ -534,8 +535,8 @@ contains
     call assertEqual(A5,B5, & 
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
-    ! "location" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(location,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
+    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
          & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
@@ -560,7 +561,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
     real(kind=r32)    :: tolerance32
@@ -581,12 +582,12 @@ contains
     call assertEqual(A2,B2,tolerance = tolerance32, message = &
          & 'testEquals_MultiDSingleEltTol32-Throw:Rank2,Tolerance32')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0. )) &
          & )
@@ -618,7 +619,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
     real(kind=r64)    :: tolerance64
@@ -644,12 +645,12 @@ contains
 
     !dbg print *,'4015'
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0. )) &
          & )
@@ -678,33 +679,89 @@ contains
     call assertEqual(A3,B3,tolerance=tolerance64, message= &
          & 'testEquals_MultiDSingleEltTol64-Throw:Rank3,Tolerance64')
 
-    ! "location" is not used in the original AssertEqual code.
-    write(location,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, 0. )) &
          & )
 
   end subroutine testEquals_MultiDWithTolerance64
 
+  subroutine testEquals_MultiDSourceLocation()
+    use Params_mod
+    use AssertRealArrays_mod, only: AssertEqual
+
+    real(kind=r64), dimension(:,:), allocatable :: A2, B2
+    real(kind=r64) :: expected, found, tolerance64
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2
+    integer :: n1, n2
+    type (SourceLocation) :: location
+    
+    expected = 0.0; found = 1.0; tolerance64 = 0.0
+
+    n1 = 2; n2 = 3; allocate(A2(n1,n2),B2(n1,n2))
+    A2 = expected; B2 = expected
+
+    i1 = 2; i2 = 3; B2(i1,i2) = found
+
+    location = SourceLocation(lineNumber=999,fileName='AFileName')
+
+    ! The following should throw an exception...
+    call assertEqual(A2,B2,tolerance = tolerance64, message = &
+         & 'testEquals_MultiDSourceLocation', &
+         & location=location)
+
+    ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
+    !dbg print *,'4015'
+
+    ! "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+
+! Note use of real...  Consider overloading the reporting functions...
+    call assertCatch( &
+         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
+         & trim(valuesReport(real(expected), real(found))) // &
+         & trim(differenceReport(real(found - expected), 0. )), &
+         & location=location &
+         & )
+
+
+  end subroutine testEquals_MultiDSourceLocation
+
   ! Check to see that the test result is as expected...
-  subroutine assertCatch(string)
+  subroutine assertCatch(string,location)
     use Params_mod
     use Exception_mod, only: getNumExceptions, Exception, catchAny
     use Assert_mod, only: assertEqual
     character(len=*), intent(in) :: string
+    type (SourceLocation), optional, intent(in) :: location
     type (Exception) :: anException
 
     !dbg print *,'5000'
     
     if (getNumExceptions() > 0) then
        anException = catchAny()
-       call assertEqual(string, anException%getMessage())!, 'exceptions do not match')
+       !, 'exceptions do not match')
+       call assertEqual(string,anException%getMessage(),message='Exception message test')
+       if(present(location))then
+          call assertEqual( &
+               & location%lineNumber,anException%getLineNumber(), &
+               & message='Source line number test')
+          call assertEqual(location%fileName,anException%getFileName(), &
+               & message='Source file name test')
+       end if
     else
-       call assertEqual(string, ' ')!, 'missing exception')
+       !, 'missing exception')
+       call assertEqual(string, ' ')
     end if
   end subroutine assertCatch
 

@@ -43,105 +43,105 @@ module ThrowFundamentalTypes_mod
 contains
 
   ! Consider promoting to module level scope.
-  subroutine throwNonConformable(shapeExpected, shapeFound, sourceLoc)
+  subroutine throwNonConformable(shapeExpected, shapeFound, location)
     integer, intent(in) :: shapeExpected(:)
     integer, intent(in) :: shapeFound(:)
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     call throw( &
          & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
          & '    expected shape: <['//trim(toString(shapeExpected))//']>' // new_line('$') //&
          & '   but found shape: <['//trim(toString(shapeFound))//']>', &
-         & location=sourceLoc &
+         & location=location &
          & )
   end subroutine throwNonConformable
 
-  subroutine compareElements(expected, found, i1, i2, sourceLoc)
+  subroutine compareElements(expected, found, i1, i2, location)
     real, intent(in) :: expected, found
     integer, intent(in) :: i1, i2
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     ! the test
     if (expected /= found) then
-       call throwDifferentValues(expected, found, i1, i2, 0.0, sourceLoc=sourceLoc)
+       call throwDifferentValues(expected, found, i1, i2, 0.0, location=location)
     end if
   end subroutine compareElements
 
-  subroutine throwDifferentValues_ii(iExpected, iFound, i1, i2, tolerance, sourceLoc)
+  subroutine throwDifferentValues_ii(iExpected, iFound, i1, i2, tolerance, location)
     integer, intent(in) :: iExpected, iFound
     integer, intent(in) :: i1, i2
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     ! Check with team to see if this is okay.
     call throwDifferentValues_rr(real(iExpected), real(iFound), i1, i2, tolerance, &
-         & sourceLoc=sourceLoc)
+         & location=location)
 
   end subroutine throwDifferentValues_ii
 
-  subroutine throwDifferentValues_ir(iExpected, found, i1, i2, tolerance, sourceLoc)
+  subroutine throwDifferentValues_ir(iExpected, found, i1, i2, tolerance, location)
     integer, intent(in) :: iExpected
     real, intent(in) :: found
     integer, intent(in) :: i1, i2
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     ! Check with team to see if this is okay.
     call throwDifferentValues_rr(real(iExpected), found, i1, i2, tolerance, &
-         & sourceLoc=sourceLoc)
+         & location=location)
 
   end subroutine throwDifferentValues_ir
 
   subroutine throwDifferentValues_rr(expected, found, i1, i2, tolerance, &
-       & sourceLoc )
+       & location )
     real, intent(in) :: expected, found
     integer, intent(in) :: i1, i2
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
 
-    ! "location" is not used in the original AssertEqual code.
-    character(len=MAXLEN_SHAPE) :: location
-    write(location,'("[",i0,", ",i0," ]")') i1, i2
+    ! "locationInArray" is not used in the original AssertEqual code.
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    write(locationInArray,'("[",i0,", ",i0," ]")') i1, i2
 
     call throw( &
          & 'Assertion failed:  unequal real 2D arrays.' // new_line('$') // &
-         & '  First difference at element <' // location // '>' // &
+         & '  First difference at element <' // locationInArray // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, tolerance)), &
-         & location=sourceLoc &
+         & location=location &
 !         & trim(differenceReport(found - expected, 0.)) &
          & )
 
   end subroutine throwDifferentValues_rr
 
   subroutine throwDifferentValuesWithLocation_ii( &
-       & iExpected, iFound, iLocation, tolerance, sourceLoc )
+       & iExpected, iFound, iLocation, tolerance, location )
     integer, intent(in) :: iExpected, iFound
     integer, intent(in) :: iLocation(:)
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     ! Check with team to see if this is okay.
     call throwDifferentValuesWithLocation_rr( &
-         & real(iExpected), real(iFound), iLocation, tolerance, sourceLoc=sourceLoc )
+         & real(iExpected), real(iFound), iLocation, tolerance, location=location )
 
   end subroutine throwDifferentValuesWithLocation_ii
 
   subroutine throwDifferentValuesWithLocation_ir( &
-       & iExpected, found, iLocation, tolerance, sourceLoc)
+       & iExpected, found, iLocation, tolerance, location)
     integer, intent(in) :: iExpected
     real, intent(in) :: found
     integer, intent(in) :: iLocation(:)
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
 !    print *,'20000'
     ! Check with team to see if this is okay. ! Answer: meh...
     call throwDifferentValuesWithLocation_rr( &
-         & real(iExpected), found, iLocation, tolerance, sourceLoc=sourceLoc)
+         & real(iExpected), found, iLocation, tolerance, location=location)
 
   end subroutine throwDifferentValuesWithLocation_ir
 
@@ -165,34 +165,34 @@ contains
   end function locationFormat
 
   subroutine throwDifferentValuesWithLocation_rr( &
-       & expected, found, iLocation, tolerance, sourceLoc)
+       & expected, found, iLocation, tolerance, location)
     real, intent(in) :: expected, found
     integer, intent(in) :: iLocation(:)
     integer :: iLocationSize
     real, intent(in) :: tolerance
-    type (SourceLocation), optional, intent(in) :: sourceLoc
+    type (SourceLocation), optional, intent(in) :: location
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80*2
 
     ! "location" is not used in the original AssertEqual code.
-    character(len=MAXLEN_SHAPE) :: location
+    character(len=MAXLEN_SHAPE) :: locationInArray
 
-    write(location, locationFormat(iLocation)) iLocation
+    write(locationInArray, locationFormat(iLocation)) iLocation
 
 !    print *, &
 !         & 'Assertion failed: unequal arrays.' // NEWLINE // &
-!         & '  First difference at element <' // trim(location) // '>' // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
 !         & trim(valuesReport(expected, found)) // &
 !         & trim(differenceReport(found - expected, tolerance))
 
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(location) // '>' // &
+         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
          & trim(differenceReport(found - expected, tolerance)), &
-         & location=sourceLoc &
+         & location=location &
          & )
 
   end subroutine throwDifferentValuesWithLocation_rr
