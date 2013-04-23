@@ -72,6 +72,8 @@ class routineUnit:
     def setName(self,name):
         self.name = name
         return
+    def getName(self):
+        return self.name
     def setDeclaration(self,declaration):
         self.declaration = declaration
         self.declarations = [self.declaration]
@@ -88,6 +90,10 @@ class routineUnit:
         return self.declarations
     def getImplementation(self):
         return self.implementation
+    def clearDeclarations(self):
+        self.declarations = []
+        self.declaration = ''
+        return self
 
 class interfaceBlock:
 #    name = ''

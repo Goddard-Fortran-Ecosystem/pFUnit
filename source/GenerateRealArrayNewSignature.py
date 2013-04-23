@@ -350,24 +350,31 @@ ifElseString(tolerance == 0, """
 """ ) + \
 elideIfZero(expectedDescr.RANK(), \
 """
+  
    ! If the expected is scalar, then we are conformable.  Otherwise, we have to check the shape.
    ! The following segment is elided if the expected rank is zero.
    !
-      if(size(expected) /= size(found)) then
-         call throwNonConformable(shape(expected), shape(found), location=location)
-         ! Test failed... So return?
-         return
-      end if
-   
+
+      call assertSameShape(shape(expected),shape(found),location=location)
+      if (anyExceptions()) return
+
+!mlr-      ! SAME SIZE
+!mlr-      if(size(expected) /= size(found)) then
+!mlr-         call throwNonConformable(shape(expected), shape(found), location=location)
+!mlr-         ! Test failed... So return?
+!mlr-         return
+!mlr-      end if
+!mlr-
+      ! SAME SHAPE
       ! Check shapes
       expectedSize = size(expected); expectedShape = shape(expected)
-   !   foundShape = shape(found)
-      do i = 1, size(expectedShape)
-         if( expectedShape(i) /= foundShape(i) ) then
-            call throwNonConformable(expectedShape, foundShape, location=location)
-            return ! bail
-         end if
-      end do
+!mlr-   !   foundShape = shape(found)
+!mlr-      do i = 1, size(expectedShape)
+!mlr-         if( expectedShape(i) /= foundShape(i) ) then
+!mlr-            call throwNonConformable(expectedShape, foundShape, location=location)
+!mlr-            return ! bail
+!mlr-         end if
+!mlr-      end do
 """ ) + \
 """
    ! Size and shape okay.  Now compare elements... If all tolerable, return...
@@ -376,7 +383,8 @@ elideIfZero(expectedDescr.RANK(), \
    ! Question:  How to handle 0-rank case?  How to handle tolerance == 0?
       if (isWithinTolerance(delta, real(tolerance_,kind=r64), L_INFINITY_NORM)) return
 
-   ! Check for difference   
+   ! Check for difference
+
 """ + \
 iterateOverMultiRank(foundDescr.RANK(),"idx","foundShape","""
    expected0 = expected""" + \
@@ -394,7 +402,7 @@ ifElseString(foundDescr.RANK() > 0, """
       idxLocation = (/ """ + MakeNamesWithRank("idx",foundDescr.RANK())+""" /) """, """
       idxLocation = (/ 0 /) """ ) + \
 """
-      tolerance_ = 0.0
+!???      tolerance_ = 0.0
       call throwDifferentValuesWithLocation( &
       &       expected0, &
       &       found0, &
@@ -431,13 +439,25 @@ ifElseString(tolerance == 0,\
    character(len=MAXLEN_SHAPE) :: locationInArray
    write(locationInArray,locationFormat(iLocation)) iLocation
 
-    call throw( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
-         & trim(valuesReport(real(expected), real(found))) // &
-         & trim(differenceReport(real(found - expected), real(tolerance))), &
-         & location=location &
-         & )
+! scalar case
+!   call throw( &
+!      & trim(valuesReport(real(expected), real(found))) // &
+!      & trim(differenceReport(real(found - expected), real(tolerance))), &
+!      & location=location &
+!      & )
+
+! Should fix the real() call below.  This is just reporting so we're okay for now.
+    call throwDifferentValuesString( &
+    &  real(expected),real(found),trim(locationInArray),location=location, &
+    &  tolerance = real(tolerance_) )
+
+!    call throw( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(real(expected), real(found))) // &
+!         & trim(differenceReport(real(found - expected), real(tolerance))), &
+!         & location=location &
+!         & )
          
 end subroutine throwDifferentValuesWithLocation
 
@@ -705,6 +725,112 @@ def testGenerateIsWithinTolerance():
     print generateIsWithinTolerance(1)
     return
 
+def makeValuesReport():
+    runit = CodeUtilities.routineUnit('valuesReport', \
+"""
+      character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
+      real, intent(in) :: expected
+      real, intent(in) :: found
+
+      valuesReport = 'expected: <' // trim(toString(expected)) // &
+      & '> but found: <' // trim(toString(found)) // '>'
+   end function valuesReport
+""")
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
+def makeDifferenceReport():
+    runit = CodeUtilities.routineUnit('differenceReport', \
+"""
+   character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
+      real, intent(in) :: difference
+      real, optional, intent(in) :: tolerance
+      differenceReport = '    difference: |' // trim(toString(difference)) // &
+      & '| > tolerance:' // trim(toString(tolerance))
+   end function differenceReport
+""")
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
+def makeCompareElements():
+    runit = CodeUtilities.routineUnit('compareElements', \
+"""
+      subroutine compareElements(expected, found, at)
+         real, intent(in) :: expected
+         real, intent(in) :: found
+         integer, intent(in) :: at
+         
+         if (expected /= found) then
+            call throwDifferentValues(expected, found, at)
+         end if
+
+      end subroutine compareElements
+""")
+#    runit.clearDeclarations() # or set to public?
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
+def makeThrowDifferentValues():
+    runit = CodeUtilities.routineUnit('throwDifferentValues', \
+"""
+      subroutine throwDifferentValues( &
+      & expected, found, at, location, tolerance)
+         real, intent(in) :: expected
+         real, intent(in) :: found
+         integer, intent(in) :: at
+         type (SourceLocation), optional, intent(in) :: location
+         real, optional, intent(in) :: tolerance
+         real :: tolerance_
+         character(len=MAXLEN_SHAPE) :: locationInArray
+
+         if(present(tolerance))then
+            tolerance_ = tolerance
+         else
+            tolerance_ = 0.0
+         end if
+
+         write(locationInArray,'("[",i0,"]")') at
+
+         call throw( &
+              & trim(valuesReport(expected, found)) // &
+              & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+              & '; first difference at element <'//trim(toString(at))//'>.', &
+              & location = location &
+              )
+      end subroutine throwDifferentValues
+""")
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
+
+def makeThrowDifferentValuesString():
+    runit = CodeUtilities.routineUnit('throwDifferentValuesString', \
+"""
+      subroutine throwDifferentValuesString(expected, found, at, location, tolerance)
+         real, intent(in) :: expected
+         real, intent(in) :: found
+         character(len=*), intent(in) :: at
+         type (SourceLocation), optional, intent(in) :: location
+         real, optional, intent(in) :: tolerance
+         real :: tolerance_
+
+         if(present(tolerance))then
+            tolerance_ = tolerance
+         else
+            tolerance_ = 0.0
+         end if
+
+         call throw( &
+              & trim(valuesReport(expected, found)) // &
+              & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+              & ';  first difference at element <'//trim(at)//'>.', &
+              & location = location &
+              )
+      end subroutine throwDifferentValuesString
+""")
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
 def makeModule0():
     mod0 = CodeUtilities.module('test_mod_0')
     return mod0
@@ -738,6 +864,8 @@ def declareUSES():
    use Exception_mod
    use SourceLocation_mod
    use ThrowFundamentalTypes_mod, only : throwNonConformable
+   use StringUtilities_mod
+!   use AssertReal_mod, only : differenceReport, valuesReport
 """
 
 def declareDISCIPLINE():
@@ -757,6 +885,9 @@ def declareEXPORTS():
    public :: L_INFINITY_NORM
    public :: L1_NORM
    public :: L2_NORM
+
+!   public :: valuesReport
+!   public :: differenceReport
 """
 
 def declareEXPORTS_PARAMETERS():
@@ -765,6 +896,8 @@ def declareEXPORTS_PARAMETERS():
    integer, parameter :: L_INFINITY_NORM = 0
    integer, parameter :: L1_NORM         = 1
    integer, parameter :: L2_NORM         = 2
+
+   integer, parameter :: MAXLEN_SHAPE = 80
 """
 
 def makeExpectedFTypes(expectedPrecision):
@@ -841,6 +974,8 @@ def makeAssertRealArrays():
 
     AssertList = []
 
+    # Note:  expectedPrecision <= foundPrecision
+ 
     # expectedFTypes -> 'int' if expectedPrecision 'default' else 'real'
     # was tolerances = [32,64], but replaced by the following:
     # tolerances = max expectedPrecisions & foundPrecisions
@@ -909,6 +1044,11 @@ def constructModule():
     m1.addInterfaceBlock(constructVectorNormInterfaceBlock())
     m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock())
     m1.addInterfaceBlock(constructAssertEqualInterfaceBlock())
+    m1.addRoutineUnit(makeValuesReport())
+    m1.addRoutineUnit(makeDifferenceReport())
+    m1.addRoutineUnit(makeCompareElements())
+    m1.addRoutineUnit(makeThrowDifferentValues())
+    m1.addRoutineUnit(makeThrowDifferentValuesString())
     return m1
 
 def checkMakeAssertionAndAddToModule():

@@ -7,7 +7,8 @@ module Test_AssertReal_mod
    use StringUtilities_mod, only: toString
    use StringUtilities_mod, only: MAXLEN_STRING
    use AssertBasic_mod
-   use AssertReal_mod
+!   use AssertReal_mod
+   use AssertRealArrays_mod
 
    implicit none
    private
@@ -79,8 +80,9 @@ contains
 
       call assertEqual(expected, found)
       call assertCatch( &
-           & trim(valuesReport(expected, found)) // new_line('$') // &
-           & trim(differenceReport(difference, tolerance = 0.)) &
+           & trim(valuesReport(expected, found)) // &
+           & '; ' // trim(differenceReport(difference, tolerance = 0.)) // &
+           & ';  first difference at element <[0]>.' & 
            & )
    end subroutine checkUnequal
 
@@ -93,10 +95,11 @@ contains
 
       difference = found - expected
 
-      call assertEqual(expected, found, tolerance)
+      call assertEqual(expected, found, tolerance=tolerance)
       call assertCatch( &
-           & trim(valuesReport(expected, found)) // new_line('$') // &
-           & trim(differenceReport(difference, tolerance)) &
+           & trim(valuesReport(expected, found)) // &
+           & '; ' // trim(differenceReport(difference, tolerance)) // &
+           & ';  first difference at element <[0]>.' & 
            & )
    end subroutine checkNotWithinTolerance
 
@@ -141,20 +144,18 @@ contains
    subroutine testEquals_1D1D_diffA()
       call assertEqual([1.,2.], [0.,2.])
       call assertCatch( &
-           & 'Assertion failed: unequal real 1D arrays.' // new_line('$') // & 
-           & '  First difference at element <[1]>' // &
            &  trim(valuesReport(expected=1., found=0.)) // &
-           &  trim(differenceReport(0.-1., tolerance = 0.)) &
+           & '; ' // trim(differenceReport(0.-1., tolerance = 0.)) // &
+           & ';  first difference at element <[1]>.' &
            & )
    end subroutine testEquals_1D1D_diffA
 
    subroutine testEquals_1D1D_diffB()
       call assertEqual([1.,0.], [1.,2.])
       call assertCatch( &
-           & 'Assertion failed: unequal real 1D arrays.' // new_line('$') // & 
-           & '  First difference at element <[2]>'      //  &
            &  trim(valuesReport(expected=0., found=2.)) // &
-           &  trim(differenceReport(2.-0., tolerance = 0.)) &
+           & '; ' // trim(differenceReport(2.-0., tolerance = 0.)) //  &
+           & ';  first difference at element <[2]>.' &
            & )
    end subroutine testEquals_1D1D_diffB
 

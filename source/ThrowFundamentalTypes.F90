@@ -138,7 +138,6 @@ contains
     real, intent(in) :: tolerance
     type (SourceLocation), optional, intent(in) :: location
 
-!    print *,'20000'
     ! Check with team to see if this is okay. ! Answer: meh...
     call throwDifferentValuesWithLocation_rr( &
          & real(iExpected), found, iLocation, tolerance, location=location)
@@ -179,13 +178,6 @@ contains
     character(len=MAXLEN_SHAPE) :: locationInArray
 
     write(locationInArray, locationFormat(iLocation)) iLocation
-
-!    print *, &
-!         & 'Assertion failed: unequal arrays.' // NEWLINE // &
-!         & '  First difference at element <' // trim(locationInArray) // '>' // &
-!         & trim(valuesReport(expected, found)) // &
-!         & trim(differenceReport(found - expected, tolerance))
-
 
     call throw( &
          & 'Assertion failed: unequal arrays.' // new_line('$') // &

@@ -107,13 +107,16 @@ contains
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
 
+
       if (nonConformable(shapeA, shapeB)) then
          throwMessage = 'nonconforming arrays - expected shape: ' // &
               & trim(toString(shapeA)) // ' but found shape: ' // &
               & trim(toString(shapeB))
+
          call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
+
          
    end subroutine assertSameShape
 
@@ -184,7 +187,7 @@ contains
               & '    expected: <"', trim(expected), '">', new_line('A'), &
               & '   but found: <"', trim(found), '">', new_line('A'), &
               & '  first diff:   ', repeat('-', numSameCharacters), '^'
-         call throw(appendWithSpace(message, throwMessage), location)
+         call throw(appendWithSpace(message, throwMessage), location_)
       end if
 
    end subroutine assertEqualString_

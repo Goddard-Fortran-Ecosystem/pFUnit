@@ -80,16 +80,16 @@ contains
 
    contains
 
-      subroutine throwNonConformable(shapeExpected, shapeFound)
-         integer, intent(in) :: shapeExpected(:)
-         integer, intent(in) :: shapeFound(:)
-
-         call throw( &
-              & 'Assertion failed: non-conformbable real arrays.' // new_line('$') //& 
-              & '    expected shape: <['//trim(toString(shapeExpected))//']>' // new_line('$') //&
-              & '   but found shape: <['//trim(toString(shapeFound))//']>' &
-              & )
-      end subroutine throwNonConformable
+!      subroutine throwNonConformable(shapeExpected, shapeFound)
+!         integer, intent(in) :: shapeExpected(:)
+!         integer, intent(in) :: shapeFound(:)
+!
+!         call throw( &
+!              & 'Assertion failed: non-conformbable real arrays.' // new_line('$') //& 
+!              & '    expected shape: <['//trim(toString(shapeExpected))//']>' // new_line('$') //&
+!              & '   but found shape: <['//trim(toString(shapeFound))//']>' &
+!              & )
+!      end subroutine throwNonConformable
       
       subroutine compareElements(expected, found, at)
          real, intent(in) :: expected
@@ -129,7 +129,7 @@ contains
 
    character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
       real, intent(in) :: difference
-      real, intent(in) :: tolerance
+      real, optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))
    end function differenceReport
 

@@ -12,6 +12,7 @@
 
 
 module Test_AssertRealArrays_mod ! note name
+  use Exception_mod, only: getNumExceptions, anyExceptions
   use TestSuite_mod
   use Params_mod, only : r32, r64
   use StringUtilities_mod, only: toString
@@ -42,10 +43,25 @@ contains
     ADD(testEquals_1D_nonConformable1)
     ADD(testEquals_2D_SingleElementDifferent)
     ADD(testEquals_MultiD_SingleElementDifferent)
+    ADD(testEquals_MultiD_SingleElementDifferent1)
+    ADD(testEquals_MultiD_SingleElementDifferent2)
+    ADD(testEquals_MultiD_SingleElementDifferent3)
+    ADD(testEquals_MultiD_SingleElementDifferent4)
+    ADD(testEquals_MultiD_SingleElementDifferent5)
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff)
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff1)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff2)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff3)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff4)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff5)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff6)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff7)
+    ADD(testEquals_MultiDMultiPrec_SingleEltDiff8)
     ADD(testEquals_MultiDWithTolerance)
+    ADD(testEquals_MultiDWithTolerance1)
     ADD(testEquals_MultiDWithTolerance64)
+    ADD(testEquals_MultiDWithTolerance64_1)
+    ADD(testEquals_MultiDWithTolerance64_2)
     ADD(testEquals_MultiDSourceLocation)
 
   end function suite
@@ -63,8 +79,6 @@ contains
     real(kind=kind(found)) :: ONE=1
     real(kind=kind(found)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
 
-    !dbg print *,'900'
-
     I0 = 1
     A1 = 0
 
@@ -76,12 +90,18 @@ contains
     
     call assertEqual(I0, A1, 'testEquals_0D1D')
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // '[1]' // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0. )) & 
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // '[1]' // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0. )) & 
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <[1]>.' &
          & )
+
     
   end subroutine testEquals_0D1D
 
@@ -95,16 +115,15 @@ contains
     integer, dimension(2) :: I2
     real(kind=r32), dimension(1) :: A1
 
-    !dbg print *,'1000'
-
     ! The following should throw an exception...
     
     call assertEqual(I2, A1, 'testEquals_2D_nonConformable1')
 
     call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // &
-         & trim(shapeReport(shape(I2),shape(A1))) &
-         & )
+          & 'nonconforming arrays - expected shape: ' // &
+          & trim(toString(shape(I2))) // ' but found shape: ' // &
+          & trim(toString(shape(A1))) &
+          & )
     
   end subroutine testEquals_1D_nonConformable1
 
@@ -123,8 +142,6 @@ contains
     character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
 
-    !dbg print *,'2000'
-
     expected = 0.0; found = 1.0
 
     i1 = 1; i2 = 2
@@ -137,12 +154,18 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
   end subroutine testEquals_2D_SingleElementDifferent
 
   subroutine testEquals_MultiD_SingleElementDifferent()
@@ -165,10 +188,6 @@ contains
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
-    !dbg print *,'3000'
-!    !dbg print *,'3001', r32, r64
-
-
     ! START 100
     expected = 0.0; found = 1.0
 
@@ -182,17 +201,39 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
-    deallocate(b2)
+  end subroutine testEquals_MultiD_SingleElementDifferent
 
-    ! END 100
+  subroutine testEquals_MultiD_SingleElementDifferent1
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
 
+    real(kind=r32) :: A0, B0
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
 
     expected = 0.0; found = 1.0
 
@@ -207,11 +248,34 @@ contains
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+  end subroutine testEquals_MultiD_SingleElementDifferent1
+
+  subroutine testEquals_MultiD_SingleElementDifferent2
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r32) :: A0, B0
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 0.0; found = 1.0
 
     n1 = 2; n2 = 3; n3 = 1; allocate(a3(n1,n2,n3),b3(n1,n2,n3))
     A3=expected; B3=expected
@@ -223,12 +287,41 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+  end subroutine testEquals_MultiD_SingleElementDifferent2
+
+  subroutine testEquals_MultiD_SingleElementDifferent3
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r32) :: A0, B0
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 0.0; found = 1.0
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
     allocate(a4(n1,n2,n3,n4),b4(n1,n2,n3,n4))
@@ -242,12 +335,39 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+  end subroutine testEquals_MultiD_SingleElementDifferent3
+
+  subroutine testEquals_MultiD_SingleElementDifferent4
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r32) :: A0, B0
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
     allocate(a5(n1,n2,n3,n4,n5),b5(n1,n2,n3,n4,n5))
@@ -261,14 +381,41 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
-    deallocate(a5,b5)
+  end subroutine testEquals_MultiD_SingleElementDifferent4
+
+  subroutine testEquals_MultiD_SingleElementDifferent5
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r32) :: A0, B0
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
     allocate(a5(n1,n2,n3,n4,n5))
     n1 = 2; n2 = 3; n3 = 2; n4 = 3; n5 = 2;
@@ -285,12 +432,17 @@ contains
     ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
-         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
-         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
-         )
+          & 'nonconforming arrays - expected shape: ' // &
+          & trim(toString(shape(A5))) // ' but found shape: ' // &
+          & trim(toString(shape(B5))) &
+          & )
 
-  end subroutine testEquals_MultiD_SingleElementDifferent
+!         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
+!         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
+!         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
+!         )
+
+  end subroutine testEquals_MultiD_SingleElementDifferent5
 
   subroutine testEquals_MultiDMultiPrec_SingleEltDiff()
     use Params_mod
@@ -319,8 +471,6 @@ contains
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
-    !dbg print *,'3010'
-
     expected = 0.0; found = 1.0
 
     n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
@@ -333,12 +483,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff1()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r64), dimension(:), allocatable :: B1
+    real(kind=r64), dimension(:,:), allocatable :: B2
+    real(kind=r64), dimension(:,:,:), allocatable :: B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 0.0; found = 1.0
 
     n1 = 2; n2 = 3; n3 = 1; allocate(a3(n1,n2,n3),b3(n1,n2,n3))
     A3=expected; B3=expected
@@ -350,12 +538,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff1
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff2()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r64), dimension(:), allocatable :: B1
+    real(kind=r64), dimension(:,:), allocatable :: B2
+    real(kind=r64), dimension(:,:,:), allocatable :: B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 0.0; found = 1.0
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
     allocate(a4(n1,n2,n3,n4),b4(n1,n2,n3,n4))
@@ -369,12 +595,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff2
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff3()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r64), dimension(:), allocatable :: B1
+    real(kind=r64), dimension(:,:), allocatable :: B2
+    real(kind=r64), dimension(:,:,:), allocatable :: B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
     allocate(a5(n1,n2,n3,n4,n5),b5(n1,n2,n3,n4,n5))
@@ -388,14 +652,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
-    deallocate(a5,b5)
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff3
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff4()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r64), dimension(:), allocatable :: B1
+    real(kind=r64), dimension(:,:), allocatable :: B2
+    real(kind=r64), dimension(:,:,:), allocatable :: B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+!    deallocate(a5,b5)
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
     allocate(a5(n1,n2,n3,n4,n5))
     n1 = 2; n2 = 3; n3 = 2; n4 = 3; n5 = 2;
@@ -412,14 +712,19 @@ contains
     ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
-         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
-         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
-         )
+          & 'nonconforming arrays - expected shape: ' // &
+          & trim(toString(shape(A5))) // ' but found shape: ' // &
+          & trim(toString(shape(B5))) &
+          & )
 
-  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff
+!         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
+!         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
+!         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
+!         )
 
-  subroutine testEquals_MultiDMultiPrec_SingleEltDiff1()
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff4
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff5()
     use Params_mod
 !    use Assert_mod, only: assertEqual
 !    use AssertRealArrays_mod, only: assertEqual  ! note name
@@ -446,8 +751,6 @@ contains
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
-    !dbg print *,'3020'
-
     expected = 0.0; found = 1.0
 
     n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
@@ -460,12 +763,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff5
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff6()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r32), dimension(:), allocatable :: B1
+    real(kind=r32), dimension(:,:), allocatable :: B2
+    real(kind=r32), dimension(:,:,:), allocatable :: B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 1.0; found = -1.0
 
     n1 = 2; n2 = 3; n3 = 1; allocate(a3(n1,n2,n3),b3(n1,n2,n3))
     A3=expected; B3=expected
@@ -477,12 +818,51 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
+
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff6
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff7()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r32), dimension(:), allocatable :: B1
+    real(kind=r32), dimension(:,:), allocatable :: B2
+    real(kind=r32), dimension(:,:,:), allocatable :: B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 1.0; found = -1.0
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
     allocate(a4(n1,n2,n3,n4),b4(n1,n2,n3,n4))
@@ -496,12 +876,48 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff7
+
+  subroutine testEquals_MultiDMultiPrec_SingleEltDiff8()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+    implicit none
+
+    real(kind=r64), dimension(:), allocatable :: A1
+    real(kind=r64), dimension(:,:), allocatable :: A2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5
+
+    real(kind=r32), dimension(:), allocatable :: B1
+    real(kind=r32), dimension(:,:), allocatable :: B2
+    real(kind=r32), dimension(:,:,:), allocatable :: B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: B5
+
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+
+    expected = 1.0; found = -1.0
 
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
     allocate(a5(n1,n2,n3,n4,n5),b5(n1,n2,n3,n4,n5))
@@ -515,12 +931,18 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0.)) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0.)) &
+         & '; ' // trim(differenceReport(found - expected, 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
+
 
     deallocate(a5,b5)
     n1 = 2; n2 = 3; n3 = 2; n4 = 2; n5 = 2;
@@ -539,12 +961,17 @@ contains
     ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
 
     call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
-         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
-         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
-         )
+          & 'nonconforming arrays - expected shape: ' // &
+          & trim(toString(shape(A5))) // ' but found shape: ' // &
+          & trim(toString(shape(B5))) &
+          & )
 
-  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff1
+!         & 'Assertion failed: non-conformable real arrays.' // new_line('$') //&
+!         & '    expected shape: <['//trim(toString(shape(A5)))//']>' // new_line('$') //&
+!         & '   but found shape: <['//trim(toString(shape(B5)))//']>' &
+!         )
+
+  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff8
 
   subroutine testEquals_MultiDWithTolerance()
     use Params_mod
@@ -566,8 +993,6 @@ contains
     integer :: n1, n2, n3, n4, n5
     real(kind=r32)    :: tolerance32
 
-    !dbg print *,'4000'
-
     expected = 0.0; 
 
     n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
@@ -585,13 +1010,50 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0. )) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0. )) &
+         & '; ' // trim(differenceReport(found - expected, tolerance32 )) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
+
+  end subroutine testEquals_MultiDWithTolerance
+
+  subroutine testEquals_MultiDWithTolerance1()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r32), dimension(:), allocatable :: A1, B1
+    real(kind=r32), dimension(:,:), allocatable :: A2, B2
+    real(kind=r32), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r32), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r32), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+    real(kind=r32)    :: tolerance32
+
+    expected = 0.0; 
+
+    n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
+    A2=expected; B2=expected
+    i1 = 1; i2 = 2; 
+
+    tolerance32 = 0.01
+    found = expected + tolerance32*2.0
+    B2(i1,i2) = found
     tolerance32 = 0.01
     found = expected + tolerance32/2.0
     B2(i1,i2) = found
@@ -602,7 +1064,7 @@ contains
 
     call assertCatch( "" )
 
-  end subroutine testEquals_MultiDWithTolerance
+  end subroutine testEquals_MultiDWithTolerance1
 
   subroutine testEquals_MultiDWithTolerance64()
     use Params_mod
@@ -624,9 +1086,6 @@ contains
     integer :: n1, n2, n3, n4, n5
     real(kind=r64)    :: tolerance64
 
-    !dbg 
-    !dbg print *,'4010'
-
     expected = 0.0; 
 
     n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
@@ -637,25 +1096,54 @@ contains
     found = expected + tolerance64*2.0
     B2(i1,i2) = found
 
-    !dbg print *,'4010'
-
     ! The following should throw an exception...
     call assertEqual(A2,B2,tolerance = tolerance64, message = &
          & 'testEquals_MultiDSingleEltTol64-Throw:Rank2,Tolerance64')
 
-    !dbg print *,'4015'
-
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0. )) &
+!         & )
+
+! Fix the need for the real below.  Note we're just reporting at this stage, not calculating.
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0. )) &
+         & '; ' // trim(differenceReport(found - expected, real(tolerance64))) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
-    !dbg print *,'4020'
+end subroutine testEquals_MultiDWithTolerance64
+
+  subroutine testEquals_MultiDWithTolerance64_1()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r64), dimension(:), allocatable :: A1, B1
+    real(kind=r64), dimension(:,:), allocatable :: A2, B2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+    real(kind=r64)    :: tolerance64
+
+    expected = 0.0; 
+
+    n1 = 1; n2 = 2; allocate(a2(n1,n2),b2(n1,n2))
+    A2=expected; B2=expected
+    i1 = 1; i2 = 2; 
 
     tolerance64 = 0.01
     found = expected + tolerance64/2.0
@@ -666,6 +1154,30 @@ contains
          & 'testEquals_MultiDSingleEltTol64-NoThrow:Rank2,Tolerance64')
 
     call assertCatch( "" )
+
+  end subroutine testEquals_MultiDWithTolerance64_1
+
+
+  subroutine testEquals_MultiDWithTolerance64_2()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+!    use AssertRealArrays_mod, only: assertEqual  ! note name
+    use AssertRealArrays_mod, only: assertEqual  ! note name
+
+    real(kind=r64), dimension(:), allocatable :: A1, B1
+    real(kind=r64), dimension(:,:), allocatable :: A2, B2
+    real(kind=r64), dimension(:,:,:), allocatable :: A3, B3
+    real(kind=r64), dimension(:,:,:,:), allocatable :: A4, B4
+    real(kind=r64), dimension(:,:,:,:,:), allocatable :: A5, B5
+    real :: expected, found
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4, i5
+    integer :: n1, n2, n3, n4, n5
+    real(kind=r64)    :: tolerance64
+
 
     n1 = 1; n2 = 2; n3 = 2; allocate(a3(n1,n2,n3),b3(n1,n2,n3))
     A3=expected; B3=expected
@@ -682,14 +1194,19 @@ contains
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(expected, found)) // &
+!         & trim(differenceReport(found - expected, 0. )) &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(expected, found)) // &
-         & trim(differenceReport(found - expected, 0. )) &
+         & '; ' // trim(differenceReport(found - expected, real(tolerance64))) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.' &
          & )
 
-  end subroutine testEquals_MultiDWithTolerance64
+  end subroutine testEquals_MultiDWithTolerance64_2
 
   subroutine testEquals_MultiDSourceLocation()
     use Params_mod
@@ -720,20 +1237,24 @@ contains
          & location=location)
 
     ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
-    !dbg print *,'4015'
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
 ! Note use of real...  Consider overloading the reporting functions...
+!    call assertCatch( &
+!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
+!         & '  First difference at element <' // trim(locationInArray) // '>' // &
+!         & trim(valuesReport(real(expected), real(found))) // &
+!         & trim(differenceReport(real(found - expected), 0. )), &
+!         & location=location &
+!         & )
     call assertCatch( &
-         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-         & '  First difference at element <' // trim(locationInArray) // '>' // &
          & trim(valuesReport(real(expected), real(found))) // &
-         & trim(differenceReport(real(found - expected), 0. )), &
+         & '; ' // trim(differenceReport(real(found - expected), 0.)) // &
+         & ';  first difference at element <' // trim(locationInArray) // '>.', &
          & location=location &
          & )
-
 
   end subroutine testEquals_MultiDSourceLocation
 
@@ -746,12 +1267,11 @@ contains
     type (SourceLocation), optional, intent(in) :: location
     type (Exception) :: anException
 
-    !dbg print *,'5000'
-    
     if (getNumExceptions() > 0) then
        anException = catchAny()
+
        !, 'exceptions do not match')
-       call assertEqual(string,anException%getMessage(),message='Exception message test')
+       call assertEqual(string,anException%getMessage()) ! ,message='Exception message test')
        if(present(location))then
           call assertEqual( &
                & location%lineNumber,anException%getLineNumber(), &
