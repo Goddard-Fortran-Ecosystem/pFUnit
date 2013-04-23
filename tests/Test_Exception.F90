@@ -7,6 +7,7 @@ module Test_Exception_mod
    use Assert_mod, only: assertTrue
    use Assert_mod, only: assertFalse
    use Exception_mod, only: ExceptionList, Exception
+   use SourceLocation_mod
    implicit none
    private
 
@@ -423,7 +424,8 @@ contains
       type (Exception) :: anException
       integer, parameter :: LINE_NUMBER = 2
 
-      anException = newException('message', fileName='foo', lineNumber=LINE_NUMBER)
+      anException = newException('message', &
+           & SourceLocation(fileName='foo', lineNumber=LINE_NUMBER))
       call assertEqual(LINE_NUMBER, anException%getLineNumber())
 
    end subroutine testGetLineNumber
@@ -440,7 +442,8 @@ contains
    subroutine testGetFileName()
       type (Exception) :: anException
       character(len=*), parameter :: FILE_NAME = 'foo'
-      anException = newException('message', lineNumber=3, fileName=FILE_NAME)
+      anException = newException('message', &
+           & SourceLocation(lineNumber=3, fileName=FILE_NAME))
       call assertEqual(FILE_NAME, anException%getFileName())
 
    end subroutine testGetFileName
@@ -451,7 +454,8 @@ contains
       character(len=*), parameter :: FILE_NAME = 'foo'
 
       list = newExceptionList()
-      call list%throw('message', fileName=FILE_NAME, lineNumber=2)
+      call list%throw('message', &
+           & SourceLocation(fileName=FILE_NAME, lineNumber=2))
       anException = list%catchAny()
       call assertEqual(FILE_NAME, anException%getFileName())
 

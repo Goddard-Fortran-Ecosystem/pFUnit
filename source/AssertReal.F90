@@ -11,80 +11,66 @@ module AssertReal_mod
    ! exposed for testing purposes only
    public :: valuesReport
    public :: differenceReport
+   public :: shapeReport
 
    interface assertEqual
-      module procedure assertEqualExact
-      module procedure assertEqualExact_withMessage
-      module procedure assertEqualTolerance
-      module procedure assertEqualTolerance_withMessage
+      module procedure assertEqualTolerance_
       module procedure assertEqual_1D1D
    end interface
 
 contains
 
-   subroutine assertEqualExact(expected, found, unused, file, line)
+   subroutine assertEqualTolerance_(expected, found, tolerance, message, location)
       real, intent(in) :: expected
       real, intent(in) :: found
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, tolerance=0., message=NULL_MESSAGE, file=file, line=line)
-
-   end subroutine assertEqualExact
-
-   subroutine assertEqualExact_withMessage(expected, found, message, line, file)
-      real, intent(in) :: expected
-      real, intent(in) :: found
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, tolerance=0., message=message, file=file, line=line)
-
-   end subroutine assertEqualExact_withMessage
-
-   subroutine assertEqualTolerance(expected, found, tolerance, unused, file, line)
-      real, intent(in) :: expected
-      real, intent(in) :: found
-      real, intent(in) :: tolerance
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, tolerance, NULL_MESSAGE, file=file, line=line)
-   end subroutine assertEqualTolerance
-
-   subroutine assertEqualTolerance_withMessage(expected, found, tolerance, message, file, line)
-      real, intent(in) :: expected
-      real, intent(in) :: found
-      real, intent(in) :: tolerance
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      real, intent(in), optional :: tolerance
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
-      if (abs(found-expected) > tolerance) then
+      real :: tolerance_
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      if(present(tolerance))then
+         tolerance_ = tolerance
+      else 
+         tolerance_ = 0.
+      end if
+
+      if(present(message))then
+         message_ = message
+      else
+         message_ = NULL_MESSAGE
+      end if
+
+      if(present(location))then
+         location_ = location
+      else
+         location_ = UNKNOWN_SOURCE_LOCATION
+      end if
+
+
+      if (abs(found-expected) > tolerance_) then
 
          throwMessage = trim(valuesReport(expected, found)) // new_line('$') // &
-              & trim(differenceReport(found - expected, tolerance))
+              & trim(differenceReport(found - expected, tolerance_))
 
-         call throw(appendWithSpace(message, throwMessage), SourceLocation(file, line))
+         call throw(appendWithSpace(message_, throwMessage), location_)
 
       end if
 
-   end subroutine assertEqualTolerance_withMessage
+    end subroutine assertEqualTolerance_
 
-   subroutine assertEqual_1D1D(expected, found, line, file)
+   subroutine assertEqual_1D1D(expected, found, location)
       real, intent(in) :: expected(:)
       real, intent(in) :: found(:)
-      integer, optional, intent(in) :: line
-      character(len=*), optional, intent(in) :: file
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       integer :: i
       integer, parameter :: MAXLEN_SHAPE = 80
-
 
       call assertSameShape(shape(expected), shape(found))
       if (anyExceptions()) return
@@ -146,5 +132,15 @@ contains
       real, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))
    end function differenceReport
+
+   character(len=MAXLEN_MESSAGE) FUNCTION shapeReport(expectedShape, foundShape)
+     integer, intent(in) :: expectedShape(:)
+     integer, intent(in) :: foundShape(:)
+
+     shapeReport = new_line('$') // &
+          & '    expected shape: <['//trim(toString(expectedShape))//']>' // new_line('$') // &
+          & '   but found shape: <['//trim(toString(foundShape))//']>'
+
+   end function shapeReport
 
 end module AssertReal_mod

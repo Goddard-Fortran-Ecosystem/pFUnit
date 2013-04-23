@@ -71,7 +71,7 @@ contains
          if (context%isRootProcess()) then ! rethrow
             do i = 1, totalExceptions
                associate(e => globalList%exceptions(i))
-                 call throw(e%message, e%location%fileName, e%location%lineNumber)
+                 call throw(e%message, e%location)
                end associate
             end do
          end if

@@ -13,36 +13,27 @@ module AssertInteger_mod
    public :: assertGreaterThanOrEqual
 
    interface assertEqual
-      module procedure assertEqualIntegerScalar
-      module procedure assertEqualIntegerScalar_withMessage
-      module procedure assertEqualInteger1D1D
-      module procedure assertEqualInteger1D1D_withMessage
-      module procedure assertEqualInteger0D1D
-      module procedure assertEqualInteger0D1D_withMessage
-      module procedure assertEqualInteger0D2D
-      module procedure assertEqualInteger0D2D_withMessage
-      module procedure assertEqualInteger2D2D
-      module procedure assertEqualInteger2D2D_withMessage
+      module procedure assertEqualIntegerScalar_
+      module procedure assertEqualInteger1D1D_
+      module procedure assertEqualInteger0D1D_
+      module procedure assertEqualInteger0D2D_
+      module procedure assertEqualInteger2D2D_
    end interface assertEqual
 
    interface assertLessThan
       module procedure assertLessThan_
-      module procedure assertLessThan_withMessage
    end interface assertLessThan
 
    interface assertLessThanOrEqual
       module procedure assertLessThanOrEqual_
-      module procedure assertLessThanOrEqual_withMessage
    end interface assertLessThanOrEqual
 
    interface assertGreaterThan
       module procedure assertGreaterThan_
-      module procedure assertGreaterThan_withMessage
    end interface assertGreaterThan
 
    interface assertGreaterThanOrEqual
       module procedure assertGreaterThanOrEqual_
-      module procedure assertGreaterThanOrEqual_withMessage
    end interface assertGreaterThanOrEqual
 
    interface locationOfFirstNonzero
@@ -52,25 +43,13 @@ module AssertInteger_mod
 
 contains
 
-   subroutine assertEqualIntegerScalar(expected, found, unused, file, line)
+   subroutine assertEqualIntegerScalar_(expected, found, message, location)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       integer, intent(in) :: expected
       integer, intent(in) :: found
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-
-   end subroutine assertEqualIntegerScalar
-
-   subroutine assertEqualIntegerScalar_withMessage(expected, found, message, file, line)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected
-      integer, intent(in) :: found
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -78,35 +57,23 @@ contains
          write(throwMessage,'(a,i0,a,i0,a)') &
               & 'expected: <', expected, '> but found: <', found, '>'
          call throw(appendWithSpace(message, throwMessage), &
-              & SourceLocation(file, line))
+              & location)
       end if
 
-   end subroutine assertEqualIntegerScalar_withMessage
+   end subroutine assertEqualIntegerScalar_
 
-   subroutine assertEqualInteger1D1D(expected, found, unused, file, line)
+   subroutine assertEqualInteger1D1D_(expected, found, message, location)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       integer, intent(in) :: expected(:)
       integer, intent(in) :: found(:)
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-
-   end subroutine assertEqualInteger1D1D
-
-   subroutine assertEqualInteger1D1D_withMessage(expected, found, message, file, line)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected(:)
-      integer, intent(in) :: found(:)
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(1)
 
-      call AssertSameShape(shape(expected), shape(found), message, file, line)
+      call AssertSameShape(shape(expected), shape(found), message, location)
       if (anyExceptions()) return
 
       if (any(found /= expected)) then
@@ -114,29 +81,19 @@ contains
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected(loc(1)),'> but found: <',found(loc(1)), &
               & '> at position: ',toString(loc)
          call throw(appendWithSpace(message, throwMessage), &
-              & SourceLocation(file, line))
+              & location)
       end if
 
-   end subroutine assertEqualInteger1D1D_withMessage
+   end subroutine assertEqualInteger1D1D_
 
-   subroutine assertEqualInteger0D1D(expected, found, unused, file, line) ! always conformable
+   subroutine assertEqualInteger0D1D_(expected, found, message, location) ! always conformable
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       integer, intent(in) :: expected
       integer, intent(in) :: found(:)
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-   end subroutine assertEqualInteger0D1D
-
-   subroutine assertEqualInteger0D1D_withMessage(expected, found, message, file, line) ! always conformable
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected
-      integer, intent(in) :: found(:)
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(1)
@@ -146,34 +103,23 @@ contains
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected,'> but found: <',found(loc(1)), &
               & '> at position: ',toString(loc)
          call throw(appendWithSpace(message, throwMessage), &
-              & SourceLocation(file, line))
+              & location)
       end if
 
-   end subroutine assertEqualInteger0D1D_withMessage
+   end subroutine assertEqualInteger0D1D_
 
-   subroutine assertEqualInteger2D2D(expected, found, unused, file, line)
+   subroutine assertEqualInteger2D2D_(expected, found, message, location)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       integer, intent(in) :: expected(:,:)
       integer, intent(in) :: found(:,:)
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-   end subroutine assertEqualInteger2D2D
-
-   subroutine assertEqualInteger2D2D_withMessage(expected, found, message, file, line)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected(:,:)
-      integer, intent(in) :: found(:,:)
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
 
-      call AssertSameShape(shape(expected), shape(found), message, file, line)
+      call AssertSameShape(shape(expected), shape(found), message, location)
       if (anyExceptions()) return
 
       if (any(found /= expected)) then
@@ -183,29 +129,18 @@ contains
               & '> but found: <',found(loc(1),loc(2)), &
               & '> at position: ', toString(loc)
          call throw(appendWithSpace(message, throwMessage), &
-              & sourcelocation(file, line))
+              & location)
       end if
 
-   end subroutine assertEqualInteger2D2D_withMessage
+   end subroutine assertEqualInteger2D2D_
 
-   subroutine assertEqualInteger0D2D(expected, found, unused, file, line) ! always conformable
+   subroutine assertEqualInteger0D2D_(expected, found, message, location) ! always conformable
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       integer, intent(in) :: expected
       integer, intent(in) :: found(:,:)
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-   end subroutine assertEqualInteger0D2D
-
-   subroutine assertEqualInteger0D2D_withMessage(expected, found, message, file, line) ! always conformable
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      integer, intent(in) :: expected
-      integer, intent(in) :: found(:,:)
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
@@ -214,57 +149,35 @@ contains
          loc = locationOfFirstNonzero(found - expected)
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected,'> but found: <',found(loc(1),loc(2)), &
               & '> at position: ',toString(loc)
-         call throw(appendWithSpace(message, throwMessage), file, line)
+         call throw(appendWithSpace(message, throwMessage), location)
       end if
 
-   end subroutine assertEqualInteger0D2D_withMessage
+   end subroutine assertEqualInteger0D2D_
 
-   subroutine assertLessThan_(a, b, unused, file, line)
+   subroutine assertLessThan_(a, b, message, location)
       integer, intent(in) :: a
       integer, intent(in) :: b
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      
-      call assertLessThan(a, b, NULL_MESSAGE, file, line)
-
-   end subroutine assertLessThan_
-
-   subroutine assertLessThan_withMessage(a, b, message, file, line)
-      integer, intent(in) :: a
-      integer, intent(in) :: b
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
       if ( .not. (a < b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), file, line)
+         call throw(appendWithSpace(message,throwMessage), location)
 
       end if
 
-   end subroutine assertLessThan_withMessage
+   end subroutine assertLessThan_
 
-   subroutine assertLessThanOrEqual_(a, b, unused, file, line)
+   subroutine assertLessThanOrEqual_(a, b, message, location)
       integer, intent(in) :: a
       integer, intent(in) :: b
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      
-      call assertLessThanOrEqual(a, b, NULL_MESSAGE, file, line)
-
-   end subroutine assertLessThanOrEqual_
-
-   subroutine assertLessThanOrEqual_withMessage(a, b, message, file, line)
-      integer, intent(in) :: a
-      integer, intent(in) :: b
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -272,69 +185,47 @@ contains
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than or equal to: <',b,'>'
          call throw(appendWithSpace(message,throwMessage), &
-              & SourceLocation(file, line))
+              & location)
 
       end if
 
-   end subroutine assertLessThanOrEqual_withMessage
+   end subroutine assertLessThanOrEqual_
 
-   subroutine assertGreaterThan_(a, b, unused, file, line)
+   subroutine assertGreaterThan_(a, b, message, location)
       integer, intent(in) :: a
       integer, intent(in) :: b
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      
-      call assertGreaterThan(a, b, NULL_MESSAGE, file, line)
-
-   end subroutine assertGreaterThan_
-
-   subroutine assertGreaterThan_withMessage(a, b, message, file, line)
-      integer, intent(in) :: a
-      integer, intent(in) :: b
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
       if ( .not. (a > b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), file, line)
+         call throw(appendWithSpace(message,throwMessage), location)
 
       end if
 
-   end subroutine assertGreaterThan_withMessage
+   end subroutine assertGreaterThan_
 
-   subroutine assertGreaterThanOrEqual_(a, b, unused, file, line)
+   subroutine assertGreaterThanOrEqual_(a, b, message, location)
       integer, intent(in) :: a
       integer, intent(in) :: b
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      
-      call assertGreaterThanOrEqual(a, b, NULL_MESSAGE, file, line)
-
-   end subroutine assertGreaterThanOrEqual_
-
-   subroutine assertGreaterThanOrEqual_withMessage(a, b, message, file, line)
-      integer, intent(in) :: a
-      integer, intent(in) :: b
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
       if ( .not. (a >= b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than or equal to: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), SourceLocation(file, line))
+         call throw(appendWithSpace(message,throwMessage), location)
 
       end if
 
-   end subroutine assertGreaterThanOrEqual_withMessage
+   end subroutine assertGreaterThanOrEqual_
 
    function locationOfFirstNonzero_1d(array) result(loc)
       integer, intent(in) :: array(:)

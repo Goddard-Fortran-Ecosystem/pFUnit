@@ -21,23 +21,18 @@ module AssertBasic_mod
 
    interface fail
       module procedure fail_
-      module procedure fail_withMessage
-      module procedure fail_withMessageFileAndLine
    end interface fail
 
    interface assertTrue
       module procedure assertTrue_
-      module procedure assertTrue_withMessage
    end interface
 
    interface assertFalse
       module procedure assertFalse_
-      module procedure assertFalse_withMessage
    end interface
 
    interface assertEqual
-      module procedure assertEqualString
-      module procedure assertEqualString_withMessage
+      module procedure assertEqualString_
    end interface
 
    interface assertExceptionRaised
@@ -53,39 +48,33 @@ module AssertBasic_mod
 
 contains
 
-   subroutine fail_(location)
-      type (SourceLocation), optional, intent(in) :: location
-      call fail(NULL_MESSAGE, location)
-   end subroutine fail_
-   
-   subroutine fail_withMessageFileAndLine(message, file, line)
-      character(len=*), intent(in) :: message
-      character(len=*), intent(in) :: file
-      integer, intent(in) :: line
-      call fail(message, SourceLocation(file, line))
-   end subroutine fail_withMessageFileAndLine
-
-   subroutine fail_withMessage(message, location)
+   subroutine fail_(message, location)
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       call throw(message, location)
-   end subroutine fail_withMessage
+    end subroutine fail_
 
-   subroutine assertTrue_(condition, unused, file, line)
+   subroutine assertTrue_(condition, message, location)
       logical, intent(in) :: condition
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      call assertTrue(condition, NULL_MESSAGE, file, line)
-   end subroutine assertTrue_
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
 
-   subroutine assertTrue_withMessage(condition, message, file, line)
-      logical, intent(in) :: condition
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-      if (.not. condition) call throw(trim(message), SourceLocation(file, line))
-   end subroutine assertTrue_withMessage
+      if(present(message))then
+         message_ = message
+      else
+         message_ = NULL_MESSAGE
+      end if
+
+      if(present(location))then
+         location_ = location
+      else
+         location_ = UNKNOWN_SOURCE_LOCATION
+      end if
+
+      if (.not. condition) call throw(trim(message), location)
+    end subroutine assertTrue_
 
    subroutine assertExceptionRaisedBasic()
       use Exception_mod, only: throw, catch
@@ -106,12 +95,11 @@ contains
 
    end subroutine assertExceptionRaisedMessage
 
-   subroutine assertSameShape(shapeA, shapeB, message, file, line)
+   subroutine assertSameShape(shapeA, shapeB, message, location)
       integer, intent(in) :: shapeA(:)
       integer, intent(in) :: shapeB(:)
       character(len=*), optional, intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       character(len=MAXLEN_MESSAGE) :: message_
@@ -124,7 +112,7 @@ contains
               & trim(toString(shapeA)) // ' but found shape: ' // &
               & trim(toString(shapeB))
          call throw(appendWithSpace(message_, throwMessage), &
-              & SourceLocation(file, line))
+              & location)
       end if
          
    end subroutine assertSameShape
@@ -152,47 +140,39 @@ contains
 
    end function nonConformable
 
-
-   subroutine assertFalse_(condition, unused, file, line)
+   subroutine assertFalse_(condition, message, location)
       logical, intent(in) :: condition
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
 
-      call assertFalse(condition, NULL_MESSAGE, file, line)
+      call assertTrue(.not. condition, message, location)
    end subroutine assertFalse_
 
-   subroutine assertFalse_withMessage(condition, message, file, line)
-      logical, intent(in) :: condition
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
-
-      call assertTrue(.not. condition, message, file, line)
-   end subroutine assertFalse_withMessage
-
-   subroutine assertEqualString(expected, found, unused, file, line)
+   subroutine assertEqualString_(expected, found, message, location)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
-      type (UnusableArgument), optional, intent(in) :: unused
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
 
-      call assertEqual(expected, found, NULL_MESSAGE, file, line)
-   end subroutine assertEqualString
-
-   subroutine assertEqualString_withMessage(expected, found, message, file, line)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
-      character(len=*), intent(in) :: expected
-      character(len=*), intent(in) :: found
-      character(len=*), intent(in) :: message
-      character(len=*), optional, intent(in) :: file
-      integer, optional, intent(in) :: line
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: i
       integer :: numSameCharacters
+
+      if(present(message))then
+         message_ = message
+      else
+         message_ = NULL_MESSAGE
+      end if
+
+      if(present(location))then
+         location_ = location
+      else
+         location_ = UNKNOWN_SOURCE_LOCATION
+      end if
 
       if (trim(expected) /= trim(found)) then
          numSameCharacters = 0
@@ -204,9 +184,9 @@ contains
               & '    expected: <"', trim(expected), '">', new_line('A'), &
               & '   but found: <"', trim(found), '">', new_line('A'), &
               & '  first diff:   ', repeat('-', numSameCharacters), '^'
-         call throw(appendWithSpace(message, throwMessage), SourceLocation(file, line))
+         call throw(appendWithSpace(message, throwMessage), location)
       end if
 
-   end subroutine assertEqualString_withMessage
+   end subroutine assertEqualString_
 
 end module AssertBasic_mod

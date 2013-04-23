@@ -4,6 +4,7 @@
 *.mod
 *.o
 *~
+*.pyc
 /AssertComplex_mod.F90
 /AssertComplex_mod_cpp.F90
 /AssertReal_mod.F90

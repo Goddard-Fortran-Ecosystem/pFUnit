@@ -32,6 +32,8 @@ AssertInteger.o: Exception.o AssertBasic.o
 Assert.o: Exception.o AssertBasic.o AssertInteger.o
 AssertReal.o: StringUtilities.o AssertBasic.o
 
+AssertRealArrays.o: Params.o ThrowFundamentalTypes.o
+ThrowFundamentalTypes.o: Params.o StringUtilities.o Exception.o AssertReal.o
 
 TestListener.o: Exception.o
 SurrogateTestCase.o:
@@ -56,7 +58,6 @@ TestRunner.o: TestSuite.o BaseTestRunner.o ResultPrinter.o TestResult.o
 SubsetRunner.o: BaseTestRunner.o TestResult.o TestSuite.o
 RobustRunner.o: BaseTestRunner.o TestResult.o TestSuite.o RemoteProxyTestCase.o UnixProcess.o
 RemoteProxyTestCase.o: TestCase.o UnixProcess.o
-
 
 
 ResultPrinter.o: TestFailure.o TestResult.o

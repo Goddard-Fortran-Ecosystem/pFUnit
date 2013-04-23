@@ -50,11 +50,9 @@ module PrivateException_mod
       procedure, private :: deleteIthException
 
       generic :: throw => throwMessage
-      generic :: throw => throwMessageWithFileAndLine
       generic :: throw => throwException
 
       procedure :: throwMessage
-      procedure :: throwMessageWithFileAndLine
       procedure :: throwException
 !TODO - NAG does not yet support FINAL keyword
 !!$$      final :: delete
@@ -62,36 +60,29 @@ module PrivateException_mod
 
    interface newException
       module procedure Exception_
-      module procedure Exception_message
-      module procedure Exception_messageWithFileAndLine
    end interface
 
 contains
 
-   type(Exception) function Exception_()
-
-      Exception_%message = NULL_MESSAGE
-      Exception_%location = UNKNOWN_SOURCE_LOCATION
-      Exception_%nullFlag = .false.
-
-   end function Exception_
-
-   type(Exception) function Exception_message(message, location)
-      character(len=*), intent(in) :: message
+   type(Exception) function Exception_(message, location)
+      character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      Exception_message%message = trim(message)
-      if (present(location)) Exception_message%location = location
-      Exception_message%nullFlag = .false.
+      if (present(message)) then
+         Exception_%message = trim(message)
+      else
+         Exception_%message = NULL_MESSAGE
+      end if
 
-   end function Exception_message
+      if (present(location)) then
+         Exception_%location = location
+      else
+         Exception_%location = UNKNOWN_SOURCE_LOCATION
+      end if
 
-   type(Exception) function Exception_messageWithFileAndLine(message, fileName, lineNumber)
-      character(len=*), intent(in) :: message
-      character(len=*), intent(in) :: fileName
-      integer, intent(in) :: lineNumber
-      Exception_messageWithFileAndLine = Exception(message, SourceLocation(fileName, lineNumber))
-   end function Exception_messageWithFileAndLine
+      Exception_%nullFlag = .false.
+
+    end function Exception_
 
    function getMessage(this) result(message)
       class (Exception), intent(in) :: this
@@ -132,16 +123,6 @@ contains
       call this%throw(newException(message, location))
 
    end subroutine throwMessage
-
-   subroutine throwMessageWithFileAndLine(this, message, fileName, lineNumber)
-      class (ExceptionList), intent(inOut) :: this
-      character(len=*), intent(in) :: message
-      character(len=*), intent(in) :: fileName
-      integer, intent(in) :: lineNumber
-
-      call this%throw(Exception(message, SourceLocation(fileName, lineNumber)))
-      
-   end subroutine throwMessageWithFileAndLine
 
    subroutine throwException(this, anException)
       class (ExceptionList), intent(inOut) :: this
@@ -358,7 +339,6 @@ module Exception_mod
 
   interface throw
     module procedure throw_message
-    module procedure throw_messageWithFileAndLine
   end interface
 
   interface catch
@@ -397,13 +377,6 @@ contains
       type (SourceLocation), intent(in) :: location
       call globalExceptionList%throw(message, location)
    end subroutine throw_messageWithLocation
-
-   subroutine throw_messageWithFileAndLine(message, fileName, lineNumber)
-      character(len=*), intent(in) :: message
-      character(len=*), intent(in) :: fileName
-      integer, intent(in) :: lineNumber
-      call globalExceptionList%throw(message, fileName, lineNumber)
-   end subroutine throw_messageWithFileAndLine
 
    function catchAny(preserve) result(anException)
       logical, optional, intent(in) :: preserve
