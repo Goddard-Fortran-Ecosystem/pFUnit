@@ -6,17 +6,17 @@
 !
 !    2013-0304 MLR: First version. 
 !
+!
 ! Note: `note name' is a mark to remind me of references to code being
 !    tested.  I.e. non-boilerplate.
 
 
 module Test_AssertRealArrays_mod ! note name
+  use TestSuite_mod
   use Params_mod, only : r32, r64
   use StringUtilities_mod, only: toString
-!  use StringUtilities_mod, only: MAXLEN_REAL_STRING
-  use AssertReal_mod, only: valuesReport
-  use AssertReal_mod, only: shapeReport
-  use AssertReal_mod, only: differenceReport
+  use AssertBasic_mod
+  use AssertReal_mod
   use AssertRealArrays_mod, only: assertEqual  ! note name
   use ThrowFundamentalTypes_mod, only: locationFormat
 
@@ -28,12 +28,12 @@ module Test_AssertRealArrays_mod ! note name
 contains
 
   function suite()
-    use TestSuite_mod, only: newTestSuite, TestSuite
+    use TestSuite_mod, only: TestSuite, newTestSuite 
     use TestMethod_mod, only: newTestMethod
+
     type (TestSuite) :: suite
 
-!    allocate(suite)
-    suite = newTestSuite('assertRealArraysSuite') ! note name
+    suite = newTestSuite('AssertRealArraysSuite') 
 
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
