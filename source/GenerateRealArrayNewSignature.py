@@ -447,9 +447,13 @@ ifElseString(tolerance == 0,\
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -803,10 +807,10 @@ def makeThrowDifferentValues():
     return runit
 
 
-def makeThrowDifferentValuesString():
-    runit = CodeUtilities.routineUnit('throwDifferentValuesString', \
+def makeThrowDifferentValuesString32():
+    runit = CodeUtilities.routineUnit('throwDifferentValuesString32', \
 """
-      subroutine throwDifferentValuesString(expected, found, at, location, tolerance)
+      subroutine throwDifferentValuesString32(expected, found, at, location, tolerance)
          real, intent(in) :: expected
          real, intent(in) :: found
          character(len=*), intent(in) :: at
@@ -826,10 +830,41 @@ def makeThrowDifferentValuesString():
               & ';  first difference at element <'//trim(at)//'>.', &
               & location = location &
               )
-      end subroutine throwDifferentValuesString
+      end subroutine throwDifferentValuesString32
 """)
     runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
     return runit
+
+def makeThrowDifferentValuesString64():
+    runit = CodeUtilities.routineUnit('throwDifferentValuesString64', \
+"""
+      ! Need to reconsider this part -- provide correct type-specific routines rather than
+      ! just cast everything to real*8.
+      subroutine throwDifferentValuesString64(expected, found, at, location, tolerance)
+         real(kind=r64), intent(in) :: expected
+         real(kind=r64), intent(in) :: found
+         character(len=*), intent(in) :: at
+         type (SourceLocation), optional, intent(in) :: location
+         real(kind=r64), optional, intent(in) :: tolerance
+         real(kind=r64) :: tolerance_
+
+         if(present(tolerance))then
+            tolerance_ = tolerance
+         else
+            tolerance_ = 0.0
+         end if
+
+         call throw( &
+              & trim(valuesReport(real(expected), real(found))) // &
+              & '; ' // trim(differenceReport(real(found - expected), real(tolerance_))) //  &
+              & ';  first difference at element <'//trim(at)//'>.', &
+              & location = location &
+              )
+      end subroutine throwDifferentValuesString64
+""")
+    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    return runit
+
 
 def makeModule0():
     mod0 = CodeUtilities.module('test_mod_0')
@@ -1048,7 +1083,8 @@ def constructModule():
     m1.addRoutineUnit(makeDifferenceReport())
     m1.addRoutineUnit(makeCompareElements())
     m1.addRoutineUnit(makeThrowDifferentValues())
-    m1.addRoutineUnit(makeThrowDifferentValuesString())
+    m1.addRoutineUnit(makeThrowDifferentValuesString32())
+    m1.addRoutineUnit(makeThrowDifferentValuesString64())
     return m1
 
 def checkMakeAssertionAndAddToModule():

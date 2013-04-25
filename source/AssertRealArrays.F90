@@ -4,7 +4,7 @@ module AssertRealArrays_mod
    use AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
-!   use ThrowFundamentalTypes_mod, only : throwNonConformable
+   use ThrowFundamentalTypes_mod, only : throwNonConformable
    use StringUtilities_mod
 !   use AssertReal_mod, only : differenceReport, valuesReport
 
@@ -131,7 +131,8 @@ public valuesReport
 public differenceReport
 public compareElements
 public throwDifferentValues
-public throwDifferentValuesString
+public throwDifferentValuesString32
+public throwDifferentValuesString64
 contains
 ! interface vectorNorm implementations
 
@@ -499,9 +500,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -655,9 +660,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -811,9 +820,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -967,9 +980,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1123,9 +1140,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1279,9 +1300,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1437,9 +1462,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1595,9 +1624,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1753,9 +1786,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -1937,9 +1974,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2121,9 +2162,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2305,9 +2350,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2463,9 +2512,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2621,9 +2674,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2779,9 +2836,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -2963,9 +3024,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3147,9 +3212,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3331,9 +3400,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3491,9 +3564,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3651,9 +3728,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3811,9 +3892,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -3997,9 +4082,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -4183,9 +4272,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -4369,9 +4462,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -4529,9 +4626,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -4689,9 +4790,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -4849,9 +4954,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5035,9 +5144,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5221,9 +5334,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5407,9 +5524,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5569,9 +5690,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5731,9 +5856,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -5893,9 +6022,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6081,9 +6214,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6269,9 +6406,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6457,9 +6598,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6619,9 +6764,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6781,9 +6930,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -6943,9 +7096,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7131,9 +7288,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7319,9 +7480,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7507,9 +7672,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7671,9 +7840,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7835,9 +8008,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -7999,9 +8176,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -8189,9 +8370,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -8379,9 +8564,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -8569,9 +8758,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -8733,9 +8926,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -8897,9 +9094,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9061,9 +9262,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9251,9 +9456,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9441,9 +9650,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9631,9 +9844,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9797,9 +10014,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -9963,9 +10184,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -10129,9 +10354,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -10321,9 +10550,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -10513,9 +10746,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -10705,9 +10942,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -10871,9 +11112,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11037,9 +11282,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11203,9 +11452,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11395,9 +11648,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11587,9 +11844,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11779,9 +12040,13 @@ subroutine throwDifferentValuesWithLocation( &
 !      & )
 
 ! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString( &
-    &  real(expected),real(found),trim(locationInArray),location=location, &
-    &  tolerance = real(tolerance_) )
+    call throwDifferentValuesString64( &
+    &  real(expected, kind=r64), &
+    &  real(found, kind=r64),    &
+    &  trim(locationInArray), &
+    &  location=location, &
+    &  tolerance = real(tolerance_, kind=r64) &
+    &  )
 
 !    call throw( &
 !         & 'Assertion failed: unequal arrays.' // new_line('$') // &
@@ -11853,7 +12118,7 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       end subroutine throwDifferentValues
 
 
-      subroutine throwDifferentValuesString(expected, found, at, location, tolerance)
+      subroutine throwDifferentValuesString32(expected, found, at, location, tolerance)
          real, intent(in) :: expected
          real, intent(in) :: found
          character(len=*), intent(in) :: at
@@ -11873,6 +12138,31 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
               & ';  first difference at element <'//trim(at)//'>.', &
               & location = location &
               )
-      end subroutine throwDifferentValuesString
+      end subroutine throwDifferentValuesString32
+
+
+      ! Need to reconsider this part -- provide correct type-specific routines rather than
+      ! just cast everything to real*8.
+      subroutine throwDifferentValuesString64(expected, found, at, location, tolerance)
+         real(kind=r64), intent(in) :: expected
+         real(kind=r64), intent(in) :: found
+         character(len=*), intent(in) :: at
+         type (SourceLocation), optional, intent(in) :: location
+         real(kind=r64), optional, intent(in) :: tolerance
+         real(kind=r64) :: tolerance_
+
+         if(present(tolerance))then
+            tolerance_ = tolerance
+         else
+            tolerance_ = 0.0
+         end if
+
+         call throw( &
+              & trim(valuesReport(real(expected), real(found))) // &
+              & '; ' // trim(differenceReport(real(found - expected), real(tolerance_))) //  &
+              & ';  first difference at element <'//trim(at)//'>.', &
+              & location = location &
+              )
+      end subroutine throwDifferentValuesString64
 
 end module AssertRealArrays_mod
