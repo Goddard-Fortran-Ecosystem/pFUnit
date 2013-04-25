@@ -29,10 +29,8 @@ Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
 AssertBasic.o: Exception.o StringUtilities.o
 AssertInteger.o: Exception.o AssertBasic.o
-Assert.o: Exception.o AssertBasic.o AssertInteger.o
-AssertReal.o: StringUtilities.o AssertBasic.o
-
-AssertRealArrays.o: Params.o ThrowFundamentalTypes.o
+AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
+Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o
 ThrowFundamentalTypes.o: Params.o StringUtilities.o Exception.o AssertReal.o
 
 TestListener.o: Exception.o

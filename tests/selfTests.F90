@@ -62,8 +62,6 @@ contains
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
 #endif
 
-      use Test_AssertRealArrays_mod, only: assertRealArraysSuite => suite  ! (13 mlr)
-
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
 
@@ -98,8 +96,6 @@ contains
       ADD(ParallelExceptionSuite)
       ADD(MpiTestCaseSuite)
 #endif
-
-      ADD(assertRealArraysSuite)    ! (13 mlr)
 
 #ifdef USE_MPI
       call runner%run(allTests, newMpiContext())

@@ -33,21 +33,27 @@ my $tearDown = "";
 while ( my $line = <$infile> ) {  # process each line in the source file
     $lineNumber++;
     if ($line =~ s/^(\s*)\@assertEqual\((.*)\)/\1call assertEqual(\2, &
-     & file='$fname', line=$lineNumber)/i) {
+     & location=SourceLocation( &
+     & '$fname', &
+     & $lineNumber))/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
 	print $line;
 	print "   if (anyExceptions()) return \n";
 	next;
     }
     elsif ($line =~ s/^(\s*)\@assertTrue\((.*)\)/\1call assertTrue(\2, &
-     & file='$fname', line=$lineNumber)/i) {
+     & location=SourceLocation( &
+     & '$fname', &
+     & $lineNumber))/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
 	print $line;
 	print "   if (anyExceptions()) return \n";
 	next;
     }
     elsif ($line =~ s/^(\s*)\@assertFalse\((.*)\)/\1call assertFalse(\2, &
-     & file='$fname', line=$lineNumber)/i) {
+     & location=SourceLocation( &
+     & '$fname', &
+     & $lineNumber))/i) {
 	print "#line ", $lineNumber, " \"$fname\"" , "\n";
 	print $line;
 	print "   if (anyExceptions()) return \n";

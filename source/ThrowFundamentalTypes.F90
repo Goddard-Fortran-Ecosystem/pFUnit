@@ -4,7 +4,6 @@ module ThrowFundamentalTypes_mod
   use Params_mod
   use StringUtilities_mod
   use Exception_mod
-  use AssertReal_mod, only : differenceReport, valuesReport
   use SourceLocation_mod
 
   implicit none
@@ -188,5 +187,18 @@ contains
          & )
 
   end subroutine throwDifferentValuesWithLocation_rr
+
+   character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
+      real, intent(in) :: expected
+      real, intent(in) :: found
+
+      valuesReport = 'expected: <' // trim(toString(expected)) // '> but found: <' // trim(toString(found)) // '>'
+   end function valuesReport
+
+   character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
+      real, intent(in) :: difference
+      real, intent(in) :: tolerance
+      differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))
+   end function differenceReport
 
 end module ThrowFundamentalTypes_mod

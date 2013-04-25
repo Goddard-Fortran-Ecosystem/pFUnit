@@ -1072,8 +1072,8 @@ def constructModule0():
 
 def constructModule():
     "A main test of how to construct the module."
-    m1 = CodeUtilities.module('AssertRealArrays_mod')
-    m1.setFileName('AssertRealArrays.F90')
+    m1 = CodeUtilities.module('AssertReal_mod')
+    m1.setFileName('AssertReal.F90')
     [m1.addDeclaration(d) for d in constructDeclarations()]
     # add interface blocks (and the implementations)
     m1.addInterfaceBlock(constructVectorNormInterfaceBlock())

@@ -1,6 +1,7 @@
 module Assert_mod
    use AssertBasic_mod
    use AssertInteger_mod
+   use AssertReal_mod
    implicit none
    private
 

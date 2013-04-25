@@ -1,0 +1,20 @@
+#!/bin/bash
+pushd Simple/Semi-Automatic
+make clean
+make
+popd
+
+pushd Fixture/Semi-Automatic
+make clean
+make
+popd
+
+pushd ParameterizedTest/Semi-Automatic
+make clean
+make
+popd
+
+pushd Robust/Semi-Automatic
+make clean
+make
+popd
