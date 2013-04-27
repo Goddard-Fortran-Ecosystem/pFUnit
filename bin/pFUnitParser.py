@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import re
 
+def cppSetLineAndFile(line, file):
+    return "#line " + str(line) + " '" + file + "'\n"
+
 def getSubroutineName(line):
     m = re.match('\s*subroutine\s+(\w*)\s*\\([\w\s,]*\\)\s*$', line, re.IGNORECASE)
     return m.groups()[0]
@@ -25,7 +28,9 @@ class AtTest(Action):
         return m
 
     def action(self, m, line):
+        print 'here'
         nextLine = self.parser.nextLine()
+        print 'there <',nextLine
         self.parser.tests.append({'name':getSubroutineName(nextLine)})
         self.parser.outputFile.write("!"+line)
         self.parser.outputFile.write(nextLine)
@@ -98,18 +103,19 @@ class AtAssert(Action):
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        fileHandle.write(" & location=SourceLocation( &\n" +  
-                         " & '" + fileName + "',&\n" + 
-                         " & " + str(lineNumber) + ")")
+        fileHandle.write(" & location=SourceLocation( &\n")
+        fileHandle.write(" & '" + fileName + "', &\n")
+        fileHandle.write(" & " + str(lineNumber) + ")")
 
     def action(self, m, line):
         p = self.parser
-        p.outputFile.write("#line " + str(p.lineNumber) + " ' " + p.fileName + " '\n")
+        
+        p.outputFile.write(cppSetLineAndFile(p.lineNumber, p.fileName))
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.lineNumber)
-        p.outputFile.write(") \n")
-        p.outputFile.write("  if (anyExceptions()) return \n")
-        p.outputFile.write("#line " + str(p.lineNumber+1) + " ' " + p.fileName + " '\n")
+        p.outputFile.write(" )\n")
+        p.outputFile.write("  if (anyExceptions()) return\n")
+        p.outputFile.write(cppSetLineAndFile(p.lineNumber+1, p.fileName))
 
 class AtBefore(Action):
     def __init__(self, parser):
