@@ -15,7 +15,7 @@ module Test_RestrictSphericalCoordinates_mod
    use SphericalCoordinates_mod
    implicit none
 
-@Parameters{lat,lon,restrictedLat,restrictedLon}
+@Parameters = [lat,lon,restrictedLat,restrictedLon]
    type, extends(AbstractTestParameter) :: LatLonCase
       real :: lat
       real :: lon

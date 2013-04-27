@@ -1,1 +1,1 @@
-ADD_TEST_SUITE(myTests)
+ADD_TEST_SUITE(myTests_suite)

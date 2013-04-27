@@ -19,7 +19,7 @@ ifeq ($(F90),ifort)
 endif
 
 %.F90: %.pf
-	$(PFUNIT)/bin/preprocess.pl $<  > $@
+	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %.o: %.F90
 	$(F90) -c $(FFLAGS) $<
