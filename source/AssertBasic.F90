@@ -13,6 +13,12 @@ module AssertBasic_mod
    public :: assertExceptionRaised
    public :: assertSameShape
 
+   public :: assertAny
+   public :: assertAll
+   public :: assertNone
+   public :: assertNotAll
+
+
    ! Utility procedures
    public :: conformable
    public :: nonConformable
@@ -191,5 +197,37 @@ contains
       end if
 
    end subroutine assertEqualString_
+
+   subroutine assertAny(conditions, message, location)
+      logical, intent(in) :: conditions(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(any(conditions), message, location)
+   end subroutine assertAny
+
+   subroutine assertAll(conditions, message, location)
+      logical, intent(in) :: conditions(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(all(conditions), message, location)
+   end subroutine assertAll
+
+   subroutine assertNone(conditions, message, location)
+      logical, intent(in) :: conditions(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(.not. any(conditions), message, location)
+   end subroutine assertNone
+
+   subroutine assertNotAll(conditions, message, location)
+      logical, intent(in) :: conditions(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(.not. all(conditions), message, location)
+   end subroutine assertNotAll
 
 end module AssertBasic_mod

@@ -29,6 +29,14 @@ contains
       ADD(testAssertFalseF)
       ADD(testAssertEqualStringSame)
       ADD(testAssertEqualStringDifferent)
+      ADD(testAssertAny)
+      ADD(testAssertAnyFail)
+      ADD(testAssertAll)
+      ADD(testAssertAllFail)
+      ADD(testAssertNone)
+      ADD(testAssertNoneFail)
+      ADD(testAssertNotAll)
+      ADD(testAssertNotAllFail)
 
    end function suite
 
@@ -61,5 +69,70 @@ contains
            & '   but found: <"string B">' // new_line('A') // &
            & '  first diff:   -------^'))
    end subroutine testAssertEqualStringDifferent
+
+   ! Fail only if all .false.
+   subroutine testAssertAny()
+      call assertAny([.true.])
+      call assertAny([.true., .true.])
+      call assertAny([.true.,.false.])
+      call assertAny([.false.,.true.])
+   end subroutine testAssertAny
+
+   subroutine testAssertAnyFail()
+      call assertAny([.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertAny([.false.,.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertAnyFail
+
+   ! Fail if any .false.
+   subroutine testAssertAll()
+      call assertAll([.true.])
+      call assertAll([.true., .true.])
+   end subroutine testAssertAll
+
+   subroutine testAssertAllFail()
+      call assertAll([.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertAll([.false.,.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertAll([.true.,.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertAll([.false.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertAllFail
+
+   ! Fail if any .true.
+   subroutine testAssertNone()
+      call assertNone([.false.])
+      call assertNone([.false., .false.])
+   end subroutine testAssertNone
+
+   subroutine testAssertNoneFail()
+      call assertNone([.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertNone([.false.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertNone([.true.,.false.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertNone([.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertNoneFail
+
+
+   ! Fail if any .true.
+   subroutine testAssertNotAll()
+      call assertNotAll([.false.])
+      call assertNotAll([.false., .true.])
+      call assertNotAll([.true., .false.])
+      call assertNotAll([.false., .false.])
+   end subroutine testAssertNotAll
+
+   subroutine testAssertNotAllFail()
+      call assertNotAll([.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+      call assertNotAll([.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertNotAllFail
 
 end module Test_AssertBasic_mod

@@ -22,10 +22,6 @@ class MockParser():
 
 class TestParseLine(unittest.TestCase):
 
-    annotationList = (("@test", "!@test"),
-                      ("   @assertEqual(...","   !@assertEqual(...")
-                      )
-
     def testCppSetLineAndFile(self):
         self.assertEqual("#line 7 'foo'\n", cppSetLineAndFile(7, 'foo'))
         self.assertEqual("#line 3 'bar'\n", cppSetLineAndFile(3, 'bar'))

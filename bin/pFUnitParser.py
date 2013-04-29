@@ -28,9 +28,7 @@ class AtTest(Action):
         return m
 
     def action(self, m, line):
-        print 'here'
         nextLine = self.parser.nextLine()
-        print 'there <',nextLine
         self.parser.tests.append({'name':getSubroutineName(nextLine)})
         self.parser.outputFile.write("!"+line)
         self.parser.outputFile.write(nextLine)
@@ -98,7 +96,7 @@ class AtAssert(Action):
 
     def match(self, line):
         variants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
-        variants += '|IsMemberOf|Contains|Any|All|IsPermutationOf'
+        variants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
         m = re.match('\s*@assert('+variants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
         return m
 
@@ -165,8 +163,9 @@ class AtParameters(Action):
 class Parser():
     def __init__(self, inputFileName, outputFileName):
         def getBaseName(fileName):
-            m = re.match('(\w*)\.\w*', fileName)
-            return m.groups()[0]
+            from os.path import basename, splitext
+            base = basename(fileName)
+            return splitext(base)[0]
 
         self.inputFile = open(inputFileName, 'r')
         self.outputFile = open(outputFileName, 'w')
