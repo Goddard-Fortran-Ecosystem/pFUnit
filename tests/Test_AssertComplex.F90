@@ -16,7 +16,8 @@ module Test_AssertComplex_mod ! note name
   use Params_mod, only : r32, r64
   use StringUtilities_mod, only: toString
   use AssertBasic_mod
-  use AssertComplex_mod, only: assertEqual, differenceReport, valuesReport
+  use AssertReal_mod, only: assertEqual, differenceReport, valuesReport
+  use AssertComplex_mod, only: assertEqual
   use ThrowFundamentalTypes_mod, only: locationFormat
 ! , differenceReport, valuesReport
   use SourceLocation_mod

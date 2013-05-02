@@ -816,6 +816,8 @@ def makeModuleReal():
 
 def makeModuleComplex():
     #
+    # mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
+    #
     mod = constructModule(baseName='AssertComplex',foundFTypes=['real','complex'])
     # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     print 'makeModuleComplex: opening    '+mod.getFileName()
@@ -870,16 +872,28 @@ def declareEXPORTS_PARAMETERS():
    integer, parameter :: MAXLEN_SHAPE = 80
 """
 
-def makeExpectedFTypes(expectedPrecision,foundFTypes=['real']):
-    "A very application-specific mapping to construct an fType list for expected."
+def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
+    """A very application-specific mapping to construct an fType list
+    for expected.  Make sure that if we're looking at complex that we
+    do not replicate real-real comparisons."""
     retTypes = ['makeExpectedFType::ERROR']
     if expectedPrecision == 'default':
-        retTypes=['int']
+        if not 'complex' in foundFTypes :
+            retTypes=['int']
+        else :
+            # If we're in AssertComplex and we're not duplicating reals...
+            if foundFType == 'real' :
+                retTypes=[]
+            else :
+                retTypes=['int']
     elif expectedPrecision == 32 or expectedPrecision == 64:
         if not 'complex' in foundFTypes :
             retTypes=['real']
         else :
-            retTypes=['real','complex']
+            if foundFType == 'real' :
+                retTypes=['complex']
+            else :
+                retTypes=['real','complex']
     return retTypes
 
 def makeExpectedRanks(foundRank):
@@ -943,16 +957,24 @@ class AssertRealArrayArgument:
     def getTolerance(self):
         return self.tolerance
 
+def makeExpectedPrecisions(foundPrecision):
+    expectedPrecisions = ['default',32]
+    if foundPrecision > 32 :
+        expectedPrecisions.append(foundPrecision)
+    return expectedPrecisions
+
 def constructASSERTS(foundFTypes=['real','complex']):
 
     AssertList = []
 
     # Note:  expectedPrecision <= foundPrecision
+    # Note:  Need to eliminate redundancy of real asserts that can arise in AssertComplex.
+    #        I.e. remove real-real comparisons when complex is available.
  
     # expectedFTypes -> 'int' if expectedPrecision 'default' else 'real'
     # was tolerances = [32,64], but replaced by the following:
     # tolerances = max expectedPrecisions & foundPrecisions
-    expectedPrecisions = ['default',32,64]
+    # expectedPrecisions = ['default',32,64] that are < foundPrecision
     # expectedRanks(foundRank) -> [0,foundRank]
     # + passed in foundFTypes = ['real','complex']
     # + passed in foundFTypes = ['real']
@@ -974,9 +996,9 @@ def constructASSERTS(foundFTypes=['real','complex']):
     Utilities.flattened( \
                [[[[[[[ \
                        AssertRealArrayArgument(eft,ep,er,fft,fp,fr,tol) \
-                       for eft in makeExpectedFTypes(ep,foundFTypes=foundFTypes) ]  \
+                       for eft in makeExpectedFTypes(ep,fft,foundFTypes=foundFTypes) ]  \
                        for tol in makeTolerances(ep,fp) ] \
-                       for ep in expectedPrecisions  ] \
+                       for ep in makeExpectedPrecisions(fp)  ] \
                        for er in makeExpectedRanks(fr) ] \
                        for fft in foundFTypes ] \
                        for fp in foundPrecisions ] \
