@@ -17,19 +17,6 @@ import textwrap
 import random
 import copy
 
-def indentKluge(indentString,txt):
-    wrapper = textwrap.TextWrapper(initial_indent=indentString, subsequent_indent=indentString);
-    txtList=map(wrapper.fill,str.splitlines(txt))
-    return "\n".join(txtList)
-
-def iterateOverMultiRank(nr,variableName,shapeName,centralText):
-    indent= str(' '*(3*(nr+1)));
-    txt = indentKluge(indent,centralText)
-    r = range(nr); rrev = range(nr); rrev.reverse();
-    codeSnippet = ''.join([' '*(3*(nr-i))+'do '+variableName+str(i+1)+'= 1,'+shapeName+'('+str(i+1)+')\n' for i in rrev])+txt+'\n'+''.join([' '*(3*(nr-i))+'end do\n' for i in r])
-    #    print codeSnippet
-    return codeSnippet
-
 ##### begin generation code #####
 
 def DIMS(rank):
@@ -152,6 +139,24 @@ def testEXPANDSHAPE():
     print '3,test -> ' + str(EXPANDSHAPE(3,'test'))
     print '5,test -> ' + str(EXPANDSHAPE(5,'test'))
 
+def coerceReal(x,kind='r32') :
+    return 'real('+x+',kind='+kind+')'
+
+def coerceComplex(x,kind='r32') :
+    return 'cmplx('+x+',kind='+kind+')'
+
+def coerceKind(x,kind='r32',t='real'):
+    coerceStr = x
+    if t == 'real' :
+        coerceStr = coerceReal(x,kind=kind)
+    elif t == 'complex' :
+        coerceStr = coerceComplex(x,kind=kind)
+    elif t == 'integer':
+        coerceStr = coerceReal(x,kind=kind)
+    else:
+        coerceStr = 'coerceKind: ERROR - t = '+t+', kind = '+kind+', x = '+x
+    return coerceStr
+
 class ArrayDescription:
     def __init__(self,fType,kind,rank):
         self.fType = fType
@@ -245,7 +250,8 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
     subroutineName = makeSubroutineName(expectedDescr.NAME(), \
                                         foundDescr.NAME(), \
                                         str(tolerance))
-        # Maybe set up an object where comments have some extra meaning.
+    
+    # Maybe set up an object where comments have some extra meaning.
     commentPreambleString = \
 """
   !---------------------------------------------------------------------------
@@ -260,15 +266,41 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
   !---------------------------------------------------------------------------
 """
 
+    declareExpected = \
+"     " + expectedDescr.DECLARE('expected') + "\n"
+    declareFound = \
+"     " + foundDescr.DECLARE('found') + "\n"
+    declareTolerance = \
+"     " + tolDECLARE(tolerance,foundDescr,opts=', optional, intent(in)')
+
+    toleranceKind = KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())
+
+    declareExpectedScalar_expected = \
+"      " + expectedDescr.DECLARESCALAR('expected') + "\n"
+    declareFoundScalar_found = \
+"      " + foundDescr.DECLARESCALAR('found') + "\n"
+
+    declareExpectedScalar_expected0 = \
+"      " + expectedDescr.DECLARESCALAR('expected0') + "\n"
+    declareFoundScalar_found0 = \
+"      " + foundDescr.DECLARESCALAR('found0') + "\n"
+
+    if 'complex' in [foundDescr.FTYPE(),expectedDescr.FTYPE()] :
+        declareDelta = \
+"      " + "complex(kind=kind(found)) :: delta"+foundDescr.EXPANDSHAPE('found') +"\n"
+    else:
+        declareDelta = \
+"      " + "real(kind=kind(found)) :: delta"+foundDescr.EXPANDSHAPE('found') +"\n"
+    
     retString = \
         commentPreambleString + \
 """
    subroutine """+subroutineName+"""( &
    &  expected, found, message, tolerance, location )
      implicit none\n""" + \
-"     " + expectedDescr.DECLARE('expected') + "\n" + \
-"     " + foundDescr.DECLARE('found') + "\n" +\
-"     " + tolDECLARE(tolerance,foundDescr,opts=', optional, intent(in)') + """
+     declareExpected + \
+     declareFound + \
+     declareTolerance + """
      character(len=*), optional, intent(in) :: message  ! not used yet!
      type (SourceLocation), optional, intent(in) :: location
 
@@ -279,7 +311,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,"""+KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())+""")
+        tolerance_ = real(0.,"""+toleranceKind+""")
      end if
 
      if(present(location)) then 
@@ -303,11 +335,10 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
    subroutine """+subroutineName+"""_internal( &
    &  expected, found, tolerance, message, location )
      implicit none\n""" + \
-"     " + foundDescr.DECLARE('found') + "\n" +\
-"     " + tolDECLARE(tolerance,foundDescr,opts=', intent(in)') + """
-     real(kind=kind(tolerance)) :: tolerance_\n""" + \
-"     " + expectedDescr.DECLARE('expected') + "\n" + \
-"""
+     declareExpected + \
+     declareFound + \
+     declareTolerance + """ 
+     real(kind=kind(tolerance)) :: tolerance_\n
      character(len=*), intent(in) :: message  ! not used yet!
      type (SourceLocation), intent(in) :: location
 
@@ -316,8 +347,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
      logical :: conformable
   
      integer :: first
-     real(kind=r64) :: delta"""+ foundDescr.EXPANDSHAPE('found') + \
-"""
+""" + declareDelta + """
      integer :: i, i1, i2
      integer :: expectedSize
      ! maybe use (:) in the following...
@@ -329,8 +359,8 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 """
 ! Scalar "temp" variables
 """ + \
-"      " + expectedDescr.DECLARESCALAR('expected0') + "\n" + \
-"      " + foundDescr.DECLARESCALAR('found0') + "\n" + \
+     declareExpectedScalar_expected0 + \
+     declareFoundScalar_found0 + \
 """
 !
 ! Capture the location where things went wrong. Using foundRank.
@@ -350,31 +380,13 @@ ifElseString(tolerance == 0, """
 """ ) + \
 elideIfZero(expectedDescr.RANK(), \
 """
-  
    ! If the expected is scalar, then we are conformable.  Otherwise, we have to check the shape.
    ! The following segment is elided if the expected rank is zero.
-   !
 
       call assertSameShape(shape(expected),shape(found),location=location)
       if (anyExceptions()) return
 
-!mlr-      ! SAME SIZE
-!mlr-      if(size(expected) /= size(found)) then
-!mlr-         call throwNonConformable(shape(expected), shape(found), location=location)
-!mlr-         ! Test failed... So return?
-!mlr-         return
-!mlr-      end if
-!mlr-
-      ! SAME SHAPE
-      ! Check shapes
       expectedSize = size(expected); expectedShape = shape(expected)
-!mlr-   !   foundShape = shape(found)
-!mlr-      do i = 1, size(expectedShape)
-!mlr-         if( expectedShape(i) /= foundShape(i) ) then
-!mlr-            call throwNonConformable(expectedShape, foundShape, location=location)
-!mlr-            return ! bail
-!mlr-         end if
-!mlr-      end do
 """ ) + \
 """
    ! Size and shape okay.  Now compare elements... If all tolerable, return...
@@ -386,7 +398,7 @@ elideIfZero(expectedDescr.RANK(), \
    ! Check for difference
 
 """ + \
-iterateOverMultiRank(foundDescr.RANK(),"idx","foundShape","""
+CodeUtilities.iterateOverMultiRank(foundDescr.RANK(),"idx","foundShape","""
    expected0 = expected""" + \
 AddBlockSymbols(expectedDescr.RANK() > 0, \
                 ['(',')'], \
@@ -421,10 +433,10 @@ subroutine throwDifferentValuesWithLocation( &
    use StringUtilities_mod
    use Exception_mod
    use ThrowFundamentalTypes_mod, only : locationFormat
-   use AssertReal_mod, only : differenceReport, valuesReport
+   ! , differenceReport, valuesReport
    implicit none\n""" + \
-"   " + expectedDescr.DECLARESCALAR('expected') + "\n" + \
-"   " + foundDescr.DECLARESCALAR('found') + "\n" + \
+   declareExpectedScalar_expected + \
+   declareFoundScalar_found + \
 ifElseString(tolerance == 0,\
 """
    real(kind=kind(found)) :: tolerance""", \
@@ -440,28 +452,13 @@ ifElseString(tolerance == 0,\
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-!   call throw( &
-!      & trim(valuesReport(real(expected), real(found))) // &
-!      & trim(differenceReport(real(found - expected), real(tolerance))), &
-!      & location=location &
-!      & )
 
-! Should fix the real() call below.  This is just reporting so we're okay for now.
-    call throwDifferentValuesString64( &
-    &  real(expected, kind=r64), &
-    &  real(found, kind=r64),    &
-    &  trim(locationInArray), &
-    &  location=location, &
-    &  tolerance = real(tolerance_, kind=r64) &
-    &  )
-
-!    call throw( &
-!         & 'Assertion failed: unequal arrays.' // new_line('$') // &
-!         & '  First difference at element <' // trim(locationInArray) // '>' // &
-!         & trim(valuesReport(real(expected), real(found))) // &
-!         & trim(differenceReport(real(found - expected), real(tolerance))), &
-!         & location=location &
-!         & )
+    call throw( &
+         & trim(valuesReport(expected, found)) // &
+         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & location = location &
+         )    
          
 end subroutine throwDifferentValuesWithLocation
 
@@ -485,137 +482,10 @@ class constraintASSERTEQUAL(CodeUtilities.routineUnit):
                                                    tolerance ))
         self.tolerance = tolerance
         return
-    
-    def generateNonConformableTest(self):
-        "Generate a module subroutine that tests correct handling of conconform. arrays."
-        er = self.expectedDescr.RANK()
-        fr = self.foundDescr.RANK()
-        subName = self.name
-        testName = 'test'+subName+'HandlesNonConformableArrays'
-        eDims = DIMS_RANDOM_INTS(er)
-        if er == fr:
-            # enforce non conformity
-            fDims = DIMS_IncrementRandomElement(eDims)
-        else:
-            # Question:  What about er or fr equalling zero?
-            fDims = DIMS_RANDOM_INTS(fr)
-        eDimsDeclared = DIMS_SET(eDims)
-        fDimsDeclared = DIMS_SET(fDims)
-        
-        return \
-"""
-   subroutine """+testName+"""()
-      use Exception_mod, only: new_line('$')
-      use Assert_mod, only:    assertEqual
 
-      real, dimension"""+eDimsDeclared+""" :: expected
-      real, dimension"""+fDimsDeclared+""" :: found
-
-      call assertEqual(expected, found)
-
-      call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // &
-         & 'trim(shapeReport(shape(expected),shape(found))) &
-         & )
-         
-   end subroutine """+testName+"""
-
-"""
-
-    def generateOneElementDifferent(self):
-        "Generate a module subroutine that tests correct handling of one element being greatly different."
-        er = self.expectedDescr.RANK()
-        fr = self.foundDescr.RANK()
-        subName = self.name
-        testName = 'test'+subName+'HandlesOneElementBeingDifferent'
-        eDims = DIMS_RANDOM_INTS(er,3)
-        fDims = DIMS_RANDOM_INTS(fr,3)
-        eDimsDeclared = DIMS_SET(eDims)
-        fDimsDeclared = DIMS_SET(fDims)
-        iRandomIndex = DIMS_SET(RANDOM_INDEX(fDims))
-        
-        return \
-"""
-   subroutine """+testName+"""()
-      use Exception_mod, only: new_line('$')
-      use Assert_mod, only:    assertEqual
-
-      real, dimension"""+eDimsDeclared+""" :: expected
-      real, dimension"""+fDimsDeclared+""" :: found
-      real :: expectedScalar, foundScalar
-
-      expectedScalar = 0.0
-      foundScalar = 1.0
-
-      expected = expectedScalar
-      found"""+iRandomIndex+""" = foundScalar
-
-      call assertEqual(expected, found)
-
-      call assertCatch( &
-         & 'Assertion failed: non-conformable real arrays.' // &
-         & 'trim(shapeReport(shape(expected),shape(found))) &
-         & )
-         
-   end subroutine """+testName+"""
-
-"""
-
-    def generateAssertCatch(self):
-        "Check that the test result is as expected.  Might be refactored."
-        return \
-"""
-! NOTE:  No apparent dependencies on arrays...  Might be refactored.
-   subroutine assertCatch(string)
-      use Exception_mod, only: getNumExceptions, Exception, catchAny
-      use Assert_mod, only:    assertEqual
-      character(len=*), intent(in) :: string
-      type (Exception) :: anException
-
-      if (getNumExceptions() > 0) then
-         anException = catchAny()
-         call assertEqual(string, anException%getMessage()) !, 'exceptions don't match'\rightParen
-      else
-         call assertEqual(string, ' ')!, 'missing exception'\rightParen
-      end if
-   end subroutine assertCatch
-"""
-
-    def generate_testIncludePreamble(self):
-        "For the #includes..."
-        return \
-"""
-#include "reflection.h"
-"""
-
-    def generate_testUSE(self):
-        "Generate use-dependencies for the test suite."
-        return testUSES()
-    def generate_testDiscipline(self):
-        return testDiscipline()
-    def ADD(self,method):
-        "Add a test method to the test suite.  Has some hardcoded dependencies."
-        return \
-            "call suite%addTest(newSimpleTestMethod(REFLECT("+method+")))\n"
-    def generate_testMakeSuite(self,TestMethods):
-        "Construct the test suite.  Add methods to call via 'TestMethods'. See 'ADD'. A good way to do this would be to pass in a list, and then map ADD onto that list, generating the text to be inserted below."
-        return \
-"""
-   function suite()
-      use TestSuite_mod, only:         newTestSuite, TestSuite
-      use SimpleTestMethod_mod, only:  newSimpleTestMethod
-      type (TestSuite), pointer ::     suite
-      allocate(suite)
-      suite => newTestSuite('assertRealArraySuite') ! note name """ + \
-      TestMethods + \
-"""      
-   end function suite
-"""
-
-
-def constructAssertEqualInterfaceBlock():
+def constructAssertEqualInterfaceBlock(foundFTypes=['real']):
     AssertEqualInterfaceBlock = CodeUtilities.interfaceBlock('assertEqual')
-    [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS()]
+    [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(foundFTypes=foundFTypes)]
     return AssertEqualInterfaceBlock
 
 def testgenerateASSERTEQUAL():
@@ -624,11 +494,18 @@ def testgenerateASSERTEQUAL():
                             ArrayDescription('int','default',3), \
                             32)
 
-def VECTOR_NORM_NAME(rank):
-    return """vectorNorm_"""+str(rank)+"""D"""    
+def VECTOR_NORM_NAME(rank,fType='real',precision=64):
+    return """vectorNorm_"""+str(rank)+"D"+"_"+fType+str(precision)
+
+def CONJG(x,fType='complex'):
+    # If x complex return conjg, else return as is.
+    retStr = str(x)
+    if fType == 'complex':
+        retStr = 'conjg('+str(x)+')'
+    return retStr
     
-def generateVECTOR_NORM(rank):
-    subroutineName = VECTOR_NORM_NAME(rank)
+def generateVECTOR_NORM(rank,fType='real',precision=64):
+    subroutineName = VECTOR_NORM_NAME(rank,fType=fType,precision=precision)
     dimStr = DIMS(rank)
     retstr = \
 """
@@ -644,7 +521,7 @@ def generateVECTOR_NORM(rank):
   !! @return independent of norm
   !---------------------------------------------------------------------------
   function """+subroutineName+"""(x, norm) result(y)
-    real (kind=r64), intent(in) :: x"""+DIMS(rank)+"""
+    """+DECLARE('x',fType,precision,rank,opts=', intent(in)')+"""
     integer :: norm
     real (kind=r64) :: y
 """ + ifElseString(rank == 0, \
@@ -652,13 +529,16 @@ def generateVECTOR_NORM(rank):
     y = abs(x) ! independent of norm for rank=0 (scalar) case.
 """, \
 """
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
     select case (norm)  ! code to support rank /= 0 cases.
     case (L_INFINITY_NORM)
        y = maxval(abs(x))
     case (L1_NORM)
        y = sum(abs(x))
     case (L2_NORM)
-       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+       y = sqrt(sum(x*"""+CONJG('x',fType)+"""))
     end select
 """) + \
 """
@@ -673,31 +553,56 @@ def testGenerateVECTOR_NORM():
     return
 
 class VECTOR_NORM(CodeUtilities.routineUnit):
-    def __init__(self,rank):
+    def __init__(self,rank,fType='real',precision=32):
         self.rank = rank
-        self.name = VECTOR_NORM_NAME(rank)
+        self.fType = fType
+        self.precision = precision
+        self.name = VECTOR_NORM_NAME(rank,fType=self.fType,precision=self.precision)
         self.declaration = CodeUtilities.declaration(self.name,self.name)
         self.declarations = [self.declaration]
         self.implementation \
-            = CodeUtilities.implementation(self.name, generateVECTOR_NORM(rank))
+            = CodeUtilities.implementation( \
+                self.name, \
+                generateVECTOR_NORM(rank,fType=self.fType,precision=self.precision))
         return
 
 def constructVectorNormInterfaceBlock():
     VectorNormInterface = CodeUtilities.interfaceBlock('vectorNorm')
-    map(VectorNormInterface.addRoutineUnit,[VECTOR_NORM(i) for i in range(6)])
+    map(VectorNormInterface.addRoutineUnit, \
+                        [VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
+                         for t in ['real','complex'] \
+                         for p in [32, 64]] )
     return VectorNormInterface
 
-def isWithinToleranceName(rank):
-    return """isWithinTolerance_"""+str(rank)+"""D"""
+def constructDifferenceReportInterfaceBlock():
+    DifferenceReportInterface = CodeUtilities.interfaceBlock('differenceReport')
+    map(DifferenceReportInterface.addRoutineUnit, \
+        [makeDifferenceReport_type(t=t,p=p,tol=tol) for t in ['real','complex'] \
+                                                    for p in ['32','64'] \
+                                                    for tol in ['32','64']])
+    return DifferenceReportInterface
 
-def generateIsWithinTolerance(rank):
-    subroutineName = isWithinToleranceName(rank)
+def constructValuesReportInterfaceBlock():
+    ValuesReportInterface = CodeUtilities.interfaceBlock('valuesReport')
+    map(ValuesReportInterface.addRoutineUnit, \
+        [makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
+                                        for te in ['integer','real','complex'] \
+                                        for tf in ['integer','real','complex'] \
+                                        for pe in ['32','64'] \
+                                        for pf in ['32','64']])
+    return ValuesReportInterface
+
+def isWithinToleranceName(rank,fType='real',precision=64):
+    return """isWithinTolerance_"""+str(rank)+"""D"""+"_"+fType+str(precision)
+
+def generateIsWithinTolerance(rank,fType='real',precision=64):
+    subroutineName = isWithinToleranceName(rank,fType=fType,precision=precision)
     dimStr = DIMS(rank)
     
     retstr = \
 """
    logical function """+subroutineName+"""(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x"""+dimStr+"""
+     """+fType+""" (kind=r"""+str(precision)+"""), intent(in) :: x"""+dimStr+"""
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -708,19 +613,26 @@ def generateIsWithinTolerance(rank):
     return retstr
 
 class IsWithinTolerance(CodeUtilities.routineUnit):
-    def __init__(self,rank):
+    def __init__(self,rank,fType='real',precision=64):
         self.rank = rank
-        self.name = isWithinToleranceName(rank)
+        self.precision = precision
+        self.name = isWithinToleranceName(rank,fType=fType,precision=precision)
+        self.fType = fType
         self.declaration = CodeUtilities.declaration(self.name, self.name)
         self.declarations = [self.declaration]
         self.implementation \
             = CodeUtilities.implementation(self.name, \
-                                           generateIsWithinTolerance(self.rank))
+                                           generateIsWithinTolerance(self.rank, \
+                                                                     fType=self.fType, \
+                                                                     precision=self.precision))
         return
 
 def constructIsWithinToleranceInterfaceBlock():
     iwt_InterfaceBlock = CodeUtilities.interfaceBlock('isWithinTolerance')
-    map(iwt_InterfaceBlock.addRoutineUnit, [IsWithinTolerance(i) for i in range(6)])
+    map(iwt_InterfaceBlock.addRoutineUnit, \
+        [IsWithinTolerance(i,fType=t,precision=p)
+         for i in range(6) for t in ['real','complex'] \
+            for p in [32,64]])
     return iwt_InterfaceBlock
 
 def testGenerateIsWithinTolerance():
@@ -729,31 +641,42 @@ def testGenerateIsWithinTolerance():
     print generateIsWithinTolerance(1)
     return
 
-def makeValuesReport():
-    runit = CodeUtilities.routineUnit('valuesReport', \
+def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
+    coercedExpected = coerceKind('expected',t=tf)
+    coercedFound    = coerceKind('found',t=tf)
+    runit = CodeUtilities.routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
-      character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
-      real, intent(in) :: expected
-      real, intent(in) :: found
+      character(len=MAXLEN_MESSAGE) &
+      & function valuesReport_"""+te+tf+pe+pf+"""(expected, found) result(valuesReport)
+      """+te+"""(kind=r"""+pe+"""), intent(in) :: expected
+      """+tf+"""(kind=r"""+pf+"""), intent(in) :: found
 
-      valuesReport = 'expected: <' // trim(toString(expected)) // &
-      & '> but found: <' // trim(toString(found)) // '>'
-   end function valuesReport
+      valuesReport = &
+      & 'expected: <' // trim(toString("""+coercedExpected+""")) // &
+      & '> but found: <' // trim(toString("""+coercedFound+""")) // '>'
+      
+   end function
 """)
-    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+    # runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
     return runit
 
-def makeDifferenceReport():
-    runit = CodeUtilities.routineUnit('differenceReport', \
+def makeDifferenceReport_type(t='real',p='64',tol='64'):
+    coercedDifference = coerceKind('difference',t=t)
+    #    coercedTolerance =  coerceKind('tolerance',t=t)
+    runit = CodeUtilities.routineUnit('differenceReport_'+t+p+tol,\
 """
-   character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
-      real, intent(in) :: difference
-      real, optional, intent(in) :: tolerance
-      differenceReport = '    difference: |' // trim(toString(difference)) // &
-      & '| > tolerance:' // trim(toString(tolerance))
-   end function differenceReport
+    character(len=MAXLEN_MESSAGE) &
+    & function differenceReport_"""+t+p+tol+"""(difference, tolerance) result(differenceReport)
+      """+t+"""(kind=r"""+p+"""), intent(in) :: difference
+     real(kind=r"""+tol+"""), intent(in) :: tolerance
+!     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
+      differenceReport = '    difference: |' // trim(toString("""+coercedDifference+""")) // &
+      & '| > tolerance:' // trim(toString("""+'tolerance'+"""))
+   end function 
 """)
-    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
+
+# Don't need the following because we'll add to an interface block.
+#    runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
     return runit
 
 def makeCompareElements():
@@ -877,18 +800,30 @@ def makeModuleVectorNorm():
     mod1.addInterfaceBlock(VectorNormInterface)
     return mod1
 
-def testMakeModule():
+def makeModuleReal():
     # mod = makeModule0()
     # mod = makeModuleVectorNorm()
     mod = constructModule()
     # print '\n'.join(mod.generate())
     # print mod
-    print 'testMakeModule: opening    '+mod.getFileName()
+    print 'makeModuleReal: opening    '+mod.getFileName()
     with open(mod.getFileName(),'w') as f:
-        print 'testMakeModule: writing to '+mod.getFileName()
+        print 'makeModuleReal: writing to '+mod.getFileName()
         f.write('\n'.join(mod.generate()))
         f.close()
-    print 'testMakeModule: done'
+    print 'makeModuleReal: done'
+    return
+
+def makeModuleComplex():
+    #
+    mod = constructModule(baseName='AssertComplex',foundFTypes=['real','complex'])
+    # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
+    print 'makeModuleComplex: opening    '+mod.getFileName()
+    with open(mod.getFileName(),'w') as f:
+        print 'makeModuleComplex: writing to '+mod.getFileName()
+        f.write('\n'.join(mod.generate()))
+        f.close()
+    print 'makeModuleComplex: done'
     return
 
 def declareUSES():
@@ -899,8 +834,8 @@ def declareUSES():
    use Exception_mod
    use SourceLocation_mod
    use ThrowFundamentalTypes_mod, only : throwNonConformable
+   ! , differenceReport, valuesReport
    use StringUtilities_mod
-!   use AssertReal_mod, only : differenceReport, valuesReport
 """
 
 def declareDISCIPLINE():
@@ -921,8 +856,8 @@ def declareEXPORTS():
    public :: L1_NORM
    public :: L2_NORM
 
-!   public :: valuesReport
-!   public :: differenceReport
+   public :: valuesReport
+   public :: differenceReport
 """
 
 def declareEXPORTS_PARAMETERS():
@@ -935,14 +870,17 @@ def declareEXPORTS_PARAMETERS():
    integer, parameter :: MAXLEN_SHAPE = 80
 """
 
-def makeExpectedFTypes(expectedPrecision):
+def makeExpectedFTypes(expectedPrecision,foundFTypes=['real']):
     "A very application-specific mapping to construct an fType list for expected."
-    retStr = 'makeExpectedFType::ERROR'
+    retTypes = ['makeExpectedFType::ERROR']
     if expectedPrecision == 'default':
-        retStr='int'
+        retTypes=['int']
     elif expectedPrecision == 32 or expectedPrecision == 64:
-        retStr='real'
-    return [retStr]
+        if not 'complex' in foundFTypes :
+            retTypes=['real']
+        else :
+            retTypes=['real','complex']
+    return retTypes
 
 def makeExpectedRanks(foundRank):
     ranks = [0]
@@ -1005,7 +943,7 @@ class AssertRealArrayArgument:
     def getTolerance(self):
         return self.tolerance
 
-def makeAssertRealArrays():
+def constructASSERTS(foundFTypes=['real','complex']):
 
     AssertList = []
 
@@ -1016,14 +954,15 @@ def makeAssertRealArrays():
     # tolerances = max expectedPrecisions & foundPrecisions
     expectedPrecisions = ['default',32,64]
     # expectedRanks(foundRank) -> [0,foundRank]
-    # foundFTypes = ['real','complex']
-    foundFTypes = ['real']
+    # + passed in foundFTypes = ['real','complex']
+    # + passed in foundFTypes = ['real']
     foundPrecisions = [32,64]
     foundRanks = [0,1,2,3,4,5]
 
 # -> foundFTypes --> adding 'complex'
 
 # THE MAIN LOOP.
+# May need a special case if we don't want to construct a real-real in AssertComplex...
     AssertList = \
     [ \
       #test      a \
@@ -1035,7 +974,7 @@ def makeAssertRealArrays():
     Utilities.flattened( \
                [[[[[[[ \
                        AssertRealArrayArgument(eft,ep,er,fft,fp,fr,tol) \
-                       for eft in makeExpectedFTypes(ep) ]  \
+                       for eft in makeExpectedFTypes(ep,foundFTypes=foundFTypes) ]  \
                        for tol in makeTolerances(ep,fp) ] \
                        for ep in expectedPrecisions  ] \
                        for er in makeExpectedRanks(fr) ] \
@@ -1044,10 +983,6 @@ def makeAssertRealArrays():
                        for fr in foundRanks ] \
                        )]
     return AssertList
-
-def constructASSERTS():
-    asserts = makeAssertRealArrays()
-    return asserts
 
 def constructDeclarations():
     "Construct declarations to be used at the beginning of the Module."
@@ -1066,25 +1001,27 @@ def constructModule0():
     [m1.addDeclaration(d) for d in constructDeclarations()]
     # add asserts
     AssertEqualInterfaceBlock = CodeUtilities.interfaceBlock('assertEqual')
-    [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS()]
+    [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(foundFTypes=['real'])]
     m1.addInterfaceBlock(AssertEqualInterfaceBlock)
     return m1
 
-def constructModule():
+def constructModule(baseName='AssertReal',foundFTypes=['real']):
     "A main test of how to construct the module."
-    m1 = CodeUtilities.module('AssertReal_mod')
-    m1.setFileName('AssertReal.F90')
+    m1 = CodeUtilities.module(baseName+'_mod')
+    m1.setFileName(baseName+'.F90')
     [m1.addDeclaration(d) for d in constructDeclarations()]
     # add interface blocks (and the implementations)
     m1.addInterfaceBlock(constructVectorNormInterfaceBlock())
     m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock())
-    m1.addInterfaceBlock(constructAssertEqualInterfaceBlock())
-    m1.addRoutineUnit(makeValuesReport())
-    m1.addRoutineUnit(makeDifferenceReport())
-    m1.addRoutineUnit(makeCompareElements())
-    m1.addRoutineUnit(makeThrowDifferentValues())
-    m1.addRoutineUnit(makeThrowDifferentValuesString32())
+    m1.addInterfaceBlock(constructAssertEqualInterfaceBlock(foundFTypes=foundFTypes))
+#    m1.addRoutineUnit(makeValuesReport())
+#    m1.addRoutineUnit(makeDifferenceReport())
+#    m1.addRoutineUnit(makeCompareElements())
+#    m1.addRoutineUnit(makeThrowDifferentValues())
+#    m1.addRoutineUnit(makeThrowDifferentValuesString32())
     m1.addRoutineUnit(makeThrowDifferentValuesString64())
+    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
+    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
     return m1
 
 def checkMakeAssertionAndAddToModule():
@@ -1118,8 +1055,11 @@ def main():
     # testgenerateASSERTEQUAL()
     # testGenerateVECTOR_NORM()
     # testGenerateIsWithinTolerance()
-    #-
-    testMakeModule()
+    #+
+    #++
+    makeModuleReal()
+    #?
+    makeModuleComplex()
     return
 
 if __name__ == "__main__":

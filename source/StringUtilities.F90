@@ -7,6 +7,9 @@
 !
 
 module StringUtilities_mod
+
+  use Params_mod, only : r32, r64
+
    implicit none
    private
    
@@ -18,15 +21,41 @@ module StringUtilities_mod
 
    integer, parameter :: MAXLEN_STRING = 80
    interface toString
+      module Procedure toString_real64Scalar
       module Procedure toString_realScalar
+      module Procedure toString_complexScalar
       module Procedure toString_integerScalar
       module Procedure toString_integer1D
    end interface
 
 contains
 
+!   character(len=MAXLEN_STRING) function toString_complex64Scalar(value) result(buffer)
+!      complex(kind=r64), intent(in) :: value
+!
+!      write(buffer,'(2(SP,G14.7))') value
+!      buffer = adjustL(buffer)
+!
+!   end function toString_complexScalar
+
+   character(len=MAXLEN_STRING) function toString_complexScalar(value) result(buffer)
+      complex, intent(in) :: value
+
+      write(buffer,'(2(SP,G14.7))') value
+      buffer = adjustL(buffer)
+
+   end function toString_complexScalar
+
+   character(len=MAXLEN_STRING) function toString_real64Scalar(value) result(buffer)
+      real(kind=r64), intent(in) :: value
+
+      write(buffer,'(SP,G14.7)') value
+      buffer = adjustL(buffer)
+
+    end function toString_real64Scalar
+
    character(len=MAXLEN_STRING) function toString_realScalar(value) result(buffer)
-      real, intent(in) :: value
+      real(kind=r32), intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
       buffer = adjustL(buffer)
