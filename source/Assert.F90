@@ -2,6 +2,7 @@ module Assert_mod
    use AssertBasic_mod
    use AssertInteger_mod
    use AssertReal_mod
+   use AssertComplex_mod, only : AssertEqual
    implicit none
    private
 

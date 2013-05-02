@@ -2,7 +2,8 @@
 import re
 
 def cppSetLineAndFile(line, file):
-    return "#line " + str(line) + " '" + file + "'\n"
+    return "#line " + str(line) + ' "' + file + '"\n'
+    # return "#line " + str(line) + " '" + file + "'\n"
 
 def getSubroutineName(line):
     m = re.match('\s*subroutine\s+(\w*)\s*\\([\w\s,]*\\)\s*$', line, re.IGNORECASE)

@@ -31,7 +31,7 @@ AssertBasic.o: Exception.o StringUtilities.o
 AssertInteger.o: Exception.o AssertBasic.o
 AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
 AssertComplex.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
-Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o
+Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o AssertComplex.o
 StringUtilities.o: Params.o
 ThrowFundamentalTypes.o: Params.o StringUtilities.o Exception.o
 

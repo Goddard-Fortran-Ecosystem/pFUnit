@@ -452,11 +452,12 @@ ifElseString(tolerance == 0,\
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -641,6 +642,7 @@ def testGenerateIsWithinTolerance():
     print generateIsWithinTolerance(1)
     return
 
+### Currently Active ###
 def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
     coercedExpected = coerceKind('expected',t=tf)
     coercedFound    = coerceKind('found',t=tf)
@@ -651,9 +653,10 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
       """+te+"""(kind=r"""+pe+"""), intent(in) :: expected
       """+tf+"""(kind=r"""+pf+"""), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString("""+coercedExpected+""")) // &
-      & '> but found: <' // trim(toString("""+coercedFound+""")) // '>'
+      & 'expected: ' // trim(toString("""+coercedExpected+""")) // &
+      & ' but found: ' // trim(toString("""+coercedFound+""")) // ''
       
    end function
 """)
@@ -718,6 +721,7 @@ def makeThrowDifferentValues():
 
          write(locationInArray,'("[",i0,"]")') at
 
+! in throwDifferentValues
          call throw( &
               & trim(valuesReport(expected, found)) // &
               & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
@@ -747,6 +751,7 @@ def makeThrowDifferentValuesString32():
             tolerance_ = 0.0
          end if
 
+! in throwDifferentValues32
          call throw( &
               & trim(valuesReport(expected, found)) // &
               & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &

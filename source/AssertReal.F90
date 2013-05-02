@@ -1293,11 +1293,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -1439,11 +1440,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -1585,11 +1587,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -1731,11 +1734,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -1877,11 +1881,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2025,11 +2030,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2173,11 +2179,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2329,11 +2336,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2485,11 +2493,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2633,11 +2642,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2781,11 +2791,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -2929,11 +2940,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3085,11 +3097,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3241,11 +3254,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3397,11 +3411,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3547,11 +3562,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3697,11 +3713,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -3855,11 +3872,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4013,11 +4031,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4163,11 +4182,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4313,11 +4333,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4463,11 +4484,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4621,11 +4643,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4779,11 +4802,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -4937,11 +4961,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5089,11 +5114,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5241,11 +5267,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5401,11 +5428,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5561,11 +5589,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5713,11 +5742,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -5865,11 +5895,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6017,11 +6048,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6177,11 +6209,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6337,11 +6370,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6497,11 +6531,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6651,11 +6686,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6805,11 +6841,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -6967,11 +7004,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7129,11 +7167,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7283,11 +7322,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7437,11 +7477,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7591,11 +7632,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7753,11 +7795,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -7915,11 +7958,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8077,11 +8121,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8233,11 +8278,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8389,11 +8435,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8553,11 +8600,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8717,11 +8765,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -8873,11 +8922,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9029,11 +9079,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9185,11 +9236,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9349,11 +9401,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9513,11 +9566,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9677,11 +9731,12 @@ subroutine throwDifferentValuesWithLocation( &
    write(locationInArray,locationFormat(iLocation)) iLocation
 
 ! scalar case
-
+! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
     call throw( &
          & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element <'//trim(locationInArray)//'>.', &
+         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
+!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
+         & ';  first difference at element '//trim(locationInArray)//'.', &
          & location = location &
          )    
          
@@ -9804,9 +9859,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9816,9 +9872,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9828,9 +9885,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9840,9 +9898,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9852,9 +9911,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9864,9 +9924,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9876,9 +9937,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9888,9 +9950,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9900,9 +9963,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -9912,9 +9976,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r32), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -9924,9 +9989,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -9936,9 +10002,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       integer(kind=r64), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -9948,9 +10015,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9960,9 +10028,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9972,9 +10041,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9984,9 +10054,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -9996,9 +10067,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10008,9 +10080,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10020,9 +10093,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10032,9 +10106,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10044,9 +10119,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10056,9 +10132,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r32), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10068,9 +10145,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10080,9 +10158,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       real(kind=r64), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10092,9 +10171,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10104,9 +10184,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10116,9 +10197,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       integer(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10128,9 +10210,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       integer(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10140,9 +10223,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10152,9 +10236,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10164,9 +10249,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       real(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10176,9 +10262,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       real(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(real(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(real(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
    end function
 
@@ -10188,9 +10275,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10200,9 +10288,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r32), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10212,9 +10301,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       complex(kind=r32), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 
@@ -10224,9 +10314,10 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
       complex(kind=r64), intent(in) :: expected
       complex(kind=r64), intent(in) :: found
 
+! Note: removed '<.>'
       valuesReport = &
-      & 'expected: <' // trim(toString(cmplx(expected,kind=r32))) // &
-      & '> but found: <' // trim(toString(cmplx(found,kind=r32))) // '>'
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
    end function
 

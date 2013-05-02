@@ -86,8 +86,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <[1]>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element [1].' &
          & )
     
   end subroutine testEquals_0D1D
@@ -138,8 +138,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good,bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_2D_SingleElementDifferent
@@ -171,8 +171,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiD_SingleElementDifferent
@@ -205,8 +205,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiD_SingleElementDifferent1
@@ -240,8 +240,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiD_SingleElementDifferent2
@@ -277,8 +277,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiD_SingleElementDifferent3
@@ -312,8 +312,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiD_SingleElementDifferent4
@@ -385,8 +385,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
 
@@ -422,8 +422,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff1
@@ -460,8 +460,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
 
@@ -497,8 +497,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff3
@@ -566,8 +566,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff5
@@ -597,8 +597,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff6
@@ -630,8 +630,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff7
@@ -663,8 +663,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
-         & '; ' // trim(differenceReport(bad - good, 0.)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
     deallocate(expected,found)
@@ -724,8 +724,8 @@ contains
 
     call assertCatch( &
          & trim(valuesReport(good, bad32)) // &
-         & '; ' // trim(differenceReport(bad32 - good, tolerance32)) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDWithTolerance
@@ -794,9 +794,9 @@ contains
 
 ! Fix the need for the real below.  Note we're just reporting at this stage, not calculating.
     call assertCatch( &
-         & trim(valuesReport(real(good64), real(bad64))) // &
-         & '; ' // trim(differenceReport(real(bad64 - good64), real(tolerance64))) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & trim(valuesReport(good64, bad64)) // &
+         & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
 end subroutine testEquals_MultiDWithTolerance64
@@ -868,9 +868,9 @@ end subroutine testEquals_MultiDWithTolerance64
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
-         & trim(valuesReport(real(good64), real(bad64))) // &
-         & '; ' // trim(differenceReport(real(bad64 - good64), real(tolerance64))) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.' &
+         & trim(valuesReport(good64,bad64)) // &
+         & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
   end subroutine testEquals_MultiDWithTolerance64_2
@@ -913,9 +913,9 @@ end subroutine testEquals_MultiDWithTolerance64
 
 ! Note use of real...  Consider overloading the reporting functions...
     call assertCatch( &
-         & trim(valuesReport(real(good64), real(bad64))) // &
-         & '; ' // trim(differenceReport(real(bad64 - good64), real(tolerance64))) // &
-         & ';  first difference at element <' // trim(locationInArray) // '>.', &
+         & trim(valuesReport(good64, bad64)) // &
+         & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
+         & ';  first difference at element ' // trim(locationInArray) // '.', &
          & location=location &
          & )
 

@@ -14,7 +14,7 @@ module PrivateException_mod
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
-   integer, parameter :: MAXLEN_MESSAGE = 80*10
+   integer, parameter :: MAXLEN_MESSAGE = 80*15
    integer, parameter :: MAXLEN_FILE_NAME = 80
    character(len=*), parameter :: NULL_MESSAGE = ''
 

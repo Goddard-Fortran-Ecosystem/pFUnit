@@ -20,28 +20,42 @@ module StringUtilities_mod
 
 
    integer, parameter :: MAXLEN_STRING = 80
+!   integer, parameter :: MAXLEN_STRING = 80*5
+
    interface toString
       module Procedure toString_real64Scalar
       module Procedure toString_realScalar
+      module Procedure toString_complex64Scalar
       module Procedure toString_complexScalar
       module Procedure toString_integerScalar
       module Procedure toString_integer1D
    end interface
 
+
+   character(len=:), parameter :: r32fmtStr = 'SP,G14.7'
+   character(len=:), parameter :: r64fmtStr = 'SP,G14.7'
+   character(len=:), parameter :: r32fmt1 = '('//r32fmtStr//')'
+   character(len=:), parameter :: r64fmt1 = '('//r64fmtStr//')'
+
+   character(len=:), parameter :: c32fmt1 = '("z=("'//r32fmt1//'","'//r32fmt1//'")")'
+   character(len=:), parameter :: c64fmt1 = '("z=("'//r64fmt1//'","'//r64fmt1//'")")'
+
 contains
 
-!   character(len=MAXLEN_STRING) function toString_complex64Scalar(value) result(buffer)
-!      complex(kind=r64), intent(in) :: value
-!
+   character(len=MAXLEN_STRING) function toString_complex64Scalar(value) result(buffer)
+      complex(kind=r64), intent(in) :: value
+
 !      write(buffer,'(2(SP,G14.7))') value
-!      buffer = adjustL(buffer)
-!
-!   end function toString_complexScalar
+      write(buffer,c64fmt1) value
+      buffer = adjustL(buffer)
+
+    end function toString_complex64Scalar
 
    character(len=MAXLEN_STRING) function toString_complexScalar(value) result(buffer)
       complex, intent(in) :: value
 
-      write(buffer,'(2(SP,G14.7))') value
+!      write(buffer,'(2(SP,G14.7))') value
+      write(buffer,c32fmt1) value
       buffer = adjustL(buffer)
 
    end function toString_complexScalar
@@ -50,6 +64,7 @@ contains
       real(kind=r64), intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
+!      write(buffer,r64fmt1) value
       buffer = adjustL(buffer)
 
     end function toString_real64Scalar
@@ -58,6 +73,10 @@ contains
       real(kind=r32), intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
+!      print *,'r32fmt1: ',r32fmt1
+!      print *,'       : ','(SP,G14.7)'
+!      print *,'=?     : ','(SP,G14.7)'.EQ.r32fmt1
+!      write(buffer,r32fmt1)
       buffer = adjustL(buffer)
 
    end function toString_realScalar
