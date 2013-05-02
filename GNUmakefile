@@ -120,7 +120,7 @@ install:
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
 	cp include/*        $(INSTALL_DIR)/include/.
-	cp bin/* $(INSTALL_DIR)/bin/.
+	cp -r bin/* $(INSTALL_DIR)/bin/.
 
 export UNAME
 export F90
