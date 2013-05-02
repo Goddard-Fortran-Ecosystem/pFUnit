@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import textwrap
+
 class module:
     def __init__(self, name):
         # what do we need?
@@ -157,5 +159,17 @@ class fortranSubroutineSignature:
         print 'generateImplementationCloseNotImplemented'
         return
     
+def indentKluge(indentString,txt):
+    wrapper = textwrap.TextWrapper(initial_indent=indentString, subsequent_indent=indentString);
+    txtList=map(wrapper.fill,str.splitlines(txt))
+    return "\n".join(txtList)
+
+def iterateOverMultiRank(nr,variableName,shapeName,centralText):
+    indent= str(' '*(3*(nr+1)));
+    txt = indentKluge(indent,centralText)
+    r = range(nr); rrev = range(nr); rrev.reverse();
+    codeSnippet = ''.join([' '*(3*(nr-i))+'do '+variableName+str(i+1)+'= 1,'+shapeName+'('+str(i+1)+')\n' for i in rrev])+txt+'\n'+''.join([' '*(3*(nr-i))+'end do\n' for i in r])
+    #    print codeSnippet
+    return codeSnippet
 
     
