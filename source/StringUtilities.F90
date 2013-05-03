@@ -37,8 +37,8 @@ module StringUtilities_mod
    character(len=*), parameter :: r32fmt1 = '('//r32fmtStr//')'
    character(len=*), parameter :: r64fmt1 = '('//r64fmtStr//')'
 
-   character(len=*), parameter :: c32fmt1 = '("z=("'//r32fmt1//'","'//r32fmt1//'")")'
-   character(len=*), parameter :: c64fmt1 = '("z=("'//r64fmt1//'","'//r64fmt1//'")")'
+   character(len=*), parameter :: c32fmt1 = '("z=(",'//r32fmt1//',",",'//r32fmt1//',")")'
+   character(len=*), parameter :: c64fmt1 = '("z=(",'//r64fmt1//',",",'//r64fmt1//',")")'
 
 contains
 
