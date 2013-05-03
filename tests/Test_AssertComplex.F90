@@ -206,8 +206,13 @@ contains
     use Params_mod
 !    use Assert_mod, only: assertEqual
 
-    real(kind=r32), dimension(:,:), allocatable :: found
-    complex(kind=r32), dimension(:,:), allocatable :: expected
+! Don't do ths.
+!    real(kind=r32), dimension(:,:), allocatable :: found
+!    complex(kind=r32), dimension(:,:), allocatable :: expected
+
+!  And if I just switch them...
+    real(kind=r32), dimension(:,:), allocatable :: expected
+    complex(kind=r32), dimension(:,:), allocatable :: found
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -218,7 +223,8 @@ contains
     !dbg1 print *,'3000'
 
     n1 = 1; n2 = 2; allocate(expected(n1,n2),found(n1,n2))
-    expected = real(good); found = expected; i1 = 1; i2 = 2; found(i1,i2) = bad
+    ! Note interesting interplay if we use found = expected...
+    expected = real(good); found = real(good); i1 = 1; i2 = 2; found(i1,i2) = bad
 
     ! The following should throw an exception...
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank2')
@@ -227,8 +233,8 @@ contains
     write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
 
     call assertCatch( &
-         & trim(valuesReport(real(good),real(bad))) // &
-         & '; ' // trim(differenceReport(abs(cmplx(real(bad - good))), 0.)) // &
+         & trim(valuesReport(real(good),bad)) // &
+         & '; ' // trim(differenceReport(abs(bad - real(good)), 0.)) // &
          & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )
 
@@ -238,8 +244,14 @@ contains
     use Params_mod
 !    use Assert_mod, only: assertEqual
 
-    complex(kind=r32), dimension(:,:,:), allocatable :: expected
-    real(kind=r32), dimension(:,:,:), allocatable :: found
+! Don't do this...
+!    complex(kind=r32), dimension(:,:,:), allocatable :: expected
+!    real(kind=r32), dimension(:,:,:), allocatable :: found
+
+! Try a simple switch...
+    complex(kind=r32), dimension(:,:,:), allocatable :: found
+    real(kind=r32), dimension(:,:,:), allocatable :: expected
+
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -251,7 +263,7 @@ contains
 
     n1 = 2; n2 = 3; n3 = 1; allocate(expected(n1,n2,n3),found(n1,n2,n3))
     expected = good; found = real(good);
-    i1 = 1; i2 = 1; i3 = 1; found(i1,i2,i3) = real(good)
+    i1 = 1; i2 = 1; i3 = 1; found(i1,i2,i3) = good
 
     ! The following should throw an exception...
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank3')
@@ -260,7 +272,7 @@ contains
     write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
 
     call assertCatch( &
-         & trim(valuesReport(good, real(good))) // &
+         & trim(valuesReport(real(good), good)) // &
          & '; ' // trim(differenceReport(abs(real(good) - good), 0.)) // &
          & ';  first difference at element ' // trim(locationInArray) // '.' &
          & )

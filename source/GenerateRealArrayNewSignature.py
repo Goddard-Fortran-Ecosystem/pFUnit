@@ -56,6 +56,27 @@ def FULLTYPE(fType):
         ret = fType
     return ret
 
+
+typeTower = {
+    'integer' : 0,
+    'real'    : 1,
+    'complex' : 2 }
+
+def maxType(type1,type2) :
+    retType = type1
+    if typeTower[type1] < typeTower[type2] :
+        retType = type2
+    return retType
+
+def maxPrecision(prec1,prec2) :
+    retPrec = prec1
+    if 'default' in [prec1,prec2] :
+        if prec2 != 'default' :
+            retPrec = prec2
+    elif prec1 < prec2 :
+        retPrec = prec2
+    return retPrec
+
 def KINDATTRIBUTE0(fType,precision):
     ret = ''
     if fType.lower() == 'real' :
@@ -583,14 +604,24 @@ def constructDifferenceReportInterfaceBlock():
                                                     for tol in ['32','64']])
     return DifferenceReportInterface
 
+def allowedPrecisions(t) :
+    allowed = []
+    if t == 'integer' :
+        allowed = ['default']
+    elif t == 'real' or 'complex' :
+        allowed = ['32','64']
+    return allowed
+
 def constructValuesReportInterfaceBlock():
     ValuesReportInterface = CodeUtilities.interfaceBlock('valuesReport')
     map(ValuesReportInterface.addRoutineUnit, \
-        [makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
-                                        for te in ['integer','real','complex'] \
-                                        for tf in ['integer','real','complex'] \
-                                        for pe in ['32','64'] \
-                                        for pf in ['32','64']])
+        Utilities.flattened( \
+    [[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
+       for pe in allowedPrecisions(te) ] \
+       for pf in allowedPrecisions(tf) ] \
+       for te in ['integer','real','complex'] \
+       for tf in ['integer','real','complex'] \
+        ]))
     return ValuesReportInterface
 
 def isWithinToleranceName(rank,fType='real',precision=64):
@@ -642,27 +673,43 @@ def testGenerateIsWithinTolerance():
     print generateIsWithinTolerance(1)
     return
 
+def reportKind(t,p):
+    k = ''
+    if t == 'real' :
+        k = '(kind=r'+str(p)+')'
+    elif t == 'complex' :
+        k = '(kind=c'+str(p)+')'
+    elif t == 'integer' :
+        # default integer
+        k = ''
+    else :
+        k = '<Generate...py-reportKind-error:  unsupported type>'
+    return k
+
 ### Currently Active ###
 def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
+    expectedKind = reportKind(te,pe)
+    foundKind =    reportKind(tf,pf)
     coercedExpected = coerceKind('expected',t=tf)
     coercedFound    = coerceKind('found',t=tf)
     runit = CodeUtilities.routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_"""+te+tf+pe+pf+"""(expected, found) result(valuesReport)
-      """+te+"""(kind=r"""+pe+"""), intent(in) :: expected
-      """+tf+"""(kind=r"""+pf+"""), intent(in) :: found
+        """+te+expectedKind+""", intent(in) :: expected
+        """+tf+foundKind+""", intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString("""+coercedExpected+""")) // &
       & ' but found: ' // trim(toString("""+coercedFound+""")) // ''
       
-   end function
+      end function
 """)
     # runit.setDeclaration(CodeUtilities.declaration(runit.getName(),'public '+runit.getName()))
     return runit
 
+### Currently Active ###
 def makeDifferenceReport_type(t='real',p='64',tol='64'):
     coercedDifference = coerceKind('difference',t=t)
     #    coercedTolerance =  coerceKind('tolerance',t=t)
@@ -670,12 +717,12 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
 """
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_"""+t+p+tol+"""(difference, tolerance) result(differenceReport)
-      """+t+"""(kind=r"""+p+"""), intent(in) :: difference
+     """+t+"""(kind=r"""+p+"""), intent(in) :: difference
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| > tolerance:' // trim(toString("""+'tolerance'+"""))
-   end function 
+    end function 
 """)
 
 # Don't need the following because we'll add to an interface block.
@@ -852,10 +899,13 @@ def declareDISCIPLINE():
    private
 """
 
-def declareEXPORTS():
-    return \
+def declareEXPORTS(basename='AssertReal'):
+    retPublic = \
 """
    public :: assertEqual
+"""
+    if basename == 'AssertReal' :
+        retPublic = retPublic + """
    public :: vectorNorm
    public :: isWithinTolerance
  
@@ -866,6 +916,7 @@ def declareEXPORTS():
    public :: valuesReport
    public :: differenceReport
 """
+    return retPublic
 
 def declareEXPORTS_PARAMETERS():
     return \
@@ -896,7 +947,9 @@ def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
             retTypes=['real']
         else :
             if foundFType == 'real' :
-                retTypes=['complex']
+                # Tom asserts that finding a real when expecting complex should be an error.
+                # retTypes=['complex']
+                retTypes=[]
             else :
                 retTypes=['real','complex']
     return retTypes
@@ -1011,13 +1064,13 @@ def constructASSERTS(foundFTypes=['real','complex']):
                        )]
     return AssertList
 
-def constructDeclarations():
+def constructDeclarations(basename=''):
     "Construct declarations to be used at the beginning of the Module."
     declarations = \
         [ \
           CodeUtilities.declaration('uses',declareUSES()), \
           CodeUtilities.declaration('discipline',declareDISCIPLINE()), \
-          CodeUtilities.declaration('exports',declareEXPORTS()), \
+          CodeUtilities.declaration('exports',declareEXPORTS(basename)), \
           CodeUtilities.declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
           ]
     return declarations
@@ -1036,7 +1089,7 @@ def constructModule(baseName='AssertReal',foundFTypes=['real']):
     "A main test of how to construct the module."
     m1 = CodeUtilities.module(baseName+'_mod')
     m1.setFileName(baseName+'.F90')
-    [m1.addDeclaration(d) for d in constructDeclarations()]
+    [m1.addDeclaration(d) for d in constructDeclarations(basename=baseName)]
     # add interface blocks (and the implementations)
     m1.addInterfaceBlock(constructVectorNormInterfaceBlock())
     m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock())

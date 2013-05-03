@@ -14,6 +14,7 @@ module AssertReal_mod
 
 
    public :: assertEqual
+
    public :: vectorNorm
    public :: isWithinTolerance
  
@@ -170,41 +171,30 @@ end interface differenceReport
 
 interface valuesReport
 
-   module procedure valuesReport_integerinteger3232
-   module procedure valuesReport_integerinteger3264
-   module procedure valuesReport_integerinteger6432
-   module procedure valuesReport_integerinteger6464
-   module procedure valuesReport_integerreal3232
-   module procedure valuesReport_integerreal3264
-   module procedure valuesReport_integerreal6432
-   module procedure valuesReport_integerreal6464
-   module procedure valuesReport_integercomplex3232
-   module procedure valuesReport_integercomplex3264
-   module procedure valuesReport_integercomplex6432
-   module procedure valuesReport_integercomplex6464
-   module procedure valuesReport_realinteger3232
-   module procedure valuesReport_realinteger3264
-   module procedure valuesReport_realinteger6432
-   module procedure valuesReport_realinteger6464
+   module procedure valuesReport_integerintegerdefaultdefault
+   module procedure valuesReport_integerrealdefault32
+   module procedure valuesReport_integerrealdefault64
+   module procedure valuesReport_integercomplexdefault32
+   module procedure valuesReport_integercomplexdefault64
+   module procedure valuesReport_realinteger32default
+   module procedure valuesReport_realinteger64default
    module procedure valuesReport_realreal3232
-   module procedure valuesReport_realreal3264
    module procedure valuesReport_realreal6432
+   module procedure valuesReport_realreal3264
    module procedure valuesReport_realreal6464
    module procedure valuesReport_realcomplex3232
-   module procedure valuesReport_realcomplex3264
    module procedure valuesReport_realcomplex6432
+   module procedure valuesReport_realcomplex3264
    module procedure valuesReport_realcomplex6464
-   module procedure valuesReport_complexinteger3232
-   module procedure valuesReport_complexinteger3264
-   module procedure valuesReport_complexinteger6432
-   module procedure valuesReport_complexinteger6464
+   module procedure valuesReport_complexinteger32default
+   module procedure valuesReport_complexinteger64default
    module procedure valuesReport_complexreal3232
-   module procedure valuesReport_complexreal3264
    module procedure valuesReport_complexreal6432
+   module procedure valuesReport_complexreal3264
    module procedure valuesReport_complexreal6464
    module procedure valuesReport_complexcomplex3232
-   module procedure valuesReport_complexcomplex3264
    module procedure valuesReport_complexcomplex6432
+   module procedure valuesReport_complexcomplex3264
    module procedure valuesReport_complexcomplex6464
 
 end interface valuesReport
@@ -9774,552 +9764,409 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_real3232(difference, tolerance) result(differenceReport)
-      real(kind=r32), intent(in) :: difference
+     real(kind=r32), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_real3264(difference, tolerance) result(differenceReport)
-      real(kind=r32), intent(in) :: difference
+     real(kind=r32), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_real6432(difference, tolerance) result(differenceReport)
-      real(kind=r64), intent(in) :: difference
+     real(kind=r64), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_real6464(difference, tolerance) result(differenceReport)
-      real(kind=r64), intent(in) :: difference
+     real(kind=r64), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_complex3232(difference, tolerance) result(differenceReport)
-      complex(kind=r32), intent(in) :: difference
+     complex(kind=r32), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_complex3264(difference, tolerance) result(differenceReport)
-      complex(kind=r32), intent(in) :: difference
+     complex(kind=r32), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_complex6432(difference, tolerance) result(differenceReport)
-      complex(kind=r64), intent(in) :: difference
+     complex(kind=r64), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
    
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_complex6464(difference, tolerance) result(differenceReport)
-      complex(kind=r64), intent(in) :: difference
+     complex(kind=r64), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
-   end function 
+    end function 
 
 ! end interface differenceReport implementations
 ! interface valuesReport implementations
 
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerinteger3232(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
+      & function valuesReport_integerintegerdefaultdefault(expected, found) result(valuesReport)
+        integer, intent(in) :: expected
+        integer, intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerinteger3264(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
+      & function valuesReport_integerrealdefault32(expected, found) result(valuesReport)
+        integer, intent(in) :: expected
+        real(kind=r32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerinteger6432(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
+      & function valuesReport_integerrealdefault64(expected, found) result(valuesReport)
+        integer, intent(in) :: expected
+        real(kind=r64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerinteger6464(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
+      & function valuesReport_integercomplexdefault32(expected, found) result(valuesReport)
+        integer, intent(in) :: expected
+        complex(kind=c32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerreal3232(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerreal3264(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerreal6432(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerreal6464(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplex3232(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplex3264(expected, found) result(valuesReport)
-      integer(kind=r32), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
+      & function valuesReport_integercomplexdefault64(expected, found) result(valuesReport)
+        integer, intent(in) :: expected
+        complex(kind=c64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplex6432(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
+      & function valuesReport_realinteger32default(expected, found) result(valuesReport)
+        real(kind=r32), intent(in) :: expected
+        integer, intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplex6464(expected, found) result(valuesReport)
-      integer(kind=r64), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realinteger3232(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realinteger3264(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
+      & function valuesReport_realinteger64default(expected, found) result(valuesReport)
+        real(kind=r64), intent(in) :: expected
+        integer, intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realinteger6432(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realinteger6464(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realreal3232(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
+        real(kind=r32), intent(in) :: expected
+        real(kind=r32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realreal3264(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realreal6432(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
+        real(kind=r64), intent(in) :: expected
+        real(kind=r32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
+
+   
+      character(len=MAXLEN_MESSAGE) &
+      & function valuesReport_realreal3264(expected, found) result(valuesReport)
+        real(kind=r32), intent(in) :: expected
+        real(kind=r64), intent(in) :: found
+
+! Note: removed '<.>'
+        valuesReport = &
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realreal6464(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
+        real(kind=r64), intent(in) :: expected
+        real(kind=r64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realcomplex3232(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
+        real(kind=r32), intent(in) :: expected
+        complex(kind=c32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realcomplex3264(expected, found) result(valuesReport)
-      real(kind=r32), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realcomplex6432(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
+        real(kind=r64), intent(in) :: expected
+        complex(kind=c32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
+
+   
+      character(len=MAXLEN_MESSAGE) &
+      & function valuesReport_realcomplex3264(expected, found) result(valuesReport)
+        real(kind=r32), intent(in) :: expected
+        complex(kind=c64), intent(in) :: found
+
+! Note: removed '<.>'
+        valuesReport = &
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_realcomplex6464(expected, found) result(valuesReport)
-      real(kind=r64), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
+        real(kind=r64), intent(in) :: expected
+        complex(kind=c64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexinteger3232(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
+      & function valuesReport_complexinteger32default(expected, found) result(valuesReport)
+        complex(kind=c32), intent(in) :: expected
+        integer, intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexinteger3264(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
+      & function valuesReport_complexinteger64default(expected, found) result(valuesReport)
+        complex(kind=c64), intent(in) :: expected
+        integer, intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexinteger6432(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      integer(kind=r32), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexinteger6464(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      integer(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexreal3232(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
+        complex(kind=c32), intent(in) :: expected
+        real(kind=r32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexreal3264(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexreal6432(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      real(kind=r32), intent(in) :: found
+        complex(kind=c64), intent(in) :: expected
+        real(kind=r32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
+
+   
+      character(len=MAXLEN_MESSAGE) &
+      & function valuesReport_complexreal3264(expected, found) result(valuesReport)
+        complex(kind=c32), intent(in) :: expected
+        real(kind=r64), intent(in) :: found
+
+! Note: removed '<.>'
+        valuesReport = &
+      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexreal6464(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      real(kind=r64), intent(in) :: found
+        complex(kind=c64), intent(in) :: expected
+        real(kind=r64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
       
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexcomplex3232(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
+        complex(kind=c32), intent(in) :: expected
+        complex(kind=c32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
-
-   
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexcomplex3264(expected, found) result(valuesReport)
-      complex(kind=r32), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
-
-! Note: removed '<.>'
-      valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
-      
-   end function
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexcomplex6432(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      complex(kind=r32), intent(in) :: found
+        complex(kind=c64), intent(in) :: expected
+        complex(kind=c32), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
+
+   
+      character(len=MAXLEN_MESSAGE) &
+      & function valuesReport_complexcomplex3264(expected, found) result(valuesReport)
+        complex(kind=c32), intent(in) :: expected
+        complex(kind=c64), intent(in) :: found
+
+! Note: removed '<.>'
+        valuesReport = &
+      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      
+      end function
 
    
       character(len=MAXLEN_MESSAGE) &
       & function valuesReport_complexcomplex6464(expected, found) result(valuesReport)
-      complex(kind=r64), intent(in) :: expected
-      complex(kind=r64), intent(in) :: found
+        complex(kind=c64), intent(in) :: expected
+        complex(kind=c64), intent(in) :: found
 
 ! Note: removed '<.>'
-      valuesReport = &
+        valuesReport = &
       & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
       & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
       
-   end function
+      end function
 
 ! end interface valuesReport implementations
 end module AssertReal_mod
