@@ -604,22 +604,37 @@ def constructDifferenceReportInterfaceBlock():
                                                     for tol in ['32','64']])
     return DifferenceReportInterface
 
-def allowedPrecisions(t) :
+def allowedPrecisions(t,pFound='64') :
     allowed = []
     if t == 'integer' :
         allowed = ['default']
     elif t == 'real' or 'complex' :
-        allowed = ['32','64']
+        if pFound == '32' :
+            allowed = ['32']
+        elif pFound == '64' : 
+            allowed = ['32','64']
+    return allowed
+
+def allowedExpected(tFound) :
+    # allowed = []
+    if tFound in 'integer' :
+        allowed = ['integer']
+    elif tFound == 'real' :
+        allowed = ['integer','real']
+    elif tFound == 'complex' :
+        allowed = ['integer','real','complex']
+    else :
+        allowed = []
     return allowed
 
 def constructValuesReportInterfaceBlock():
     ValuesReportInterface = CodeUtilities.interfaceBlock('valuesReport')
     map(ValuesReportInterface.addRoutineUnit, \
         Utilities.flattened( \
-    [[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
-       for pe in allowedPrecisions(te) ] \
+    [[[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
+       for pe in allowedPrecisions(te,pFound=pf) ] \
        for pf in allowedPrecisions(tf) ] \
-       for te in ['integer','real','complex'] \
+       for te in allowedExpected(tf) ] \
        for tf in ['integer','real','complex'] \
         ]))
     return ValuesReportInterface
@@ -690,8 +705,10 @@ def reportKind(t,p):
 def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
     expectedKind = reportKind(te,pe)
     foundKind =    reportKind(tf,pf)
-    coercedExpected = coerceKind('expected',t=tf)
-    coercedFound    = coerceKind('found',t=tf)
+    mxType = maxType(te,tf) 
+    mxPrec = maxPrecision(pe,pf)
+    coercedExpected = coerceKind('expected',t=mxType)
+    coercedFound    = coerceKind('found',t=mxType)
     runit = CodeUtilities.routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
       character(len=MAXLEN_MESSAGE) &
