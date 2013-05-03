@@ -161,12 +161,16 @@ def testEXPANDSHAPE():
     print '5,test -> ' + str(EXPANDSHAPE(5,'test'))
 
 def coerceReal(x,kind='r32') :
+    if kind == 'ckDefault' :
+        kind = 'r32'
     return 'real('+x+',kind='+kind+')'
 
-def coerceComplex(x,kind='r32') :
+def coerceComplex(x,kind='c32') :
+    if kind == 'ckDefault' :
+        kind = 'c32'
     return 'cmplx('+x+',kind='+kind+')'
 
-def coerceKind(x,kind='r32',t='real'):
+def coerceKind(x,kind='ckDefault',t='real'):
     coerceStr = x
     if t == 'real' :
         coerceStr = coerceReal(x,kind=kind)

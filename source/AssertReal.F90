@@ -9796,7 +9796,7 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
      complex(kind=r32), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
-      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
+      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=c32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
     end function 
 
@@ -9806,7 +9806,7 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
      complex(kind=r32), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
-      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
+      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=c32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
     end function 
 
@@ -9816,7 +9816,7 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
      complex(kind=r64), intent(in) :: difference
      real(kind=r32), intent(in) :: tolerance
 !     real(kind=r32), optional, intent(in) :: tolerance
-      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
+      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=c32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
     end function 
 
@@ -9826,7 +9826,7 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
      complex(kind=r64), intent(in) :: difference
      real(kind=r64), intent(in) :: tolerance
 !     real(kind=r64), optional, intent(in) :: tolerance
-      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=r32))) // &
+      differenceReport = '    difference: |' // trim(toString(cmplx(difference,kind=c32))) // &
       & '| > tolerance:' // trim(toString(tolerance))
     end function 
 
@@ -9918,8 +9918,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9931,8 +9931,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9944,8 +9944,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9957,8 +9957,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9970,8 +9970,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9983,8 +9983,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -9996,8 +9996,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
@@ -10009,8 +10009,8 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=r32))) // ''
+      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
+      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
       
       end function
 
