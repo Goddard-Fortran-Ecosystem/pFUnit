@@ -29,7 +29,7 @@ module UnixProcess_mod
    type UnixProcess
       private
       type (C_PTR) :: file
-      integer :: pid
+      integer :: pid = -1
    contains
       procedure :: getLine
       procedure :: getDelim
