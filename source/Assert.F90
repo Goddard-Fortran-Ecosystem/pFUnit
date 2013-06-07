@@ -12,6 +12,11 @@ module Assert_mod
    public :: assertExceptionRaised
    public :: assertSameShape
 
+   public :: assertAny
+   public :: assertAll
+   public :: assertNone
+   public :: assertNotAll
+
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
 
