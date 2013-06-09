@@ -8,10 +8,19 @@ module MpiTestMethod_mod
    public :: MpiTestMethod
    public :: newMpiTestMethod
 
+   interface newMpiTestMethod
+      module procedure newMpiTest_basic
+      module procedure newMpiTest_setUpTearDown
+   end interface newMpiTestMethod
+
    type, extends(MpiTestCase) :: MpiTestMethod
       procedure(mpiMethod), pointer :: userMethod => null()
+      procedure(mpiMethod), nopass, pointer :: userSetUp => null()
+      procedure(mpiMethod), nopass, pointer :: userTearDown => null()
    contains
       procedure :: runMethod
+      procedure :: setUp
+      procedure :: tearDown
    end type MpiTestMethod
 
    abstract interface
@@ -23,7 +32,7 @@ module MpiTestMethod_mod
 
 contains
 
-   function newMpiTestMethod(name, userMethod, numProcesses) result(mpiTest)
+   function newMpiTest_basic(name, userMethod, numProcesses) result(mpiTest)
       character(len=*), intent(in) :: name
       procedure (runMethod) :: userMethod
       integer, intent(in) :: numProcesses
@@ -33,11 +42,38 @@ contains
       mpiTest%userMethod => userMethod
       call mpiTest%setNumProcesses(numProcesses)
 
-   end function newMpiTestMethod
+   end function newMpiTest_basic
+
+   function newMpiTest_setUpTearDown(name, userMethod, numProcesses, setUp, tearDown) result(mpiTest)
+      character(len=*), intent(in) :: name
+      procedure (runMethod) :: userMethod
+      integer, intent(in) :: numProcesses
+      type (MpiTestMethod) :: mpiTest
+      procedure (runMethod) :: setUp
+      procedure (runMethod) :: tearDown
+
+      call mpiTest%setName(name)
+      mpiTest%userMethod => userMethod
+      call mpiTest%setNumProcesses(numProcesses)
+
+      mpiTest%userSetUp => setUp
+      mpiTest%userTearDown => tearDown
+
+   end function newMpiTest_setUpTearDown
 
    subroutine runMethod(this)
       class (MpiTestMethod), intent(inout) :: this
       call this%userMethod()
    end subroutine runMethod
+
+   subroutine setUp(this)
+      class (MpiTestMethod), intent(inout) :: this
+      if (associated(this%userSetUp)) call this%userSetUp(this)
+   end subroutine setUp
+
+   subroutine tearDown(this)
+      class (MpiTestMethod), intent(inout) :: this
+      if (associated(this%userTearDown)) call this%userTearDown(this)
+   end subroutine tearDown
 
 end module MpiTestMethod_mod
