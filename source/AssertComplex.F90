@@ -5,7 +5,6 @@ module AssertComplex_mod
    use Exception_mod
    use SourceLocation_mod
    use ThrowFundamentalTypes_mod, only : throwNonConformable
-   ! , differenceReport, valuesReport
    use StringUtilities_mod
 
 
@@ -176,10 +175,10 @@ interface assertEqual
 
 end interface assertEqual
 
-public throwDifferentValuesString64
 
 interface differenceReport
 
+   module procedure differenceReport_integerdefault64
    module procedure differenceReport_real3232
    module procedure differenceReport_real3264
    module procedure differenceReport_real6432
@@ -210,6 +209,68 @@ interface valuesReport
    module procedure valuesReport_complexcomplex6464
 
 end interface valuesReport
+
+
+interface assertEqual_internal
+
+   module procedure assertEqual_e0_integerdefault_f0_integerdefault_tol64_
+   module procedure assertEqual_e1_integerdefault_f0_integerdefault_tol64_
+   module procedure assertEqual_e0_integerdefault_f1_integerdefault_tol64_
+   module procedure assertEqual_e1_integerdefault_f1_integerdefault_tol64_
+   module procedure assertEqual_e0_integerdefault_f0_real32_tol32_
+   module procedure assertEqual_e1_integerdefault_f0_real32_tol32_
+   module procedure assertEqual_e0_integerdefault_f1_real32_tol32_
+   module procedure assertEqual_e1_integerdefault_f1_real32_tol32_
+   module procedure assertEqual_e0_integerdefault_f0_real64_tol64_
+   module procedure assertEqual_e1_integerdefault_f0_real64_tol64_
+   module procedure assertEqual_e0_integerdefault_f1_real64_tol64_
+   module procedure assertEqual_e1_integerdefault_f1_real64_tol64_
+   module procedure assertEqual_e0_real32_f0_real32_tol32_
+   module procedure assertEqual_e1_real32_f0_real32_tol32_
+   module procedure assertEqual_e0_real32_f1_real32_tol32_
+   module procedure assertEqual_e1_real32_f1_real32_tol32_
+   module procedure assertEqual_e0_real32_f0_real64_tol64_
+   module procedure assertEqual_e1_real32_f0_real64_tol64_
+   module procedure assertEqual_e0_real32_f1_real64_tol64_
+   module procedure assertEqual_e1_real32_f1_real64_tol64_
+   module procedure assertEqual_e0_real64_f0_real64_tol64_
+   module procedure assertEqual_e1_real64_f0_real64_tol64_
+   module procedure assertEqual_e0_real64_f1_real64_tol64_
+   module procedure assertEqual_e1_real64_f1_real64_tol64_
+   module procedure assertEqual_e0_integerdefault_f0_complex32_tol32_
+   module procedure assertEqual_e1_integerdefault_f0_complex32_tol32_
+   module procedure assertEqual_e0_integerdefault_f1_complex32_tol32_
+   module procedure assertEqual_e1_integerdefault_f1_complex32_tol32_
+   module procedure assertEqual_e0_integerdefault_f0_complex64_tol64_
+   module procedure assertEqual_e1_integerdefault_f0_complex64_tol64_
+   module procedure assertEqual_e0_integerdefault_f1_complex64_tol64_
+   module procedure assertEqual_e1_integerdefault_f1_complex64_tol64_
+   module procedure assertEqual_e0_real32_f0_complex32_tol32_
+   module procedure assertEqual_e1_real32_f0_complex32_tol32_
+   module procedure assertEqual_e0_real32_f1_complex32_tol32_
+   module procedure assertEqual_e1_real32_f1_complex32_tol32_
+   module procedure assertEqual_e0_real32_f0_complex64_tol64_
+   module procedure assertEqual_e1_real32_f0_complex64_tol64_
+   module procedure assertEqual_e0_real32_f1_complex64_tol64_
+   module procedure assertEqual_e1_real32_f1_complex64_tol64_
+   module procedure assertEqual_e0_real64_f0_complex64_tol64_
+   module procedure assertEqual_e1_real64_f0_complex64_tol64_
+   module procedure assertEqual_e0_real64_f1_complex64_tol64_
+   module procedure assertEqual_e1_real64_f1_complex64_tol64_
+   module procedure assertEqual_e0_complex32_f0_complex32_tol32_
+   module procedure assertEqual_e1_complex32_f0_complex32_tol32_
+   module procedure assertEqual_e0_complex32_f1_complex32_tol32_
+   module procedure assertEqual_e1_complex32_f1_complex32_tol32_
+   module procedure assertEqual_e0_complex32_f0_complex64_tol64_
+   module procedure assertEqual_e1_complex32_f0_complex64_tol64_
+   module procedure assertEqual_e0_complex32_f1_complex64_tol64_
+   module procedure assertEqual_e1_complex32_f1_complex64_tol64_
+   module procedure assertEqual_e0_complex64_f0_complex64_tol64_
+   module procedure assertEqual_e1_complex64_f0_complex64_tol64_
+   module procedure assertEqual_e0_complex64_f1_complex64_tol64_
+   module procedure assertEqual_e1_complex64_f1_complex64_tol64_
+
+end interface assertEqual_internal
 
 contains
 ! interface vectorNorm implementations
@@ -1189,7 +1250,7 @@ contains
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -1206,6 +1267,13 @@ contains
 
      call assertEqual_int_0D_c32_0D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f0_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1226,6 +1294,7 @@ contains
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1260,8 +1329,17 @@ contains
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -1336,7 +1414,7 @@ end subroutine assertEqual_int_0D_c32_0D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -1353,6 +1431,13 @@ end subroutine assertEqual_int_0D_c32_0D_tol32_internal
 
      call assertEqual_r32_0D_c32_0D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f0_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1373,6 +1458,7 @@ end subroutine assertEqual_int_0D_c32_0D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1407,8 +1493,17 @@ end subroutine assertEqual_int_0D_c32_0D_tol32_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -1483,7 +1578,7 @@ end subroutine assertEqual_r32_0D_c32_0D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -1500,6 +1595,13 @@ end subroutine assertEqual_r32_0D_c32_0D_tol32_internal
 
      call assertEqual_c32_0D_c32_0D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f0_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1520,6 +1622,7 @@ end subroutine assertEqual_r32_0D_c32_0D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1554,8 +1657,17 @@ end subroutine assertEqual_r32_0D_c32_0D_tol32_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -1630,7 +1742,7 @@ end subroutine assertEqual_c32_0D_c32_0D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -1647,6 +1759,13 @@ end subroutine assertEqual_c32_0D_c32_0D_tol32_internal
 
      call assertEqual_int_0D_c64_0D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f0_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1667,6 +1786,7 @@ end subroutine assertEqual_c32_0D_c32_0D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1701,8 +1821,17 @@ end subroutine assertEqual_c32_0D_c32_0D_tol32_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -1777,7 +1906,7 @@ end subroutine assertEqual_int_0D_c64_0D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -1794,6 +1923,13 @@ end subroutine assertEqual_int_0D_c64_0D_tol64_internal
 
      call assertEqual_r32_0D_c64_0D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f0_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1814,6 +1950,7 @@ end subroutine assertEqual_int_0D_c64_0D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1848,8 +1985,17 @@ end subroutine assertEqual_int_0D_c64_0D_tol64_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -1924,7 +2070,7 @@ end subroutine assertEqual_r32_0D_c64_0D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -1941,6 +2087,13 @@ end subroutine assertEqual_r32_0D_c64_0D_tol64_internal
 
      call assertEqual_c32_0D_c64_0D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f0_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -1961,6 +2114,7 @@ end subroutine assertEqual_r32_0D_c64_0D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -1995,8 +2149,17 @@ end subroutine assertEqual_r32_0D_c64_0D_tol64_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -2071,7 +2234,7 @@ end subroutine assertEqual_c32_0D_c64_0D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -2088,6 +2251,13 @@ end subroutine assertEqual_c32_0D_c64_0D_tol64_internal
 
      call assertEqual_r64_0D_c64_0D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f0_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2108,6 +2278,7 @@ end subroutine assertEqual_c32_0D_c64_0D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2142,8 +2313,17 @@ end subroutine assertEqual_c32_0D_c64_0D_tol64_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -2218,7 +2398,7 @@ end subroutine assertEqual_r64_0D_c64_0D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -2235,6 +2415,13 @@ end subroutine assertEqual_r64_0D_c64_0D_tol64_internal
 
      call assertEqual_c64_0D_c64_0D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f0_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2255,6 +2442,7 @@ end subroutine assertEqual_r64_0D_c64_0D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2289,8 +2477,17 @@ end subroutine assertEqual_r64_0D_c64_0D_tol64_internal
 
       expected0 = expected
       found0 = found
-      if (expected0 /= found0 ) then
-         idxLocation = (/ 0 /)
+      delta1 = expected0-found0
+      if ( &
+      & .not. &
+      & isWithinTolerance( &
+      &   delta1, &
+      &   real(tolerance_,kind=r64), &
+      &   L_INFINITY_NORM) ) &
+      &   then
+   !bug2013-0607   if (expected0 /= found0 ) then
+
+         idxLocation = [ 0 ]
    !???      tolerance_ = 0.0
          call throwDifferentValuesWithLocation( &
          &       expected0, &
@@ -2365,7 +2562,7 @@ end subroutine assertEqual_c64_0D_c64_0D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -2382,6 +2579,13 @@ end subroutine assertEqual_c64_0D_c64_0D_tol64_internal
 
      call assertEqual_int_0D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2402,6 +2606,7 @@ end subroutine assertEqual_c64_0D_c64_0D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2437,8 +2642,17 @@ end subroutine assertEqual_c64_0D_c64_0D_tol64_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -2514,7 +2728,7 @@ end subroutine assertEqual_int_0D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -2531,6 +2745,13 @@ end subroutine assertEqual_int_0D_c32_1D_tol32_internal
 
      call assertEqual_r32_0D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2551,6 +2772,7 @@ end subroutine assertEqual_int_0D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2586,8 +2808,17 @@ end subroutine assertEqual_int_0D_c32_1D_tol32_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -2663,7 +2894,7 @@ end subroutine assertEqual_r32_0D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -2680,6 +2911,13 @@ end subroutine assertEqual_r32_0D_c32_1D_tol32_internal
 
      call assertEqual_c32_0D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2700,6 +2938,7 @@ end subroutine assertEqual_r32_0D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2735,8 +2974,17 @@ end subroutine assertEqual_r32_0D_c32_1D_tol32_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -2812,7 +3060,7 @@ end subroutine assertEqual_c32_0D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -2829,6 +3077,13 @@ end subroutine assertEqual_c32_0D_c32_1D_tol32_internal
 
      call assertEqual_int_1D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -2849,6 +3104,7 @@ end subroutine assertEqual_c32_0D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -2892,8 +3148,17 @@ end subroutine assertEqual_c32_0D_c32_1D_tol32_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -2969,7 +3234,7 @@ end subroutine assertEqual_int_1D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -2986,6 +3251,13 @@ end subroutine assertEqual_int_1D_c32_1D_tol32_internal
 
      call assertEqual_r32_1D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3006,6 +3278,7 @@ end subroutine assertEqual_int_1D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3049,8 +3322,17 @@ end subroutine assertEqual_int_1D_c32_1D_tol32_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3126,7 +3408,7 @@ end subroutine assertEqual_r32_1D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -3143,6 +3425,13 @@ end subroutine assertEqual_r32_1D_c32_1D_tol32_internal
 
      call assertEqual_c32_1D_c32_1D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3163,6 +3452,7 @@ end subroutine assertEqual_r32_1D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3206,8 +3496,17 @@ end subroutine assertEqual_r32_1D_c32_1D_tol32_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3283,7 +3582,7 @@ end subroutine assertEqual_c32_1D_c32_1D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -3300,6 +3599,13 @@ end subroutine assertEqual_c32_1D_c32_1D_tol32_internal
 
      call assertEqual_int_0D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3320,6 +3626,7 @@ end subroutine assertEqual_c32_1D_c32_1D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3355,8 +3662,17 @@ end subroutine assertEqual_c32_1D_c32_1D_tol32_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3432,7 +3748,7 @@ end subroutine assertEqual_int_0D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -3449,6 +3765,13 @@ end subroutine assertEqual_int_0D_c64_1D_tol64_internal
 
      call assertEqual_r32_0D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3469,6 +3792,7 @@ end subroutine assertEqual_int_0D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3504,8 +3828,17 @@ end subroutine assertEqual_int_0D_c64_1D_tol64_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3581,7 +3914,7 @@ end subroutine assertEqual_r32_0D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -3598,6 +3931,13 @@ end subroutine assertEqual_r32_0D_c64_1D_tol64_internal
 
      call assertEqual_c32_0D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3618,6 +3958,7 @@ end subroutine assertEqual_r32_0D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3653,8 +3994,17 @@ end subroutine assertEqual_r32_0D_c64_1D_tol64_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3730,7 +4080,7 @@ end subroutine assertEqual_c32_0D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -3747,6 +4097,13 @@ end subroutine assertEqual_c32_0D_c64_1D_tol64_internal
 
      call assertEqual_r64_0D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3767,6 +4124,7 @@ end subroutine assertEqual_c32_0D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3802,8 +4160,17 @@ end subroutine assertEqual_c32_0D_c64_1D_tol64_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -3879,7 +4246,7 @@ end subroutine assertEqual_r64_0D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -3896,6 +4263,13 @@ end subroutine assertEqual_r64_0D_c64_1D_tol64_internal
 
      call assertEqual_c64_0D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -3916,6 +4290,7 @@ end subroutine assertEqual_r64_0D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -3951,8 +4326,17 @@ end subroutine assertEqual_r64_0D_c64_1D_tol64_internal
 
          expected0 = expected
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4028,7 +4412,7 @@ end subroutine assertEqual_c64_0D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -4045,6 +4429,13 @@ end subroutine assertEqual_c64_0D_c64_1D_tol64_internal
 
      call assertEqual_int_1D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4065,6 +4456,7 @@ end subroutine assertEqual_c64_0D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4108,8 +4500,17 @@ end subroutine assertEqual_c64_0D_c64_1D_tol64_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4185,7 +4586,7 @@ end subroutine assertEqual_int_1D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -4202,6 +4603,13 @@ end subroutine assertEqual_int_1D_c64_1D_tol64_internal
 
      call assertEqual_r32_1D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4222,6 +4630,7 @@ end subroutine assertEqual_int_1D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4265,8 +4674,17 @@ end subroutine assertEqual_int_1D_c64_1D_tol64_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4342,7 +4760,7 @@ end subroutine assertEqual_r32_1D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -4359,6 +4777,13 @@ end subroutine assertEqual_r32_1D_c64_1D_tol64_internal
 
      call assertEqual_c32_1D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4379,6 +4804,7 @@ end subroutine assertEqual_r32_1D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4422,8 +4848,17 @@ end subroutine assertEqual_r32_1D_c64_1D_tol64_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4499,7 +4934,7 @@ end subroutine assertEqual_c32_1D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -4516,6 +4951,13 @@ end subroutine assertEqual_c32_1D_c64_1D_tol64_internal
 
      call assertEqual_r64_1D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4536,6 +4978,7 @@ end subroutine assertEqual_c32_1D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4579,8 +5022,17 @@ end subroutine assertEqual_c32_1D_c64_1D_tol64_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4656,7 +5108,7 @@ end subroutine assertEqual_r64_1D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -4673,6 +5125,13 @@ end subroutine assertEqual_r64_1D_c64_1D_tol64_internal
 
      call assertEqual_c64_1D_c64_1D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4693,6 +5152,7 @@ end subroutine assertEqual_r64_1D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4736,8 +5196,17 @@ end subroutine assertEqual_r64_1D_c64_1D_tol64_internal
 
          expected0 = expected(idx1)
          found0 = found(idx1)
-         if (expected0 /= found0 ) then
-            idxLocation = (/ idx1 /)
+         delta1 = expected0-found0
+         if ( &
+         & .not. &
+         & isWithinTolerance( &
+         &   delta1, &
+         &   real(tolerance_,kind=r64), &
+         &   L_INFINITY_NORM) ) &
+         &   then
+      !bug2013-0607   if (expected0 /= found0 ) then
+
+            idxLocation = [ idx1 ]
       !???      tolerance_ = 0.0
             call throwDifferentValuesWithLocation( &
             &       expected0, &
@@ -4813,7 +5282,7 @@ end subroutine assertEqual_c64_1D_c64_1D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -4830,6 +5299,13 @@ end subroutine assertEqual_c64_1D_c64_1D_tol64_internal
 
      call assertEqual_int_0D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -4850,6 +5326,7 @@ end subroutine assertEqual_c64_1D_c64_1D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -4886,8 +5363,17 @@ end subroutine assertEqual_c64_1D_c64_1D_tol64_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -4964,7 +5450,7 @@ end subroutine assertEqual_int_0D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -4981,6 +5467,13 @@ end subroutine assertEqual_int_0D_c32_2D_tol32_internal
 
      call assertEqual_r32_0D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5001,6 +5494,7 @@ end subroutine assertEqual_int_0D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5037,8 +5531,17 @@ end subroutine assertEqual_int_0D_c32_2D_tol32_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5115,7 +5618,7 @@ end subroutine assertEqual_r32_0D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -5132,6 +5635,13 @@ end subroutine assertEqual_r32_0D_c32_2D_tol32_internal
 
      call assertEqual_c32_0D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5152,6 +5662,7 @@ end subroutine assertEqual_r32_0D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5188,8 +5699,17 @@ end subroutine assertEqual_r32_0D_c32_2D_tol32_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5266,7 +5786,7 @@ end subroutine assertEqual_c32_0D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -5283,6 +5803,13 @@ end subroutine assertEqual_c32_0D_c32_2D_tol32_internal
 
      call assertEqual_int_2D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5303,6 +5830,7 @@ end subroutine assertEqual_c32_0D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5347,8 +5875,17 @@ end subroutine assertEqual_c32_0D_c32_2D_tol32_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5425,7 +5962,7 @@ end subroutine assertEqual_int_2D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -5442,6 +5979,13 @@ end subroutine assertEqual_int_2D_c32_2D_tol32_internal
 
      call assertEqual_r32_2D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5462,6 +6006,7 @@ end subroutine assertEqual_int_2D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5506,8 +6051,17 @@ end subroutine assertEqual_int_2D_c32_2D_tol32_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5584,7 +6138,7 @@ end subroutine assertEqual_r32_2D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -5601,6 +6155,13 @@ end subroutine assertEqual_r32_2D_c32_2D_tol32_internal
 
      call assertEqual_c32_2D_c32_2D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5621,6 +6182,7 @@ end subroutine assertEqual_r32_2D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5665,8 +6227,17 @@ end subroutine assertEqual_r32_2D_c32_2D_tol32_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5743,7 +6314,7 @@ end subroutine assertEqual_c32_2D_c32_2D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -5760,6 +6331,13 @@ end subroutine assertEqual_c32_2D_c32_2D_tol32_internal
 
      call assertEqual_int_0D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5780,6 +6358,7 @@ end subroutine assertEqual_c32_2D_c32_2D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5816,8 +6395,17 @@ end subroutine assertEqual_c32_2D_c32_2D_tol32_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -5894,7 +6482,7 @@ end subroutine assertEqual_int_0D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -5911,6 +6499,13 @@ end subroutine assertEqual_int_0D_c64_2D_tol64_internal
 
      call assertEqual_r32_0D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -5931,6 +6526,7 @@ end subroutine assertEqual_int_0D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -5967,8 +6563,17 @@ end subroutine assertEqual_int_0D_c64_2D_tol64_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6045,7 +6650,7 @@ end subroutine assertEqual_r32_0D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6062,6 +6667,13 @@ end subroutine assertEqual_r32_0D_c64_2D_tol64_internal
 
      call assertEqual_c32_0D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6082,6 +6694,7 @@ end subroutine assertEqual_r32_0D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6118,8 +6731,17 @@ end subroutine assertEqual_r32_0D_c64_2D_tol64_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6196,7 +6818,7 @@ end subroutine assertEqual_c32_0D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6213,6 +6835,13 @@ end subroutine assertEqual_c32_0D_c64_2D_tol64_internal
 
      call assertEqual_r64_0D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6233,6 +6862,7 @@ end subroutine assertEqual_c32_0D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6269,8 +6899,17 @@ end subroutine assertEqual_c32_0D_c64_2D_tol64_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6347,7 +6986,7 @@ end subroutine assertEqual_r64_0D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6364,6 +7003,13 @@ end subroutine assertEqual_r64_0D_c64_2D_tol64_internal
 
      call assertEqual_c64_0D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6384,6 +7030,7 @@ end subroutine assertEqual_r64_0D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6420,8 +7067,17 @@ end subroutine assertEqual_r64_0D_c64_2D_tol64_internal
 
             expected0 = expected
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6498,7 +7154,7 @@ end subroutine assertEqual_c64_0D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6515,6 +7171,13 @@ end subroutine assertEqual_c64_0D_c64_2D_tol64_internal
 
      call assertEqual_int_2D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6535,6 +7198,7 @@ end subroutine assertEqual_c64_0D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6579,8 +7243,17 @@ end subroutine assertEqual_c64_0D_c64_2D_tol64_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6657,7 +7330,7 @@ end subroutine assertEqual_int_2D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6674,6 +7347,13 @@ end subroutine assertEqual_int_2D_c64_2D_tol64_internal
 
      call assertEqual_r32_2D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6694,6 +7374,7 @@ end subroutine assertEqual_int_2D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6738,8 +7419,17 @@ end subroutine assertEqual_int_2D_c64_2D_tol64_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6816,7 +7506,7 @@ end subroutine assertEqual_r32_2D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6833,6 +7523,13 @@ end subroutine assertEqual_r32_2D_c64_2D_tol64_internal
 
      call assertEqual_c32_2D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -6853,6 +7550,7 @@ end subroutine assertEqual_r32_2D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -6897,8 +7595,17 @@ end subroutine assertEqual_r32_2D_c64_2D_tol64_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -6975,7 +7682,7 @@ end subroutine assertEqual_c32_2D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -6992,6 +7699,13 @@ end subroutine assertEqual_c32_2D_c64_2D_tol64_internal
 
      call assertEqual_r64_2D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7012,6 +7726,7 @@ end subroutine assertEqual_c32_2D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7056,8 +7771,17 @@ end subroutine assertEqual_c32_2D_c64_2D_tol64_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -7134,7 +7858,7 @@ end subroutine assertEqual_r64_2D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -7151,6 +7875,13 @@ end subroutine assertEqual_r64_2D_c64_2D_tol64_internal
 
      call assertEqual_c64_2D_c64_2D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7171,6 +7902,7 @@ end subroutine assertEqual_r64_2D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7215,8 +7947,17 @@ end subroutine assertEqual_r64_2D_c64_2D_tol64_internal
 
             expected0 = expected(idx1,idx2)
             found0 = found(idx1,idx2)
-            if (expected0 /= found0 ) then
-               idxLocation = (/ idx1,idx2 /)
+            delta1 = expected0-found0
+            if ( &
+            & .not. &
+            & isWithinTolerance( &
+            &   delta1, &
+            &   real(tolerance_,kind=r64), &
+            &   L_INFINITY_NORM) ) &
+            &   then
+         !bug2013-0607   if (expected0 /= found0 ) then
+
+               idxLocation = [ idx1,idx2 ]
          !???      tolerance_ = 0.0
                call throwDifferentValuesWithLocation( &
                &       expected0, &
@@ -7293,7 +8034,7 @@ end subroutine assertEqual_c64_2D_c64_2D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -7310,6 +8051,13 @@ end subroutine assertEqual_c64_2D_c64_2D_tol64_internal
 
      call assertEqual_int_0D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7330,6 +8078,7 @@ end subroutine assertEqual_c64_2D_c64_2D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7367,8 +8116,17 @@ end subroutine assertEqual_c64_2D_c64_2D_tol64_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -7446,7 +8204,7 @@ end subroutine assertEqual_int_0D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -7463,6 +8221,13 @@ end subroutine assertEqual_int_0D_c32_3D_tol32_internal
 
      call assertEqual_r32_0D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7483,6 +8248,7 @@ end subroutine assertEqual_int_0D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7520,8 +8286,17 @@ end subroutine assertEqual_int_0D_c32_3D_tol32_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -7599,7 +8374,7 @@ end subroutine assertEqual_r32_0D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -7616,6 +8391,13 @@ end subroutine assertEqual_r32_0D_c32_3D_tol32_internal
 
      call assertEqual_c32_0D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7636,6 +8418,7 @@ end subroutine assertEqual_r32_0D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7673,8 +8456,17 @@ end subroutine assertEqual_r32_0D_c32_3D_tol32_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -7752,7 +8544,7 @@ end subroutine assertEqual_c32_0D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -7769,6 +8561,13 @@ end subroutine assertEqual_c32_0D_c32_3D_tol32_internal
 
      call assertEqual_int_3D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7789,6 +8588,7 @@ end subroutine assertEqual_c32_0D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7834,8 +8634,17 @@ end subroutine assertEqual_c32_0D_c32_3D_tol32_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -7913,7 +8722,7 @@ end subroutine assertEqual_int_3D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -7930,6 +8739,13 @@ end subroutine assertEqual_int_3D_c32_3D_tol32_internal
 
      call assertEqual_r32_3D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -7950,6 +8766,7 @@ end subroutine assertEqual_int_3D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -7995,8 +8812,17 @@ end subroutine assertEqual_int_3D_c32_3D_tol32_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8074,7 +8900,7 @@ end subroutine assertEqual_r32_3D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -8091,6 +8917,13 @@ end subroutine assertEqual_r32_3D_c32_3D_tol32_internal
 
      call assertEqual_c32_3D_c32_3D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8111,6 +8944,7 @@ end subroutine assertEqual_r32_3D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8156,8 +8990,17 @@ end subroutine assertEqual_r32_3D_c32_3D_tol32_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8235,7 +9078,7 @@ end subroutine assertEqual_c32_3D_c32_3D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -8252,6 +9095,13 @@ end subroutine assertEqual_c32_3D_c32_3D_tol32_internal
 
      call assertEqual_int_0D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8272,6 +9122,7 @@ end subroutine assertEqual_c32_3D_c32_3D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8309,8 +9160,17 @@ end subroutine assertEqual_c32_3D_c32_3D_tol32_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8388,7 +9248,7 @@ end subroutine assertEqual_int_0D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -8405,6 +9265,13 @@ end subroutine assertEqual_int_0D_c64_3D_tol64_internal
 
      call assertEqual_r32_0D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8425,6 +9292,7 @@ end subroutine assertEqual_int_0D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8462,8 +9330,17 @@ end subroutine assertEqual_int_0D_c64_3D_tol64_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8541,7 +9418,7 @@ end subroutine assertEqual_r32_0D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -8558,6 +9435,13 @@ end subroutine assertEqual_r32_0D_c64_3D_tol64_internal
 
      call assertEqual_c32_0D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8578,6 +9462,7 @@ end subroutine assertEqual_r32_0D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8615,8 +9500,17 @@ end subroutine assertEqual_r32_0D_c64_3D_tol64_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8694,7 +9588,7 @@ end subroutine assertEqual_c32_0D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -8711,6 +9605,13 @@ end subroutine assertEqual_c32_0D_c64_3D_tol64_internal
 
      call assertEqual_r64_0D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8731,6 +9632,7 @@ end subroutine assertEqual_c32_0D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8768,8 +9670,17 @@ end subroutine assertEqual_c32_0D_c64_3D_tol64_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -8847,7 +9758,7 @@ end subroutine assertEqual_r64_0D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -8864,6 +9775,13 @@ end subroutine assertEqual_r64_0D_c64_3D_tol64_internal
 
      call assertEqual_c64_0D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -8884,6 +9802,7 @@ end subroutine assertEqual_r64_0D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -8921,8 +9840,17 @@ end subroutine assertEqual_r64_0D_c64_3D_tol64_internal
 
                expected0 = expected
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9000,7 +9928,7 @@ end subroutine assertEqual_c64_0D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -9017,6 +9945,13 @@ end subroutine assertEqual_c64_0D_c64_3D_tol64_internal
 
      call assertEqual_int_3D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9037,6 +9972,7 @@ end subroutine assertEqual_c64_0D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9082,8 +10018,17 @@ end subroutine assertEqual_c64_0D_c64_3D_tol64_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9161,7 +10106,7 @@ end subroutine assertEqual_int_3D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -9178,6 +10123,13 @@ end subroutine assertEqual_int_3D_c64_3D_tol64_internal
 
      call assertEqual_r32_3D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9198,6 +10150,7 @@ end subroutine assertEqual_int_3D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9243,8 +10196,17 @@ end subroutine assertEqual_int_3D_c64_3D_tol64_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9322,7 +10284,7 @@ end subroutine assertEqual_r32_3D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -9339,6 +10301,13 @@ end subroutine assertEqual_r32_3D_c64_3D_tol64_internal
 
      call assertEqual_c32_3D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9359,6 +10328,7 @@ end subroutine assertEqual_r32_3D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9404,8 +10374,17 @@ end subroutine assertEqual_r32_3D_c64_3D_tol64_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9483,7 +10462,7 @@ end subroutine assertEqual_c32_3D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -9500,6 +10479,13 @@ end subroutine assertEqual_c32_3D_c64_3D_tol64_internal
 
      call assertEqual_r64_3D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9520,6 +10506,7 @@ end subroutine assertEqual_c32_3D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9565,8 +10552,17 @@ end subroutine assertEqual_c32_3D_c64_3D_tol64_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9644,7 +10640,7 @@ end subroutine assertEqual_r64_3D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -9661,6 +10657,13 @@ end subroutine assertEqual_r64_3D_c64_3D_tol64_internal
 
      call assertEqual_c64_3D_c64_3D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9681,6 +10684,7 @@ end subroutine assertEqual_r64_3D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9726,8 +10730,17 @@ end subroutine assertEqual_r64_3D_c64_3D_tol64_internal
 
                expected0 = expected(idx1,idx2,idx3)
                found0 = found(idx1,idx2,idx3)
-               if (expected0 /= found0 ) then
-                  idxLocation = (/ idx1,idx2,idx3 /)
+               delta1 = expected0-found0
+               if ( &
+               & .not. &
+               & isWithinTolerance( &
+               &   delta1, &
+               &   real(tolerance_,kind=r64), &
+               &   L_INFINITY_NORM) ) &
+               &   then
+            !bug2013-0607   if (expected0 /= found0 ) then
+
+                  idxLocation = [ idx1,idx2,idx3 ]
             !???      tolerance_ = 0.0
                   call throwDifferentValuesWithLocation( &
                   &       expected0, &
@@ -9805,7 +10818,7 @@ end subroutine assertEqual_c64_3D_c64_3D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -9822,6 +10835,13 @@ end subroutine assertEqual_c64_3D_c64_3D_tol64_internal
 
      call assertEqual_int_0D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9842,6 +10862,7 @@ end subroutine assertEqual_c64_3D_c64_3D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -9880,8 +10901,17 @@ end subroutine assertEqual_c64_3D_c64_3D_tol64_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -9960,7 +10990,7 @@ end subroutine assertEqual_int_0D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -9977,6 +11007,13 @@ end subroutine assertEqual_int_0D_c32_4D_tol32_internal
 
      call assertEqual_r32_0D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -9997,6 +11034,7 @@ end subroutine assertEqual_int_0D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10035,8 +11073,17 @@ end subroutine assertEqual_int_0D_c32_4D_tol32_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10115,7 +11162,7 @@ end subroutine assertEqual_r32_0D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -10132,6 +11179,13 @@ end subroutine assertEqual_r32_0D_c32_4D_tol32_internal
 
      call assertEqual_c32_0D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10152,6 +11206,7 @@ end subroutine assertEqual_r32_0D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10190,8 +11245,17 @@ end subroutine assertEqual_r32_0D_c32_4D_tol32_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10270,7 +11334,7 @@ end subroutine assertEqual_c32_0D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -10287,6 +11351,13 @@ end subroutine assertEqual_c32_0D_c32_4D_tol32_internal
 
      call assertEqual_int_4D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10307,6 +11378,7 @@ end subroutine assertEqual_c32_0D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10353,8 +11425,17 @@ end subroutine assertEqual_c32_0D_c32_4D_tol32_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10433,7 +11514,7 @@ end subroutine assertEqual_int_4D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -10450,6 +11531,13 @@ end subroutine assertEqual_int_4D_c32_4D_tol32_internal
 
      call assertEqual_r32_4D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10470,6 +11558,7 @@ end subroutine assertEqual_int_4D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10516,8 +11605,17 @@ end subroutine assertEqual_int_4D_c32_4D_tol32_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10596,7 +11694,7 @@ end subroutine assertEqual_r32_4D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -10613,6 +11711,13 @@ end subroutine assertEqual_r32_4D_c32_4D_tol32_internal
 
      call assertEqual_c32_4D_c32_4D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10633,6 +11738,7 @@ end subroutine assertEqual_r32_4D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10679,8 +11785,17 @@ end subroutine assertEqual_r32_4D_c32_4D_tol32_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10759,7 +11874,7 @@ end subroutine assertEqual_c32_4D_c32_4D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -10776,6 +11891,13 @@ end subroutine assertEqual_c32_4D_c32_4D_tol32_internal
 
      call assertEqual_int_0D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10796,6 +11918,7 @@ end subroutine assertEqual_c32_4D_c32_4D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10834,8 +11957,17 @@ end subroutine assertEqual_c32_4D_c32_4D_tol32_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -10914,7 +12046,7 @@ end subroutine assertEqual_int_0D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -10931,6 +12063,13 @@ end subroutine assertEqual_int_0D_c64_4D_tol64_internal
 
      call assertEqual_r32_0D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -10951,6 +12090,7 @@ end subroutine assertEqual_int_0D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -10989,8 +12129,17 @@ end subroutine assertEqual_int_0D_c64_4D_tol64_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11069,7 +12218,7 @@ end subroutine assertEqual_r32_0D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11086,6 +12235,13 @@ end subroutine assertEqual_r32_0D_c64_4D_tol64_internal
 
      call assertEqual_c32_0D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11106,6 +12262,7 @@ end subroutine assertEqual_r32_0D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11144,8 +12301,17 @@ end subroutine assertEqual_r32_0D_c64_4D_tol64_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11224,7 +12390,7 @@ end subroutine assertEqual_c32_0D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11241,6 +12407,13 @@ end subroutine assertEqual_c32_0D_c64_4D_tol64_internal
 
      call assertEqual_r64_0D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11261,6 +12434,7 @@ end subroutine assertEqual_c32_0D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11299,8 +12473,17 @@ end subroutine assertEqual_c32_0D_c64_4D_tol64_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11379,7 +12562,7 @@ end subroutine assertEqual_r64_0D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11396,6 +12579,13 @@ end subroutine assertEqual_r64_0D_c64_4D_tol64_internal
 
      call assertEqual_c64_0D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11416,6 +12606,7 @@ end subroutine assertEqual_r64_0D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11454,8 +12645,17 @@ end subroutine assertEqual_r64_0D_c64_4D_tol64_internal
 
                   expected0 = expected
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11534,7 +12734,7 @@ end subroutine assertEqual_c64_0D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11551,6 +12751,13 @@ end subroutine assertEqual_c64_0D_c64_4D_tol64_internal
 
      call assertEqual_int_4D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11571,6 +12778,7 @@ end subroutine assertEqual_c64_0D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11617,8 +12825,17 @@ end subroutine assertEqual_c64_0D_c64_4D_tol64_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11697,7 +12914,7 @@ end subroutine assertEqual_int_4D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11714,6 +12931,13 @@ end subroutine assertEqual_int_4D_c64_4D_tol64_internal
 
      call assertEqual_r32_4D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11734,6 +12958,7 @@ end subroutine assertEqual_int_4D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11780,8 +13005,17 @@ end subroutine assertEqual_int_4D_c64_4D_tol64_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -11860,7 +13094,7 @@ end subroutine assertEqual_r32_4D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -11877,6 +13111,13 @@ end subroutine assertEqual_r32_4D_c64_4D_tol64_internal
 
      call assertEqual_c32_4D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -11897,6 +13138,7 @@ end subroutine assertEqual_r32_4D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -11943,8 +13185,17 @@ end subroutine assertEqual_r32_4D_c64_4D_tol64_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -12023,7 +13274,7 @@ end subroutine assertEqual_c32_4D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -12040,6 +13291,13 @@ end subroutine assertEqual_c32_4D_c64_4D_tol64_internal
 
      call assertEqual_r64_4D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12060,6 +13318,7 @@ end subroutine assertEqual_c32_4D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12106,8 +13365,17 @@ end subroutine assertEqual_c32_4D_c64_4D_tol64_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -12186,7 +13454,7 @@ end subroutine assertEqual_r64_4D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -12203,6 +13471,13 @@ end subroutine assertEqual_r64_4D_c64_4D_tol64_internal
 
      call assertEqual_c64_4D_c64_4D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12223,6 +13498,7 @@ end subroutine assertEqual_r64_4D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12269,8 +13545,17 @@ end subroutine assertEqual_r64_4D_c64_4D_tol64_internal
 
                   expected0 = expected(idx1,idx2,idx3,idx4)
                   found0 = found(idx1,idx2,idx3,idx4)
-                  if (expected0 /= found0 ) then
-                     idxLocation = (/ idx1,idx2,idx3,idx4 /)
+                  delta1 = expected0-found0
+                  if ( &
+                  & .not. &
+                  & isWithinTolerance( &
+                  &   delta1, &
+                  &   real(tolerance_,kind=r64), &
+                  &   L_INFINITY_NORM) ) &
+                  &   then
+               !bug2013-0607   if (expected0 /= found0 ) then
+
+                     idxLocation = [ idx1,idx2,idx3,idx4 ]
                !???      tolerance_ = 0.0
                      call throwDifferentValuesWithLocation( &
                      &       expected0, &
@@ -12349,7 +13634,7 @@ end subroutine assertEqual_c64_4D_c64_4D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -12366,6 +13651,13 @@ end subroutine assertEqual_c64_4D_c64_4D_tol64_internal
 
      call assertEqual_int_0D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12386,6 +13678,7 @@ end subroutine assertEqual_c64_4D_c64_4D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12425,8 +13718,17 @@ end subroutine assertEqual_c64_4D_c64_4D_tol64_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -12506,7 +13808,7 @@ end subroutine assertEqual_int_0D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -12523,6 +13825,13 @@ end subroutine assertEqual_int_0D_c32_5D_tol32_internal
 
      call assertEqual_r32_0D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12543,6 +13852,7 @@ end subroutine assertEqual_int_0D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12582,8 +13892,17 @@ end subroutine assertEqual_int_0D_c32_5D_tol32_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -12663,7 +13982,7 @@ end subroutine assertEqual_r32_0D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -12680,6 +13999,13 @@ end subroutine assertEqual_r32_0D_c32_5D_tol32_internal
 
      call assertEqual_c32_0D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12700,6 +14026,7 @@ end subroutine assertEqual_r32_0D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12739,8 +14066,17 @@ end subroutine assertEqual_r32_0D_c32_5D_tol32_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -12820,7 +14156,7 @@ end subroutine assertEqual_c32_0D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -12837,6 +14173,13 @@ end subroutine assertEqual_c32_0D_c32_5D_tol32_internal
 
      call assertEqual_int_5D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -12857,6 +14200,7 @@ end subroutine assertEqual_c32_0D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -12904,8 +14248,17 @@ end subroutine assertEqual_c32_0D_c32_5D_tol32_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -12985,7 +14338,7 @@ end subroutine assertEqual_int_5D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -13002,6 +14355,13 @@ end subroutine assertEqual_int_5D_c32_5D_tol32_internal
 
      call assertEqual_r32_5D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13022,6 +14382,7 @@ end subroutine assertEqual_int_5D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13069,8 +14430,17 @@ end subroutine assertEqual_int_5D_c32_5D_tol32_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13150,7 +14520,7 @@ end subroutine assertEqual_r32_5D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r32)
+        tolerance_ = real(0., kind=r32)
      end if
 
      if(present(location)) then 
@@ -13167,6 +14537,13 @@ end subroutine assertEqual_r32_5D_c32_5D_tol32_internal
 
      call assertEqual_c32_5D_c32_5D_tol32_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex32_tol32_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13187,6 +14564,7 @@ end subroutine assertEqual_r32_5D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13234,8 +14612,17 @@ end subroutine assertEqual_r32_5D_c32_5D_tol32_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13315,7 +14702,7 @@ end subroutine assertEqual_c32_5D_c32_5D_tol32_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -13332,6 +14719,13 @@ end subroutine assertEqual_c32_5D_c32_5D_tol32_internal
 
      call assertEqual_int_0D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13352,6 +14746,7 @@ end subroutine assertEqual_c32_5D_c32_5D_tol32_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13391,8 +14786,17 @@ end subroutine assertEqual_c32_5D_c32_5D_tol32_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13472,7 +14876,7 @@ end subroutine assertEqual_int_0D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -13489,6 +14893,13 @@ end subroutine assertEqual_int_0D_c64_5D_tol64_internal
 
      call assertEqual_r32_0D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13509,6 +14920,7 @@ end subroutine assertEqual_int_0D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13548,8 +14960,17 @@ end subroutine assertEqual_int_0D_c64_5D_tol64_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13629,7 +15050,7 @@ end subroutine assertEqual_r32_0D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -13646,6 +15067,13 @@ end subroutine assertEqual_r32_0D_c64_5D_tol64_internal
 
      call assertEqual_c32_0D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13666,6 +15094,7 @@ end subroutine assertEqual_r32_0D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13705,8 +15134,17 @@ end subroutine assertEqual_r32_0D_c64_5D_tol64_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13786,7 +15224,7 @@ end subroutine assertEqual_c32_0D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -13803,6 +15241,13 @@ end subroutine assertEqual_c32_0D_c64_5D_tol64_internal
 
      call assertEqual_r64_0D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13823,6 +15268,7 @@ end subroutine assertEqual_c32_0D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -13862,8 +15308,17 @@ end subroutine assertEqual_c32_0D_c64_5D_tol64_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -13943,7 +15398,7 @@ end subroutine assertEqual_r64_0D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -13960,6 +15415,13 @@ end subroutine assertEqual_r64_0D_c64_5D_tol64_internal
 
      call assertEqual_c64_0D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e0_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -13980,6 +15442,7 @@ end subroutine assertEqual_r64_0D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14019,8 +15482,17 @@ end subroutine assertEqual_r64_0D_c64_5D_tol64_internal
 
                      expected0 = expected
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14100,7 +15572,7 @@ end subroutine assertEqual_c64_0D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -14117,6 +15589,13 @@ end subroutine assertEqual_c64_0D_c64_5D_tol64_internal
 
      call assertEqual_int_5D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -14137,6 +15616,7 @@ end subroutine assertEqual_c64_0D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14184,8 +15664,17 @@ end subroutine assertEqual_c64_0D_c64_5D_tol64_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14265,7 +15754,7 @@ end subroutine assertEqual_int_5D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -14282,6 +15771,13 @@ end subroutine assertEqual_int_5D_c64_5D_tol64_internal
 
      call assertEqual_r32_5D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -14302,6 +15798,7 @@ end subroutine assertEqual_int_5D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14349,8 +15846,17 @@ end subroutine assertEqual_int_5D_c64_5D_tol64_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14430,7 +15936,7 @@ end subroutine assertEqual_r32_5D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -14447,6 +15953,13 @@ end subroutine assertEqual_r32_5D_c64_5D_tol64_internal
 
      call assertEqual_c32_5D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex32_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -14467,6 +15980,7 @@ end subroutine assertEqual_r32_5D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14514,8 +16028,17 @@ end subroutine assertEqual_r32_5D_c64_5D_tol64_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14595,7 +16118,7 @@ end subroutine assertEqual_c32_5D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -14612,6 +16135,13 @@ end subroutine assertEqual_c32_5D_c64_5D_tol64_internal
 
      call assertEqual_r64_5D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_real64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -14632,6 +16162,7 @@ end subroutine assertEqual_c32_5D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14679,8 +16210,17 @@ end subroutine assertEqual_c32_5D_c64_5D_tol64_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14760,7 +16300,7 @@ end subroutine assertEqual_r64_5D_c64_5D_tol64_internal
      if(present(tolerance)) then
         tolerance_ = tolerance
      else
-        tolerance_ = real(0.,kind=r64)
+        tolerance_ = real(0., kind=r64)
      end if
 
      if(present(location)) then 
@@ -14777,6 +16317,13 @@ end subroutine assertEqual_r64_5D_c64_5D_tol64_internal
 
      call assertEqual_c64_5D_c64_5D_tol64_internal ( &
      &  expected, found, tolerance_, message_, location_ )
+
+! Next allow call to here...
+!mlr-NextStep-Begin
+!     call assertEqual_e1_complex64_f1_complex64_tol64_(&
+!     &  expected, shape(expected), found, shape(found), &
+!     &  tolerance_, message_, location_ )
+!mlr-NextStep-End
      
    end subroutine
 
@@ -14797,6 +16344,7 @@ end subroutine assertEqual_r64_5D_c64_5D_tol64_internal
   
      integer :: first
       complex(kind=kind(found)) :: delta(size(found,1),size(found,2),size(found,3),size(found,4),size(found,5))
+      complex(kind=kind(found)) :: delta1
 
      integer :: i, i1, i2
      integer :: expectedSize
@@ -14844,8 +16392,17 @@ end subroutine assertEqual_r64_5D_c64_5D_tol64_internal
 
                      expected0 = expected(idx1,idx2,idx3,idx4,idx5)
                      found0 = found(idx1,idx2,idx3,idx4,idx5)
-                     if (expected0 /= found0 ) then
-                        idxLocation = (/ idx1,idx2,idx3,idx4,idx5 /)
+                     delta1 = expected0-found0
+                     if ( &
+                     & .not. &
+                     & isWithinTolerance( &
+                     &   delta1, &
+                     &   real(tolerance_,kind=r64), &
+                     &   L_INFINITY_NORM) ) &
+                     &   then
+                  !bug2013-0607   if (expected0 /= found0 ) then
+
+                        idxLocation = [ idx1,idx2,idx3,idx4,idx5 ]
                   !???      tolerance_ = 0.0
                         call throwDifferentValuesWithLocation( &
                         &       expected0, &
@@ -14898,33 +16455,18 @@ end subroutine throwDifferentValuesWithLocation
 end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
 
 ! end interface assertEqual implementations
-
-      ! Need to reconsider this part -- provide correct type-specific routines rather than
-      ! just cast everything to real*8.
-      subroutine throwDifferentValuesString64(expected, found, at, location, tolerance)
-         real(kind=r64), intent(in) :: expected
-         real(kind=r64), intent(in) :: found
-         character(len=*), intent(in) :: at
-         type (SourceLocation), optional, intent(in) :: location
-         real(kind=r64), optional, intent(in) :: tolerance
-         real(kind=r64) :: tolerance_
-
-         if(present(tolerance))then
-            tolerance_ = tolerance
-         else
-            tolerance_ = 0.0
-         end if
-
-         call throw( &
-              & trim(valuesReport(real(expected), real(found))) // &
-              & '; ' // trim(differenceReport(real(found - expected), real(tolerance_))) //  &
-              & ';  first difference at element <'//trim(at)//'>.', &
-              & location = location &
-              )
-      end subroutine throwDifferentValuesString64
-
 ! interface differenceReport implementations
 
+    character(len=MAXLEN_MESSAGE) &
+    & function differenceReport_integerdefault64(difference, tolerance) result(differenceReport)
+      integer, intent(in) :: difference
+     real(kind=r64), intent(in) :: tolerance
+!     real(kind=r64), optional, intent(in) :: tolerance
+      differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
+      & '| > tolerance:' // trim(toString(tolerance))
+    end function 
+
+   
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_real3232(difference, tolerance) result(differenceReport)
      real(kind=r32), intent(in) :: difference
@@ -15189,4 +16731,4318 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
       end function
 
 ! end interface valuesReport implementations
+! interface assertEqual_internal implementations
+
+    subroutine assertEqual_e0_integerdefault_f0_integerdefault_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    integer, intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f0_integerdefault_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f0_integerdefault_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    integer, intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f0_integerdefault_tol64_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f1_integerdefault_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    integer, dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f1_integerdefault_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f1_integerdefault_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    integer, dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f1_integerdefault_tol64_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f0_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    real(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f0_real32_tol32_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f0_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f0_real32_tol32_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f1_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    real(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f1_real32_tol32_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f1_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f1_real32_tol32_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real32_f0_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    real(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f0_real32_tol32_
+
+
+   
+    subroutine assertEqual_e1_real32_f0_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f0_real32_tol32_
+
+
+   
+    subroutine assertEqual_e0_real32_f1_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    real(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f1_real32_tol32_
+
+
+   
+    subroutine assertEqual_e1_real32_f1_real32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f1_real32_tol32_
+
+
+   
+    subroutine assertEqual_e0_real32_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real32_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real32_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real32_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real64_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real64_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real64_f0_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real64_f0_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real64_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real64_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real64_f1_real64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real64_f1_real64_tol64_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_integerdefault_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_integerdefault_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_integerdefault_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    integer, dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_integerdefault_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real32_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_real32_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_real32_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_real32_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_real32_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real32_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real32_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real32_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real32_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real32_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real64_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real64_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real64_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real64_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_real64_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_real64_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_real64_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_real64_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_complex32_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex32_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_complex32_f0_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex32_f0_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_complex32_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex32_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e1_complex32_f1_complex32_tol32_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r32), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex32_f1_complex32_tol32_
+
+
+   
+    subroutine assertEqual_e0_complex32_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex32_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_complex32_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex32_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_complex32_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex32_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_complex32_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex32_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_complex64_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r64), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found )
+       end do
+    else
+         OK = .not. ( expected /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex64_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_complex64_f0_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found )
+       end do
+    else
+         OK = .not. ( expected(i) /= found )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex64_f0_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e0_complex64_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r64), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected /= found(i) )
+       end do
+    else
+         OK = .not. ( expected /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e0_complex64_f1_complex64_tol64_
+
+
+   
+    subroutine assertEqual_e1_complex64_f1_complex64_tol64_( &
+    & expected,eShape,found,fShape,tolerance,message,location )
+    use Params_mod
+    use Exception_mod
+    use StringUtilities_mod
+    use ThrowFundamentalTypes_mod, only : locationFormat
+    implicit none
+    integer, intent(in), dimension(:) :: eShape, fShape
+    character(len=*), intent(in) :: message
+    type (SourceLocation), intent(in) :: location
+    complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+
+    real(kind=r64), intent(in) :: tolerance
+
+    
+    real(kind=kind(tolerance)) :: tolerance_
+    real(kind=kind(expected)) :: expected_
+    real(kind=kind(found)) :: found_
+    integer :: i,m,ir
+    logical OK
+    integer, dimension(size(fShape)) :: iLocation
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+! Note:  Could assert size(expected) = size(found) and fShape = eShape...
+
+    m = product(fShape)
+    i = 0
+    OK = .true.
+    
+! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+    if( m > 0 )then
+       do while ( i < m .and. OK )
+         i = i + 1
+!      OK = .not. ( expected(i) /= found(i) )
+         OK = .not. ( expected(i) /= found(i) )
+       end do
+    else
+         OK = .not. ( expected(i) /= found(i) )
+    end if
+
+    if( .not. OK )then
+
+    ! Save the FirstBad...
+    expected_ = expected(i)
+    found_    = found(i)
+
+    if( m > 0 )then
+
+    do ir = 1, size(fShape)
+      iLocation(ir) = mod(i,fShape(ir))
+      i = i / fShape(ir)
+    end do
+
+    write(locationInArray,locationFormat(iLocation)) iLocation
+
+    else
+
+    write(locationInArray,*) '[1]'
+
+    end if
+
+! Scalar
+! Note use of abs
+    call throw( &
+    & trim(valuesReport(expected_,found_)) // &
+    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+    & '; first difference at element '//trim(locationInArray)//'.', &
+    & location = location &
+    )
+    
+    end if
+
+    end subroutine assertEqual_e1_complex64_f1_complex64_tol64_
+
+
+! end interface assertEqual_internal implementations
 end module AssertComplex_mod

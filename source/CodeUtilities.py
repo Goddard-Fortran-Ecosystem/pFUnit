@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from Utilities import *
 import textwrap
 
 class module:
@@ -150,13 +151,13 @@ class fortranSubroutineSignature:
         self.ArgumentToFType[arg] = fType
         return self
     def generateInterfaceEntry(self):
-        print 'generateInterfaceEntryNotImplemented'
+        print 'generateInterfaceEntryNotImplemented_'+this.name
         return
     def generateImplementationSignature(self):
-        print 'generateImplementationSignatureNotImplemented'
+        print 'generateImplementationSignatureNotImplemented_'+this.name
         return
     def generateImplementationClose(self):
-        print 'generateImplementationCloseNotImplemented'
+        print 'generateImplementationCloseNotImplemented_'+this.name
         return
     
 def indentKluge(indentString,txt):
@@ -172,4 +173,216 @@ def iterateOverMultiRank(nr,variableName,shapeName,centralText):
     #    print codeSnippet
     return codeSnippet
 
+# Text formatting functions for Fortran from the m4-based code generator.
+    
+def DIMS(rank):
+    if rank > 0:
+        return '('+','.join([':' for i in range(rank) ])+')'
+    else:
+        return ''
+
+def DIMS_SET(dims):
+    "Return a comma separated list of dimensions, delineated by parentheses."
+    retStr = ''
+    if len(dims) > 0:
+        retStr = '('+','.join([str(i) for i in dims])+')'
+    return retStr
+
+def DIMS_RANDOM_INTS(rank,maxDim):
+    return [random.randint(1,maxDim) for i in range(rank)]
+
+def RANDOM_INDEX(dims):
+    return [random.randint(1,dims[i]) for i in range(len(dims))]
+
+def DIMS_RANDOM(rank,maxDim):
+    return DIMS_SET(DIMS_RANDOM_INTS(rank,maxDim))
+
+def DIMS_IncrementRandomElement(dims):
+    newDims = copy.copy(dims)
+    i = random.randint(0,len(dims)-1)
+    newDims[i] = newDims[i] + 1
+    return DIMS_SET(newDims)
+
+def FULLTYPE(fType):
+    fTypes = { 'int' : 'integer',
+              'char' : 'character' }
+    if fType in fTypes:
+        ret = fTypes[fType]
+    else:
+        ret = fType
+    return ret
+
+typeTower = {
+    'integer' : 0,
+    'real'    : 1,
+    'complex' : 2 }
+
+def maxType(type1,type2) :
+    retType = type1
+    if typeTower[type1] < typeTower[type2] :
+        retType = type2
+    return retType
+
+def maxPrecision(prec1,prec2) :
+    retPrec = prec1
+    if 'default' in [prec1,prec2] :
+        if prec2 != 'default' :
+            retPrec = prec2
+    elif prec1 < prec2 :
+        retPrec = prec2
+    return retPrec
+
+def KINDATTRIBUTE0(fType,precision):
+    ret = ''
+    if fType.lower() == 'real' :
+        ret = 'kind=r'+str(precision)+''
+    elif fType.lower() == 'complex' :
+        ret = 'kind=r'+str(precision)+''
+    elif fType.lower() == 'integer' :
+        ret = ''
+    return ret
+
+def KINDATTRIBUTE(fType,precision):
+    ret = ''
+    if fType.lower() == 'real' :
+        ret = '(kind=r'+str(precision)+')'
+    elif fType.lower() == 'complex' :
+        ret = '(kind=r'+str(precision)+')'
+    elif fType.lower() == 'integer' :
+        ret = ''
+    return ret
+
+def testKINDATTRIBUTE():
+    print 'COMPLEX,32 -> ' + KINDATTRIBUTE('COMPLEX',32)
+    print 'REAL,32 -> ' + KINDATTRIBUTE('REAL',32)
+    print 'real,32 -> ' + KINDATTRIBUTE('real',32)
+    print 'integer,32 -> ' + KINDATTRIBUTE('integer',32)
+
+def DECLARE(variableName,fType,precision,rank,opts=', intent(in)'):
+    return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+opts+' :: '+variableName+DIMS(rank)
+
+def DECLARESCALAR(variableName,fType,precision,rank):
+    return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+' :: '+variableName
+
+def testDECLARE():
+    print 'xVar,real,32,3 -> ' + DECLARE('xVar','real',32,3)
+    print 'iVar,int,32,3 -> ' + DECLARE('iVar','int',32,3)
+    print 'iVar,int,32,0 -> ' + DECLARE('iVar','int',32,0)
+    print 'iVar,int,default,1 -> ' + DECLARE('iVar','int','default',1)
+
+def OVERLOAD(routineName,fType,precision,rank):
+    routineNameModifier=str(fType)+'_'+str(precision)+'_'+str(rank)
+    return routineName+'_'+routineNameModifier.lower()+'D'
+
+def testOVERLOAD():
+    print 'testRoutine,real,32,2 -> '+OVERLOAD('testRoutine','real',32,2)
+    print 'testRoutine,integer,64,0 -> '+OVERLOAD('testRoutine','integer',64,0)
+    print 'testRoutine,int,32,4 -> '+OVERLOAD('testRoutine','int',32,4)
+
+def DECLAREPOINTER(pointerName,fType,precision,rank):
+    return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+', pointer :: '+ \
+        OVERLOAD(pointerName,fType,precision,rank)+DIMS(rank)+' = null()'
+
+def testDECLAREPOINTER():
+    print 'd-pointer: p,real,32,0 -> '+DECLAREPOINTER('p','real',32,0)
+    print 'd-pointer: p,integer, 64, 1 -> '+DECLAREPOINTER('p','integer',64,1)
+    print 'd-pointer: p,integer, 64, 3 -> '+DECLAREPOINTER('p','integer',64,3)
+
+def NAME(fType,kind,rank):
+    if fType == 'real' :
+        fTypeToken = 'r'
+    elif fType == 'complex' :
+        fTypeToken = 'c'
+    else:
+        fTypeToken = 'int'
+    if kind == 'default':
+        kindToken = ''
+    else:
+        kindToken = str(kind)
+    return fTypeToken+kindToken+'_'+str(rank)+'D'
+
+def testNAME():
+    print 'real,32,2 -> '+NAME('real',32,2)
+    print 'integer,64,0 -> '+NAME('integer',64,0)
+
+def EXPANDSHAPE(rank, variableName):
+    if rank == 0:
+        return ''
+    elif rank == 1:
+        return '(size('+variableName+'))'
+    else:
+        return '('+','.join(['size('+variableName+','+str(i)+')' for i in range(1,rank+1)])+')'
+
+def testEXPANDSHAPE():
+    print '0,test -> ' + str(EXPANDSHAPE(0,'test'))
+    print '1,test -> ' + str(EXPANDSHAPE(1,'test'))
+    print '3,test -> ' + str(EXPANDSHAPE(3,'test'))
+    print '5,test -> ' + str(EXPANDSHAPE(5,'test'))
+
+class ArrayDescription:
+    def __init__(self,fType,kind,rank):
+        self.fType = fType
+        self.kind = kind
+        self.rank = rank
+        if rank == 0:
+            print 'ArrayDescription:Warning: rank == 0!!!'
+    def NAME(self):
+        return NAME(self.fType, self.kind, self.rank)
+    def DECLARE(self,variableName):
+        return DECLARE(variableName,self.fType, self.kind, self.rank)
+    def DECLARESCALAR(self,variableName):
+        return DECLARESCALAR(variableName,self.fType, self.kind, 0)
+    def KIND(self):
+        return self.kind
+    def RANK(self):
+        return self.rank
+    def FTYPE(self):
+        return self.fType
+    def EXPANDSHAPE(self,variableName):
+        return EXPANDSHAPE(self.rank,variableName)
+    def FailureMessageFork(self,messageForRank1,messageOtherwise):
+        if self.rank == 1 :
+            return messageForRank1
+        else:
+            return messageOtherwise
+
+def AddBlockSymbols(predicate, blockSymbols, inStr):
+    # Note a big change in how this works -- this will actually remove str...
+    retStr = '' 
+    if predicate :
+        if blockSymbols :
+            retStr = blockSymbols[0] + inStr + blockSymbols[1]
+    return retStr
+        
+def MakeNamesWithRank(variableName, rank):
+    retStr = ''
+    if rank != 0:
+        retStr = ','.join([variableName+str(i+1) for i in range(rank)])
+    else:
+        retStr = ''.join([variableName+str(rank+1)])
+    return retStr
+
+# def compareELEMENTS(varName1,varName2,itername,shape,rank):
+#    if rank == 0:
+#        retStr = ''
+
+def reportKind(t,p):
+    k = ''
+    if t == 'real' :
+        k = '(kind=r'+str(p)+')'
+    elif t == 'complex' :
+        k = '(kind=c'+str(p)+')'
+    elif t == 'integer' :
+        # default integer
+        k = ''
+    else :
+        k = '<Generate...py-reportKind-error:  unsupported type>'
+    return k
+
+def CONJG(x,fType='complex'):
+    # If x complex return conjg, else return as is.
+    retStr = str(x)
+    if fType == 'complex':
+        retStr = 'conjg('+str(x)+')'
+    return retStr
     

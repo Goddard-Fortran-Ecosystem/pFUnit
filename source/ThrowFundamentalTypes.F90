@@ -153,8 +153,10 @@ contains
     integer :: iLocationSize
 
     iLocationSize = size(iLocation)
-    
-    if (iLocationSize .eq. 1) then
+
+    if (iLocationSize .eq. 0) then
+       fmt = '("[" i0 "]")'       
+    else if (iLocationSize .eq. 1) then
        fmt = '("[" i0 "]")'
     else
        write(fmt,*) '("["',iLocationSize-1,'(i0,", ") i0 "]")'

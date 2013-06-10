@@ -1,6 +1,5 @@
 .PHONY: clean tests
 
-
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=.o)
 

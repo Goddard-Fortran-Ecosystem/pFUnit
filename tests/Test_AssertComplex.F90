@@ -67,6 +67,7 @@ contains
     ADD(testEquals_C_MultiDWithTolerance64_1)
     ADD(testEquals_C_MultiDWithTolerance64_2)
     ADD(testEquals_C_MultiDSourceLocation)
+    ADD(testEquals_4DPComplex_DifferenceReport)
 
   end function suite
 
@@ -159,7 +160,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_2D_SingleElementDifferent')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(good,bad)) // &
@@ -192,7 +193,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank0')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(real(good), bad)) // &
@@ -230,7 +231,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(real(good),bad)) // &
@@ -269,7 +270,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
          & trim(valuesReport(real(good), good)) // &
@@ -303,7 +304,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -335,7 +336,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -372,7 +373,7 @@ contains
          & 'testEquals_C_MultiD_SingleElementDifferent:nonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
           & 'nonconforming arrays - expected shape: ' // &
@@ -405,7 +406,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -439,7 +440,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -474,7 +475,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -508,7 +509,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -545,7 +546,7 @@ contains
          & 'testEquals_C_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
           & 'nonconforming arrays - expected shape: ' // &
@@ -577,7 +578,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -608,7 +609,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -641,7 +642,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4/) )) (/i1, i2, i3, i4/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -674,7 +675,7 @@ contains
     call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -696,7 +697,7 @@ contains
          & 'testEquals_C_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
-    ! write(locationInArray,locationFormat( (/i1,i2,i3,i4,i5/) )) (/i1, i2, i3, i4, i5/)
+    ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
           & 'nonconforming arrays - expected shape: ' // &
@@ -735,7 +736,7 @@ contains
          & 'testEquals_C_MultiDSingleEltTol32-Throw:Rank2,Tolerance32')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
          & trim(valuesReport(good, cmplx(bad32))) // &
@@ -807,7 +808,7 @@ contains
          & 'testEquals_C_MultiDSingleEltTol64-Throw:Rank2,Tolerance64')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
 ! Fix the need for the real below.  Note we're just reporting at this stage, not calculating.
     call assertCatch( &
@@ -883,7 +884,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
          & 'testEquals_C_MultiDSingleEltTol64-Throw:Rank3,Tolerance64')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2,i3/) )) (/i1, i2, i3/)
+    write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
          & trim(valuesReport(good64, bad64)) // &
@@ -928,7 +929,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
     ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    write(locationInArray,locationFormat( (/i1,i2/) )) (/i1, i2/)
+    write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
 ! Note use of real...  Consider overloading the reporting functions...
     call assertCatch( &
@@ -939,6 +940,44 @@ end subroutine testEquals_C_MultiDWithTolerance64
          & )
 
   end subroutine testEquals_C_MultiDSourceLocation
+
+  subroutine testEquals_4DPComplex_DifferenceReport()
+    use Params_mod
+    implicit none
+    
+    complex(kind=r64), dimension(4) :: expected, found
+    real(kind=r64), parameter :: tolerance64 = 0.2220446E-13
+
+    expected = [ (-2.18668712341731,-5.06286061261393), &
+         &       (-0.434093364126748,-1.76502068116290), &
+         &       (0.553931617203788,0.705041772163443), &
+         &       (-0.833863952864297,-1.68080268623140) &
+         &     ]
+
+    found = [ (-2.18668712341731,-5.06286061261393), &
+         &    (-0.434093364126748,-1.76502068116290), &
+         &    (5.991912653851966E-002,-0.529989454499727), &
+         &    (-0.833863952864297,-1.68080268623140) &
+         &  ]
+
+    found(1) = found(1) + (1.0E-15,0.0)
+
+    call assertEqual(expected,found,tolerance = tolerance64, &
+         & message = 'testEquals_4DPComplex_DifferenceReport')
+
+    call assertCatch( &
+         & trim(valuesReport(expected(3),found(3))) // &
+         & '; ' // trim(differenceReport(abs(found(3)-expected(3)),tolerance64)) // &
+         & ';  first difference at element [3].' &
+         & )
+
+!    print *,'1000'//' DifferenceReportTesting: ' // &
+!         & trim(differenceReport(abs(found(3)-expected(3)),tolerance64))
+!    print *,'1001'//' DifferenceReportTesting: ' // &
+!         & trim(differenceReport((found(3)-expected(3)),tolerance64))
+
+  end subroutine testEquals_4DPComplex_DifferenceReport
+
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)

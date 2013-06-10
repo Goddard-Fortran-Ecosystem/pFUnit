@@ -18,7 +18,36 @@ def _flatten(l, fn, val=[]):
     return [lambda x: _flatten(l[0], \
                                lambda y: _flatten(l[1:],fn,y), x), val]
 
- 
+# Preprocessor-like functions
+
+def elideIfZero(test, insert):
+    if test == 0:
+        retString = ''
+    else:
+        retString = insert
+    return retString
+
+def testElideIfZero():
+    print '0,test -> '+elideIfZero(0,'test'+',')
+    print '1,test -> '+elideIfZero(1,'test'+',')
+
+def ifZeroElse(test, ifTrue, ifFalse):
+    if test == 0:
+        return ifTrue
+    else:
+        return ifFalse
+
+def ifElseString(test, string1, string2):
+    retstr = ''
+    if test:
+        retstr = string1
+    else:
+        retstr = string2
+    return retstr
+
+
+
+
 def main():
     a = [1,2,3,4,[5,[6,7]]]
     print 'a ',a
