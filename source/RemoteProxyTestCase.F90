@@ -21,7 +21,7 @@ module RemoteProxyTestCase_mod
       module procedure newRemoteProxyTestCase
    end interface RemoteProxyTestCase
 
-   real, parameter :: MAX_TIME = 1.100 ! in seconds
+   real, parameter :: MAX_TIME_TEST = 0.10 ! in seconds
 
 contains
 
@@ -45,7 +45,7 @@ contains
       character(len=:), allocatable :: message
       character(len=:), allocatable :: fileName
 
-      character(len=40) :: timeCommand
+      character(len=80) :: timeCommand
       type (UnixProcess) :: timerProcess
       integer :: numExceptions, iException ,i
       integer :: lineNumber
@@ -59,7 +59,7 @@ contains
       ! If the appropriate messages are received in time, then this timer process is 
       ! safely stopped.
 
-      write(timeCommand,'("(sleep ",f10.3,"; kill -9 ",i0,")")') MAX_TIME, this%process%getPid()
+      write(timeCommand,'(a, f10.3,a,i0,a)') "(sleep ",MAX_TIME_TEST,"; kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
 
       do

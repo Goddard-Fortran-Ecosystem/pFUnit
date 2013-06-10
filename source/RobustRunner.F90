@@ -46,6 +46,8 @@ module RobustRunner_mod
       procedure :: runMethod
    end type TestCaseMonitor
 
+   real, parameter :: MAX_TIME_LAUNCH = 5.00 ! in seconds
+
 contains
 
    function newRobustRunner(remoteRunCommand) result(runner)
@@ -137,6 +139,8 @@ contains
 
    subroutine launchRemoteRunner(this, numSkip)
       use UnixProcess_mod
+      use Exception_mod
+      use Assert_mod
       class (RobustRunner), intent(inout) :: this
       integer, intent(in) :: numSkip
 
@@ -145,9 +149,39 @@ contains
       integer, parameter :: MAX_LEN=8
       character(len=MAX_LEN) :: suffix
 
+      character(len=80) :: timeCommand
+      type (UnixProcess) :: timerProcess
+      character(len=:), allocatable :: line
+
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' -skip ' // suffix
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
+
+      ! Check for successful launch - prevents MPI launch time from counting against
+      ! first test's time limit.
+      write(timeCommand,'(a, f10.3,a,i0,a)') &
+           & "(sleep ",MAX_TIME_LAUNCH," && kill -9 ", this%remoteProcess%getPid(),") > /dev/null 2>&1"
+      timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
+
+      do
+         line = this%remoteProcess%getLine()
+         if (len(line) == 0) then
+            if (.not. this%remoteProcess%isActive()) then
+               call throw('RUNTIME-ERROR: terminated before starting')
+               call timerProcess%terminate()
+               return
+            else
+!!$               call timerProcess%terminate()
+!!$               timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
+               cycle ! might just not be ready yet
+            end if
+         else
+            call assertEqual('*LAUNCHED*', line)
+            ! successfully launched
+            call timerProcess%terminate()
+            exit
+         end if
+      end do
 
    end subroutine launchRemoteRunner
 

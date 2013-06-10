@@ -91,6 +91,8 @@ contains
 
       ! This should be a named pipe
       ! Note - uses F2008 extension:  "newunit=..."
+      
+      write(this%unit,'(a)') '*LAUNCHED*'
 
       do i = this%numSkip + 1, size(testCaseList(:))
          call testCaseList(i)%test%run(result, context)

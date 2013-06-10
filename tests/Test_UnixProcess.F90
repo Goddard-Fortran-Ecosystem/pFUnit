@@ -33,11 +33,11 @@ contains
       type (UnixProcess) :: process
 
       process = UnixProcess('sleep 10', runInBackground=.true.)
-      call assertTrue(process%isActive())
+      call assertTrue(process%isActive(),'hmm')
       if (anyExceptions()) return
 
       call process%terminate()
-      call assertFalse(process%isActive())
+      call assertFalse(process%isActive(),'huh')
       
    end subroutine testIsActive
 

@@ -121,12 +121,14 @@ contains
    subroutine terminate(this)
       class (UnixProcess), intent(inout) :: this
 
-      integer, parameter :: MAX_LEN = 40
+      integer, parameter :: MAX_LEN = 120
       character(len=MAX_LEN) :: command
       integer :: stat
 
       if (this%pid >=0) then
-         write(command, '("kill -9 ",i0," >& /dev/null ")') this%pid
+         write(command,'(a,i0,a)') "kill -15 `ps -ef 2> /dev/null | awk '$3 == ",this%pid," {print $2}'` > /dev/null 2>&1" 
+         call execute_command_line(command, exitStat=stat)
+         write(command, '("kill -15 ",i0," > /dev/null 2>&1; ")') this%pid
          call execute_command_line(command, exitStat=stat)
       end if
 
