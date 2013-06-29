@@ -1,4 +1,4 @@
-module AssertReal_mod
+module AssertInteger1_mod
 
    use Params_mod
    use AssertBasic_mod
@@ -13,16 +13,6 @@ module AssertReal_mod
 
 
    public :: assertEqual
-
-   public :: vectorNorm
-   public :: isWithinTolerance
- 
-   public :: L_INFINITY_NORM
-   public :: L1_NORM
-   public :: L2_NORM
-
-   public :: valuesReport
-   public :: differenceReport
 
 
    integer, parameter :: L_INFINITY_NORM = 0
@@ -15725,4 +15715,4 @@ end subroutine assertEqual_r64_5D_r64_5D_tol64_internal
 
 
 ! end interface assertEqual_internal implementations
-end module AssertReal_mod
+end module AssertInteger1_mod

@@ -26,28 +26,34 @@ interface vectorNorm
 
    module procedure vectorNorm_0D_real32
    module procedure vectorNorm_0D_real64
-   module procedure vectorNorm_0D_complex32
-   module procedure vectorNorm_0D_complex64
    module procedure vectorNorm_1D_real32
    module procedure vectorNorm_1D_real64
-   module procedure vectorNorm_1D_complex32
-   module procedure vectorNorm_1D_complex64
    module procedure vectorNorm_2D_real32
    module procedure vectorNorm_2D_real64
-   module procedure vectorNorm_2D_complex32
-   module procedure vectorNorm_2D_complex64
    module procedure vectorNorm_3D_real32
    module procedure vectorNorm_3D_real64
-   module procedure vectorNorm_3D_complex32
-   module procedure vectorNorm_3D_complex64
    module procedure vectorNorm_4D_real32
    module procedure vectorNorm_4D_real64
-   module procedure vectorNorm_4D_complex32
-   module procedure vectorNorm_4D_complex64
    module procedure vectorNorm_5D_real32
    module procedure vectorNorm_5D_real64
+   module procedure vectorNorm_0D_complex32
+   module procedure vectorNorm_0D_complex64
+   module procedure vectorNorm_1D_complex32
+   module procedure vectorNorm_1D_complex64
+   module procedure vectorNorm_2D_complex32
+   module procedure vectorNorm_2D_complex64
+   module procedure vectorNorm_3D_complex32
+   module procedure vectorNorm_3D_complex64
+   module procedure vectorNorm_4D_complex32
+   module procedure vectorNorm_4D_complex64
    module procedure vectorNorm_5D_complex32
    module procedure vectorNorm_5D_complex64
+   module procedure vectorNorm_0D_integerdefault
+   module procedure vectorNorm_1D_integerdefault
+   module procedure vectorNorm_2D_integerdefault
+   module procedure vectorNorm_3D_integerdefault
+   module procedure vectorNorm_4D_integerdefault
+   module procedure vectorNorm_5D_integerdefault
 
 end interface vectorNorm
 
@@ -56,28 +62,34 @@ interface isWithinTolerance
 
    module procedure isWithinTolerance_0D_real32
    module procedure isWithinTolerance_0D_real64
-   module procedure isWithinTolerance_0D_complex32
-   module procedure isWithinTolerance_0D_complex64
    module procedure isWithinTolerance_1D_real32
    module procedure isWithinTolerance_1D_real64
-   module procedure isWithinTolerance_1D_complex32
-   module procedure isWithinTolerance_1D_complex64
    module procedure isWithinTolerance_2D_real32
    module procedure isWithinTolerance_2D_real64
-   module procedure isWithinTolerance_2D_complex32
-   module procedure isWithinTolerance_2D_complex64
    module procedure isWithinTolerance_3D_real32
    module procedure isWithinTolerance_3D_real64
-   module procedure isWithinTolerance_3D_complex32
-   module procedure isWithinTolerance_3D_complex64
    module procedure isWithinTolerance_4D_real32
    module procedure isWithinTolerance_4D_real64
-   module procedure isWithinTolerance_4D_complex32
-   module procedure isWithinTolerance_4D_complex64
    module procedure isWithinTolerance_5D_real32
    module procedure isWithinTolerance_5D_real64
+   module procedure isWithinTolerance_0D_complex32
+   module procedure isWithinTolerance_0D_complex64
+   module procedure isWithinTolerance_1D_complex32
+   module procedure isWithinTolerance_1D_complex64
+   module procedure isWithinTolerance_2D_complex32
+   module procedure isWithinTolerance_2D_complex64
+   module procedure isWithinTolerance_3D_complex32
+   module procedure isWithinTolerance_3D_complex64
+   module procedure isWithinTolerance_4D_complex32
+   module procedure isWithinTolerance_4D_complex64
    module procedure isWithinTolerance_5D_complex32
    module procedure isWithinTolerance_5D_complex64
+   module procedure isWithinTolerance_0D_integerdefault
+   module procedure isWithinTolerance_1D_integerdefault
+   module procedure isWithinTolerance_2D_integerdefault
+   module procedure isWithinTolerance_3D_integerdefault
+   module procedure isWithinTolerance_4D_integerdefault
+   module procedure isWithinTolerance_5D_integerdefault
 
 end interface isWithinTolerance
 
@@ -321,6 +333,326 @@ contains
   !> Returns the independent of norm in vector by the given diminsional
   !! double-precission real numbers and given integer norm
   !!
+  !! The following is for rank = 1.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_1D_real32(x, norm) result(y)
+    real(kind=r32), intent(in) :: x(:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_1D_real32
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 1.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_1D_real64(x, norm) result(y)
+    real(kind=r64), intent(in) :: x(:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_1D_real64
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 2.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_2D_real32(x, norm) result(y)
+    real(kind=r32), intent(in) :: x(:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_2D_real32
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 2.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_2D_real64(x, norm) result(y)
+    real(kind=r64), intent(in) :: x(:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_2D_real64
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 3.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_3D_real32(x, norm) result(y)
+    real(kind=r32), intent(in) :: x(:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_3D_real32
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 3.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_3D_real64(x, norm) result(y)
+    real(kind=r64), intent(in) :: x(:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_3D_real64
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 4.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_4D_real32(x, norm) result(y)
+    real(kind=r32), intent(in) :: x(:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_4D_real32
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 4.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_4D_real64(x, norm) result(y)
+    real(kind=r64), intent(in) :: x(:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_4D_real64
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 5.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_5D_real32(x, norm) result(y)
+    real(kind=r32), intent(in) :: x(:,:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_5D_real32
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 5.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_5D_real64(x, norm) result(y)
+    real(kind=r64), intent(in) :: x(:,:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(sum(x*x))
+    end select
+
+  end function vectorNorm_5D_real64
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
   !! The following is for rank = 0.
   !!
   !! @param x - given dimensional double-precision real numbers
@@ -370,68 +702,6 @@ contains
   !!
   !! @return independent of norm
   !---------------------------------------------------------------------------
-  function vectorNorm_1D_real32(x, norm) result(y)
-    real(kind=r32), intent(in) :: x(:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_1D_real32
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 1.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_1D_real64(x, norm) result(y)
-    real(kind=r64), intent(in) :: x(:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_1D_real64
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 1.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
   function vectorNorm_1D_complex32(x, norm) result(y)
     complex(kind=r32), intent(in) :: x(:)
     integer :: norm
@@ -445,6 +715,7 @@ contains
        y = sum(abs(x))
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
 !       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
@@ -477,72 +748,11 @@ contains
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
 
   end function vectorNorm_1D_complex64
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 2.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_2D_real32(x, norm) result(y)
-    real(kind=r32), intent(in) :: x(:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_2D_real32
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 2.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_2D_real64(x, norm) result(y)
-    real(kind=r64), intent(in) :: x(:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_2D_real64
 
    
   !---------------------------------------------------------------------------
@@ -569,6 +779,7 @@ contains
        y = sum(abs(x))
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
 !       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
@@ -601,72 +812,11 @@ contains
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
 
   end function vectorNorm_2D_complex64
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 3.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_3D_real32(x, norm) result(y)
-    real(kind=r32), intent(in) :: x(:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_3D_real32
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 3.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_3D_real64(x, norm) result(y)
-    real(kind=r64), intent(in) :: x(:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_3D_real64
 
    
   !---------------------------------------------------------------------------
@@ -693,6 +843,7 @@ contains
        y = sum(abs(x))
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
 !       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
@@ -725,72 +876,11 @@ contains
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
 
   end function vectorNorm_3D_complex64
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 4.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_4D_real32(x, norm) result(y)
-    real(kind=r32), intent(in) :: x(:,:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_4D_real32
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 4.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_4D_real64(x, norm) result(y)
-    real(kind=r64), intent(in) :: x(:,:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_4D_real64
 
    
   !---------------------------------------------------------------------------
@@ -817,6 +907,7 @@ contains
        y = sum(abs(x))
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
 !       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
@@ -849,72 +940,11 @@ contains
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
 
   end function vectorNorm_4D_complex64
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 5.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_5D_real32(x, norm) result(y)
-    real(kind=r32), intent(in) :: x(:,:,:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_5D_real32
-
-   
-  !---------------------------------------------------------------------------
-  !> Returns the independent of norm in vector by the given diminsional
-  !! double-precission real numbers and given integer norm
-  !!
-  !! The following is for rank = 5.
-  !!
-  !! @param x - given dimensional double-precision real numbers
-  !! @param norm - given norm
-  !!
-  !! @return independent of norm
-  !---------------------------------------------------------------------------
-  function vectorNorm_5D_real64(x, norm) result(y)
-    real(kind=r64), intent(in) :: x(:,:,:,:,:)
-    integer :: norm
-    real (kind=r64) :: y
-
-! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
-    select case (norm)  ! code to support rank /= 0 cases.
-    case (L_INFINITY_NORM)
-       y = maxval(abs(x))
-    case (L1_NORM)
-       y = sum(abs(x))
-    case (L2_NORM)
-!       y = sqrt(sum(x**2))
-!       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*x))
-    end select
-
-  end function vectorNorm_5D_real64
 
    
   !---------------------------------------------------------------------------
@@ -941,6 +971,7 @@ contains
        y = sum(abs(x))
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
 !       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
@@ -973,16 +1004,199 @@ contains
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*conjg(x)))
        y = sqrt(sum(x*conjg(x)))
     end select
 
   end function vectorNorm_5D_complex64
 
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 0.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_0D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x
+    integer :: norm
+    real (kind=r64) :: y
+
+    y = abs(x) ! independent of norm for rank=0 (scalar) case.
+
+  end function vectorNorm_0D_integerdefault
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 1.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_1D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x(:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(real(sum(x*x),kind=r64))
+    end select
+
+  end function vectorNorm_1D_integerdefault
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 2.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_2D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x(:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(real(sum(x*x),kind=r64))
+    end select
+
+  end function vectorNorm_2D_integerdefault
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 3.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_3D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x(:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(real(sum(x*x),kind=r64))
+    end select
+
+  end function vectorNorm_3D_integerdefault
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 4.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_4D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x(:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(real(sum(x*x),kind=r64))
+    end select
+
+  end function vectorNorm_4D_integerdefault
+
+   
+  !---------------------------------------------------------------------------
+  !> Returns the independent of norm in vector by the given diminsional
+  !! double-precission real numbers and given integer norm
+  !!
+  !! The following is for rank = 5.
+  !!
+  !! @param x - given dimensional double-precision real numbers
+  !! @param norm - given norm
+  !!
+  !! @return independent of norm
+  !---------------------------------------------------------------------------
+  function vectorNorm_5D_integerdefault(x, norm) result(y)
+    integer, intent(in) :: x(:,:,:,:,:)
+    integer :: norm
+    real (kind=r64) :: y
+
+! Note that abs(complex) is like the L2_NORM unless care is taken *here*.  Fix later...
+    select case (norm)  ! code to support rank /= 0 cases.
+    case (L_INFINITY_NORM)
+       y = maxval(abs(x))
+    case (L1_NORM)
+       y = sum(abs(x))
+    case (L2_NORM)
+!       y = sqrt(sum(x**2))
+!       y = sqrt(sum(x*conjg(x)))
+!       y = sqrt(sum(x*x))
+       y = sqrt(real(sum(x*x),kind=r64))
+    end select
+
+  end function vectorNorm_5D_integerdefault
+
 ! end interface vectorNorm implementations
 ! interface isWithinTolerance implementations
 
    logical function isWithinTolerance_0D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x
+!     real (kind=r32), intent(in) :: x
+     real(kind=r32), intent(in) :: x
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -992,7 +1206,8 @@ contains
 
    
    logical function isWithinTolerance_0D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x
+!     real (kind=r64), intent(in) :: x
+     real(kind=r64), intent(in) :: x
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1001,28 +1216,9 @@ contains
    end function isWithinTolerance_0D_real64
 
    
-   logical function isWithinTolerance_0D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_0D_complex32 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_0D_complex32
-
-   
-   logical function isWithinTolerance_0D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_0D_complex64 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_0D_complex64
-
-   
    logical function isWithinTolerance_1D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x(:)
+!     real (kind=r32), intent(in) :: x(:)
+     real(kind=r32), intent(in) :: x(:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1032,7 +1228,8 @@ contains
 
    
    logical function isWithinTolerance_1D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x(:)
+!     real (kind=r64), intent(in) :: x(:)
+     real(kind=r64), intent(in) :: x(:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1041,28 +1238,9 @@ contains
    end function isWithinTolerance_1D_real64
 
    
-   logical function isWithinTolerance_1D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x(:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_1D_complex32 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_1D_complex32
-
-   
-   logical function isWithinTolerance_1D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x(:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_1D_complex64 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_1D_complex64
-
-   
    logical function isWithinTolerance_2D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x(:,:)
+!     real (kind=r32), intent(in) :: x(:,:)
+     real(kind=r32), intent(in) :: x(:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1072,7 +1250,8 @@ contains
 
    
    logical function isWithinTolerance_2D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x(:,:)
+!     real (kind=r64), intent(in) :: x(:,:)
+     real(kind=r64), intent(in) :: x(:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1081,28 +1260,9 @@ contains
    end function isWithinTolerance_2D_real64
 
    
-   logical function isWithinTolerance_2D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x(:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_2D_complex32 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_2D_complex32
-
-   
-   logical function isWithinTolerance_2D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x(:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_2D_complex64 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_2D_complex64
-
-   
    logical function isWithinTolerance_3D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x(:,:,:)
+!     real (kind=r32), intent(in) :: x(:,:,:)
+     real(kind=r32), intent(in) :: x(:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1112,7 +1272,8 @@ contains
 
    
    logical function isWithinTolerance_3D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x(:,:,:)
+!     real (kind=r64), intent(in) :: x(:,:,:)
+     real(kind=r64), intent(in) :: x(:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1121,28 +1282,9 @@ contains
    end function isWithinTolerance_3D_real64
 
    
-   logical function isWithinTolerance_3D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x(:,:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_3D_complex32 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_3D_complex32
-
-   
-   logical function isWithinTolerance_3D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x(:,:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_3D_complex64 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_3D_complex64
-
-   
    logical function isWithinTolerance_4D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x(:,:,:,:)
+!     real (kind=r32), intent(in) :: x(:,:,:,:)
+     real(kind=r32), intent(in) :: x(:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1152,7 +1294,8 @@ contains
 
    
    logical function isWithinTolerance_4D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x(:,:,:,:)
+!     real (kind=r64), intent(in) :: x(:,:,:,:)
+     real(kind=r64), intent(in) :: x(:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1161,28 +1304,9 @@ contains
    end function isWithinTolerance_4D_real64
 
    
-   logical function isWithinTolerance_4D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x(:,:,:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_4D_complex32 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_4D_complex32
-
-   
-   logical function isWithinTolerance_4D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x(:,:,:,:)
-     real (kind=r64), intent(in) :: tolerance
-     integer,         intent(in) :: norm
-
-     isWithinTolerance_4D_complex64 = ( vectorNorm(x, norm) <= tolerance )
-
-   end function isWithinTolerance_4D_complex64
-
-   
    logical function isWithinTolerance_5D_real32(x, tolerance, norm)
-     real (kind=r32), intent(in) :: x(:,:,:,:,:)
+!     real (kind=r32), intent(in) :: x(:,:,:,:,:)
+     real(kind=r32), intent(in) :: x(:,:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1192,7 +1316,8 @@ contains
 
    
    logical function isWithinTolerance_5D_real64(x, tolerance, norm)
-     real (kind=r64), intent(in) :: x(:,:,:,:,:)
+!     real (kind=r64), intent(in) :: x(:,:,:,:,:)
+     real(kind=r64), intent(in) :: x(:,:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1201,8 +1326,119 @@ contains
    end function isWithinTolerance_5D_real64
 
    
+   logical function isWithinTolerance_0D_complex32(x, tolerance, norm)
+!     complex (kind=r32), intent(in) :: x
+     complex(kind=c32), intent(in) :: x
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_0D_complex32 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_0D_complex32
+
+   
+   logical function isWithinTolerance_0D_complex64(x, tolerance, norm)
+!     complex (kind=r64), intent(in) :: x
+     complex(kind=c64), intent(in) :: x
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_0D_complex64 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_0D_complex64
+
+   
+   logical function isWithinTolerance_1D_complex32(x, tolerance, norm)
+!     complex (kind=r32), intent(in) :: x(:)
+     complex(kind=c32), intent(in) :: x(:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_1D_complex32 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_1D_complex32
+
+   
+   logical function isWithinTolerance_1D_complex64(x, tolerance, norm)
+!     complex (kind=r64), intent(in) :: x(:)
+     complex(kind=c64), intent(in) :: x(:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_1D_complex64 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_1D_complex64
+
+   
+   logical function isWithinTolerance_2D_complex32(x, tolerance, norm)
+!     complex (kind=r32), intent(in) :: x(:,:)
+     complex(kind=c32), intent(in) :: x(:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_2D_complex32 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_2D_complex32
+
+   
+   logical function isWithinTolerance_2D_complex64(x, tolerance, norm)
+!     complex (kind=r64), intent(in) :: x(:,:)
+     complex(kind=c64), intent(in) :: x(:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_2D_complex64 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_2D_complex64
+
+   
+   logical function isWithinTolerance_3D_complex32(x, tolerance, norm)
+!     complex (kind=r32), intent(in) :: x(:,:,:)
+     complex(kind=c32), intent(in) :: x(:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_3D_complex32 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_3D_complex32
+
+   
+   logical function isWithinTolerance_3D_complex64(x, tolerance, norm)
+!     complex (kind=r64), intent(in) :: x(:,:,:)
+     complex(kind=c64), intent(in) :: x(:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_3D_complex64 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_3D_complex64
+
+   
+   logical function isWithinTolerance_4D_complex32(x, tolerance, norm)
+!     complex (kind=r32), intent(in) :: x(:,:,:,:)
+     complex(kind=c32), intent(in) :: x(:,:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_4D_complex32 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_4D_complex32
+
+   
+   logical function isWithinTolerance_4D_complex64(x, tolerance, norm)
+!     complex (kind=r64), intent(in) :: x(:,:,:,:)
+     complex(kind=c64), intent(in) :: x(:,:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_4D_complex64 = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_4D_complex64
+
+   
    logical function isWithinTolerance_5D_complex32(x, tolerance, norm)
-     complex (kind=r32), intent(in) :: x(:,:,:,:,:)
+!     complex (kind=r32), intent(in) :: x(:,:,:,:,:)
+     complex(kind=c32), intent(in) :: x(:,:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -1212,13 +1448,80 @@ contains
 
    
    logical function isWithinTolerance_5D_complex64(x, tolerance, norm)
-     complex (kind=r64), intent(in) :: x(:,:,:,:,:)
+!     complex (kind=r64), intent(in) :: x(:,:,:,:,:)
+     complex(kind=c64), intent(in) :: x(:,:,:,:,:)
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
      isWithinTolerance_5D_complex64 = ( vectorNorm(x, norm) <= tolerance )
 
    end function isWithinTolerance_5D_complex64
+
+   
+   logical function isWithinTolerance_0D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x
+     integer, intent(in) :: x
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_0D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_0D_integerdefault
+
+   
+   logical function isWithinTolerance_1D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x(:)
+     integer, intent(in) :: x(:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_1D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_1D_integerdefault
+
+   
+   logical function isWithinTolerance_2D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x(:,:)
+     integer, intent(in) :: x(:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_2D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_2D_integerdefault
+
+   
+   logical function isWithinTolerance_3D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x(:,:,:)
+     integer, intent(in) :: x(:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_3D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_3D_integerdefault
+
+   
+   logical function isWithinTolerance_4D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x(:,:,:,:)
+     integer, intent(in) :: x(:,:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_4D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_4D_integerdefault
+
+   
+   logical function isWithinTolerance_5D_integerdefault(x, tolerance, norm)
+!     integer (kind=rdefault), intent(in) :: x(:,:,:,:,:)
+     integer, intent(in) :: x(:,:,:,:,:)
+     real (kind=r64), intent(in) :: tolerance
+     integer,         intent(in) :: norm
+
+     isWithinTolerance_5D_integerdefault = ( vectorNorm(x, norm) <= tolerance )
+
+   end function isWithinTolerance_5D_integerdefault
 
 ! end interface isWithinTolerance implementations
 ! interface assertEqual implementations
@@ -16744,14 +17047,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     integer, intent(in) :: found
+    integer :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -16821,14 +17126,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     integer, intent(in) :: found
+    integer :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -16898,14 +17205,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     integer, dimension(product(fShape)), intent(in) :: found
+    integer :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -16975,14 +17284,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     integer, dimension(product(fShape)), intent(in) :: found
+    integer :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17052,14 +17363,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     real(kind=r32), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17129,14 +17442,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     real(kind=r32), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17206,14 +17521,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17283,14 +17600,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17360,14 +17679,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17437,14 +17758,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17514,14 +17837,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17591,14 +17916,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17668,14 +17995,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r32), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17745,14 +18074,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r32), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17822,14 +18153,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17899,14 +18232,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
+    real(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -17976,14 +18311,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18053,14 +18390,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18130,14 +18469,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18207,14 +18548,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18284,14 +18627,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), intent(in) :: expected
+    real(kind=r64) :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18361,14 +18706,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64) :: expected_
     real(kind=r64), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18438,14 +18785,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), intent(in) :: expected
+    real(kind=r64) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18515,14 +18864,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
+    real(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18592,14 +18943,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18669,14 +19022,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18746,14 +19101,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18823,14 +19180,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18900,14 +19259,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -18977,14 +19338,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19054,14 +19417,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, intent(in) :: expected
+    integer :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19131,14 +19496,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     integer, dimension(product(eShape)), intent(in) :: expected
+    integer :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19208,14 +19575,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19285,14 +19654,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19362,14 +19733,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19439,14 +19812,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19516,14 +19891,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19593,14 +19970,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19670,14 +20049,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19747,14 +20128,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19824,14 +20207,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), intent(in) :: expected
+    real(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19901,14 +20286,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -19978,14 +20365,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), intent(in) :: expected
+    real(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20055,14 +20444,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    real(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20132,14 +20523,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20209,14 +20602,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20286,14 +20681,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20363,14 +20760,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r32) :: found_
 
     real(kind=r32), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20440,14 +20839,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20517,14 +20918,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20594,14 +20997,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20671,14 +21076,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20748,14 +21155,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r64), intent(in) :: expected
+    complex(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20825,14 +21234,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20902,14 +21313,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r64), intent(in) :: expected
+    complex(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -20979,14 +21392,16 @@ end subroutine assertEqual_c64_5D_c64_5D_tol64_internal
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
     complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
+    complex(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
+    complex(kind=r64) :: found_
 
     real(kind=r64), intent(in) :: tolerance
 
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!--    real(kind=kind(expected)) :: expected_
+!--    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation

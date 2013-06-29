@@ -211,17 +211,18 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 
      real(kind=kind(tolerance_)) :: ONE=1
      real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
-     logical :: conformable
+!     logical :: conformable
   
-     integer :: first
+!     integer :: first
 """ + declareDelta + """
-     integer :: i, i1, i2
-     integer :: expectedSize
+!     integer :: i, i1, i2
+!     integer :: expectedSize
      ! maybe use (:) in the following...
-     integer :: expectedShape("""+ str(expectedDescr.RANK()) + """)
-     integer :: foundShape(""" + str(foundDescr.RANK()) + """)
+!     integer :: expectedShape("""+ str(expectedDescr.RANK()) + """)""" +\
+elideIfZero(foundDescr.RANK(), """
+     integer :: foundShape(""" + str(foundDescr.RANK()) + """)"""  + """
      ! expected and found combinations are [0,icomb] by [1,2,3,4,5,...].
-     integer :: """ + MakeNamesWithRank('idx',foundDescr.RANK()) + """ ! for iter.
+     integer :: """ + MakeNamesWithRank('idx',foundDescr.RANK()) ) + """ 
 """ + \
 """
 ! Scalar "temp" variables
@@ -235,9 +236,9 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         ifElseString(foundDescr.RANK()==0,'1',str(foundDescr.RANK())) + """)
 !
 """ + \
-"""
+elideIfZero(foundDescr.RANK(), """
       foundShape = shape(found)
-""" + \
+""" )+ \
 ifElseString(tolerance == 0, """
       ! Case:  tolerance == 0
       tolerance_ = DEFAULT_TOLERANCE
@@ -253,7 +254,7 @@ elideIfZero(expectedDescr.RANK(), \
       call assertSameShape(shape(expected),shape(found),location=location)
       if (anyExceptions()) return
 
-      expectedSize = size(expected); expectedShape = shape(expected)
+!      expectedSize = size(expected)
 """ ) + \
 """
    ! Size and shape okay.  Now compare elements... If all tolerable, return...
@@ -379,10 +380,15 @@ def makeAssertEqualInternal_type(eDescr,fDescr,tolerance):
         
     expectedDeclaration = \
 "    " + DECLARE('expected',eType,ePrec,0,\
-                                  opts=eOpts+', intent(in)') + "\n"
+                                  opts=eOpts+', intent(in)') + "\n" + \
+"    " + DECLARE('expected_',eType,ePrec,0,\
+                                  opts='') + "\n" 
+
     foundDeclaration = \
 "    " + DECLARE('found',fType,fPrec,0,\
-                               opts=fOpts+', intent(in)') + "\n"
+                               opts=fOpts+', intent(in)') + "\n" + \
+"    " + DECLARE('found_',fType,fPrec,0,\
+                               opts= '' ) + "\n"
     
     toleranceDeclaration = \
 ifElseString(tolerance == 0,\
@@ -412,8 +418,8 @@ ifElseString(tolerance == 0,\
     toleranceDeclaration + """
     
     real(kind=kind(tolerance)) :: tolerance_
-    real(kind=kind(expected)) :: expected_
-    real(kind=kind(found)) :: found_
+!---    real(kind=kind(expected)) :: expected_
+!---    real(kind=kind(found)) :: found_
     integer :: i,m,ir
     logical OK
     integer, dimension(size(fShape)) :: iLocation
@@ -503,6 +509,14 @@ def constructAssertEqualInterfaceBlock(foundFTypes=['real']):
 def VECTOR_NORM_NAME(rank,fType='real',precision=64):
     return """vectorNorm_"""+str(rank)+"D"+"_"+fType+str(precision)
 
+def vnSQRT(x,fType,precision):
+    retStr = ''
+    if fType == 'integer' :
+        retStr = 'sqrt(real('+x+',kind=r64))'
+    else :
+        retStr = 'sqrt('+x+')'
+    return retStr
+
 def generateVECTOR_NORM(rank,fType='real',precision=64):
     subroutineName = VECTOR_NORM_NAME(rank,fType=fType,precision=precision)
     dimStr = DIMS(rank)
@@ -537,7 +551,8 @@ def generateVECTOR_NORM(rank,fType='real',precision=64):
     case (L2_NORM)
 !       y = sqrt(sum(x**2))
 !       y = sqrt(sum(x*conjg(x)))
-       y = sqrt(sum(x*"""+CONJG('x',fType)+"""))
+!       y = sqrt(sum(x*"""+CONJG('x',fType)+"""))
+       y = """ + vnSQRT("""sum(x*"""+CONJG('x',fType)+""")""",fType,precision) + """
     end select
 """) + \
 """
@@ -562,9 +577,10 @@ class VECTOR_NORM(routineUnit):
 def constructVectorNormInterfaceBlock():
     VectorNormInterface = interfaceBlock('vectorNorm')
     map(VectorNormInterface.addRoutineUnit, \
-                        [VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
-                         for t in ['real','complex'] \
-                         for p in [32, 64]] )
+            flattened( \
+                        [[VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
+                         for p in allowedPrecisions(t) ] \
+                         for t in ['real','complex','integer']] ))
     return VectorNormInterface
 
 def constructDifferenceReportInterfaceBlock():
@@ -617,11 +633,22 @@ def isWithinToleranceName(rank,fType='real',precision=64):
 def generateIsWithinTolerance(rank,fType='real',precision=64):
     subroutineName = isWithinToleranceName(rank,fType=fType,precision=precision)
     dimStr = DIMS(rank)
-    
+
+    declareKind = ''
+    if fType == 'integer' :
+        declareKind = ''
+    elif fType == 'real' :
+        declareKind = '(kind=r'+str(precision)+')'
+    elif fType == 'complex' :
+        declareKind = '(kind=c'+str(precision)+')'
+    else:
+        print 'isWithinToleranceTypeError'
+        
     retstr = \
 """
    logical function """+subroutineName+"""(x, tolerance, norm)
-     """+fType+""" (kind=r"""+str(precision)+"""), intent(in) :: x"""+dimStr+"""
+!     """+fType+""" (kind=r"""+str(precision)+"""), intent(in) :: x"""+dimStr+"""
+     """+fType+declareKind+""", intent(in) :: x"""+dimStr+"""
      real (kind=r64), intent(in) :: tolerance
      integer,         intent(in) :: norm
 
@@ -649,9 +676,12 @@ class IsWithinTolerance(routineUnit):
 def constructIsWithinToleranceInterfaceBlock():
     iwt_InterfaceBlock = interfaceBlock('isWithinTolerance')
     map(iwt_InterfaceBlock.addRoutineUnit, \
-        [IsWithinTolerance(i,fType=t,precision=p)
-         for i in range(6) for t in ['real','complex'] \
-            for p in [32,64]])
+        flattened( \
+        [[IsWithinTolerance(i,fType=t,precision=p)
+         for i in range(6) \
+         for p in allowedPrecisions(t) ] \
+         for t in ['real','complex','integer'] \
+            ]))
     return iwt_InterfaceBlock
 
 
@@ -712,7 +742,7 @@ def declareUSES():
    use AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
-   use ThrowFundamentalTypes_mod, only : throwNonConformable
+!   use ThrowFundamentalTypes_mod, only : throwNonConformable
    use StringUtilities_mod
 """
 
@@ -958,7 +988,8 @@ def makeModuleComplex():
     return
 
 def makeModuleInteger():
-    mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
+#    mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
+    mod = constructModule(baseName='AssertInteger1')
     with open(mod.getFileName(),'w') as f:
         f.write('\n'.join(mod.generate()))
         f.close()

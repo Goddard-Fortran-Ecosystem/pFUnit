@@ -12,9 +12,8 @@
 
 
 module Test_AssertReal_mod ! note name
-  use Exception_mod, only: getNumExceptions, anyExceptions
   use TestSuite_mod
-  use Params_mod, only : r32, r64
+  use Params_mod, only : r32
   use StringUtilities_mod, only: toString
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport   ! note name
@@ -326,7 +325,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -368,8 +367,8 @@ contains
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
-    integer :: i1, i2, i3, i4, i5
-    integer :: n1, n2, n3, n4, n5
+    integer :: i1, i2
+    integer :: n1, n2
 
     !dbg3 print *,'11000'
 
@@ -405,8 +404,8 @@ contains
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
-    integer :: i1, i2, i3, i4, i5
-    integer :: n1, n2, n3, n4, n5
+    integer :: i1, i2, i3
+    integer :: n1, n2, n3
 
     !dbg3 print *,'12000'
 
@@ -512,7 +511,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -739,7 +738,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
     integer :: n1, n2
     real(kind=r32)    :: tolerance32, bad32
@@ -810,7 +809,7 @@ end subroutine testEquals_MultiDWithTolerance64
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
     integer :: n1, n2
     real(kind=r64)    :: tolerance64, good64, bad64

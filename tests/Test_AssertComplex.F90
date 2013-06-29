@@ -11,9 +11,9 @@
 !    tested.  I.e. non-boilerplate.
 
 module Test_AssertComplex_mod ! note name
-  use Exception_mod, only: getNumExceptions, anyExceptions
+!  use Exception_mod, only: getNumExceptions, anyExceptions
   use TestSuite_mod
-  use Params_mod, only : r32, r64
+  use Params_mod, only : r32
   use StringUtilities_mod, only: toString
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport
@@ -354,7 +354,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -393,8 +393,8 @@ contains
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
-    integer :: i1, i2, i3, i4, i5
-    integer :: n1, n2, n3, n4, n5
+    integer :: i1, i2
+    integer :: n1, n2
 
     !dbg3 print *,'11000'
 
@@ -528,7 +528,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2, i3, i4, i5
     integer :: n1, n2, n3, n4, n5
 
@@ -755,7 +755,7 @@ contains
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
     integer :: n1, n2
     complex(kind=r32)    :: bad32
@@ -828,7 +828,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
-    character(len=MAXLEN_SHAPE) :: locationInArray
+!    character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
     integer :: n1, n2
     real(kind=r64)    :: tolerance64, good64, bad64

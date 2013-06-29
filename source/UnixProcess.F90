@@ -56,13 +56,13 @@ contains
       character(len=:), allocatable :: fullCommand
       character(len=:), allocatable :: mode
 
-      type (C_PTR) :: fileHandle
-      type (C_PTR) :: line
-      integer :: pid
+!      type (C_PTR) :: fileHandle
+!      type (C_PTR) :: line
+!      integer :: pid
       integer, parameter :: MAX_LEN = 80
       character(len=:), allocatable :: string
-      integer :: rc
-      integer :: i
+!      integer :: rc
+!      integer :: i
 
       fullCommand = makeCommand(command, runInBackground)
       mode = nullTerminate('r')
@@ -143,7 +143,7 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer :: rc
-      integer :: i
+!      integer :: i
 
 !!$      line = this%getDelim(new_line('$'))
 
@@ -173,7 +173,7 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer :: rc
-      integer :: i
+!      integer :: i
 
       integer(kind=C_INT) :: useDelimeter
 
