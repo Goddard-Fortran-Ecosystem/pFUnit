@@ -49,7 +49,7 @@ contains
       integer, intent(in) :: found
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -68,7 +68,7 @@ contains
       integer, intent(in) :: found(:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(1)
@@ -92,7 +92,7 @@ contains
       integer, intent(in) :: found(:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
@@ -114,7 +114,7 @@ contains
       integer, intent(in) :: found(:,:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
@@ -140,7 +140,7 @@ contains
       integer, intent(in) :: found(:,:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
@@ -159,7 +159,7 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -177,7 +177,7 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -196,7 +196,7 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 
@@ -214,7 +214,7 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      type (SourceLocation) :: location_
+!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
 

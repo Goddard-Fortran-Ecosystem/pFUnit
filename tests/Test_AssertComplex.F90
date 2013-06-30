@@ -86,7 +86,7 @@ contains
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element [0].' &
+         & ';  first difference at element  [1].' &
          & )
     
   end subroutine testEquals_C_complexScalar

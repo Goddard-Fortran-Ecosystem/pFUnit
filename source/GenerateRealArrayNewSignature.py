@@ -186,161 +186,20 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         message_ = NULL_MESSAGE
      end if
 
-     call """+subroutineName+"""_internal ( &
-     &  expected, found, tolerance_, message_, location_ )
+    call assertSameShape(shape(expected),shape(found), location=location_)
+    if (anyExceptions()) return
+
+!+     call """+subroutineName+"""_internal ( &
+!+     &  expected, found, tolerance_, message_, location_ )
 
 ! Next allow call to here...
 !mlr-NextStep-Begin
-!     call """+internalSubroutineName+"""(&
-!     &  expected, shape(expected), found, shape(found), &
-!     &  tolerance_, message_, location_ )
+     call """+internalSubroutineName+"""(&
+     &  expected, shape(expected), found, shape(found), &
+     &  tolerance_, message_, location_ )
 !mlr-NextStep-End
      
    end subroutine
-""" + \
-"""
-   subroutine """+subroutineName+"""_internal( &
-   &  expected, found, tolerance, message, location )
-     implicit none\n""" + \
-     declareExpected + \
-     declareFound + \
-     declareTolerance + """ 
-     real(kind=kind(tolerance)) :: tolerance_\n
-     character(len=*), intent(in) :: message  ! not used yet!
-     type (SourceLocation), intent(in) :: location
-
-     real(kind=kind(tolerance_)) :: ONE=1
-     real(kind=kind(tolerance_)), parameter :: DEFAULT_TOLERANCE = tiny(ONE)
-!     logical :: conformable
-  
-!     integer :: first
-""" + declareDelta + """
-!     integer :: i, i1, i2
-!     integer :: expectedSize
-     ! maybe use (:) in the following...
-!     integer :: expectedShape("""+ str(expectedDescr.RANK()) + """)""" +\
-elideIfZero(foundDescr.RANK(), """
-     integer :: foundShape(""" + str(foundDescr.RANK()) + """)"""  + """
-     ! expected and found combinations are [0,icomb] by [1,2,3,4,5,...].
-     integer :: """ + MakeNamesWithRank('idx',foundDescr.RANK()) ) + """ 
-""" + \
-"""
-! Scalar "temp" variables
-""" + \
-     declareExpectedScalar_expected0 + \
-     declareFoundScalar_found0 + \
-"""
-!
-! Capture the location where things went wrong. Using foundRank.
-      integer :: idxLocation("""+ \
-        ifElseString(foundDescr.RANK()==0,'1',str(foundDescr.RANK())) + """)
-!
-""" + \
-elideIfZero(foundDescr.RANK(), """
-      foundShape = shape(found)
-""" )+ \
-ifElseString(tolerance == 0, """
-      ! Case:  tolerance == 0
-      tolerance_ = DEFAULT_TOLERANCE
-""", """
-      ! Case:  tolerance !== 0
-      tolerance_ = tolerance
-""" ) + \
-elideIfZero(expectedDescr.RANK(), \
-"""
-   ! If the expected is scalar, then we are conformable.  Otherwise, we have to check the shape.
-   ! The following segment is elided if the expected rank is zero.
-
-      call assertSameShape(shape(expected),shape(found),location=location)
-      if (anyExceptions()) return
-
-!      expectedSize = size(expected)
-""" ) + \
-"""
-   ! Size and shape okay.  Now compare elements... If all tolerable, return...
-      delta = expected - found ! Note use of implicit iteration, delta can have nontrivial rank
-
-   ! Question:  How to handle 0-rank case?  How to handle tolerance == 0?
-      if (isWithinTolerance(delta, real(tolerance_,kind=r64), L_INFINITY_NORM)) return
-
-   ! Check for difference
-
-""" + \
-iterateOverMultiRank(foundDescr.RANK(),"idx","foundShape","""
-   expected0 = expected""" + \
-AddBlockSymbols(expectedDescr.RANK() > 0, \
-                ['(',')'], \
-                MakeNamesWithRank("idx",foundDescr.RANK())) \
-                +"""
-   found0 = found""" + \
-AddBlockSymbols(foundDescr.RANK() > 0, \
-                ['(',')'], \
-                MakeNamesWithRank("idx",foundDescr.RANK())) \
-                +"""
-   delta1 = expected0-found0
-   if ( &
-   & .not. &
-   & isWithinTolerance( &
-   &   delta1, &
-   &   real(tolerance_,kind=r64), &
-   &   L_INFINITY_NORM) ) &
-   &   then
-!bug2013-0607   if (expected0 /= found0 ) then
-""" + \
-ifElseString(foundDescr.RANK() > 0, """
-      idxLocation = [ """ + MakeNamesWithRank("idx",foundDescr.RANK())+""" ] """, """
-      idxLocation = [ 0 ] """ ) + \
-"""
-!???      tolerance_ = 0.0
-      call throwDifferentValuesWithLocation( &
-      &       expected0, &
-      &       found0, &
-      &       idxLocation, & 
-      &       tolerance_, &
-      &       location )
-      return ! bail
-   end if
-
-""") + """
-contains
-
-subroutine throwDifferentValuesWithLocation( &
-&   expected, found, iLocation, tolerance, location )
-   use Params_mod
-   use StringUtilities_mod
-   use Exception_mod
-   use ThrowFundamentalTypes_mod, only : locationFormat
-   ! , differenceReport, valuesReport
-   implicit none\n""" + \
-   declareExpectedScalar_expected + \
-   declareFoundScalar_found + \
-ifElseString(tolerance == 0,\
-"""
-   real(kind=kind(found)) :: tolerance""", \
-"""
-   real(kind=r"""+str(tolerance)+"""), intent(in) :: tolerance""" \
-) + \
-"""
-   type (SourceLocation), intent(in) :: location
-   integer, intent(in) :: iLocation(:)
-   integer :: iLocationSize
-   integer, parameter :: MAXLEN_SHAPE = 80
-   character(len=MAXLEN_SHAPE) :: locationInArray
-   write(locationInArray,locationFormat(iLocation)) iLocation
-
-! scalar case
-! in throwDifferentValuesWithLocation  !!!!***CURRENTLY ACTIVE***!!!!
-    call throw( &
-         & trim(valuesReport(expected, found)) // &
-         & '; ' // trim(differenceReport(abs(found - expected), tolerance_)) //  &
-!         & '; ' // trim(differenceReport(found - expected, tolerance_)) //  &
-         & ';  first difference at element '//trim(locationInArray)//'.', &
-         & location = location &
-         )    
-         
-end subroutine throwDifferentValuesWithLocation
-
-end subroutine """ + subroutineName + """_internal
 """
     return retString
 
@@ -388,6 +247,8 @@ def makeAssertEqualInternal_type(eDescr,fDescr,tolerance):
 "    " + DECLARE('found',fType,fPrec,0,\
                                opts=fOpts+', intent(in)') + "\n" + \
 "    " + DECLARE('found_',fType,fPrec,0,\
+                               opts= '' ) + "\n" + \
+"    " + DECLARE('delta1',fType,fPrec,0,\
                                opts= '' ) + "\n"
     
     toleranceDeclaration = \
@@ -425,8 +286,12 @@ ifElseString(tolerance == 0,\
     integer, dimension(size(fShape)) :: iLocation
     character(len=MAXLEN_SHAPE) :: locationInArray
 
+! MLR: The following just might work...
+    tolerance_ = tolerance
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
+!    print *,'0800 ',product(fShape),fShape
     m = product(fShape)
     i = 0
     OK = .true.
@@ -435,11 +300,25 @@ ifElseString(tolerance == 0,\
     if( m > 0 )then
        do while ( i < m .and. OK )
          i = i + 1
-!      OK = .not. ( expected(i) /= found(i) )
-         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
+
+         delta1 = """ + expected_i + """-""" + found_i + """
+         OK = &
+         &  isWithinTolerance( &
+         &    delta1, &
+         &    real(tolerance_,kind=r64), &
+         &    L_INFINITY_NORM )
+!         OK = .not. ( expected(i) /= found(i) )
+!         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
        end do
     else
-         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
+!         i = 1
+         delta1 = """ + expected_i + """-""" + found_i + """    
+         OK = &
+         &  isWithinTolerance( &
+         &    delta1, &
+         &    real(tolerance_,kind=r64), &
+         &    L_INFINITY_NORM )
+!         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
     end if
 
     if( .not. OK )then
@@ -448,13 +327,18 @@ ifElseString(tolerance == 0,\
     expected_ = """+expected_i+"""
     found_    = """+found_i+"""
 
-    if( m > 0 )then
+!    if( m > 0 )then
+    if( size(fshape) > 0 ) then
 
-    do ir = 1, size(fShape)
-      iLocation(ir) = mod(i,fShape(ir))
+    i = i - 1
+    do ir = 1,size(fShape)
+      iLocation(ir) = mod(i,fShape(ir)) + 1
       i = i / fShape(ir)
     end do
 
+!    print *,'0998 ',m
+!    print *,'0999 ',size(fShape)
+!    print *,'1000 ',iLocation
     write(locationInArray,locationFormat(iLocation)) iLocation
 
     else
@@ -468,7 +352,7 @@ ifElseString(tolerance == 0,\
     call throw( &
     & trim(valuesReport(expected_,found_)) // &
     & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & '; first difference at element '//trim(locationInArray)//'.', &
+    & ';  first difference at element '//trim(locationInArray)//'.', &
     & location = location &
     )
     
