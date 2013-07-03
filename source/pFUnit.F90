@@ -43,6 +43,10 @@ module pFUnit_mod
 
    public :: assertEqual
    public :: assertTrue, assertFalse
+   public :: assertAny
+   public :: assertAll
+   public :: assertNone
+   public :: assertNotAll
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
    public :: assertExceptionRaised
