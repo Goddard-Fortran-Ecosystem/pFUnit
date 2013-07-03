@@ -1,0 +1,62 @@
+@test
+subroutine testAdd()
+   use add_mod
+   use pfunit_mod
+   implicit none
+
+   @assertEqual(3., add(1.,2.))
+
+end subroutine testAdd
+
+@test
+subroutine testAddBroken()
+   use add_mod
+   use pfunit_mod
+   implicit none
+
+   @assertEqual(1., add(1.,2.), 'intentional broken test')
+
+end subroutine testAddBroken
+
+@test
+subroutine testAddComplex()
+   use addComplex_mod
+   use pfunit_mod
+   implicit none
+
+   @assertEqual((/cmplx(1.0),cmplx(0.0,2.0)/),add( (/cmplx(1.0),cmplx(0.0)/), (/cmplx(0.0),cmplx(0.0,2.0)/)))
+
+end subroutine testAddComplex
+
+@test
+subroutine testAddComplexMultiDim()
+   use pfunit_mod
+   implicit none
+
+   integer, parameter :: m = 3, n = 3
+   complex, dimension(m,n) :: expected, z0, z1
+
+   expected = 0.0; z0 = 1.0; z1 = -1.0
+   z0(2,2) = cmplx(1.0,0.0); z1(3,1) = cmplx(0.0,-2.0)
+   expected(2,2) = z0(2,2) - 1.0 ; expected(3,1) = 1.0 + z1(3,1)
+
+   @assertEqual(expected,z0+z1)
+
+end subroutine testAddComplexMultiDim
+
+@test
+subroutine testAddComplexMultiDimBroken()
+   use pfunit_mod
+   implicit none
+
+   integer, parameter :: m = 3, n = 3
+   complex, dimension(m,n) :: expected, z0, z1
+
+   expected = 0.0; z0 = 1.0; z1 = -1.0
+   z0(2,2) = cmplx(1.0,0.0); z1(3,1) = cmplx(0.0,-2.0)
+   expected(2,2) = z0(2,2)+1.0 ; expected(3,1) = 1.0 + z1(3,1)
+
+   @assertEqual(expected,z0+z1,'intentionally broken')
+
+end subroutine testAddComplexMultiDimBroken
+

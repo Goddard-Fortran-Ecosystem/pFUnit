@@ -1,4 +1,9 @@
+
+*.a
+*.i90
 *.mod
 *.o
 *~
+/Test_Assert_cpp.F90
+/remote.x
 /tests.x

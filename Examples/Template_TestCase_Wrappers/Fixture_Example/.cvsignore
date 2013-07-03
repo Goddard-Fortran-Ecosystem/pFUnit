@@ -1,9 +1,0 @@
-.pFUnitLog
-pfunit.F90
-pfunit.x
-semantic.cache
-suite_list
-testUseFixture_mod_wrap.F90
-tests.x
-testusefixture_mod.mod
-testusefixture_mod_wrap.mod

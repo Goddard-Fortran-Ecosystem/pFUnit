@@ -1,48 +1,123 @@
-#include "fortran_tokens.h"
-
 program main
-  use pFUnit
+   use pfunit_mod
+   use ParallelContext_mod
+   implicit none
+#ifdef USE_MPI
+   include 'mpif.h'
+#endif
 
-#define OPER(module) use CONCATENATE(module,_wrap), only: CONCATENATE(suite_,module) => suite
+   type (TestSuite) :: all
+   class(BaseTestRunner), allocatable :: runner
+   
+   integer :: i
+   character(len=:), allocatable :: executable
+   character(len=:), allocatable :: argument
+   integer :: length
 
-#include "suite_list"
-#undef OPER
+   logical :: useRobustRunner
+   logical :: useSubsetRunner
+   integer :: numSkip
+   logical :: useMpi
 
-  implicit none
+   class (ParallelContext), allocatable :: context
 
-  type (TestSuite_type)  :: top
-  type (TestResult_type) :: result
-  type (Report_type)     :: rprt
-  character(len=100)  :: summary_statement
+   useRobustRunner = .false.
+   useSubsetRunner = .false.
+   numSkip = 0
 
-  call pFUnit_init()
-!!$$  call setDebug()
-  top = TestSuite('top')
+   call get_command_argument(0, length=length)
+   allocate(character(len=length) :: executable)
+   call get_command_argument(0, value=executable)
 
-#define OPER(module) call Add(top, CONCATENATE(suite_,module)())
+   i = 0
+   do
+      i = i + 1
+      if (i > command_argument_count()) exit
 
-#include "suite_list"
-#undef OPER
+      call get_command_argument(i, length=length)
+      allocate(character(len=length) :: argument)
+      call get_command_argument(i, value=argument)
+      select case(argument)
+      case ('-robust')
+         useRobustRunner = .true.
+      case ('-skip')
+         useSubsetRunner = .true.
+         i = i + 1
+         deallocate(argument)
+         call get_command_argument(i, length=length)
+         allocate(character(len=length) :: argument)
+         call get_command_argument(i, value=argument)
+         read(argument,*) numSkip
+      end select
+      deallocate(argument)
+   end do
 
-  result=newTestResult(mode=MODE_USE_STDOUT + MODE_USE_LOGFILE)
-  call Run(top, result)
+   if (useRobustRunner) then
+      call initialize(useMPI=.false.)
+   else
+      call initialize(useMPI=.true.)
+   end if
 
-  if (amRoot()) then
-     summary_statement=Summary(result)
-     print*
-     print*,trim(summary_statement)
-  end if
+#ifdef USE_MPI
+      useMpi = .true.
+#else
+      useMpi = .false.
+#endif
 
-  ! Catch remaining exceptions
-  if (ExceptionRaised()) then
-     print*,'Remaining exception: '
-     rprt = GenerateExceptionReport()
-     call Print(rprt)
-     call clean(rprt)
-  end if
+   if (useRobustRunner) then
+      useMpi = .false. ! override build
+#ifdef USE_MPI
+      allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable))
+#else
+      allocate(runner, source=RobustRunner(executable))
+#endif
+   else if (useSubsetRunner) then
+      allocate(runner, source=SubsetRunner(numSkip=numSkip))
+   else
+      allocate(runner, source=newTestRunner())
+   end if
 
-  call clean(result)
-  call clean(top)
-  call pFUnit_finalize()
+   all = getTestSuites()
+   call getContext(context, useMpi)
+
+   call runner%run(all, context)
+
+   call finalize()
+
+contains
+
+   subroutine getContext(context, useMpi)
+      class (ParallelContext), allocatable :: context
+      logical, intent(in) :: useMpi
+
+#ifdef USE_MPI
+      if (useMpi) then
+         allocate(context, source=newMpiContext())
+         return
+      end if
+#endif
+
+      allocate(context, source=newSerialContext())
+
+   end subroutine getContext
+
+   function getTestSuites() result(suite)
+      type (TestSuite) :: suite
+
+#define ADD_TEST_SUITE(s) type (TestSuite), external :: s
+#include "testSuites.inc"
+#undef ADD_TEST_SUITE
+
+      suite = newTestSuite()
+
+   ! accumulate tests in top suite
+#define ADD_TEST_SUITE(s) call suite%addTest(s())
+#include "testSuites.inc"
+#undef ADD_TEST_SUITE
+
+   end function getTestSuites
+
 
 end program main
+
+

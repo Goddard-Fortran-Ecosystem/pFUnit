@@ -1,4 +1,4 @@
-.PHONY: all
+.PHONY: tests all
 
 TOP_DIR ?=$(shell pwd)
 
@@ -16,23 +16,13 @@ ifeq ($(UNAME),)
   UNAME =UNKNOWN
 endif
 
-ifneq ($(UNAME),AIX)
-  ARCH  ?=$(shell arch)
-else
-  ARCH ?=AIX
-endif
+ARCH  ?=$(shell arch)
 ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
 
-# Determine default compiler by architecture
-ifeq ($(ARCH),AIX)
-    F90_VENDOR ?=IBM
-else
-  ifneq ($(findstring $(ARCH),i386 x86_64 ia64),'')
-    F90_VENDOR ?=Intel
-  endif
-endif
+# Default compiler by architecture - always gfortran for now:
+F90 ?=gfortran
 F90_VENDOR ?=UNKNOWN
 
 # 32/64 ABI - almost all architectures are now 64 bit
@@ -43,9 +33,7 @@ else
 endif
 
 # Other defaults
-USE_MPI ?=NO # do not include MPI capabilities
-USE_DSO ?=NO # do not use DSO capabilities
-USE_ESMF ?=NO # do not use ESMF capabilities
+MPI ?=NO # do not include MPI capabilities
 
 # F90 Vendor common elements (override below)
 FFLAGS ?=
@@ -54,90 +42,38 @@ I=-I
 MOD=-I
 F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
-LDFLAGS ?=-L$(SOURCE_DIR) -lpfunitStatic
 
 # F90 Vendor specifics
-ifeq ($(F90_VENDOR),Intel)
-  F90 ?=ifort
-  DEBUG_FLAGS += -traceback -O0
-  ifeq ($(F90_VERSION),10)
-    CFLAGS+=-m64
+# Possibly F90 defined - makes things simple:
+
+ifneq (,$(findstring $(F90), ifort gfortran nag))
+  ifeq ($(F90),ifort)
+     COMPILER=Intel
+  else ifeq ($(F90),gfortran)
+     COMPILER=GNU
+  else ifeq ($(F90),nagfor)
+     COMPILER=NAG
   endif
-  ifeq ($(DSO),YES)
-    FPPFLAGS +=-fPIC
-    CFLAGS +=-fPIC
+else # use F90_VENDOR to specify
+  ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
+    COMPILER=Intel
+  else ifneq (,$(findstring $(F90_VENDOR),GNU gnu gfortran GFortran GFORTRAN))
+    COMPILER=GNU
+  else ifneq (,$(findstring $(F90_VENDOR),nag NAG nagfor))
+    COMPILER=NAG
   endif
-  FPPFLAGS+=-DSTRINGIFY_OPERATOR
-endif
-
-ifeq ($(F90_VENDOR),G95)
-  F90 ?=g95
-  FFLAGS += -Wno=155
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(F90_VENDOR),GFortran)
-  F90 ?=gfortran
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(F90_VENDOR),GNU)
-  F90 ?=gfortran
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(F90_VENDOR),NAG)
-  F90 ?=nagfor
-  FFLAGS +=-f2003
-  FFLAGS += -mismatch_all
-  F90_HAS_CPP=NO
-  FPPFLAGS += -DSTRINGIFY_SIMPLE
-  CPP =cpp -traditional -C
-  ifeq ($(DSO),YES)
-    FFLAGS +=-PIC
-  endif
-  LDFLAGS+= -ldl
-endif
-
-ifeq ($(F90_VENDOR),PGI)
-  F90 ?=pgf90
-  FFLAGS +=-Mallocatable=03
-  FPPFLAGS += -DSTRINGIFY_SIMPLE -Minform=severe -O0 -g
-  LDFLAGS+= -ldl
-endif
-
-ifeq ($(F90_VENDOR),IBM)
-  F90 ?=xlf
-  CC ?=xlc
-  FFLAGS += -qsuffix=cpp=F90 -qfree=f90 -qzerosize -qnosave
-  D=-WF,-D
-  FPPFLAGS += $DSTRINGIFY_SIMPLE
-endif
-
-ifeq ($(ESMF),YES)
-MPI=YES
 endif
 
 ifeq ($(MPI),YES)
   MPIF90 ?= mpif90
-  F90     = $(MPIF90)
   FPPFLAGS += $DUSE_MPI
   CPPFLAGS += -DUSE_MPI
   ifeq ($(MPICH),YES)
      LIBMPI ?=-lmpich
-  else 
+  else
      LIBMPI ?=-lmpi
   endif
   LDFLAGS += $(LIBMPI)
-ifeq ($(ESMF),YES)
-   FPPFLAGS += $DUSE_ESMF
-endif
-endif
-
-DSO_SUFFIX ?=so
-ifeq ($(DSO),YES)
-  FPPFLAGS += $DUSE_DSO
-  CPPFLAGS += -DUSE_DSO
 endif
 
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
@@ -152,12 +88,12 @@ FFLAGS +=$I$(INCLUDE_DIR) $(MOD)$(SOURCE_DIR)
 CFLAGS +=-I$(INCLUDE_DIR)
 
 ifeq ($(DEBUG),YES)
-	FFLAGS += $(DEBUG_FLAGS)
+        FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all:
-	$(MAKE) -j -C $(SOURCE_DIR) all
-	$(MAKE) -j -C $(TESTS_DIR) all
+all: 
+	$(MAKE) -C $(SOURCE_DIR) all
+	$(MAKE) -C $(TESTS_DIR) all
 
 doc:
 	$(MAKE) -j -C $(DOC_DIR) all
@@ -165,101 +101,30 @@ doc:
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
-	$(RM) .pFUnitLog
 
-distclean: clean
+distclean:
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
-	$(RM) *.x
 
 tests: all
 ifeq ($(MPI),YES)
-	mpirun -np 5 ./mpi_pFUnit.x
+	mpirun -np 4 ./tests/tests.x
 else
-	tests/tests.x
+	./tests/tests.x
 endif
 
 install: libpfunit.a
-ifeq ($(DSO),YES)
-  install: libpfunit.$(DSO_SUFFIX)
-endif
-
 INSTALL_DIR ?= $(CURDIR)
-install:
+install: 
 	echo Installing pFUnit in $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)/lib
 	mkdir -p $(INSTALL_DIR)/mod
-	mkdir -p $(INSTALL_DIR)/bin
 	mkdir -p $(INSTALL_DIR)/include
+	mkdir -p $(INSTALL_DIR)/bin
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
-	cp -p bin/wrapTest    $(INSTALL_DIR)/bin/.
-	cp -p bin/extract     $(INSTALL_DIR)/bin/.
-	cp include/*.h        $(INSTALL_DIR)/include/.
-	cp include/*.F90      $(INSTALL_DIR)/include/.
-	cp include/*.makefile $(INSTALL_DIR)/include/.
-ifeq ($(DSO),YES)
-	cp -p source/pfunit.x $(INSTALL_DIR)/bin/.
-endif
-
-
-ifeq ($(F90_HAS_CPP),YES)
-
-define F90-Rule
-%.o:%.F90
-	$(F90) -c $(FFLAGS) $(FPPFLAGS) $$$$<
-endef
-
-else
-
-define F90-Rule
-%.o:%.F90
-	$(CPP) $(CPPFLAGS) $(FPPFLAGS) $$$$< > $$$$*_cpp.F90
-	$(F90) -c $(FFLAGS)  $$$$*_cpp.F90 -o $$$$@
-	$(RM) $$$$*_cpp.F90
-endef
-
-endif
-
-define M4-Rule
-%.F90 : %.m4
-	m4 < $$$$< > $$$$*.F90
-endef
-
-define CM4-Rule
-%.c : %.cm4
-	m4 -I$(INCLUDE_DIR) -DfortranCompiler="lowerCase($(F90_VENDOR))" < $$$$< > $$$$*.c
-endef
-
-
-ifeq ($(F90_VENDOR),Intel)
-#  DSO_EXTERNAL_LIBRARIES += -L/opt/intel/fc/9.1.038/lib -limf -lifcore
-  DSO_EXTERNAL_LIBRARIES += #-L/opt/intel/fc/10.1.014/lib -limf -lifcore -lifport
-endif
-
-ifeq ($(F90_VENDOR),NAG)
-  DSO_EXTERNAL_LIBRARIES +=
-endif
-
-ifeq ($(F90_VENDOR),G95)
-  DSO_EXTERNAL_LIBRARIES += #-L/sw/lib/gcc-lib/i386-apple-darwin8/4.0.3/ -lgcc_s -lf95
-endif
-
-DSO_EXTERNAL_LIBRARIES +=-L$(SOURCE_DIR) -lpfunit
-
-ifeq ($(UNAME),Linux)
-  FFLAGS +=$DLINUX
-  ifeq ($(F90_VENDOR),Intel)
-    DSO_MECHANISM ?=$(F90) -shared -o $$@ $$^ $(DSO_EXTERNAL_LIBRARIES)
-  endif
-  ifeq ($(F90_VENDOR),NAG)
-    DSO_MECHANISM ?=ld -shared -o $$@ -lc $$^ $(DSO_EXTERNAL_LIBRARIES)
-  endif
-endif
-ifeq ($(UNAME),Darwin)
-  DSO_MECHANISM ?=libtool -v -o $$@ -dynamic -undefined dynamic_lookup -single_module -dead_strip $$^ $(DSO_EXTERNAL_LIBRARIES) 
-endif
-DSO_MECHANISM ?=UNKNOWN
+	cp include/*        $(INSTALL_DIR)/include/.
+	cp -r bin/* $(INSTALL_DIR)/bin/.
 
 export UNAME
 export F90
@@ -267,39 +132,27 @@ export F90_VENDOR
 export FFLAGS
 export FPPFLAGS
 export F90_HAS_CPP
-
 export CPP
 export CFLAGS
 export CPPFLAGS
-
 export LDFLAGS
-
-export F90-Rule
-export M4-Rule
-export CM4-Rule
-
 export SOURCE_DIR
 export INCLUDE_DIR
 export VPATH
-
 export MPI
-export ESMF
-export DSO
-export DSO_SUFFIX
-export DSO_MECHANISM
-export CC
+export MPIF90
 export LIBMPI
+export COMPILER
+
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
-  $(warning 	UNAME: 	$(UNAME))
-  $(warning 	ARCH:  	$(ARCH))
-  $(warning 	F90 vendor:	$(F90_VENDOR))
-  $(warning 	F90 command:	$(F90))
-  $(warning 	F90 has cpp:	$(F90_HAS_CPP))
-  $(warning	USE MPI:	$(MPI))
-  $(warning	USE DSO:	$(DSO))
-  $(warning	ABI:		$(PFUNIT_ABI))
+  $(warning     UNAME:  $(UNAME))
+  $(warning     ARCH:   $(ARCH))
+  $(warning     F90 vendor:     $(COMPILER))
+  $(warning     F90 command:    $(F90))
+  $(warning     F90 has cpp:    $(F90_HAS_CPP))
+  $(warning     USE MPI:        $(MPI))
+  $(warning     ABI:            $(PFUNIT_ABI))
 endif
-#FFLAGS+=-prof-gen=srcpos -prof-dir=..
 

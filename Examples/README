@@ -1,44 +1,51 @@
-There are many several supported mechanisms for constructing suites of
-tests within pFUnit.  These are suggestively labeled "manual",
-"template", and "dso".
+These directories contain working examples of the use of pFUnit to
+perform unit testing.  For each example, multiple approaches to
+unit-testing are provided:
 
-The most straightforward mechanism is for the user to manually
-assemble the suite with explicit instrutions in their own driver.
-This mode is also essential for the bootstrapping development of
-pFUnit itself.  The downside of this approach is both the tedious
-requirement of editing the driver as each new test is created, or
-worse, forgetting to do so and incorrectly believing that a test is
-being exercised when in fact it is not.  New users are recommended to
-understand the manual mechanism before proceeding to either of the
-other mechanisms for routine use.
+* Manual (TBD) - developer manually inserts references to each test in the
+  main driver.  Assertions are done with direct Fortran calls to
+  pFUnit interfaces.  This approach is the most cumbersome, but also
+  provides better understanding of how test assembly is managed.
 
-The "template" mechanism for assembling tests is probably the one
-which will be the most comfortable for most users.  This mechanism
-uses simple shell scripts and pFUnit templates to automatically
-assemble pFUnit test cases and suites based upon the content of the
-user's test source code.  These scripts are currently rather
-primitive, but fully functional so long as users follow some simple
-conventions.  The most difficult aspect of this approach is the
-additional complexity in the build (Makefile) introduced by the
-intermediate wrapper files.   
 
-The "dso" mechanism for assembling tests uses so-called dynamic
-shared-object libraries as containers for the users tests.  Such
-libraries can be searched and loaded dynamically at runtime.  To use
-this mechanism, the user merely installs their test routines in a DSO
-and uses a prebuilt pFUnit executable (pfunit.x).  This executable
-prompts for the location of the DSO, searches the DSO for routines
-matching the pattern "test_*", builds a suite from these, and runs the
-suite.  Although this is a very elegant and flexible mechanism, some
-users may have difficulty providing their tests as a DSO.  (How to do
-this varies significantly from system to system, and may not be
-possible unless other libraries are also provided as DSOs.)
+* Semi-automated (should always work) - developer indicates tests with semaphores in the
+  source code and uses pFUnit preprocessing scripts to create a
+  framework driver.  Assertions are done with macros that
+  automatically track source file and line number, which improves
+  clarity in several ways.  This approach reduces the effort to create
+  and maintain tests but involves a bit of scripting "magic" that lies
+  outside the domain of Fortran.  Real applications will likely need
+  to adapt some aspects to their particular build system.
 
-The "dso" mechanism is also not yet completed.  It currently works
-well with simple tests cases - i.e. those that do not use fixtures,
-MPI, or parameterized setups.  We expect to modify pFUnit interfaces
-slightly in the near future to accommodate additional information that
-needs to be exchanged between the framework and user code.  
+  In each Semi-Automated directory, to run the tests:
+  - Set PFUNIT environment variable to directory where you installed pFUnit
+  - % make    # sohuld build and run tests
+
+* Automated (may never happen) - developer places all test code in a shared object
+  library (.so).  pFUnit provides a static driver that can
+  automatically execute tests in such a library given a regexp that
+  indicates test naming conventions.   Default is "test*".
+
+
+The current examples are:
+
+* Simple - a very simple example that allows users to gain some
+  confidence in the utility.  One test is purposefully failing to show what
+  failure messages look like.
+
+* Fixture - a more complicated example that involves subclassing TestCase.
+
+* Halo - a very simple example showing how to create tests for MPI based
+  procedures and execute them on varying processor counts.
+
+* Parameterized - an example showing how to create and use a
+  parameterized test case.
+
+* Robust - demonstrates the use of the "-robust" option for the
+  framework driver that allows for tests that crash or hang.
+
+
+
 
 
 
