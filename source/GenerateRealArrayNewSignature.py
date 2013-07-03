@@ -189,14 +189,11 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call """+subroutineName+"""_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call """+internalSubroutineName+"""(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -263,7 +260,8 @@ ifElseString(tolerance == 0,\
 # Start to define routine...
     retStr = """
     subroutine """+subroutineName+"""( &
-    & expected,eShape,found,fShape,tolerance,message,location )""" + \
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )""" + \
 """
     use Params_mod
     use Exception_mod
@@ -273,6 +271,7 @@ ifElseString(tolerance == 0,\
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
 """ + \
     expectedDeclaration + \
     foundDeclaration + \
@@ -289,6 +288,8 @@ ifElseString(tolerance == 0,\
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = """ + str(fType != 'complex') + """
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -302,22 +303,106 @@ ifElseString(tolerance == 0,\
          i = i + 1
 
          delta1 = """ + expected_i + """-""" + found_i + """
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) """ + \
+ifElseString(fType != 'complex', \
+"""
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 """,'') + \
+"""
+            case (RELEQP)
+              if ( abs("""+expected_i+""") > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / """+expected_i+""", &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
        end do
     else
 !         i = 1
          delta1 = """ + expected_i + """-""" + found_i + """    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) """ + \
+ifElseString(fType != 'complex', \
+"""
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 """,'') + \
+"""
+            case (RELEQP)
+              if ( abs("""+expected_i+""") > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / """+expected_i+""", &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( """+expected_i+""" /= """+found_i+""" )
     end if
 
@@ -349,13 +434,66 @@ ifElseString(tolerance == 0,\
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) """ + \
+ifElseString(fType != 'complex', \
+"""
+    case (GTP)
+       call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected' &
+       &   fPrefix='to be greater than:')) // &       
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected' &
+       &   fPrefix='to be greater than or equal to:')) // &       
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected' &
+       &   fPrefix='to be less than:')) // &       
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected' &
+       &   fPrefix='to be less than or equal to:')) // &       
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) """,'') + \
+"""
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine """+subroutineName+"""
@@ -580,14 +718,44 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
     runit = routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_"""+te+tf+pe+pf+"""(expected, found) result(valuesReport)
+      & function valuesReport_"""+te+tf+pe+pf+""" &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         """+te+expectedKind+""", intent(in) :: expected
         """+tf+foundKind+""", intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString("""+coercedExpected+""")) // &
-      & ' but found: ' // trim(toString("""+coercedFound+""")) // ''
+      & trim(ePrefix_)//' '// trim(toString("""+coercedExpected+""")) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString("""+coercedFound+""")) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 """)

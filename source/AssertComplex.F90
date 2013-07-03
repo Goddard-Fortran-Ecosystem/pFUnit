@@ -1571,14 +1571,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_0D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f0_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1629,14 +1626,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_0D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f0_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1687,14 +1681,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_0D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f0_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1745,14 +1736,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_0D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f0_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1803,14 +1791,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_0D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f0_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1861,14 +1846,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_0D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f0_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1919,14 +1901,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_0D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f0_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -1977,14 +1956,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_0D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f0_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2035,14 +2011,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2093,14 +2066,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2151,14 +2121,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2209,14 +2176,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_1D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2267,14 +2231,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_1D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2325,14 +2286,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_1D_c32_1D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2383,14 +2341,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2441,14 +2396,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2499,14 +2451,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2557,14 +2506,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2615,14 +2561,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2673,14 +2616,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_1D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2731,14 +2671,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_1D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2789,14 +2726,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_1D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2847,14 +2781,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_1D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2905,14 +2836,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_1D_c64_1D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -2963,14 +2891,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3021,14 +2946,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3079,14 +3001,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3137,14 +3056,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_2D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3195,14 +3111,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_2D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3253,14 +3166,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_2D_c32_2D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3311,14 +3221,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3369,14 +3276,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3427,14 +3331,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3485,14 +3386,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3543,14 +3441,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3601,14 +3496,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_2D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3659,14 +3551,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_2D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3717,14 +3606,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_2D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3775,14 +3661,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_2D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3833,14 +3716,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_2D_c64_2D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3891,14 +3771,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -3949,14 +3826,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4007,14 +3881,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4065,14 +3936,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_3D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4123,14 +3991,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_3D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4181,14 +4046,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_3D_c32_3D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4239,14 +4101,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4297,14 +4156,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4355,14 +4211,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4413,14 +4266,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4471,14 +4321,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4529,14 +4376,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_3D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4587,14 +4431,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_3D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4645,14 +4486,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_3D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4703,14 +4541,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_3D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4761,14 +4596,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_3D_c64_3D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4819,14 +4651,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4877,14 +4706,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4935,14 +4761,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -4993,14 +4816,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_4D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5051,14 +4871,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_4D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5109,14 +4926,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_4D_c32_4D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5167,14 +4981,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5225,14 +5036,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5283,14 +5091,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5341,14 +5146,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5399,14 +5201,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5457,14 +5256,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_4D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5515,14 +5311,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_4D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5573,14 +5366,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_4D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5631,14 +5421,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_4D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5689,14 +5476,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_4D_c64_4D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5747,14 +5531,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5805,14 +5586,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5863,14 +5641,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5921,14 +5696,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_5D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -5979,14 +5751,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_5D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6037,14 +5806,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_5D_c32_5D_tol32_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex32_tol32_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6095,14 +5861,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_0D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6153,14 +5916,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_0D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6211,14 +5971,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_0D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6269,14 +6026,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_0D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6327,14 +6081,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_0D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e0_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6385,14 +6136,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_int_5D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_integerdefault_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6443,14 +6191,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r32_5D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6501,14 +6246,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c32_5D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex32_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6559,14 +6301,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_r64_5D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_real64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6617,14 +6356,11 @@ contains
     call assertSameShape(shape(expected),shape(found), location=location_)
     if (anyExceptions()) return
 
-!+     call assertEqual_c64_5D_c64_5D_tol64_internal ( &
-!+     &  expected, found, tolerance_, message_, location_ )
-
 ! Next allow call to here...
 !mlr-NextStep-Begin
      call assertEqual_e1_complex64_f1_complex64_tol64_(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_ )
+     &  tolerance_, message_, location_, EQP )
 !mlr-NextStep-End
      
    end subroutine
@@ -6725,183 +6461,603 @@ contains
 ! interface valuesReport implementations
 
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerintegerdefaultdefault(expected, found) result(valuesReport)
+      & function valuesReport_integerintegerdefaultdefault &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         integer, intent(in) :: expected
         integer, intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerrealdefault32(expected, found) result(valuesReport)
+      & function valuesReport_integerrealdefault32 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         integer, intent(in) :: expected
         real(kind=r32), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integerrealdefault64(expected, found) result(valuesReport)
+      & function valuesReport_integerrealdefault64 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         integer, intent(in) :: expected
         real(kind=r64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realreal3232(expected, found) result(valuesReport)
+      & function valuesReport_realreal3232 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r32), intent(in) :: expected
         real(kind=r32), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realreal3264(expected, found) result(valuesReport)
+      & function valuesReport_realreal3264 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r32), intent(in) :: expected
         real(kind=r64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realreal6464(expected, found) result(valuesReport)
+      & function valuesReport_realreal6464 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r64), intent(in) :: expected
         real(kind=r64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(real(expected,kind=r32))) // &
-      & ' but found: ' // trim(toString(real(found,kind=r32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(real(expected,kind=r32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(real(found,kind=r32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplexdefault32(expected, found) result(valuesReport)
+      & function valuesReport_integercomplexdefault32 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         integer, intent(in) :: expected
         complex(kind=c32), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_integercomplexdefault64(expected, found) result(valuesReport)
+      & function valuesReport_integercomplexdefault64 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         integer, intent(in) :: expected
         complex(kind=c64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realcomplex3232(expected, found) result(valuesReport)
+      & function valuesReport_realcomplex3232 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r32), intent(in) :: expected
         complex(kind=c32), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realcomplex3264(expected, found) result(valuesReport)
+      & function valuesReport_realcomplex3264 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r32), intent(in) :: expected
         complex(kind=c64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_realcomplex6464(expected, found) result(valuesReport)
+      & function valuesReport_realcomplex6464 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         real(kind=r64), intent(in) :: expected
         complex(kind=c64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexcomplex3232(expected, found) result(valuesReport)
+      & function valuesReport_complexcomplex3232 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         complex(kind=c32), intent(in) :: expected
         complex(kind=c32), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexcomplex3264(expected, found) result(valuesReport)
+      & function valuesReport_complexcomplex3264 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         complex(kind=c32), intent(in) :: expected
         complex(kind=c64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
    
       character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_complexcomplex6464(expected, found) result(valuesReport)
+      & function valuesReport_complexcomplex6464 &
+      & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
+      & result(valuesReport)
         complex(kind=c64), intent(in) :: expected
         complex(kind=c64), intent(in) :: found
+        character(len=*), optional, intent(in) :: &
+      &   ePrefix, ePostfix, fPrefix, fPostfix
+        character(len=MAXLEN_MESSAGE) :: &
+      &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
+
+      if( .not.present(ePrefix) ) then
+         ePrefix_ = 'expected:'
+      else
+         ePrefix_ = ePrefix
+      end if
+      if( .not.present(ePostfix) ) then
+         ePostfix_ = ''
+      else
+         ePostfix_ = ePostfix
+      end if
+      if( .not.present(fPrefix) ) then
+         fPrefix_ = 'but found:'
+      else
+         fPrefix_ = fPrefix
+      end if
+      if( .not.present(fPostfix) ) then
+         fPostfix_ = ''
+      else
+         fPostfix_ = fPostfix
+      end if
 
 ! Note: removed '<.>'
         valuesReport = &
-      & 'expected: ' // trim(toString(cmplx(expected,kind=c32))) // &
-      & ' but found: ' // trim(toString(cmplx(found,kind=c32))) // ''
+      & trim(ePrefix_)//' '// trim(toString(cmplx(expected,kind=c32))) // &
+      & trim(ePostfix_)//' '// &
+      & trim(fPrefix_)//' '//trim(toString(cmplx(found,kind=c32))) // &
+      & trim(fPostfix_)// &
+      & ''
       
       end function
 
@@ -6909,7 +7065,8 @@ contains
 ! interface assertEqual_internal implementations
 
     subroutine assertEqual_e0_integerdefault_f0_integerdefault_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -6918,6 +7075,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     integer, intent(in) :: found
@@ -6938,6 +7096,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -6951,22 +7111,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -6998,13 +7236,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f0_integerdefault_tol64_
@@ -7012,7 +7288,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f0_integerdefault_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7021,6 +7298,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     integer, intent(in) :: found
@@ -7041,6 +7319,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7054,22 +7334,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -7101,13 +7459,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f0_integerdefault_tol64_
@@ -7115,7 +7511,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f1_integerdefault_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7124,6 +7521,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     integer, dimension(product(fShape)), intent(in) :: found
@@ -7144,6 +7542,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7157,22 +7557,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -7204,13 +7682,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f1_integerdefault_tol64_
@@ -7218,7 +7734,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f1_integerdefault_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7227,6 +7744,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     integer, dimension(product(fShape)), intent(in) :: found
@@ -7247,6 +7765,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7260,22 +7780,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -7307,13 +7905,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f1_integerdefault_tol64_
@@ -7321,7 +7957,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f0_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7330,6 +7967,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     real(kind=r32), intent(in) :: found
@@ -7350,6 +7988,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7363,22 +8003,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -7410,13 +8128,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f0_real32_tol32_
@@ -7424,7 +8180,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f0_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7433,6 +8190,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     real(kind=r32), intent(in) :: found
@@ -7453,6 +8211,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7466,22 +8226,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -7513,13 +8351,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f0_real32_tol32_
@@ -7527,7 +8403,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f1_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7536,6 +8413,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -7556,6 +8434,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7569,22 +8449,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -7616,13 +8574,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f1_real32_tol32_
@@ -7630,7 +8626,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f1_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7639,6 +8636,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -7659,6 +8657,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7672,22 +8672,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -7719,13 +8797,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f1_real32_tol32_
@@ -7733,7 +8849,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7742,6 +8859,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     real(kind=r64), intent(in) :: found
@@ -7762,6 +8880,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7775,22 +8895,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -7822,13 +9020,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f0_real64_tol64_
@@ -7836,7 +9072,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7845,6 +9082,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     real(kind=r64), intent(in) :: found
@@ -7865,6 +9103,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7878,22 +9118,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -7925,13 +9243,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f0_real64_tol64_
@@ -7939,7 +9295,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -7948,6 +9305,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -7968,6 +9326,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -7981,22 +9341,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -8028,13 +9466,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f1_real64_tol64_
@@ -8042,7 +9518,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8051,6 +9528,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -8071,6 +9549,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8084,22 +9564,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -8131,13 +9689,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f1_real64_tol64_
@@ -8145,7 +9741,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f0_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8154,6 +9751,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r32), intent(in) :: found
@@ -8174,6 +9772,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8187,22 +9787,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -8234,13 +9912,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f0_real32_tol32_
@@ -8248,7 +9964,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f0_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8257,6 +9974,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r32), intent(in) :: found
@@ -8277,6 +9995,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8290,22 +10010,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -8337,13 +10135,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f0_real32_tol32_
@@ -8351,7 +10187,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f1_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8360,6 +10197,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -8380,6 +10218,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8393,22 +10233,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -8440,13 +10358,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f1_real32_tol32_
@@ -8454,7 +10410,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f1_real32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8463,6 +10420,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -8483,6 +10441,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8496,22 +10456,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -8543,13 +10581,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f1_real32_tol32_
@@ -8557,7 +10633,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8566,6 +10643,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r64), intent(in) :: found
@@ -8586,6 +10664,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8599,22 +10679,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -8646,13 +10804,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f0_real64_tol64_
@@ -8660,7 +10856,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8669,6 +10866,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r64), intent(in) :: found
@@ -8689,6 +10887,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8702,22 +10902,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -8749,13 +11027,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f0_real64_tol64_
@@ -8763,7 +11079,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8772,6 +11089,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -8792,6 +11110,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8805,22 +11125,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -8852,13 +11250,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f1_real64_tol64_
@@ -8866,7 +11302,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8875,6 +11312,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -8895,6 +11333,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -8908,22 +11348,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -8955,13 +11473,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f1_real64_tol64_
@@ -8969,7 +11525,8 @@ contains
 
    
     subroutine assertEqual_e0_real64_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -8978,6 +11535,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), intent(in) :: expected
     real(kind=r64) :: expected_
     real(kind=r64), intent(in) :: found
@@ -8998,6 +11556,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9011,22 +11571,100 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -9058,13 +11696,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real64_f0_real64_tol64_
@@ -9072,7 +11748,8 @@ contains
 
    
     subroutine assertEqual_e1_real64_f0_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9081,6 +11758,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
     real(kind=r64) :: expected_
     real(kind=r64), intent(in) :: found
@@ -9101,6 +11779,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9114,22 +11794,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -9161,13 +11919,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real64_f0_real64_tol64_
@@ -9175,7 +11971,8 @@ contains
 
    
     subroutine assertEqual_e0_real64_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9184,6 +11981,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), intent(in) :: expected
     real(kind=r64) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -9204,6 +12002,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9217,22 +12017,100 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -9264,13 +12142,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real64_f1_real64_tol64_
@@ -9278,7 +12194,8 @@ contains
 
    
     subroutine assertEqual_e1_real64_f1_real64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9287,6 +12204,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
     real(kind=r64) :: expected_
     real(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -9307,6 +12225,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = True
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9320,22 +12240,100 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (GTP)
+              OK = delta1 .gt. 0
+            case (GEP)
+              OK = delta1 .ge. 0
+            case (LTP)
+              OK = delta1 .lt. 0
+            case (LEP)
+              OK = delta1 .le. 0 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -9367,13 +12365,51 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (GTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (GEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LTP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (LEP)
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real64_f1_real64_tol64_
@@ -9381,7 +12417,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9390,6 +12427,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     complex(kind=r32), intent(in) :: found
@@ -9410,6 +12448,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9423,22 +12463,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -9470,13 +12572,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f0_complex32_tol32_
@@ -9484,7 +12604,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9493,6 +12614,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     complex(kind=r32), intent(in) :: found
@@ -9513,6 +12635,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9526,22 +12650,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -9573,13 +12759,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f0_complex32_tol32_
@@ -9587,7 +12791,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9596,6 +12801,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -9616,6 +12822,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9629,22 +12837,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -9676,13 +12946,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f1_complex32_tol32_
@@ -9690,7 +12978,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9699,6 +12988,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -9719,6 +13009,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9732,22 +13024,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -9779,13 +13133,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f1_complex32_tol32_
@@ -9793,7 +13165,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9802,6 +13175,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     complex(kind=r64), intent(in) :: found
@@ -9822,6 +13196,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9835,22 +13211,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -9882,13 +13320,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f0_complex64_tol64_
@@ -9896,7 +13352,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -9905,6 +13362,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     complex(kind=r64), intent(in) :: found
@@ -9925,6 +13383,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -9938,22 +13398,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -9985,13 +13507,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f0_complex64_tol64_
@@ -9999,7 +13539,8 @@ contains
 
    
     subroutine assertEqual_e0_integerdefault_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10008,6 +13549,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, intent(in) :: expected
     integer :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -10028,6 +13570,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10041,22 +13585,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -10088,13 +13694,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_integerdefault_f1_complex64_tol64_
@@ -10102,7 +13726,8 @@ contains
 
    
     subroutine assertEqual_e1_integerdefault_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10111,6 +13736,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     integer, dimension(product(eShape)), intent(in) :: expected
     integer :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -10131,6 +13757,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10144,22 +13772,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -10191,13 +13881,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_integerdefault_f1_complex64_tol64_
@@ -10205,7 +13913,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10214,6 +13923,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
@@ -10234,6 +13944,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10247,22 +13959,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -10294,13 +14068,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f0_complex32_tol32_
@@ -10308,7 +14100,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10317,6 +14110,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
@@ -10337,6 +14131,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10350,22 +14146,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -10397,13 +14255,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f0_complex32_tol32_
@@ -10411,7 +14287,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10420,6 +14297,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -10440,6 +14318,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10453,22 +14333,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -10500,13 +14442,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f1_complex32_tol32_
@@ -10514,7 +14474,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10523,6 +14484,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -10543,6 +14505,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10556,22 +14520,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -10603,13 +14629,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f1_complex32_tol32_
@@ -10617,7 +14661,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10626,6 +14671,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -10646,6 +14692,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10659,22 +14707,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -10706,13 +14816,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f0_complex64_tol64_
@@ -10720,7 +14848,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10729,6 +14858,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -10749,6 +14879,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10762,22 +14894,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -10809,13 +15003,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f0_complex64_tol64_
@@ -10823,7 +15035,8 @@ contains
 
    
     subroutine assertEqual_e0_real32_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10832,6 +15045,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -10852,6 +15066,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10865,22 +15081,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -10912,13 +15190,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real32_f1_complex64_tol64_
@@ -10926,7 +15222,8 @@ contains
 
    
     subroutine assertEqual_e1_real32_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -10935,6 +15232,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r32), dimension(product(eShape)), intent(in) :: expected
     real(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -10955,6 +15253,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -10968,22 +15268,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -11015,13 +15377,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real32_f1_complex64_tol64_
@@ -11029,7 +15409,8 @@ contains
 
    
     subroutine assertEqual_e0_real64_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11038,6 +15419,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), intent(in) :: expected
     real(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -11058,6 +15440,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11071,22 +15455,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -11118,13 +15564,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real64_f0_complex64_tol64_
@@ -11132,7 +15596,8 @@ contains
 
    
     subroutine assertEqual_e1_real64_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11141,6 +15606,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
     real(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -11161,6 +15627,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11174,22 +15642,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -11221,13 +15751,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real64_f0_complex64_tol64_
@@ -11235,7 +15783,8 @@ contains
 
    
     subroutine assertEqual_e0_real64_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11244,6 +15793,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), intent(in) :: expected
     real(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -11264,6 +15814,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11277,22 +15829,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -11324,13 +15938,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_real64_f1_complex64_tol64_
@@ -11338,7 +15970,8 @@ contains
 
    
     subroutine assertEqual_e1_real64_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11347,6 +15980,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     real(kind=r64), dimension(product(eShape)), intent(in) :: expected
     real(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -11367,6 +16001,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11380,22 +16016,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -11427,13 +16125,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_real64_f1_complex64_tol64_
@@ -11441,7 +16157,8 @@ contains
 
    
     subroutine assertEqual_e0_complex32_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11450,6 +16167,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
@@ -11470,6 +16188,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11483,22 +16203,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -11530,13 +16312,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex32_f0_complex32_tol32_
@@ -11544,7 +16344,8 @@ contains
 
    
     subroutine assertEqual_e1_complex32_f0_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11553,6 +16354,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r32), intent(in) :: found
@@ -11573,6 +16375,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11586,22 +16390,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -11633,13 +16499,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex32_f0_complex32_tol32_
@@ -11647,7 +16531,8 @@ contains
 
    
     subroutine assertEqual_e0_complex32_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11656,6 +16541,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -11676,6 +16562,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11689,22 +16577,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -11736,13 +16686,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex32_f1_complex32_tol32_
@@ -11750,7 +16718,8 @@ contains
 
    
     subroutine assertEqual_e1_complex32_f1_complex32_tol32_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11759,6 +16728,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r32), dimension(product(fShape)), intent(in) :: found
@@ -11779,6 +16749,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11792,22 +16764,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -11839,13 +16873,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex32_f1_complex32_tol32_
@@ -11853,7 +16905,8 @@ contains
 
    
     subroutine assertEqual_e0_complex32_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11862,6 +16915,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -11882,6 +16936,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11895,22 +16951,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -11942,13 +17060,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex32_f0_complex64_tol64_
@@ -11956,7 +17092,8 @@ contains
 
    
     subroutine assertEqual_e1_complex32_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -11965,6 +17102,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -11985,6 +17123,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -11998,22 +17138,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -12045,13 +17247,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex32_f0_complex64_tol64_
@@ -12059,7 +17279,8 @@ contains
 
    
     subroutine assertEqual_e0_complex32_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12068,6 +17289,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -12088,6 +17310,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -12101,22 +17325,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -12148,13 +17434,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex32_f1_complex64_tol64_
@@ -12162,7 +17466,8 @@ contains
 
    
     subroutine assertEqual_e1_complex32_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12171,6 +17476,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r32), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r32) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -12191,6 +17497,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -12204,22 +17512,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -12251,13 +17621,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex32_f1_complex64_tol64_
@@ -12265,7 +17653,8 @@ contains
 
    
     subroutine assertEqual_e0_complex64_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12274,6 +17663,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r64), intent(in) :: expected
     complex(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -12293,6 +17683,8 @@ contains
 
 ! MLR: The following just might work...
     tolerance_ = tolerance
+
+! fType != 'complex' = False
 
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
@@ -12307,22 +17699,84 @@ contains
          i = i + 1
 
          delta1 = expected-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found )
        end do
     else
 !         i = 1
          delta1 = expected-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found )
     end if
 
@@ -12354,13 +17808,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex64_f0_complex64_tol64_
@@ -12368,7 +17840,8 @@ contains
 
    
     subroutine assertEqual_e1_complex64_f0_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12377,6 +17850,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r64) :: expected_
     complex(kind=r64), intent(in) :: found
@@ -12397,6 +17871,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -12410,22 +17886,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found )
     end if
 
@@ -12457,13 +17995,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex64_f0_complex64_tol64_
@@ -12471,7 +18027,8 @@ contains
 
    
     subroutine assertEqual_e0_complex64_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12480,6 +18037,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r64), intent(in) :: expected
     complex(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -12500,6 +18058,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -12513,22 +18073,84 @@ contains
          i = i + 1
 
          delta1 = expected-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected /= found(i) )
     end if
 
@@ -12560,13 +18182,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e0_complex64_f1_complex64_tol64_
@@ -12574,7 +18214,8 @@ contains
 
    
     subroutine assertEqual_e1_complex64_f1_complex64_tol64_( &
-    & expected,eShape,found,fShape,tolerance,message,location )
+    & expected,eShape,found,fShape,tolerance,message,location, &
+    & comparison )
     use Params_mod
     use Exception_mod
     use StringUtilities_mod
@@ -12583,6 +18224,7 @@ contains
     integer, intent(in), dimension(:) :: eShape, fShape
     character(len=*), intent(in) :: message
     type (SourceLocation), intent(in) :: location
+    integer, intent(in) :: comparison
     complex(kind=r64), dimension(product(eShape)), intent(in) :: expected
     complex(kind=r64) :: expected_
     complex(kind=r64), dimension(product(fShape)), intent(in) :: found
@@ -12603,6 +18245,8 @@ contains
 ! MLR: The following just might work...
     tolerance_ = tolerance
 
+! fType != 'complex' = False
+
 ! Note:  Could assert size(expected) = size(found) and fShape = eShape...
 
 !    print *,'0800 ',product(fShape),fShape
@@ -12616,22 +18260,84 @@ contains
          i = i + 1
 
          delta1 = expected(i)-found(i)
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-1'
+         end select
+         
 !         OK = .not. ( expected(i) /= found(i) )
 !         OK = .not. ( expected(i) /= found(i) )
        end do
     else
 !         i = 1
          delta1 = expected(i)-found(i)    
-         OK = &
-         &  isWithinTolerance( &
-         &    delta1, &
-         &    real(tolerance_,kind=r64), &
-         &    L_INFINITY_NORM )
+
+         select case (comparison)
+            case (EQP)
+              OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+            case (NEQP)
+              OK = &
+              &  .not. &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM ) 
+            case (RELEQP)
+              if ( abs(expected(i)) > 0 ) then
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1 / expected(i), &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              else
+                 OK = &
+              &  isWithinTolerance( &
+              &    delta1, &
+              &    real(tolerance_,kind=r64), &
+              &    L_INFINITY_NORM )
+              end if
+            case default
+              print *,'select-error-2'
+         end select
+
+!         OK = &
+!         &  isWithinTolerance( &
+!         &    delta1, &
+!         &    real(tolerance_,kind=r64), &
+!         &    L_INFINITY_NORM )
+         
 !         OK = .not. ( expected(i) /= found(i) )
     end if
 
@@ -12663,13 +18369,31 @@ contains
 
 ! Scalar
 ! Note use of abs
-    call throw( &
-    & trim(valuesReport(expected_,found_)) // &
-    & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-    & ';  first difference at element '//trim(locationInArray)//'.', &
-    & location = location &
-    )
-    
+
+    select case (comparison)
+    case (EQP)
+       call throw( &
+       & trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case (NEQP)
+       call throw( &
+       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       ) 
+    case (RELEQP)    
+       call throw( &
+       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & location = location &
+       )
+    case default
+       print *,'select-error-3'
+    end select
+
     end if
 
     end subroutine assertEqual_e1_complex64_f1_complex64_tol64_
