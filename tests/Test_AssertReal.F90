@@ -81,7 +81,7 @@ contains
 
     ! The following should throw an exception...
     
-    call assertEqual(expected, found, 'testEquals_0D1D')
+    call assertEqual(expected, found, message='testEquals_0D1D')
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -104,7 +104,7 @@ contains
 
     expected = good; found = good
     
-    call assertEqual(expected, found, 'testEquals_2D_nonConformable1')
+    call assertEqual(expected, found, message='testEquals_2D_nonConformable1')
 
     call assertCatch( &
           & 'nonconforming arrays - expected shape: ' // &
@@ -130,7 +130,7 @@ contains
     !dbg1 print *,'1000'
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_2D_SingleElementDifferent')
+    call assertEqual(expected,found, message='testEquals_2D_SingleElementDifferent')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
@@ -163,7 +163,7 @@ contains
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank0')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank0')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
@@ -197,7 +197,7 @@ contains
     expected = good; found = good; i1 = 1; i2 = 2; found(i1,i2) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
@@ -232,7 +232,7 @@ contains
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
@@ -269,7 +269,7 @@ contains
     found(i1,i2,i3,i4) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
@@ -304,7 +304,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
@@ -340,7 +340,7 @@ contains
     !dbg2 print *,'10000'
 
     ! The following should throw an exception...
-    call assertEqual(expected,found, &
+    call assertEqual(expected,found,message=&
          & 'testEquals_MultiD_SingleElementDifferent:nonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
@@ -377,7 +377,7 @@ contains
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
@@ -414,7 +414,7 @@ contains
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
@@ -452,7 +452,7 @@ contains
     found(i1,i2,i3,i4) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
@@ -489,7 +489,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
@@ -525,7 +525,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected, found, &
+    call assertEqual(expected, found,message=&
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
@@ -558,7 +558,7 @@ contains
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
@@ -589,7 +589,7 @@ contains
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
@@ -622,7 +622,7 @@ contains
     found(i1,i2,i3,i4) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
@@ -655,7 +655,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,'testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
@@ -676,7 +676,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found, & 
+    call assertEqual(expected,found,message=& 
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.

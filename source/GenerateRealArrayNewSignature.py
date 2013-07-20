@@ -156,7 +156,8 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         commentPreambleString + \
 """
    subroutine """+subroutineName+"""( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none\n""" + \
      declareExpected + \
      declareFound + \
@@ -455,7 +456,7 @@ ifElseString(fType != 'complex', \
     case (GTP)
        call throw( &
        & trim(valuesReport(expected_,found_, &
-       &   ePrefix='expected' &
+       &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
@@ -463,7 +464,7 @@ ifElseString(fType != 'complex', \
     case (GEP)
        call throw( &
        & trim(valuesReport(expected_,found_, &
-       &   ePrefix='expected' &
+       &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
@@ -471,7 +472,7 @@ ifElseString(fType != 'complex', \
     case (LTP)
        call throw( &
        & trim(valuesReport(expected_,found_, &
-       &   ePrefix='expected' &
+       &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
@@ -479,7 +480,7 @@ ifElseString(fType != 'complex', \
     case (LEP)
        call throw( &
        & trim(valuesReport(expected_,found_, &
-       &   ePrefix='expected' &
+       &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &

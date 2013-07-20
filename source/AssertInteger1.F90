@@ -1505,7 +1505,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_0D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found
@@ -1560,7 +1561,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_0D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found
@@ -1615,7 +1617,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found
@@ -1670,7 +1673,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found
@@ -1725,7 +1729,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_0D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found
@@ -1780,7 +1785,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:)
@@ -1835,7 +1841,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:)
@@ -1890,7 +1897,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_1D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:)
      real(kind=r32), intent(in) :: found(:)
@@ -1945,7 +1953,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_1D_r32_1D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:)
      real(kind=r32), intent(in) :: found(:)
@@ -2000,7 +2009,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
@@ -2055,7 +2065,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
@@ -2110,7 +2121,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:)
@@ -2165,7 +2177,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
@@ -2220,7 +2233,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
@@ -2275,7 +2289,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_1D_r64_1D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected(:)
      real(kind=r64), intent(in) :: found(:)
@@ -2330,7 +2345,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:)
@@ -2385,7 +2401,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:)
@@ -2440,7 +2457,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_2D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:)
      real(kind=r32), intent(in) :: found(:,:)
@@ -2495,7 +2513,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_2D_r32_2D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:)
      real(kind=r32), intent(in) :: found(:,:)
@@ -2550,7 +2569,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
@@ -2605,7 +2625,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
@@ -2660,7 +2681,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:)
@@ -2715,7 +2737,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
@@ -2770,7 +2793,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
@@ -2825,7 +2849,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_2D_r64_2D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected(:,:)
      real(kind=r64), intent(in) :: found(:,:)
@@ -2880,7 +2905,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:)
@@ -2935,7 +2961,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:)
@@ -2990,7 +3017,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_3D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:)
@@ -3045,7 +3073,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_3D_r32_3D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:)
@@ -3100,7 +3129,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3155,7 +3185,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3210,7 +3241,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3265,7 +3297,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3320,7 +3353,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3375,7 +3409,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_3D_r64_3D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:)
@@ -3430,7 +3465,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:)
@@ -3485,7 +3521,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:)
@@ -3540,7 +3577,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_4D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:)
@@ -3595,7 +3633,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_4D_r32_4D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:)
@@ -3650,7 +3689,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3705,7 +3745,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3760,7 +3801,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3815,7 +3857,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3870,7 +3913,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3925,7 +3969,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_4D_r64_4D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:)
@@ -3980,7 +4025,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
@@ -4035,7 +4081,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
@@ -4090,7 +4137,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_5D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
@@ -4145,7 +4193,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_5D_r32_5D_tol32( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
      real(kind=r32), intent(in) :: found(:,:,:,:,:)
@@ -4200,7 +4249,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -4255,7 +4305,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -4310,7 +4361,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_0D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -4365,7 +4417,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_int_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      integer, intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -4420,7 +4473,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r32_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r32), intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -4475,7 +4529,8 @@ contains
   !---------------------------------------------------------------------------
 
    subroutine assertEqual_r64_5D_r64_5D_tol64( &
-   &  expected, found, message, tolerance, location )
+   &  expected, found, tolerance, message, location )
+! was tolerance, message -- need to propagate changes... e.g. to test files
      implicit none
      real(kind=r64), intent(in) :: expected(:,:,:,:,:)
      real(kind=r64), intent(in) :: found(:,:,:,:,:)
@@ -5406,21 +5461,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -5629,21 +5696,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -5852,21 +5931,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -6075,21 +6166,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -6298,21 +6401,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -6521,21 +6636,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -6744,21 +6871,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -6967,21 +7106,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -7190,21 +7341,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -7413,21 +7576,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -7636,21 +7811,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -7859,21 +8046,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -8082,21 +8281,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -8305,21 +8516,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -8528,21 +8751,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -8751,21 +8986,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -8974,21 +9221,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -9197,21 +9456,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -9420,21 +9691,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -9643,21 +9926,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -9866,21 +10161,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -10089,21 +10396,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -10312,21 +10631,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
@@ -10535,21 +10866,33 @@ contains
        ) 
     case (GTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be greater than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='expected', &
+       &   fPrefix='to be less than or equal to:')) // &       
        & ';  first difference at element '//trim(locationInArray)//'.', &
        & location = location &
        ) 
