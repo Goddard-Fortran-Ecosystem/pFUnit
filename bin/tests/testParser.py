@@ -16,6 +16,7 @@ class MockParser():
         self.outputFile = MockWriter(self)
         self.outLines = []
         self.tests = []
+        self.mpitests = []
 
     def nextLine(self):
         return self.line
@@ -23,8 +24,8 @@ class MockParser():
 class TestParseLine(unittest.TestCase):
 
     def testCppSetLineAndFile(self):
-        self.assertEqual("#line 7 'foo'\n", cppSetLineAndFile(7, 'foo'))
-        self.assertEqual("#line 3 'bar'\n", cppSetLineAndFile(3, 'bar'))
+        self.assertEqual('#line 7 "foo"\n', cppSetLineAndFile(7, 'foo'))
+        self.assertEqual('#line 3 "bar"\n', cppSetLineAndFile(3, 'bar'))
 
     def testGetSubroutineName(self):
         self.assertEqual('a', getSubroutineName('subroutine a()'))
@@ -61,6 +62,37 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual('!@test\n',parser.outLines[0])
         self.assertEqual(nextLine,parser.outLines[1])
 
+    def testAtMpiTest(self):
+        """Check that a line starting with '@mpitest' is detected as an
+        annotation and that optional parameters are collected."""
+
+        nextLine = 'subroutine myTest()\n'
+        parser = MockParser(nextLine)
+        atMpiTest = AtMpiTest(parser)
+
+        line = '@mpitest(npes=[1])'
+        m = atMpiTest.match(line)
+        self.assertTrue(m)
+        atMpiTest.action(m,line)
+        self.assertEqual([1], parser.mpitests[0]['npes'])
+        self.assertFalse('ifdef' in parser.mpitests[0])
+
+        line = '@mpitest(npes=[1, 2,3], ifdef=USE_MPI)'
+        m = atMpiTest.match(line)
+        self.assertTrue(m)
+        atMpiTest.action(m,line)
+        self.assertEqual([1,2,3], parser.mpitests[1]['npes'])
+        self.assertEqual('USE_MPI', parser.mpitests[1]['ifdef'])
+
+        line = '@mpitest(npes=[3],ifdef=USE_MPI)'
+        m = atMpiTest.match(line)
+        self.assertTrue(m)
+        atMpiTest.action(m,line)
+        self.assertEqual([3], parser.mpitests[2]['npes'])
+        self.assertEqual('USE_MPI', parser.mpitests[1]['ifdef'])
+        
+
+
     def testMatchAtTestCase(self):
         """Check that a line starting with '@testcase' is detected as an
         annotation."""
@@ -93,17 +125,17 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atAssert.match('@assertequal(a, b)')) # case insensitive
         self.assertTrue(atAssert.match('@ASSERTEQUAL(a, b)')) # case insensitive
 
-        parser.fileName = 'foo.pfunit'
+        parser.fileName = "foo.pfunit"
         parser.lineNumber = 8
         atAssert.apply('   @assertEqual(1, 2)\n')
-        self.assertEqual("#line 8 'foo.pfunit'\n", parser.outLines[0])
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
         self.assertEqual("  call assertEqual(1, 2, &\n", parser.outLines[1])
         self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
         self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
         self.assertEqual(" & 8)", parser.outLines[4])
         self.assertEqual(" )\n", parser.outLines[5])
         self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        self.assertEqual("#line 9 'foo.pfunit'\n", parser.outLines[7])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
     def testMatchAtAssertOther(self):
         """Check that a line starting with '@assert*' is detected
