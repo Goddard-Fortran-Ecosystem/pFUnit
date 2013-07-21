@@ -93,8 +93,8 @@ contains
       coordinates = SphericalCoordinates(this%lat, this%lon)
       call coordinates%restrict() 
 
-      @assertEqual(this%restrictedLat, coordinates%getLat(), 'Latitude not correct;')
-      @assertEqual(this%restrictedLon, coordinates%getLon(), 'Longitude not correct;')
+      @assertEqual(this%restrictedLat, coordinates%getLat(), message='Latitude not correct;')
+      @assertEqual(this%restrictedLon, coordinates%getLon(), message='Longitude not correct;')
 
    end subroutine testRestrict
 

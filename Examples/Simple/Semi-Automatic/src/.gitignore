@@ -1,3 +1,4 @@
-/GNUmakefile~
-/add.o
-/add_mod.mod
+*~
+*.o
+*.mod
+
