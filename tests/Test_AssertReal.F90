@@ -64,6 +64,7 @@ contains
     ADD(testEquals_MultiDWithTolerance64_1)
     ADD(testEquals_MultiDWithTolerance64_2)
     ADD(testEquals_MultiDSourceLocation)
+    ADD(testEquals_ScalarAndLocation)
 
   end function suite
 
@@ -81,7 +82,7 @@ contains
 
     ! The following should throw an exception...
     
-    call assertEqual(expected, found, message='testEquals_0D1D')
+    call assertEqual(expected, found, 'testEquals_0D1D')
 
     call assertCatch( &
          & trim(valuesReport(good, bad)) // &
@@ -104,7 +105,7 @@ contains
 
     expected = good; found = good
     
-    call assertEqual(expected, found, message='testEquals_2D_nonConformable1')
+    call assertEqual(expected, found, 'testEquals_2D_nonConformable1')
 
     call assertCatch( &
           & 'nonconforming arrays - expected shape: ' // &
@@ -910,7 +911,6 @@ end subroutine testEquals_MultiDWithTolerance64
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
-! Note use of real...  Consider overloading the reporting functions...
     call assertCatch( &
          & trim(valuesReport(good64, bad64)) // &
          & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
@@ -919,6 +919,39 @@ end subroutine testEquals_MultiDWithTolerance64
          & )
 
   end subroutine testEquals_MultiDSourceLocation
+
+  subroutine testEquals_ScalarAndLocation()
+    use Params_mod
+    implicit none
+
+    real(kind=r64) :: expected, found
+    real(kind=r64) :: tolerance64
+
+    !mlr maybe move this to a larger scope...
+!    integer, parameter :: MAXLEN_SHAPE = 80
+!    character(len=MAXLEN_SHAPE) :: locationInArray
+!    type (SourceLocation) :: location
+
+    tolerance64 = 0.0
+    expected = 2.0
+    found = 3.0
+
+!    location = SourceLocation(lineNumber=999,fileName='AFileName')
+
+    call assertEqual(expected,found)
+
+    ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
+    ! "locationInArray" is not used in the original AssertEqual code.
+
+! Note use of real...  Consider overloading the reporting functions...
+    call assertCatch( &
+         & trim(valuesReport(expected, found)) // &
+         & '; ' // trim(differenceReport(abs(expected - found), tolerance64)) // &
+         & ';  first difference at element  ' // trim('[1]') // '.' &
+         & )
+
+  end subroutine testEquals_ScalarAndLocation
+
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)

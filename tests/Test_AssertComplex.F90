@@ -672,7 +672,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_C_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found,'testEquals_C_MultiD_SingleElementDifferent:Rank5')
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
@@ -693,7 +693,7 @@ contains
     found(i1,i2,i3,i4,i5) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found, message=& 
+    call assertEqual(expected,found, &
          & 'testEquals_C_MultiD_SingleElementDifferent:Rank5:NonConformable')
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
