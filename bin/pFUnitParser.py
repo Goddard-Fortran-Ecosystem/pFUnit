@@ -44,9 +44,26 @@ class AtMpiTest(Action):
         return m
 
     def action(self, m, line):
+        args = re.match('\s*@mpitest\s*\\((.*)\\)\s*$', line, re.IGNORECASE).groups()[0]
+        dictionary = {}
+
+        # npes is mandatory
+        npesString = re.match('npes=\\[([0-9,\s]+)\\]', args, re.IGNORECASE).groups()[0]
+        npes = map(int, npesString.split(','))
+        dictionary['npes'] = npes
+
+        #ifdef is optional
+        matchIfdef = re.match('.*ifdef\s*=\s*(\w+)', args, re.IGNORECASE)
+
+        if (matchIfdef): 
+            ifdef = matchIfdef.groups()[0]
+            dictionary['ifdef'] = ifdef
+
+
         nextLine = self.parser.nextLine()
-        npes = map(int, m.groups()[0].split(','))
-        self.parser.mpitests.append({'name':getSubroutineName(nextLine),'npes':npes})
+        dictionary['name'] = getSubroutineName(nextLine)
+
+        self.parser.mpitests.append(dictionary)
         self.parser.outputFile.write("!"+line)
         self.parser.outputFile.write(nextLine)
 
@@ -310,6 +327,8 @@ class Parser():
             constructor = 'newMpiTestMethod'
 
         for test in self.mpitests:
+            if ('ifdef' in test):
+                self.outputFile.write('#ifdef ' + test['ifdef'] + '\n')
             name = test['name']
             if self.parameters:
                 startParamLoop(self.outputFile, self.parameters)
@@ -322,9 +341,10 @@ class Parser():
                 self.outputFile.write(indent + 
                                       '   call suite%addTest(' + constructor + 
                                       '('+"'" + name + "'" + ',' + name + extraArgs + '))\n')
-
             if self.parameters:
                 endParamLoop(self.outputFile)
+            if ('ifdef' in test):
+                self.outputFile.write('#endif ' + test['ifdef'] + '\n')
 
         printTail(self.outputFile, self.suiteName)
                        
