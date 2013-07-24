@@ -118,6 +118,7 @@ contains
                do iException = 1, numExceptions
                   line = contentScan(this%process%getline())
                   read(line,*) length
+                  
                   fileName = contentScan(this%process%getLine())
                   line = contentScan(this%process%getLine())
                   read(line,*) lineNumber
