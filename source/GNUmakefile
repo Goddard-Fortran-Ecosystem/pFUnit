@@ -29,6 +29,7 @@ Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
 AssertBasic.o: Exception.o StringUtilities.o
 AssertInteger.o: Exception.o AssertBasic.o
+AssertInteger1.o: AssertBasic.o
 AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
 AssertComplex.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
 Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o AssertComplex.o

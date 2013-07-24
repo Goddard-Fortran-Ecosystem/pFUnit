@@ -39,7 +39,7 @@ contains
    subroutine testToString_realPositive()
       call assertEqual('+0.1000000E-01',toString(0.0100000))
       call assertEqual('+0.1000001',toString(0.1000001))
-#if defined(__INTEL_COMPILER) && (__INTEL_VERSION == 13)
+#if defined(__INTEL_COMPILER) && defined(INTEL_13)
       call assertEqual('+1.0000000',toString(1.)) ! workaround bug
 #else
       call assertEqual('+1.000000',toString(1.))
@@ -54,7 +54,7 @@ contains
    end subroutine testToString_realPositive
 
    subroutine testToString_realNegative()
-#if defined(__INTEL_COMPILER) && (__INTEL_VERSION == 13)
+#if defined(__INTEL_COMPILER) && defined(INTEL_13)
       call assertEqual('-1.0000000',toString(-1.)) ! workaround bug
 #else
       call assertEqual('-1.000000',toString(-1.))
