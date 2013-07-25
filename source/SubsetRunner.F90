@@ -79,7 +79,12 @@ contains
 
       select type (aTest)
       class is (TestSuite)
+#if defined(__INTEL_COMPILER) && (INTEL_13)
          testCaseList = aTest%getTestCases()
+#else
+         call aTest%getTestCases(testCaseList)
+#endif
+
       class is (TestCase)
          testCaseList = [TestCaseReference(aTest)]
       class default

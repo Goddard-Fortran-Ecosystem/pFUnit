@@ -141,6 +141,7 @@ contains
       this%name = trim(name)
    end subroutine setName
 
+#if defined(__INTEL_COMPILER) && (INTEL_13)
    recursive function getTestCases(this) result(testList)
       use Exception_mod
       use Test_mod
@@ -181,5 +182,49 @@ contains
       end do
 
    end function getTestCases
-   
+#else
+   subroutine  getTestCases(this, testList)
+      use Exception_mod
+      use Test_mod
+      use TestCase_mod
+      class (TestSuite), intent(in) :: this
+      type (TestCaseReference), allocatable :: testList(:)
+
+      integer :: n
+
+      allocate(testList(this%countTestCases()))
+      
+      n = 0
+      call accumulateTestCases(this, testList, n)
+
+   contains
+      
+      recursive subroutine accumulateTestCases(this, testList, n)
+         class (TestSuite), intent(in) :: this
+         type (TestCaseReference), intent(inout) :: testList(:)
+         integer, intent(inout) :: n
+         
+         integer :: i, j
+
+         do i = 1, size(this%tests)
+
+            associate (t => this%tests(i)%pTest)
+
+               select type (t)
+               class is (TestCase)
+                  n = n + 1
+                  allocate(testList(n)%test, source=t)
+               class is (TestSuite)
+                  call accumulateTestCases(t, testList, n)
+               class default
+                  call throw('Unsupportes Test subclass in TestSuite::getTestCases()')
+               end select
+             end associate
+          end do
+
+       end subroutine accumulateTestCases
+
+    end subroutine getTestCases
+#endif
+
 end module TestSuite_mod

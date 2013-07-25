@@ -113,7 +113,12 @@ contains
 
       select type (aTest)
       class is (TestSuite)
+#if defined(__INTEL_COMPILER) && (INTEL_13)
          testCases = aTest%getTestCases()
+#else
+         call aTest%getTestCases(testCases)
+#endif
+
       class is (TestCase)
          testCases = [TestCaseReference(aTest)]
       class default
@@ -205,7 +210,7 @@ contains
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (Exception), intent(in) :: exceptions(:)
-      
+
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
