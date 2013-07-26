@@ -14,7 +14,7 @@ module Test_AssertComplex_mod ! note name
 !  use Exception_mod, only: getNumExceptions, anyExceptions
   use TestSuite_mod
   use Params_mod, only : r32
-  use StringUtilities_mod, only: toString, appendWithSpace
+  use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport
   use AssertComplex_mod, only: assertEqual

@@ -310,7 +310,7 @@ ifElseString(tolerance == 0,\
 """
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -850,7 +850,7 @@ def declareUSES():
    use Exception_mod
    use SourceLocation_mod
 !   use ThrowFundamentalTypes_mod, only : throwNonConformable
-   use StringUtilities_mod
+   use StringConversionUtilities_mod
 """
 
 def declareDISCIPLINE():

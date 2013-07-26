@@ -6,7 +6,7 @@
 ! Further control of field width could be added at a later time.
 !
 
-module StringUtilities_mod
+module StringConversionUtilities_mod
 
   use Params_mod, only : r32, r64
 
@@ -133,4 +133,4 @@ contains
 
    end function nullTerminate
 
-end module StringUtilities_mod
+end module StringConversionUtilities_mod

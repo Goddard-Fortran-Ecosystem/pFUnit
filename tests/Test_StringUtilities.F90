@@ -1,7 +1,7 @@
 #include "reflection.h"
-module Test_StringUtilities_mod
+module Test_StringConversionUtilities_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
-   use StringUtilities_mod, only: toString
+   use StringConversionUtilities_mod, only: toString
    use Assert_mod
    implicit none
    private
@@ -15,7 +15,7 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('StringUtilities')
+      suite = newTestSuite('StringConversionUtilities')
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testToStringInteger1D)
@@ -68,4 +68,4 @@ contains
       call assertEqual('-1234567.',toString(-1234567.))
    end subroutine testToString_realNegative
 
-end module Test_StringUtilities_mod
+end module Test_StringConversionUtilities_mod

@@ -14,7 +14,7 @@
 module Test_AssertReal_mod ! note name
   use TestSuite_mod
   use Params_mod, only : r32
-  use StringUtilities_mod, only: toString, appendWithSpace
+  use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport   ! note name
   use ThrowFundamentalTypes_mod, only: locationFormat
