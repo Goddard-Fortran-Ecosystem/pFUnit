@@ -45,7 +45,7 @@ DEBUG_FLAGS =-g
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
 
-ifneq (,$(findstring $(F90), ifort gfortran nag))
+ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran))
   ifeq ($(F90),ifort)
      COMPILER=Intel
   else ifeq ($(F90),gfortran)
