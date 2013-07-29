@@ -22,7 +22,7 @@ endif
 
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
-F90_VENDOR ?=UNKNOWN
+F90_VENDOR ?=GNU
 
 # 32/64 ABI - almost all architectures are now 64 bit
 ifeq ($(ARCH),i386)
@@ -52,6 +52,8 @@ ifneq (,$(findstring $(F90), ifort gfortran nag))
      COMPILER=GNU
   else ifeq ($(F90),nagfor)
      COMPILER=NAG
+  else ifeq ($(F90),pgfortran)
+     COMPILER=PGI
   endif
 else # use F90_VENDOR to specify
   ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
@@ -60,6 +62,8 @@ else # use F90_VENDOR to specify
     COMPILER=GNU
   else ifneq (,$(findstring $(F90_VENDOR),nag NAG nagfor))
     COMPILER=NAG
+  else ifneq (,$(findstring $(F90_VENDOR),pgi PGI pgfortran))
+    COMPILER=PGI
   endif
 endif
 

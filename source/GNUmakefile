@@ -22,19 +22,19 @@ endif
 	ar -r $@ $?
 	-@ranlib $@
 
-UnixProcess.o : StringUtilities.o UnixPipeInterfaces.o Assert.o
+UnixProcess.o : StringConversionUtilities.o UnixPipeInterfaces.o Assert.o
 
 SerialContext.o: ParallelContext.o
 Exception.o : ParallelContext.o SourceLocation.o
 ParallelException.o: ParallelContext.o Exception.o
-AssertBasic.o: Exception.o StringUtilities.o
+AssertBasic.o: Exception.o StringConversionUtilities.o
 AssertInteger.o: Exception.o AssertBasic.o
 AssertInteger1.o: AssertBasic.o
-AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
-AssertComplex.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringUtilities.o
+AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringConversionUtilities.o
+AssertComplex.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringConversionUtilities.o
 Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o AssertComplex.o
-StringUtilities.o: Params.o
-ThrowFundamentalTypes.o: Params.o StringUtilities.o Exception.o
+StringConversionUtilities.o: Params.o
+ThrowFundamentalTypes.o: Params.o StringConversionUtilities.o Exception.o
 
 TestListener.o: Exception.o
 SurrogateTestCase.o:

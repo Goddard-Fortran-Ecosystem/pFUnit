@@ -46,7 +46,7 @@ contains
 
    function newProcess(command, runInBackground) result(process)
       use UnixPipeInterfaces_mod, only: popen, getLine
-      use StringUtilities_mod, only: nullTerminate
+      use StringConversionUtilities_mod, only: nullTerminate
       use, intrinsic :: iso_c_binding, only: C_PTR
       use Assert_mod
       type (UnixProcess) :: process
@@ -84,7 +84,7 @@ contains
    ! Background commands must return a PID for further interactions.
    ! Also commands need to be null-terminated to send to C procedures.
    function makeCommand(baseCommand, runInBackground) result(command)
-      use StringUtilities_mod, only: nullTerminate
+      use StringConversionUtilities_mod, only: nullTerminate
       character(len=:), allocatable :: command
       character(len=*), intent(in) :: baseCommand
       logical, optional, intent(in) :: runInBackground

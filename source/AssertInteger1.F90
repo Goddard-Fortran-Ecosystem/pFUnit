@@ -17,7 +17,7 @@ module AssertInteger1_mod
    use Exception_mod
    use SourceLocation_mod
 !   use ThrowFundamentalTypes_mod, only : throwNonConformable
-   use StringUtilities_mod
+   use StringConversionUtilities_mod
 
 
    implicit none
@@ -224,6 +224,7 @@ end interface assertEqual
 
 interface differenceReport
 
+   module procedure differenceReport_integerdefault32
    module procedure differenceReport_integerdefault64
    module procedure differenceReport_real3232
    module procedure differenceReport_real3264
@@ -1604,7 +1605,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -1689,7 +1690,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -1774,7 +1775,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -1859,7 +1860,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -1944,7 +1945,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2029,7 +2030,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2114,7 +2115,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2199,7 +2200,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2284,7 +2285,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2369,7 +2370,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2454,7 +2455,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2539,7 +2540,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2624,7 +2625,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2709,7 +2710,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2794,7 +2795,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2879,7 +2880,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -2964,7 +2965,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3049,7 +3050,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3134,7 +3135,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3219,7 +3220,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3304,7 +3305,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3389,7 +3390,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3474,7 +3475,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3559,7 +3560,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3644,7 +3645,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3729,7 +3730,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3814,7 +3815,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3899,7 +3900,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -3984,7 +3985,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4069,7 +4070,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4154,7 +4155,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4239,7 +4240,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4324,7 +4325,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4409,7 +4410,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4494,7 +4495,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4579,7 +4580,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4664,7 +4665,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4749,7 +4750,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4834,7 +4835,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -4919,7 +4920,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5004,7 +5005,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5089,7 +5090,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5174,7 +5175,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5259,7 +5260,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5344,7 +5345,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5429,7 +5430,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5514,7 +5515,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5599,7 +5600,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5684,7 +5685,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5769,7 +5770,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5854,7 +5855,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -5939,7 +5940,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -6024,7 +6025,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -6109,7 +6110,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -6194,7 +6195,7 @@ contains
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -6237,6 +6238,16 @@ contains
 ! end interface assertEqual implementations
 ! interface differenceReport implementations
 
+    character(len=MAXLEN_MESSAGE) &
+    & function differenceReport_integerdefault32(difference, tolerance) result(differenceReport)
+      integer, intent(in) :: difference
+     real(kind=r32), intent(in) :: tolerance
+!     real(kind=r32), optional, intent(in) :: tolerance
+      differenceReport = '    difference: |' // trim(toString(real(difference,kind=r32))) // &
+      & '| > tolerance:' // trim(toString(tolerance))
+    end function 
+
+   
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_integerdefault64(difference, tolerance) result(differenceReport)
       integer, intent(in) :: difference
@@ -6938,7 +6949,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -7109,57 +7120,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -7173,7 +7191,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -7344,57 +7362,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -7408,7 +7433,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -7579,57 +7604,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -7643,7 +7675,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -7814,57 +7846,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -7878,7 +7917,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -8049,57 +8088,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -8113,7 +8159,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -8284,57 +8330,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -8348,7 +8401,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -8519,57 +8572,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -8583,7 +8643,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -8754,57 +8814,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -8818,7 +8885,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -8989,57 +9056,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -9053,7 +9127,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -9224,57 +9298,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -9288,7 +9369,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -9459,57 +9540,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -9523,7 +9611,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -9694,57 +9782,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -9758,7 +9853,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -9929,57 +10024,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -9993,7 +10095,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -10164,57 +10266,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -10228,7 +10337,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -10399,57 +10508,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -10463,7 +10579,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -10634,57 +10750,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -10698,7 +10821,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -10869,57 +10992,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -10933,7 +11063,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -11104,57 +11234,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -11168,7 +11305,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -11339,57 +11476,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -11403,7 +11547,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -11574,57 +11718,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -11638,7 +11789,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -11809,57 +11960,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -11873,7 +12031,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -12044,57 +12202,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -12108,7 +12273,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -12279,57 +12444,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -12343,7 +12515,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -12514,57 +12686,64 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -12578,7 +12757,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -12733,25 +12912,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -12765,7 +12947,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -12920,25 +13102,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -12952,7 +13137,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -13107,25 +13292,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -13139,7 +13327,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -13294,25 +13482,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -13326,7 +13517,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -13481,25 +13672,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -13513,7 +13707,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -13668,25 +13862,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -13700,7 +13897,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -13855,25 +14052,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -13887,7 +14087,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14042,25 +14242,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -14074,7 +14277,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14229,25 +14432,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -14261,7 +14467,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14416,25 +14622,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -14448,7 +14657,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14603,25 +14812,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -14635,7 +14847,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14790,25 +15002,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -14822,7 +15037,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -14977,25 +15192,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15009,7 +15227,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -15164,25 +15382,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15196,7 +15417,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -15351,25 +15572,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15383,7 +15607,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -15538,25 +15762,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15570,7 +15797,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -15725,25 +15952,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15757,7 +15987,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -15912,25 +16142,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -15944,7 +16177,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -16099,25 +16332,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -16131,7 +16367,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -16286,25 +16522,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -16318,7 +16557,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -16473,25 +16712,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -16505,7 +16747,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -16660,25 +16902,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -16692,7 +16937,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -16847,25 +17092,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -16879,7 +17127,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17034,25 +17282,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -17066,7 +17317,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17221,25 +17472,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -17253,7 +17507,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17408,25 +17662,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -17440,7 +17697,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17595,25 +17852,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -17627,7 +17887,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17782,25 +18042,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -17814,7 +18077,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -17969,25 +18232,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -18001,7 +18267,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -18156,25 +18422,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -18188,7 +18457,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -18343,25 +18612,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -18375,7 +18647,7 @@ contains
     & comparison )
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -18530,25 +18802,28 @@ contains
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) 
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if

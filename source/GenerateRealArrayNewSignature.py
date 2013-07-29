@@ -23,6 +23,22 @@ import copy
 ### Restrictions on types and type combinations.
 
 def dr_TolAllowedPrecisions(t,pFound='64') :
+    "returns a list of strings corresponding to the precisions 'tolerance' may take on."
+    allowed = []
+    if t == 'integer' :
+        allowed = ['32','64']
+    elif t == 'real' or 'complex' :
+        if pFound == '32' :
+            allowed = ['32']
+        elif pFound == '64' :
+            allowed = ['32','64']
+        else :
+            # Should not make it here...
+            allowed = []
+    return allowed
+
+def dr_TolAllowedPrecisions_orig(t,pFound='64') :
+    "returns a list of strings corresponding to the precisions 'tolerance' may take on."
     allowed = []
     if t == 'integer' :
         allowed = ['64']
@@ -31,6 +47,7 @@ def dr_TolAllowedPrecisions(t,pFound='64') :
     return allowed
 
 def allowedPrecisions(t,pFound='64') :
+    "returns a list of strings corresponding to the precisions 'expected' may take on."
     allowed = []
     if t == 'integer' :
         allowed = ['default']
@@ -190,7 +207,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
         message_ = NULL_MESSAGE
      end if
 
-    call assertSameShape(shape(expected),shape(found), location=location_)
+    call assertSameShape(shape(expected),shape(found), message=message_, location=location_)
     if (anyExceptions()) return
 
 ! Next allow call to here...
@@ -293,7 +310,7 @@ ifElseString(tolerance == 0,\
 """
     use Params_mod
     use Exception_mod
-    use StringUtilities_mod
+    use StringConversionUtilities_mod
     use ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -466,60 +483,67 @@ ifElseString(fType != 'complex', \
     select case (comparison)
     case (EQP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (NEQP)
        call throw( &
+       & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) """ + \
 ifElseString(fType != 'complex', \
 """
     case (GTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (GEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LTP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case (LEP)
        call throw( &
+       & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        ) """,'') + \
 """
     case (RELEQP)    
        call throw( &
-       & ';  first difference at element '//trim(locationInArray)//'.', &
+       & appendWithSpace(message, &
+       & ';  first difference at element '//trim(locationInArray)//'.'), &
        & location = location &
        )
     case default
-       print *,'select-error-3'
+       print *,appendWithSpace(message,'select-error-3')
     end select
 
     end if
@@ -826,7 +850,7 @@ def declareUSES():
    use Exception_mod
    use SourceLocation_mod
 !   use ThrowFundamentalTypes_mod, only : throwNonConformable
-   use StringUtilities_mod
+   use StringConversionUtilities_mod
 """
 
 def declareDISCIPLINE():

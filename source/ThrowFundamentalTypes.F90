@@ -2,7 +2,7 @@
 module ThrowFundamentalTypes_mod
 
   use Params_mod
-  use StringUtilities_mod
+  use StringConversionUtilities_mod
   use Exception_mod
   use SourceLocation_mod
 

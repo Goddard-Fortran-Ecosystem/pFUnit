@@ -2,7 +2,7 @@ module AssertInteger_mod
    use AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
-   use StringUtilities_mod
+   use StringConversionUtilities_mod
    implicit none
    private
 

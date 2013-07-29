@@ -14,7 +14,7 @@
 module Test_AssertReal_mod ! note name
   use TestSuite_mod
   use Params_mod, only : r32
-  use StringUtilities_mod, only: toString
+  use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport   ! note name
   use ThrowFundamentalTypes_mod, only: locationFormat
@@ -58,6 +58,9 @@ contains
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff6)
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff7)
     ADD(testEquals_MultiDMultiPrec_SingleEltDiff8)
+    ADD(testEquals_ScalarWithTolerance)
+    ADD(testEquals_ScalarWithToleranceNoMsg)
+    ADD(testEquals_VectorWithToleranceNoMsg)
     ADD(testEquals_MultiDWithTolerance)
     ADD(testEquals_MultiDWithTolerance1)
     ADD(testEquals_MultiDWithTolerance64)
@@ -76,19 +79,26 @@ contains
     integer :: expected
     real(kind=r32), dimension(1) :: found
 
+    character(len=:), allocatable :: msg
+
     expected = good
     ! The location [1] below is the 1 here.
     found = bad
 
     ! The following should throw an exception...
+
+    allocate(msg, source='testEquals_0D1D')
     
-    call assertEqual(expected, found, 'testEquals_0D1D')
+    call assertEqual(expected, found, msg)
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element [1].' &
+         & ';  first difference at element [1].') &
          & )
+
+    deallocate(msg)
     
   end subroutine testEquals_0D1D
 
@@ -101,17 +111,24 @@ contains
     integer, dimension(2) :: expected
     real(kind=r32), dimension(1) :: found
 
+    character(len=:), allocatable :: msg
+
+    allocate(msg, source='testEquals_2D_nonConformable1')
+
     ! The following should throw an exception...
 
     expected = good; found = good
     
-    call assertEqual(expected, found, 'testEquals_2D_nonConformable1')
+    call assertEqual(expected, found, msg)
 
     call assertCatch( &
-          & 'nonconforming arrays - expected shape: ' // &
-          & trim(toString(shape(expected))) // ' but found shape: ' // &
-          & trim(toString(shape(found))) &
-          & )
+         & appendWithSpace(msg, & 
+         & 'nonconforming arrays - expected shape: ' // &
+         & trim(toString(shape(expected))) // ' but found shape: ' // &
+         & trim(toString(shape(found)))) &
+         & )
+
+    deallocate(msg)
     
   end subroutine testEquals_1D_nonConformable1
 
@@ -126,20 +143,25 @@ contains
     character(len=MAXLEN_SHAPE) :: locationInArray
     integer :: i1, i2
 
+    character(len=:), allocatable :: msg
+
     i1 = 1; i2 = 2; expected=good; found=good; found(i1,i2) = bad
 
     !dbg1 print *,'1000'
 
+    allocate(msg, source='testEquals_2D_SingleElementDifferent')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_2D_SingleElementDifferent')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good,bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
   end subroutine testEquals_2D_SingleElementDifferent
@@ -150,6 +172,8 @@ contains
 
     real(kind=r32) :: expected
     real(kind=r32), dimension(:,:), allocatable :: found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -163,17 +187,21 @@ contains
     expected=good; found=good
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank0')
+    allocate(msg, source='testEquals_MultiD_SingleElementDifferent:Rank0')
 
+    ! The following should throw an exception...
+    call assertEqual(expected,found,message=msg)
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent
 
@@ -186,6 +214,8 @@ contains
 
     real(kind=r32), dimension(:,:), allocatable :: expected, found
 
+    character(len=:), allocatable :: msg
+
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
@@ -197,17 +227,22 @@ contains
     n1 = 1; n2 = 2; allocate(expected(n1,n2),found(n1,n2))
     expected = good; found = good; i1 = 1; i2 = 2; found(i1,i2) = bad
 
+    allocate(msg, source='testEquals_MultiD_SingleElementDifferent:Rank2')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message=msg )
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent1
 
@@ -219,6 +254,8 @@ contains
     real, parameter :: bad  = -999
 
     real(kind=r32), dimension(:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -232,17 +269,22 @@ contains
     expected = good; found = good;
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank3')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent2
 
@@ -254,6 +296,8 @@ contains
     real, parameter :: bad  = -999
 
     real(kind=r32), dimension(:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -269,17 +313,22 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2
     found(i1,i2,i3,i4) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank4')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent3
 
@@ -291,6 +340,8 @@ contains
     real, parameter :: bad  = -999
 
     real(kind=r32), dimension(:,:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -304,17 +355,22 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2; i5 = 1
     found(i1,i2,i3,i4,i5) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank5')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent4
 
@@ -323,6 +379,8 @@ contains
 !    use Assert_mod, only: assertEqual
 
     real(kind=r32), dimension(:,:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -340,18 +398,23 @@ contains
 
     !dbg2 print *,'10000'
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found,message=&
+    allocate(msg,source=&
          & 'testEquals_MultiD_SingleElementDifferent:nonConformable')
+
+    ! The following should throw an exception...
+    call assertEqual(expected,found,message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
     ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
           & 'nonconforming arrays - expected shape: ' // &
           & trim(toString(shape(expected))) // ' but found shape: ' // &
-          & trim(toString(shape(found))) &
+          & trim(toString(shape(found)))) &
           & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleElementDifferent5
 
@@ -365,6 +428,8 @@ contains
 
     real(kind=r64), dimension(:,:), allocatable :: expected, found
 
+    character(len=:), allocatable :: msg
+
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
@@ -377,18 +442,23 @@ contains
     expected = good; found = good
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank2')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff
 
@@ -402,6 +472,8 @@ contains
 
     real(kind=r64), dimension(:,:,:), allocatable :: expected, found
 
+    character(len=:), allocatable :: msg
+
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
@@ -414,17 +486,22 @@ contains
     expected = good; found = good
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank3')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff1
 
@@ -437,6 +514,8 @@ contains
     real, parameter :: bad  = -999
 
     real(kind=r64), dimension(:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -452,18 +531,23 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2
     found(i1,i2,i3,i4) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank4')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff2
 
@@ -477,6 +561,8 @@ contains
 
     real(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
 
+    character(len=:), allocatable :: msg
+
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
@@ -489,17 +575,22 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2; i5 = 1
     found(i1,i2,i3,i4,i5) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank5')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff3
 
@@ -509,6 +600,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -525,18 +618,23 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2; i5 = 1
     found(i1,i2,i3,i4,i5) = bad
 
-    ! The following should throw an exception...
-    call assertEqual(expected, found,message=&
+    allocate(msg,source=&
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
+
+    ! The following should throw an exception...
+    call assertEqual(expected, found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
     ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
-          & 'nonconforming arrays - expected shape: ' // &
-          & trim(toString(shape(expected))) // ' but found shape: ' // &
-          & trim(toString(shape(found))) &
-          & )
+         & appendWithSpace(msg, &
+         & 'nonconforming arrays - expected shape: ' // &
+         & trim(toString(shape(expected))) // ' but found shape: ' // &
+         & trim(toString(shape(found)))) &
+         & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff4
 
@@ -546,6 +644,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -558,17 +658,22 @@ contains
     expected = good; found = good
     i1 = 1; i2 = 2; found(i1,i2) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank2')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank2')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff5
 
@@ -578,6 +683,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -589,17 +696,22 @@ contains
     expected = good; found = good
     i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank3')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank3')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff6
 
@@ -609,6 +721,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -622,17 +736,22 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2
     found(i1,i2,i3,i4) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank4')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank4')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff7
 
@@ -642,6 +761,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -655,16 +776,19 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2; i5 = 1
     found(i1,i2,i3,i4,i5) = bad
 
+    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank5')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found, message='testEquals_MultiD_SingleElementDifferent:Rank5')
+    call assertEqual(expected,found, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
     deallocate(expected,found)
@@ -676,21 +800,147 @@ contains
     i1 = 1; i2 = 2; i3 = 1; i4 = 2; i5 = 1
     found(i1,i2,i3,i4,i5) = bad
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found,message=& 
+    deallocate(msg)
+    allocate(msg, source= &
          & 'testEquals_MultiD_SingleElementDifferent:Rank5:NonConformable')
+
+    ! The following should throw an exception...
+    call assertEqual(expected,found,message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code. Not needed for nonconf.
     ! write(locationInArray,locationFormat( [i1,i2,i3,i4,i5] )) [i1, i2, i3, i4, i5]
 
     call assertCatch( &
-          & 'nonconforming arrays - expected shape: ' // &
-          & trim(toString(shape(expected))) // ' but found shape: ' // &
-          & trim(toString(shape(found))) &
-          & )
+         & appendWithSpace(msg, &
+         & 'nonconforming arrays - expected shape: ' // &
+         & trim(toString(shape(expected))) // ' but found shape: ' // &
+         & trim(toString(shape(found)))) &
+         & )
 
+    deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff8
+
+  subroutine testEquals_ScalarWithTolerance()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+    implicit none
+
+    real(kind=r32) :: expected, found
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+    real(kind=r32) :: tolerance32, bad32
+
+    expected = good; found = good;
+
+    tolerance32 = 0.01
+    bad32 = good + tolerance32*2.0
+
+    found = bad32
+
+    allocate(msg,source= &
+         & 'testEquals_ScalarWithTolerance')
+
+    ! The following should throw an exception...
+    ! call assertEqual(expected,found,tolerance = tolerance32, message=msg)
+    call assertEqual(expected,found,tolerance32, message=msg)
+
+    call assertCatch( &
+         & appendWithSpace(msg, &
+         & trim(valuesReport(good, bad32)) // &
+         & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
+         & ';  first difference at element  [1].') &
+         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ScalarWithTolerance
+
+  subroutine testEquals_ScalarWithToleranceNoMsg()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+    implicit none
+
+!    real(kind=r32) :: expected, found, tolerance32
+    real :: expected, found, tolerance32
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+    real(kind=r32) :: bad32
+
+    expected = good; found = good;
+
+    tolerance32 = 0.01
+    bad32 = good + tolerance32*2.0
+
+    found = bad32
+
+    allocate(msg,source='')
+
+    ! The following should throw an exception...
+    ! call assertEqual(expected,found,tolerance = tolerance32, message=msg)
+    ! call assertEqual(expected,found,tolerance32, message=msg)
+    call assertEqual(expected,found,tolerance32)
+
+    call assertCatch( &
+         & appendWithSpace(msg, &
+         & trim(valuesReport(good, bad32)) // &
+         & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
+         & ';  first difference at element  [1].') &
+         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ScalarWithToleranceNoMsg
+
+  subroutine testEquals_VectorWithToleranceNoMsg()
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+    implicit none
+
+    real(kind=r32), dimension(3) :: expected, found
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+    real(kind=r32) :: tolerance32, bad32
+
+    expected = good; found = good;
+
+    tolerance32 = 0.01
+    bad32 = good + tolerance32*2.0
+
+    found(2) = bad32
+
+    allocate(msg,source='')
+
+    ! The following should throw an exception...
+    ! call assertEqual(expected,found,tolerance = tolerance32, message=msg)
+    ! call assertEqual(expected,found,tolerance32, message=msg)
+    call assertEqual(expected,found,tolerance32)
+
+    call assertCatch( &
+         & appendWithSpace(msg, &
+         & trim(valuesReport(good, bad32)) // &
+         & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
+         & ';  first difference at element [2].') &
+         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_VectorWithToleranceNoMsg
 
   subroutine testEquals_MultiDWithTolerance()
     use Params_mod
@@ -698,6 +948,8 @@ contains
     implicit none
 
     real(kind=r32), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -715,20 +967,26 @@ contains
     i1 = 1; i2 = 2; 
     found(i1,i2) = bad32
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found,tolerance = tolerance32, message = &
+    allocate(msg,source= &
          & 'testEquals_MultiDSingleEltTol32-Throw:Rank2,Tolerance32')
+
+    ! The following should throw an exception...
+    call assertEqual(expected,found,tolerance = tolerance32, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good, bad32)) // &
          & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
+    deallocate(msg)
+
   end subroutine testEquals_MultiDWithTolerance
+
 
   subroutine testEquals_MultiDWithTolerance1()
     use Params_mod
@@ -736,6 +994,8 @@ contains
     implicit none
 
     real(kind=r32), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -753,11 +1013,15 @@ contains
     i1 = 1; i2 = 2; 
     found(i1,i2) = bad32
 
-    ! The following should not throw an exception...
-    call assertEqual(expected,found,tolerance = tolerance32, message = &
+    allocate(msg,source= &
          & 'testEquals_MultiDSingleEltTol32-NoThrow:Rank2,Tolerance32')
 
+    ! The following should not throw an exception...
+    call assertEqual(expected,found,tolerance = tolerance32, message=msg)
+
     call assertCatch( "" )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDWithTolerance1
 
@@ -767,6 +1031,8 @@ contains
     implicit none
 
     real(kind=r64), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
     character(len=MAXLEN_SHAPE) :: locationInArray
@@ -785,19 +1051,25 @@ contains
     i1 = 1; i2 = 2; 
     found(i1,i2) = bad64
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found,tolerance = tolerance64, message = &
+    allocate(msg,source= &
          & 'testEquals_MultiDSingleEltTol64-Throw:Rank2,Tolerance64')
+
+    ! The following should throw an exception...
+    call assertEqual(expected,found,tolerance = tolerance64, message=msg)
+
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
 ! Fix the need for the real below.  Note we're just reporting at this stage, not calculating.
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good64, bad64)) // &
          & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
 end subroutine testEquals_MultiDWithTolerance64
 
@@ -807,6 +1079,8 @@ end subroutine testEquals_MultiDWithTolerance64
     implicit none
 
     real(kind=r64), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -826,11 +1100,15 @@ end subroutine testEquals_MultiDWithTolerance64
     i1 = 1; i2 = 2; 
     found(i1,i2) = bad64
 
-    ! The following should not throw an exception...
-    call assertEqual(expected,found,tolerance = tolerance64, message = &
+    allocate(msg,source= &
          & 'testEquals_MultiDSingleEltTol64-NoThrow:Rank2,Tolerance64')
 
+    ! The following should not throw an exception...
+    call assertEqual(expected,found,tolerance = tolerance64, message=msg)
+
     call assertCatch( "" )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDWithTolerance64_1
 
@@ -841,6 +1119,8 @@ end subroutine testEquals_MultiDWithTolerance64
     implicit none
 
     real(kind=r64), dimension(:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
 
     !mlr maybe move this to a larger scope...
     integer, parameter :: MAXLEN_SHAPE = 80
@@ -860,18 +1140,23 @@ end subroutine testEquals_MultiDWithTolerance64
     i1 = 1; i2 = 2; i3 = 1
     found(i1,i2,i3) = bad64
 
-    ! The following should throw an exception...
-    call assertEqual(expected,found,tolerance=tolerance64, message= &
+    allocate(msg,source= &
          & 'testEquals_MultiDSingleEltTol64-Throw:Rank3,Tolerance64')
+
+    ! The following should throw an exception...
+    call assertEqual(expected,found,tolerance=tolerance64, message=msg)
 
     ! "locationInArray" is not used in the original AssertEqual code.
     write(locationInArray,locationFormat( [i1,i2,i3] )) [i1, i2, i3]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good64,bad64)) // &
          & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.' &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDWithTolerance64_2
 
@@ -880,6 +1165,8 @@ end subroutine testEquals_MultiDWithTolerance64
     implicit none
 
     real(kind=r64), dimension(:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
     real(kind=r64) :: tolerance64, good64, bad64
 
     !mlr maybe move this to a larger scope...
@@ -901,9 +1188,10 @@ end subroutine testEquals_MultiDWithTolerance64
 
     location = SourceLocation(lineNumber=999,fileName='AFileName')
 
+    allocate(msg,source='testEquals_MultiDSourceLocation')
+
     ! The following should throw an exception...
-    call assertEqual(expected,found,tolerance = tolerance64, message = &
-         & 'testEquals_MultiDSourceLocation', &
+    call assertEqual(expected,found,tolerance = tolerance64, message=msg, &
          & location=location)
 
     ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
@@ -912,11 +1200,14 @@ end subroutine testEquals_MultiDWithTolerance64
     write(locationInArray,locationFormat( [i1,i2] )) [i1, i2]
 
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(good64, bad64)) // &
          & '; ' // trim(differenceReport(abs(bad64 - good64), tolerance64)) // &
-         & ';  first difference at element ' // trim(locationInArray) // '.', &
+         & ';  first difference at element ' // trim(locationInArray) // '.'), &
          & location=location &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_MultiDSourceLocation
 
@@ -925,6 +1216,8 @@ end subroutine testEquals_MultiDWithTolerance64
     implicit none
 
     real(kind=r64) :: expected, found
+
+    character(len=:), allocatable :: msg
     real(kind=r64) :: tolerance64
 
     !mlr maybe move this to a larger scope...
@@ -938,17 +1231,22 @@ end subroutine testEquals_MultiDWithTolerance64
 
 !    location = SourceLocation(lineNumber=999,fileName='AFileName')
 
-    call assertEqual(expected,found)
+    allocate(msg,source='')
+
+    call assertEqual(expected,found,msg)
 
     ! location = SourceLocation(lineNumber=998,fileName='AFileName2')
     ! "locationInArray" is not used in the original AssertEqual code.
 
 ! Note use of real...  Consider overloading the reporting functions...
     call assertCatch( &
+         & appendWithSpace(msg, &
          & trim(valuesReport(expected, found)) // &
          & '; ' // trim(differenceReport(abs(expected - found), tolerance64)) // &
-         & ';  first difference at element  ' // trim('[1]') // '.' &
+         & ';  first difference at element  ' // trim('[1]') // '.') &
          & )
+
+    deallocate(msg)
 
   end subroutine testEquals_ScalarAndLocation
 

@@ -14,7 +14,7 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('StringUtilities')
+      suite = newTestSuite('StringConversionUtilities')
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testRunVariety)
