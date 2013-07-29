@@ -1,6 +1,7 @@
 module pFUnit_mod
    use SourceLocation_mod
    use Exception_mod
+   use Test_mod
    use TestSuite_mod
    use TestCase_mod
    use TestMethod_mod
@@ -25,6 +26,7 @@ module pFUnit_mod
    public :: finalize
 
    public :: SourceLocation
+   public :: Test
    public :: TestSuite, newTestSuite
    public :: TestMethod, newTestMethod
    public :: BaseTestRunner
