@@ -4,6 +4,7 @@
 *.mod
 *.o
 *~
+/Test_AssertComplex_cpp.F90
 /Test_Assert_cpp.F90
 /remote.x
 /tests.x
