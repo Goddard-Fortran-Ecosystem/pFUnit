@@ -48,7 +48,7 @@ class AtMpiTest(Action):
         dictionary = {}
 
         # npes is mandatory
-        npesString = re.match('npes=\\[([0-9,\s]+)\\]', args, re.IGNORECASE).groups()[0]
+        npesString = re.search('npes=\\[([0-9,\s]+)\\]', args, re.IGNORECASE).groups()[0]
         npes = map(int, npesString.split(','))
         dictionary['npes'] = npes
 

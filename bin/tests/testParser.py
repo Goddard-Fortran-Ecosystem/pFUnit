@@ -77,19 +77,27 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual([1], parser.mpitests[0]['npes'])
         self.assertFalse('ifdef' in parser.mpitests[0])
 
+        # ignore leading space?
+        line = '@mpitest( npes=[1])'
+        m = atMpiTest.match(line)
+        self.assertTrue(m)
+        atMpiTest.action(m,line)
+        self.assertEqual([1], parser.mpitests[1]['npes'])
+        self.assertFalse('ifdef' in parser.mpitests[1])
+
         line = '@mpitest(npes=[1, 2,3], ifdef=USE_MPI)'
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([1,2,3], parser.mpitests[1]['npes'])
-        self.assertEqual('USE_MPI', parser.mpitests[1]['ifdef'])
+        self.assertEqual([1,2,3], parser.mpitests[2]['npes'])
+        self.assertEqual('USE_MPI', parser.mpitests[2]['ifdef'])
 
         line = '@mpitest(npes=[3],ifdef=USE_MPI)'
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([3], parser.mpitests[2]['npes'])
-        self.assertEqual('USE_MPI', parser.mpitests[1]['ifdef'])
+        self.assertEqual([3], parser.mpitests[3]['npes'])
+        self.assertEqual('USE_MPI', parser.mpitests[3]['ifdef'])
         
 
 
