@@ -45,7 +45,7 @@ contains
 
    recursive subroutine run(this, tstResult, context)
       use TestResult_mod, only: TestResult
-      use Parallelcontext_mod
+      use ParallelContext_mod
       use Exception_mod
       use SurrogateTestCase_mod
       class (MpiTestCase), intent(inout) :: this

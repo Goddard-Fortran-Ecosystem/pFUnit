@@ -8,6 +8,9 @@
 # M. Rilee
 #    Initial: 2013-0304
 # 
+#    2013-0814:  Added default r64 to call from assertEqual_w/o_tol to internal proc.
+#                Added logical to makeExpectedFTypes - but not for prime time.
+# 
 
 ##### utility code #####
 
@@ -25,7 +28,9 @@ import copy
 def dr_TolAllowedPrecisions(t,pFound='64') :
     "returns a list of strings corresponding to the precisions 'tolerance' may take on."
     allowed = []
-    if t == 'integer' :
+    if t == 'logical' :
+        allowed = []
+    elif t == 'integer' :
         allowed = ['32','64']
     elif t == 'real' or 'complex' :
         if pFound == '32' :
@@ -40,7 +45,9 @@ def dr_TolAllowedPrecisions(t,pFound='64') :
 def dr_TolAllowedPrecisions_orig(t,pFound='64') :
     "returns a list of strings corresponding to the precisions 'tolerance' may take on."
     allowed = []
-    if t == 'integer' :
+    if t == 'logical' :
+        allowed = []
+    elif t == 'integer' :
         allowed = ['64']
     else:
         allowed = ['32','64']
@@ -49,7 +56,9 @@ def dr_TolAllowedPrecisions_orig(t,pFound='64') :
 def allowedPrecisions(t,pFound='64') :
     "returns a list of strings corresponding to the precisions 'expected' may take on."
     allowed = []
-    if t == 'integer' :
+    if t == 'logical' :
+        allowed = []
+    elif t == 'integer' :
         allowed = ['default']
     elif t == 'real' or 'complex' :
         if pFound == '32' :
@@ -61,6 +70,8 @@ def allowedPrecisions(t,pFound='64') :
 def allowedExpected(tFound) :
     # allowed = []
     if tFound in 'integer' :
+        allowed = []
+    elif tFound in 'integer' :
         allowed = ['integer']
     elif tFound == 'real' :
         allowed = ['integer','real']
@@ -237,7 +248,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 
      call """+subroutineName+"""(&
    &   expected, found, &
-   &   tolerance=real(0."""+ifElseString(toleranceKind,', '+toleranceKind,'')+"""), &
+   &   tolerance=real(0."""+ifElseString(toleranceKind,', '+toleranceKind,', '+KINDATTRIBUTE0('real',64))+"""), &
    &   message=message, location=location )
      
    end subroutine
@@ -572,6 +583,10 @@ class constraintASSERTEQUAL(routineUnit):
         ## Kluge.  Need to make makeSubroutineNames and load the extra interface entries there.
         self.name1 = self.name+'_WithoutTolerance'
         self.addDeclaration(declaration(self.name1,self.name1))
+
+        ## If you need another kind of code generator, perhaps
+        ## conditioned on eDesc., fDesc., or tol, then that logic
+        ## would go here... E.g. to implement assertEqual(Logical(...))
         self.setImplementation(generateASSERTEQUAL(expectedDescr, \
                                                    foundDescr, \
                                                    tolerance ))
@@ -849,7 +864,6 @@ def declareUSES():
    use AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
-!   use ThrowFundamentalTypes_mod, only : throwNonConformable
    use StringConversionUtilities_mod
 """
 
@@ -896,7 +910,10 @@ def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
     for expected.  Make sure that if we're looking at complex that we
     do not replicate real-real comparisons."""
     retTypes = ['makeExpectedFType::ERROR']
-    if expectedPrecision == 'default':
+    if 'logical' in foundFTypes :
+        if foundFType == 'logical' :
+            retTypes=['logical']        
+    elif expectedPrecision == 'default':
         if not 'complex' in foundFTypes :
             retTypes=['integer']
         else :
@@ -979,7 +996,9 @@ class AssertRealArrayArgument:
         return self.tolerance
 
 def makeExpectedPrecisions(foundPrecision,foundFType='real'):
-    if foundFType == 'integer' :
+    if foundFType == 'logical' :
+        expectedPrecisions = ['']
+    elif foundFType == 'integer' :
         expectedPrecisions = ['default']
     else :
         expectedPrecisions = ['default',32]
@@ -1112,8 +1131,7 @@ def makeModuleComplex():
     return
 
 def makeModuleInteger():
-#    mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
-    mod = constructModule(baseName='AssertInteger1')
+    mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
     with open(mod.getFileName(),'w') as f:
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))
@@ -1121,14 +1139,25 @@ def makeModuleInteger():
     print 'makeModuleInteger: done'
     return
 
+# def makeModuleLogical():
+#     mod = constructModule(baseName='AssertLogical1',foundFTypes=['logical'])
+#     with open(mod.getFileName(),'w') as f:
+#         f.write(filePreamble(mod.getFileName()))
+#         f.write('\n'.join(mod.generate()))
+#         f.close()
+#     print 'makeModuleInteger: done'
+#     return
+
 def main():
     # Make the modules for the different types...
     #++
     makeModuleReal()
     #++
     makeModuleComplex()
-    #?
+    #? The following requires testing.
     makeModuleInteger()
+    #? Just started...
+    #- makeModuleLogical()
     return
 
 if __name__ == "__main__":

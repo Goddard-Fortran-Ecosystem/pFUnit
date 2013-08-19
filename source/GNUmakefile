@@ -1,8 +1,21 @@
 TOP = ..
 include ../include/base.mk
-.PHONY: all
+.PHONY: all generate clean_generated_code
 
-all: libpfunit.a
+all: dependencies.inc libpfunit.a
+
+GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
+
+$(GENERATED_CODE):
+	./GenerateRealArrayNewSignature.py
+
+clean_generated_code: 
+	rm -f $(GENERATED_CODE)
+
+distclean: clean_generated_code
+
+dependencies.inc: $(GENERATED_CODE)
+	./MakeDependenciesInclude
 
 SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%.o)
@@ -22,69 +35,5 @@ endif
 	ar -r $@ $?
 	-@ranlib $@
 
-UnixProcess.o : StringConversionUtilities.o UnixPipeInterfaces.o Assert.o
+include ./dependencies.inc
 
-SerialContext.o: ParallelContext.o
-Exception.o : ParallelContext.o SourceLocation.o
-ParallelException.o: ParallelContext.o Exception.o
-AssertBasic.o: Exception.o StringConversionUtilities.o
-AssertInteger.o: Exception.o AssertBasic.o
-AssertInteger1.o: AssertBasic.o
-AssertReal.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringConversionUtilities.o
-AssertComplex.o: Params.o ThrowFundamentalTypes.o AssertBasic.o StringConversionUtilities.o
-Assert.o: Exception.o AssertBasic.o AssertInteger.o AssertReal.o AssertComplex.o
-StringConversionUtilities.o: Params.o
-ThrowFundamentalTypes.o: Params.o StringConversionUtilities.o Exception.o
-
-TestListener.o: Exception.o
-SurrogateTestCase.o:
-TestResult.o: SurrogateTestCase.o TestListener.o Exception.o
-Test.o: TestResult.o
-
-TestCase.o: Test.o TestResult.o SurrogateTestCase.o
-TestCase.o: SerialContext.o
-ParameterizedTestCase.o: TestCase.o
-
-DynamicTestCase.o: TestCase.o
-
-DebugListener.o: TestListener.o
-
-TestMethod.o: TestCase.o
-TestSuite.o: Test.o TestMethod.o
-
-Assert_mod.o: 			AssertString_mod.o		\
-				AssertInteger_mod.o		\
-				AssertReal_mod.o		\
-				AssertComplex_mod.o		\
-				Report_mod.o
-TestCaseDecorator.o :: TestCase.o
-
-BaseTestRunner.o: TestListener.o Test.o ParallelContext.o
-TestRunner.o: TestSuite.o BaseTestRunner.o ResultPrinter.o TestResult.o
-SubsetRunner.o: BaseTestRunner.o TestResult.o TestSuite.o
-RobustRunner.o: BaseTestRunner.o TestResult.o TestSuite.o RemoteProxyTestCase.o UnixProcess.o
-RemoteProxyTestCase.o: TestCase.o UnixProcess.o
-
-
-ResultPrinter.o: TestFailure.o TestResult.o
-
-TestFailure.o: Exception.o
-TestResult.o: TestFailure.o
-
-MockRepository.o: Exception.o
-MockCall.o: Exception.o Assert.o
-
-pFUnit.o: TestRunner.o TestSuite.o
-pFUnit.o: ParallelContext.o
-pFUnit.o: RobustRunner.o SubsetRunner.o
-
-ifeq ($(MPI),YES)
-   MpiContext.o: Assert.o
-   pFUnit.o: MpiContext.o
-
-   MpiTestCase.o : TestCase.o MpiContext.o ParallelException.o
-   MpiTestCase.o : ParameterizedTestCase.o
-   MpiTestMethod.o: MpiTestCase.o
-endif
-
-pFUnitPackage.o: pFUnit.o

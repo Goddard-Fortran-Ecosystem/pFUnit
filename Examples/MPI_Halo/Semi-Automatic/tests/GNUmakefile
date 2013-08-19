@@ -1,4 +1,5 @@
 .PHONY: clean tests
+# .PRECIOUS: %.F90
 
 
 SRCS = $(wildcard *.pf)

@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# pFUnit source/MakeDependenciesInclude
+
+# Generates makefile dependencies from "use" statements in
+# Fortran files. Specifically built to pFUnit conventions.
+#
+# M. Rilee, 2013-0815
+
+# TODO:  Move this and its cousins to a single "$(TOP)/bin/MakeDependenciesInclude".
+
+# Dependency injection...
+# Intermediate & target files...
+export tmpFile=./DependencyCheck-1.tmp; 
+export outFile=./dependencies.inc
+
+# We do not automatically check to see if references are satisfied
+# within the using file, so we can IGNORE those references by naming
+# them here.
+#
+# Note: PrivateException is in Exception.F90, there is no
+# PrivateException.F90 or PrivateException.o.
+#
+IGNORE="PrivateException"
+# May need to consider case, however if we stick to our current coding
+# style, we should be okay.
+
+# Have trouble with commented use statements... see grep -v "\!" below.
+# Need to watch out for use statements that refer to tokens with use or used.
+# Also may have some trouble with files/modules with "use" in their names.
+
+echo "# pFUnit: source/MakeDependenciesInclude..." > ${tmpFile}; 
+echo -e "# source/${outFile} automatically generated: " `date "+%Y-%m%d-%H%M-%S"` "\n" >> ${tmpFile}; 
+
+for i in *.F90; do 
+   echo `echo $i | cut -f 1 -d. - `".o: " | tr -d "\n" >> ${tmpFile};
+      grep -i use $i | grep -v used | cut -d, -f1 - | sort | tr -s " \t\v" | uniq - | \
+      egrep -v ${IGNORE} | \
+      sed 's/use//g' | sed 's/_mod/.o/g' | egrep "\.o" | grep -v "\!\!" | tr -d "\n" | tr -s " \t\v" >> ${tmpFile};  
+   echo -e "\n" >> ${tmpFile}; 
+done; 
+
+cat ${tmpFile} | grep -iv Mpi\*.o > ${outFile}; 
+   cat ${tmpFile} | grep -i pfunit\*.o | sed 's/[a-zA-Z0-9]*[m|M]pi[.a-zA-Z0-9]*//g' >> ${outFile}; 
+   echo -e "\nifeq (\$(MPI),YES)\n" >> ${outFile}; 
+   cat ${tmpFile} | grep -i Mpi\*.o >> ${outFile}; 
+   echo -e "\nendif\n" >> ${outFile}

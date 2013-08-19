@@ -1,13 +1,19 @@
+
+# Gnu makefile for $(TOP)/tests/
+
 TOP = ..
 include ../include/base.mk
 .PHONY: all tests
 EXE = tests.x
 REMOTE = remote.x
 
-all: $(EXE) $(REMOTE)
+all: dependencies.inc $(EXE) $(REMOTE) 
 
 VPATH = . ../source
-tests: $(EXE)
+tests: dependencies.inc $(EXE) 
+
+dependencies.inc: 
+	./MakeDependenciesInclude
 
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
@@ -45,15 +51,5 @@ $(REMOTE): RemoteProgram.o $(OBJS_SERIAL)
 
 endif
 
-Test_SimpleTestCase.o: SimpleTestCase.o
-Test_FixtureTestCase.o: FixtureTestCase.o
-Test_TestResult.o: SimpleTestCase.o
-Test_RobustRunner.o: robustTestSuite.o
-Test_TestSuite.o: SimpleTestCase.o
+include ./dependencies.inc
 
-EXCLUDE_OBJS = selfTests.o RemoteProgram.o
-ifeq ($(MPI),YES)
-   selfTests.o RemoteProgram.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS))
-else
-   selfTests.o RemoteProgram.o: $(filter-out $(EXCLUDE_OBJS),$(OBJS_SERIAL))
-endif

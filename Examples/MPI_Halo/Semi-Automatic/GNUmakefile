@@ -1,4 +1,4 @@
-.PHONY: clean tests
+.PHONY: clean distclean tests
 
 TOP_DIR := $(shell pwd)
 SRC_DIR=$(TOP_DIR)/src
@@ -21,6 +21,9 @@ $(EXE): testSuites.inc myTests.pf Halo.F90 SUT tests
 clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
+
+distclean: clean
+	rm *.x
 
 SUT:
 	make -C $(SRC_DIR) SUT

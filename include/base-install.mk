@@ -1,8 +1,9 @@
-SRC_DIR     =$(TOP)/source
-TESTS_DIR   =$(TOP)/tests
-INCLUDE_DIR =$(TOP)/include
-LIB_DIR     =$(TOP)/source
-MOD_DIR     =$(TOP)/source
+
+SRC_DIR     =$(PFUNIT)/source
+TESTS_DIR   =$(PFUNIT)/tests
+INCLUDE_DIR =$(PFUNIT)/include
+LIB_DIR     =$(PFUNIT)/lib
+MOD_DIR     =$(PFUNIT)/mod
 
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
@@ -27,7 +28,7 @@ endif
 .PHONY: clean distclean
 
 clean:
-	$(RM) *.o *.mod *.i90 *~ *_cpp.F90 *.tmp
+	$(RM) *.o *.mod *.i90 *~ *_cpp.F90
 
 distclean: clean
-	$(RM) *.a *.x dependencies.inc
+	$(RM) *.a *.x

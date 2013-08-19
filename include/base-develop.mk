@@ -27,7 +27,7 @@ endif
 .PHONY: clean distclean
 
 clean:
-	$(RM) *.o *.mod *.i90 *~ *_cpp.F90 *.tmp
+	$(RM) *.o *.mod *.i90 *~ *_cpp.F90
 
 distclean: clean
-	$(RM) *.a *.x dependencies.inc
+	$(RM) *.a *.x
