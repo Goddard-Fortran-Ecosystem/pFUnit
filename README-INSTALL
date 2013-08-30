@@ -1,7 +1,7 @@
 
 PFUNIT INSTALLATION AND BASIC USAGE GUIDE
 
-DRAFT VERSION 2013-0805 M. Rilee mike@rilee.net
+VERSION 2013-0830 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -27,14 +27,13 @@ mixture of systems, including high-end computers, Apple Mac OSX, and
 linux-based systems.  Full use of the system depends on the following
 being available.
 
-Fortran (2003+)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1.)
 The Message Passing Interface (MPI)
 GNU Make
 Python
-PERL
 
 The system is routinely tested with GNU, Intel, and NAG fortran
-compilers and OpenMPI.
+compilers and OpenMPI, as well as nightly regression testing.
 
 2. OBTAINING PFUNIT
 
@@ -96,21 +95,23 @@ tests - Source code for unit testing pFUnit itself.
 4. CONFIGURATION
 
 Little needs to be done to configure pFUnit for the build, however
-there are several evnironment variables on which the package depends.
+there are several environment variables on which the package depends.
 
-F90_VENDOR - is set to include the correct makefile in $(TOP)/include,
+F90_VENDOR - is set to include the correct makefile in $(TOP_DIR)/include,
 i.e. GNU, Intel, NAG, or PGI.  Case insensitive file systems may cause
 some confusion from time-to-time.
 
 F90 - is set to the Fortran compiler being used: e.g. ifort for Intel,
 gfortran for GNU.
 
-COMPILER - is set according to F90_VENDOR and is set in the top level 
-makefile. 
+COMPILER - is set according to F90_VENDOR and is automatically set in
+the top level makefile.
 
 For MPI-based unit testing, your setup may require the following as well.
 
 MPIF90
+$ # e.g.
+$ export MPIF90=mpif90
 
 5.1 BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
 
@@ -131,15 +132,19 @@ along with a large number of Fortran module files.
 
 To build pFUnit for unit testing MPI-based codes, be sure that the
 environment is properly set up for the MPI implementation you are
-using.  The steps for building pFUnit start out the same as for the serial
-case above, but add MPI=YES to the environment to switch on MPI
-support.  The MPI-based unit tests for pFUnit itself will run
-automatically.  Again, occasionally a spurious (runtime) error may
-appear on the first execution.
-3. Execute make as follows. 
-$ make tests MPI=YES
-4. At this point an MPI-enabled pFUnit object library is in the source directory,
-along with a large number of Fortran module files.
+using. Depending on your local environment, you may need execute the
+build within a batch or other job queing system, e.g. an interactive
+batch job under PBS. The steps for building pFUnit start out the same
+as for the serial case above, but add MPI=YES to the environment to
+switch on MPI support.  The MPI-based unit tests for pFUnit itself
+will run automatically.  Again, occasionally a spurious (runtime)
+error may appear on the first execution.  
+
+3. Execute make as follows.
+$ make tests MPI=YES 
+
+4. At this point an MPI-enabled pFUnit object library is in the source
+directory, along with a large number of Fortran module files.
 
 Also, one may get some harmless "no symbols" warnings when the pFUnit library is constructed.
 
@@ -193,7 +198,9 @@ To test, set PFUNIT and go into Examples/MPI_Halo directory.
 
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-parallel
-$ pushd Examples/MPI_Halo/Semi-Automatic
+$ # The variable MPIF90 must be set to the appropriate build script.
+$ export MPIF90=mpif90
+$ cd Examples/MPI_Halo/Semi-Automatic
 $ make
 
 This will compile and run a set of parallel examples that includes
@@ -273,17 +280,24 @@ in the makefile to keep them from being deleted. For example:
 The MacPorts package management system is a convenient way to install
 and maintain many packages, including gcc which includes gfortran.
 
-
 10. ACKNOWLEDGMENTS
+
+Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 11. KNOWN INSTALLATIONS/VERSIONS
 
 12. NOTES
 
-On Mac OSX:  gcc-mp-4.8.1 + OpenMP 1.6.4 -- Examples/MPI_Halo fails to build.
+TBD
 
 13. --TODO--
 
 Make other directory.
 Make sample modulefile.
+Make "hello world" examples for section 7 above.
 
+14. REVISIONS TO THIS DOCUMENT
+
+2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
+2013-0806-1345. Corrected git reference. Was using old URL.  MLR
+2013-0805. Initial draft. MLR
