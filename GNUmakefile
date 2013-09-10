@@ -72,6 +72,7 @@ endif
 
 ifeq ($(MPI),YES)
   MPIF90 ?= mpif90
+	MPIRUN ?= mpirun
   FPPFLAGS += $DUSE_MPI
   CPPFLAGS += -DUSE_MPI
   ifeq ($(MPICH),YES)
@@ -111,7 +112,7 @@ distclean:
 
 tests: all
 ifeq ($(MPI),YES)
-	mpirun -np 4 ./tests/tests.x
+	$(MPIRUN) -np 4 ./tests/tests.x
 else
 	./tests/tests.x
 endif

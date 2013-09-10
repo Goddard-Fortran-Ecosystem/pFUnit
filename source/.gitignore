@@ -10,3 +10,5 @@
 /AssertReal_mod.F90
 *~
 /pre.m4
+/testCM.*
+/.#*

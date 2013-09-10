@@ -26,7 +26,8 @@ import copy
 ### Restrictions on types and type combinations.
 
 def dr_TolAllowedPrecisions(t,pFound='64') :
-    "returns a list of strings corresponding to the precisions 'tolerance' may take on."
+    "returns a list of strings corresponding to the precisions 'tolerance' may take on. \
+    dr_ refers to 'Difference Report.'  Please see the DifferenceReport routines."
     allowed = []
     if t == 'logical' :
         allowed = []
@@ -43,7 +44,8 @@ def dr_TolAllowedPrecisions(t,pFound='64') :
     return allowed
 
 def dr_TolAllowedPrecisions_orig(t,pFound='64') :
-    "returns a list of strings corresponding to the precisions 'tolerance' may take on."
+    "returns a list of strings corresponding to the precisions 'tolerance' may take on. \
+    dr_ refers to 'Difference Report.'  Please see the DifferenceReport routines."
     allowed = []
     if t == 'logical' :
         allowed = []
@@ -333,6 +335,7 @@ ifElseString(tolerance == 0,\
     foundDeclaration + \
     toleranceDeclaration + """
     
+! mlr 2013-0908 Note:  Perhaps have tolerance_ with a type depending on found... incl. logical or int.
     real(kind=kind(tolerance)) :: tolerance_
 !---    real(kind=kind(expected)) :: expected_
 !---    real(kind=kind(found)) :: found_
@@ -354,6 +357,7 @@ ifElseString(tolerance == 0,\
     OK = .true.
     
 ! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
+! mlr 2013-0908 Other comparisons:  tolerance-less integer comparison... logical...
     if( m > 0 )then
        do while ( i < m .and. OK )
          i = i + 1
@@ -570,6 +574,9 @@ ifElseString(fType != 'complex', \
     
 
 class constraintASSERTEQUAL(routineUnit):
+    "Defines the comparison code as a routineUnit so that it can be \
+    used by the module generation code.  These declarations are used \
+    to construct interface blocks as well as the routines themeselves."
     def __init__(self, expectedDescr, foundDescr, tolerance):
         self.expectedDescr = expectedDescr
         self.foundDescr = foundDescr
@@ -587,6 +594,8 @@ class constraintASSERTEQUAL(routineUnit):
         ## If you need another kind of code generator, perhaps
         ## conditioned on eDesc., fDesc., or tol, then that logic
         ## would go here... E.g. to implement assertEqual(Logical(...))
+        ##
+        ## This next line actually generates the text of the code.
         self.setImplementation(generateASSERTEQUAL(expectedDescr, \
                                                    foundDescr, \
                                                    tolerance ))
@@ -595,6 +604,7 @@ class constraintASSERTEQUAL(routineUnit):
 
 def constructAssertEqualInterfaceBlock(foundFTypes=['real']):
     AssertEqualInterfaceBlock = interfaceBlock('assertEqual')
+    # Construct asserts generates the combinations based on what is passed in here.
     [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(foundFTypes=foundFTypes)]
     return AssertEqualInterfaceBlock
 
@@ -628,6 +638,7 @@ def generateVECTOR_NORM(rank,fType='real',precision=64):
   function """+subroutineName+"""(x, norm) result(y)
     """+DECLARE('x',fType,precision,rank,opts=', intent(in)')+"""
     integer :: norm
+! mlr 2013-0908 Maybe we change the range of VECTOR_NORM to include integer & logical.
     real (kind=r64) :: y
 """ + ifElseString(rank == 0, \
 """
@@ -723,6 +734,8 @@ def isWithinToleranceName(rank,fType='real',precision=64):
     return """isWithinTolerance_"""+str(rank)+"""D"""+"_"+fType+str(precision)
 
 def generateIsWithinTolerance(rank,fType='real',precision=64):
+    "Generate the code for the comparison function. Calls \
+    vectorNorm..."
     subroutineName = isWithinToleranceName(rank,fType=fType,precision=precision)
     dimStr = DIMS(rank)
 
@@ -751,6 +764,7 @@ def generateIsWithinTolerance(rank,fType='real',precision=64):
     return retstr
 
 class IsWithinTolerance(routineUnit):
+    "A routineUnit specialized to the isWithinTolerance comparison function."
     def __init__(self,rank,fType='real',precision=64):
         self.rank = rank
         self.precision = precision
@@ -766,6 +780,8 @@ class IsWithinTolerance(routineUnit):
         return
 
 def constructIsWithinToleranceInterfaceBlock():
+    "For the comparison function, make an interface block and \
+    implementation for inclusion into a module."
     iwt_InterfaceBlock = interfaceBlock('isWithinTolerance')
     map(iwt_InterfaceBlock.addRoutineUnit, \
         flattened( \
@@ -941,6 +957,8 @@ def makeExpectedRanks(foundRank):
     return ranks
 
 def makeTolerances(expectedP, foundP) :
+    "unless default (int) is found, collect all of the tolerances \
+    found in eP and fP and return the maximum"
     tol = -1
     if type(expectedP) is list :
         ep = expectedP
@@ -1016,7 +1034,7 @@ def ca_MakeAllowedPrecisions(foundFType) :
             precs = precs + [int(i)]
     return precs
 
-def constructASSERTS(foundFTypes=['real','complex']):
+def constructASSERTS(foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
 
     AssertList = []
 
@@ -1032,12 +1050,25 @@ def constructASSERTS(foundFTypes=['real','complex']):
     # + passed in foundFTypes = ['real','complex']
     # + passed in foundFTypes = ['real']
     # foundPrecisions = [32,64] replaced with ca_MakeAllowedPrecisions
-    foundRanks = [0,1,2,3,4,5]
+    # + passed in foundRanks = [0,1,2,3,4,5]
 
 # -> foundFTypes --> adding 'complex'
 
 # THE MAIN LOOP.
 # May need a special case if we don't want to construct a real-real in AssertComplex...
+# Many type-kind-rank combinations are not allowed.  The allowed combinations result from 
+# some options depending on others.  These are implemented in the "make..." functions listed below.
+# The argument foundFType (found Fortran Type) is a key independent variable, which drives the types
+# chosen for other arguments.
+#
+# The variable a contains the arguments for the specialized AssertEqual being generated.
+# The constraintASSERTEQUAL object is the specialized routine, which is then used to
+# construct the module.
+#
+# To change the list of asserts constructed, one can either change the logic implemented in the
+# network of "make..." functions below, or one could add other routineUnits to AssertList, as long
+# as it make sense to include them in the list (and interface block).
+#
     AssertList = \
     [ \
       #test      a \
@@ -1057,6 +1088,15 @@ def constructASSERTS(foundFTypes=['real','complex']):
                        for fft in foundFTypes ] \
                        for fr in foundRanks ] \
                        )]
+
+    ## To insert by hand, one might try the following (sketch...)...
+    ## a = AssertRealArrayArgument('integer','default','1','integer','default','1',0)
+    ## AssertList += [MyConstraintAssertEqual(a.getExpectedDescription(),a.getFoundDescription())]
+    ## Any specialization of routineUnit should work here...
+    ## The code is generated when the routineUnit is instantiated, so that support code would
+    ## need to be available.
+    
+    
     return AssertList
 
 def constructDeclarations(basename=''):
@@ -1082,6 +1122,7 @@ def constructModule(baseName='AssertReal',foundFTypes=['real']):
     m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
     m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
     # *in test*
+    # This is where the "list of asserts" is generated.
     m1.addInterfaceBlock(constructAssertEqualInternalInterfaceBlock())
     # add individual routine units
     #    m1.addRoutineUnit(makeThrowDifferentValues()) # arg. provides a routine unit.

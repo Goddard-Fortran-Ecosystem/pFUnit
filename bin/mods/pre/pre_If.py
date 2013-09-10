@@ -6,7 +6,7 @@ from textwrap import dedent
 from pre2 import *
 from interleavedp import interleavedp
 
-debug = 0
+debug = 00
 debugLevel = 50
 
 class interval :
@@ -37,6 +37,7 @@ class IfDirective(procDirective) :
         
         if debug > debugLevel :
             print 'cs: ',args
+            print 'cs: pos: ',pos
         replaceString = args.keys()
         if debug > debugLevel :
             print 'cs-rs0: ',replaceString
@@ -74,14 +75,18 @@ class IfDirective(procDirective) :
             # print ':UntilEnd found'
             mU_span = mUntil.span()
         else :
-            # print ':UntilEnd not found, searching to end'
+            if debug > debugLevel :
+                print ':UntilEnd not found, searching to end'
             mU_span = [data.getLength()-1,data.getLength()-1]
-        #print 'mU_span: ',mU_span
+        if debug > debugLevel :
+            print 'mU_span: ',mU_span
             
         # until the first UntilEndifsToken
         mUntilPos = mU_span[0]
-        # print 'mUntilPos: ',mUntilPos
-        # print 'data:    ',data.getSlice(self.newPosition+mUntilPos,self.newPosition+mUntilPos+5)
+        if debug > debugLevel :
+            # print 'mUntilPos: ',mUntilPos
+            print 'data:    ',data.getSlice(self.newPosition,self.newPosition+mUntilPos+5)
+            print 'data:    ',data.getSlice(self.newPosition+mUntilPos,self.newPosition+mUntilPos+5)
 
         mBeginIter = self.finditerTokenToPosition(':BeginIfToken',data,self.newPosition,self.newPosition+mUntilPos)
         if not mBeginIter :
@@ -111,8 +116,10 @@ class IfDirective(procDirective) :
             endsStart.append(i.start())
             endsEnd.append(i.end())
 
-        # print 'be: ',beginsEnd
-        # print 'es: ',endsStart
+        if debug > debugLevel :
+            print 'be: ',beginsEnd
+            print 'es: ',endsStart
+            print 'ee: ',endsEnd
 
         pos = self.getNewPosition()
         # for i in range(len(beginsStart)) :
@@ -149,21 +156,31 @@ class IfDirective(procDirective) :
             return 'no :test in IF!'
         else :
             #            print ':test = ',args[':test']
-            p = args[':test']
-            KeepIfClause = p == 'True'
+            p = eval(args[':test'])
+            KeepIfClause = p
+            #mlr ???            p = args[':test']
+            #mlr-old KeepIfClause = p == 'True'
 
-
+        if debug > debugLevel :
+            print 'KeepIfClause, p: ',KeepIfClause,p
+            print '0+++',data.getSliceForward(pos),'---'
         pos = self.newPosition
         if KeepIfClause :
+            if debug > debugLevel :
+                print 'removing else intervals...'
             offset = 0
             for i in elseIntervals :
                 data.removeSlice(pos + i.getStart()+offset,pos + i.getEnd()+offset)
                 offset = offset - ( i.getEnd() - i.getStart() )
         else:
+            if debug > debugLevel :
+                print 'removing if intervals...'
             offset = 0
             for i in ifIntervals :
                 data.removeSlice(pos + i.getStart()+offset,pos + i.getEnd()+offset)
                 offset = offset - ( i.getEnd() - i.getStart() )
+        if debug > debugLevel :
+            print '1+++',data.getSliceForward(pos),'---'
 
         # Remember data has been modified...
         pos = self.newPosition
@@ -175,14 +192,22 @@ class IfDirective(procDirective) :
             # print 'mU_span0: ',mU_span
         else :
             # print ':UntilEnd found not found, searching to end'
+            if debug > debugLevel :
+                print 'mU_span1,endsEnd: ',endsEnd
             mU_span = [endsEnd[-1],endsEnd[-1]]
             # print 'mU_span1: ',mU_span
         # until the last :UntilEnd
         mUntilPos = mU_span[0]
         mUntilEnd = mU_span[1]
-        if ':clearTokens' in args.keys() :
-            # print 'clearing tokens in data from ',pos,' to ',pos + mUntilEnd
-            # print '+++',data.getSlice(pos,pos + mUntilEnd),'---'
+
+        clearTokens = True
+        if ':keepTokens' in args.keys() :
+            clearTokens = args[':keepTokens'] != 'True'
+            
+        if clearTokens :
+            if debug > debugLevel :
+                print 'clearing tokens in data from ',pos,' to ',pos + mUntilEnd
+                print '+++',data.getSlice(pos,pos + mUntilEnd),'---'
             offsetEnd = 0
             for key in self.tokens.keys():
                 # print 'clearing key = ',key,' = ',self.tokens[key]
@@ -193,11 +218,16 @@ class IfDirective(procDirective) :
                     start = item.start()
                     end = item.end()
                     length = end - start
-                    # print 'pos,start,length,offset',pos,start,length,offset
-                    # print 'removing: ',data.getSlice(pos+start+offset,pos+end+offset)
+                    if debug > debugLevel :
+                        print 'pos,start,length,offset',pos,start,length,offset
+                        print '+++',data.getSliceForward(pos),'---'
+                        print 'removing: ',data.getSlice(pos+start+offset,pos+end+offset)
                     data.removeSlice(pos+start+offset,pos+end+offset)
                     offset = offset - length
                     offsetEnd = offsetEnd - length
+                    if debug > debugLevel :
+                        print '+++',data.getSliceForward(pos),'---'
+
 
 
                                                          
@@ -227,7 +257,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If()
+                                            @If(:keepTokens)
                                             Nobody but us chickens.
                                             <BeginIf>
                                             No EndIf tokens here.
@@ -243,7 +273,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If(:test='False')
+                                            @If(:test='False',:keepTokens='True')
                                             Nobody but us 
                                             <BeginIf>
                                             chickens. (If-Clause)
@@ -263,7 +293,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If(:test='True')
+                                            @If(:test='True',:keepTokens='True')
                                             Nobody but us 
                                             <BeginIf>
                                             chickens. (If-Clause)
@@ -284,7 +314,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If(:test='True')
+                                            @If(:test='True',:keepTokens='True')
                                             Nobody but us 
                                             <BeginIf>
                                             chickens. (If-Clause)
@@ -318,7 +348,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If(:test='True',:clearTokens='True')
+                                            @If(:test='True')
                                             Nobody but us 
                                             <BeginIf>
                                             chickens. (If-Clause)
@@ -352,7 +382,7 @@ class TestIfDirective(unittest.TestCase) :
         self.assertEqual(\
                          pre(data = dedent( \
                                             '''
-                                            @If(:test='True',:clearTokens='True')
+                                            @If(:test='True')
                                             Nobody but us 
                                             <BeginIf>
                                             chickens. (If-Clause)

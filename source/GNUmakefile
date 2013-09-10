@@ -1,6 +1,6 @@
 TOP = ..
 include ../include/base.mk
-.PHONY: all generate clean_generated_code
+.PHONY: all generate clean_generated_code testCodeMacs
 
 all: dependencies.inc libpfunit.a
 
@@ -8,6 +8,12 @@ GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 
 $(GENERATED_CODE):
 	./GenerateRealArrayNewSignature.py
+
+testCodeMacs:
+	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
+
+# %.F90: %.cm
+#	python $(TOP)/bin/codeMacs.py $< $@
 
 clean_generated_code: 
 	rm -f $(GENERATED_CODE)

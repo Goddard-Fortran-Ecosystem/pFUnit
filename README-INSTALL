@@ -113,6 +113,13 @@ MPIF90
 $ # e.g.
 $ export MPIF90=mpif90
 
+As a convenience for working with multiple MPI configurations, you may
+also set the following.
+
+MPIRUN
+$ # e.g.
+$ export MPIRUN=/some.path/mpirun
+
 5.1 BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
