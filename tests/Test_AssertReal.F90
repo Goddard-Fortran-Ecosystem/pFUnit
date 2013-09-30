@@ -457,7 +457,6 @@ contains
          & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
 
-
     deallocate(msg)
 
   end subroutine testEquals_MultiDMultiPrec_SingleEltDiff
@@ -545,7 +544,6 @@ contains
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
          & ';  first difference at element ' // trim(locationInArray) // '.') &
          & )
-
 
     deallocate(msg)
 
@@ -854,8 +852,10 @@ contains
          & appendWithSpace(msg, &
          & trim(valuesReport(good, bad32)) // &
          & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
-         & ';  first difference at element  [1].') &
-         & )
+         & '.' ))
+
+!mlr-         & ';  first difference at element  [1].') &
+!mlr-         & )
 
     deallocate(msg)
 
@@ -895,8 +895,10 @@ contains
          & appendWithSpace(msg, &
          & trim(valuesReport(good, bad32)) // &
          & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
-         & ';  first difference at element  [1].') &
-         & )
+         & '.' ))
+
+!mlr-         & ';  first difference at element  [1].') &
+!mlr-         & )
 
     deallocate(msg)
 
@@ -1243,8 +1245,10 @@ end subroutine testEquals_MultiDWithTolerance64
          & appendWithSpace(msg, &
          & trim(valuesReport(expected, found)) // &
          & '; ' // trim(differenceReport(abs(expected - found), tolerance64)) // &
-         & ';  first difference at element  ' // trim('[1]') // '.') &
-         & )
+         &  '.' ) )
+
+!mlr-         & ';  first difference at element  ' // trim('[1]') // '.') &
+!mlr-         & )
 
     deallocate(msg)
 

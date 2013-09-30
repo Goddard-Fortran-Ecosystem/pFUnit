@@ -17,7 +17,7 @@ module StringConversionUtilities_mod
    public :: appendWithSpace
    public :: MAXLEN_STRING
    public :: nullTerminate
-
+   public :: unlessScalar
 
    integer, parameter :: MAXLEN_STRING = 80
 !   integer, parameter :: MAXLEN_STRING = 80*5
@@ -30,7 +30,6 @@ module StringConversionUtilities_mod
       module Procedure toString_integerScalar
       module Procedure toString_integer1D
    end interface
-
 
    character(len=*), parameter :: r32fmtStr = 'SP,G14.7'
    character(len=*), parameter :: r64fmtStr = 'SP,G14.7'
@@ -132,5 +131,15 @@ contains
       nullTerminatedString = trim(string) // C_NULL_CHAR
 
    end function nullTerminate
+
+   function unlessScalar(vShape,string) result(retString)
+     integer, intent(in), dimension(:) :: vShape
+     character(len=*), intent(in) :: string
+     character(len=:), allocatable :: retString
+     retString=""
+     if(size(vShape).ne.0)then
+        retString=string
+     end if
+   end function unlessScalar
 
 end module StringConversionUtilities_mod

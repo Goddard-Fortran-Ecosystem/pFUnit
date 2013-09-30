@@ -501,7 +501,7 @@ ifElseString(fType != 'complex', \
        & appendWithSpace(message, &
        & trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case (NEQP)
@@ -509,7 +509,7 @@ ifElseString(fType != 'complex', \
        & appendWithSpace(message, &
        & 'NOT '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        ) """ + \
 ifElseString(fType != 'complex', \
@@ -520,7 +520,7 @@ ifElseString(fType != 'complex', \
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case (GEP)
@@ -529,7 +529,7 @@ ifElseString(fType != 'complex', \
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be greater than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case (LTP)
@@ -538,7 +538,7 @@ ifElseString(fType != 'complex', \
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case (LEP)
@@ -547,14 +547,14 @@ ifElseString(fType != 'complex', \
        & trim(valuesReport(expected_,found_, &
        &   ePrefix='expected', &
        &   fPrefix='to be less than or equal to:')) // &       
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        ) """,'') + \
 """
     case (RELEQP)    
        call throw( &
        & appendWithSpace(message, &
-       & ';  first difference at element '//trim(locationInArray)//'.'), &
+       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case default

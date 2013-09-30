@@ -91,8 +91,10 @@ contains
          & appendWithSpace(msg, &
          & trim(valuesReport(good, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
-         & ';  first difference at element  [1].') &
-         & )
+         & '.' ) )
+
+!mlr-         & ';  first difference at element  [1].') &
+!mlr-         & )
     
     deallocate(msg)
 
@@ -882,8 +884,10 @@ contains
          & appendWithSpace(msg, &
          & trim(valuesReport(good, bad32)) // &
          & '; ' // trim(differenceReport(abs(bad32 - good), tolerance32)) // &
-         & ';  first difference at element  [1].') &
-         & )
+         & '.' ))
+
+!mlr-         & ';  first difference at element  [
+!mlr-         & )
 
     deallocate(msg)
 
