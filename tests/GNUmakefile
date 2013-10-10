@@ -41,6 +41,7 @@ endif
 else
 LIBS = $(LIB_DIR)/libpfunit$(LIB_EXT)
 ifeq ($(MPI),YES)
+# TODO: This must still be addressed for MPI
    LIBS += -lmpi
 endif
 endif
@@ -50,9 +51,9 @@ $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
 ifeq ($(MPI),YES)
 
-$(EXE): selfTests.o $(OBJS)
+$(EXE): selfTests$(OBJ_EXT) $(OBJS)
 	$(FC) $(O)$@ $^ $(LIBS) -g
-$(REMOTE): RemoteProgram.o $(OBJS)
+$(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
 	$(FC) $(O)$@ $^ $(LIBS) -g
 
 else
