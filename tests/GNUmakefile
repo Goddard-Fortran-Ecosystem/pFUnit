@@ -7,18 +7,23 @@ include ../include/base.mk
 EXE = tests$(EXE_EXT)
 REMOTE = remote$(EXE_EXT)
 
-all: dependencies.inc $(EXE) $(REMOTE) 
+all: dependencies.inc $(EXE) $(REMOTE)
 
 VPATH = . ../source
-tests: dependencies.inc $(EXE) 
+tests: dependencies.inc $(EXE)
 
-dependencies.inc: 
+dependencies.inc:
 	./MakeDependenciesInclude
 
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
+EXCLUDE = $(PROGRAMS)
+ifeq ($(UNAME),Windows)
+EXCLUDE += RobustRunner.F90 Test_RobustRunner.F90 Test_UnixProcess.F90
+endif
 
-SRCS = $(filter-out $(PROGRAMS),$(SRCS_BASE))
+
+SRCS = $(filter-out $(EXCLUDE),$(SRCS_BASE))
 OBJS = $(SRCS:%.F90=%$(OBJ_EXT))
 
 ifneq ($(MPI),YES)
@@ -28,26 +33,34 @@ endif
 
 F90FLAGS +=$M$(MOD_DIR)
 
+ifneq ($(UNAME),Windows)
 LIBS = $L$(LIB_DIR) -lpfunit
 ifeq ($(MPI),YES)
    LIBS += -lmpi
 endif
+else
+LIBS = $(LIB_DIR)/libpfunit$(LIB_EXT)
+ifeq ($(MPI),YES)
+   LIBS += -lmpi
+endif
+endif
+
 
 $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
 ifeq ($(MPI),YES)
 
 $(EXE): selfTests.o $(OBJS)
-	$(FC) -o $@ $^ $(LIBS) -g
+	$(FC) $(O)$@ $^ $(LIBS) -g
 $(REMOTE): RemoteProgram.o $(OBJS)
-	$(FC) -o $@ $^ $(LIBS) -g
+	$(FC) $(O)$@ $^ $(LIBS) -g
 
 else
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) -o $@ $^ $(LIBS) -g
+	$(FC) $(O)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) -o $@ $^ $(LIBS) -g
+	$(FC) $(O)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 
 endif
 

@@ -15,7 +15,7 @@ testCodeMacs:
 # %.F90: %.cm
 #	python $(TOP)/bin/codeMacs.py $< $@
 
-clean_generated_code: 
+clean_generated_code:
 	rm -f $(GENERATED_CODE)
 
 distclean: clean_generated_code
@@ -23,7 +23,11 @@ distclean: clean_generated_code
 dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude
 
-SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
+EXCLUDE = BasicElements.F90
+ifeq ($(UNAME),Windows)
+EXCLUDE += UnixProcess.F90
+endif
+SRCS = $(filter-out $(EXCLUDE),$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%$(OBJ_EXT))
 
 EXCLUDE_MPI_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90 MpiTestMethod.F90
@@ -38,8 +42,8 @@ ifeq ($(MPI),YES)
 else
    libpfunit$(LIB_EXT): $(OBJS_SERIAL)
 endif
-	ar -r $@ $?
-	-@ranlib $@
+	$(AR)$@ $?
+	-@$(RANLIB) $@
 
 include ./dependencies.inc
 

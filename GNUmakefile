@@ -1,7 +1,7 @@
 .PHONY: tests all
 
 # Add -j below for parallel make in subdirectories.
-MAKEFLAGS = 
+MAKEFLAGS =
 
 TOP_DIR ?=$(shell pwd)
 
@@ -16,6 +16,11 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 UNAME ?=$(shell uname)
 ifeq ($(UNAME),)
   UNAME =UNKNOWN
+else
+# If the UNAME is not Linux, then assume a Windows compilation.
+ifneq ($(UNAME),Linux)
+UNAME =Windows
+endif
 endif
 
 ARCH  ?=$(shell arch)
@@ -23,9 +28,27 @@ ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
 
+# Set the file extensions based on the UNAME.
+ifneq ($(UNAME),Windows)
+# File extensions for non-Windows.
 OBJ_EXT ?= .o
 LIB_EXT ?= .a
 EXE_EXT ?= .x
+# Also set the archiver and RANLIB options.
+AR = ar -r
+RANLIB ?= ranlib
+O ?= -o
+else
+# File extensions for Windows.
+OBJ_EXT ?= .obj
+LIB_EXT ?= .lib
+EXE_EXT ?= .exe
+# Also set the archiver and RANLIB options.
+AR = lib /out:
+RANLIB ?= echo
+O ?= /nologo /Fe
+endif
+
 
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
@@ -102,7 +125,7 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all: 
+all:
 	$(MAKE) $(MAKEFLAGS) -C $(SOURCE_DIR) all
 	$(MAKE) $(MAKEFLAGS) -C $(TESTS_DIR) all
 
@@ -122,11 +145,11 @@ else
 endif
 
 develop:
-	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk 
+	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
 install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
-install: 
+install:
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)/lib
 	mkdir -p $(INSTALL_DIR)/mod
@@ -135,7 +158,7 @@ install:
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
 	cp include/*        $(INSTALL_DIR)/include/.
-	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
+	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
 	cp -r bin/* $(INSTALL_DIR)/bin/.
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
@@ -144,6 +167,9 @@ export UNAME
 export OBJ_EXT
 export EXE_EXT
 export LIB_EXT
+export AR
+export RANLIB
+export O
 export F90
 export F90_VENDOR
 export FFLAGS

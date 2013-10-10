@@ -1,7 +1,8 @@
-
+*.lib
 *.a
 *.i90
 *.mod
+*.obj
 *.o
 *~
 *.pyc
@@ -12,3 +13,4 @@
 /pre.m4
 /testCM.*
 /.#*
+/dependencies.inc
