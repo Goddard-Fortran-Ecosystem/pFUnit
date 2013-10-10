@@ -2,7 +2,7 @@ TOP = ..
 include ../include/base.mk
 .PHONY: all generate clean_generated_code testCodeMacs
 
-all: dependencies.inc libpfunit.a
+all: dependencies.inc libpfunit$(LIB_EXT)
 
 GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 
@@ -24,19 +24,19 @@ dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude
 
 SRCS = $(filter-out BasicElements.F90,$(wildcard *.F90))
-OBJS = $(SRCS:%.F90=%.o)
+OBJS = $(SRCS:%.F90=%$(OBJ_EXT))
 
 EXCLUDE_MPI_SRCS = MpiContext.F90 MpiStubs.F90 MpiTestCase.F90 MpiTestMethod.F90
 
 ifneq ($(MPI),YES)
    SRCS_SERIAL=$(filter-out $(EXCLUDE_MPI_SRCS),$(SRCS))
-   OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%.o)
+   OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%$(OBJ_EXT))
 endif
 
 ifeq ($(MPI),YES)
-   libpfunit.a: $(OBJS)
+   libpfunit$(LIB_EXT): $(OBJS)
 else
-   libpfunit.a: $(OBJS_SERIAL)
+   libpfunit$(LIB_EXT): $(OBJS_SERIAL)
 endif
 	ar -r $@ $?
 	-@ranlib $@

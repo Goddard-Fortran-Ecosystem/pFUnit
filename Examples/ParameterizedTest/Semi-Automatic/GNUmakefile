@@ -10,13 +10,13 @@ ifeq ($(F90),nagfor)
   FFLAGS += -fpp
 endif
 
-EXE = tests.x
+EXE = tests$(EXE_EXT)
 
 all: $(EXE)
 	./$(EXE)
 
 $(EXE): testSuites.inc SUT tests
-	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*.o $(SRC_DIR)/*.o -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
+	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
 
 clean:
 	make -C $(SRC_DIR) clean

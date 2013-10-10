@@ -23,6 +23,10 @@ ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
 
+OBJ_EXT ?= .o
+LIB_EXT ?= .a
+EXE_EXT ?= .x
+
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
 F90_VENDOR ?=GNU
@@ -112,15 +116,15 @@ distclean:
 
 tests: all
 ifeq ($(MPI),YES)
-	$(MPIRUN) -np 4 ./tests/tests.x
+	$(MPIRUN) -np 4 ./tests/tests$(EXE_EXT)
 else
-	./tests/tests.x
+	./tests/tests$(EXE_EXT)
 endif
 
 develop:
 	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk 
 
-install: libpfunit.a
+install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
 install: 
 	@echo Installing pFUnit in $(INSTALL_DIR)
@@ -137,6 +141,9 @@ install:
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
 
 export UNAME
+export OBJ_EXT
+export EXE_EXT
+export LIB_EXT
 export F90
 export F90_VENDOR
 export FFLAGS
