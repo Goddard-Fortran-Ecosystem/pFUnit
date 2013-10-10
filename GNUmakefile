@@ -35,7 +35,9 @@ OBJ_EXT ?= .o
 LIB_EXT ?= .a
 EXE_EXT ?= .x
 # Also set the archiver and RANLIB options.
-AR = ar -r
+NULL :=
+SPACE := ${NULL} ${NULL}
+AR = ar -r$(SPACE)
 RANLIB ?= ranlib
 O ?= -o
 else

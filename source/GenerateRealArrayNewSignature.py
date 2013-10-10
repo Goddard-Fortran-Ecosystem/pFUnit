@@ -1148,11 +1148,11 @@ def makeModuleReal():
     # print '\n'.join(mod.generate())
     # print mod
     print 'makeModuleReal: opening    '+mod.getFileName()
-    with open(mod.getFileName(),'w') as f:
-        print 'makeModuleReal: writing to '+mod.getFileName()
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
-        f.close()
+    f = open(mod.getFileName(),'w')
+    print 'makeModuleReal: writing to '+mod.getFileName()
+    f.write(filePreamble(mod.getFileName()))
+    f.write('\n'.join(mod.generate()))
+    f.close()
     print 'makeModuleReal: done'
     return
 
@@ -1163,29 +1163,29 @@ def makeModuleComplex():
     mod = constructModule(baseName='AssertComplex',foundFTypes=['real','complex'])
     # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     # print 'makeModuleComplex: opening    '+mod.getFileName()
-    with open(mod.getFileName(),'w') as f:
-        # print 'makeModuleComplex: writing to '+mod.getFileName()
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
-        f.close()
+    f = open(mod.getFileName(),'w')
+    # print 'makeModuleComplex: writing to '+mod.getFileName()
+    f.write(filePreamble(mod.getFileName()))
+    f.write('\n'.join(mod.generate()))
+    f.close()
     print 'makeModuleComplex: done'
     return
 
 def makeModuleInteger():
     mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
-    with open(mod.getFileName(),'w') as f:
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
-        f.close()
+    f = open(mod.getFileName(),'w')
+    f.write(filePreamble(mod.getFileName()))
+    f.write('\n'.join(mod.generate()))
+    f.close()
     print 'makeModuleInteger: done'
     return
 
 # def makeModuleLogical():
 #     mod = constructModule(baseName='AssertLogical1',foundFTypes=['logical'])
-#     with open(mod.getFileName(),'w') as f:
-#         f.write(filePreamble(mod.getFileName()))
-#         f.write('\n'.join(mod.generate()))
-#         f.close()
+#     f = open(mod.getFileName(),'w')
+#     f.write(filePreamble(mod.getFileName()))
+#     f.write('\n'.join(mod.generate()))
+#     f.close()
 #     print 'makeModuleInteger: done'
 #     return
 
