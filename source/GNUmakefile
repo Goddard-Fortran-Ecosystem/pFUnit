@@ -25,7 +25,7 @@ dependencies.inc: $(GENERATED_CODE)
 
 EXCLUDE = BasicElements.F90
 ifeq ($(UNAME),Windows)
-EXCLUDE += UnixProcess.F90
+EXCLUDE += UnixProcess.F90 RobustRunner.F90
 endif
 SRCS = $(filter-out $(EXCLUDE),$(wildcard *.F90))
 OBJS = $(SRCS:%.F90=%$(OBJ_EXT))
