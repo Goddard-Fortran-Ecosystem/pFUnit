@@ -44,7 +44,8 @@ The current examples are:
 * Robust - demonstrates the use of the "-robust" option for the
   framework driver that allows for tests that crash or hang.
 
-
+Note:
+These examples currently only run under Linux.
 
 
 

@@ -4,6 +4,10 @@ INCLUDE_DIR =$(TOP)/include
 LIB_DIR     =$(TOP)/source
 MOD_DIR     =$(TOP)/source
 
+# Set the required file extensions.
+include $(INCLUDE_DIR)/extensions.mk
+
+# Include the compiler-specific options.
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)

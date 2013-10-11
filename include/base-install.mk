@@ -5,6 +5,10 @@ INCLUDE_DIR =$(PFUNIT)/include
 LIB_DIR     =$(PFUNIT)/lib
 MOD_DIR     =$(PFUNIT)/mod
 
+# Set the required file extensions.
+include $(INCLUDE_DIR)/extensions.mk
+
+# Include the compiler-specific options.
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)

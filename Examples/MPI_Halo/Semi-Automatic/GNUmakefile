@@ -6,6 +6,9 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
+# Decide the file extensions.
+include $(PFUNIT)/include/extensions.mk
+
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp
 endif
@@ -32,3 +35,6 @@ tests:
 
 export SRC_DIR
 export TEST_DIR
+export OBJ_EXT
+export LIB_EXT
+export EXE_EXT

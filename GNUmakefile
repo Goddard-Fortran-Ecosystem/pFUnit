@@ -28,12 +28,7 @@ ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
 
-# Set the file extensions based on the UNAME.
 ifneq ($(UNAME),Windows)
-# File extensions for non-Windows.
-OBJ_EXT ?= .o
-LIB_EXT ?= .a
-EXE_EXT ?= .x
 # Also set the archiver and RANLIB options.
 NULL :=
 SPACE := ${NULL} ${NULL}
@@ -41,16 +36,14 @@ AR = ar -r$(SPACE)
 RANLIB ?= ranlib
 O ?= -o
 else
-# File extensions for Windows.
-OBJ_EXT ?= .obj
-LIB_EXT ?= .lib
-EXE_EXT ?= .exe
 # Also set the archiver and RANLIB options.
 AR = lib /out:
 RANLIB ?= echo
 O ?= /nologo /Fe
 endif
 
+# Set the relevant file extensions
+include $(INCLUDE_DIR)/extensions.mk
 
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
@@ -199,5 +192,9 @@ ifeq ($(DEBUG),YES)
   $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))
   $(warning     ABI:            $(PFUNIT_ABI))
+  $(warning File extensions:)
+  $(warning     OBJ_EXT         $(OBJ_EXT))
+  $(warning     LIB_EXT         $(LIB_EXT))
+  $(warning     EXE_EXT         $(EXE_EXT))
 endif
 
