@@ -43,8 +43,8 @@ module pFUnit_mod
    public :: MpiTestMethod, newMpiTestMethod
 #endif
 
-   public :: assertEqual
    public :: assertTrue, assertFalse
+   public :: assertEqual
    public :: assertAny
    public :: assertAll
    public :: assertNone
