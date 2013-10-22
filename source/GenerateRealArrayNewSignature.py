@@ -974,14 +974,15 @@ def makeTolerances(expectedP, foundP) :
     if not 'default' in fp :
         lp = lp + fp
     if lp == [] :
-        print 'tolerance error! setting lp to 64.'
+        # 2013-1022 MLR Fix this!!!
+        # print 'tolerance error! setting lp to 64.'
         lp = [64]
     tol = max(lp)
     return [tol]
 
 class AssertRealArrayArgument:
     def __init__(self,eft,ep,er,fft,fp,fr,tol):
-        print ' ',eft,ep,er,fft,fp,fr,tol
+        # print ' ',eft,ep,er,fft,fp,fr,tol
         self.expectedFType = eft
         self.expectedPrecision = ep
         self.expectedRank = er
@@ -1147,9 +1148,9 @@ def makeModuleReal():
     mod = constructModule()
     # print '\n'.join(mod.generate())
     # print mod
-    print 'makeModuleReal: opening    '+mod.getFileName()
+    # print 'makeModuleReal: opening    '+mod.getFileName()
     with open(mod.getFileName(),'w') as f:
-        print 'makeModuleReal: writing to '+mod.getFileName()
+        # print 'makeModuleReal: writing to '+mod.getFileName()
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))
         f.close()

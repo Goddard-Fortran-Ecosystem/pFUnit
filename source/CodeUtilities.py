@@ -324,8 +324,8 @@ class ArrayDescription:
         self.fType = fType
         self.kind = kind
         self.rank = rank
-        if rank == 0:
-            print 'ArrayDescription:Warning: rank == 0!!!'
+        #        if rank == 0:
+        #            print 'ArrayDescription:Warning: rank == 0!!!'
     def NAME(self):
         return NAME(self.fType, self.kind, self.rank)
     def DECLARE(self,variableName):
