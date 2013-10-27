@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 import re
 
 def cppSetLineAndFile(line, file):
@@ -352,8 +353,10 @@ class Parser():
 
 if __name__ == "__main__":
     import sys
-    print "Processing file", sys.argv[1]
+
+    print("Processing file", sys.argv[1])
     p = Parser(sys.argv[1], sys.argv[2])
     p.run()
-    print " ... Done.  Results in", sys.argv[2]
+    print(" ... Done.  Results in", sys.argv[2])
+
 
