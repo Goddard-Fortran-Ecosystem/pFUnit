@@ -138,26 +138,70 @@ contains
    end subroutine testAssertNotAllFail
 
    subroutine testAssertIsNaN()
-      real :: x 
+      use Params_mod, only: r32, r64
 
       call assertIsNaN(1.e0, 'not NaN')
       call assertExceptionRaised('not NaN')
       call assertIsNaN(1.d0, 'not NaN')
       call assertExceptionRaised('not NaN')
 
-      x = 0
-      call assertIsNaN(x/x)
+      call assertIsNaN(makeNaN_32())
+      call assertIsNaN(makeNaN_64())
+
+   contains
+
+      function makeNaN_32() result(NaN_32)
+        real(r32) :: NaN_32
+        integer, parameter :: i32 = selected_int_kind(8)
+        integer(i32), parameter :: nan_bits_32 = int(Z'7FA00000',i32)
+
+        NaN_32 = transfer(nan_bits_32, NaN_32)
+
+      end function makeNaN_32
+
+      function makeNaN_64() result(NaN_64)
+        real(r64) :: NaN_64
+        integer, parameter :: i64 = selected_int_kind(18)
+        integer(i64), parameter :: nan_bits_64 = int(Z'7FF4000000000000',i64)
+
+        NaN_64 = transfer(nan_bits_64, NaN_64)
+
+      end function makeNaN_64
+
+
    end subroutine testAssertIsNaN
 
    subroutine testAssertIsFinite()
-      real :: x 
+      use Params_mod, only: r32, r64
 
       call assertIsFinite(1.e0, 'finite')
       call assertIsFinite(1.d0, 'finite')
 
-      x = 0
-      call assertIsFinite(1./x, 'not finite')
+      call assertIsFinite(makeInf_32(), 'not finite')
       call assertExceptionRaised('not finite')
+      call assertIsFinite(makeInf_64(), 'not finite')
+      call assertExceptionRaised('not finite')
+
+   contains
+
+      function makeInf_32() result(Inf_32)
+        real(r32) :: Inf_32
+        integer, parameter :: i32 = selected_int_kind(8)
+        integer(i32), parameter :: inf_bits_32 = int(Z'7F800000',i32)
+
+        Inf_32 = transfer(inf_bits_32, Inf_32)
+
+      end function makeInf_32
+
+      function makeInf_64() result(Inf_64)
+        real(r64) :: Inf_64
+        integer, parameter :: i64 = selected_int_kind(18)
+        integer(i64), parameter :: inf_bits_64 = int(Z'7FF0000000000000',i64)
+
+        Inf_64 = transfer(inf_bits_64, Inf_64)
+
+      end function makeInf_64
+
    end subroutine testAssertIsFinite
 
 end module Test_AssertBasic_mod
