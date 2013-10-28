@@ -53,6 +53,8 @@ module pFUnit_mod
    public :: assertGreaterThan, assertGreaterThanOrEqual
    public :: assertExceptionRaised
    public :: assertSameShape
+   public :: assertIsNan
+   public :: assertIsFinite
 
    public :: throw, catchAny, catch, anyExceptions
 

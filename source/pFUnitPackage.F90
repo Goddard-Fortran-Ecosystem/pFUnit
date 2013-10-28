@@ -35,6 +35,9 @@ module pFUnit
    use Assert_mod, only: RENAME(assertGreaterThanOrEqual)
    use Assert_mod, only: RENAME(assertExceptionRaised)
 
+   use Assert_mod, only: RENAME(assertIsNan)
+   use Assert_mod, only: RENAME(assertIsFinite)
+
    use Test_mod, only: RENAME(Test)
    use TestCase_mod, only: RENAME(TestCase)
    use TestSuite_mod, only: RENAME(TestSuite)

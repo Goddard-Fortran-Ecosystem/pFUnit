@@ -38,6 +38,8 @@ contains
       ADD(testAssertNotAll)
       ADD(testAssertNotAllFail)
 
+      ADD(testAssertIsNaN)
+      ADD(testAssertIsFinite)
    end function suite
 
    subroutine testAssertTrueF()
@@ -134,5 +136,28 @@ contains
       call assertNotAll([.true.,.true.])
       call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertNotAllFail
+
+   subroutine testAssertIsNaN()
+      real :: x 
+
+      call assertIsNaN(1.e0, 'not NaN')
+      call assertExceptionRaised('not NaN')
+      call assertIsNaN(1.d0, 'not NaN')
+      call assertExceptionRaised('not NaN')
+
+      x = 0
+      call assertIsNaN(x/x)
+   end subroutine testAssertIsNaN
+
+   subroutine testAssertIsFinite()
+      real :: x 
+
+      call assertIsFinite(1.e0, 'finite')
+      call assertIsFinite(1.d0, 'finite')
+
+      x = 0
+      call assertIsFinite(1./x, 'not finite')
+      call assertExceptionRaised('not finite')
+   end subroutine testAssertIsFinite
 
 end module Test_AssertBasic_mod

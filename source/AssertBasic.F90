@@ -18,6 +18,9 @@ module AssertBasic_mod
    public :: assertNone
    public :: assertNotAll
 
+   public :: assertIsNaN
+   public :: assertIsFinite
+
 
    ! Utility procedures
    public :: conformable
@@ -45,6 +48,16 @@ module AssertBasic_mod
       module procedure assertExceptionRaisedBasic
       module procedure assertExceptionRaisedMessage
    end interface assertExceptionRaised
+
+   interface assertIsNaN
+      module procedure assertIsNan_single
+      module procedure assertIsNan_double
+   end interface assertIsNaN
+
+   interface assertIsFinite
+      module procedure assertIsFinite_single
+      module procedure assertIsFinite_double
+   end interface assertIsFinite
 
    ! Arguments of the type below are used to force keyword arguments
    ! for optional arguments. 
@@ -229,5 +242,71 @@ contains
 
       call assertTrue(.not. all(conditions), message, location)
    end subroutine assertNotAll
+
+
+   subroutine assertIsNaN_single(x, message, location)
+      use Params_mod, only: r32
+#ifndef GNU
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+#endif
+      real(kind=r32), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+#ifdef GNU
+      call assertTrue(isNaN(x), message, location)
+#else
+      call assertTrue(ieee_is_nan(x), message, location)
+#endif
+   end subroutine assertIsNaN_single
+
+   subroutine assertIsNaN_double(x, message, location)
+      use Params_mod, only: r64
+#ifndef GNU
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+#endif
+      real(kind=r64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+#ifdef GNU
+      call assertTrue(isNaN(x), message, location)
+#else
+      call assertTrue(ieee_is_nan(x), message, location)
+#endif
+   end subroutine assertIsNaN_double
+
+   subroutine assertIsFinite_single(x, message, location)
+      use Params_mod, only: r32
+#ifndef GNU
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+#endif
+      real(kind=r32), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+#ifdef GNU
+      call assertTrue(abs(x) <= huge(x), message, location)
+#else
+      call assertTrue(ieee_is_finite(x), message, location)
+#endif
+   end subroutine assertIsFinite_single
+
+   subroutine assertIsFinite_double(x, message, location)
+      use Params_mod, only: r64
+#ifndef GNU
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+#endif
+      real(kind=r64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+#ifdef GNU
+      call assertTrue(abs(x) <= huge(x), message, location)
+#else
+      call assertTrue(ieee_is_finite(x), message, location)
+#endif
+   end subroutine assertIsFinite_double
+
 
 end module AssertBasic_mod
