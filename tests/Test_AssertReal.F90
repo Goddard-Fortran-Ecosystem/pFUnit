@@ -68,6 +68,7 @@ contains
     ADD(testEquals_MultiDWithTolerance64_2)
     ADD(testEquals_MultiDSourceLocation)
     ADD(testEquals_ScalarAndLocation)
+    ADD(testEquals_ScalarInfinity)
 
   end function suite
 
@@ -1254,6 +1255,29 @@ end subroutine testEquals_MultiDWithTolerance64
 
   end subroutine testEquals_ScalarAndLocation
 
+  subroutine testEquals_ScalarInfinity()
+    use Params_mod
+    implicit none
+
+    real(kind=r64) :: infinity
+
+    character(len=:), allocatable :: msg
+
+    integer, parameter :: i64 = selected_int_kind(18)
+
+    integer(i64), parameter :: inf_bit_pattern = int(Z'7FF0000000000000', i64)
+
+    infinity = transfer(inf_bit_pattern, infinity)
+
+    allocate(msg,source='')
+
+    call assertEqual(infinity,infinity,msg)
+
+    call assertCatch( "" )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ScalarInfinity
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
