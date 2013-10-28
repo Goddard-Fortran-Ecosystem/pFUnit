@@ -1,10 +1,10 @@
 #!/usr/bin/python
 from __future__ import print_function
+from os.path import *
 import re
 
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
-    # return "#line " + str(line) + " '" + file + "'\n"
 
 def getSubroutineName(line):
     m = re.match('\s*subroutine\s+(\w*)\s*\\([\w\s,]*\\)\s*$', line, re.IGNORECASE)
@@ -121,7 +121,7 @@ class AtAssert(Action):
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
         fileHandle.write(" & location=SourceLocation( &\n")
-        fileHandle.write(" & '" + fileName + "', &\n")
+        fileHandle.write(" & '" + str(relpath(fileName)) + "', &\n")
         fileHandle.write(" & " + str(lineNumber) + ")")
 
     def action(self, m, line):
