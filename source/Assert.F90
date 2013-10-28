@@ -20,6 +20,8 @@ module Assert_mod
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
 
+   public :: assertIsNan, assertIsFinite
+
 contains
 
 end module Assert_mod

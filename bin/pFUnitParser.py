@@ -116,7 +116,7 @@ class AtAssert(Action):
     def match(self, line):
         variants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
         variants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
-        variants += '|ExceptionRaised|SameShape'
+        variants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
         m = re.match('\s*@assert('+variants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
         return m
 
