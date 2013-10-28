@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 from Utilities import *
 import textwrap
 
@@ -22,7 +22,7 @@ class module:
         generation.extend([ 'end module '+self.name])
         return generation
     def addDeclaration(self,declaration):
-        # print 'adding declaration: ',declaration
+        # print('adding declaration: ',declaration)
         if type(declaration) is list :
             self.declarations.extend(declaration)
         else:
@@ -151,13 +151,13 @@ class fortranSubroutineSignature:
         self.ArgumentToFType[arg] = fType
         return self
     def generateInterfaceEntry(self):
-        print 'generateInterfaceEntryNotImplemented_'+this.name
+        print('generateInterfaceEntryNotImplemented_'+this.name)
         return
     def generateImplementationSignature(self):
-        print 'generateImplementationSignatureNotImplemented_'+this.name
+        print('generateImplementationSignatureNotImplemented_'+this.name)
         return
     def generateImplementationClose(self):
-        print 'generateImplementationCloseNotImplemented_'+this.name
+        print('generateImplementationCloseNotImplemented_'+this.name)
         return
     
 def indentKluge(indentString,txt):
@@ -170,7 +170,7 @@ def iterateOverMultiRank(nr,variableName,shapeName,centralText):
     txt = indentKluge(indent,centralText)
     r = range(nr); rrev = range(nr); rrev.reverse();
     codeSnippet = ''.join([' '*(3*(nr-i))+'do '+variableName+str(i+1)+'= 1,'+shapeName+'('+str(i+1)+')\n' for i in rrev])+txt+'\n'+''.join([' '*(3*(nr-i))+'end do\n' for i in r])
-    #    print codeSnippet
+    #    print(codeSnippet)
     return codeSnippet
 
 # Text formatting functions for Fortran from the m4-based code generator.
@@ -253,10 +253,10 @@ def KINDATTRIBUTE(fType,precision):
     return ret
 
 def testKINDATTRIBUTE():
-    print 'COMPLEX,32 -> ' + KINDATTRIBUTE('COMPLEX',32)
-    print 'REAL,32 -> ' + KINDATTRIBUTE('REAL',32)
-    print 'real,32 -> ' + KINDATTRIBUTE('real',32)
-    print 'integer,32 -> ' + KINDATTRIBUTE('integer',32)
+    print('COMPLEX,32 -> ' + KINDATTRIBUTE('COMPLEX',32))
+    print('REAL,32 -> ' + KINDATTRIBUTE('REAL',32))
+    print('real,32 -> ' + KINDATTRIBUTE('real',32))
+    print('integer,32 -> ' + KINDATTRIBUTE('integer',32))
 
 def DECLARE(variableName,fType,precision,rank,opts=', intent(in)'):
     return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+opts+' :: '+variableName+DIMS(rank)
@@ -265,28 +265,28 @@ def DECLARESCALAR(variableName,fType,precision,rank):
     return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+' :: '+variableName
 
 def testDECLARE():
-    print 'xVar,real,32,3 -> ' + DECLARE('xVar','real',32,3)
-    print 'iVar,int,32,3 -> ' + DECLARE('iVar','int',32,3)
-    print 'iVar,int,32,0 -> ' + DECLARE('iVar','int',32,0)
-    print 'iVar,int,default,1 -> ' + DECLARE('iVar','int','default',1)
+    print('xVar,real,32,3 -> ' + DECLARE('xVar','real',32,3))
+    print('iVar,int,32,3 -> ' + DECLARE('iVar','int',32,3))
+    print('iVar,int,32,0 -> ' + DECLARE('iVar','int',32,0))
+    print('iVar,int,default,1 -> ' + DECLARE('iVar','int','default',1))
 
 def OVERLOAD(routineName,fType,precision,rank):
     routineNameModifier=str(fType)+'_'+str(precision)+'_'+str(rank)
     return routineName+'_'+routineNameModifier.lower()+'D'
 
 def testOVERLOAD():
-    print 'testRoutine,real,32,2 -> '+OVERLOAD('testRoutine','real',32,2)
-    print 'testRoutine,integer,64,0 -> '+OVERLOAD('testRoutine','integer',64,0)
-    print 'testRoutine,int,32,4 -> '+OVERLOAD('testRoutine','int',32,4)
+    print('testRoutine,real,32,2 -> '+OVERLOAD('testRoutine','real',32,2))
+    print('testRoutine,integer,64,0 -> '+OVERLOAD('testRoutine','integer',64,0))
+    print('testRoutine,int,32,4 -> '+OVERLOAD('testRoutine','int',32,4))
 
 def DECLAREPOINTER(pointerName,fType,precision,rank):
     return FULLTYPE(fType)+KINDATTRIBUTE(fType,precision)+', pointer :: '+ \
         OVERLOAD(pointerName,fType,precision,rank)+DIMS(rank)+' = null()'
 
 def testDECLAREPOINTER():
-    print 'd-pointer: p,real,32,0 -> '+DECLAREPOINTER('p','real',32,0)
-    print 'd-pointer: p,integer, 64, 1 -> '+DECLAREPOINTER('p','integer',64,1)
-    print 'd-pointer: p,integer, 64, 3 -> '+DECLAREPOINTER('p','integer',64,3)
+    print('d-pointer: p,real,32,0 -> '+DECLAREPOINTER('p','real',32,0))
+    print('d-pointer: p,integer, 64, 1 -> '+DECLAREPOINTER('p','integer',64,1))
+    print('d-pointer: p,integer, 64, 3 -> '+DECLAREPOINTER('p','integer',64,3))
 
 def NAME(fType,kind,rank):
     if fType == 'real' :
@@ -302,8 +302,8 @@ def NAME(fType,kind,rank):
     return fTypeToken+kindToken+'_'+str(rank)+'D'
 
 def testNAME():
-    print 'real,32,2 -> '+NAME('real',32,2)
-    print 'integer,64,0 -> '+NAME('integer',64,0)
+    print('real,32,2 -> '+NAME('real',32,2))
+    print('integer,64,0 -> '+NAME('integer',64,0))
 
 def EXPANDSHAPE(rank, variableName):
     if rank == 0:
@@ -314,10 +314,10 @@ def EXPANDSHAPE(rank, variableName):
         return '('+','.join(['size('+variableName+','+str(i)+')' for i in range(1,rank+1)])+')'
 
 def testEXPANDSHAPE():
-    print '0,test -> ' + str(EXPANDSHAPE(0,'test'))
-    print '1,test -> ' + str(EXPANDSHAPE(1,'test'))
-    print '3,test -> ' + str(EXPANDSHAPE(3,'test'))
-    print '5,test -> ' + str(EXPANDSHAPE(5,'test'))
+    print('0,test -> ' + str(EXPANDSHAPE(0,'test')))
+    print('1,test -> ' + str(EXPANDSHAPE(1,'test')))
+    print('3,test -> ' + str(EXPANDSHAPE(3,'test')))
+    print('5,test -> ' + str(EXPANDSHAPE(5,'test')))
 
 class ArrayDescription:
     def __init__(self,fType,kind,rank):
@@ -325,7 +325,7 @@ class ArrayDescription:
         self.kind = kind
         self.rank = rank
         #        if rank == 0:
-        #            print 'ArrayDescription:Warning: rank == 0!!!'
+        #            print('ArrayDescription:Warning: rank == 0!!!')
     def NAME(self):
         return NAME(self.fType, self.kind, self.rank)
     def DECLARE(self,variableName):
