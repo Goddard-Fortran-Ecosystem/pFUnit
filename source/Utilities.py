@@ -28,8 +28,8 @@ def elideIfZero(test, insert):
     return retString
 
 def testElideIfZero():
-    print '0,test -> '+elideIfZero(0,'test'+',')
-    print '1,test -> '+elideIfZero(1,'test'+',')
+    print('0,test -> '+elideIfZero(0,'test'+','))
+    print('1,test -> '+elideIfZero(1,'test'+','))
 
 def ifZeroElse(test, ifTrue, ifFalse):
     if test == 0:
@@ -50,9 +50,9 @@ def ifElseString(test, string1, string2):
 
 def main():
     a = [1,2,3,4,[5,[6,7]]]
-    print 'a ',a
-    print 'f(a)', flattened(a)
-    print '[f(a)]', list(flattened(a))
+    print('a ',a)
+    print('f(a)', flattened(a))
+    print('[f(a)]', list(flattened(a)))
     return
 
 if __name__ == "__main__":

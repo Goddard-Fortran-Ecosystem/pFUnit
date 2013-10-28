@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from __future__ import print_function
 # 
 # Generate AssertRealArrays.F90, which provides assertEqual for arrays.
 # 
@@ -39,8 +39,7 @@ def dr_TolAllowedPrecisions(t,pFound='64') :
         elif pFound == '64' :
             allowed = ['32','64']
         else :
-            # Should not make it here...
-            allowed = []
+            raise ValueError("dr_TolAllowedPrecisions: Bad value of pFound.")
     return allowed
 
 def dr_TolAllowedPrecisions_orig(t,pFound='64') :
@@ -291,7 +290,12 @@ def makeAssertEqualInternal_type(eDescr,fDescr,tolerance):
     else:
         found_i = 'found'
         fOpts = ""
-        
+
+    if(eRank != 0 or fRank != 0):
+        all_i = "all"
+    else:
+        all_i = ""
+
     expectedDeclaration = \
 "    " + DECLARE('expected',eType,ePrec,0,\
                                   opts=eOpts+', intent(in)') + "\n" + \
@@ -343,6 +347,11 @@ ifElseString(tolerance == 0,\
     logical OK
     integer, dimension(size(fShape)) :: iLocation
     character(len=MAXLEN_SHAPE) :: locationInArray
+
+    ! Return immediately if the two are precisely equal.
+    ! This is necessary to deal with identical infinities, which cannot be
+    ! subtracted.
+    if (""" + all_i + """(expected == found)) return
 
 ! MLR: The following just might work...
     tolerance_ = tolerance
@@ -679,55 +688,53 @@ class VECTOR_NORM(routineUnit):
 
 def constructVectorNormInterfaceBlock():
     VectorNormInterface = interfaceBlock('vectorNorm')
-    map(VectorNormInterface.addRoutineUnit, \
-            flattened( \
-                        [[VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
-                         for p in allowedPrecisions(t) ] \
-                         for t in ['real','complex','integer']] ))
+    list(map(VectorNormInterface.addRoutineUnit,
+             flattened( [[VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
+                          for p in allowedPrecisions(t) ] \
+                         for t in ['real','complex','integer']
+                     ])))
     return VectorNormInterface
 
 def constructDifferenceReportInterfaceBlock():
     DifferenceReportInterface = interfaceBlock('differenceReport')
-    map(DifferenceReportInterface.addRoutineUnit, \
-        flattened( \
-    [[[makeDifferenceReport_type(t=t,p=p,tol=tol) \
-       for tol in dr_TolAllowedPrecisions(t) ]
-       for p in allowedPrecisions(t) ]
-       for t in ['integer','real','complex'] \
-       ]))
+    list(map(DifferenceReportInterface.addRoutineUnit,
+             flattened( [[[makeDifferenceReport_type(t=t,p=p,tol=tol) \
+                           for tol in dr_TolAllowedPrecisions(t) ]
+                          for p in allowedPrecisions(t) ]
+                         for t in ['integer','real','complex'] \
+                     ])))
     return DifferenceReportInterface
 
 def constructValuesReportInterfaceBlock():
     ValuesReportInterface = interfaceBlock('valuesReport')
-    map(ValuesReportInterface.addRoutineUnit, \
-        flattened( \
-    [[[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
-       for pe in allowedPrecisions(te,pFound=pf) ] \
-       for pf in allowedPrecisions(tf) ] \
-       for te in allowedExpected(tf) ] \
-       for tf in ['integer','real','complex'] \
-        ]))
+    list(map(ValuesReportInterface.addRoutineUnit,
+             flattened( [[[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
+                            for pe in allowedPrecisions(te,pFound=pf) ] \
+                           for pf in allowedPrecisions(tf) ] \
+                          for te in allowedExpected(tf) ] \
+                         for tf in ['integer','real','complex'] \
+                     ])))
     return ValuesReportInterface
 
 # Scalar args?
 def constructAssertEqualInternalInterfaceBlock():
     AssertEqualInternalInterface = interfaceBlock('assertEqual_internal')
-    map(AssertEqualInternalInterface.addRoutineUnit, \
-    [makeAssertEqualInternal_type(a.getExpectedDescription(),\
-                                  a.getFoundDescription(),\
-                                  a.getTolerance()\
-                                  ) \
-    for a in \
-    flattened( \
-               [[[[[[[[AssertRealArrayArgument(te,pe,re,tf,pf,rf,tol) \
-                       for re in [0,1] ] \
-                       for rf in [0,1] ] \
-                       for tol in makeTolerances(pe,pf) ] \
-                       for pe in allowedPrecisions(te,pFound=pf) ] \
-                       for pf in allowedPrecisions(tf) ] \
-                       for te in allowedExpected(tf) ] \
-                     for tf in ['integer','real','complex'] \
-                     ]])])
+    list(map(AssertEqualInternalInterface.addRoutineUnit,
+             [makeAssertEqualInternal_type(a.getExpectedDescription(),
+                                           a.getFoundDescription(),
+                                           a.getTolerance()
+                                       )
+              for a in
+              flattened(
+                  [[[[[[[[AssertRealArrayArgument(te,pe,re,tf,pf,rf,tol)
+                          for re in [0,1] ]
+                         for rf in [0,1] ]
+                        for tol in makeTolerances(pe,pf) ]
+                       for pe in allowedPrecisions(te,pFound=pf) ]
+                      for pf in allowedPrecisions(tf) ]
+                     for te in allowedExpected(tf) ]
+                    for tf in ['integer','real','complex']
+                ]])]))
     return AssertEqualInternalInterface
 
 def isWithinToleranceName(rank,fType='real',precision=64):
@@ -747,7 +754,7 @@ def generateIsWithinTolerance(rank,fType='real',precision=64):
     elif fType == 'complex' :
         declareKind = '(kind=c'+str(precision)+')'
     else:
-        print 'isWithinToleranceTypeError'
+        print('isWithinToleranceTypeError')
         
     retstr = \
 """
@@ -783,13 +790,13 @@ def constructIsWithinToleranceInterfaceBlock():
     "For the comparison function, make an interface block and \
     implementation for inclusion into a module."
     iwt_InterfaceBlock = interfaceBlock('isWithinTolerance')
-    map(iwt_InterfaceBlock.addRoutineUnit, \
-        flattened( \
-        [[IsWithinTolerance(i,fType=t,precision=p)
-         for i in range(6) \
-         for p in allowedPrecisions(t) ] \
-         for t in ['real','complex','integer'] \
-            ]))
+    list(map(iwt_InterfaceBlock.addRoutineUnit,
+             flattened(
+                 [[IsWithinTolerance(i,fType=t,precision=p)
+                   for i in range(6)
+                   for p in allowedPrecisions(t) ]
+                  for t in ['real','complex','integer']
+              ])))
     return iwt_InterfaceBlock
 
 
@@ -975,14 +982,14 @@ def makeTolerances(expectedP, foundP) :
         lp = lp + fp
     if lp == [] :
         # 2013-1022 MLR Fix this!!!
-        # print 'tolerance error! setting lp to 64.'
+        # print('tolerance error! setting lp to 64.')
         lp = [64]
     tol = max(lp)
     return [tol]
 
 class AssertRealArrayArgument:
     def __init__(self,eft,ep,er,fft,fp,fr,tol):
-        # print ' ',eft,ep,er,fft,fp,fr,tol
+        # print(' ',eft,ep,er,fft,fp,fr,tol)
         self.expectedFType = eft
         self.expectedPrecision = ep
         self.expectedRank = er
@@ -1146,15 +1153,14 @@ def filePreamble(filename):
 
 def makeModuleReal():
     mod = constructModule()
-    # print '\n'.join(mod.generate())
-    # print mod
-    # print 'makeModuleReal: opening    '+mod.getFileName()
+    # print('\n'.join(mod.generate()))
+    # print(mod)
+    # print('makeModuleReal: opening    '+mod.getFileName())
     with open(mod.getFileName(),'w') as f:
-        # print 'makeModuleReal: writing to '+mod.getFileName()
+        # print('makeModuleReal: writing to '+mod.getFileName())
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))
-        f.close()
-    print 'makeModuleReal: done'
+    print('makeModuleReal: done')
     return
 
 def makeModuleComplex():
@@ -1163,13 +1169,12 @@ def makeModuleComplex():
     #
     mod = constructModule(baseName='AssertComplex',foundFTypes=['real','complex'])
     # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
-    # print 'makeModuleComplex: opening    '+mod.getFileName()
+    # print('makeModuleComplex: opening    '+mod.getFileName())
     with open(mod.getFileName(),'w') as f:
-        # print 'makeModuleComplex: writing to '+mod.getFileName()
+        # print('makeModuleComplex: writing to '+mod.getFileName())
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))
-        f.close()
-    print 'makeModuleComplex: done'
+    print('makeModuleComplex: done')
     return
 
 def makeModuleInteger():
@@ -1177,8 +1182,7 @@ def makeModuleInteger():
     with open(mod.getFileName(),'w') as f:
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))
-        f.close()
-    print 'makeModuleInteger: done'
+    print('makeModuleInteger: done')
     return
 
 # def makeModuleLogical():
@@ -1186,8 +1190,7 @@ def makeModuleInteger():
 #     with open(mod.getFileName(),'w') as f:
 #         f.write(filePreamble(mod.getFileName()))
 #         f.write('\n'.join(mod.generate()))
-#         f.close()
-#     print 'makeModuleInteger: done'
+#     print('makeModuleInteger: done')
 #     return
 
 def main():

@@ -123,7 +123,7 @@ contains
 
       type (TestFailure) :: aFailedTest
       integer :: i, j
-      character(len=80) :: locationString
+      character(len=200) :: locationString
 
       do i = 1, size(failures)
          aFailedTest = failures(i)
@@ -142,7 +142,7 @@ contains
 
       function toString(location) result(string)
          type (SourceLocation), intent(in) :: location
-         character(len=80) :: string
+         character(len=200) :: string
 
          if (location%fileName == UNKNOWN_FILE_NAME) then
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then

@@ -349,15 +349,17 @@ class Parser():
                 self.outputFile.write('#endif ' + test['ifdef'] + '\n')
 
         printTail(self.outputFile, self.suiteName)
-                       
-	
+
+    def final(self):
+        self.inputFile.close()
+        self.outputFile.close()
 
 if __name__ == "__main__":
     import sys
-
     print("Processing file", sys.argv[1])
     p = Parser(sys.argv[1], sys.argv[2])
     p.run()
+    p.final()
     print(" ... Done.  Results in", sys.argv[2])
 
 
