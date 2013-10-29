@@ -69,6 +69,8 @@ contains
     ADD(testEquals_MultiDSourceLocation)
     ADD(testEquals_ScalarAndLocation)
     ADD(testEquals_ScalarInfinity)
+    ADD(testEquals_ScalarInfinity_1)
+    ADD(testEquals_ScalarInfinity_unequal)
 
   end function suite
 
@@ -1247,10 +1249,6 @@ end subroutine testEquals_MultiDWithTolerance64
          & trim(valuesReport(expected, found)) // &
          & '; ' // trim(differenceReport(abs(expected - found), tolerance64)) // &
          &  '.' ) )
-
-!mlr-         & ';  first difference at element  ' // trim('[1]') // '.') &
-!mlr-         & )
-
     deallocate(msg)
 
   end subroutine testEquals_ScalarAndLocation
@@ -1269,7 +1267,7 @@ end subroutine testEquals_MultiDWithTolerance64
 
     infinity = transfer(inf_bit_pattern, infinity)
 
-    allocate(msg,source='')
+    allocate(msg,source='equal')
 
     call assertEqual(infinity,infinity,msg)
 
@@ -1278,6 +1276,25 @@ end subroutine testEquals_MultiDWithTolerance64
     deallocate(msg)
 
   end subroutine testEquals_ScalarInfinity
+
+  subroutine testEquals_ScalarInfinity_1()
+    use MakeInfinity_mod, only: makeInf_32, makeInf_64
+    
+    call assertEqual(makeInf_64(), makeInf_64(), 'equal')
+
+    call assertCatch("")
+    
+  end subroutine testEquals_ScalarInfinity_1
+
+  subroutine testEquals_ScalarInfinity_unequal()
+    use MakeInfinity_mod, only: makeInf_32, makeInf_64
+    
+    
+    call assertEqual(1., makeInf_64(), 'unequal')
+    call assertCatch( "unequal expected: +1.000000 but found: +Infinity;"//&
+         &"     difference: |+Infinity| > tolerance:+0.000000." )
+!    call assertCatch("")
+  end subroutine testEquals_ScalarInfinity_unequal
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
