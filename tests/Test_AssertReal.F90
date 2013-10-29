@@ -1278,7 +1278,7 @@ end subroutine testEquals_MultiDWithTolerance64
   end subroutine testEquals_ScalarInfinity
 
   subroutine testEquals_ScalarInfinity_1()
-    use MakeInfinity_mod, only: makeInf_32, makeInf_64
+    use MakeInfinity_mod, only:  makeInf_64
     
     call assertEqual(makeInf_64(), makeInf_64(), 'equal')
 
@@ -1287,12 +1287,18 @@ end subroutine testEquals_MultiDWithTolerance64
   end subroutine testEquals_ScalarInfinity_1
 
   subroutine testEquals_ScalarInfinity_unequal()
-    use MakeInfinity_mod, only: makeInf_32, makeInf_64
+    use MakeInfinity_mod, only: makeInf_64
     
     
     call assertEqual(1., makeInf_64(), 'unequal')
-    call assertCatch( "unequal expected: +1.000000 but found: +Infinity;"//&
-         &"     difference: |+Infinity| > tolerance:+0.000000." )
+    call assertCatch( &
+         & appendWithSpace('unequal', &
+         & trim(valuesReport(1., makeInf_64())) // &
+         & '; ' // trim(differenceReport(abs(1. - makeInf_64()), 0.)) // &
+         &  '.' ) )
+
+!    call assertCatch( "unequal expected: +1.000000 but found: +Infinity;"//&
+!         &"     difference: |+Infinity| > tolerance:+0.000000." )
 !    call assertCatch("")
   end subroutine testEquals_ScalarInfinity_unequal
 
