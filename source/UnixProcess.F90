@@ -202,15 +202,17 @@ contains
 
 
 #ifdef Intel
-   subroutine execute_command_line(command, exitStat)
+   subroutine execute_command_line(command, exitStat, cmdStat)
       use ifport
       character(len=*), intent(in) :: command
       integer, optional, intent(out) :: exitStat
+      integer, optional, intent(out) :: cmdStat
 
       integer :: exitStat_
 
       exitStat_ = system(trim(command))
       if (present(exitStat)) exitStat = exitStat_
+      if (present(cmdStat)) cmdStat = 0
 
    end subroutine execute_command_line
 #endif
