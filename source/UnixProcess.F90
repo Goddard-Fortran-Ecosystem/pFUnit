@@ -106,11 +106,11 @@ contains
       
       integer, parameter :: MAX_LEN = 40
       character(len=MAX_LEN) :: command
-      integer :: stat
+      integer :: stat, cstat
 
       if (this%pid >=0) then
          write(command, '("kill -0 ",i0," >& /dev/null")') this%pid
-         call execute_command_line(command, exitStat=stat)
+         call execute_command_line(command, exitStat=stat, cmdStat=cstat)
          isActive = (stat == 0)
       else
          isActive = .false.
@@ -123,13 +123,13 @@ contains
 
       integer, parameter :: MAX_LEN = 120
       character(len=MAX_LEN) :: command
-      integer :: stat
+      integer :: stat, cstat
 
       if (this%pid >=0) then
          write(command,'(a,i0,a)') "kill -15 `ps -ef 2> /dev/null | awk '$3 == ",this%pid," {print $2}'` > /dev/null 2>&1" 
-         call execute_command_line(command, exitStat=stat)
+         call execute_command_line(command, exitStat=stat, cmdStat=cstat)
          write(command, '("kill -15 ",i0," > /dev/null 2>&1; ")') this%pid
-         call execute_command_line(command, exitStat=stat)
+         call execute_command_line(command, exitStat=stat, cmdStat=cstat)
       end if
 
    end subroutine terminate
