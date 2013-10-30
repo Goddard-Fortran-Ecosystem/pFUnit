@@ -1271,7 +1271,7 @@ end subroutine testEquals_MultiDWithTolerance64
 
     call assertEqual(infinity,infinity,msg)
 
-    call assertCatch( "" )
+! redundant?   call assertCatch( "" )
 
     deallocate(msg)
 
@@ -1282,7 +1282,7 @@ end subroutine testEquals_MultiDWithTolerance64
     
     call assertEqual(makeInf_64(), makeInf_64(), 'equal')
 
-    call assertCatch("")
+! redundant?    call assertCatch("")
     
   end subroutine testEquals_ScalarInfinity_1
 
