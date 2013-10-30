@@ -1,7 +1,11 @@
 
 module MakeInfinity_mod
-
   use Params_mod, only: r32, r64
+  implicit none
+  private
+  
+  public :: makeInf_32
+  public :: makeInf_64
 
 contains
 
