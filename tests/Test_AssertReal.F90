@@ -68,7 +68,8 @@ contains
     ADD(testEquals_MultiDWithTolerance64_2)
     ADD(testEquals_MultiDSourceLocation)
     ADD(testEquals_ScalarAndLocation)
-    ADD(testEquals_ScalarInfinity)
+    ADD(testEquals_ScalarInfinity_equal)
+    ADD(testEquals_ScalarInfinity_unequal)
 
   end function suite
 
@@ -1022,8 +1023,6 @@ contains
     ! The following should not throw an exception...
     call assertEqual(expected,found,tolerance = tolerance32, message=msg)
 
-    call assertCatch( "" )
-
     deallocate(msg)
 
   end subroutine testEquals_MultiDWithTolerance1
@@ -1108,8 +1107,6 @@ end subroutine testEquals_MultiDWithTolerance64
 
     ! The following should not throw an exception...
     call assertEqual(expected,found,tolerance = tolerance64, message=msg)
-
-    call assertCatch( "" )
 
     deallocate(msg)
 
@@ -1247,37 +1244,28 @@ end subroutine testEquals_MultiDWithTolerance64
          & trim(valuesReport(expected, found)) // &
          & '; ' // trim(differenceReport(abs(expected - found), tolerance64)) // &
          &  '.' ) )
-
-!mlr-         & ';  first difference at element  ' // trim('[1]') // '.') &
-!mlr-         & )
-
     deallocate(msg)
 
   end subroutine testEquals_ScalarAndLocation
 
-  subroutine testEquals_ScalarInfinity()
-    use Params_mod
-    implicit none
+  subroutine testEquals_ScalarInfinity_equal()
+    use MakeInfinity_mod, only:  makeInf_64
+    
+    call assertEqual(makeInf_64(), makeInf_64(), 'equal')
 
-    real(kind=r64) :: infinity
+  end subroutine testEquals_ScalarInfinity_equal
 
-    character(len=:), allocatable :: msg
+  subroutine testEquals_ScalarInfinity_unequal()
+    use MakeInfinity_mod, only: makeInf_64
+    
+    call assertEqual(1.d0, makeInf_64(), 'unequal')
+    call assertCatch( &
+         & appendWithSpace('unequal', &
+         & trim(valuesReport(1., makeInf_64())) // &
+         & '; ' // trim(differenceReport(abs(1. - makeInf_64()), 0.)) // &
+         &  '.' ) )
 
-    integer, parameter :: i64 = selected_int_kind(18)
-
-    integer(i64), parameter :: inf_bit_pattern = int(Z'7FF0000000000000', i64)
-
-    infinity = transfer(inf_bit_pattern, infinity)
-
-    allocate(msg,source='')
-
-    call assertEqual(infinity,infinity,msg)
-
-    call assertCatch( "" )
-
-    deallocate(msg)
-
-  end subroutine testEquals_ScalarInfinity
+  end subroutine testEquals_ScalarInfinity_unequal
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
