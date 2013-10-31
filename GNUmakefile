@@ -1,7 +1,7 @@
 .PHONY: tests all
 
 # Add -j below for parallel make in subdirectories.
-MAKEFLAGS = 
+MAKEFLAGS =
 
 TOP_DIR ?=$(shell pwd)
 
@@ -16,12 +16,34 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 UNAME ?=$(shell uname)
 ifeq ($(UNAME),)
   UNAME =UNKNOWN
+else
+# Check for Windows/CYGWIN compilation.
+ifneq (,$(findstring CYGWIN,$(UNAME)))
+UNAME =Windows
+endif
 endif
 
 ARCH  ?=$(shell arch)
 ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
+
+ifneq ($(UNAME),Windows)
+# Also set the archiver and RANLIB options.
+NULL :=
+SPACE := ${NULL} ${NULL}
+AR = ar -r$(SPACE)
+RANLIB ?= ranlib
+O ?= -o
+else
+# Also set the archiver and RANLIB options.
+AR = lib /out:
+RANLIB ?= echo
+O ?= /nologo /Fe
+endif
+
+# Set the relevant file extensions
+include $(INCLUDE_DIR)/extensions.mk
 
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
@@ -98,7 +120,7 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all: 
+all:
 	$(MAKE) $(MAKEFLAGS) -C $(SOURCE_DIR) all
 	$(MAKE) $(MAKEFLAGS) -C $(TESTS_DIR) all
 
@@ -112,17 +134,17 @@ distclean:
 
 tests: all
 ifeq ($(MPI),YES)
-	$(MPIRUN) -np 4 ./tests/tests.x
+	$(MPIRUN) -np 4 ./tests/tests$(EXE_EXT)
 else
-	./tests/tests.x
+	./tests/tests$(EXE_EXT)
 endif
 
 develop:
-	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk 
+	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
-install: libpfunit.a
+install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
-install: 
+install:
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	mkdir -p $(INSTALL_DIR)/lib
 	mkdir -p $(INSTALL_DIR)/mod
@@ -131,12 +153,18 @@ install:
 	cp -p source/lib*     $(INSTALL_DIR)/lib/.
 	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
 	cp include/*        $(INSTALL_DIR)/include/.
-	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
+	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
 	cp -r bin/* $(INSTALL_DIR)/bin/.
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
 
 export UNAME
+export OBJ_EXT
+export EXE_EXT
+export LIB_EXT
+export AR
+export RANLIB
+export O
 export F90
 export F90_VENDOR
 export FFLAGS
@@ -164,5 +192,9 @@ ifeq ($(DEBUG),YES)
   $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))
   $(warning     ABI:            $(PFUNIT_ABI))
+  $(warning File extensions:)
+  $(warning     OBJ_EXT         $(OBJ_EXT))
+  $(warning     LIB_EXT         $(LIB_EXT))
+  $(warning     EXE_EXT         $(EXE_EXT))
 endif
 

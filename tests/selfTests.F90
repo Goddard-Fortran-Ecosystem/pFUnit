@@ -36,7 +36,9 @@ contains
       use ParallelContext_mod
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
+#ifndef Windows
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
+#endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
@@ -55,7 +57,9 @@ contains
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
+#ifndef Windows
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
+#endif
 
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
@@ -72,7 +76,9 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
+#ifndef Windows
       ADD(UnixProcessSuite)
+#endif
       ADD(exceptionSuite)
 
       ADD(assertBasicSuite)
@@ -91,7 +97,9 @@ contains
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
 
+#ifndef Windows
       ADD(testRobustRunnerSuite)
+#endif
 
 #ifdef USE_MPI
       ADD(MpiContextSuite)

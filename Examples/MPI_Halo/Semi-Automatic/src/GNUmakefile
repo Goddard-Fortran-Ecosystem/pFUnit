@@ -1,10 +1,10 @@
 .PHONY: clean
 
-SUT: Halo.o
+SUT: Halo$(OBJ_EXT)
 
-%.o: %.F90
+%$(OBJ_EXT): %.F90
 	$(MPIF90) -c $(FFLAGS) $<
 
 clean:
-	$(RM) *.o *.mod
+	$(RM) *$(OBJ_EXT) *.mod
 

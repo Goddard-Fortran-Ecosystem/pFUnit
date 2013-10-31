@@ -44,8 +44,7 @@ The current examples are:
 * Robust - demonstrates the use of the "-robust" option for the
   framework driver that allows for tests that crash or hang.
 
-
-
-
-
+Note:
+* These examples are not currently supported on Windows/CYGWIN.
+* For modifications and feature requests please see "sourceforge.net/projects/pfunit".
 

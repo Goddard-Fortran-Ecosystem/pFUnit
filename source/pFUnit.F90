@@ -9,7 +9,9 @@ module pFUnit_mod
    use BaseTestRunner_mod
    use TestRunner_mod
    use SubsetRunner_mod
+#ifndef Windows
    use RobustRunner_mod
+#endif
    use Assert_mod
    use AssertReal_mod
    use ParallelContext_mod
@@ -32,7 +34,9 @@ module pFUnit_mod
    public :: BaseTestRunner
    public :: TestRunner, newTestRunner
    public :: SubsetRunner
+#ifndef Windows
    public :: RobustRunner
+#endif
    public :: TestCase
    public :: ParameterizedTestCase, AbstractTestParameter
    public :: ParallelContext
@@ -78,7 +82,7 @@ contains
       call initializeGlobalExceptionList()
 
    end subroutine initialize
-   
+
    subroutine finalize()
 #ifdef USE_MPI
       integer :: error

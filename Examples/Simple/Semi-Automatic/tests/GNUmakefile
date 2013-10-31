@@ -1,7 +1,7 @@
 .PHONY: clean tests
 
 SRCS = $(wildcard *.pf)
-OBJS = $(SRCS:.pf=.o)
+OBJS = $(SRCS:.pf=$(OBJ_EXT))
 
 tests: $(OBJS)
 
@@ -16,8 +16,8 @@ endif
 %.F90: %.pf
 	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
 
-%.o: %.F90
+%$(OBJ_EXT): %.F90
 	$(F90) -c $(FFLAGS) $<
 
 clean:
-	$(RM) *.o *.mod
+	$(RM) *$(OBJ_EXT) *.mod
