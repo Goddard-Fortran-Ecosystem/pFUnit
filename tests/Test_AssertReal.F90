@@ -1294,6 +1294,14 @@ end subroutine testEquals_MultiDWithTolerance64
          & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
          &  ';  first difference at element [1].' ) )
 
+
+    call assertEqual(1.d0, [1.d0, makeInf_64()], 'unequal')
+    call assertCatch( &
+         & appendWithSpace('unequal', &
+         & trim(valuesReport(1., makeInf_64())) // &
+         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
+         &  ';  first difference at element [2].' ) )
+
   end subroutine testEquals_ScalarInfinity_unequal_C
 
   ! Check to see that the test result is as expected...
