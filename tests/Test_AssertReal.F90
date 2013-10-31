@@ -69,7 +69,9 @@ contains
     ADD(testEquals_MultiDSourceLocation)
     ADD(testEquals_ScalarAndLocation)
     ADD(testEquals_ScalarInfinity_equal)
-    ADD(testEquals_ScalarInfinity_unequal)
+    ADD(testEquals_ScalarInfinity_unequal_A)
+    ADD(testEquals_ScalarInfinity_unequal_B)
+    ADD(testEquals_ScalarInfinity_unequal_C)
 
   end function suite
 
@@ -1249,23 +1251,50 @@ end subroutine testEquals_MultiDWithTolerance64
   end subroutine testEquals_ScalarAndLocation
 
   subroutine testEquals_ScalarInfinity_equal()
-    use MakeInfinity_mod, only:  makeInf_64
+    use MakeInfinity_mod, only:  makeInf_64, makeInf_32
     
-    call assertEqual(makeInf_64(), makeInf_64(), 'equal')
+    call assertEqual(makeInf_32(), makeInf_32(), 'equal inf 32')
+    call assertEqual(makeInf_64(), makeInf_64(), 'equal inf 64')
+
+    call assertEqual(makeInf_32(), [makeInf_32(), makeInf_32()], 'equal inf array')
 
   end subroutine testEquals_ScalarInfinity_equal
 
-  subroutine testEquals_ScalarInfinity_unequal()
+  subroutine testEquals_ScalarInfinity_unequal_A()
     use MakeInfinity_mod, only: makeInf_64
     
     call assertEqual(1.d0, makeInf_64(), 'unequal')
     call assertCatch( &
          & appendWithSpace('unequal', &
          & trim(valuesReport(1., makeInf_64())) // &
-         & '; ' // trim(differenceReport(abs(1. - makeInf_64()), 0.)) // &
+         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
          &  '.' ) )
 
-  end subroutine testEquals_ScalarInfinity_unequal
+  end subroutine testEquals_ScalarInfinity_unequal_A
+
+  subroutine testEquals_ScalarInfinity_unequal_B()
+    use MakeInfinity_mod, only: makeInf_64
+    
+    call assertEqual(makeInf_64(), 1.0d0, 'unequal')
+    call assertCatch( &
+         & appendWithSpace('unequal', &
+         & trim(valuesReport(makeInf_64(), 1.0d0)) // &
+         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
+         &  '.' ) )
+
+  end subroutine testEquals_ScalarInfinity_unequal_B
+
+  subroutine testEquals_ScalarInfinity_unequal_C()
+    use MakeInfinity_mod, only: makeInf_64
+    
+    call assertEqual(1.d0, [makeInf_64(), 1.d0], 'unequal')
+    call assertCatch( &
+         & appendWithSpace('unequal', &
+         & trim(valuesReport(1., makeInf_64())) // &
+         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
+         &  ';  first difference at element [1].' ) )
+
+  end subroutine testEquals_ScalarInfinity_unequal_C
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
