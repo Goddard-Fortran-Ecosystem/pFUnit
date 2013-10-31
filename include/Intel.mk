@@ -13,9 +13,7 @@ F90FLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check un
 
 else
 # Windows command line options for the intel compiler
-# Note hardwiring to 'Version 13'.  Trying a hack... MLR 2013-1031-1
-# version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
-version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 1')
+version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
 
 # Suppress version information with each compile.
 F90FLAGS += /nologo
@@ -24,7 +22,7 @@ F90FLAGS += /Z7 /Od /traceback /check:uninit /check:bounds /check:stack /check:u
 # Enable the Fortran preprocessor
 F90FLAGS += /fpp
 
-# Remove the DEBUG_FLAGS -g opsion.
+# Remove the DEBUG_FLAGS -g option.
 DEBUG_FLAGS = /Z7
 endif
 
