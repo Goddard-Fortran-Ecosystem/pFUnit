@@ -155,11 +155,11 @@ contains
     iLocationSize = size(iLocation)
 
     if (iLocationSize .eq. 0) then
-       fmt = '("[" i0 "]")'       
+       fmt = '("[", i0, "]")'
     else if (iLocationSize .eq. 1) then
-       fmt = '("[" i0 "]")'
+       fmt = '("[", i0, "]")'
     else
-       write(fmt,*) '("["',iLocationSize-1,'(i0,", ") i0 "]")'
+       write(fmt,*) '("[",',iLocationSize-1,'(i0,", "), i0, "]")'
     end if
 
   end function locationFormat

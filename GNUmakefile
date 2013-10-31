@@ -70,7 +70,7 @@ DEBUG_FLAGS =-g
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
 
-ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran))
+ifneq (,$(findstring $(F90), ifort gfortran nagfor pgfortran xlf))
   ifeq ($(F90),ifort)
      COMPILER=Intel
   else ifeq ($(F90),gfortran)
@@ -79,6 +79,8 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
+  else ifeq ($(F90),xlf)
+     COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
   ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
@@ -89,6 +91,8 @@ else # use F90_VENDOR to specify
     COMPILER=NAG
   else ifneq (,$(findstring $(F90_VENDOR),pgi PGI pgfortran))
     COMPILER=PGI
+  else ifneq (,$(findstring $(F90_VENDOR),ibm IBM xlf XLF))
+    COMPILER=IBM
   endif
 endif
 

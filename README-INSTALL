@@ -28,7 +28,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1.)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
 The Message Passing Interface (MPI)
 GNU Make
 Python
@@ -303,6 +303,8 @@ Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 Windows/CYGWIN contributions from Evan Lezar.
 
+Other acknowledgments:  Sean Patrick Santos (NCAR).
+
 11. KNOWN INSTALLATIONS/VERSIONS
 
 12. NOTES
@@ -319,7 +321,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
-2013-1031-1227. Added user contributed code for Windows/CYGWIN. MLR
+2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
 2013-0806-1345. Corrected git reference. Was using old URL.  MLR
 2013-0805. Initial draft. MLR

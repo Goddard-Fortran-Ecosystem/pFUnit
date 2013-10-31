@@ -6,7 +6,7 @@ L=-L
 
 ifneq ($(UNAME),Windows)
 # Non-Windows (Linux) command line options for the intel compiler
-version = $(shell $(F90) --version | grep '(IFORT) 13')
+version = $(shell $(F90) --version | grep -E '\(IFORT\) 13')
 
 F90FLAGS += -assume realloc_lhs
 F90FLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check uninit
@@ -31,6 +31,7 @@ endif
 
 # Common command line options.
 F90FLAGS += -DSTRINGIFY_OPERATOR
+
 
 CPPFLAGS +=-DSTRINGIFY_OPERATOR -DIntel
 FPPFLAGS +=-DSTRINGIFY_OPERATOR -DIntel
