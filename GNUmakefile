@@ -104,7 +104,9 @@ ifeq ($(MPI),YES)
   ifeq ($(MPICH),YES)
      LIBMPI ?=-lmpich
   else
-     LIBMPI ?=-lmpi
+# The following may be redundant and better handled via an MPI's linking script. 2013-1104 MLR
+#     LIBMPI ?=-lmpi
+     LIBMPI ?=
   endif
   LDFLAGS += $(LIBMPI)
 endif
@@ -144,7 +146,7 @@ else
 endif
 
 develop:
-	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
+	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
 install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)

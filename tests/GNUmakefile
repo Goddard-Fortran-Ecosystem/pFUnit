@@ -36,13 +36,13 @@ F90FLAGS +=$M$(MOD_DIR)
 ifneq ($(UNAME),Windows)
 LIBS = $L$(LIB_DIR) -lpfunit
 ifeq ($(MPI),YES)
-   LIBS += -lmpi
+   LIBS += $(LIBMPI)
 endif
 else
 LIBS = $(LIB_DIR)/libpfunit$(LIB_EXT)
 ifeq ($(MPI),YES)
 # TODO: This must still be addressed for MPI
-   LIBS += -lmpi
+   LIBS += $(LIBMPI)
 endif
 endif
 
