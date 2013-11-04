@@ -31,7 +31,7 @@ endif
 .PHONY: clean distclean
 
 clean:
-	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
 
 distclean: clean
-	$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc
+	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc

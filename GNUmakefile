@@ -34,12 +34,12 @@ NULL :=
 SPACE := ${NULL} ${NULL}
 AR = ar -r$(SPACE)
 RANLIB ?= ranlib
-O ?= -o
+OUTPUT_FLAG ?= -o
 else
 # Also set the archiver and RANLIB options.
 AR = lib /out:
 RANLIB ?= echo
-O ?= /nologo /Fe
+OUTPUT_FLAG ?= /nologo /Fe
 endif
 
 # Set the relevant file extensions
@@ -70,7 +70,7 @@ DEBUG_FLAGS =-g
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
 
-ifneq (,$(findstring $(F90), ifort gfortran nagfor pgfortran xlf))
+ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
   ifeq ($(F90),ifort)
      COMPILER=Intel
   else ifeq ($(F90),gfortran)
@@ -150,15 +150,11 @@ install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
 install:
 	@echo Installing pFUnit in $(INSTALL_DIR)
-	mkdir -p $(INSTALL_DIR)/lib
-	mkdir -p $(INSTALL_DIR)/mod
-	mkdir -p $(INSTALL_DIR)/include
-	mkdir -p $(INSTALL_DIR)/bin
-	cp -p source/lib*     $(INSTALL_DIR)/lib/.
-	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
-	cp include/*        $(INSTALL_DIR)/include/.
-	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
-	cp -r bin/* $(INSTALL_DIR)/bin/.
+	tools/install $(INSTALL_DIR)/lib source/lib*
+	tools/install $(INSTALL_DIR)/mod source/*.mod
+	tools/install $(INSTALL_DIR) include
+	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
+	tools/install $(INSTALL_DIR) bin
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
 
@@ -168,7 +164,7 @@ export EXE_EXT
 export LIB_EXT
 export AR
 export RANLIB
-export O
+export OUTPUT_FLAG
 export F90
 export F90_VENDOR
 export FFLAGS
