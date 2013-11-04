@@ -109,7 +109,7 @@ contains
       integer :: stat, cstat
 
       if (this%pid >=0) then
-         write(command, '("kill -0 ",i0," >& /dev/null")') this%pid
+         write(command, '("kill -0 ",i0," > /dev/null 2>&1")') this%pid
          call execute_command_line(command, exitStat=stat, cmdStat=cstat)
          isActive = (stat == 0)
       else
