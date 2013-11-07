@@ -1,8 +1,5 @@
 .PHONY: tests all
 
-# Add -j below for parallel make in subdirectories.
-MAKEFLAGS =
-
 TOP_DIR ?=$(shell pwd)
 
 SOURCE_DIR  = $(TOP_DIR)/source
@@ -127,8 +124,8 @@ ifeq ($(DEBUG),YES)
 endif
 
 all:
-	$(MAKE) $(MAKEFLAGS) -C $(SOURCE_DIR) all
-	$(MAKE) $(MAKEFLAGS) -C $(TESTS_DIR) all
+	$(MAKE) -C $(SOURCE_DIR) all
+	$(MAKE) -C $(TESTS_DIR) all
 
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
@@ -183,7 +180,6 @@ export MPI
 export MPIF90
 export LIBMPI
 export COMPILER
-export MAKEFLAGS
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
