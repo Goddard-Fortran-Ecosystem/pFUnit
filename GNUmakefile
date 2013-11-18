@@ -1,4 +1,4 @@
-.PHONY: tests all
+.PHONY: tests all documentation
 
 # Add -j below for parallel make in subdirectories.
 MAKEFLAGS =
@@ -129,6 +129,9 @@ endif
 all:
 	$(MAKE) $(MAKEFLAGS) -C $(SOURCE_DIR) all
 	$(MAKE) $(MAKEFLAGS) -C $(TESTS_DIR) all
+
+documentation:
+	doxygen documentation/doxygen.conf
 
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
