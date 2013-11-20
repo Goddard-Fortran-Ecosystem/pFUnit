@@ -122,7 +122,7 @@ class AtAssert(Action):
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
         fileHandle.write(" & location=SourceLocation( &\n")
-        fileHandle.write(" & '" + str(relpath(fileName)) + "', &\n")
+        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
         fileHandle.write(" & " + str(lineNumber) + ")")
 
     def action(self, m, line):
