@@ -1,8 +1,5 @@
 .PHONY: tests all
 
-# Add -j below for parallel make in subdirectories.
-MAKEFLAGS = 
-
 TOP_DIR ?=$(shell pwd)
 
 SOURCE_DIR  = $(TOP_DIR)/source
@@ -16,12 +13,34 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 UNAME ?=$(shell uname)
 ifeq ($(UNAME),)
   UNAME =UNKNOWN
+else
+# Check for Windows/CYGWIN compilation.
+ifneq (,$(findstring CYGWIN,$(UNAME)))
+UNAME =Windows
+endif
 endif
 
 ARCH  ?=$(shell arch)
 ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
+
+ifneq ($(UNAME),Windows)
+# Also set the archiver and RANLIB options.
+NULL :=
+SPACE := ${NULL} ${NULL}
+AR = ar -r$(SPACE)
+RANLIB ?= ranlib
+OUTPUT_FLAG ?= -o
+else
+# Also set the archiver and RANLIB options.
+AR = lib /out:
+RANLIB ?= echo
+OUTPUT_FLAG ?= /nologo /Fe
+endif
+
+# Set the relevant file extensions
+include $(INCLUDE_DIR)/extensions.mk
 
 # Default compiler by architecture - always gfortran for now:
 F90 ?=gfortran
@@ -48,7 +67,7 @@ DEBUG_FLAGS =-g
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
 
-ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran))
+ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
   ifeq ($(F90),ifort)
      COMPILER=Intel
   else ifeq ($(F90),gfortran)
@@ -57,6 +76,8 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
+  else ifeq ($(F90),xlf)
+     COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
   ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
@@ -67,6 +88,8 @@ else # use F90_VENDOR to specify
     COMPILER=NAG
   else ifneq (,$(findstring $(F90_VENDOR),pgi PGI pgfortran))
     COMPILER=PGI
+  else ifneq (,$(findstring $(F90_VENDOR),ibm IBM xlf XLF))
+    COMPILER=IBM
   endif
 endif
 
@@ -78,7 +101,9 @@ ifeq ($(MPI),YES)
   ifeq ($(MPICH),YES)
      LIBMPI ?=-lmpich
   else
-     LIBMPI ?=-lmpi
+# The following may be redundant and better handled via an MPI's linking script. 2013-1104 MLR
+#     LIBMPI ?=-lmpi
+     LIBMPI ?=
   endif
   LDFLAGS += $(LIBMPI)
 endif
@@ -98,9 +123,9 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all: 
-	$(MAKE) $(MAKEFLAGS) -C $(SOURCE_DIR) all
-	$(MAKE) $(MAKEFLAGS) -C $(TESTS_DIR) all
+all:
+	$(MAKE) -C $(SOURCE_DIR) all
+	$(MAKE) -C $(TESTS_DIR) all
 
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
@@ -112,31 +137,33 @@ distclean:
 
 tests: all
 ifeq ($(MPI),YES)
-	$(MPIRUN) -np 4 ./tests/tests.x
+	$(MPIRUN) -np 4 ./tests/tests$(EXE_EXT)
 else
-	./tests/tests.x
+	./tests/tests$(EXE_EXT)
 endif
 
 develop:
-	mv -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk 
+	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
-install: libpfunit.a
+install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
-install: 
+install:
 	@echo Installing pFUnit in $(INSTALL_DIR)
-	mkdir -p $(INSTALL_DIR)/lib
-	mkdir -p $(INSTALL_DIR)/mod
-	mkdir -p $(INSTALL_DIR)/include
-	mkdir -p $(INSTALL_DIR)/bin
-	cp -p source/lib*     $(INSTALL_DIR)/lib/.
-	cp -p source/*.mod    $(INSTALL_DIR)/mod/.
-	cp include/*        $(INSTALL_DIR)/include/.
+	tools/install $(INSTALL_DIR)/lib source/lib*
+	tools/install $(INSTALL_DIR)/mod source/*.mod
+	tools/install $(INSTALL_DIR) include
 	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
-	cp -r bin/* $(INSTALL_DIR)/bin/.
+	tools/install $(INSTALL_DIR) bin
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
 
 export UNAME
+export OBJ_EXT
+export EXE_EXT
+export LIB_EXT
+export AR
+export RANLIB
+export OUTPUT_FLAG
 export F90
 export F90_VENDOR
 export FFLAGS
@@ -153,7 +180,6 @@ export MPI
 export MPIF90
 export LIBMPI
 export COMPILER
-export MAKEFLAGS
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
@@ -164,5 +190,9 @@ ifeq ($(DEBUG),YES)
   $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))
   $(warning     ABI:            $(PFUNIT_ABI))
+  $(warning File extensions:)
+  $(warning     OBJ_EXT         $(OBJ_EXT))
+  $(warning     LIB_EXT         $(LIB_EXT))
+  $(warning     EXE_EXT         $(EXE_EXT))
 endif
 

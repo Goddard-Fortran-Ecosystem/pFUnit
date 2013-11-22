@@ -1,21 +1,27 @@
 .PHONY: clean tests
 
+TOP_DIR := ..
 
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
+
+# Since PFUNIT is defined relative to the TOP_DIRECTORY, adjust it here
+PFUNIT := $(TOP_DIR)/$(PFUNIT)
 
 tests: $(OBJS)
 
 testSuites.inc: $(SRCS)
 
 
-FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
-ifeq ($(F90),nagfor)
-   FFLAGS += -fpp
-endif
+FFLAGS += -I$(TOP_DIR)/$(SRC_DIR) -I$(PFUNIT)/mod
+# Since this is a Windows compilation, add the Windows define.
+FFLAGS += -DWindows
 
+ifeq ($(F90),nagfor)
+  FFLAGS += -fpp
+endif
 ifeq ($(F90),ifort)
-   FFLAGS += -assume realloc_lhs
+  FFLAGS += -fpp /nologo
 endif
 
 %.F90: %.pf

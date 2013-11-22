@@ -24,10 +24,11 @@ TABLE OF CONTENTS
 
 The development work for pFUnit has mostly been carried out on a
 mixture of systems, including high-end computers, Apple Mac OSX, and
-linux-based systems.  Full use of the system depends on the following
+linux-based systems.  A preliminary Windows/CYGWIN port has been
+contributed by a user. Full use of the system depends on the following
 being available.
 
-Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1.)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
 The Message Passing Interface (MPI)
 GNU Make
 Python
@@ -287,13 +288,28 @@ in the makefile to keep them from being deleted. For example:
 The MacPorts package management system is a convenient way to install
 and maintain many packages, including gcc which includes gfortran.
 
+9.4.2 Windows/CYGWIN
+
+User contributed code for Windows/CYGWIN has been added, but is
+currently not tested and supported by the pFUnit team. At this
+writing, 2013-1031, serial Examples and MPI are not known to be
+supported.  Please contact us if you wish to either contribute or
+otherwise discuss this port.
+
+
 10. ACKNOWLEDGMENTS
 
 Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
+Windows/CYGWIN contributions from Evan Lezar.
+
+Other acknowledgments:  Sean Patrick Santos (NCAR).
+
 11. KNOWN INSTALLATIONS/VERSIONS
 
 12. NOTES
+
+* For modifications and feature requests please see "sourceforge.net/projects/pfunit".
 
 TBD
 
@@ -305,6 +321,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
 2013-0806-1345. Corrected git reference. Was using old URL.  MLR
 2013-0805. Initial draft. MLR

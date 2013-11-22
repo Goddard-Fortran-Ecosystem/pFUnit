@@ -45,3 +45,7 @@ cat ${tmpFile} | grep -iv Mpi\*.o > ${outFile};
    echo -e "\nifeq (\$(MPI),YES)\n" >> ${outFile}; 
    cat ${tmpFile} | grep -i Mpi\*.o >> ${outFile}; 
    echo -e "\nendif\n" >> ${outFile}
+
+# The following converts the occurrences of .o in ${outFile} to $(OBJ_EXT)
+sed -i -e 's&\.o&$(OBJ_EXT)&g' ${outFile}
+\rm -f ${outFile}-e

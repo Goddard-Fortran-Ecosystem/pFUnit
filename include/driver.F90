@@ -8,7 +8,7 @@ program main
 
    type (TestSuite) :: all
    class(BaseTestRunner), allocatable :: runner
-   
+
    integer :: i
    character(len=:), allocatable :: executable
    character(len=:), allocatable :: argument
@@ -39,7 +39,13 @@ program main
       call get_command_argument(i, value=argument)
       select case(argument)
       case ('-robust')
+#ifndef Windows
          useRobustRunner = .true.
+#else
+         ! TODO: This should be a failing test.
+         write (*,*) 'Robust mode not supported under Windows'
+         useRobustRunner = .false.
+#endif
       case ('-skip')
          useSubsetRunner = .true.
          i = i + 1
@@ -66,10 +72,15 @@ program main
 
    if (useRobustRunner) then
       useMpi = .false. ! override build
+#ifndef Windows
 #ifdef USE_MPI
       allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable))
 #else
       allocate(runner, source=RobustRunner(executable))
+#endif
+#else
+      ! TODO: This should be a failing test.
+      write (*,*) 'Robust mode not supported under Windows'
 #endif
    else if (useSubsetRunner) then
       allocate(runner, source=SubsetRunner(numSkip=numSkip))
