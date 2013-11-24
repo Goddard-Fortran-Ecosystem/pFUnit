@@ -52,16 +52,16 @@ $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 ifeq ($(MPI),YES)
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 
 else
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(LIBS) $(DEBUG_FLAGS)
 
 endif
 
