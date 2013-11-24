@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+from __future__ import with_statement
 # 
 # Generate AssertRealArrays.F90, which provides assertEqual for arrays.
 # 

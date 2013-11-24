@@ -45,5 +45,7 @@ endif
 	$(AR)$@ $?
 	-@$(RANLIB) $@
 
+# Only include the dependencies file if we are not doing a clean.
+ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
-
+endif
