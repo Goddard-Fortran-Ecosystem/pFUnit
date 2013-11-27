@@ -2,6 +2,7 @@
 
 TOP_DIR ?=$(shell pwd)
 
+DOC_DIR  = $(TOP_DIR)/documentation
 SOURCE_DIR  = $(TOP_DIR)/source
 TESTS_DIR   = $(TOP_DIR)/tests
 INCLUDE_DIR = $(TOP_DIR)/include
@@ -137,6 +138,7 @@ clean:
 distclean:
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
+	$(MAKE) -C $(DOC_DIR) distclean
 
 tests: all
 ifeq ($(MPI),YES)

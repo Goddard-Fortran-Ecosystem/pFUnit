@@ -1,7 +1,7 @@
 
-PFUNIT INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 2.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2013-0830 M. Rilee mike@rilee.net
+VERSION 2013-1107 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -301,9 +301,9 @@ otherwise discuss this port.
 
 Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
-Windows/CYGWIN contributions from Evan Lezar.
+Windows/CYGWIN contributions from E. Lezar.
 
-Other acknowledgments:  Sean Patrick Santos (NCAR).
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley.
 
 11. KNOWN INSTALLATIONS/VERSIONS
 
@@ -321,6 +321,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
 2013-0806-1345. Corrected git reference. Was using old URL.  MLR

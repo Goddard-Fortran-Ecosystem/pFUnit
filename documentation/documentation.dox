@@ -1,0 +1,306 @@
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_Installation Installation
+///
+/// \section sec_InstallingPFUNIT Installing pFUnit
+///
+/// Comentatry for the page.
+///
+/// \li \ref sec_Prerequisites
+/// \li \ref sec_ObtainingPFUNIT
+/// \li \ref sec_Manifest
+/// \li \ref sec_Configuration
+/// \li \ref sec_Building
+/// \li \ref sec_Installation
+///
+/// \section sec_Prerequisites Prerequisites
+///
+/// The development work for pFUnit has mostly been carried out on a
+/// mixture of systems, including high-end computers, Apple Mac OSX, and
+/// linux-based systems.  A preliminary Windows/CYGWIN port has been
+/// contributed by a user. Full use of the system depends on the following
+/// being available.
+/// 
+/// - Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
+/// - The Message Passing Interface (MPI)
+/// - GNU Make
+/// - Python
+/// 
+/// The system is routinely tested with GNU, Intel, and NAG fortran
+/// compilers and OpenMPI, as well as nightly regression testing.
+///
+/// \section sec_ObtainingPFUNIT Obtaining pFUnit
+/// 
+/// The best way to obtain pFUnit is to clone the git repository from
+/// SourceForge as follows.
+/// 
+/// \code
+/// # Read Only Access
+/// git clone git://git.code.sf.net/p/pfunit/code pFUnit\endcode
+///
+/// This will create the directory pFUnit in the current working
+/// directory.  
+/// 
+/// You may also visit the project page at SourceForge and
+/// download the source tarfile "pFUnit.tar.gz" there.
+///
+/// http://sourceforge.net/projects/pfunit/
+/// or
+/// http://sourceforge.net/projects/pfunit/files/latest/download
+/// 
+/// Extracting this tarfile via a command like
+/// 
+/// `$ tar zxf ./pFUnit.tar.gz`
+/// 
+/// will place the pFUnit files into the current working directory.
+/// 
+/// For other ways to acquire the code visit
+/// 
+/// https://sourceforge.net/p/pfunit/code/ci/master/tree/
+/// 
+/// or contact the pFUnit team.
+/// 
+/// \section sec_Manifest Manifest - What's in the directory?
+///
+/// In the top level of the pFUnit distribution you will see the following
+/// files.
+/// 
+/// COPYRIGHT - Contains information pertaining to the use and
+/// distribution of pFUnit.
+/// 
+/// Examples - Contains examples of how to use pFUnit once it is
+/// installed.
+/// 
+/// GNUmakefile - The top level makefile for building and installing
+/// pFUnit.
+/// 
+/// bin - Executables used to construct and perform unit tests.
+/// 
+/// include - Files to be included into makefiles or source, including use
+/// code.
+/// 
+/// source - Source code and scripts of the pFUnit library and framework.
+/// 
+/// tests - Source code for unit testing pFUnit itself.
+///
+/// \section sec_Configuration Configuration
+/// Little needs to be done to configure pFUnit for the build, however
+/// there are several environment variables on which the package depends.
+/// 
+/// `F90_VENDOR` - is set to include the correct makefile in $(TOP_DIR)/include,
+/// i.e. GNU, Intel, NAG, or PGI.  Case insensitive file systems may cause
+/// some confusion from time-to-time.
+/// 
+/// `F90` - is set to the Fortran compiler being used: e.g. ifort for Intel,
+/// gfortran for GNU.
+/// 
+/// `COMPILER` - is set according to `F90_VENDOR` and is automatically set in
+/// the top level makefile.
+/// 
+/// For MPI-based unit testing, your setup may require the following as well.
+/// 
+/// `MPIF90`\code
+/// $ export MPIF90=mpif90\endcode
+/// 
+/// As a convenience for working with multiple MPI configurations, you may
+/// also set the following.
+/// 
+/// `MPIRUN`\code
+/// $ export MPIRUN=/some.path/mpirun\endcode
+/// 
+/// 
+/// \section sec_Building Building pFUnit
+/// \subsection sec_BuildingPFUNITSerial BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
+/// 
+/// 1. Change to the directory into which pFUnit has been placed.
+/// 2. Set the environment variables (in bash):
+/// \code
+/// $ export F90=gfortran-mp-4.8
+/// $ export F90_VENDOR=GNU\endcode
+/// 3. To build pFUnit for unit testing of serial codes, execute make.
+/// The unit tests for pFUnit itself will run automatically.
+/// \code
+/// $ make tests\endcode
+/// 3.1 Occasionally on the first run through, one will get a spurious
+/// (runtime) error, for example in the unix process component.
+/// \code
+/// Re-execute "make tests" to check again.\endcode
+/// 4. At this point the pFUnit object library is in the source directory,
+/// along with a large number of Fortran module files.
+/// 
+/// \subsection sec_BuildingPFUNITParallel BUILDING THE PFUNIT FOR TESTING PARALLEL CODES (MPI)
+/// 
+/// To build pFUnit for unit testing MPI-based codes, be sure that the
+/// environment is properly set up for the MPI implementation you are
+/// using. Depending on your local environment, you may need execute the
+/// build within a batch or other job queing system, e.g. an interactive
+/// batch job under PBS. The steps for building pFUnit start out the same
+/// as for the serial case above, but add MPI=YES to the environment to
+/// switch on MPI support.  The MPI-based unit tests for pFUnit itself
+/// will run automatically.  Again, occasionally a spurious (runtime)
+/// error may appear on the first execution.  
+/// 
+/// 3. Execute make as follows.
+/// \code
+/// $ make tests MPI=YES \endcode
+/// 
+/// 4. At this point an MPI-enabled pFUnit object library is in the source
+/// directory, along with a large number of Fortran module files.
+/// 
+/// Also, one may get some harmless "no symbols" warnings when the pFUnit library is constructed.
+/// 
+/// \subsection sec_BuildingPFUNTICleaning CLEANING
+/// 
+/// To clean the pFUnit build directory for the space or to rebuild there
+/// are two options.
+/// 
+/// 1. Make clean to remove object files and other intermediate products.
+/// \code
+/// $ make clean\endcode
+/// 
+/// 2. Make distclean to remove libraries and other more final products.
+/// \code
+/// $ make distclean\endcode
+/// 
+/// 3. Some directories support a `make src_clean` to remove intermediate
+/// products in subdirectories.
+/// 
+/// 
+/// \section sec_Installation Installation
+/// \subsection sec_InstallationSerial Installation - Serial
+/// 
+/// To install pFUnit for regular use, set INSTALL_DIR to the location in
+/// which to place pFUnit.  This can be done on the make command line.
+/// For example, after compiling pFUnit for serial use (MPI absent or
+/// MPI=NO), please try.
+/// \code
+/// $ # In the top of the pFUnit build directory.
+/// $ make install INSTALL_DIR=/opt/pfunit/pfunit-serial\endcode
+/// 
+/// Note: you may need special priveleges to install in some locations,
+/// e.g. via sudo.
+/// 
+/// To test the installation set PFUNIT to INSTALL_DIR, then change the
+/// working directory to Examples in pFUnit distribution and execute
+/// "buildIt," which will run a number of examples.  These include some
+/// expected failures.  
+/// \code
+/// $ # In the top pFUnit build directory...
+/// $ export PFUNIT=/opt/pfunit/pfunit-serial
+/// $ pushd Examples
+/// $ ./buildIt\endcode
+/// 
+/// \subsection sec_InstallationMPI Installation - MPI
+/// 
+/// For installing an MPI-enabled pFUnit library, change to the top of the
+/// distribution and execute make with MPI=YES.  You may need to "make
+/// distclean" first.  After compilation and pFUnit passes its self-tests,
+/// then installation proceeds as for the serial case above.
+/// \code
+/// $ make install INSTALL_DIR=/opt/pfunit/pfunit-parallel\endcode
+/// 
+/// To test, set PFUNIT and go into Examples/MPI_Halo directory.
+/// \code
+/// $ # In the top pFUnit build directory...
+/// $ export PFUNIT=/opt/pfunit/pfunit-parallel
+/// $ # The variable MPIF90 must be set to the appropriate build script.
+/// $ export MPIF90=mpif90
+/// $ cd Examples/MPI_Halo/Semi-Automatic
+/// $ make\endcode
+/// 
+/// This will compile and run a set of parallel examples that includes
+/// intentional failures.
+/// 
+/// \subsection sec_InstallationDefaultDirectory Installation - DEFAULT DIRECTORY
+/// 
+/// If INSTALL_DIR is not set, "make install" will attempt to install
+/// pFUnit into the top build directory.  This will create directories
+/// such as lib and mod in the top level of the build directory and will
+/// overwrite the include/base.mk with include/base-install.mk.  If this
+/// is not desired, then "make develop" will put back the original
+/// base.mk, which is the file to be used for development and building
+/// pFUnit.  In general, we recommend installing to a directory that is not also the
+/// build directory.
+/// 
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_Usage Usage
+///
+/// \li \ref sec_UsageConfiguration
+/// \li \ref sec_UsageHelloWorld
+/// \li \ref sec_UsagePreprocessor
+/// 
+/// \section Usage
+/// \subsection sec_UsageConfiguration Usage - Configuration
+/// 
+/// For regular use, after installation, the same compiler/MPI development
+/// configuration that was used to build pFUnit should be used.  Once the
+/// environment variables and paths associated with the environment are
+/// set, to configure pFUnit, please set the following.
+/// 
+/// `PFUNIT` - set to the directory into which pFUnit was installed.
+///
+/// `F90_VENDOR` - set to Intel, GNU, NAG, or PGI accordingly.
+/// 
+/// \subsection sec_UsageHelloWorld Usage - Hello World
+/// TBD
+/// \subsection sec_UsagePreprocessor Usage - Preprocessor
+/// TBD
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_Development Development
+///
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_FeedbackAndSupport Feedback & Support
+///
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_Acknowledgments Acknowledgments
+///
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_KnownInstallationsAndVersions Known Installations & Versions
+///
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_TODO TODO
+///
+/// \link group_Logging View All Logging Classes \endlink
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_pFUnitParser The Preprocessor - pFUnitParser
+///
+/// Overview of Preprocessor (pFUnitParser.py)
+///
+/// \li \ref sec_UsingThePreprocessor
+/// \li \ref sec_TestCase
+/// \li \ref sec_mpiTest
+
+///////////////////////////////////////////////////////////////////////////
+/// \section sec_UsingThePreprocessor Using The Preprocessor
+///
+/// How to write tests using the ".pf" files.
+
+
+
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+/// \page page_Versioning API Versioning
+
+/// \link group_Versioning View All Versioning Classes \endlink
+
+/// \defgroup group_Logging Diagnostic logging features
+/// See \ref Logging for a detailed description.
+
+/// \defgroup group_Versioning Versioning System
+/// See \ref Versioning for a detailed description.
+

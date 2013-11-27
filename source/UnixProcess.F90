@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: UnixProcess
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC SIVO
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 ! This module encapsulates the ability to issue background system commands
 ! Unix pipes are used under the hood soo that results from such commands
 ! can be returned to the program for further processing.

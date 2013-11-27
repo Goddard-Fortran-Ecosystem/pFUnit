@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: TestMethod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC SIVO
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module TestMethod_mod
    use TestCase_mod, only: TestCase
    implicit none
