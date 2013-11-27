@@ -384,12 +384,22 @@ contains
 
 
    integer function getNumExceptions_local() result(numExceptions)
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       numExceptions = globalExceptionList%getNumExceptions()
    end function getNumExceptions_local
 
    subroutine throw_message(message, location)
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       call globalExceptionList%throw(message, location)
    end subroutine throw_message
 
@@ -397,6 +407,11 @@ contains
       use SourceLocation_mod
       character(len=*), intent(in) :: message
       type (SourceLocation), intent(in) :: location
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       call globalExceptionList%throw(message, location)
    end subroutine throw_messageWithLocation
 
@@ -404,11 +419,20 @@ contains
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
 
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       anException = globalExceptionList%catchAny(preserve)
    end function catchAny
 
    logical function catch_any(preserve)
       logical, optional, intent(in) :: preserve
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       catch_any = globalExceptionList%catch(preserve)
    end function catch_any
 
@@ -416,19 +440,38 @@ contains
       character(len=*), intent(in) :: message
       logical, optional, intent(in) :: preserve
 
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       catch_message = globalExceptionList%catch(message, preserve)
    end function catch_message
 
    function getExceptions() result(exceptions)
       type (Exception), allocatable :: exceptions(:)
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       exceptions = globalExceptionList%getExceptions()
    end function getExceptions
 
    logical function noExceptions()
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
    logical function anyExceptions_local()
+
+      if (.not. allocated(globalExceptionList%exceptions)) then
+         call initializeGlobalExceptionList()
+      end if
+
       anyExceptions_local = globalExceptionList%anyExceptions()
    end function anyExceptions_local
 

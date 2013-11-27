@@ -1,5 +1,7 @@
 #!/usr/bin/python
+# For python 2.6-2.7
 from __future__ import print_function
+
 from os.path import *
 import re
 
@@ -122,7 +124,7 @@ class AtAssert(Action):
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
         fileHandle.write(" & location=SourceLocation( &\n")
-        fileHandle.write(" & '" + str(relpath(fileName)) + "', &\n")
+        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
         fileHandle.write(" & " + str(lineNumber) + ")")
 
     def action(self, m, line):

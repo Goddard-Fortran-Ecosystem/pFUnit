@@ -94,9 +94,10 @@ else # use F90_VENDOR to specify
   endif
 endif
 
-ifeq ($(MPI),YES)
+ifneq ($(findstring $(MPI),yes YES Yes),)
+  USEMPI=YES
   MPIF90 ?= mpif90
-	MPIRUN ?= mpirun
+  MPIRUN ?= mpirun
   FPPFLAGS += $DUSE_MPI
   CPPFLAGS += -DUSE_MPI
   ifeq ($(MPICH),YES)
@@ -141,7 +142,7 @@ distclean:
 	$(MAKE) -C $(DOC_DIR) distclean
 
 tests: all
-ifeq ($(MPI),YES)
+ifeq ($(USEMPI),YES)
 	$(MPIRUN) -np 4 ./tests/tests$(EXE_EXT)
 else
 	./tests/tests$(EXE_EXT)
@@ -182,6 +183,7 @@ export SOURCE_DIR
 export INCLUDE_DIR
 export VPATH
 export MPI
+export USEMPI
 export MPIF90
 export LIBMPI
 export COMPILER

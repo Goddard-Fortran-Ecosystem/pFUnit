@@ -39,7 +39,7 @@ for i in *.F90; do
 done; 
 
 cat ${tmpFile} | grep -iv selfTests.o > ${outFile}; 
-   echo -e "\nifeq (\$(MPI),YES)\n" >> ${outFile}; 
+   echo -e "\nifeq (\$(USEMPI),YES)\n" >> ${outFile}; 
    cat ${tmpFile} | grep -i selfTests.o >> ${outFile}; 
    echo -e "\nelse\n" >> ${outFile}; 
 

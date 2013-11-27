@@ -42,7 +42,7 @@ done;
 
 cat ${tmpFile} | grep -iv Mpi\*.o > ${outFile}; 
    cat ${tmpFile} | grep -i pfunit\*.o | sed 's/[a-zA-Z0-9]*[m|M]pi[.a-zA-Z0-9]*//g' >> ${outFile}; 
-   echo -e "\nifeq (\$(MPI),YES)\n" >> ${outFile}; 
+   echo -e "\nifeq (\$(USEMPI),YES)\n" >> ${outFile}; 
    cat ${tmpFile} | grep -i Mpi\*.o >> ${outFile}; 
    echo -e "\nendif\n" >> ${outFile}
 
