@@ -136,7 +136,7 @@ Re-execute "make tests" to check again.
 4. At this point the pFUnit object library is in the source directory,
 along with a large number of Fortran module files.
 
-5.2 BUILDING THE PFUNIT FOR TESTING PARALLEL CODES (MPI)
+5.2 BUILDING PFUNIT FOR TESTING PARALLEL CODES (MPI)
 
 To build pFUnit for unit testing MPI-based codes, be sure that the
 environment is properly set up for the MPI implementation you are
