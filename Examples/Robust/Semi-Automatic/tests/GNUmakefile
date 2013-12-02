@@ -15,7 +15,7 @@ ifeq ($(F90),nagfor)
 endif
 
 %.F90: %.pf
-	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
+	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
 	$(F90) -c $(FFLAGS) $<

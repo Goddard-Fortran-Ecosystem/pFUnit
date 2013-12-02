@@ -1,5 +1,7 @@
 #!/usr/bin/python
+# For python 2.6-2.7
 from __future__ import print_function
+
 from os.path import *
 import re
 

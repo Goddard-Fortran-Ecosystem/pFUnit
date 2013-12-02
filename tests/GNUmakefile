@@ -26,7 +26,7 @@ endif
 SRCS = $(filter-out $(EXCLUDE),$(SRCS_BASE))
 OBJS = $(SRCS:%.F90=%$(OBJ_EXT))
 
-ifneq ($(MPI),YES)
+ifneq ($(USEMPI),YES)
    SRCS_SERIAL=$(filter-out Test_Mpi%,$(SRCS))
    OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%$(OBJ_EXT))
 endif
@@ -35,12 +35,12 @@ F90FLAGS +=$M$(MOD_DIR)
 
 ifneq ($(UNAME),Windows)
 LIBS = $L$(LIB_DIR) -lpfunit
-ifeq ($(MPI),YES)
+ifeq ($(USEMPI),YES)
    LIBS += $(LIBMPI)
 endif
 else
 LIBS = $(LIB_DIR)/libpfunit$(LIB_EXT)
-ifeq ($(MPI),YES)
+ifeq ($(USEMPI),YES)
 # TODO: This must still be addressed for MPI
    LIBS += $(LIBMPI)
 endif
@@ -49,7 +49,7 @@ endif
 
 $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
-ifeq ($(MPI),YES)
+ifeq ($(USEMPI),YES)
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
 	$(FC) $(OUTPUT_FLAG)$@ $^ $(LIBS) $(DEBUG_FLAGS)
