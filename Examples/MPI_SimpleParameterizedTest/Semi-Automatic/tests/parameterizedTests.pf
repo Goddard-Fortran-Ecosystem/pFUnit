@@ -1,0 +1,95 @@
+! An example of how to extend MPITestCase to support parameterized tests.
+
+module Test_Parameters_mod
+  use pfunit_mod
+
+  public :: testParamBroken
+
+  @Parameters = [p1,p2]
+  type, extends(AbstractTestParameter) :: peCase
+     integer :: p1
+     integer :: p2
+  end type peCase
+
+  @TestCase
+  type, extends(MPITestCase) :: Test_Parameters
+     integer :: p1, p2
+     procedure(runMethod), pointer :: userMethod => null()
+   contains
+     procedure, nopass :: getParameters
+     procedure :: getParameterString => getParameterString_
+     procedure :: runMethod
+  end type Test_Parameters
+
+  interface Test_Parameters
+     module procedure newTest
+  end interface Test_Parameters
+
+contains
+  ! Constructor
+  function newTest(name, method, npe, p1, p2) result (tst)
+    type (Test_Parameters) :: tst
+    character(len=*), intent(in) :: name
+    procedure (runMethod) :: method
+    integer, intent(in) :: npe, p1, p2
+    tst%p1 = p1; tst%p2 = p2
+    call tst%setName(name);
+    tst%userMethod => method
+    call tst%setNumProcesses(npe) !??? MLR 2013-1205
+  end function newTest
+
+  ! Define the parameters over which to be cycled...
+  function getParameters() result(params)
+    type(peCase), allocatable :: params(:)
+    params = [ &
+         & peCase(0,1), &
+         & peCase(1,2), &
+         & peCase(0,2) &
+         & ]
+  end function getParameters
+
+  ! Override the parent's version...
+  function getParameterString_(this) result(string)
+    class(Test_Parameters), intent(in) :: this
+    character(:), allocatable :: string
+    allocate(character(len=80) :: string)
+    write(string,'("(npes,p1,p2)=(",i0,",",i0,",",i0,")")') &
+         & this%numProcessesRequested, this%p1, this%p2
+  end function getParameterString_
+
+  ! Implement the deferred runMethod...
+  subroutine runMethod(this)
+    class (Test_Parameters), intent(inout) :: this
+    call this%userMethod()
+  end subroutine runMethod
+
+  @mpiTest( npes=[3] )
+  subroutine testParamBroken(this)
+! Use atParameters to set processor numbers to configure test...
+    implicit none
+    class (Test_Parameters), intent(inout) :: this
+
+    integer :: p
+
+    p = this%getProcessRank()
+    associate( p1 => this%p1, p2 => this%p2 )
+      if ( p .eq. p1 ) then
+         @assertEqual(p,p1)
+      end if
+      if ( p .eq. p2 ) then
+         @assertEqual(p,p2)
+      end if
+      ! Case 3 - Intentionally fail.
+      if (p1 == 0 .and. p2 == 2) then
+         if ( p .eq. 0 ) then
+            @assertEqual(0,1,'Intentionally broken test.')
+         ! Comment out the following for clarity: only announce the failure once.
+         !else
+         !   call throw('Intentional broken test.')
+         end if
+      end if
+    end associate
+  end   subroutine testParamBroken
+
+end module Test_Parameters_mod
+
