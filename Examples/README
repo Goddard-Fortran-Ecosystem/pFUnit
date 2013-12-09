@@ -1,6 +1,8 @@
 These directories contain working examples of the use of pFUnit to
-perform unit testing.  For each example, multiple approaches to
-unit-testing are provided:
+perform unit testing.  They presume a working installation of pFUnit,
+with the PFUNIT environment variable set to the directory where it is
+installed.  For each example, multiple approaches to unit-testing are
+provided:
 
 * Manual (TBD) - developer manually inserts references to each test in the
   main driver.  Assertions are done with direct Fortran calls to
@@ -41,10 +43,14 @@ The current examples are:
 * Parameterized - an example showing how to create and use a
   parameterized test case.
 
+* MPI SimpleParameterized - a simple example showing how to create and use 
+  a parameterized test case in MPI.
+
 * Robust - demonstrates the use of the "-robust" option for the
   framework driver that allows for tests that crash or hang.
 
 Note:
 * These examples are not currently supported on Windows/CYGWIN.
 * For modifications and feature requests please see "sourceforge.net/projects/pfunit".
+
 

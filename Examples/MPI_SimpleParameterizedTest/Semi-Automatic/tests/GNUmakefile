@@ -1,6 +1,8 @@
 .PHONY: clean tests
 # .PRECIOUS: %.F90
 
+# Note: unused references to SRC_DIR removed.
+
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
 
@@ -8,8 +10,7 @@ tests: $(OBJS)
 
 testSuites.inc: $(SRCS)
 
-
-FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
+FFLAGS += -I$(PFUNIT)/mod
 ifeq ($(F90),nagfor)
    FFLAGS += -fpp
 endif

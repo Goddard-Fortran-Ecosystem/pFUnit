@@ -212,6 +212,7 @@ contains
       class (TestSuite), intent(in) :: this
       type (TestCaseReference), allocatable :: testList(:)
 
+! 2013-1202 MLR Is n used for anything?
       integer :: n
 
       allocate(testList(this%countTestCases()))
@@ -239,7 +240,7 @@ contains
                class is (TestSuite)
                   call accumulateTestCases(t, testList, n)
                class default
-                  call throw('Unsupportes Test subclass in TestSuite::getTestCases()')
+                  call throw('Unsupported Test subclass in TestSuite::getTestCases()')
                end select
              end associate
           end do
