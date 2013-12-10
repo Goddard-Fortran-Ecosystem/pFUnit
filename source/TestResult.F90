@@ -5,6 +5,7 @@
 !
 !> @brief
 !! <BriefDescription>
+!! Note: A possible extension point for user-specialized TestResults.
 !!
 !! @author
 !! Tom Clune,  NASA/GSFC SIVO
