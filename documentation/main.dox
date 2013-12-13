@@ -1,36 +1,38 @@
 
-///////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////
-///
-/// \mainpage pFUnit Documentation
-///
-/// Main page comment.
-///
-///////////////////////////////////////////////////////////////////////////
-/// \section sec_Overview Overview
-///
-/// Your overview text here.
-///
-///////////////////////////////////////////////////////////////////////////
-/// \section sec_Contents Contents
-///
-/// Content comment.
-///
-/// \li \ref page_Installation
-/// \li \ref page_Usage
-/// \li \ref page_Development
-/// \li \ref page_FeedbackAndSupport
-/// \li \ref page_FAQAndTips
-/// \li \ref page_PlatformSpecific
-/// \li \ref page_Acknowledgments
-/// \li \ref page_KnownInstallationsAndVersions
-/// \li \ref page_TODO
-/// \li \ref page_pFUnitParser
-/// \li \ref page_Versioning
-///
-///////////////////////////////////////////////////////////////////////////
-/// \section sec_SeeAlso See Also
-///
-/// \li ref Something
-///
+/*!
 
+\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1213-1 MLR)
+
+\section sec_Overview Overview
+
+pFUnit is a unit testing framework enabling JUnit-like testing of
+serial and MPI-parallel software written in Fortran.  It makes use of
+modern Fortran programming techniques, including object oriented
+programming, offering a convenient, lightweight mechanism for Fortran developers to create and run software tests that specify the desired behavior for a given piece of code.  The framework was originally created by developers from NASA and NGC TASC.  The project is hosted at <a href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>.
+
+If you are using pFUnit, please leave a note/topic at <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a>, or send a note to <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., Chief, Software Systems Support Office Code 610.3, NASA Goddard Space Flight Center.
+
+Please refer revisions and comments about the documentation to <a href="mailto:mike@rilee.net">Mike Rilee</a>, Ph.D., Rilee Systems Technologies.
+
+\section sec_Contents Contents
+
+\li \ref page_Installation
+\li \ref page_Usage
+\li \ref page_Development
+\li \ref page_FeedbackAndSupport
+\li \ref page_FAQAndTips
+\li \ref page_PlatformSpecific
+\li \ref page_Acknowledgments
+\li \ref page_KnownInstallationsAndVersions
+\li \ref page_TODO
+\li \ref page_pFUnitParser
+\li \ref page_RevisionNotes
+
+\section sec_SeeAlso See Also
+
+\li <a href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>
+\li <a href="https://modelingguru.nasa.gov/index.jspa">NASA Modeling Guru</a>
+\li <a href="http://JUnit.org">JUnit.org</a>
+
+
+*/
