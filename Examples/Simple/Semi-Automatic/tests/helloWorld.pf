@@ -1,0 +1,13 @@
+@test
+subroutine testHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello World!","Hello World!")
+end subroutine testHelloWorld
+
+@test
+subroutine testBrokenHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello World!","Found something else!","Intentionally broken test!")
+end subroutine testBrokenHelloWorld
