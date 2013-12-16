@@ -132,6 +132,11 @@ all:
 documentation:
 	doxygen documentation/doxygen.conf
 
+documentation/pFUnit2-ReferenceManual.pdf: documentation
+	$(MAKE) -C documentation/latex all
+	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
+
+
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
