@@ -444,13 +444,13 @@ contains
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
-   logical function anyExceptions_local()
+   logical function anyExceptions_local() result(anyExceptions)
 
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
-      anyExceptions_local = globalExceptionList%anyExceptions()
+      anyExceptions = globalExceptionList%anyExceptions()
    end function anyExceptions_local
 
    logical function anyErrors()

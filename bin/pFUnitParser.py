@@ -5,11 +5,19 @@ from __future__ import print_function
 from os.path import *
 import re
 
+assertVariants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
+assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
+assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
+
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
 
 def getSubroutineName(line):
     m = re.match('\s*subroutine\s+(\w*)\s*\\([\w\s,]*\\)\s*$', line, re.IGNORECASE)
+    return m.groups()[0]
+
+def getSelfObjectName(line):
+    m = re.match('\s*subroutine\s+\w*\s*\\(\s*(\w+)\s*(,\s*\w+\s*)*\\)\s*$', line, re.IGNORECASE)
     return m.groups()[0]
 
 def getTypeName(line):
@@ -65,6 +73,8 @@ class AtMpiTest(Action):
 
         nextLine = self.parser.nextLine()
         dictionary['name'] = getSubroutineName(nextLine)
+        # save "self" name for use with @mpiAssert
+        self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
 
         self.parser.mpitests.append(dictionary)
         self.parser.outputFile.write("!"+line)
@@ -116,10 +126,7 @@ class AtAssert(Action):
         self.parser = parser
 
     def match(self, line):
-        variants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
-        variants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
-        variants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
-        m = re.match('\s*@assert('+variants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -135,6 +142,30 @@ class AtAssert(Action):
         self.appendSourceLocation(p.outputFile, p.fileName, p.lineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
+        p.outputFile.write(cppSetLineAndFile(p.lineNumber+1, p.fileName))
+
+class AtMpiAssert(Action):
+    def __init__(self, parser):
+        self.parser = parser
+
+    def match(self, line):
+        m = re.match('\s*@mpiassert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        return m
+
+    def appendSourceLocation(self, fileHandle, fileName, lineNumber):
+        fileHandle.write(" & location=SourceLocation( &\n")
+        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
+        fileHandle.write(" & " + str(lineNumber) + ")")
+
+    def action(self, m, line):
+        p = self.parser
+        
+        p.outputFile.write(cppSetLineAndFile(p.lineNumber, p.fileName))
+        p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
+        self.appendSourceLocation(p.outputFile, p.fileName, p.lineNumber)
+        p.outputFile.write(" )\n")
+        
+        p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
         p.outputFile.write(cppSetLineAndFile(p.lineNumber+1, p.fileName))
 
 class AtBefore(Action):
@@ -211,6 +242,7 @@ class Parser():
         self.actions.append(AtSuite(self))
         self.actions.append(AtBegin(self))
         self.actions.append(AtAssert(self))
+        self.actions.append(AtMpiAssert(self))
         self.actions.append(AtBefore(self))
         self.actions.append(AtAfter(self))
         self.actions.append(AtParameters(self))

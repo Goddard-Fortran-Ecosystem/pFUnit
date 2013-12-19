@@ -18,16 +18,12 @@ module ParallelException_mod
 
 contains
 
-   logical function anyExceptions_context(context) result(anyExcepts)
+   logical function anyExceptions_context(context) result(anyExcept)
       class (ParallelContext) :: context
 
       logical, allocatable :: anyTable(:)
 
-      allocate(anyTable(context%getNumProcesses()))
-
-      call context%gather([anyExceptions()], anyTable)
-      anyExcepts = any(anyTable)
-
+      anyExcept = context%allReduce(anyExceptions())
    end function anyExceptions_context
 
    integer function getNumExceptions_context(context) result(numExceptions)

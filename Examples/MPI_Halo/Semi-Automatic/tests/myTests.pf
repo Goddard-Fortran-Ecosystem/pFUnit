@@ -49,11 +49,11 @@ subroutine testHaloExterior(this)
 
    call haloFill(a, this%getMpiCommunicator())
 
-   @assertEqual(real(leftNeighbor), a(1,0))
-   @assertEqual(real(leftNeighbor), a(2,0))
+   @mpiAssertEqual(real(leftNeighbor), a(1,0))
+   @mpiAssertEqual(real(leftNeighbor), a(2,0))
 
-   @assertEqual(real(rightNeighbor), a(1,N+1))
-   @assertEqual(real(rightNeighbor), a(2,N+1))
+   @mpiAssertEqual(real(rightNeighbor), a(1,N+1))
+   @mpiAssertEqual(real(rightNeighbor), a(2,N+1))
 
 end subroutine testHaloExterior
 

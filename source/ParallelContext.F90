@@ -21,6 +21,7 @@ module ParallelContext_mod
       procedure(gatherLogical), deferred :: gatherLogical
       procedure :: labelProcess
       procedure :: barrier
+      procedure(allReduceLogical), deferred :: allReduce
    end type ParallelContext
 
    abstract interface
@@ -60,6 +61,12 @@ module ParallelContext_mod
          logical, intent(in) :: values(:)
          logical, intent(out) :: list(:)
       end subroutine gatherLogical
+
+      logical function allReduceLogical(this, q) result(anyQ)
+         import ParallelContext
+         class (ParallelContext), intent(in) :: this
+         logical, intent(in) :: q
+      end function allReduceLogical
 
    end interface
 
