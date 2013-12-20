@@ -1,3 +1,26 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: MpiTestCase
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC SIVO
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
+
 module MpiTestCase_mod
    use MpiContext_mod
    use TestCase_mod

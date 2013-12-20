@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: StringConversionUtilities
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC SIVO
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 ! This module converts integers/real's to strings of a specific format
 ! for unit test diagnostics.  Basically just a wrapper for Fortran
 ! formatting, but functional programming provides a better style in many

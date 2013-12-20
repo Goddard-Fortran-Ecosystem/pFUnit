@@ -1,7 +1,7 @@
 
-PFUNIT INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 2.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2013-0830 M. Rilee mike@rilee.net
+VERSION 2013-1107 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -32,6 +32,8 @@ Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
 The Message Passing Interface (MPI)
 GNU Make
 Python
+
+Doxygen is used to generate documentation (see http://www.doxygen.org).
 
 The system is routinely tested with GNU, Intel, and NAG fortran
 compilers and OpenMPI, as well as nightly regression testing.
@@ -84,6 +86,8 @@ pFUnit.
 
 bin - Executables used to construct and perform unit tests.
 
+documentation - Provides information about the pFUnit.
+
 include - Files to be included into makefiles or source, including use
 code.
 
@@ -92,6 +96,8 @@ README-INSTALL - This file.
 source - Source code and scripts of the pFUnit library and framework.
 
 tests - Source code for unit testing pFUnit itself.
+
+tools - Tools used to help develop, build, and install pFUnit.
 
 4. CONFIGURATION
 
@@ -136,7 +142,7 @@ Re-execute "make tests" to check again.
 4. At this point the pFUnit object library is in the source directory,
 along with a large number of Fortran module files.
 
-5.2 BUILDING THE PFUNIT FOR TESTING PARALLEL CODES (MPI)
+5.2 BUILDING PFUNIT FOR TESTING PARALLEL CODES (MPI)
 
 To build pFUnit for unit testing MPI-based codes, be sure that the
 environment is properly set up for the MPI implementation you are
@@ -146,7 +152,7 @@ batch job under PBS. The steps for building pFUnit start out the same
 as for the serial case above, but add MPI=YES to the environment to
 switch on MPI support.  The MPI-based unit tests for pFUnit itself
 will run automatically.  Again, occasionally a spurious (runtime)
-error may appear on the first execution.  
+error may appear on the first execution.
 
 3. Execute make as follows.
 $ make tests MPI=YES 
@@ -169,6 +175,15 @@ $ make distclean
 
 3. Some directories support a "make src_clean" to remove intermediate
 products in subdirectories.
+
+5.4 BUILDING THE DOCUMENTATION
+
+A start at documentation for pFUnit is in the documentation directory.
+Doxygen is our primary documentation tool.  To make the documentation,
+which will be generated in the documentation directory, please invoke
+the following.
+
+$ make documentation
 
 6.1 INSTALLATION - SERIAL
 
@@ -301,9 +316,9 @@ otherwise discuss this port.
 
 Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
-Windows/CYGWIN contributions from Evan Lezar.
+Windows/CYGWIN contributions from E. Lezar.
 
-Other acknowledgments:  Sean Patrick Santos (NCAR).
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley.
 
 11. KNOWN INSTALLATIONS/VERSIONS
 
@@ -321,6 +336,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
 2013-0806-1345. Corrected git reference. Was using old URL.  MLR

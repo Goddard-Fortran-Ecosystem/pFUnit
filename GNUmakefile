@@ -1,7 +1,8 @@
-.PHONY: tests all
+.PHONY: tests all documentation
 
 TOP_DIR ?=$(shell pwd)
 
+DOC_DIR  = $(TOP_DIR)/documentation
 SOURCE_DIR  = $(TOP_DIR)/source
 TESTS_DIR   = $(TOP_DIR)/tests
 INCLUDE_DIR = $(TOP_DIR)/include
@@ -128,6 +129,14 @@ all:
 	$(MAKE) -C $(SOURCE_DIR) all
 	$(MAKE) -C $(TESTS_DIR) all
 
+documentation:
+	doxygen documentation/doxygen.conf
+
+documentation/pFUnit2-ReferenceManual.pdf: documentation
+	$(MAKE) -C documentation/latex all
+	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
+
+
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
@@ -135,6 +144,7 @@ clean:
 distclean:
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
+	$(MAKE) -C $(DOC_DIR) distclean
 
 tests: all
 ifeq ($(USEMPI),YES)
