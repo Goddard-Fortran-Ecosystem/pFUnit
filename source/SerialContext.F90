@@ -38,6 +38,7 @@ module SerialContext_mod
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
+      procedure :: allReduce
 !TODO - NAG does not yet support FINAL keyword
 !!$$      final :: clean
    end type SerialContext
@@ -95,6 +96,12 @@ contains
 
       list = values
    end subroutine gatherLogical
+
+   logical function allReduce(this, q) result(anyQ)
+      class (SerialContext), intent(in) :: this
+      logical, intent(in) :: q
+      anyQ = q
+   end function allReduce
 
    subroutine clean(this)
       type (SerialContext), intent(inout) :: this

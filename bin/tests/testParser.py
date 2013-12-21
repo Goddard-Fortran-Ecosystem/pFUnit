@@ -17,6 +17,7 @@ class MockParser():
         self.outLines = []
         self.tests = []
         self.mpitests = []
+        self.currentSelfObjectName = ''
 
     def nextLine(self):
         return self.line
@@ -30,6 +31,15 @@ class TestParseLine(unittest.TestCase):
     def testGetSubroutineName(self):
         self.assertEqual('a', getSubroutineName('subroutine a()'))
         self.assertEqual('abcd', getSubroutineName('subroutine   abcd ()'))
+
+    def testGetSelfObjectName(self):
+        self.assertEqual('b', getSelfObjectName('subroutine a(b)'))
+        self.assertEqual('bc', getSelfObjectName('subroutine a(bc)'))
+        self.assertEqual('bc', getSelfObjectName('subroutine a(bc,d)'))
+        self.assertEqual('bc', getSelfObjectName('subroutine a(bc, d)'))
+        self.assertEqual('bc', getSelfObjectName('subroutine a(bc ,d)'))
+        self.assertEqual('bc', getSelfObjectName('subroutine a(bc , d)'))
+
 
     def testGetTypeName(self):
         self.assertEqual('foo', getTypeName(' type :: foo'))
@@ -66,7 +76,7 @@ class TestParseLine(unittest.TestCase):
         """Check that a line starting with '@mpitest' is detected as an
         annotation and that optional parameters are collected."""
 
-        nextLine = 'subroutine myTest()\n'
+        nextLine = 'subroutine myTest(this)\n'
         parser = MockParser(nextLine)
         atMpiTest = AtMpiTest(parser)
 
@@ -120,6 +130,7 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual('!@testCase\n', parser.outLines[0])
         self.assertEqual(nextLine, parser.outLines[1])
 
+
     def testMatchAtAssertEqual(self):
         """Check that a line starting with '@assertEqual' is detected
         as an annotation."""
@@ -128,7 +139,6 @@ class TestParseLine(unittest.TestCase):
 
         self.assertFalse(atAssert.match('@assertEqual'))
         self.assertFalse(atAssert.match('@assertEqual()'))
-        self.assertTrue(atAssert.match('@assertEqual(a)'))
         self.assertTrue(atAssert.match('@assertEqual(a, b)'))
         self.assertTrue(atAssert.match('@assertequal(a, b)')) # case insensitive
         self.assertTrue(atAssert.match('@ASSERTEQUAL(a, b)')) # case insensitive
@@ -154,7 +164,7 @@ class TestParseLine(unittest.TestCase):
         self.assertFalse(atAssert.match('@assertTrue'))
         self.assertFalse(atAssert.match('@assertTrue()'))
         self.assertTrue(atAssert.match('@assertTrue(a)'))
-        self.assertTrue(atAssert.match('@assertTrue(a)')) # case insensitive
+        self.assertTrue(atAssert.match('@asserttrue(a)')) # case insensitive
         self.assertTrue(atAssert.match('@ASSERTTRUE(a)')) # case insensitive
 
         parser.fileName = 'foo.pfunit'
@@ -167,6 +177,31 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(" & 8)", parser.outLines[4])
         self.assertTrue(" )\n", parser.outLines[5])
         self.assertTrue("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertTrue("#line 9 'foo.pfunit'\n", parser.outLines[7])
+
+    def testMatchAtMpiAssert(self):
+        """Check that a line starting with '@mpiAssert*' is detected
+        as an annotation."""
+        parser = MockParser('subroutine foo(this)\n')
+        atMpiAssert = AtMpiAssert(parser)
+
+        self.assertFalse(atMpiAssert.match('@mpiAssertTrue'))
+        self.assertFalse(atMpiAssert.match('@mpiAssertTrue()'))
+        self.assertTrue(atMpiAssert.match('@mpiAssertTrue(a)'))
+        self.assertTrue(atMpiAssert.match('@mpiAssertTrue(a,b)'))
+        self.assertTrue(atMpiAssert.match('@mpiasserttrue(a)')) # case insensitive
+        self.assertTrue(atMpiAssert.match('@MPIASSERTTRUE(a)')) # case insensitive
+
+        parser.fileName = 'foo.pfunit'
+        parser.lineNumber = 8
+        atMpiAssert.apply('   @mpiAssertTrue(.true.)\n')
+        self.assertTrue("#line 8 'foo.pfunit'\n", parser.outLines[0])
+        self.assertTrue("  call assertTrue(1, 2, &\n", parser.outLines[1])
+        self.assertTrue(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertTrue(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertTrue(" & 8)", parser.outLines[4])
+        self.assertTrue(" )\n", parser.outLines[5])
+        self.assertTrue("  if (anyExceptions(this%getMpiCommunicator())) return\n", parser.outLines[6])
         self.assertTrue("#line 9 'foo.pfunit'\n", parser.outLines[7])
 
     def testMatchAtBefore(self):
