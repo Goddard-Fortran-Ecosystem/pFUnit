@@ -35,8 +35,8 @@ being available.
 
 <a href="http://www.doxygen.org">Doxygen</a> is used to generate documentation.
 
-The system is routinely tested with GNU, Intel, and NAG fortran
-compilers and OpenMPI, as well as nightly regression testing.
+The system routinely undergoes regression testing with GNU, Intel, and NAG fortran
+compilers and OpenMPI.
 
 \section sec_ObtainingPFUNIT Obtaining pFUnit
 
@@ -119,6 +119,15 @@ also set the following.
 `MPIRUN`\code
 $ export MPIRUN=/some.path/mpirun\endcode
 
+`DOXYGEN` - To generate documentation, set DOXYGEN to the desired
+executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
+names from Fortran source code by currently converting all to
+lowercase.  It does this to get HTML links correct for references in
+the source code that also do not respect the CamelCase convention.
+The Fortran standard specifies case insensitivity.  Doxygen 1.7.x
+seems to better respect CamelCase.
+\code
+$ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen\endcode
 
 \section sec_Building Building pFUnit
 \subsection sec_BuildingPFUNITSerial Building pFUnit for testing serial codes (Non-MPI)
@@ -186,7 +195,15 @@ generated in the documentation directory, please invoke the following.
 \code
 $ make documentation\endcode
 
+Or to make a reference manual.
 
+\code
+$ make documentation/pFUnit2-ReferenceManual.pdf\endcode
+
+To select a specific version of Doxygen, please set the DOXYGEN
+environment variable as in \ref sec_Configuration. You may wish to do
+this if your code uses CamelCase names as current versions of Doxygen
+(1.8.5) do not respect this convention for Fortran.
 
 \section sec_Installation Installation
 \subsection sec_InstallationSerial Installation - Serial
@@ -444,10 +461,12 @@ Overview of Preprocessor (pFUnitParser.py)
       <li>\ref ss_Invocation</li>
       <li>\ref ss_PreprocessorInput</li>
       <li>\ref ss_Directives</li>
-      <ul><li>\ref s3_atParameters</li>
-         <li>\ref s3_atTestCase</li>
+      <ul>
          <li>\ref s3_atTest</li>
          <li>\ref s3_atMPITest</li>
+         <li>\ref s3_atAssert (or \ref page_Assert)</li>
+         <li>\ref s3_atParameters</li>
+         <li>\ref s3_atTestCase</li>
       </ul>
    </ul>
 </ul>
@@ -486,7 +505,7 @@ $ ${PFUNIT}/bin/pFUnitParser.py exampleTests.pf exampleTests.F90 \endcode
 A convenient GNUmakefile rule is as follows.
 \code
 %.F90: %.pf
-$(PFUNIT)/bin/pFUnitParser.py $<  $@ \endcode
+       $(PFUNIT)/bin/pFUnitParser.py $<  $@ \endcode
 
 \subsection ss_PreprocessorInput Preprocessor Input File (.pf)
 
@@ -505,52 +524,25 @@ parser.
 Many example .pf files may be found in the examples'
 semi-automatic/tests subdirectories in the Examples directory.
 
+Below we present the most commonly used directives first, but in a .pf
+file using all of these capabilities, the most common order is as
+follows.
+<ul>
+   <li>\ref s3_atParameters</li>
+   <li>\ref s3_atTestCase</li>
+   <li>\ref s3_atTest or \ref s3_atMPITest
+   <ul><li>\ref s3_atAssert</li>
+   </ul>
+   </li>
+</ul>
+
+
 \subsection ss_Directives Directives
 
-Preprocessor "@" directives instruct the preprocessor how to interpret
-parts of the code relevant to the generation of the test suite.  The
-most important directives follow.
-
-
-\subsubsection s3_atParameters @Parameters
-
-The @Parameter directive indicates the declaration of the
-parameterized type used to generate the iteration over the multiple
-parameter values.  It also identifies the names of the parameters to
-be iterated over.  The preprocessor extracts type information from the
-declaration of the parameter type collection that immediately follows
-the directive. This directive will set up the iteration.  To define
-the parameter values per iteration the <code>getParameters</code>
-method of the abstract ParameterizedTest must be implemented. For
-example:
-
-\code
-  @Parameters = [p1,p2]
-  type, extends(AbstractTestParameter) :: exampleCase
-     integer :: i
-     real :: x
-  end type exampleCase\endcode
-
-\subsubsection s3_atTestCase @TestCase
-
-This directive identifies to the preprocessor the TestCase
-declaration.  The type declared at this point extends TestCase (or its
-extension), which includes setting methods such as the following:
-setUp, tearDown, runMethod, userMethod.  For the extension
-MPITestCase, as with ParameterizedTestCase, you have the option
-(requirement if parameters are used) to set getParameters and
-getParameterString.  For example:
-
-\code
-  @TestCase
-  type, extends(MPITestCase) :: Test_Parameters
-     integer :: p1, p2
-     procedure(runMethod), pointer :: userMethod => null()
-   contains
-     procedure, nopass :: getParameters
-     procedure :: getParameterString => getParameterString_
-     procedure :: runMethod
-  end type Test_Parameters\endcode
+Preprocessor "@" directives, which in keeping with Fortran style are
+not case sensitive, instruct the preprocessor how to interpret parts
+of the code relevant to the generation of the test suite.  The most
+important directives follow.
 
 \subsubsection s3_atTest @Test
 
@@ -606,6 +598,125 @@ subroutine testHaloInterior(this)
 
 end subroutine testHaloInterior\endcode
 
+\subsubsection s3_atAssert @Assert
+
+The @Assert directives are expanded into calls to similarly named
+pFUnit library routines.  The syntax for the directives follows the
+pattern for @assertEqual below.
+
+\code
+@assertEqual(expected,found,'An identifying or explanatory message.')\endcode
+
+The preprocessor will automatically add information about source
+location (file & line number) to the call emitted to the test suite
+code.  It also adds the check for exceptions.
+
+For more information about @assert directives, please refer to the following.
+
+<ul>
+   <li>\ref ss_assertEqual</li>
+   <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertFalse</li>
+   <li>\ref ss_assertLessThan</li>
+   <li>\ref ss_assertLessThanOrEqual</li>
+   <li>\ref ss_assertGreaterThan</li>
+   <li>\ref ss_assertGreaterThanOrEqual</li>
+   <li>\ref ss_assertIsMemberOf</li>
+   <li>\ref ss_assertContains</li>
+   <li>\ref ss_assertAny</li>
+   <li>\ref ss_assertAll</li>
+   <li>\ref ss_assertNotAll</li>
+   <li>\ref ss_assertNone</li>
+   <li>\ref ss_assertIsPermutationOf</li>
+   <li>\ref ss_assertExceptionRaised</li>
+   <li>\ref ss_assertSameShape</li>
+   <li>\ref ss_assertIsNaN</li>
+   <li>\ref ss_assertIsFinite</li>
+</ul>
+
+
+\subsubsection s3_atParameters @Parameters
+
+The @Parameter directive indicates the declaration of the
+parameterized type used to generate the iteration over the multiple
+parameter values.  It also identifies the names of the parameters to
+be iterated over.  The preprocessor extracts type information from the
+declaration of the parameter type collection that immediately follows
+the directive. This directive will set up the iteration.  To define
+the parameter values per iteration the <code>getParameters</code>
+method of the abstract ParameterizedTest must be implemented. For
+example:
+
+\code
+  @Parameters = [p1,p2]
+  type, extends(AbstractTestParameter) :: exampleCase
+     integer :: i
+     real :: x
+  end type exampleCase\endcode
+
+\subsubsection s3_atTestCase @TestCase
+
+This directive identifies to the preprocessor the TestCase
+declaration.  The type declared at this point extends TestCase (or its
+extension), which includes setting methods such as the following:
+setUp, tearDown, runMethod, userMethod.  For the extension
+MPITestCase, as with ParameterizedTestCase, you have the option
+(requirement if parameters are used) to set getParameters and
+getParameterString.  For example:
+
+\code
+  @TestCase
+  type, extends(MPITestCase) :: Test_Parameters
+     integer :: p1, p2
+     procedure(runMethod), pointer :: userMethod => null()
+   contains
+     procedure, nopass :: getParameters
+     procedure :: getParameterString => getParameterString_
+     procedure :: runMethod
+  end type Test_Parameters\endcode
+
+\page page_Assert @Assert Preprocessor Directives
+
+<ul>
+   <li>\ref ss_assertEqual</li>
+   <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertFalse</li>
+   <li>\ref ss_assertLessThan</li>
+   <li>\ref ss_assertLessThanOrEqual</li>
+   <li>\ref ss_assertGreaterThan</li>
+   <li>\ref ss_assertGreaterThanOrEqual</li>
+   <li>\ref ss_assertIsMemberOf</li>
+   <li>\ref ss_assertContains</li>
+   <li>\ref ss_assertAny</li>
+   <li>\ref ss_assertAll</li>
+   <li>\ref ss_assertNotAll</li>
+   <li>\ref ss_assertNone</li>
+   <li>\ref ss_assertIsPermutationOf</li>
+   <li>\ref ss_assertExceptionRaised</li>
+   <li>\ref ss_assertSameShape</li>
+   <li>\ref ss_assertIsNaN</li>
+   <li>\ref ss_assertIsFinite</li>
+</ul>
+
+\section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
+\subsection ss_assertEqual @assertEqual
+\subsection ss_assertTrue @assertTrue
+\subsection ss_assertFalse @assertFalse
+\subsection ss_assertLessThan @assertLessThan
+\subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
+\subsection ss_assertGreaterThan @assertGreaterThan
+\subsection ss_assertGreaterThanOrEqual @assertGreaterThanOrEqual
+\subsection ss_assertIsMemberOf @assertIsMemberOf
+\subsection ss_assertContains @assertContains
+\subsection ss_assertAny @assertAny
+\subsection ss_assertAll @assertAll
+\subsection ss_assertNotAll @assertNotAll
+\subsection ss_assertNone @assertNone
+\subsection ss_assertIsPermutationOf @assertIsPermutationOf
+\subsection ss_assertExceptionRaised @assertExceptionRaised
+\subsection ss_assertSameShape @assertSameShape
+\subsection ss_assertIsNaN @assertIsNaN
+\subsection ss_assertIsFinite @assertIsFinite
 
 \page page_RevisionNotes Revision Notes
 

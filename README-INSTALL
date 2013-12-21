@@ -127,6 +127,16 @@ MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
 
+DOXYGEN - To generate documentation, set DOXYGEN to the desired
+executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
+names from Fortran source code by currently converting all to
+lowercase.  It does this to get HTML links correct for references in
+the source code that also do not respect the CamelCase convention.
+The Fortran standard specifies case insensitivity.  Doxygen 1.7.x
+seems to better respect CamelCase.
+$ #.e.g.
+$ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+
 5.1 BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
@@ -184,6 +194,17 @@ which will be generated in the documentation directory, please invoke
 the following.
 
 $ make documentation
+
+Or to make a reference manual:
+
+$ make documentation/pFUnit2-ReferenceManual.pdf
+
+To select a specific version of Doxygen, please set the DOXYGEN
+environment variable as in the Configuration section above.  You 
+may wish to do this if your code uses CamelCase names as current
+versions of Doxygen (1.8.5) do not respect this convention for
+Fortran.
+
 
 6.1 INSTALLATION - SERIAL
 

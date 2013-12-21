@@ -7,7 +7,7 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC SIVO
+!! Tom Clune,  NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013
