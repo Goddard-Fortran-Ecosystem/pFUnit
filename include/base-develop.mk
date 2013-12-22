@@ -12,7 +12,7 @@ include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)
 
-ifneq ($(MPI),YES)
+ifneq ($(USEMPI),YES)
   FC=$(F90)
 else
   FC=$(MPIF90)
