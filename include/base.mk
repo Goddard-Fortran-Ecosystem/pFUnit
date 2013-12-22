@@ -15,7 +15,7 @@ F90FLAGS += $I$(INCLUDE_DIR)
 ifeq ($(USEMPI),)
   FC=$(F90)
 else
-  FC=$(MPIF90)
+  override FC=$(MPIF90)
 endif
 
 ifeq ($(F90_HAS_CPP),YES)
