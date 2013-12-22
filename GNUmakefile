@@ -8,6 +8,17 @@ TESTS_DIR   = $(TOP_DIR)/tests
 INCLUDE_DIR = $(TOP_DIR)/include
 VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 
+# Set DOXYGEN to the desired executable.
+# NOTE: Doxygen Version 1.8.5 does not respect CamelCase names from
+# Fortran source code by currently converting all to lowercase.  It
+# does this to get HTML links correct for references in the source
+# code that also do not respect the CamelCase convention.  The Fortran
+# standard specifies case insensitivity.
+#
+DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
+# DOXYGEN ?= doxygen
+
 # Determine operating system, architecture and compiler
 # automatically if possible
 
@@ -130,7 +141,7 @@ all:
 	$(MAKE) -C $(TESTS_DIR) all
 
 documentation:
-	doxygen documentation/doxygen.conf
+	$(DOXYGEN) documentation/doxygen.conf
 
 documentation/pFUnit2-ReferenceManual.pdf: documentation
 	$(MAKE) -C documentation/latex all

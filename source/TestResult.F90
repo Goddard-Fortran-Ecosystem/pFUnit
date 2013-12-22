@@ -8,7 +8,7 @@
 !! Note: A possible extension point for user-specialized TestResults.
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC SIVO
+!! Tom Clune,  NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013

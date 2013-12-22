@@ -1,7 +1,7 @@
 
 /*!
 
-\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1213-1 MLR)
+\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1220-1 MLR)
 
 \section sec_Overview Overview
 
@@ -35,7 +35,7 @@ Please refer revisions and comments about the documentation to <a href="mailto:m
 \li <a href="http://JUnit.org">JUnit.org</a>
 
 \section sec_Copyright Copyright
-Copyright 2005 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.  All Rights Reserved.
+Copyright 2005,2013 United States Government as represented by the Administrator of the National Aeronautics and Space Administration.  All Rights Reserved.
 
 
 
