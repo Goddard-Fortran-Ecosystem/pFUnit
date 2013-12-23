@@ -23,7 +23,6 @@ distclean: clean_generated_code
 dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude
 
-EXCLUDE = BasicElements.F90
 ifeq ($(UNAME),Windows)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90
 endif
