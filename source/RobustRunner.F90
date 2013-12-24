@@ -26,6 +26,7 @@ module RobustRunner_mod
    use BaseTestRunner_mod
    use UnixProcess_mod
    use ResultPrinter_mod
+   use DebugListener_mod
    implicit none
    private
 
@@ -44,6 +45,7 @@ module RobustRunner_mod
 #endif
       integer :: numSkip
       type (ResultPrinter) :: printer
+      type (DebugListener) :: debugger
       type (UnixProcess) :: remoteProcess
    contains
       procedure :: run
@@ -88,6 +90,7 @@ contains
       runner%remoteRunCommand = trim(remoteRunCommand)
       runner%numSkip = 0
       runner%printer = newResultPrinter(unit)
+      runner%debugger = DebugListener(unit)
    end function newRobustRunner_unit
 
    subroutine runMethod(this)
@@ -131,6 +134,8 @@ contains
       call system_clock(clockStart)
 
       call result%addListener(this%printer)
+      if (this%debug()) call result%addListener(this%debugger)
+
       call result%addListener( this ) ! - monitoring
 
       select type (aTest)

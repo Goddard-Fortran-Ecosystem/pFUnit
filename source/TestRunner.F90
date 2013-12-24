@@ -25,6 +25,7 @@ module TestRunner_mod
    use BaseTestRunner_mod
    use TestListener_mod
    use ResultPrinter_mod
+   use DebugListener_mod
    implicit none
    private
 
@@ -33,6 +34,7 @@ module TestRunner_mod
 
    type, extends(BaseTestRunner) :: TestRunner
       type (ResultPrinter) :: printer
+      type (DebugListener) :: debugger
    contains
       procedure :: run
       procedure :: createTestResult
@@ -58,6 +60,7 @@ contains
       integer, intent(in) :: unit
       type (TestRunner) :: runner
       runner%printer = newResultPrinter(unit)
+      runner%debugger = DebugListener(unit)
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
@@ -82,14 +85,12 @@ contains
       integer :: clockRate
       real :: runTime
 
-      type (DebugListener) :: debug
-
       call system_clock(clockStart)
+
       result = this%createTestResult()
       call result%addListener(this%printer)
-#ifdef DEBUG_ON
-      call result%addListener(debug)
-#endif
+      if (this%debug()) call result%addListener(this%debugger)
+
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
