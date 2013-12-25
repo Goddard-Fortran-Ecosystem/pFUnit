@@ -1,7 +1,9 @@
 
 /*!
 
-\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1220-1 MLR)
+\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1224-1 MLR)
+
+<a href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">Quick link to the code!</a>
 
 \section sec_Overview Overview
 
@@ -17,6 +19,9 @@ Please refer revisions and comments about the documentation to <a href="mailto:m
 \section sec_Contents Contents
 
 \li \ref page_Installation
+<ul>
+<li>\ref sec_ObtainingPFUNIT</li>
+</ul>
 \li \ref page_Usage
 \li \ref page_Development
 \li \ref page_FeedbackAndSupport
