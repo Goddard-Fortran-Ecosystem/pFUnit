@@ -32,9 +32,10 @@ module TestResult_mod
    public :: newTestResult
 
    type :: TestResult
-      integer :: numFailed
-      integer :: numErrors
-      integer :: numRun
+      private
+      integer :: numFailed = 0
+      integer :: numErrors = 0
+      integer :: numRun = 0
       type (ListenerPointer), allocatable :: listeners(:)
       type (TestFailure), allocatable :: failures(:)
       type (TestFailure), allocatable :: errors(:)
@@ -43,20 +44,20 @@ module TestResult_mod
       procedure :: addError
       procedure :: failureCount
       procedure :: errorCount
-      procedure :: getIthFailure
       procedure :: startTest
       procedure :: endTest
       procedure :: runCount
       procedure :: run
       procedure :: addListener
       procedure :: wasSuccessful
+      procedure :: getErrors
+      procedure :: getFailures
    end type TestResult
 
 contains
 
    function newTestResult()
-      type (TestResult), pointer :: newTestResult
-      allocate(newTestResult)
+      type (TestResult) :: newTestResult
       allocate(newTestResult%listeners(0))
       allocate(newTestResult%failures(0))
       allocate(newTestResult%errors(0))
@@ -211,18 +212,21 @@ contains
 
    end subroutine addListener
 
-   function getIthFailure(this, i) result(failure)
-      class (TestResult), intent(in) :: this
-      integer, intent(in) :: i
-      type (TestFailure) :: failure
-
-      failure = this%failures(i)
-
-   end function getIthFailure
-
    logical function wasSuccessful(this)
       class (TestResult), intent(in) :: this
       wasSuccessful = (this%failureCount() ==  0) .and. (this%errorCount() == 0)
    end function wasSuccessful
+
+   function getErrors(this) result(errors)
+      class (TestResult), intent(in) :: this
+      type (TestFailure), allocatable :: errors(:)
+      errors = this%errors
+   end function getErrors
+
+   function getFailures(this) result(failures)
+      class (TestResult), intent(in) :: this
+      type (TestFailure), allocatable :: failures(:)
+      failures = this%failures
+   end function getFailures
 
 end module TestResult_mod

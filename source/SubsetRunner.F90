@@ -82,7 +82,7 @@ contains
 
    end function newSubsetRunner
 
-   subroutine run(this, aTest, context)
+   logical function run(this, aTest, context) result(success)
       use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       use Test_mod
       use ParallelContext_mod
@@ -94,8 +94,8 @@ contains
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestCaseReference), allocatable :: testCaseList(:)
       type (TestResult) :: result
+      type (TestCaseReference), allocatable :: testCaseList(:)
 
       integer :: i
 
@@ -127,7 +127,9 @@ contains
 
       if (this%unit /= OUTPUT_UNIT) close(this%unit)
 
-   end subroutine run
+      success = (result%errorCount() == 0)
+
+   end function run
 
    subroutine addFailure(this, testName, exceptions)
       use Exception_mod

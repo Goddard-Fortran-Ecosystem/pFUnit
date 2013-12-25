@@ -31,21 +31,25 @@ module BaseTestRunner_mod
       private
       logical :: useDebug = .false.
    contains
-      procedure(run), deferred :: run
+      procedure(run2), deferred :: run
       procedure :: setDebug
       procedure :: debug
    end type BaseTestRunner
 
    abstract interface
-      subroutine run(this, aTest, context)
+
+      ! TODO - report bug to NAG.  If this is named "run" then
+      ! RubustRunner fails to compile with message about conflicting types
+
+      logical function run2(this, aTest, context) result(success)
          use Test_mod
          use ParallelContext_mod
          import BaseTestRunner
-         
+
          class (BaseTestRunner), intent(inout) :: this
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context
-      end subroutine run
+      end function run2
       
 !!$      subroutine startTest(this, testName)
 !!$         import BaseTestRunner

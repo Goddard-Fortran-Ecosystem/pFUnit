@@ -67,38 +67,44 @@ contains
       use TestResult_mod
       class (TestRunner), intent(inout) :: this
       type (TestResult) :: tstResult
+
       tstResult = newTestResult()
+      call tstResult%addListener(this%printer)
+      if (this%debug()) call tstResult%addListener(this%debugger)
+
     end function createTestResult
 
-    subroutine run(this, aTest, context)
+    logical function run(this, aTest, context) result(success)
       use Test_mod
       use TestResult_mod
       use ParallelContext_mod
       use DebugListener_mod
+
       class (TestRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestResult) :: result
       integer :: clockStart
       integer :: clockStop
       integer :: clockRate
       real :: runTime
 
+      type (TestResult) :: tresult
+
       call system_clock(clockStart)
 
-      result = this%createTestResult()
-      call result%addListener(this%printer)
-      if (this%debug()) call result%addListener(this%debugger)
+      tresult = this%createTestResult()
 
-      call aTest%run(result, context)
+      call aTest%run(tResult, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
       if (context%isRootProcess())  then
-         call this%printer%print(result, runTime)
+         call this%printer%print(tResult, runTime)
       end if
 
-   end subroutine run
+      success = tResult%wasSuccessful()
+
+   end function run
 
     subroutine startTest(this, testName)
        class (TestRunner), intent(inout) :: this

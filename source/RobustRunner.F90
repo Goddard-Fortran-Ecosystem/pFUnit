@@ -97,11 +97,12 @@ contains
       class (TestCaseMonitor), intent(inout) :: this
    end subroutine runMethod
 
-   subroutine run(this, aTest, context)
+   logical function run(this, aTest, context) result(success)
       use Test_mod
       use TestSuite_mod
       use TestResult_mod
       use ParallelContext_mod
+
       class (RobustRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
@@ -110,8 +111,9 @@ contains
 
       result = this%createTestResult()
       call this%runWithResult(aTest, context, result)
+      success = result%wasSuccessful()
 
-   end subroutine run
+   end function run
 
    subroutine runWithResult(this, aTest, context, result)
       use Test_mod
@@ -132,9 +134,6 @@ contains
       real :: runTime
 
       call system_clock(clockStart)
-
-      call result%addListener(this%printer)
-      if (this%debug()) call result%addListener(this%debugger)
 
       call result%addListener( this ) ! - monitoring
 
@@ -252,7 +251,11 @@ contains
       use TestResult_mod
       class (RobustRunner), intent(inout) :: this
       type (TestResult) :: tstResult
+
       tstResult = newTestResult()
+      call tstResult%addListener(this%printer)
+      if (this%debug()) call tstResult%addListener(this%debugger)
+
     end function createTestResult
 
 end module RobustRunner_mod

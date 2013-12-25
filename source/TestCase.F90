@@ -114,6 +114,7 @@ contains
       class (ParallelContext), intent(in) :: context
 
       ! Always run serial tests in a serial context.
+
       if (context%isRootProcess()) then
          call tstResult%run(this%getSurrogate(), THE_SERIAL_CONTEXT)
       end if

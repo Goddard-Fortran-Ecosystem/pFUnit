@@ -15,15 +15,18 @@ end subroutine debug
 program main
    use pFUnit_mod, only: initialize
    use pFUnit_mod, only: finalize
+   use pFUnit_mod, only: TestResult
    implicit none
 
+   logical :: success
+
    call initialize()
-   call runTests()
-   call finalize()
+   success = runTests()
+   call finalize(success)
 
 contains
 
-   subroutine runTests()
+   logical function runTests() result(success)
       use pFUnit_mod, only: newTestSuite
       use pFUnit_mod, only: TestSuite
       use pFUnit_mod, only: TestRunner, newTestRunner
@@ -108,12 +111,12 @@ contains
 #endif
 
 #ifdef USE_MPI
-      call runner%run(allTests, newMpiContext())
+      success = runner%run(allTests, newMpiContext())
 #else
-      call runner%run(allTests, newSerialContext())
+      success = runner%run(allTests, newSerialContext())
 #endif
 
-   end subroutine runTests
+  end function runTests
 
 end program main
 

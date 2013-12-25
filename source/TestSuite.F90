@@ -105,7 +105,7 @@ contains
       class (ParallelContext), intent(in) :: context
 
       integer :: i
-      
+
       do i = 1, this%getNumTests()
          call this%tests(i)%ptest%run(tstResult, context)
       end do

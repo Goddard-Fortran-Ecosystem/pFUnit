@@ -25,6 +25,7 @@ program main
    character(len=:), allocatable :: outputFile
 
    class (ParallelContext), allocatable :: context
+   logical :: success
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
@@ -46,6 +47,7 @@ program main
       select case(argument)
       case ('-h','--help')
          call printHelpMessage()
+         call finalize(successful=.true.)
       case ('-v','--verbose','-d','--debug')
          debug = .true.
       case ('-o')
@@ -114,13 +116,14 @@ program main
    all = getTestSuites()
    call getContext(context, useMpi)
 
-   call runner%run(all, context)
+   success = runner%run(all, context)
 
    if (outputUnit /= OUTPUT_UNIT) then
       close(outputUnit)
    end if
 
-   call finalize()
+   call finalize(success)
+   stop
 
 contains
 
@@ -174,6 +177,7 @@ contains
       write(OUTPUT_UNIT,*)'Unsupported/mismatched command line arguments.'
       write(OUTPUT_UNIT,*)' '
       call printHelpMessage()
+      call finalize(successful=.false.)
 
    end subroutine commandLineArgumentError
 
@@ -192,9 +196,6 @@ contains
       write(OUTPUT_UNIT,*)"   '-skip n'         : used by remote start with 'robust' internally"
       write(OUTPUT_UNIT,*)"                       This flag should NOT be used directly by users."
       write(OUTPUT_UNIT,*)" "
-
-      call finalize()
-      stop
 
    end subroutine printHelpMessage
 
