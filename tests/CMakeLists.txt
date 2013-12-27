@@ -53,11 +53,6 @@ add_dependencies(tests.x pfunit)
 target_link_libraries(${TEST_EXE} pfunit testpfunit)
 target_link_libraries(${REMOTE_EXE} pfunit testpfunit)
 
-#if (OPENMP)
-#     target_link_libraries(${TEST_EXE} ${OPENMP_LINKER_FLAGS} )
-#     target_link_libraries(${REMOTE_EXE} ${OPENMP_LINKER_FLAGS} )
-#endif()
-
 if (MPI)
      target_link_libraries(${TEST_EXE} ${MPI_Fortran_LIBRARIES} )
      target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
