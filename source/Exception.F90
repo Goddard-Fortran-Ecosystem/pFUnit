@@ -396,11 +396,14 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
+      !$omp critical
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
       call globalExceptionList%throw(message, location)
+      !$omp end critical
+
    end subroutine throw_message
 
    subroutine throw_messageWithLocation(message, location)
@@ -408,11 +411,13 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), intent(in) :: location
 
+      !$omp critical
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
       call globalExceptionList%throw(message, location)
+      !$omp end critical
    end subroutine throw_messageWithLocation
 
    function catchAny(preserve) result(anException)

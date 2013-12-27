@@ -13,3 +13,7 @@ FPPFLAGS += -DGNU
 CPPFLAGS += -DGNU
 
 
+ifeq ($(USEOPENMP),YES)
+F90FLAGS += -fopenmp
+endif
+

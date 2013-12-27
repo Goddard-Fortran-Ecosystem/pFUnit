@@ -53,6 +53,8 @@ contains
       use Test_SimpleTestCase_mod, only: testSimpleSuite => suite          ! (9)
       use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
 
+      use Test_BasicOpenMP_mod, only: testBasicOpenMpSuite => suite  ! (8)
+
 
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
@@ -93,6 +95,8 @@ contains
       ADD(testSimpleMethodSuite)
       ADD(testSimpleSuite)
       ADD(testFixtureSuite)
+
+      ADD(testBasicOpenMpSuite)
 
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)

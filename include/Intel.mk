@@ -11,6 +11,11 @@ version = $(shell $(F90) --version | grep -E '\(IFORT\) 13')
 F90FLAGS += -assume realloc_lhs
 F90FLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check uninit
 
+ifeq ($(USEOPENMP),YES)
+F90FLAGS += -openmp
+endif
+
+
 else
 # Windows command line options for the intel compiler
 version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')

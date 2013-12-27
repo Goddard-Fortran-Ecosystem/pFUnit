@@ -35,6 +35,7 @@ F90FLAGS +=$M$(MOD_DIR)
 
 ifneq ($(UNAME),Windows)
 LIBS = $L$(LIB_DIR) -lpfunit
+
 ifeq ($(USEMPI),YES)
    LIBS += $(LIBMPI)
 endif
@@ -46,22 +47,22 @@ ifeq ($(USEMPI),YES)
 endif
 endif
 
-
 $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
 ifeq ($(USEMPI),YES)
 
+
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) -g
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) -g
 
 else
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) $(DEBUG_FLAGS)
 
 endif
 
