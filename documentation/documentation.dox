@@ -47,6 +47,7 @@ Comentatry for the page.
 <ul>
   <li> \ref sec_BuildingPFUNITSerial </li>
   <li> \ref sec_BuildingPFUNITMPI </li>
+  <li> \ref sec_BuildingPFUNITOPENMP </li>
   <li> \ref sec_BuildingPFUNITCleaning </li>
   <li> \ref sec_BuildingPFUNITDocumentation </li>
 </ul>
@@ -202,6 +203,20 @@ directory, along with a large number of Fortran module files.
 
 Also, one may get some harmless "no symbols" warnings when the pFUnit library is constructed.
 
+\subsection sec_BuildingPFUNITOPENMP OPENMP
+
+Initial (limited) support for OPENMP has been implemented.  At this
+writing, a basic functionality is available.
+
+The process for building pFUnit for testing OPENMP-based codes is
+similar to that for other paradigms.
+
+3. To compile for OPENMP support execute make as follows.
+\code
+$make tests OPENMP=YES\endcode
+
+4. At this point the OPENMP-enabled pFUnit is ready to be installed.
+
 \subsection sec_BuildingPFUNITCleaning Cleaning
 
 To clean the pFUnit build directory for the space or to rebuild there
@@ -282,6 +297,12 @@ $ make\endcode
 
 This will compile and run a set of parallel examples that includes
 intentional failures.
+
+\subsection sec_InstallationOPENMP Installation - OPENMP
+
+At this time the OPENMP version of pFUnit can be installed in the same
+way as for the serial or MPI-parallel codes.  OPENMP support, tests,
+and examples are limited as of this writing.
 
 \subsection sec_InstallationDefaultDirectory Installation - DEFAULT DIRECTORY
 
@@ -754,6 +775,7 @@ getParameterString.  For example:
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2013-1227. First note of OPENMP additions by T. Clune.  MLR.</li>
 <li>2013-1212. Initial draft of Doxygen version. MLR</li>
 <li>2013-1107. Minor edits. MLR</li>
 <li>2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR</li>

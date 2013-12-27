@@ -1,16 +1,21 @@
 
 /*!
 
-\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1224-1 MLR)
+\mainpage pFUnit 2 - Documentation - Version 0.0 (2013-1227-1 MLR)
 
 <a href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">Quick link to the code!</a>
 
 \section sec_Overview Overview
 
 pFUnit is a unit testing framework enabling JUnit-like testing of
-serial and MPI-parallel software written in Fortran.  It makes use of
-modern Fortran programming techniques, including object oriented
-programming, offering a convenient, lightweight mechanism for Fortran developers to create and run software tests that specify the desired behavior for a given piece of code.  The framework was originally created by developers from NASA and NGC TASC.  The project is hosted at <a href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>.
+serial and MPI-parallel software written in Fortran.  Initial support
+for OPENMP has been implemented.  pFUnit makes use of modern Fortran
+programming techniques, including object oriented programming,
+offering a convenient, lightweight mechanism for Fortran developers to
+create and run software tests that specify the desired behavior for a
+given piece of code.  The framework was originally created by
+developers from NASA and NGC TASC.  The project is hosted at <a
+href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>.
 
 If you are using pFUnit, please leave a note/topic at <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a>, or send a note to <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., Chief, Software Systems Support Office Code 610.3, NASA Goddard Space Flight Center.
 
