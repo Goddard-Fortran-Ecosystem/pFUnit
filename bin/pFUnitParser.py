@@ -5,6 +5,12 @@ from __future__ import print_function
 from os.path import *
 import re
 
+class MyError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 assertVariants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
 assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
@@ -13,8 +19,12 @@ def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
 
 def getSubroutineName(line):
-    m = re.match('\s*subroutine\s+(\w*)\s*\\([\w\s,]*\\)\s*$', line, re.IGNORECASE)
-    return m.groups()[0]
+    try:
+        m = re.match('\s*subroutine\s+(\w*)\s*(\\([\w\s,]*\\))?\s*(!.*)*$', line, re.IGNORECASE)
+        return m.groups()[0]
+    except:
+        raise MyError('Improper format in declaration of test procedure.')
+
 
 def getSelfObjectName(line):
     m = re.match('\s*subroutine\s+\w*\s*\\(\s*(\w+)\s*(,\s*\w+\s*)*\\)\s*$', line, re.IGNORECASE)
@@ -259,10 +269,18 @@ class Parser():
             parse(line)
         self.makeSuite()
 
+    def isComment(self, line):
+        return re.match('\s*(!.*|)$', line)
 
     def nextLine(self):
-        self.lineNumber += 1
-        return self.inputFile.readline()
+        while True:
+            self.lineNumber += 1
+            line = self.inputFile.readline()
+            if (self.isComment(line)):
+                pass
+            else:
+                break
+        return line
 
     def makeSuite(self):
         def printHeader(file, suiteName, moduleName):
