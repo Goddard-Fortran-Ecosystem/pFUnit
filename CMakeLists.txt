@@ -33,6 +33,13 @@ get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 if (Fortran_COMPILER_NAME STREQUAL "ifort")
 
     # Use ifort
+    execute_process(COMMAND ifort --version 
+                    OUTPUT_VARIABLE INTEL_COMPILER_VERSION)
+    string (REGEX MATCH "([0-9]+)" 
+            NUM_VERSION ${INTEL_COMPILER_VERSION})
+    if("${NUM_VERSION}" STREQUAL "13")
+        add_definitions(-DINTEL_13)
+    endif()
     add_definitions(-DIntel)
     add_definitions(-DSTRINGIFY_OPERATOR)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
@@ -43,7 +50,7 @@ elseif(Fortran_COMPILER_NAME STREQUAL "gfortran" OR Fortran_COMPILER_NAME STREQU
     # Use Gfortran
     add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
 
 elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
 
