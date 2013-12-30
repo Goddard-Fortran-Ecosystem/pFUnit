@@ -98,8 +98,9 @@ contains
       ADD(testFixtureSuite)
 
 ! If using OpenMP ...
+#ifdef USEOPENMP
 !$    ADD(testBasicOpenMpSuite)
-
+#endif
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
 
