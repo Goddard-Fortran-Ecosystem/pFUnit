@@ -96,9 +96,8 @@ contains
       ADD(testSimpleSuite)
       ADD(testFixtureSuite)
 
-#ifdef USEOPENMP
-      ADD(testBasicOpenMpSuite)
-#endif
+! If using OpenMP ...
+!$    ADD(testBasicOpenMpSuite)
 
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)

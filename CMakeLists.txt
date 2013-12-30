@@ -9,7 +9,7 @@ INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
 project (pFUnit)
 enable_language (Fortran)
-set (CMAKE_VERBOSE_MAKEFILE 1)
+#set (CMAKE_VERBOSE_MAKEFILE 1)
 
 if ( DEFINED ENV{PFUNIT} )
     OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
@@ -27,15 +27,6 @@ if (MPI)
     message( STATUS "MPI enabled")
 endif()
 
-if (OPENMP)
-    add_definitions(-DUSEOPENMP)
-    find_package(OpenMP REQUIRED) 
-    if(OPENMP_FOUND)
-      set(OPENMP_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-      set(OPENMP_LINKER_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    endif()
-    message( STATUS "OpenMP enabled")
-endif()
 
 get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
@@ -44,31 +35,22 @@ if (Fortran_COMPILER_NAME STREQUAL "ifort")
     # Use ifort
     add_definitions(-DIntel)
     add_definitions(-DSTRINGIFY_OPERATOR)
-    if (OPENMP)
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs -fopenmp")
-    else()
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs")
-    endif()
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
+
 
 elseif(Fortran_COMPILER_NAME STREQUAL "gfortran" OR Fortran_COMPILER_NAME STREQUAL "gfortran-mp-4.8")
 
     # Use Gfortran
     add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
-    if (OPENMP)
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds -fopenmp")
-    else()
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds")
-    endif()
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds")
 
 elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
 
-  # use nagfor			     
-  if (OPENMP)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -openmp")
-  else()
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all")
-  endif()
+    # use nagfor			     
+    add_definitions(-DNAG)
+    add_definitions(-DSTRINGIFY_SIMPLE)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
 
 else()
 
@@ -76,10 +58,17 @@ else()
 
 endif()
 
-# Set the compiler name to the wrapper, if necessary
-if (NOT ${COMPILER_WRAPPER} STREQUAL "")
-   CMAKE_FORCE_Fortran_COMPILER(${COMPILER_WRAPPER} ${Fortran_COMPILER_NAME})
-endif ()
+# Fortran OpenMP support is not yet integrated into the CMake distribution.
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/include/cmake/Modules/")
+if (OPENMP)
+    find_package(OpenMP_Fortran REQUIRED) 
+    if(OPENMP_FORTRAN_FOUND)
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+      set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+      message( STATUS "OpenMP enabled")
+    endif()
+endif()
+
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
