@@ -56,9 +56,9 @@ elseif(Fortran_COMPILER_NAME STREQUAL "gfortran" OR Fortran_COMPILER_NAME STREQU
     add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
     if (OPENMP)
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds -fopenmp")
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check -fopenmp")
     else()
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds")
+      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
     endif()
 
 elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
