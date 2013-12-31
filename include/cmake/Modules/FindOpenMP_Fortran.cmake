@@ -70,8 +70,7 @@ end program TestOpenMP
          "-DOpenMP_FLAG_DETECTED ${CMAKE_REQUIRED_FLAGS}")
     TRY_RUN (OpenMP_RUN_FAILED OpenMP_FLAG_DETECTED ${CMAKE_BINARY_DIR}
         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranOpenMP.f90
-        COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-        CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
+        COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${MACRO_CHECK_FUNCTION_DEFINITIONS}
         COMPILE_OUTPUT_VARIABLE OUTPUT
         RUN_OUTPUT_VARIABLE OMP_NUM_PROCS_INTERNAL)
     IF (OpenMP_FLAG_DETECTED)
@@ -80,7 +79,7 @@ end program TestOpenMP
              "the following output:\n${OUTPUT}\n\n")
         SET (OpenMP_FLAG_DETECTED 1)
         IF (OpenMP_RUN_FAILED)
-            MESSAGE (WARNING "OpenMP found, but test code did not run")
+            MESSAGE (FATAL_ERROR "OpenMP found, but test code did not run")
         ENDIF (OpenMP_RUN_FAILED)
         SET (OMP_NUM_PROCS ${OMP_NUM_PROCS_INTERNAL} CACHE
              STRING "Number of processors OpenMP may use" FORCE)
