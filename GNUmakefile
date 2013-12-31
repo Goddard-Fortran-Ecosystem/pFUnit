@@ -95,7 +95,7 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
-  else ifeq ($(F90),xlf)
+  else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
