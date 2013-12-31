@@ -27,10 +27,7 @@ if (MPI)
     message( STATUS "MPI enabled")
 endif()
 
-
-get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
-
-if (Fortran_COMPILER_NAME STREQUAL "ifort")
+if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 
     # Use ifort
     execute_process(COMMAND ifort --version 
@@ -45,19 +42,26 @@ if (Fortran_COMPILER_NAME STREQUAL "ifort")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
 
 
-elseif(Fortran_COMPILER_NAME STREQUAL "gfortran" OR Fortran_COMPILER_NAME STREQUAL "gfortran-mp-4.8")
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
     # Use Gfortran
     add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
 
-elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
     # use nagfor			     
     add_definitions(-DNAG)
     add_definitions(-DSTRINGIFY_SIMPLE)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
+
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
+
+    # Use XLF.
+    add_definitions(-DIBM)
+    add_definitions(-DSTRINGIFY_SIMPLE)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
 else()
 

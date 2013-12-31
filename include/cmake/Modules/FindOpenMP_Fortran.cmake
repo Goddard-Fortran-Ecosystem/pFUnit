@@ -44,7 +44,7 @@ SET (OpenMP_Fortran_FLAG_CANDIDATES
      #HP
      "+Oopenmp"
      #IBM XL C/c++
-     "-qsmp"
+     "-qsmp=omp"
      #Portland Group
      "-mp"
 )
