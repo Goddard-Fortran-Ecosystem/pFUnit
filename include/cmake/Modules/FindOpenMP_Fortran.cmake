@@ -80,7 +80,7 @@ end program TestOpenMP
              "the following output:\n${OUTPUT}\n\n")
         SET (OpenMP_FLAG_DETECTED 1)
         IF (OpenMP_RUN_FAILED)
-            MESSAGE (FATAL_ERROR "OpenMP found, but test code did not run")
+            MESSAGE (WARNING "OpenMP found, but test code did not run")
         ENDIF (OpenMP_RUN_FAILED)
         SET (OMP_NUM_PROCS ${OMP_NUM_PROCS_INTERNAL} CACHE
              STRING "Number of processors OpenMP may use" FORCE)
