@@ -276,11 +276,14 @@ class Parser():
         while True:
             self.lineNumber += 1
             line = self.inputFile.readline()
+            if not line: break
             if (self.isComment(line)):
+                self.outputFile.write(line)
                 pass
             else:
                 break
         return line
+
 
     def makeSuite(self):
         def printHeader(file, suiteName, moduleName):
