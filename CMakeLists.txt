@@ -82,4 +82,12 @@ set(CMAKE_SKIP_RPATH ON)
 
 add_subdirectory (source)
 add_subdirectory (tests)
+add_subdirectory (include)
+add_subdirectory (bin)
+
+# Override on command line with -DCMAKE_INSTALL_PREFIX=...
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "$ENV{PFUNIT" CACHE PATH "default install path" FORCE )
+endif()
+
 

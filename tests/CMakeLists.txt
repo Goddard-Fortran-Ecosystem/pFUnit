@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
 include_directories (${pFUnit_SOURCE_DIR}/include)
-include_directories (${pFUnit_BINARY_DIR}/source)
+#include_directories (${pFUnit_BINARY_DIR}/source)
+include_directories(${CMAKE_BINARY_DIR}/mod)
 
 set(srcs Test_Assert.F90)
 list(APPEND srcs MakeNaN.F90)
