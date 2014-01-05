@@ -82,7 +82,7 @@ contains
 
    end function newSubsetRunner
 
-   logical function run(this, aTest, context) result(success)
+   function run(this, aTest, context) result(result)
       use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       use Test_mod
       use ParallelContext_mod
@@ -90,11 +90,11 @@ contains
       use TestResult_mod
       use TestSuite_mod
 
+      type (TestResult) :: result
       class (SubsetRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestResult) :: result
       type (TestCaseReference), allocatable :: testCaseList(:)
 
       integer :: i
@@ -126,8 +126,6 @@ contains
       end do
 
       if (this%unit /= OUTPUT_UNIT) close(this%unit)
-
-      success = (result%errorCount() == 0)
 
    end function run
 

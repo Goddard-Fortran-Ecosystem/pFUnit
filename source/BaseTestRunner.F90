@@ -41,11 +41,13 @@ module BaseTestRunner_mod
       ! TODO - report bug to NAG.  If this is named "run" then
       ! RubustRunner fails to compile with message about conflicting types
 
-      logical function run2(this, aTest, context) result(success)
+      function run2(this, aTest, context) result(result)
          use Test_mod
          use ParallelContext_mod
+         use TestResult_mod
          import BaseTestRunner
 
+         type (TestResult) :: result
          class (BaseTestRunner), intent(inout) :: this
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context

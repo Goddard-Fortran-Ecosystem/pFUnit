@@ -97,21 +97,19 @@ contains
       class (TestCaseMonitor), intent(inout) :: this
    end subroutine runMethod
 
-   logical function run(this, aTest, context) result(success)
+   function run(this, aTest, context) result(result)
       use Test_mod
       use TestSuite_mod
       use TestResult_mod
       use ParallelContext_mod
 
+      type (TestResult) :: result
       class (RobustRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestResult) :: result
-
       result = this%createTestResult()
       call this%runWithResult(aTest, context, result)
-      success = result%wasSuccessful()
 
    end function run
 

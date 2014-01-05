@@ -24,7 +24,7 @@ contains
       integer :: skipArg
       character(len=100) :: command
 
-      logical :: success
+      type (TestResult) :: result
 
 #ifdef USE_MPI
       skipArg = 2
@@ -42,7 +42,7 @@ contains
       allocate(context, source=newSerialContext())
       s = suite()
 
-      success = runner%run(s, context)
+      result = runner%run(s, context)
       
    end subroutine runTests
 

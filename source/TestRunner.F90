@@ -33,6 +33,7 @@ module TestRunner_mod
    public :: newTestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
+!!$      private
       type (ResultPrinter) :: printer
       type (DebugListener) :: debugger
    contains
@@ -74,12 +75,13 @@ contains
 
     end function createTestResult
 
-    logical function run(this, aTest, context) result(success)
+    function run(this, aTest, context) result(result)
       use Test_mod
       use TestResult_mod
       use ParallelContext_mod
       use DebugListener_mod
 
+      type (TestResult) :: result
       class (TestRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
@@ -89,20 +91,17 @@ contains
       integer :: clockRate
       real :: runTime
 
-      type (TestResult) :: tresult
 
       call system_clock(clockStart)
 
-      tresult = this%createTestResult()
+      result = this%createTestResult()
 
-      call aTest%run(tResult, context)
+      call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
       if (context%isRootProcess())  then
-         call this%printer%print(tResult, runTime)
+         call this%printer%print(result, runTime)
       end if
-
-      success = tResult%wasSuccessful()
 
    end function run
 

@@ -72,6 +72,7 @@ contains
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
+      type (TestResult) :: tstResult
 
       allTests = newTestSuite('allTests')
       runner = newTestRunner()
@@ -111,9 +112,11 @@ contains
 #endif
 
 #ifdef USE_MPI
-      success = runner%run(allTests, newMpiContext())
+      tstResult = runner%rRun(allTests, newMpiContext())
+      success = .true.
 #else
-      success = runner%run(allTests, newSerialContext())
+      tstResult = runner%run(allTests, newSerialContext())
+      success = .true.
 #endif
 
   end function runTests

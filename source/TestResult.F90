@@ -197,16 +197,16 @@ contains
 
       subroutine extend(listeners)
          type (ListenerPointer), allocatable, intent(inout) :: listeners(:)
-         type (ListenerPointer) :: temp(size(listeners))
+         type (ListenerPointer), allocatable :: temp(:)
          integer :: n
 
-         temp = listeners
-
-         deallocate(listeners)
          n = size(listeners)
-         allocate(listeners(n+1))
+         temp = listeners
+         deallocate(listeners)
 
+         allocate(listeners(n+1))
          listeners(:n) = temp
+         deallocate(temp)
 
       end subroutine extend
 
