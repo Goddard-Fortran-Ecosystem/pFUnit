@@ -67,6 +67,7 @@ endif
 
 # Other defaults
 MPI ?=NO # do not include MPI capabilities
+OPENMP ?=NO # do not include OpenMP threading
 
 # F90 Vendor common elements (override below)
 FFLAGS ?=
@@ -119,6 +120,10 @@ ifneq ($(findstring $(MPI),yes YES Yes),)
      LIBMPI ?=
   endif
   LDFLAGS += $(LIBMPI)
+endif
+
+ifneq ($(findstring $(OPENMP),yes YES Yes),)
+  USEOPENMP=YES
 endif
 
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
@@ -200,6 +205,7 @@ export INCLUDE_DIR
 export VPATH
 export MPI
 export USEMPI
+export USEOPENMP
 export MPIF90
 export LIBMPI
 export COMPILER

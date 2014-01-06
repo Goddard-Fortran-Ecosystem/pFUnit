@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+SET (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+
 set(srcs Assert.F90 AssertBasic.F90 AssertInteger.F90)
 list(APPEND srcs BaseTestRunner.F90)
 list(APPEND srcs DebugListener.F90)
@@ -66,5 +68,7 @@ set(SOURCES ${srcs})
 
 add_library(pfunit STATIC ${SOURCES})
 
+include_directories(${CMAKE_BINARY_DIR}/mod)
 
-
+INSTALL(TARGETS pfunit DESTINATION lib)
+INSTALL(DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)

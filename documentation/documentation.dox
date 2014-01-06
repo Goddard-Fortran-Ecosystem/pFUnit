@@ -1,6 +1,38 @@
 
 /*!
 
+\page page_ObtainingPFUNIT Obtaining pFUnit
+
+The best way to obtain pFUnit is to <a
+href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">clone
+pFUnit from the git repository</a> from SourceForge as follows.
+
+\code
+# Read Only Access
+git clone git://git.code.sf.net/p/pfunit/code pFUnit\endcode
+
+This will create the directory pFUnit in the current working
+directory.  
+
+You may also visit the project page at SourceForge and
+download the source tarfile "pFUnit.tar.gz" there.
+
+http://sourceforge.net/projects/pfunit/
+or
+http://sourceforge.net/projects/pfunit/files/latest/download
+
+Extracting this tarfile via a command like
+
+`$ tar zxf ./pFUnit.tar.gz`
+
+will place the pFUnit files into the current working directory.
+
+For other ways to acquire the code visit
+
+https://sourceforge.net/p/pfunit/code/ci/master/tree/
+
+or contact the pFUnit team.
+
 \page page_Installation Installation
 
 \section sec_InstallingPFUNIT Installing pFUnit
@@ -45,8 +77,9 @@ compilers and OpenMPI.
 
 \section sec_ObtainingPFUNIT Obtaining pFUnit
 
-The best way to obtain pFUnit is to clone the git repository from
-SourceForge as follows.
+The best way to obtain pFUnit is to <a
+href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">clone
+pFUnit from the git repository</a> from SourceForge as follows.
 
 \code
 # Read Only Access

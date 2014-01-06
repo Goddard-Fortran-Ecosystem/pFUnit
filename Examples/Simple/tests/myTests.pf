@@ -14,7 +14,7 @@ subroutine testAddBroken()
    use pfunit_mod
    implicit none
 
-   @assertEqual(1., add(1.,2.), message='intentional broken test')
+   @assertEqual(1., add(1.,2.), message='<<This test is intentionally broken.>>')
 
 end subroutine testAddBroken
 
@@ -56,7 +56,7 @@ subroutine testAddComplexMultiDimBroken()
    z0(2,2) = cmplx(1.0,0.0); z1(3,1) = cmplx(0.0,-2.0)
    expected(2,2) = z0(2,2)+1.0 ; expected(3,1) = 1.0 + z1(3,1)
 
-   @assertEqual(expected,z0+z1,message='intentionally broken')
+   @assertEqual(expected,z0+z1,message='<<This test is intentionally broken.>>')
 
 end subroutine testAddComplexMultiDimBroken
 
