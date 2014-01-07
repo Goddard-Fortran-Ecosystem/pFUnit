@@ -100,7 +100,7 @@ contains
    recursive subroutine run(this, tstResult, context)
       use ParallelContext_mod
       use TestResult_mod
-      class (TestSuite), target, intent(inout) :: this
+      class (TestSuite), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 

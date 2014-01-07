@@ -109,16 +109,13 @@ contains
       use SerialContext_mod
       use TestResult_mod
       use ParallelContext_mod
-      class (TestCase), target, intent(inout) :: this
+      class (TestCase), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
-      type (ConcreteSurrogate) :: surrogate
       ! Always run serial tests in a serial context.
-
       if (context%isRootProcess()) then
-         surrogate%tCase => this
-         call tstResult%run(surrogate, THE_SERIAL_CONTEXT)
+         call tstResult%run(this%getSurrogate(), THE_SERIAL_CONTEXT)
       end if
 
       call context%barrier()

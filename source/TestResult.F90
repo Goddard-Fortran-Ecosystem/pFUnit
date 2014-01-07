@@ -52,6 +52,7 @@ module TestResult_mod
       procedure :: wasSuccessful
       procedure :: getErrors
       procedure :: getFailures
+      procedure :: getIthFailure
    end type TestResult
 
 contains
@@ -211,6 +212,15 @@ contains
       end subroutine extend
 
    end subroutine addListener
+
+   function getIthFailure(this, i) result(failure)
+      class (TestResult), intent(in) :: this
+      integer, intent(in) :: i
+      type (TestFailure) :: failure
+
+      failure = this%failures(i)
+
+   end function getIthFailure
 
    logical function wasSuccessful(this)
       class (TestResult), intent(in) :: this

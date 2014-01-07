@@ -45,7 +45,7 @@ module Test_mod
          use TestResult_mod
          use ParallelContext_mod
          import Test
-         class (Test), target, intent(inout) :: this
+         class (Test), intent(inout) :: this
          class (TestResult), intent(inout) :: tstResult
          class (ParallelContext), intent(in) :: context
       end subroutine run
