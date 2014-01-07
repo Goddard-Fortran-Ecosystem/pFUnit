@@ -27,15 +27,12 @@ list(APPEND TEST_SRCS Test_TestResult.F90)
 list(APPEND TEST_SRCS Test_TestSuite.F90)
 list(APPEND TEST_SRCS Test_UnixProcess.F90)
 list(APPEND TEST_SRCS robustTestSuite.F90)
+list(APPEND TEST_SRCS Test_BasicOpenMP.F90)
 
 if (MPI)
   list(APPEND TEST_SRCS Test_MpiContext.F90)
   list(APPEND TEST_SRCS Test_MpiException.F90)
   list(APPEND TEST_SRCS Test_MpiTestCase.F90)
-endif()
-
-if (OPENMP)
-  list(APPEND TEST_SRCS Test_BasicOpenMP.F90)
 endif()
 
 if (HAS_CPP)
