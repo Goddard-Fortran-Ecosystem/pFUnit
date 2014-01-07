@@ -25,7 +25,7 @@ program main
    character(len=:), allocatable :: outputFile
 
    class (ParallelContext), allocatable :: context
-   logical :: success
+   type (TestResult) :: result
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
@@ -116,13 +116,13 @@ program main
    all = getTestSuites()
    call getContext(context, useMpi)
 
-   success = runner%run(all, context)
+   result = runner%run(all, context)
 
    if (outputUnit /= OUTPUT_UNIT) then
       close(outputUnit)
    end if
 
-   call finalize(success)
+   call finalize(result%wasSuccessful())
    stop
 
 contains
