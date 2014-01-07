@@ -1,9 +1,14 @@
 # ------------------------------------------------------------------------ #
 # DOCUMENTATION:
 # ------------------------------------------------------------------------ #
+#
 # Command line options:
 #     MPI=YES               ! defaults to NO
 #     INSTALL_PATH=<path>   ! defaults to $(PFUNIT)
+# 
+# Usage:
+#   cmake -DMPI=YES -DINSTALL_PATH=<A path> <path to source>
+#
 # ------------------------------------------------------------------------ #
 INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
@@ -11,11 +16,7 @@ project (pFUnit)
 enable_language (Fortran)
 set (CMAKE_VERBOSE_MAKEFILE 1)
 
-if ( DEFINED ENV{PFUNIT} )
-    OPTION(INSTALL_PATH "Use PFUNIT for development" "$ENV{PFUNIT}")
-else ()
-endif ()
-
+OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
@@ -87,9 +88,9 @@ add_subdirectory (tests)
 add_subdirectory (include)
 add_subdirectory (bin)
 
-# Override on command line with -DCMAKE_INSTALL_PREFIX=...
+# Override on command line with -DCMAKE_INSTALL_PREFIX=... or -DINSTALL_PATH=...
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set (CMAKE_INSTALL_PREFIX "$ENV{PFUNIT}" CACHE PATH "default install path" FORCE )
+    set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
 endif()
 
 
