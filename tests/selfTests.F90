@@ -119,7 +119,7 @@ contains
 #endif
 
 #ifdef USE_MPI
-      tstResult = runner%rRun(allTests, newMpiContext())
+      tstResult = runner%run(allTests, newMpiContext())
       success = .true.
 #else
       tstResult = runner%run(allTests, newSerialContext())
