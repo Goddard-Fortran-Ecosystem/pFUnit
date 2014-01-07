@@ -1,7 +1,7 @@
 
 PFUNIT VERSION 2.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2013-1107 M. Rilee mike@rilee.net
+VERSION 2013-1227 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -30,13 +30,14 @@ being available.
 
 Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
 The Message Passing Interface (MPI)
+OPENMP
 GNU Make
 Python
 
 Doxygen is used to generate documentation (see http://www.doxygen.org).
 
-The system is routinely tested with GNU, Intel, and NAG fortran
-compilers and OpenMPI, as well as nightly regression testing.
+The system is routinely undergoes regression testing, including with GNU,
+Intel, and NAG fortran compilers and OpenMPI.
 
 2. OBTAINING PFUNIT
 
@@ -172,7 +173,20 @@ directory, along with a large number of Fortran module files.
 
 Also, one may get some harmless "no symbols" warnings when the pFUnit library is constructed.
 
-5.3 CLEANING
+5.3 BUILDING PFUNIT FOR TESTING PARALLEL CODES (OPENMP)
+
+Initial (limited) support for OPENMP has been implemented.  At this
+writing, a basic functionality is available.
+
+The process for building pFUnit for testing OPENMP-based codes is
+similar to that for other paradigms.
+
+3. To compile for OPENMP support execute make as follows.
+$ make tests OPENMP=YES 
+
+4. At this point the OPENMP-enabled pFUnit is ready to be installed.
+
+5.4 CLEANING
 
 To clean the pFUnit build directory for the space or to rebuild there
 are two options.
@@ -186,7 +200,7 @@ $ make distclean
 3. Some directories support a "make src_clean" to remove intermediate
 products in subdirectories.
 
-5.4 BUILDING THE DOCUMENTATION
+5.5 BUILDING THE DOCUMENTATION
 
 A start at documentation for pFUnit is in the documentation directory.
 Doxygen is our primary documentation tool.  To make the documentation,
@@ -250,7 +264,13 @@ $ make
 This will compile and run a set of parallel examples that includes
 intentional failures.
 
-6.3 INSTALLATION - DEFAULT DIRECTORY
+6.3 INSTALLATION - OPENMP
+
+At this time the OPENMP version of pFUnit can be installed in the same
+way as for the serial or MPI-parallel codes.  OPENMP support, tests,
+and examples are limited as of this writing.
+
+6.4 INSTALLATION - DEFAULT DIRECTORY
 
 If INSTALL_DIR is not set, "make install" will attempt to install
 pFUnit into the top build directory.  This will create directories
