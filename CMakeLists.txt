@@ -9,7 +9,7 @@ INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
 project (pFUnit)
 enable_language (Fortran)
-set (CMAKE_VERBOSE_MAKEFILE 1)
+#set (CMAKE_VERBOSE_MAKEFILE 1)
 
 if ( DEFINED ENV{PFUNIT} )
     OPTION(INSTALL_PATH "Use PFUNIT for development" "$ENV{PFUNIT}")
