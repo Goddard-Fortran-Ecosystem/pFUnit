@@ -1,2 +1,2 @@
-install(FILES driver.F90 DESTINATION include)
+install(FILES driver.F90 extensions.mk DESTINATION include)
 

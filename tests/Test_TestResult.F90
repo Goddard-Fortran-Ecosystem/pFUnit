@@ -37,10 +37,10 @@ contains
       use Assert_mod, only: assertEqual
       use TestResult_mod, only: newTestResult, TestResult
 !!$      use TestCase_mod
-      type (TestResult), pointer :: aResult
+      type (TestResult) :: aResult
 !!$      class(TestCase), pointer :: tstCase
 
-      aResult => newTestResult()
+      aResult = newTestResult()
 !!$      call assertEqual(0, aResult%runCount())
 !!$
 !!$      tstCase => newSimpleTestCase(method1,'method1')

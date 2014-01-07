@@ -10,11 +10,12 @@ program main
 
    call initialize(useMPI=.false.)
    call runTests()
-   call finalize()
+   call finalize(.true.) ! let top level driver indicate success/failure
 
 contains
 
    subroutine runTests()
+      use pFUnit_mod, only: TestResult
       type (SubsetRunner) :: runner
       type (TestSuite) :: s
       class (ParallelContext), allocatable :: context
@@ -22,6 +23,8 @@ contains
       integer :: numSkip, strLength
       integer :: skipArg
       character(len=100) :: command
+
+      type (TestResult) :: result
 
 #ifdef USE_MPI
       skipArg = 2
@@ -39,7 +42,7 @@ contains
       allocate(context, source=newSerialContext())
       s = suite()
 
-      call runner%run(s, context)
+      result = runner%run(s, context)
       
    end subroutine runTests
 

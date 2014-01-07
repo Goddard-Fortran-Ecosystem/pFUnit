@@ -28,7 +28,7 @@ module TestListener_mod
    public :: ListenerPointer
 
    type, abstract :: TestListener
-      integer :: placeholder
+      private
    contains
      procedure(addFailure), deferred :: addFailure
      procedure(startTest), deferred :: startTest

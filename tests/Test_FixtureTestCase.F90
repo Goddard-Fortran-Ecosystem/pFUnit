@@ -31,9 +31,9 @@ contains
       use SerialContext_mod
       use Assert_mod, only: assertEqual
       type (FixtureTestCase) :: aTest
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
 
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       aTest = newFixtureTestCase()
       call aTest%setSurrogate()
       call aTest%run(aTestResult, newSerialContext())

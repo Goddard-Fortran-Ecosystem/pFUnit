@@ -29,6 +29,7 @@ module pFUnit_mod
    use TestCase_mod
    use TestMethod_mod
    use ParameterizedTestCase_mod
+   use TestResult_mod
    use BaseTestRunner_mod
    use TestRunner_mod
    use SubsetRunner_mod
@@ -54,6 +55,7 @@ module pFUnit_mod
    public :: Test
    public :: TestSuite, newTestSuite
    public :: TestMethod, newTestMethod
+   public :: TestResult
    public :: BaseTestRunner
    public :: TestRunner, newTestRunner
    public :: SubsetRunner
@@ -106,13 +108,46 @@ contains
 
    end subroutine initialize
 
-   subroutine finalize()
+   subroutine finalize(successful)
+#ifdef NAG
+      use f90_unix_proc, only: exit
+#endif
+      logical, intent(in) :: successful
+
+      logical :: allSuccessful
+      logical :: amRoot
+
 #ifdef USE_MPI
       integer :: error
+      integer :: rank
+      include 'mpif.h'
+
+      allSuccessful = successful
       if (useMpi_) then
+         call MPI_Comm_rank(MPI_COMM_WORLD, rank, error)
+         amRoot = (rank == 0)
+         call MPI_Bcast(allSuccessful, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, error)
          call mpi_finalize(error)
+      else
+      end if
+#else
+      amRoot = .true.
+      allSuccessful = successful
+#endif
+
+   if (.not. allSuccessful) then
+#ifdef NAG
+      call exit(-1)
+#else
+
+      if (amRoot) then
+         error stop '*** Encountered 1 or more failures/errors during testing. ***'
+      else
+         error stop
       end if
 #endif
+   end if
+
    end subroutine finalize
 
 end module pFUnit_mod
