@@ -60,10 +60,15 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-- Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
+- Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
 - The Message Passing Interface (MPI)
 - GNU Make
 - Python
+
+Note: Recent changes have exposed a latent bug in GCC 4.8.2.  The fix
+is available in the GCC 4.9 development branch and will also appear in
+GCC 4.8.3 when that is released.  Users that require older versions of
+GCC should use pFUnit 2.1.x.
 
 <a href="http://www.doxygen.org">Doxygen</a> is used to generate documentation.
 

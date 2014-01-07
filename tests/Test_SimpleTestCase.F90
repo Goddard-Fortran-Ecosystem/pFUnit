@@ -41,10 +41,10 @@ contains
       use Assert_mod, only: assertEqual
       use SerialContext_mod
 
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method1', aTest%runLog)
@@ -64,10 +64,10 @@ contains
       use Assert_mod, only: assertEqual
       use SerialContext_mod
 
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
@@ -79,11 +79,11 @@ contains
       use TestResult_mod, only: TestResult, newTestResult
       use Assert_mod, only: assertEqual
       use SerialContext_mod
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (TestSuite) :: aSuite
 
       aSuite = internalSuite()
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       call aSuite%run(aTestResult, newSerialContext())
       call assertEqual(2, aTestResult%runCount())
       call assertEqual(1, aTestResult%failureCount())

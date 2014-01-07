@@ -12,12 +12,13 @@ enable_language (Fortran)
 #set (CMAKE_VERBOSE_MAKEFILE 1)
 
 if ( DEFINED ENV{PFUNIT} )
-    OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
+    OPTION(INSTALL_PATH "Use PFUNIT for development" "$ENV{PFUNIT}")
 else ()
 endif ()
 
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
+OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
 
 if (MPI)
     add_definitions(-DUSE_MPI)
@@ -57,6 +58,7 @@ elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
     # use nagfor			     
     add_definitions(-DNAG)
     add_definitions(-DSTRINGIFY_SIMPLE)
+    set(HAS_CPP NO)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
 
 else()
