@@ -41,8 +41,6 @@ module MpiTestCase_mod
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
       procedure :: runBare
-      procedure :: setUp
-      procedure :: tearDown
       procedure :: setNumProcesses
       procedure :: getNumProcesses
       procedure :: getProcessRank
@@ -110,14 +108,6 @@ contains
       call gather(this%parentContext)
 
    end subroutine runBare
-
-   subroutine setUp(this)
-      class (MpiTestCase), intent(inout) :: this
-   end subroutine setUp
-
-   subroutine tearDown(this)
-      class (MpiTestCase), intent(inout) :: this
-   end subroutine tearDown
 
    integer function getMpiCommunicator(this) result(mpiCommunicator)
       class (MpiTestCase), intent(in) :: this
