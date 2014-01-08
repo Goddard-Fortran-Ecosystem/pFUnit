@@ -28,7 +28,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
 The Message Passing Interface (MPI)
 OPENMP
 GNU Make
