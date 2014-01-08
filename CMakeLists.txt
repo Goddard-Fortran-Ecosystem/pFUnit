@@ -16,10 +16,15 @@ project (pFUnit)
 enable_language (Fortran)
 set (CMAKE_VERBOSE_MAKEFILE 1)
 
-OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
+
+# OPTION doesn't seem to work as expected.
+OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
+if ( NOT INSTALL_PATH )
+   set (INSTALL_PATH "$ENV{PFUNIT}" )
+endif()
 
 if (MPI)
     add_definitions(-DUSE_MPI)
