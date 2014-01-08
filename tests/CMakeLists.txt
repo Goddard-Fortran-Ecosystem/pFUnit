@@ -41,6 +41,12 @@ set(SRCS ${TEST_SRCS})
 
 else() # use external cpp
 
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
+  set(CPP_STRINGIFY "STRINGIFY_OPERATOR")
+else()
+  set(CPP_STRINGIFY "STRINGIFY_SIMPLE")
+endif()
+
 # Create intermediate targets for all TEST_SRCS
 function( ADD_TEST_SOURCES OUTVAR )
      set( outfiles )
@@ -60,7 +66,7 @@ function( ADD_TEST_SOURCES OUTVAR )
          endif( NOT IS_DIRECTORY "${dir}" )
          # now add the custom command to generate the output file
          add_custom_command( OUTPUT "${outFile}"
-             COMMAND ${CMAKE_C_COMPILER} -E -C -DSTRINGIFY_OPERATOR -DNAG -I${CMAKE_SOURCE_DIR}/include ${f} >${outFile}
+             COMMAND ${CMAKE_C_COMPILER} -E -C -D${CPP_STRINGIFY} -DNAG -I${CMAKE_SOURCE_DIR}/include ${f} >${outFile}
              DEPENDS "${f}"
              )
      endforeach( f )

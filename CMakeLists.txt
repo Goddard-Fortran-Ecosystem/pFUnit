@@ -39,6 +39,7 @@ IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
 ENDIF()
 MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
 
+OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
@@ -111,8 +112,7 @@ add_subdirectory (bin)
 
 # Override on command line with -DCMAKE_INSTALL_PREFIX=... or -DINSTALL_PATH=...
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-#    set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
-    set (CMAKE_INSTALL_PREFIX ${INSTALL_PATH} CACHE PATH "default install path" FORCE )
+    set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
 endif()
 
 
