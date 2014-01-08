@@ -23,7 +23,7 @@ distclean: clean_generated_code
 dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude
 
-ifeq ($(UNAME),Windows)
+ifneq ($(BUILDROBUST),YES)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90
 endif
 SRCS = $(filter-out $(EXCLUDE),$(wildcard *.F90))

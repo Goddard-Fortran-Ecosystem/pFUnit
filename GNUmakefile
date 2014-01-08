@@ -69,6 +69,12 @@ endif
 MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
 
+ifneq ($(UNAME),Windows)
+ROBUST ?=YES # for now include RobustRunner by default
+else
+ROBUST = NO
+endif
+
 # F90 Vendor common elements (override below)
 FFLAGS ?=
 D=-D
@@ -89,7 +95,7 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
-  else ifeq ($(F90),xlf)
+  else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
@@ -124,6 +130,11 @@ endif
 
 ifneq ($(findstring $(OPENMP),yes YES Yes),)
   USEOPENMP=YES
+endif
+
+ifneq ($(findstring $(ROBUST),yes YES Yes),)
+  BUILDROBUST=YES
+  FPPFLAGS += $DBUILD_ROBUST
 endif
 
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
@@ -206,6 +217,7 @@ export VPATH
 export MPI
 export USEMPI
 export USEOPENMP
+export BUILDROBUST
 export MPIF90
 export LIBMPI
 export COMPILER
