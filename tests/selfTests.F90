@@ -36,7 +36,7 @@ contains
       use ParallelContext_mod
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
-#ifndef Windows
+#ifdef BUILD_ROBUST
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
 #endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
@@ -58,7 +58,7 @@ contains
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
-#ifndef Windows
+#ifdef BUILD_ROBUST
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
 #endif
 
@@ -77,7 +77,7 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
-#ifndef Windows
+#ifdef BUILD_ROBUST
       ADD(UnixProcessSuite)
 #endif
       ADD(exceptionSuite)
@@ -100,7 +100,7 @@ contains
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
 
-#ifndef Windows
+#ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
 #endif
 

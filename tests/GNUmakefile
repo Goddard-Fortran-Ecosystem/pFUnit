@@ -18,7 +18,7 @@ dependencies.inc:
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
 EXCLUDE = $(PROGRAMS)
-ifeq ($(UNAME),Windows)
+ifneq ($(BUILDROBUST),YES)
 EXCLUDE += RobustRunner.F90 Test_RobustRunner.F90 Test_UnixProcess.F90
 endif
 

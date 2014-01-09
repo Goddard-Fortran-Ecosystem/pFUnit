@@ -44,7 +44,7 @@ SET (OpenMP_Fortran_FLAG_CANDIDATES
      #HP
      "+Oopenmp"
      #IBM XL C/c++
-     "-qsmp"
+     "-qsmp=omp"
      #Portland Group
      "-mp"
 )
@@ -70,8 +70,15 @@ end program TestOpenMP
          "-DOpenMP_FLAG_DETECTED ${CMAKE_REQUIRED_FLAGS}")
     TRY_RUN (OpenMP_RUN_FAILED OpenMP_FLAG_DETECTED ${CMAKE_BINARY_DIR}
         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranOpenMP.f90
+#
+# The following was put in for running on Mira to allow cmake to handle the 
+# appropriately handle "-D" macro definitions for XLF's CPP.  For more info see:
+# https://sourceforge.net/p/pfunit/code/ci/96b2de9f09f255901ad58b7de6af297b8e826229/
+#       COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${MACRO_CHECK_FUNCTION_DEFINITIONS}
+# This is the "old way."
         COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
+#
         COMPILE_OUTPUT_VARIABLE OUTPUT
         RUN_OUTPUT_VARIABLE OMP_NUM_PROCS_INTERNAL)
     IF (OpenMP_FLAG_DETECTED)
