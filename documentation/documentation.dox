@@ -63,6 +63,7 @@ being available.
 
 - Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
 - The Message Passing Interface (MPI)
+- OpenMP
 - GNU Make
 - Python
 
