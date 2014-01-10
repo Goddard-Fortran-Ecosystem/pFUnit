@@ -3,6 +3,7 @@ module Test_MpiTestCase_mod
    use Test_mod
    use TestCase_mod
    use MpiTestCase_mod
+   use MpiTestParameter_mod
    implicit none
    private
 
