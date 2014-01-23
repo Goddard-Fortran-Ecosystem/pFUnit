@@ -36,6 +36,7 @@
 ! -----------------------------------------------------------------------
 
 module SubsetRunner_mod
+   use Test_mod
    use BaseTestRunner_mod
    implicit none
    private

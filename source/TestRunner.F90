@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 
 module TestRunner_mod
+   use Test_mod
    use BaseTestRunner_mod
    use TestListener_mod
    use ResultPrinter_mod

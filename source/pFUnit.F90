@@ -30,7 +30,6 @@ module pFUnit_mod
    use TestMethod_mod
    use ParameterizedTestCase_mod
    use TestResult_mod
-   use BaseTestRunner_mod
    use TestRunner_mod
    use SubsetRunner_mod
 #ifndef Windows
@@ -56,7 +55,6 @@ module pFUnit_mod
    public :: TestSuite, newTestSuite
    public :: TestMethod, newTestMethod
    public :: TestResult
-   public :: BaseTestRunner
    public :: TestRunner, newTestRunner
    public :: SubsetRunner
 #ifndef Windows
