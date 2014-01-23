@@ -117,6 +117,9 @@ installed.
 GNUmakefile - The top level makefile for building and installing
 pFUnit.
 
+LICENSE - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT, also
+known as pFUnit.
+
 bin - Executables used to construct and perform unit tests.
 
 include - Files to be included into makefiles or source, including use
@@ -213,7 +216,7 @@ similar to that for other paradigms.
 
 3. To compile for OPENMP support execute make as follows.
 \code
-$make tests OPENMP=YES\endcode
+$ make tests OPENMP=YES\endcode
 
 4. At this point the OPENMP-enabled pFUnit is ready to be installed.
 
@@ -252,6 +255,27 @@ To select a specific version of Doxygen, please set the DOXYGEN
 environment variable as in \ref sec_Configuration. You may wish to do
 this if your code uses CamelCase names as current versions of Doxygen
 (1.8.5) do not respect this convention for Fortran.
+
+\subsection sec_BuildingPFUNITCMAKE CMAKE
+
+Initial support for CMAKE has been implemented.  At this
+writing, a basic functionality is available.
+
+3. The process for building pFUnit using cmake is as follows.  In the
+top directory of the distribution make a new directory to support the
+build, then change to that directory and run cmake (pointing back to
+the source) to generate the required makefiles.
+\code
+$ mkdir build
+$ cd build
+$ # e.g. cmake -DMPI=YES -DOPENMP=NO -DINSTALL_PATH=<A path> <path to source>
+$ cmake -DMPI=NO ..
+$ make tests\endcode
+
+One may also set the environment variable PFUNIT instead of setting
+INSTALL_PATH on the cmake command line as given above.
+
+4. If the build is successful, then at this point make install should work.
 
 \section sec_Installation Installation
 \subsection sec_InstallationSerial Installation - Serial
@@ -292,7 +316,7 @@ $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-parallel
 $ # The variable MPIF90 must be set to the appropriate build script.
 $ export MPIF90=mpif90
-$ cd Examples/MPI_Halo/Semi-Automatic
+$ cd Examples/MPI_Halo
 $ make\endcode
 
 This will compile and run a set of parallel examples that includes
@@ -337,7 +361,7 @@ set, to configure pFUnit, please set the following.
 
 \subsection sec_UsageHelloWorld Usage - Hello World
 
-For an example of a simple usage of pFUnit, see Examples/Simple/Semi-Automatic/tests.
+For an example of a simple usage of pFUnit, see Examples/Simple/tests.
 
 The simplest way to write a test is to write a preprocessor input file (extension ".pf"), which is a Fortran free format file with preprocessor directives added.  An example from "helloWorld.pf" follows.
 \code
@@ -495,8 +519,9 @@ Initial pFUnit 2 documentation by Michael Rilee (Rilee Systems Technologies).
 
 \page page_KnownInstallationsAndVersions Known Installations & Versions
 
-TBD
+master - The cutting edge of pFUnit development.
 
+pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
 \page page_TODO TODO
 
@@ -531,8 +556,7 @@ Overview of Preprocessor (pFUnitParser.py)
 How to write tests using the ".pf" files.  We expect this to be the
 main way people write pFUnit-based tests.  Please see the Examples
 directory for a wide range of examples.  The .pf files themselves are
-generally to be found in an example's semi-automatic/tests
-subdirectory.
+generally to be found in an example's "tests" subdirectory.
 
 \subsection ss_Configuration Configuration - testSuites.inc
 
@@ -576,7 +600,7 @@ referred to by "testSuites.inc".  Currently only one test suite per
 parser.
 
 Many example .pf files may be found in the examples'
-semi-automatic/tests subdirectories in the Examples directory.
+"tests" subdirectories in the Examples directory.
 
 Below we present the most commonly used directives first, but in a .pf
 file using all of these capabilities, the most common order is as

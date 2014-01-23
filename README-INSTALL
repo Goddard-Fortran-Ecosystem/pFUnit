@@ -1,5 +1,5 @@
 
-PFUNIT VERSION 2.0 INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 2.1.0 INSTALLATION AND BASIC USAGE GUIDE
 
 VERSION 2013-1227 M. Rilee mike@rilee.net
 
@@ -76,6 +76,8 @@ or contact the pFUnit team.
 In the top level of the pFUnit distribution you will see the following
 files.
 
+CMakeLists.txt - Initial support for cmake-based builds.
+
 COPYRIGHT - Contains information pertaining to the use and
 distribution of pFUnit.
 
@@ -91,6 +93,8 @@ documentation - Provides information about the pFUnit.
 
 include - Files to be included into makefiles or source, including use
 code.
+
+LICENSE - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT, also known as pFUnit.
 
 README-INSTALL - This file.
 
@@ -219,6 +223,30 @@ may wish to do this if your code uses CamelCase names as current
 versions of Doxygen (1.8.5) do not respect this convention for
 Fortran.
 
+5.6 BUILDING PFUNIT USING CMAKE
+
+Initial support for CMAKE has been implemented.  At this
+writing, a basic functionality is available.
+
+3. The process for building pFUnit using cmake is as follows.  In the
+top directory of the distribution make a new directory to support the
+build, then change to that directory and run cmake (pointing back to
+the source) to generate the required makefiles.
+
+$ mkdir build
+$ cd build
+$ # e.g. cmake -DMPI=YES -DOPENMP=NO -DINSTALL_PATH=<A path> <path to source>
+$ cmake -DMPI=NO ..
+$ make tests
+
+One may also set the environment variable PFUNIT instead of setting
+INSTALL_PATH on the cmake command line as given above.
+
+4. If the build is successful, then at this point make install should work.
+
+6. INSTALLATION
+
+Installations 6.1-6.5 are based on GNU make and the project makefiles.
 
 6.1 INSTALLATION - SERIAL
 
@@ -258,7 +286,7 @@ $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-parallel
 $ # The variable MPIF90 must be set to the appropriate build script.
 $ export MPIF90=mpif90
-$ cd Examples/MPI_Halo/Semi-Automatic
+$ cd Examples/MPI_Halo/
 $ make
 
 This will compile and run a set of parallel examples that includes
@@ -361,7 +389,11 @@ Windows/CYGWIN contributions from E. Lezar.
 
 Other acknowledgments:  S.P. Santos (NCAR), M. Hambley.
 
-11. KNOWN INSTALLATIONS/VERSIONS
+11. KNOWN INSTALLATIONS/VERSIONS (git cognizant from "sourceforge.net/projects/pfunit")
+
+master - The cutting edge of pFUnit development.
+
+pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
 12. NOTES
 

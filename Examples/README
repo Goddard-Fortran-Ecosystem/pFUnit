@@ -54,7 +54,8 @@ The current examples are:
   framework driver that allows for tests that crash or hang.
 
 Note:
-* These examples are not currently supported on Windows/CYGWIN.
+* These examples are not currently supported on Windows/CYGWIN, though a preliminary
+  example is given in "Examples/Simple".
 * For modifications and feature requests please see "sourceforge.net/projects/pfunit".
 
 
