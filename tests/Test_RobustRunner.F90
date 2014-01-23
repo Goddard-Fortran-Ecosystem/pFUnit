@@ -24,13 +24,12 @@ contains
    subroutine testRunVariety()
       use iso_fortran_env
       use robustTestSuite_mod, only: remoteSuite => suite
-      use SerialContext_mod, only: SerialContext
+      use SerialContext_mod, only: THE_SERIAL_CONTEXT
       use TestSuite_mod
       use TestResult_mod
       use Assert_mod
 
       type (RobustRunner) :: runner
-      type (SerialContext) :: context
       type (TestSuite) :: suite
       type (TestResult) :: result
 
@@ -40,7 +39,7 @@ contains
       runner = RobustRunner('./tests/remote.x',unit)
       result = newTestResult()
       suite = remoteSuite()
-      call runner%runWithResult(suite, context, result)
+      call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
       call assertEqual(4, result%runCount(),'runCount()')
       call assertEqual(1, result%failureCount(), 'failureCount()')
