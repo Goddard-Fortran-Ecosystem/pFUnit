@@ -68,6 +68,7 @@ module pFUnit
    use TestMethod_mod, only: RENAME(TestMethod)
    use TestMethod_mod, only: RENAME(newTestMethod)
    use TestResult_mod, only: RENAME(TestResult)
+   use BaseTestRunner_mod, only: RENAME(BaseTestRunner)
    use TestRunner_mod, only: RENAME(TestRunner)
    use TestRunner_mod, only: RENAME(newTestRunner)
 #ifdef BUILD_ROBUST
