@@ -30,7 +30,6 @@ module SerialContext_mod
    public :: THE_SERIAL_CONTEXT
 
    type, extends(ParallelContext) :: SerialContext
-      integer :: placeholder
    contains
       procedure :: getNumProcesses
       procedure :: processRank
@@ -43,13 +42,12 @@ module SerialContext_mod
 !!$$      final :: clean
    end type SerialContext
 
-   type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext(1)
+   type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext()
 
 contains
 
    function newSerialContext() result(context)
       type (SerialContext) :: context
-      context%placeholder = 1
    end function newSerialContext
 
    integer function getNumProcesses(this)
