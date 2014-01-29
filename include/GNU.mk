@@ -12,8 +12,8 @@ FPPFLAGS += -DGNU
 # The ramifications across all GNUish configurations of eliding CPPFLAGS here are not known. MLR 2013-1104
 CPPFLAGS += -DGNU
 
-
 ifeq ($(USEOPENMP),YES)
 F90FLAGS += -fopenmp
+LIBS += -lgomp
 endif
 

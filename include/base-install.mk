@@ -1,14 +1,20 @@
 
-SRC_DIR     =$(PFUNIT)/source
-TESTS_DIR   =$(PFUNIT)/tests
 INCLUDE_DIR =$(PFUNIT)/include
 LIB_DIR     =$(PFUNIT)/lib
 MOD_DIR     =$(PFUNIT)/mod
+
+# These two are not part of an installation.
+# SRC_DIR     =$(PFUNIT)/source
+# TESTS_DIR   =$(PFUNIT)/tests
+
+# Read in compile configuration to help set flags like -gomp for GNU.
+include $(INCLUDE_DIR)/configuration.mk
 
 # Set the required file extensions.
 include $(INCLUDE_DIR)/extensions.mk
 
 # Include the compiler-specific options.
+COMPILER ?= COMPILER_NOT_SET
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)
