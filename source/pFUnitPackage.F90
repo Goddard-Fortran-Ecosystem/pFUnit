@@ -71,7 +71,9 @@ module pFUnit
    use BaseTestRunner_mod, only: RENAME(BaseTestRunner)
    use TestRunner_mod, only: RENAME(TestRunner)
    use TestRunner_mod, only: RENAME(newTestRunner)
+#ifdef BUILD_ROBUST
    use RobustRunner_mod, only: RENAME(RobustRunner)
+#endif
 
    use ParallelContext_mod, only: RENAME(ParallelContext)
    use SerialContext_mod, only: RENAME(SerialContext)

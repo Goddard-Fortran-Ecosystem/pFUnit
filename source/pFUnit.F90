@@ -33,7 +33,7 @@ module pFUnit_mod
    use BaseTestRunner_mod
    use TestRunner_mod
    use SubsetRunner_mod
-#ifndef Windows
+#ifdef BUILD_ROBUST
    use RobustRunner_mod
 #endif
    use Assert_mod
@@ -59,7 +59,7 @@ module pFUnit_mod
    public :: BaseTestRunner
    public :: TestRunner, newTestRunner
    public :: SubsetRunner
-#ifndef Windows
+#ifdef BUILD_ROBUST
    public :: RobustRunner
 #endif
    public :: TestCase
