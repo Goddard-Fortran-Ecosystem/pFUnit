@@ -17,6 +17,7 @@ contains
       suite = newTestSuite('Test_TestCase')
 
       ADD(testRunSuite)
+      ADD(testRunMethodShouldFail)
 
    end function suite
 
@@ -89,6 +90,23 @@ contains
       call assertEqual(1, aTestResult%failureCount())
 
     end subroutine testRunSuite
+
+    ! Previously TestCase deferred implementation of runMethod()
+    ! New changes though require there to be a default implementation
+    ! (to avoid user types being ABSTRACT), but it should never be used.
+    ! This test ensures that the default throws an exception.
+    subroutine testRunMethodShouldFail()
+       use TestCase_mod
+       use Assert_mod
+
+       type, extends(TestCase) :: TempTestCase
+       end type TempTestCase
+
+       type (TempTestCase) :: testObject
+
+       call testObject%runMethod()
+       call assertExceptionRaised('TestCase::runMethod() must be overridden.')
+    end subroutine testRunMethodShouldFail
 
 end module Test_SimpleTestCase_mod
 

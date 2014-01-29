@@ -16,8 +16,8 @@ class MockParser(Parser):
         self.lines = self.saveLines[:]
         self.outputFile = MockWriter(self)
         self.outLines = []
-        self.tests = []
-        self.mpitests = []
+        self.userTestCase = {}
+        self.userTestMethods = []
         self.currentSelfObjectName = ''
 
     def nextLine(self):
@@ -76,9 +76,10 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atTest.match('@Test(timeout=3.0)'))
         self.assertFalse(atTest.match('! @Test'))
         self.assertFalse(atTest.match('@assertTrue'))
+        self.assertTrue(atTest.match('@test(cases = [1,3,5])'))
 
         atTest.apply('@test\n')
-        self.assertEqual('myTest', parser.tests[0]['name'])
+        self.assertEqual('myTest', parser.userTestMethods[0]['name'])
         self.assertEqual('!@test\n',parser.outLines[0])
         self.assertEqual(nextLine,parser.outLines[1])
 
@@ -90,7 +91,7 @@ class TestParseLine(unittest.TestCase):
 
         m = atTest.match('@test\n')
         atTest.action(m,'@test\n')
-        self.assertEqual('myTest', parser.tests[0]['name'])
+        self.assertEqual('myTest', parser.userTestMethods[0]['name'])
         self.assertEqual('!@test\n',parser.outLines[0])
         self.assertEqual(nextLine,parser.outLines[1])
 
@@ -116,7 +117,7 @@ class TestParseLine(unittest.TestCase):
 
         atTest = AtTest(parser)
         atTest.apply('@test\n')
-        self.assertEqual('myTestC', parser.tests[0]['name'])
+        self.assertEqual('myTestC', parser.userTestMethods[0]['name'])
         self.assertEqual('!@test\n',parser.outLines[0])
         self.assertEqual(nextLineC,parser.outLines[1])
 
@@ -132,8 +133,8 @@ class TestParseLine(unittest.TestCase):
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([1], parser.mpitests[0]['npes'])
-        self.assertFalse('ifdef' in parser.mpitests[0])
+        self.assertEqual([1], parser.userTestMethods[0]['npRequests'])
+        self.assertFalse('ifdef' in parser.userTestMethods[0])
 
         # ignore leading space?
         line = '@mpitest( npes=[1])'
@@ -141,24 +142,24 @@ class TestParseLine(unittest.TestCase):
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([1], parser.mpitests[1]['npes'])
-        self.assertFalse('ifdef' in parser.mpitests[1])
+        self.assertEqual([1], parser.userTestMethods[1]['npRequests'])
+        self.assertFalse('ifdef' in parser.userTestMethods[1])
 
         line = '@mpitest(npes=[1, 2,3], ifdef=USE_MPI)'
         parser.reset()
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([1,2,3], parser.mpitests[2]['npes'])
-        self.assertEqual('USE_MPI', parser.mpitests[2]['ifdef'])
+        self.assertEqual([1,2,3], parser.userTestMethods[2]['npRequests'])
+        self.assertEqual('USE_MPI', parser.userTestMethods[2]['ifdef'])
 
         line = '@mpitest(npes=[3],ifdef=USE_MPI)'
         parser.reset()
         m = atMpiTest.match(line)
         self.assertTrue(m)
         atMpiTest.action(m,line)
-        self.assertEqual([3], parser.mpitests[3]['npes'])
-        self.assertEqual('USE_MPI', parser.mpitests[3]['ifdef'])
+        self.assertEqual([3], parser.userTestMethods[3]['npRequests'])
+        self.assertEqual('USE_MPI', parser.userTestMethods[3]['ifdef'])
         
 
 
@@ -174,10 +175,9 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atTestCase.match('@TESTCASE'))   # case insensitive
         self.assertTrue(atTestCase.match('@TestCase'))   # mixed case
         self.assertFalse(atTestCase.match('@TestCaseb')) # can't have trailing characters without whitespace
-        self.assertFalse(atTestCase.match('@TestCase (b)')) # can't have arguments
 
         atTestCase.apply('@testCase\n')
-        self.assertEqual('myTestCase', parser.testCase)
+        self.assertEqual('myTestCase', parser.userTestCase['type'])
         self.assertEqual('!@testCase\n', parser.outLines[0])
         self.assertEqual(nextLine, parser.outLines[1])
 
@@ -195,7 +195,7 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atAssert.match('@ASSERTEQUAL(a, b)')) # case insensitive
 
         parser.fileName = "foo.pfunit"
-        parser.lineNumber = 8
+        parser.currentLineNumber = 8
         atAssert.apply('   @assertEqual(1, 2)\n')
         self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
         self.assertEqual("  call assertEqual(1, 2, &\n", parser.outLines[1])
@@ -219,7 +219,7 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atAssert.match('@ASSERTTRUE(a)')) # case insensitive
 
         parser.fileName = 'foo.pfunit'
-        parser.lineNumber = 8
+        parser.currentLineNumber = 8
         atAssert.apply('   @assertTrue(.true.)\n')
         self.assertTrue("#line 8 'foo.pfunit'\n", parser.outLines[0])
         self.assertTrue("  call assertTrue(1, 2, &\n", parser.outLines[1])
@@ -244,7 +244,7 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atMpiAssert.match('@MPIASSERTTRUE(a)')) # case insensitive
 
         parser.fileName = 'foo.pfunit'
-        parser.lineNumber = 8
+        parser.currentLineNumber = 8
         atMpiAssert.apply('   @mpiAssertTrue(.true.)\n')
         self.assertTrue("#line 8 'foo.pfunit'\n", parser.outLines[0])
         self.assertTrue("  call assertTrue(1, 2, &\n", parser.outLines[1])
@@ -265,7 +265,7 @@ class TestParseLine(unittest.TestCase):
         self.assertFalse(atBefore.match('  @beforeb'))
 
         atBefore.apply('@before\n')
-        self.assertEqual(procedure, parser.setUp)
+        self.assertEqual(procedure, parser.userTestCase['setUp'])
         self.assertEqual('!@before\n', parser.outLines[0])
         self.assertEqual(nextLine, parser.outLines[1])
 
@@ -280,7 +280,7 @@ class TestParseLine(unittest.TestCase):
         self.assertFalse(atAfter.match('  @afterb'))
 
         atAfter.apply('@after\n')
-        self.assertEqual(procedure, parser.tearDown)
+        self.assertEqual(procedure, parser.userTestCase['tearDown'])
         self.assertEqual('!@after\n', parser.outLines[0])
         self.assertEqual(nextLine, parser.outLines[1])
 

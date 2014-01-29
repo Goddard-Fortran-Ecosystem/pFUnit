@@ -48,6 +48,12 @@ module TestMethod_mod
       module procedure TestMethod_setUpTearDown
    end interface newTestMethod
 
+! TODO: ifort 14.0.1 still has indirect issues with the following overload
+!!$   interface TestMethod
+!!$      module procedure TestMethod_
+!!$      module procedure TestMethod_setUpTearDown
+!!$   end interface TestMethod
+
 contains
 
    function TestMethod_(name, method) result(this)

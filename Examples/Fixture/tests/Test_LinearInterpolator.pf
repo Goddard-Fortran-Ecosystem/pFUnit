@@ -5,31 +5,15 @@ module Test_LinearInterpolator_mod
 
    public :: Test_LinearInterpolator
 
-   interface Test_LinearInterpolator
-      module procedure newTest_LinearInterpolator
-   end interface Test_LinearInterpolator
-
 @TestCase
    type, extends(TestCase) :: Test_LinearInterpolator
       type (LinearInterpolator) :: interpolator
-      procedure(runMethod), pointer :: userMethod => null()
    contains
       procedure :: setUp     ! overides generic
       procedure :: tearDown  ! overrides generic
-      procedure :: runMethod ! runs userMethod
    end type Test_LinearInterpolator
 
 contains
-
-   function newTest_LinearInterpolator(name, userMethod) result(test)
-      type (Test_LinearInterpolator) :: test
-      character(len=*), intent(in) :: name
-      procedure(runMethod) :: userMethod
-
-      call test%setName(name)
-      test%userMethod => userMethod
-
-   end function newTest_LinearInterpolator
 
    ! No need to annotate setUp() when _extending_ TestCase
    subroutine setUp(this)
@@ -43,11 +27,6 @@ contains
    subroutine tearDown(this)
       class (Test_LinearInterpolator), intent(inout) :: this
    end subroutine tearDown
-
-   subroutine runMethod(this)
-      class (Test_LinearInterpolator), intent(inout) :: this
-      call this%userMethod()
-   end subroutine runMethod
 
 @Test
    subroutine testBracketAtNode(this)

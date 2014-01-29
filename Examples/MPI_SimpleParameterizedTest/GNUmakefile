@@ -14,6 +14,10 @@ ifeq ($(F90),nagfor)
   FFLAGS += -fpp
 endif
 
+ifeq ($(F90),ifort)
+  FFLAGS += -assume realloc_lhs
+endif
+
 EXE = tests$(EXE_EXT)
 
 all: $(EXE)
