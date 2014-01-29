@@ -1,1 +1,3 @@
+*.mod
+*.o
 /tests.x

@@ -3,67 +3,65 @@
 module Test_Parameters_mod
   use pfunit_mod
 
-  public :: testParamBroken
-
-  @Parameters = [p1,p2]
-  type, extends(AbstractTestParameter) :: peCase
+  @testParameter(contsructor = newTest)
+  type, extends(MpiTestParameter) :: peCase
      integer :: p1
      integer :: p2
+  contains
+     procedure :: toString
   end type peCase
 
-  @TestCase
+  @TestCase(constructor = newTest)
   type, extends(MPITestCase) :: Test_Parameters
      integer :: p1, p2
-     procedure(runMethod), pointer :: userMethod => null()
-   contains
-     procedure, nopass :: getParameters
-     procedure :: getParameterString => getParameterString_
-     procedure :: runMethod
   end type Test_Parameters
 
-  interface Test_Parameters
-     module procedure newTest
-  end interface Test_Parameters
+!!$  interface Test_Parameters
+!!$     module procedure newTest
+!!$  end interface Test_Parameters
 
 contains
   ! Constructor
-  function newTest(name, method, npe, p1, p2) result (tst)
+  function newTest(testParameter) result (tst)
     type (Test_Parameters) :: tst
-    character(len=*), intent(in) :: name
-    procedure (runMethod) :: method
-    integer, intent(in) :: npe, p1, p2
-    tst%p1 = p1; tst%p2 = p2
-    call tst%setName(name);
-    tst%userMethod => method
-    call tst%setNumProcesses(npe) !??? MLR 2013-1205
+    type (peCase), intent(in) :: testParameter
+
+    tst%p1 = testParameter%p1
+    tst%p2 = testParameter%p2
+
   end function newTest
+
+  function newPeCase(p1, p2)
+     type (peCase) :: newPeCase
+     integer, intent(in) :: p1, p2
+     newPeCase%p1 = p1
+     newPeCase%p2 = p2
+  end function newPeCase
 
   ! Define the parameters over which to be cycled...
   function getParameters() result(params)
     type(peCase), allocatable :: params(:)
+
+    
     params = [ &
-         & peCase(0,1), &
-         & peCase(1,2), &
-         & peCase(0,2) &
+         & newPeCase(p1=0,p2=1), &
+         & newPeCase(p1=1,p2=2), &
+         & newPeCase(p1=0,p2=2) &
          & ]
+
+
   end function getParameters
 
   ! Override the parent's version...
-  function getParameterString_(this) result(string)
-    class(Test_Parameters), intent(in) :: this
+  function toString(this) result(string)
+    class(pECase), intent(in) :: this
     character(:), allocatable :: string
     allocate(character(len=80) :: string)
     write(string,'("(npes,p1,p2)=(",i0,",",i0,",",i0,")")') &
-         & this%numProcessesRequested, this%p1, this%p2
-  end function getParameterString_
+         & this%getNumProcessesRequested(), this%p1, this%p2
+   end function toString
 
-  ! Implement the deferred runMethod...
-  subroutine runMethod(this)
-    class (Test_Parameters), intent(inout) :: this
-    call this%userMethod()
-  end subroutine runMethod
-
-  @mpiTest( npes=[3] )
+  @test( npes=[1,3], testParameters={getParameters()} )
   subroutine testParamBroken(this)
 ! Use atParameters to set processor numbers to configure test...
     implicit none

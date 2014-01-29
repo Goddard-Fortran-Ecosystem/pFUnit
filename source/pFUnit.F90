@@ -28,6 +28,7 @@ module pFUnit_mod
    use TestSuite_mod
    use TestCase_mod
    use TestMethod_mod
+   use AbstractTestParameter_mod
    use ParameterizedTestCase_mod
    use TestResult_mod
    use TestRunner_mod
@@ -42,6 +43,7 @@ module pFUnit_mod
 #ifdef USE_MPI
    use MpiContext_mod
    use MpiTestCase_mod
+   use MpiTestParameter_mod
    use MpiTestMethod_mod
 #endif
    implicit none
@@ -61,12 +63,14 @@ module pFUnit_mod
    public :: RobustRunner
 #endif
    public :: TestCase
-   public :: ParameterizedTestCase, AbstractTestParameter
+   public :: AbstractTestParameter
+   public :: ParameterizedTestCase
    public :: ParallelContext
    public :: SerialContext, newSerialContext
 #ifdef USE_MPI
    public :: MpiContext, newMpiContext
    public :: MpiTestCase
+   public :: MpiTestParameter
    public :: MpiTestMethod, newMpiTestMethod
 #endif
 

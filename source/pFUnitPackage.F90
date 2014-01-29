@@ -79,9 +79,13 @@ module pFUnit
    use MpiContext_mod, only: RENAME(MpiContext)
    use MpiContext_mod, only: RENAME(newMpiContext)
    use MpiTestCase_mod, only: RENAME(MpiTestCase)
+   use MpiTestParameter_mod, only: RENAME(MpiTestParameter)
    use MpiTestMethod_mod, only: RENAME(MpiTestMethod)
    use MpiTestMethod_mod, only: RENAME(newMpiTestMethod)
 #endif
+
+   use AbstractTestParameter_mod, only: RENAME(AbstractTestParameter)
+   use ParameterizedTestCase_mod, only: RENAME(ParameterizedTestCase)
 
    implicit none
    public ! Nothing private in this module, just renaming exports.

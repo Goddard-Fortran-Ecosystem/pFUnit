@@ -35,6 +35,11 @@ module MpiTestMethod_mod
       module procedure newMpiTest_setUpTearDown
    end interface newMpiTestMethod
 
+!!$   interface MpiTestMethod
+!!$      module procedure newMpiTest_basic
+!!$      module procedure newMpiTest_setUpTearDown
+!!$   end interface MpiTestMethod
+
    type, extends(MpiTestCase) :: MpiTestMethod
       procedure(mpiMethod), pointer :: userMethod => null()
       procedure(mpiMethod), nopass, pointer :: userSetUp => null()
@@ -62,7 +67,7 @@ contains
 
       call mpiTest%setName(name)
       mpiTest%userMethod => userMethod
-      call mpiTest%setNumProcesses(numProcesses)
+      call mpiTest%setNumProcessesRequested(numProcesses)
 
    end function newMpiTest_basic
 
@@ -76,7 +81,7 @@ contains
 
       call mpiTest%setName(name)
       mpiTest%userMethod => userMethod
-      call mpiTest%setNumProcesses(numProcesses)
+      call mpiTest%setNumProcessesRequested(numProcesses)
 
       mpiTest%userSetUp => setUp
       mpiTest%userTearDown => tearDown

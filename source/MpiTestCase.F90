@@ -24,6 +24,8 @@
 module MpiTestCase_mod
    use MpiContext_mod
    use TestCase_mod
+   use AbstractTestParameter_mod
+   use MpiTestParameter_mod
    use ParameterizedTestCase_mod, only: ParameterizedTestCase
 !!$   use ParameterizedTestCase_mod, only: MAX_LEN_LABEL
    implicit none
@@ -33,7 +35,6 @@ module MpiTestCase_mod
 
    type, abstract, extends(ParameterizedTestCase) :: MpiTestCase
       integer :: processRank
-      integer :: numProcessesRequested
       type (MpiContext) :: context
       type (MpiContext) :: parentContext
    contains
@@ -41,21 +42,12 @@ module MpiTestCase_mod
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
       procedure :: runBare
-      procedure :: setNumProcesses
       procedure :: getNumProcesses
+      procedure :: getNumProcessesRequested
       procedure :: getProcessRank
       procedure :: getMpiCommunicator
-      procedure(runMethod), deferred :: runMethod
       procedure :: getContext
-      procedure :: getParameterString
    end type MpiTestCase
-
-   abstract interface
-      recursive subroutine runMethod(this)
-         import MpiTestCase
-         class (MpiTestCase), intent(inOut) :: this
-      end subroutine runMethod
-   end interface
 
 contains
 
@@ -91,7 +83,7 @@ contains
       class (MpiTestCase), intent(inout) :: this
 
       ! create subcommunicator
-      this%context = this%parentContext%makeSubcontext(this%numProcessesRequested)
+      this%context = this%parentContext%makeSubcontext(this%getNumProcessesRequested())
 
       if (.not. anyExceptions(this%parentContext)) then
          if (this%context%isActive()) then
@@ -114,17 +106,21 @@ contains
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator
 
-   subroutine setNumProcesses(this, numProcessesRequested)
-      class (MpiTestCase), intent(inout) :: this
-      integer, intent(in) :: numProcessesRequested
-
-      this%numProcessesRequested = numProcessesRequested
-   end subroutine setNumProcesses
-
    integer function getNumProcesses(this) result(numProcesses)
       class (MpiTestCase), intent(in) :: this
       numProcesses = this%context%getNumProcesses()
    end function getNumProcesses
+
+   integer function getNumProcessesRequested(this) result(numProcessesRequested)
+      use Exception_mod
+      class (MpiTestCase), intent(in) :: this
+      select type (p => this%testParameter)
+      class is (MpiTestParameter)
+         numProcessesRequested = p%getNumProcessesRequested()
+      class default
+         call throw('Incorrect type of test parameter in MpiTestCase::getNumProcessesRequested()')
+      end select
+   end function getNumProcessesRequested
 
    integer function getProcessRank(this) result(processRank)
       class (MpiTestCase), intent(in) :: this
@@ -139,19 +135,10 @@ contains
 
    end function getContext
 
-   subroutine setNumProcessesRequested(this, numProcesses)
+   subroutine setNumProcessesRequested(this, numProcessesRequested)
       class (MpiTestCase), intent(inout) :: this
-      integer, intent(in) :: numProcesses
-      this%numProcessesRequested = numProcesses
+      integer, intent(in) :: numProcessesRequested
+      call this%setTestParameter(MpiTestParameter(numProcessesRequested))
    end subroutine setNumProcessesRequested
-
-   function getParameterString(this) result(label)
-      class (MpiTestCase), intent(in) :: this
-      character(len=:), allocatable :: label
-
-      allocate(character(len=100) :: label)
-      write(label,'(a,i0)') 'npes=',this%numProcessesRequested
-      label = trim(label)
-   end function getParameterString
 
 end module MpiTestCase_mod

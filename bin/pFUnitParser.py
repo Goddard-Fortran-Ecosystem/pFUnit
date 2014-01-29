@@ -28,7 +28,10 @@ def getSubroutineName(line):
 
 def getSelfObjectName(line):
     m = re.match('\s*subroutine\s+\w*\s*\\(\s*(\w+)\s*(,\s*\w+\s*)*\\)\s*$', line, re.IGNORECASE)
-    return m.groups()[0]
+    if m:
+        return m.groups()[0]
+    else:
+        return m
 
 def getTypeName(line):
     m = re.match('\s*type(.*::\s*|\s+)(\w*)\s*$', line, re.IGNORECASE)
@@ -44,64 +47,97 @@ class Action():
 class AtTest(Action):
     def __init__(self, parser):
         self.parser = parser
+        self.keyword = '@test'
 
     def match(self, line):
-        m = re.match('\s*@test(\s*(\\(.*\\))?\s*$)', line, re.IGNORECASE)
+        m = re.match('\s*'+self.keyword+'(\s*(\\(.*\\))?\s*$)', line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
-        nextLine = self.parser.nextLine()
-        self.parser.tests.append({'name':getSubroutineName(nextLine)})
-        self.parser.outputFile.write("!"+line)
-        self.parser.outputFile.write(nextLine)
+        options = re.match('\s*'+self.keyword+'\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
+        method = {}
 
-#------------------
-class AtMpiTest(Action):
-    def __init__(self, parser):
-        self.parser = parser
+        if options:
 
-    def match(self, line):
-        m = re.match('\s*@mpitest\s*\\(.*npes\s*=\s*\\[([0-9,\s]+)\\].*\\)\s*$', line, re.IGNORECASE)
-        return m
+            npesOption = re.search('npes\s*=\s*\\[([0-9,\s]+)\\]', options.groups()[0], re.IGNORECASE)
+            if npesOption:
+                npesString = npesOption.groups()[0]
+                npes = map(int, npesString.split(','))
+                method['npRequests'] = npes
 
-    def action(self, m, line):
-        args = re.match('\s*@mpitest\s*\\((.*)\\)\s*$', line, re.IGNORECASE).groups()[0]
-        dictionary = {}
+            #ifdef is optional
+            matchIfdef = re.match('.*ifdef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
+            if matchIfdef: 
+                ifdef = matchIfdef.groups()[0]
+                method['ifdef'] = ifdef
 
-        # npes is mandatory
-        npesString = re.search('npes=\\[([0-9,\s]+)\\]', args, re.IGNORECASE).groups()[0]
-        npes = map(int, npesString.split(','))
-        dictionary['npes'] = npes
+            paramOption = re.search('testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
+            if paramOption:
+                paramExpr = paramOption.groups()[0]
+                method['testParameters'] = paramExpr
 
-        #ifdef is optional
-        matchIfdef = re.match('.*ifdef\s*=\s*(\w+)', args, re.IGNORECASE)
-
-        if (matchIfdef): 
-            ifdef = matchIfdef.groups()[0]
-            dictionary['ifdef'] = ifdef
+            casesOption = re.search('cases\s*=\s*(\\[[0-9,\s]+\\])', options.groups()[0], re.IGNORECASE)
+            if casesOption:
+                method['cases'] = casesOption.groups()[0]
 
 
         nextLine = self.parser.nextLine()
-        dictionary['name'] = getSubroutineName(nextLine)
+        method['name'] = getSubroutineName(nextLine)
         # save "self" name for use with @mpiAssert
         self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
 
-        self.parser.mpitests.append(dictionary)
-        self.parser.outputFile.write("!"+line)
+        # save "self" name for use with @mpiAssert
+        dummyArgument = getSelfObjectName(nextLine)
+        if dummyArgument:
+            method['selfObjectName'] = dummyArgument
+
+        self.parser.userTestMethods.append(method)
+        self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
+
+
+#------------------
+# deprecated - should now just use @test
+class AtMpiTest(AtTest):
+    def __init__(self, parser):
+        self.parser = parser
+        self.keyword = '@mpitest'
 
 class AtTestCase(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match('\s*@testcase\s*$', line, re.IGNORECASE)
+        m = re.match('\s*@testcase\s*(|\\(.*\\))\s*$', line, re.IGNORECASE)
         return m
     
     def action(self, m, line):
+        options = re.match('\s*@testcase\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
+        if options:
+            value = re.search('constructor\s*=\s*(\w*)', options.groups()[0], re.IGNORECASE)
+            if value:
+                self.parser.userTestCase['constructor'] = value.groups()[0]
+
+            value = re.search('npes\s*=\s*\\[([0-9,\s]+)\\]', options.groups()[0], re.IGNORECASE)
+            if value:
+                npesString = value.groups()[0]
+
+                npes = map(int, npesString.split(','))
+                self.parser.userTestCase['npRequests'] = npes
+
+            value = re.search('cases\s*=\s*(\\[[0-9,\s]+\\])', options.groups()[0], re.IGNORECASE)
+            if value:
+                cases = value.groups()[0]
+                self.parser.userTestCase['cases'] = cases
+
+            value = re.search('testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
+            if value:
+                paramExpr = value.groups()[0]
+                self.parser.userTestCase['testParameters'] = paramExpr
+
         nextLine = self.parser.nextLine()
-        self.parser.testCase=getTypeName(nextLine)
-        self.parser.outputFile.write("!"+line)
+        self.parser.userTestCase['type']=getTypeName(nextLine)
+        self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
 
 
@@ -126,8 +162,9 @@ class AtBegin(Action):
         return m
 
     def action(self, m, line):
-        self.parser.moduleName = m.groups()[0]
-        if (not self.parser.suiteName): self.parser.suiteName = self.parser.moduleName+"_suite"
+        self.parser.userModuleName = m.groups()[0]
+        self.parser.wrapModuleName = 'Wrap' + self.parser.userModuleName
+        if (not self.parser.suiteName): self.parser.suiteName = self.parser.userModuleName + "_suite"
         self.parser.outputFile.write(line)
 
 
@@ -147,12 +184,12 @@ class AtAssert(Action):
     def action(self, m, line):
         p = self.parser
         
-        p.outputFile.write(cppSetLineAndFile(p.lineNumber, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
-        self.appendSourceLocation(p.outputFile, p.fileName, p.lineNumber)
+        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.lineNumber+1, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 class AtMpiAssert(Action):
     def __init__(self, parser):
@@ -170,13 +207,13 @@ class AtMpiAssert(Action):
     def action(self, m, line):
         p = self.parser
         
-        p.outputFile.write(cppSetLineAndFile(p.lineNumber, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
-        self.appendSourceLocation(p.outputFile, p.fileName, p.lineNumber)
+        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         
         p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.lineNumber+1, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 class AtBefore(Action):
     def __init__(self, parser):
@@ -188,8 +225,8 @@ class AtBefore(Action):
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
-        self.parser.setUp = getSubroutineName(nextLine)
-        self.parser.outputFile.write("!"+line)
+        self.parser.userTestCase['setUp'] = getSubroutineName(nextLine)
+        self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
 
 class AtAfter(Action):
@@ -202,25 +239,32 @@ class AtAfter(Action):
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
-        self.parser.tearDown = getSubroutineName(nextLine)
-        self.parser.outputFile.write("!"+line)
+        self.parser.userTestCase['tearDown'] = getSubroutineName(nextLine)
+        self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
 
-class AtParameters(Action):
+class AtTestParameter(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match('\s*@parameters\s*=\s*\\[(.*)\\]\s*$', line, re.IGNORECASE)
+        m = re.match('\s*@testParameter\s*(|.*)$', line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
-        self.parser.parameters=m.groups()[0].split(',')
-        self.parser.outputFile.write("!"+line)
+        options = re.match('\s*@testParameter\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
+
+        self.parser.commentLine(line)
         nextLine = self.parser.nextLine()
-        self.parser.parameterType = getTypeName(nextLine)
+        self.parser.userTestCase['testParameterType'] = getTypeName(nextLine)
         self.parser.outputFile.write(nextLine)
 
+        if options:
+            value = re.search('constructor\s*=\s*(\w*)', options.groups()[0], re.IGNORECASE)
+            if value:
+                self.parser.userTestCase['testParameterConstructor'] = value.groups()[0]
+            else:
+                self.parser.userTestCase['testParameterConstructor'] = self.parser.userTestCase['testParameterType']
 
 
 class Parser():
@@ -230,22 +274,28 @@ class Parser():
             base = basename(fileName)
             return splitext(base)[0]
 
+        self.fileName = inputFileName
         self.inputFile = open(inputFileName, 'r')
         self.outputFile = open(outputFileName, 'w')
-        self.moduleName = ''
+        self.defaultSuiteName = getBaseName(inputFileName) + "_suite"
         self.suiteName = ''
-        self.testCase = ''
-        self.setUp = ''
-        self.tearDown = ''
-        self.defaultName = getBaseName(inputFileName) + "_suite"
-        self.fileName = inputFileName
-        self.lineNumber = 0
-        self.parameters=[]
-        self.parameterType = ''
-        self.tests=[]
-        self.mpitests=[]
-        self.actions=[]
 
+        self.currentLineNumber = 0
+        self.userModuleName = '' # if any
+
+        self.userTestCase = {}
+        self.userTestCase['setUpMethod'] = ''
+        self.userTestCase['tearDownMethod'] = ''
+        self.userTestCase['defaultTestParameterNpes'] = [] # is MPI if not empty
+        self.userTestCase['defaultTestParametersExpr'] = ''
+        self.userTestCase['defaultTestParameterCases'] = [] 
+
+        self.userTestMethods = [] # each entry is a dictionary
+
+        self.wrapModuleName = "Wrap" + getBaseName(inputFileName)
+        self.currentLineNumber = 0
+
+        self.actions=[]
         self.actions.append(AtTest(self))
         self.actions.append(AtMpiTest(self))
         self.actions.append(AtTestCase(self))
@@ -255,7 +305,10 @@ class Parser():
         self.actions.append(AtMpiAssert(self))
         self.actions.append(AtBefore(self))
         self.actions.append(AtAfter(self))
-        self.actions.append(AtParameters(self))
+        self.actions.append(AtTestParameter(self))
+
+    def commentLine(self, line):
+        self.outputFile.write(re.sub('@','!@',line))
 
     def run(self):
         def parse(line):
@@ -267,14 +320,18 @@ class Parser():
             line = self.nextLine()
             if  not line: break
             parse(line)
-        self.makeSuite()
+
+        if (not self.suiteName): self.suiteName = self.defaultSuiteName
+        if ('testParameterType' in self.userTestCase and (not 'constructor' in self.userTestCase)):
+            self.userTestCase['constructor'] = self.userTestCase['testParameterType']
+        self.makeWrapperModule()
 
     def isComment(self, line):
         return re.match('\s*(!.*|)$', line)
 
     def nextLine(self):
         while True:
-            self.lineNumber += 1
+            self.currentLineNumber += 1
             line = self.inputFile.readline()
             if not line: break
             if (self.isComment(line)):
@@ -285,125 +342,219 @@ class Parser():
         return line
 
 
-    def makeSuite(self):
-        def printHeader(file, suiteName, moduleName):
-            file.write('\n')
-            file.write('\n')
-            file.write('\n')
-            file.write('function ' + suiteName +'() result(suite)\n')
-            file.write('   use pFUnit_mod\n')
-            if (moduleName): file.write('   use ' + moduleName + '\n')
-            file.write('   implicit none\n\n')
-            file.write('   type (TestSuite) :: suite\n')
+    def printHeader(self):
+        self.outputFile.write('\n')
+        self.outputFile.write('module ' + self.wrapModuleName + '\n')
+        self.outputFile.write('   use pFUnit_mod\n')
+        if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
+        self.outputFile.write('   implicit none\n')
+        self.outputFile.write('   private\n\n')
 
-        def printTail(file, suiteName):
-            file.write('\n')
-            file.write('end function ' + suiteName + '\n\n')
+
+
+    def printTail(self):
+        self.outputFile.write('\n')
+        self.outputFile.write('end module ' + self.wrapModuleName + '\n\n')
+
+    def printWrapUserTestCase(self):
+        self.outputFile.write('   public :: WrapUserTestCase\n')
+        self.outputFile.write('   public :: makeCustomTest\n')
+        self.outputFile.write('   type, extends(' + self.userTestCase['type'] + ') :: WrapUserTestCase\n')
+        self.outputFile.write('      procedure(userTestMethod), nopass, pointer :: testMethodPtr\n')
+        self.outputFile.write('   contains\n')
+        self.outputFile.write('      procedure :: runMethod\n')
+        self.outputFile.write('   end type WrapUserTestCase\n\n')
+        
+        self.outputFile.write('   abstract interface\n')
+        self.outputFile.write('     subroutine userTestMethod(this)\n')
+        if self.userModuleName:
+            self.outputFile.write('        use ' + self.userModuleName + '\n')
+        if 'type' in self.userTestCase:
+            self.outputFile.write('        class (' + self.userTestCase['type'] + '), intent(inout) :: this\n')
+        self.outputFile.write('     end subroutine userTestMethod\n')
+        self.outputFile.write('   end interface\n\n')
+
+    def printRunMethod(self):
+        self.outputFile.write('   subroutine runMethod(this)\n')
+        self.outputFile.write('      class (WrapUserTestCase), intent(inout) :: this\n\n')
+        self.outputFile.write('      call this%testMethodPtr(this)\n')
+        self.outputFile.write('   end subroutine runMethod\n\n')
+
             
-        def printParameterHeader(file, type, constructor):
-            file.write('   type (' + type + '), allocatable :: parameters(:) \n')
-            file.write('   type (' + constructor + ') :: dummy \n')
-            file.write('   integer :: iParam \n')
-            file.write(' \n')
+    def printParameterHeader(self, type):
+        self.outputFile.write('   type (' + type + '), allocatable :: testParameters(:)\n')
+        self.outputFile.write('   type (' + type + ') :: testParameter\n')
+        self.outputFile.write('   integer :: iParam \n')
+        self.outputFile.write('   integer, allocatable :: cases(:) \n')
+        self.outputFile.write(' \n')
 
-        def startParamLoop(file, parameters):
-            file.write('   parameters = dummy%getParameters()\n')
-            file.write(' \n')
-            file.write('   do iParam = 1, size(parameters) \n')
-            file.write('      associate( & \n')
-            parameter = parameters[0]
-            file.write('         & '+parameter+' => parameters(iParam)%'+parameter)
-            for parameter in parameters[1:]:
-                file.write(' ,&\n         & '+parameter+' => parameters(iParam)%'+parameter)
-            file.write('  &\n         & )\n')
 
-        def endParamLoop(file):
-            file.write('      end associate \n')
-            file.write('   end do \n')
-            file.write(' \n')
+    def printMakeSuite(self):
+        self.outputFile.write('function ' + self.suiteName + '() result(suite)\n')
+        self.outputFile.write('   use pFUnit_mod\n')
+        self.outputFile.write('   use '+ self.wrapModuleName + '\n')
+        if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
+        self.outputFile.write('   type (TestSuite) :: suite\n\n')
 
-        # Create string that contains additional arguments needed by
-        # constructor for nontrivial cases
-        def makeExtraArguments(setUp, tearDown, parameters):
-            fixtureArguments = ''
-            if (setUp):
-                fixtureArguments += ',' + setUp
-            if tearDown:
-                fixtureArguments += ',' + tearDown
-            extraArguments = fixtureArguments
-                    
-            if parameters:
-                paramArguments = ''
-                for parameter in parameters:
-                    paramArguments += ',' + parameter
-                extraArguments += paramArguments
+        if not self.userModuleName:
+            for testMethod in self.userTestMethods:
+                self.outputFile.write('   external ' + testMethod['name'] + '\n')
+            self.outputFile.write('\n')
+            if 'setUp' in self.userTestCase:
+                self.outputFile.write('   external ' + self.userTestCase['setUp'] + '\n')
+            if 'tearDown' in self.userTestCase:
+                self.outputFile.write('   external ' + self.userTestCase['tearDown'] + '\n')
+            self.outputFile.write('\n')
 
-            return extraArguments
+        self.outputFile.write('   integer, allocatable :: npes(:)\n\n')
 
-        #-----------------------------------------------------------
-        # ! Start here
-        if (self.testCase):
-            constructor=self.testCase
-        else:
-            constructor = 'newTestMethod'
-        if (not self.suiteName): self.suiteName = self.defaultName
-
-        printHeader(self.outputFile, self.suiteName, self.moduleName)
-        if not self.moduleName:
-            for test in self.tests:
-                self.outputFile.write("   external " + test['name'] + "\n")
-            for test in self.mpitests:
-                self.outputFile.write("   external " + test['name'] + "\n")
-
-        if self.parameters:
-            printParameterHeader(self.outputFile, self.parameterType, constructor)
+        if 'testParameterType' in self.userTestCase:
+            type = self.userTestCase['testParameterType']
+            self.printParameterHeader(type)
 
         self.outputFile.write("   suite = newTestSuite('" + self.suiteName + "')\n\n")
 
-        extraArguments = makeExtraArguments(self.setUp, self.tearDown, self.parameters)
-
-        for test in self.tests:
-            name = test['name']
-
-            if self.parameters:
-                startParamLoop(self.outputFile, self.parameters)
-                indent = '      '
+        for method in self.userTestMethods:
+            if 'type' in self.userTestCase:
+                self.addUserTestMethod(method)
             else:
-                indent = ''
+                if 'npRequests' in method:
+                    self.addMpiTestMethod(method)
+                else: # vanilla
+                    self.addSimpleTestMethod(method)
+            self.outputFile.write('\n')
 
-            self.outputFile.write(indent + 
-                                  '   call suite%addTest(' + constructor + 
-                                  '(' + "'" + name + "'" + ',' + name + extraArguments + '))\n')
+        self.outputFile.write('\nend function ' + self.suiteName + '\n\n')
 
-            if self.parameters:
-                endParamLoop(self.outputFile)
+    def addSimpleTestMethod(self, method):
+        args = "'" + method['name'] + "', " + method['name']
+        if 'setUp' in method:
+            args += ', ' + method['setUp']
+        elif 'setUp' in self.userTestCase:
+            args += ', ' + self.userTestCase['setUp']
 
-        if (self.testCase):
-            constructor=self.testCase
+        if 'tearDown' in method:
+            args += ', ' + method['tearDown']
+        elif 'tearDown' in self.userTestCase:
+            args += ', ' + self.userTestCase['tearDown']
+
+        self.outputFile.write('   call suite%addTest(newTestMethod(' + args + '))\n')
+
+    def addMpiTestMethod(self, method):
+        for npes in method['npRequests']:
+            args = "'" + method['name'] + "', " + method['name'] + ", " + str(npes)
+            if 'setUp' in method:
+                args += ', ' + method['setup'] + ', ' + method['tearDown']
+            self.outputFile.write('   call suite%addTest(newMpiTestMethod(' + args + '))\n')
+    
+    def addUserTestMethod(self, method):
+
+        args = "'" + method['name'] + "', " + method['name']
+        if 'npRequests' in method:
+            npRequests = method['npRequests']
         else:
-            constructor = 'newMpiTestMethod'
-
-        for test in self.mpitests:
-            if ('ifdef' in test):
-                self.outputFile.write('#ifdef ' + test['ifdef'] + '\n')
-            name = test['name']
-            if self.parameters:
-                startParamLoop(self.outputFile, self.parameters)
-                indent = '      '
+            if 'npRequests' in self.userTestCase:
+                npRequests = self.userTestCase['npRequests']
             else:
-                indent = ''
+                npRequests = [1]
 
-            for np in test['npes']:
-                extraArgs = ',' + str(np) + extraArguments
-                self.outputFile.write(indent + 
-                                      '   call suite%addTest(' + constructor + 
-                                      '('+"'" + name + "'" + ',' + name + extraArgs + '))\n')
-            if self.parameters:
-                endParamLoop(self.outputFile)
-            if ('ifdef' in test):
-                self.outputFile.write('#endif ' + test['ifdef'] + '\n')
+        if 'cases' in method:
+            cases = method['cases']
+        elif 'cases' in self.userTestCase:
+            cases = self.userTestCase['cases']
 
-        printTail(self.outputFile, self.suiteName)
+        testParameterArg = '' # unless
+
+        if 'cases' in locals():
+            testParameterArg = ', testParameter'
+            self.outputFile.write('   cases = ' + method['cases'] + '\n')
+            self.outputFile.write('   testParameters = [(' + 
+                                  self.userTestCase['testParameterConstructor'] + 
+                                  '(cases(iCase)), iCase = 1, size(cases))]\n\n')
+
+        if 'testParameterType' in self.userTestCase:
+            if 'testParameters' in method:
+                testParameters = method['testParameters']
+            elif 'testParameters' in self.userTestCase:
+                testParameters = self.userTestCase['testParameters']
+
+        if 'testParameters' in locals():
+            testParameterArg = ', testParameter'
+            self.outputFile.write('   testParameters = ' + testParameters + '\n\n')
+        
+        for npes in npRequests:
+            npesArg = ''
+            if 'npRequests' in method or 'npRequests' in self.userTestCase:
+                npesArg = ', npesRequested=' + str(npes)
+
+            if 'testParameters' in locals() or 'cases' in locals():
+                self.outputFile.write('   do iParam = 1, size(testParameters)\n')
+                self.outputFile.write('      testParameter = testParameters(iParam)\n')
+
+            self.outputFile.write('   call suite%addTest(makeCustomTest(' + 
+                                  args + testParameterArg + npesArg + '))\n')
+            if 'cases' in locals() or 'testParameters' in locals():
+                self.outputFile.write('   end do\n')
+
+                
+
+    def printMakeCustomTest(self, isMpiTestCase):
+        args = 'methodName, testMethod'
+        declareArgs =  '      type (WrapUserTestCase) :: aTest\n'
+        declareArgs += '      character(len=*), intent(in) :: methodName\n'
+        declareArgs += '      procedure(userTestMethod) :: testMethod\n'
+        
+        if 'testParameterType' in self.userTestCase:
+            args += ', testParameter'
+            declareArgs += '      type (' + self.userTestCase['testParameterType'] + '), intent(in) :: testParameter\n'
+
+        if isMpiTestCase:
+            args += ', npesRequested'
+            declareArgs += '      integer, optional, intent(in) :: npesRequested\n\n'
+            
+        self.outputFile.write('   function makeCustomTest(' + args + ') result(aTest)\n')
+        self.outputFile.write(declareArgs)
+
+        if 'constructor' in self.userTestCase:
+            if 'testParameterType' in self.userTestCase:
+                constructor = self.userTestCase['constructor'] + '(testParameter)'
+            else:
+                constructor = self.userTestCase['constructor'] + '()'
+            self.outputFile.write('      aTest%' + self.userTestCase['type'] + ' = ' + constructor + '\n\n')
+
+        self.outputFile.write('      aTest%testMethodPtr => testMethod\n')
+        self.outputFile.write('      call aTest%setName(methodName)\n')
+
+        if 'testParameterType' in self.userTestCase:
+           self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
+        
+        if isMpiTestCase:
+            self.outputFile.write('     if (present(npesRequested)) then\n')
+            self.outputFile.write('         call aTest%setNumProcessesRequested(npesRequested) \n')
+            self.outputFile.write('     end if\n\n')
+
+        self.outputFile.write('   end function makeCustomTest\n')
+
+    def makeWrapperModule(self):
+        #-----------------------------------------------------------
+        # ! Start here
+        self.printHeader()
+
+        if 'type' in self.userTestCase:
+            self.printWrapUserTestCase()
+        
+        self.outputFile.write('contains\n\n')
+
+        if 'type' in self.userTestCase:
+            self.printRunMethod()
+
+        if 'type' in self.userTestCase:
+            isMpiTestCase = 'npRequests' in self.userTestCase
+            isMpiTestCase = isMpiTestCase or any('npRequests' in method for method in self.userTestMethods)
+            self.printMakeCustomTest(isMpiTestCase)
+
+        self.printTail()
+        self.printMakeSuite()
 
     def final(self):
         self.inputFile.close()

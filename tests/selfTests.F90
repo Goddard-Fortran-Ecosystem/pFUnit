@@ -116,11 +116,10 @@ contains
 
 #ifdef USE_MPI
       tstResult = runner%run(allTests, newMpiContext())
-      success = .true.
 #else
       tstResult = runner%run(allTests, newSerialContext())
-      success = .true.
 #endif
+      success = tstResult%wasSuccessful()
 
   end function runTests
 
