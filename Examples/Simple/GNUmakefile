@@ -29,9 +29,6 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 #
 include $(PFUNIT)/include/base.mk
 
-# Decide the file extensions.
-include $(PFUNIT)/include/extensions.mk
-
 ifeq ($(F90),nagfor)
 	FFLAGS += -fpp
 endif

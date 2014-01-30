@@ -205,6 +205,7 @@ include/configuration.mk:
 	@echo COMPILER  ?= $(COMPILER) >> include/configuration.mk
 	@echo USEOPENMP ?= $(USEOPENMP) >> include/configuration.mk
 	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
+	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
 
 export UNAME
 export OBJ_EXT

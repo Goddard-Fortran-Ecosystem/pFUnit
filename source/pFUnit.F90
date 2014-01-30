@@ -31,8 +31,8 @@ module pFUnit_mod
    use AbstractTestParameter_mod
    use ParameterizedTestCase_mod
    use TestResult_mod
-   use BaseTestRunner_mod
    use TestRunner_mod
+   use BaseTestRunner_mod
    use SubsetRunner_mod
 #ifdef BUILD_ROBUST
    use RobustRunner_mod

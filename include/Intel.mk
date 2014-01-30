@@ -45,4 +45,7 @@ ifneq ($(version),)
   FPPFLAGS+=-DINTEL_13
 endif
 
-
+ifeq ($(USEOPENMP),YES)
+F90FLAGS += -openmp
+LIBS += -openmp
+endif

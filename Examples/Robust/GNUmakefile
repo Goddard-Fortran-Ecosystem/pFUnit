@@ -1,10 +1,5 @@
 .PHONY: clean tests all
 
-include $(PFUNIT)/include/base.mk
-
-FFLAGS += -DBUILD_ROBUST
-FPPFLAGS += -DBUILD_ROBUST
-CPPFLAGS += -DBUILD_ROBUST
 
 TOP_DIR := $(shell pwd)
 SRC_DIR=$(TOP_DIR)/src
@@ -12,8 +7,8 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-# Decide the file extensions.
-include $(PFUNIT)/include/extensions.mk
+#
+include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp

@@ -6,8 +6,8 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-# Decide the file extensions.
-include $(PFUNIT)/include/extensions.mk
+#
+include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp

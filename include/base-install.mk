@@ -13,11 +13,25 @@ include $(INCLUDE_DIR)/configuration.mk
 # Set the required file extensions.
 include $(INCLUDE_DIR)/extensions.mk
 
+# F90 Vendor common elements (override below)
+# FFLAGS ?=
+D=-D
+I=-I
+MOD=-I
+F90_HAS_CPP=YES
+DEBUG_FLAGS =-g
+
 # Include the compiler-specific options.
 COMPILER ?= COMPILER_NOT_SET
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
 F90FLAGS += $I$(INCLUDE_DIR)
+
+ifeq ($(BUILDROBUST),YES)
+  FFLAGS += $DBUILD_ROBUST
+  FPPFLAGS += $DBUILD_ROBUST
+  CPPFLAGS += -DBUILD_ROBUST
+endif
 
 ifneq ($(MPI),YES)
   FC=$(F90)

@@ -61,6 +61,9 @@ module pFUnit
    use Assert_mod, only: RENAME(assertIsNan)
    use Assert_mod, only: RENAME(assertIsFinite)
 
+   ! workaround for ifort 13.0
+   use Test_mod, only: Test
+
    use Test_mod, only: RENAME(Test)
    use TestCase_mod, only: RENAME(TestCase)
    use TestSuite_mod, only: RENAME(TestSuite)
@@ -92,5 +95,17 @@ module pFUnit
 
    implicit none
    public ! Nothing private in this module, just renaming exports.
+
+   ! workaround for ifort 13.0
+   private :: Test
+contains
+
+    function run() result(a)
+
+      integer :: a
+      a = 0
+
+   end function run
+
 
 end module pFUnit

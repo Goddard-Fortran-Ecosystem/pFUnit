@@ -1,7 +1,6 @@
 program main
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
-   use ParallelContext_mod
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
