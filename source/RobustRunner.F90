@@ -68,7 +68,7 @@ module RobustRunner_mod
       procedure :: runMethod
    end type TestCaseMonitor
 
-   real, parameter :: MAX_TIME_LAUNCH = 5.00 ! in seconds
+   real, parameter :: MAX_TIME_LAUNCH = 50.00 ! in seconds
 
 contains
 
@@ -182,13 +182,17 @@ contains
 
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' -skip ' // suffix
+      write(*,*) 'command: ', command
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
+      write(*,*) 'done'
 
       ! Check for successful launch - prevents MPI launch time from counting against
       ! first test's time limit.
       write(timeCommand,'(a, f10.3,a,i0,a)') &
            & "(sleep ",MAX_TIME_LAUNCH," && kill -9 ", this%remoteProcess%getPid(),") > /dev/null 2>&1"
+      write(*,*) 'timecommand: ', timecommand
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
+      write(*,*) 'done'
 
       do
          line = this%remoteProcess%getLine()
