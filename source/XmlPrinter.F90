@@ -114,8 +114,8 @@ contains
       real, intent(in) :: runTime
 
       call this%printHeader(result)
-      call this%printFailures('Error', result%getErrors())
-      call this%printFailures('Failure', result%getFailures())
+      call this%printFailures('Error', result%errors)
+      call this%printFailures('Failure', result%failures)
       call this%printFooter(result)
 
    end subroutine print
