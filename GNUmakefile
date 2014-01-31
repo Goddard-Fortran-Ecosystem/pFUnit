@@ -135,6 +135,7 @@ endif
 ifneq ($(findstring $(ROBUST),yes YES Yes),)
   BUILDROBUST=YES
   FPPFLAGS += $DBUILD_ROBUST
+  CPPFLAGS += -DBUILD_ROBUST
 endif
 
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)

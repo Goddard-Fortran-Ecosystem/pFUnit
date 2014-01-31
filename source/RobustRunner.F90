@@ -26,6 +26,7 @@ module RobustRunner_mod
    use BaseTestRunner_mod
    use UnixProcess_mod
    use ResultPrinter_mod
+   use XmlPrinter_mod
    implicit none
    private
 
@@ -44,6 +45,8 @@ module RobustRunner_mod
 #endif
       integer :: numSkip
       type (ResultPrinter) :: printer
+      type (XmlPrinter) :: xmlPrinter
+      logical :: printXml
       type (UnixProcess) :: remoteProcess
    contains
       procedure :: run
@@ -59,6 +62,7 @@ module RobustRunner_mod
    interface RobustRunner
       module procedure newRobustRunner
       module procedure newRobustRunner_unit
+      module procedure newRobustRunner_unit_xml
    end interface RobustRunner
 
    type, extends(TestCase) :: TestCaseMonitor
@@ -68,7 +72,7 @@ module RobustRunner_mod
       procedure :: runMethod
    end type TestCaseMonitor
 
-   real, parameter :: MAX_TIME_LAUNCH = 50.00 ! in seconds
+   real, parameter :: MAX_TIME_LAUNCH = 5.00 ! in seconds
 
 contains
 
@@ -84,11 +88,27 @@ contains
       type (RobustRunner) :: runner
       character(len=*), intent(in) :: remoteRunCommand
       integer, intent(in) :: unit
+
+      runner = RobustRunner(remoteRunCommand, unit, 0)
+   end function newRobustRunner_unit
+
+   function newRobustRunner_unit_xml(remoteRunCommand, unit, xmlUnit) &
+        result(runner)
+      type (RobustRunner) :: runner
+      character(len=*), intent(in) :: remoteRunCommand
+      integer, intent(in) :: unit
+      integer, intent(in) :: xmlUnit
       
       runner%remoteRunCommand = trim(remoteRunCommand)
       runner%numSkip = 0
       runner%printer = newResultPrinter(unit)
-   end function newRobustRunner_unit
+      if(xmlUnit > 0) then
+         runner%xmlPrinter = newXmlPrinter(xmlUnit)
+         runner%printXml = .true.
+      else
+         runner%printXml = .false.
+      end if
+   end function newRobustRunner_unit_xml
 
    subroutine runMethod(this)
       class (TestCaseMonitor), intent(inout) :: this
@@ -131,6 +151,9 @@ contains
       call system_clock(clockStart)
 
       call result%addListener(this%printer)
+      if(this%printXml) then
+         call result%addListener(this%xmlPrinter)
+      end if
       call result%addListener( this ) ! - monitoring
 
       select type (aTest)
@@ -160,6 +183,9 @@ contains
 
       if (context%isRootProcess())  then
          call this%printer%print(result, runTime)
+         if(this%printXml) then
+            call this%xmlPrinter%print(result, runTime)
+         end if
       end if
          
    end subroutine runWithResult
@@ -182,17 +208,13 @@ contains
 
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' -skip ' // suffix
-      write(*,*) 'command: ', command
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
-      write(*,*) 'done'
 
       ! Check for successful launch - prevents MPI launch time from counting against
       ! first test's time limit.
       write(timeCommand,'(a, f10.3,a,i0,a)') &
            & "(sleep ",MAX_TIME_LAUNCH," && kill -9 ", this%remoteProcess%getPid(),") > /dev/null 2>&1"
-      write(*,*) 'timecommand: ', timecommand
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
-      write(*,*) 'done'
 
       do
          line = this%remoteProcess%getLine()

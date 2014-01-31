@@ -1,6 +1,7 @@
 program main
    use pfunit_mod
    use ParallelContext_mod
+   use iso_fortran_env, only: OUTPUT_UNIT
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
@@ -11,22 +12,30 @@ program main
 
    integer :: i
    character(len=:), allocatable :: executable
+   character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
    integer :: length
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
+   logical :: printXmlFile
    integer :: numSkip
    logical :: useMpi
+   character(len=:), allocatable :: xmlFileName
+   integer :: iostat
+   integer :: xmlFileUnit
+   logical :: xmlFileOpened
 
    class (ParallelContext), allocatable :: context
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
+   printXmlFile = .false.
    numSkip = 0
 
    call get_command_argument(0, length=length)
    allocate(character(len=length) :: executable)
+   allocate(character(len=length+30) :: fullExecutable)
    call get_command_argument(0, value=executable)
 
    i = 0
@@ -54,6 +63,12 @@ program main
          allocate(character(len=length) :: argument)
          call get_command_argument(i, value=argument)
          read(argument,*) numSkip
+      case ('-xml')
+         i = i + 1
+         call get_command_argument(i, length=length)
+         allocate(character(len=length) :: xmlFileName)
+         call get_command_argument(i, value=xmlFileName)
+         printXmlFile = .true.
       end select
       deallocate(argument)
    end do
@@ -74,10 +89,24 @@ program main
       useMpi = .false. ! override build
 #ifdef BUILD_ROBUST
 #ifdef USE_MPI
-      allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable))
+      fullExecutable = 'mpirun -np 4 ' // executable
 #else
-      allocate(runner, source=RobustRunner(executable))
+      fullExecutable = executable
 #endif
+      if(printXmlFile) then
+         xmlFileUnit = newunit()
+         open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
+         if(iostat /= 0) then
+            write(*,*) 'Could not open XML file ', xmlFileName, &
+                 ', error: ', iostat
+            allocate(runner, source=RobustRunner(fullExecutable))
+         else
+            allocate(runner, &
+                 source=RobustRunner(fullExecutable, OUTPUT_UNIT, xmlFileUnit)) 
+         end if
+      else
+         allocate(runner, source=RobustRunner(fullExecutable))
+      end if
 #else
       ! TODO: This should be a failing test.
       write (*,*) 'Robust runner not built.'
@@ -94,6 +123,11 @@ program main
    call runner%run(all, context)
 
    call finalize()
+
+   inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+   if(printXmlFile .and. xmlFileOpened) then
+      close(xmlFileUnit)
+   end if
 
 contains
 
@@ -128,6 +162,21 @@ contains
 
    end function getTestSuites
 
+   integer function newunit(unit)
+     integer, intent(out), optional :: unit
+     integer, parameter :: LUN_MIN=10, LUN_MAX=1000
+     logical :: opened
+     integer :: lun
+     newunit=-1
+     do lun=LUN_MIN,LUN_MAX
+       inquire(unit=lun,opened=opened)
+       if (.not. opened) then
+         newunit=lun
+         exit
+       end if
+     end do
+     if (present(unit)) unit=newunit
+   end function newunit
 
 end program main
 

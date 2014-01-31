@@ -89,9 +89,7 @@ contains
       fullCommand = makeCommand(command, runInBackground)
       mode = nullTerminate('r')
 
-      write(*,*) 'open pipe for command: ', fullCommand
       process%file = popen(fullCommand, mode)
-      write(*,*) 'pipe opened'
       call assertTrue(c_associated(process%file))
 
       if (present(runInBackground)) then
