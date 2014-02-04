@@ -114,6 +114,8 @@ or contact the pFUnit team.
 In the top level of the pFUnit distribution you will see the following
 files.
 
+CMakeLists.txt - Initial support for cmake-based builds.
+
 COPYRIGHT - Contains information pertaining to the use and
 distribution of pFUnit.
 
@@ -125,6 +127,8 @@ pFUnit.
 
 LICENSE - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT, also
 known as pFUnit.
+
+README-INSTALL - Basic documentation on pFUnit installation and use.
 
 bin - Executables used to construct and perform unit tests.
 
@@ -176,7 +180,7 @@ $ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen\endcode
 \subsection sec_BuildingPFUNITSerial Building pFUnit for testing serial codes (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
-2. Set the environment variables (in bash):
+2. Set the environment variables (for example in bash):
 \code
 $ export F90=gfortran-mp-4.8
 $ export F90_VENDOR=GNU\endcode
@@ -247,7 +251,8 @@ products in subdirectories.
 A start at documentation for pFUnit is in the documentation directory.
 <a href="http://www.doxygen.org">Doxygen</a> is our primary
 documentation tool.  To make the documentation, which will be
-generated in the documentation directory, please invoke the following.
+generated in the documentation directory, please invoke the following
+from the top level of your pFUnit distribution.
 
 \code
 $ make documentation\endcode
@@ -304,7 +309,7 @@ expected failures.
 \code
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
-$ pushd Examples
+$ cd Examples
 $ ./buildIt\endcode
 
 \subsection sec_InstallationMPI Installation - MPI
@@ -544,6 +549,7 @@ Overview of Preprocessor (pFUnitParser.py)
       <ul>
       <li>\ref ss_Configuration</li>
       <li>\ref ss_Invocation</li>
+      <li>\ref ss_CommandLineOptions</li>
       <li>\ref ss_PreprocessorInput</li>
       <li>\ref ss_Directives</li>
       <ul>
@@ -590,6 +596,18 @@ A convenient GNUmakefile rule is as follows.
 \code
 %.F90: %.pf
        $(PFUNIT)/bin/pFUnitParser.py $<  $@ \endcode
+
+\subsection ss_CommandLineOptions Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+<table border="0" >
+<tr><td>-v or -verbose        </td><td>Verbose execution.</td></tr>
+<tr><td>-d or -debug  </td><td>Provide debugging information.</td></tr>
+<tr><td>-h            </td><td>Print help message.</td></tr>
+</table>
 
 \subsection ss_PreprocessorInput Preprocessor Input File (.pf)
 

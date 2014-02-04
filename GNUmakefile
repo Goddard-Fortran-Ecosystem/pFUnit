@@ -15,9 +15,9 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 # code that also do not respect the CamelCase convention.  The Fortran
 # standard specifies case insensitivity.
 #
-DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 # DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
-# DOXYGEN ?= doxygen
+DOXYGEN ?= doxygen
 
 # Determine operating system, architecture and compiler
 # automatically if possible

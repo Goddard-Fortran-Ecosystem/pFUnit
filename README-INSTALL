@@ -145,7 +145,7 @@ $ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 5.1 BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
-2. Set the environment variables (in bash):
+2. Set these environment variables (bash example):
 $ export F90=gfortran-mp-4.8
 $ export F90_VENDOR=GNU
 3. To build pFUnit for unit testing of serial codes, execute make.
@@ -209,7 +209,7 @@ products in subdirectories.
 A start at documentation for pFUnit is in the documentation directory.
 Doxygen is our primary documentation tool.  To make the documentation,
 which will be generated in the documentation directory, please invoke
-the following.
+the following from the top level of the PFUNIT distribution.
 
 $ make documentation
 
@@ -268,7 +268,7 @@ expected failures.
 
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
-$ pushd Examples
+$ cd Examples
 $ ./buildIt
 
 6.2 INSTALLATION - MPI
@@ -319,13 +319,44 @@ set, to configure pFUnit, please set the following.
 PFUNIT - set to the directory into which pFUnit was installed.
 F90_VENDOR - set to Intel, GNU, NAG, or PGI accordingly.
 
-7.2 USAGE - HELLO WORLD
+7.2 USAGE - PREPROCESSOR - HELLO WORLD
 
-TBD
+An example of how to use the preprocessor can be found in
+Examples/Simple.  The GNU makefile shows how to construct an F90 file
+from a preprocessor input file.  For example, the GNU make rule can be:
 
-7.3 USAGE - PREPROCESSOR
+# GNU makefile rule
+%.F90: %.pf
+       $(PFUNIT)/bin/pFUnitParser.py $< $@
 
-TBD
+The file testSuites.inc is included in the include/driver.F90 file
+during the build process.  To include tests, one must add the test
+suite module to testSuites.inc, as follows.
+
+! Add a test suite to the build.
+ADD_TESTS_SUITE(helloWorld_suite)
+
+A preprocessor input file contains tests and is a 
+Fortran free-format file with directives, for example:
+
+! helloWorld.pf - with a successful test...
+@test
+subroutine testHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello World!","Hello World!")
+end subroutine testHelloWorld
+
+
+7.3 USAGE - Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+-v or -verbose Verbose execution.
+-d or -debug   Provide debugging information.
+-h             Print help message.
 
 8. DEVELOPMENT
 
@@ -409,6 +440,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2014-0131. Updated. MLR
 2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
