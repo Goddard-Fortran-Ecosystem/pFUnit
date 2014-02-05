@@ -1,7 +1,7 @@
 
 PFUNIT VERSION 2.1.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2013-1227 M. Rilee mike@rilee.net
+VERSION 2014-0205 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -440,7 +440,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
-2014-0131. Updated. MLR
+2014-0131, 2014-0205. Updated. MLR
 2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
