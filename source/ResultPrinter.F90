@@ -22,14 +22,14 @@
 !-------------------------------------------------------------------------------
 module ResultPrinter_mod
    use Exception_mod
-   use TestListener_mod
+   use AbstractPrinter_mod
    implicit none
    private
 
    public :: ResultPrinter
    public :: newResultPrinter
 
-   type, extends(TestListener) :: ResultPrinter
+   type, extends(AbstractPrinter) :: ResultPrinter
       integer :: unit
       integer :: column
    contains

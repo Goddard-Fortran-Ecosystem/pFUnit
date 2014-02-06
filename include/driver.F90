@@ -1,6 +1,7 @@
 program main
    use pfunit_mod
    use ParallelContext_mod
+   use AbstractPrinter_mod
    use iso_fortran_env, only: OUTPUT_UNIT
    implicit none
 #ifdef USE_MPI
@@ -25,6 +26,7 @@ program main
    integer :: iostat
    integer :: xmlFileUnit
    logical :: xmlFileOpened
+   class (PrinterPointer), allocatable :: printers(:)
 
    class (ParallelContext), allocatable :: context
 
@@ -73,6 +75,22 @@ program main
       deallocate(argument)
    end do
 
+   if(printXmlFile) then
+      xmlFileUnit = newunit()
+      open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
+      if(iostat /= 0) then
+         write(*,*) 'Could not open XML file ', xmlFileName, &
+              ', error: ', iostat
+         allocate(printers(1))
+      else
+         allocate(printers(2))
+         allocate(printers(2)%pPrinter, source=newXmlPrinter(xmlFileUnit))
+      end if
+   else
+      allocate(printers(1))
+   end if
+   allocate(printers(1)%pPrinter, source=newResultPrinter(OUTPUT_UNIT))
+
    if (useRobustRunner) then
       call initialize(useMPI=.false.)
    else
@@ -93,20 +111,8 @@ program main
 #else
       fullExecutable = executable
 #endif
-      if(printXmlFile) then
-         xmlFileUnit = newunit()
-         open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
-         if(iostat /= 0) then
-            write(*,*) 'Could not open XML file ', xmlFileName, &
-                 ', error: ', iostat
-            allocate(runner, source=RobustRunner(fullExecutable))
-         else
-            allocate(runner, &
-                 source=RobustRunner(fullExecutable, OUTPUT_UNIT, xmlFileUnit)) 
-         end if
-      else
-         allocate(runner, source=RobustRunner(fullExecutable))
-      end if
+      
+      allocate(runner, source=RobustRunner(fullExecutable, printers))
 #else
       ! TODO: This should be a failing test.
       write (*,*) 'Robust runner not built.'

@@ -20,14 +20,14 @@
 !-------------------------------------------------------------------------------
 module XmlPrinter_mod
    use Exception_mod
-   use TestListener_mod
+   use AbstractPrinter_mod
    implicit none
    private
 
    public :: XmlPrinter
    public :: newXmlPrinter
 
-   type, extends(TestListener) :: XmlPrinter
+   type, extends(AbstractPrinter) :: XmlPrinter
       integer :: unit
       integer :: privateUnit
    contains

@@ -32,6 +32,9 @@ module pFUnit_mod
    use BaseTestRunner_mod
    use TestRunner_mod
    use SubsetRunner_mod
+   use AbstractPrinter_mod
+   use XmlPrinter_mod
+   use ResultPrinter_mod
 #ifdef BUILD_ROBUST
    use RobustRunner_mod
 #endif
@@ -57,6 +60,8 @@ module pFUnit_mod
    public :: BaseTestRunner
    public :: TestRunner, newTestRunner
    public :: SubsetRunner
+   public :: newResultPrinter
+   public :: newXmlPrinter
 #ifdef BUILD_ROBUST
    public :: RobustRunner
 #endif

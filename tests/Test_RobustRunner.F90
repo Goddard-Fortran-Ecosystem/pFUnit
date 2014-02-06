@@ -28,16 +28,20 @@ contains
       use TestSuite_mod
       use TestResult_mod
       use Assert_mod
+      use AbstractPrinter_mod
+      use ResultPrinter_mod
 
       type (RobustRunner) :: runner
       type (SerialContext) :: context
       type (TestSuite) :: suite
       type (TestResult) :: result
+      type (PrinterPointer) :: printers(1)
 
       integer :: unit
 
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      runner = RobustRunner('./tests/remote.x',unit)
+      allocate(printers(1)%pPrinter, source=newResultPrinter(unit))
+      runner = RobustRunner('./tests/remote.x', printers)
       result = newTestResult()
       suite = remoteSuite()
       call runner%runWithResult(suite, context, result)

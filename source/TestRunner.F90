@@ -24,6 +24,7 @@
 module TestRunner_mod
    use BaseTestRunner_mod
    use TestListener_mod
+   use AbstractPrinter_mod
    use ResultPrinter_mod
    implicit none
    private
@@ -32,7 +33,7 @@ module TestRunner_mod
    public :: newTestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
-      type (ResultPrinter) :: printer
+      type (PrinterPointer), allocatable :: printers(:)
    contains
       procedure :: run
       procedure :: createTestResult
@@ -51,13 +52,15 @@ contains
    function newTestRunner_default() result(runner)
       use iso_fortran_env, only: OUTPUT_UNIT
       type (TestRunner) :: runner
-      runner = newTestRunner(OUTPUT_UNIT)
+      type (PrinterPointer) :: printers(1)
+      allocate(printers(1)%pPrinter, source=newResultPrinter(OUTPUT_UNIT))
+      runner = newTestRunner(printers)
    end function newTestRunner_default
 
-   function newTestRunner_unit(unit) result(runner)
-      integer, intent(in) :: unit
+   function newTestRunner_unit(printers) result(runner)
+      type(PrinterPointer), intent(in) :: printers(:)
       type (TestRunner) :: runner
-      runner%printer = newResultPrinter(unit)
+      allocate(runner%printers(size(printers)), source=printers)
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
@@ -81,12 +84,15 @@ contains
       integer :: clockStop
       integer :: clockRate
       real :: runTime
+      integer :: i
 
       type (DebugListener) :: debug
 
       call system_clock(clockStart)
       result = this%createTestResult()
-      call result%addListener(this%printer)
+      do i=1,size(this%printers)
+         call result%addListener(this%printers(i)%pPrinter)
+      end do
 #ifdef DEBUG_ON
       call result%addListener(debug)
 #endif
@@ -94,7 +100,9 @@ contains
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
       if (context%isRootProcess())  then
-         call this%printer%print(result, runTime)
+         do i=1,size(this%printers)
+            call this%printers(i)%pPrinter%print(result, runTime)
+         end do
       end if
 
    end subroutine run

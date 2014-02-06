@@ -26,7 +26,7 @@ module RobustRunner_mod
    use BaseTestRunner_mod
    use UnixProcess_mod
    use ResultPrinter_mod
-   use XmlPrinter_mod
+   use AbstractPrinter_mod
    implicit none
    private
 
@@ -37,16 +37,13 @@ module RobustRunner_mod
 
    type, extends(BaseTestRunner) :: RobustRunner
       private
-      integer :: unit
 #ifdef DEFERRED_LENGTH_CHARACTER
       character(len=:), allocatable :: remoteRunCommand
 #else
       character(len=MAX_LENGTH_COMMAND) :: remoteRunCommand
 #endif
       integer :: numSkip
-      type (ResultPrinter) :: printer
-      type (XmlPrinter) :: xmlPrinter
-      logical :: printXml
+      type (PrinterPointer), allocatable :: printers(:)
       type (UnixProcess) :: remoteProcess
    contains
       procedure :: run
@@ -61,8 +58,7 @@ module RobustRunner_mod
 
    interface RobustRunner
       module procedure newRobustRunner
-      module procedure newRobustRunner_unit
-      module procedure newRobustRunner_unit_xml
+      module procedure newRobustRunner_printers
    end interface RobustRunner
 
    type, extends(TestCase) :: TestCaseMonitor
@@ -77,38 +73,20 @@ module RobustRunner_mod
 contains
 
    function newRobustRunner(remoteRunCommand) result(runner)
-      use iso_fortran_env, only: OUTPUT_UNIT
       type (RobustRunner) :: runner
       character(len=*), intent(in) :: remoteRunCommand
-      
-      runner = RobustRunner(remoteRunCommand, OUTPUT_UNIT)
-   end function newRobustRunner
-
-   function newRobustRunner_unit(remoteRunCommand, unit) result(runner)
-      type (RobustRunner) :: runner
-      character(len=*), intent(in) :: remoteRunCommand
-      integer, intent(in) :: unit
-
-      runner = RobustRunner(remoteRunCommand, unit, 0)
-   end function newRobustRunner_unit
-
-   function newRobustRunner_unit_xml(remoteRunCommand, unit, xmlUnit) &
-        result(runner)
-      type (RobustRunner) :: runner
-      character(len=*), intent(in) :: remoteRunCommand
-      integer, intent(in) :: unit
-      integer, intent(in) :: xmlUnit
       
       runner%remoteRunCommand = trim(remoteRunCommand)
-      runner%numSkip = 0
-      runner%printer = newResultPrinter(unit)
-      if(xmlUnit > 0) then
-         runner%xmlPrinter = newXmlPrinter(xmlUnit)
-         runner%printXml = .true.
-      else
-         runner%printXml = .false.
-      end if
-   end function newRobustRunner_unit_xml
+   end function newRobustRunner
+
+   function newRobustRunner_printers(remoteRunCommand, printers) result(runner)
+      type (RobustRunner) :: runner
+      character(len=*), intent(in) :: remoteRunCommand
+      type(PrinterPointer), intent(in) :: printers(:)
+
+      allocate(runner%printers(size(printers)), source=printers)
+      runner%remoteRunCommand = trim(remoteRunCommand)
+   end function newRobustRunner_printers
 
    subroutine runMethod(this)
       class (TestCaseMonitor), intent(inout) :: this
@@ -149,11 +127,10 @@ contains
       real :: runTime
 
       call system_clock(clockStart)
-
-      call result%addListener(this%printer)
-      if(this%printXml) then
-         call result%addListener(this%xmlPrinter)
-      end if
+      
+      do i=1,size(this%printers)
+         call result%addListener(this%printers(i)%pPrinter)
+      end do
       call result%addListener( this ) ! - monitoring
 
       select type (aTest)
@@ -182,10 +159,9 @@ contains
       runTime = real(clockStop - clockStart) / clockRate
 
       if (context%isRootProcess())  then
-         call this%printer%print(result, runTime)
-         if(this%printXml) then
-            call this%xmlPrinter%print(result, runTime)
-         end if
+         do i=1,size(this%printers)
+            call this%printers(i)%pPrinter%print(result, runTime)
+         end do
       end if
          
    end subroutine runWithResult
