@@ -1,7 +1,7 @@
 
 PFUNIT VERSION 2.1.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2014-0205 M. Rilee mike@rilee.net
+VERSION 2014-0206 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -347,16 +347,41 @@ subroutine testHelloWorld()
    @assertEqual("Hello World!","Hello World!")
 end subroutine testHelloWorld
 
+7.3 USAGE - Compiling and Executing the Tests (SERIAL)
 
-7.3 USAGE - Command Line Options
+An example of a GNU make rule for for the final step of compiling a test follows.
+
+# This step presumes "include $(PFUNIT)/include/base.mk" earlier in the makefile.
+tests.x: testSuites.inc myTests.pf
+         $(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include \
+                $(PFUNIT)/include/driver.F90 \
+                ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+
+To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+7.3.1 USAGE - Compiling and Executing the Tests (MPI PARALLEL)
+
+One invokes MPI-based parallel tests according to the MPI framework being used.  For example:
+
+$ mpirun -np 4 tests.x
+
+
+7.4 USAGE - Command Line Options
 
 The executable test program provides several command line options,
 when "include/driver.F90" is used, as it is automatically when using
 the PFUNIT preprocessor.
 
--v or -verbose Verbose execution.
--d or -debug   Provide debugging information.
--h             Print help message.
+-v or -verbose                  Verbose execution.
+-d or -debug                    Provide debugging information.
+-h                              Print help message.
+-o <outputfile>                 Direct pFUnit messages to a file.
+-robust                         Use the robust runner. Runs tests as processes so failures do not halt testing.
+-skip <number of tests to skip> Use the subset runner, which runs a subset of the tests in a suite.
+
+An example from Examples/Robust:
+
+$ ./tests.x -robust
 
 8. DEVELOPMENT
 

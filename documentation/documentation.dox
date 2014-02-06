@@ -357,6 +357,7 @@ build directory.
 \li \ref sec_UsageConfiguration
 \li \ref sec_UsageHelloWorld
 \li \ref sec_UsagePreprocessor
+\li \ref sec_UsageExecutingTheTest
 
 \section Usage
 \subsection sec_UsageConfiguration Usage - Configuration
@@ -390,9 +391,49 @@ ADD_TEST_SUITE(helloWorld_suite)\endcode
 
 At this point, one can invoke the preprocessor to generate a Fortran file that when compiled and linked with pFUnit will execute the tests. For more information please see \ref page_pFUnitParser or try out the examples in Example/Simple.
 
-
-\subsection sec_UsagePreprocessor Usage - Preprocessor
+\section sec_UsagePreprocessor Usage - Preprocessor
 Please see \ref page_pFUnitParser.
+
+\section sec_UsageExecutingTheTest Compiling and Executing The Test
+
+An example of a GNU make rule for for the final step of compiling a test follows.
+
+\code
+# This step presumes "include $(PFUNIT)/include/base.mk" earlier in the makefile.
+tests.x: testSuites.inc myTests.pf
+         $(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include \
+                $(PFUNIT)/include/driver.F90 \
+                ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)\endcode
+
+To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+\subsection ss_UsageExecutingTheTestParallel - Compiling and Executing the Tests (MPI PARALLEL)
+
+One invokes MPI-based parallel tests according to the MPI framework being used.  For example:
+
+\code
+$ mpirun -np 4 tests.x\endcode
+
+
+\subsection ss_CommandLineOptions Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+<table border="0" >
+<tr><td>-v or -verbose        </td><td>Verbose execution.</td></tr>
+<tr><td>-d or -debug  </td><td>Provide debugging information.</td></tr>
+<tr><td>-h            </td><td>Print help message.</td></tr>
+<tr><td>-o \<outputfile\> </td><td>Direct pFUnit messages to a file.
+<tr><td>-robust       </td><td>Use the robust runner. Runs tests as processes so failures do not halt testing.</td></tr>
+<tr><td>-skip \<number of tests to skip\></td><td>Use the subset runner, which runs a subset of the tests in a suite.</td></tr>
+</table>
+
+An example from Examples/Robust:
+
+\code
+$ ./tests.x -robust\endcode
 
 \page page_Development Development
 
@@ -596,18 +637,6 @@ A convenient GNUmakefile rule is as follows.
 \code
 %.F90: %.pf
        $(PFUNIT)/bin/pFUnitParser.py $<  $@ \endcode
-
-\subsection ss_CommandLineOptions Command Line Options
-
-The executable test program provides several command line options,
-when "include/driver.F90" is used, as it is automatically when using
-the PFUNIT preprocessor.
-
-<table border="0" >
-<tr><td>-v or -verbose        </td><td>Verbose execution.</td></tr>
-<tr><td>-d or -debug  </td><td>Provide debugging information.</td></tr>
-<tr><td>-h            </td><td>Print help message.</td></tr>
-</table>
 
 \subsection ss_PreprocessorInput Preprocessor Input File (.pf)
 
