@@ -38,6 +38,7 @@ module XmlPrinter_mod
       procedure :: print
       procedure :: printHeader
       procedure :: printFailures
+      procedure :: printSuccesses
       procedure :: printFooter
    end type XmlPrinter
 
@@ -88,6 +89,7 @@ contains
       real, intent(in) :: runTime
 
       call this%printHeader(result)
+      call this%printSuccesses(result%successes)
       call this%printFailures('error', result%errors)
       call this%printFailures('failure', result%failures)
       call this%printFooter(result)
@@ -162,6 +164,22 @@ contains
       end function toString
       
    end subroutine printFailures
+
+   subroutine printSuccesses(this, successes)
+      use TestFailure_mod
+      class (XmlPrinter), intent(in) :: this
+      type (TestFailure), intent(in) :: successes(:)
+
+      type (TestFailure) :: aSuccessTest
+      integer :: i
+      character(len=80) :: locationString
+
+      do i = 1, size(successes)
+         aSuccessTest = successes(i)
+
+         write(this%unit,'(a,a,a)') '<testcase name="', trim(aSuccessTest%testName), '"/>'
+      end do
+   end subroutine printSuccesses
 
    subroutine printFooter(this, result)
       use TestResult_mod

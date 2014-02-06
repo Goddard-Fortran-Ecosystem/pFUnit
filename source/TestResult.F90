@@ -35,12 +35,15 @@ module TestResult_mod
       integer :: numFailed
       integer :: numErrors
       integer :: numRun
+      integer :: numSuccesses
       type (ListenerPointer), allocatable :: listeners(:)
       type (TestFailure), allocatable :: failures(:)
       type (TestFailure), allocatable :: errors(:)
+      type (TestFailure), allocatable :: successes(:)
    contains
       procedure :: addFailure
       procedure :: addError
+      procedure :: addSuccess
       procedure :: failureCount
       procedure :: errorCount
       procedure :: getIthFailure
@@ -60,9 +63,11 @@ contains
       allocate(newTestResult%listeners(0))
       allocate(newTestResult%failures(0))
       allocate(newTestResult%errors(0))
+      allocate(newTestResult%successes(0))
       newTestResult%numFailed = 0
       newTestResult%numErrors = 0
       newTestResult%numRun = 0
+      newTestResult%numSuccesses = 0
    end function newTestResult
 
    subroutine addFailure(this, aTest, exceptions)
@@ -116,6 +121,29 @@ contains
       end do
 
    end subroutine addError
+
+   subroutine addSuccess(this, aTest)
+      use Exception_mod, only: Exception
+      use TestFailure_mod
+      class (TestResult), intent(inout) :: this
+      class (SurrogateTestCase), intent(in) :: aTest
+
+      integer :: i, n
+      type (TestFailure), allocatable :: tmp(:)
+      type (Exception) :: noExceptions(0)
+
+      n = this%numSuccesses
+      allocate(tmp(n))
+      tmp(1:n) = this%successes(1:n)
+      deallocate(this%successes)
+      allocate(this%successes(n+1))
+      this%successes(1:n) = tmp
+      deallocate(tmp)
+      this%successes(n+1) = TestFailure(aTest%getName(), noExceptions)
+
+      this%numSuccesses = n + 1
+
+   end subroutine addSuccess
 
    integer function failureCount(this)
       class (TestResult), intent(in) :: this
@@ -174,6 +202,8 @@ contains
             call this%addError(test, getExceptions())
          elseif (anyExceptions()) then
             call this%addFailure(test, getExceptions())
+         else
+            call this%addSuccess(test)
          end if
       end if
 

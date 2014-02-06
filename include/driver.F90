@@ -120,7 +120,7 @@ program main
    else if (useSubsetRunner) then
       allocate(runner, source=SubsetRunner(numSkip=numSkip))
    else
-      allocate(runner, source=newTestRunner())
+      allocate(runner, source=newTestRunner(printers))
    end if
 
    all = getTestSuites()
