@@ -31,7 +31,7 @@ function setModule {
    local version=$2
    local parallel=$3
 
-   . /usr/share/modules/init/bash
+   . "$MODULEINIT"
    if [ $? -ne 0 ]; then
       abortNotify "Problem with starting up the module environment"
    fi
@@ -59,9 +59,9 @@ function setModule {
          moduleMPI=' other/mpi/openmpi/1.7.3-pgi-13.9.0'
       fi
    elif [ "$fortranCompiler" == "NAG" ]; then
-      moduleFortran='comp/nag-5.3-907'
+      moduleFortran='comp/nag-5.3'
       if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
-         moduleMPI=' other/mpi/openmpi/1.6.5-nag-5.3-907'
+         moduleMPI=' other/mpi/openmpi/1.6.5-nag-5.3'
       fi
    elif [ "$fortranCompiler" == "GNU" ]; then
       if [ "$version" == "4.9.0" ]; then
@@ -192,7 +192,7 @@ INTEL_VERSIONS_master=(13.1 14.0)
 INTEL_VERSIONS_2_1_0=(13.0 13.1 14.0)
 GNU_VERSIONS_master=(4.9.0)
 GNU_VERSIONS_2_1_0=(4.8.1 4.9.0)
-NAG_VERSIONS=(5.3-907)
+NAG_VERSIONS=(5.3)
 
 # serial, mpi, omp, omp+mpi
 PARALLEL=(off mpi omp hybrid)

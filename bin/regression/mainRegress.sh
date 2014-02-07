@@ -38,7 +38,11 @@ function gitClone
 {
    echo "Clone sourceforge repository..."
    cd $SCR_DIR
-   GIT="/usr/local/other/SLES11.1/git/1.8.5.2/libexec/git-core/git"   
+   if [[ "$NODE" =~ discover ]]; then
+     GIT="/usr/local/other/SLES11.1/git/1.8.5.2/libexec/git-core/git"   
+   else
+     GIT=git
+   fi
    echo $GIT clone --quiet -b $BRANCH $GITREPO $BRANCH
    $GIT clone --quiet -b $BRANCH $GITREPO $BRANCH
    if [ ! -d $SCR_DIR/$BRANCH ]; then
@@ -124,7 +128,6 @@ if [ $# -lt 1 ]; then
    echo "First argument should be the branch name"
    exit 1
 fi
-
 BRANCH=$1
 # If a second (optional) argument is supplied then it is used. 
 # Second argument is the URL of the pFUnit git repository. Default:
@@ -137,11 +140,25 @@ else
   HEADING="pFUnit regression tests (repository: $GITREPO)"
 fi
 
+ARCH=`uname -s`
+NODE=`uname -n`
+curDate=`date +"%Y_%m_%d_%m_%s"`
+
+# Regression scripts rely on computational environment determined by
+# by modules (modules.sourceforge.net). We support two machines:
+if [[ "$NODE" =~ discover ]]; then  # discover nodes
+  MODULEINIT=/usr/share/modules/init/bash
+  SCRATCH=$NOBACKUP
+elif [[ "$NODE" =~ "ip-10" ]]; then # AWS nodes
+  MODULEINIT=/usr/local/Modules/default/init/bash
+  SCRATCH=/data
+fi
+export MODULEINIT
+
 # Set to 0 to run interactively
 USEBATCH=1
 
-curDate=`date +"%Y_%m_%d_%m_%s"`
-SCR_DIR=$NOBACKUP/$curDate
+SCR_DIR=$SCRATCH/$curDate
 LOG_DIR=$SCR_DIR/log
 mkdir -p $SCR_DIR $LOG_DIR
 export SCR_DIR=$SCR_DIR
