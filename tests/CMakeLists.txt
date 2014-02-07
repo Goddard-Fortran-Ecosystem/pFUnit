@@ -33,6 +33,7 @@ if (MPI)
   list(APPEND TEST_SRCS Test_MpiContext.F90)
   list(APPEND TEST_SRCS Test_MpiException.F90)
   list(APPEND TEST_SRCS Test_MpiTestCase.F90)
+  list(APPEND TEST_SRCS Test_MpiParameterizedTestCase.F90)
 endif()
 
 if (HAS_CPP)

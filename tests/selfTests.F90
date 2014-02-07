@@ -66,9 +66,10 @@ contains
 #endif
 
 #ifdef USE_MPI
-      use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
+      use Test_MpiContext_mod, only: MpiContextSuite => suite
       use Test_MpiException_mod, only: ParallelExceptionSuite => suite
-      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
+      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
+      use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
 
       type (TestSuite) :: allTests
@@ -112,6 +113,7 @@ contains
       ADD(MpiContextSuite)
       ADD(ParallelExceptionSuite)
       ADD(MpiTestCaseSuite)
+      ADD(MpiParameterizedTestCaseSuite)
 #endif
 
 #ifdef USE_MPI
