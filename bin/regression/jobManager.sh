@@ -61,7 +61,7 @@ function setModule {
    elif [ "$fortranCompiler" == "NAG" ]; then
       moduleFortran='comp/nag-5.3'
       if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
-         moduleMPI=' other/mpi/openmpi/1.6.5-nag-5.3'
+         moduleMPI=' other/mpi/openmpi/1.7.3-nag-5.3'
       fi
    elif [ "$fortranCompiler" == "GNU" ]; then
       if [ "$version" == "4.9.0" ]; then
