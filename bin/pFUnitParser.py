@@ -503,17 +503,23 @@ class Parser():
         declareArgs =  '      type (WrapUserTestCase) :: aTest\n'
         declareArgs += '      character(len=*), intent(in) :: methodName\n'
         declareArgs += '      procedure(userTestMethod) :: testMethod\n'
+        localVars = ''
         
         if 'testParameterType' in self.userTestCase:
             args += ', testParameter'
             declareArgs += '      type (' + self.userTestCase['testParameterType'] + '), intent(in) :: testParameter\n'
+            localVars += '      type (' + self.userTestCase['testParameterType'] + ') :: modTestParameter\n'
 
         if isMpiTestCase:
             args += ', npesRequested'
             declareArgs += '      integer, optional, intent(in) :: npesRequested\n\n'
+            if not 'testParameterType' in self.userTestCase:
+                localVars += '      type (MpiTestParameter) :: modTestParameter\n'
+
             
         self.outputFile.write('   function makeCustomTest(' + args + ') result(aTest)\n')
         self.outputFile.write(declareArgs)
+        self.outputFile.write(localVars)
 
         if 'constructor' in self.userTestCase:
             if 'testParameterType' in self.userTestCase:
@@ -525,13 +531,15 @@ class Parser():
         self.outputFile.write('      aTest%testMethodPtr => testMethod\n')
         self.outputFile.write('      call aTest%setName(methodName)\n')
 
-        if 'testParameterType' in self.userTestCase:
-           self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
-        
         if isMpiTestCase:
             self.outputFile.write('     if (present(npesRequested)) then\n')
-            self.outputFile.write('         call aTest%setNumProcessesRequested(npesRequested) \n')
+            self.outputFile.write('         call modTestParameter%setNumProcessesRequested(npesRequested) \n')
             self.outputFile.write('     end if\n\n')
+
+        if isMpiTestCase or 'testParameterType' in self.userTestCase:
+            self.outputFile.write('      call aTest%setTestParameter(modTestParameter)\n')
+        
+
 
         self.outputFile.write('   end function makeCustomTest\n')
 
