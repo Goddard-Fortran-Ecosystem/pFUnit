@@ -25,7 +25,6 @@ module RobustRunner_mod
    use TestCase_mod
    use BaseTestRunner_mod
    use UnixProcess_mod
-   use ResultPrinter_mod
    use AbstractPrinter_mod
    implicit none
    private

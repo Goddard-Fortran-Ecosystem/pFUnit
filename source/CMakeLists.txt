@@ -14,6 +14,8 @@ list(APPEND srcs ParallelContext.F90)
 list(APPEND srcs ParallelException.F90)
 list(APPEND srcs ParameterizedTestCase.F90)
 list(APPEND srcs Params.F90)
+list(APPEND srcs AbstractPrinter.F90)
+list(APPEND srcs XmlPrinter.F90)
 list(APPEND srcs ResultPrinter.F90)
 
 if ( ROBUST )
