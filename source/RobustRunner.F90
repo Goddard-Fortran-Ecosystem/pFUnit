@@ -77,6 +77,7 @@ contains
       character(len=*), intent(in) :: remoteRunCommand
       
       runner%remoteRunCommand = trim(remoteRunCommand)
+      allocate(runner%printers(0))
    end function newRobustRunner
 
    function newRobustRunner_printers(remoteRunCommand, printers) result(runner)
@@ -127,7 +128,7 @@ contains
       real :: runTime
 
       call system_clock(clockStart)
-      
+
       do i=1,size(this%printers)
          call result%addListener(this%printers(i)%pPrinter)
       end do

@@ -50,11 +50,8 @@ module TestRunner_mod
 contains
 
    function newTestRunner_default() result(runner)
-      use iso_fortran_env, only: OUTPUT_UNIT
       type (TestRunner) :: runner
-      type (PrinterPointer) :: printers(1)
-      allocate(printers(1)%pPrinter, source=newResultPrinter(OUTPUT_UNIT))
-      runner = newTestRunner(printers)
+      allocate(runner%printers(0))
    end function newTestRunner_default
 
    function newTestRunner_unit(printers) result(runner)

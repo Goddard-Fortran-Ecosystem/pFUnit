@@ -7,11 +7,11 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Halvor Lund, SINTEF Energy Research 
+!! Halvor Lund, SINTEF Energy Research
 !!
 !! @date
 !! 05 Feb 2014
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
@@ -46,7 +46,7 @@ module AbstractPrinter_mod
          character(len=*), intent(in) :: testName
          type (Exception), intent(in) :: exceptions(:)
       end subroutine addFailure
-      
+
       subroutine startTest(this, testName)
          import AbstractPrinter
          class (AbstractPrinter), intent(inOut) :: this

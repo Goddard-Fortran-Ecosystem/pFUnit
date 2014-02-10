@@ -7,11 +7,11 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Halvor Lund, SINTEF Energy Research 
+!! Halvor Lund, SINTEF Energy Research
 !!
 !! @date
 !! 30 Jan 2014
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
@@ -42,43 +42,41 @@ module XmlPrinter_mod
       procedure :: printFooter
    end type XmlPrinter
 
-   integer, parameter :: MAX_COLUMN = 40
-
 contains
 
-  function newXmlPrinter(unit)
-     type (XmlPrinter) :: newXmlPrinter
-     integer, intent(in) :: unit
+   function newXmlPrinter(unit)
+      type (XmlPrinter) :: newXmlPrinter
+      integer, intent(in) :: unit
 
-     newXmlPrinter%unit = unit
+      newXmlPrinter%unit = unit
 
-  end function newXmlPrinter
+   end function newXmlPrinter
 
-  subroutine addFailure(this, testName, exceptions)
-     use Exception_mod
-     class (XmlPrinter), intent(inOut) :: this
-     character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: exceptions(:)
+   subroutine addFailure(this, testName, exceptions)
+      use Exception_mod
+      class (XmlPrinter), intent(inOut) :: this
+      character(len=*), intent(in) :: testName
+      type (Exception), intent(in) :: exceptions(:)
 
-  end subroutine addFailure
+   end subroutine addFailure
 
-  subroutine addError(this, testName, exceptions)
-     use Exception_mod
-     class (XmlPrinter), intent(inOut) :: this
-     character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: exceptions(:)
+   subroutine addError(this, testName, exceptions)
+      use Exception_mod
+      class (XmlPrinter), intent(inOut) :: this
+      character(len=*), intent(in) :: testName
+      type (Exception), intent(in) :: exceptions(:)
 
-  end subroutine addError
+   end subroutine addError
 
-  subroutine startTest(this, testName)
-     class (XmlPrinter), intent(inOut) :: this
-     character(len=*), intent(in) :: testName
+   subroutine startTest(this, testName)
+      class (XmlPrinter), intent(inOut) :: this
+      character(len=*), intent(in) :: testName
 
    end subroutine startTest
 
-  subroutine endTest(this, testName)
-     class (XmlPrinter), intent(inOut) :: this
-     character(len=*), intent(in) :: testName
+   subroutine endTest(this, testName)
+      class (XmlPrinter), intent(inOut) :: this
+      character(len=*), intent(in) :: testName
 
    end subroutine endTest
 
@@ -100,7 +98,6 @@ contains
       use TestResult_mod
       class (XmlPrinter), intent(in) :: this
       type(TestResult), intent(in) :: result
-      
 
       write(this%unit,'(a,i0,a,i0,a,i0,a)') &
            '<testsuite errors="', result%errorCount(),&
@@ -162,7 +159,7 @@ contains
          string = '[' // trim(string) // ']'
 
       end function toString
-      
+
    end subroutine printFailures
 
    subroutine printSuccesses(this, successes)

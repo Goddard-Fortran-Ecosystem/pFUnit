@@ -111,7 +111,6 @@ program main
 #else
       fullExecutable = executable
 #endif
-      
       allocate(runner, source=RobustRunner(fullExecutable, printers))
 #else
       ! TODO: This should be a failing test.

@@ -55,7 +55,7 @@ endif
 include $(INCLUDE_DIR)/extensions.mk
 
 # Default compiler by architecture - always gfortran for now:
-F90 ?=gfortran-4.8
+F90 ?=gfortran
 F90_VENDOR ?=GNU
 
 # 32/64 ABI - almost all architectures are now 64 bit
