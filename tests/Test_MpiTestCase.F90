@@ -46,9 +46,10 @@ contains
       procedure(method) :: userMethod
       integer, intent(in) :: numProcesses
 
+
       call this%setName(name)
       this%testMethod => userMethod
-      call this%setNumProcessesRequested(numProcesses)
+      call this%setTestParameter(MpiTestParameter(numProcesses))
 
     end function newTest_MpiTestCase
 
