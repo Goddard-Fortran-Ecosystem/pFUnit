@@ -9,10 +9,10 @@ I=-I
 M=-I
 L=-L
 
-F90FLAGS += -g -O0 -WF,-qfpp -C
+FFLAGS += -g -O0 -WF,-qfpp -C
 
 ifeq ($(USEOPENMP),YES)
-F90FLAGS += -qsmp=omp
+FFLAGS += -qsmp=omp
 endif
 
 FPPFLAGS = $DSTRINGIFY_SIMPLE $DIBM

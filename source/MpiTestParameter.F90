@@ -28,7 +28,6 @@ contains
       type (MpiTestParameter) :: testParameter
       integer, intent(in) :: numProcessesRequested
       
-! Needs fixing...
       call testParameter%setNumProcessesRequested(numProcessesRequested)
       
    end function newMpiTestParameter

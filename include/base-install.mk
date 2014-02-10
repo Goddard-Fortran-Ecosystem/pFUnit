@@ -25,7 +25,7 @@ DEBUG_FLAGS =-g
 COMPILER ?= COMPILER_NOT_SET
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
-F90FLAGS += $I$(INCLUDE_DIR)
+FFLAGS += $I$(INCLUDE_DIR)
 
 ifeq ($(BUILDROBUST),YES)
   FFLAGS += $DBUILD_ROBUST
@@ -41,11 +41,11 @@ endif
 
 ifeq ($(F90_HAS_CPP),YES)
 %$(OBJ_EXT): %.F90
-	$(FC) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
+	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
 else
 %$(OBJ_EXT):%.F90
 	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(F90FLAGS)  $*_cpp.F90 -o $@
+	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
 	$(RM) $*_cpp.F90
 endif
 
