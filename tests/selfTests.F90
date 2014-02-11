@@ -27,6 +27,8 @@ contains
       use pFUnit_mod, only: newTestSuite
       use pFUnit_mod, only: TestSuite
       use pFUnit_mod, only: TestRunner, newTestRunner
+      use pFUnit_mod, only: newResultPrinter, PrinterPointer
+      use iso_fortran_env, only: OUTPUT_UNIT
 #ifdef USE_MPI
       use MpiContext_mod
       use ParallelException_mod
@@ -70,9 +72,12 @@ contains
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
+      type (PrinterPointer) :: printers(1)
+
+      allocate(printers(1)%pPrinter, source=newResultPrinter(OUTPUT_UNIT))
 
       allTests = newTestSuite('allTests')
-      runner = newTestRunner()
+      runner = newTestRunner(printers)
 
 #define ADD(suite) call allTests%addTest(suite())
 

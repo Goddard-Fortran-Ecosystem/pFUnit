@@ -62,6 +62,7 @@ module pFUnit_mod
    public :: SubsetRunner
    public :: newResultPrinter
    public :: newXmlPrinter
+   public :: PrinterPointer
 #ifdef BUILD_ROBUST
    public :: RobustRunner
 #endif
