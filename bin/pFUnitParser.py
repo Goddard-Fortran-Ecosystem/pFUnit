@@ -256,7 +256,8 @@ class AtTestParameter(Action):
 
         self.parser.commentLine(line)
         nextLine = self.parser.nextLine()
-        self.parser.userTestCase['testParameterType'] = getTypeName(nextLine)
+        if not 'testParameterType' in self.parser.userTestCase:
+            self.parser.userTestCase['testParameterType'] = getTypeName(nextLine)
         self.parser.outputFile.write(nextLine)
 
         if options:
@@ -478,21 +479,27 @@ class Parser():
             elif 'testParameters' in self.userTestCase:
                 testParameters = self.userTestCase['testParameters']
 
+        isMpiTestCase = 'npRequests' in self.userTestCase
+        isMpiTestCase = isMpiTestCase or any('npRequests' in method for method in self.userTestMethods)
+
         if 'testParameters' in locals():
             testParameterArg = ', testParameter'
             self.outputFile.write('   testParameters = ' + testParameters + '\n\n')
+        elif isMpiTestCase:
+            testParameterArg = ', testParameter'
         
+
         for npes in npRequests:
-            npesArg = ''
-            if 'npRequests' in method or 'npRequests' in self.userTestCase:
-                npesArg = ', npesRequested=' + str(npes)
 
             if 'testParameters' in locals() or 'cases' in locals():
                 self.outputFile.write('   do iParam = 1, size(testParameters)\n')
                 self.outputFile.write('      testParameter = testParameters(iParam)\n')
 
+            if isMpiTestCase:
+                self.outputFile.write('   call testParameter%setNumProcessesRequested(' + str(npes) + ')\n')
+
             self.outputFile.write('   call suite%addTest(makeCustomTest(' + 
-                                  args + testParameterArg + npesArg + '))\n')
+                                  args + testParameterArg + '))\n')
             if 'cases' in locals() or 'testParameters' in locals():
                 self.outputFile.write('   end do\n')
 
@@ -508,10 +515,6 @@ class Parser():
             args += ', testParameter'
             declareArgs += '      type (' + self.userTestCase['testParameterType'] + '), intent(in) :: testParameter\n'
 
-        if isMpiTestCase:
-            args += ', npesRequested'
-            declareArgs += '      integer, optional, intent(in) :: npesRequested\n\n'
-            
         self.outputFile.write('   function makeCustomTest(' + args + ') result(aTest)\n')
         self.outputFile.write(declareArgs)
 
@@ -526,12 +529,8 @@ class Parser():
         self.outputFile.write('      call aTest%setName(methodName)\n')
 
         if 'testParameterType' in self.userTestCase:
-           self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
+            self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
         
-        if isMpiTestCase:
-            self.outputFile.write('     if (present(npesRequested)) then\n')
-            self.outputFile.write('         call aTest%setNumProcessesRequested(npesRequested) \n')
-            self.outputFile.write('     end if\n\n')
 
         self.outputFile.write('   end function makeCustomTest\n')
 
@@ -551,6 +550,9 @@ class Parser():
         if 'type' in self.userTestCase:
             isMpiTestCase = 'npRequests' in self.userTestCase
             isMpiTestCase = isMpiTestCase or any('npRequests' in method for method in self.userTestMethods)
+            if isMpiTestCase and not 'testParameterType' in self.userTestCase:
+                self.userTestCase['testParameterType'] = 'MpiTestParameter'
+
             self.printMakeCustomTest(isMpiTestCase)
 
         self.printTail()

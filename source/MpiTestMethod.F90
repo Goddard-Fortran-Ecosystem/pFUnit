@@ -24,6 +24,7 @@ module MpiTestMethod_mod
    use Test_mod
    use TestCase_mod
    use MpiTestCase_mod
+   use MpiTestParameter_mod
    implicit none
    private
 
@@ -67,7 +68,7 @@ contains
 
       call mpiTest%setName(name)
       mpiTest%userMethod => userMethod
-      call mpiTest%setNumProcessesRequested(numProcesses)
+      call mpiTest%setTestParameter(MpiTestParameter(numProcesses))
 
    end function newMpiTest_basic
 
@@ -81,7 +82,7 @@ contains
 
       call mpiTest%setName(name)
       mpiTest%userMethod => userMethod
-      call mpiTest%setNumProcessesRequested(numProcesses)
+      call mpiTest%setTestParameter(MpiTestParameter(numProcesses))
 
       mpiTest%userSetUp => setUp
       mpiTest%userTearDown => tearDown

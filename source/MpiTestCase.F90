@@ -38,7 +38,6 @@ module MpiTestCase_mod
       type (MpiContext) :: context
       type (MpiContext) :: parentContext
    contains
-      procedure :: setNumProcessesRequested
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
       procedure :: runBare
@@ -134,11 +133,5 @@ contains
       allocate(context, source=this%context)
 
    end function getContext
-
-   subroutine setNumProcessesRequested(this, numProcessesRequested)
-      class (MpiTestCase), intent(inout) :: this
-      integer, intent(in) :: numProcessesRequested
-      call this%setTestParameter(MpiTestParameter(numProcessesRequested))
-   end subroutine setNumProcessesRequested
 
 end module MpiTestCase_mod
