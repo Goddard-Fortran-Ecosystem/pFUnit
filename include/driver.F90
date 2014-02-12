@@ -28,6 +28,7 @@ program main
    logical :: xmlFileOpened
    class (PrinterPointer), allocatable :: printers(:)
 
+   integer :: returnCode
    class (ParallelContext), allocatable :: context
 
    useRobustRunner = .false.
@@ -125,7 +126,7 @@ program main
    all = getTestSuites()
    call getContext(context, useMpi)
 
-   call runner%run(all, context)
+   call runner%run(all, context, returnCode)
 
    call finalize()
 
@@ -133,6 +134,8 @@ program main
    if(printXmlFile .and. xmlFileOpened) then
       close(xmlFileUnit)
    end if
+
+   call exit(returnCode)
 
 contains
 

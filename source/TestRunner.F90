@@ -66,7 +66,7 @@ contains
       tstResult = newTestResult()
     end function createTestResult
 
-    subroutine run(this, aTest, context)
+    subroutine run(this, aTest, context, returnCode)
       use Test_mod
       use TestResult_mod
       use ParallelContext_mod
@@ -74,6 +74,7 @@ contains
       class (TestRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
+      integer, intent(out) :: returnCode
 
       type (TestResult) :: result
       integer :: clockStart
@@ -100,6 +101,8 @@ contains
             call this%printers(i)%pPrinter%print(result, runTime)
          end do
       end if
+
+      returnCode = getReturnCode(result)
 
    end subroutine run
 

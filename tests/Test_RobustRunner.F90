@@ -30,12 +30,14 @@ contains
       use Assert_mod
       use AbstractPrinter_mod
       use ResultPrinter_mod
+      use BaseTestRunner_mod, only: RETURN_FAILURE
 
       type (RobustRunner) :: runner
       type (SerialContext) :: context
       type (TestSuite) :: suite
       type (TestResult) :: result
       type (PrinterPointer) :: printers(1)
+      integer :: returnCode
 
       integer :: unit
 
@@ -44,11 +46,12 @@ contains
       runner = RobustRunner('./tests/remote.x', printers)
       result = newTestResult()
       suite = remoteSuite()
-      call runner%runWithResult(suite, context, result)
+      call runner%runWithResult(suite, context, result, returnCode)
 
       call assertEqual(4, result%runCount(),'runCount()')
       call assertEqual(1, result%failureCount(), 'failureCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')
+      call assertEqual(RETURN_FAILURE, returnCode)
 
       close(unit)
       

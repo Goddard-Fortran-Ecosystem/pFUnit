@@ -92,7 +92,7 @@ contains
       class (TestCaseMonitor), intent(inout) :: this
    end subroutine runMethod
 
-   subroutine run(this, aTest, context)
+   subroutine run(this, aTest, context, returnCode)
       use Test_mod
       use TestSuite_mod
       use TestResult_mod
@@ -100,15 +100,16 @@ contains
       class (RobustRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
+      integer, intent(out) :: returnCode
 
       type (TestResult) :: result
 
       result = this%createTestResult()
-      call this%runWithResult(aTest, context, result)
+      call this%runWithResult(aTest, context, result, returnCode)
 
    end subroutine run
 
-   subroutine runWithResult(this, aTest, context, result)
+   subroutine runWithResult(this, aTest, context, result, returnCode)
       use Test_mod
       use ParallelContext_mod
       use TestResult_mod
@@ -119,6 +120,7 @@ contains
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
       type (TestResult), intent(inout) :: result
+      integer, intent(out) :: returnCode
 
       type (TestCaseReference), allocatable :: testCases(:)
       type (RemoteProxyTestCase) :: proxy
@@ -163,7 +165,9 @@ contains
             call this%printers(i)%pPrinter%print(result, runTime)
          end do
       end if
-         
+
+      returnCode = getReturnCode(result)
+
    end subroutine runWithResult
 
    subroutine launchRemoteRunner(this, numSkip)

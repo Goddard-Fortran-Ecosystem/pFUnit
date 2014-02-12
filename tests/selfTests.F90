@@ -73,6 +73,7 @@ contains
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
       type (PrinterPointer) :: printers(1)
+      integer :: returnCode
 
       allocate(printers(1)%pPrinter, source=newResultPrinter(OUTPUT_UNIT))
 
@@ -116,9 +117,9 @@ contains
 #endif
 
 #ifdef USE_MPI
-      call runner%run(allTests, newMpiContext())
+      call runner%run(allTests, newMpiContext(), returnCode)
 #else
-      call runner%run(allTests, newSerialContext())
+      call runner%run(allTests, newSerialContext(), returnCode)
 #endif
 
    end subroutine runTests

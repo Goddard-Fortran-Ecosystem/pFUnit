@@ -25,7 +25,9 @@ module BaseTestRunner_mod
    implicit none
    private
 
-   public :: BaseTestRunner
+   integer, parameter :: RETURN_OK = 0, RETURN_FAILURE = 1
+
+   public :: BaseTestRunner, getReturnCode, RETURN_OK, RETURN_FAILURE
 
    type, abstract, extends(TestListener) :: BaseTestRunner
    contains
@@ -33,7 +35,7 @@ module BaseTestRunner_mod
    end type BaseTestRunner
 
    abstract interface
-      subroutine run(this, aTest, context)
+      subroutine run(this, aTest, context, returnCode)
          use Test_mod
          use ParallelContext_mod
          import BaseTestRunner
@@ -41,8 +43,9 @@ module BaseTestRunner_mod
          class (BaseTestRunner), intent(inout) :: this
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context
+         integer, intent(out) :: returnCode
       end subroutine run
-      
+
 !!$      subroutine startTest(this, testName)
 !!$         import BaseTestRunner
 !!$         class (BaseTestRunner), intent(inout) :: this
@@ -63,5 +66,17 @@ module BaseTestRunner_mod
 !!$         type (Exception), intent(in) :: exceptions(:)
 !!$      end subroutine addFailure
    end interface
+
+contains
+
+   integer function getReturnCode(aTestResult) result(returnCode)
+      use TestResult_mod
+      type (TestResult), intent(in) :: aTestResult
+      if(aTestResult%wasSuccessful()) then
+         returnCode = RETURN_OK
+      else
+         returnCode = RETURN_FAILURE
+      end if
+   end function getReturnCode
 
 end module BaseTestRunner_mod
