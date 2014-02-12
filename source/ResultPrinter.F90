@@ -112,9 +112,10 @@ contains
 
    end subroutine endTest
 
-   subroutine print(this, result, runTime)
+   subroutine print(this, name, result, runTime)
       use TestResult_mod
       class (ResultPrinter), intent(in) :: this
+      character(len=*), intent(in) :: name
       type (TestResult), intent(in) :: result
       real, intent(in) :: runTime
 

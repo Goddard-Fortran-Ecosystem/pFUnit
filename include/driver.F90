@@ -2,6 +2,7 @@ program main
    use pfunit_mod
    use ParallelContext_mod
    use AbstractPrinter_mod
+   use Test_mod
    use iso_fortran_env, only: OUTPUT_UNIT
    implicit none
 #ifdef USE_MPI
@@ -27,6 +28,7 @@ program main
    integer :: xmlFileUnit
    logical :: xmlFileOpened
    class (PrinterPointer), allocatable :: printers(:)
+   character(len=128) :: suiteName
 
    integer :: returnCode
    class (ParallelContext), allocatable :: context
@@ -40,6 +42,8 @@ program main
    allocate(character(len=length) :: executable)
    allocate(character(len=length+30) :: fullExecutable)
    call get_command_argument(0, value=executable)
+
+   suiteName = 'default_suite_name'
 
    i = 0
    do
@@ -72,6 +76,9 @@ program main
          allocate(character(len=length) :: xmlFileName)
          call get_command_argument(i, value=xmlFileName)
          printXmlFile = .true.
+      case ('-name')
+         i = i + 1
+         call get_command_argument(i, value=suiteName)
       end select
       deallocate(argument)
    end do
@@ -124,6 +131,8 @@ program main
    end if
 
    all = getTestSuites()
+   call all%setName(suiteName)
+
    call getContext(context, useMpi)
 
    call runner%run(all, context, returnCode)

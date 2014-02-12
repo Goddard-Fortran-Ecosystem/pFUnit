@@ -68,6 +68,8 @@ contains
 
     subroutine run(this, aTest, context, returnCode)
       use Test_mod
+      use TestSuite_mod
+      use TestCase_mod
       use TestResult_mod
       use ParallelContext_mod
       use DebugListener_mod
@@ -82,6 +84,7 @@ contains
       integer :: clockRate
       real :: runTime
       integer :: i
+      character(:), allocatable :: name
 
       type (DebugListener) :: debug
 
@@ -96,9 +99,10 @@ contains
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
       runTime = real(clockStop - clockStart) / clockRate
+      name = aTest%getName()
       if (context%isRootProcess())  then
          do i=1,size(this%printers)
-            call this%printers(i)%pPrinter%print(result, runTime)
+            call this%printers(i)%pPrinter%print(name, result, runTime)
          end do
       end if
 

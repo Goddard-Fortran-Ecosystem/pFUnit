@@ -59,10 +59,11 @@ module AbstractPrinter_mod
          character(len=*), intent(in) :: testName
       end subroutine endTest
 
-      subroutine print(this, result, runTime)
+      subroutine print(this, name, result, runTime)
          use TestResult_mod
          import AbstractPrinter
          class (AbstractPrinter), intent(in) :: this
+         character(len=*), intent(in) :: name
          type (TestResult), intent(in) :: result
          real, intent(in) :: runTime
       end subroutine print

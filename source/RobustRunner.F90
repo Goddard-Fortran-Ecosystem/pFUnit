@@ -127,6 +127,7 @@ contains
       integer :: i
       integer :: clockStart, clockStop, clockRate
       real :: runTime
+      character(:), allocatable :: name
 
       call system_clock(clockStart)
 
@@ -142,13 +143,12 @@ contains
 #else
          call aTest%getTestCases(testCases)
 #endif
-
       class is (TestCase)
          testCases = [TestCaseReference(aTest)]
       class default
          stop
       end select
-
+      name = aTest%getName()
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
@@ -162,7 +162,7 @@ contains
 
       if (context%isRootProcess())  then
          do i=1,size(this%printers)
-            call this%printers(i)%pPrinter%print(result, runTime)
+            call this%printers(i)%pPrinter%print(name, result, runTime)
          end do
       end if
 
