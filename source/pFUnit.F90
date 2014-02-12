@@ -133,6 +133,8 @@ contains
          call MPI_Bcast(allSuccessful, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, error)
          call mpi_finalize(error)
       else
+         ! If using MPI-PFUNIT on serial code, ensure amRoot is set.
+         amRoot = .true.
       end if
 #else
       amRoot = .true.

@@ -43,6 +43,7 @@ OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
+# The following sets robust to "ON".
 OPTION(ROBUST "Build robust test runner" YES)
 
 # OPTION doesn't seem to work as expected.

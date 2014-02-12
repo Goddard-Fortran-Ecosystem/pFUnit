@@ -33,7 +33,8 @@ ifeq ($(BUILDROBUST),YES)
   CPPFLAGS += -DBUILD_ROBUST
 endif
 
-ifneq ($(MPI),YES)
+# include/driver.F90 needs both BUILD_ROBUST
+ifneq ($(USEMPI),YES)
   FC=$(F90)
 else
   FC=$(MPIF90)
