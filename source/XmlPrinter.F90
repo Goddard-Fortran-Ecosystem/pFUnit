@@ -102,7 +102,7 @@ contains
       type(TestResult), intent(in) :: result
       real, intent(in) :: runTime
 
-      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,e12.3,a)') &
+      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f8.4,a)') &
            '<testsuite name="', name, &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
