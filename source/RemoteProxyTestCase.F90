@@ -43,7 +43,7 @@ module RemoteProxyTestCase_mod
       module procedure newRemoteProxyTestCase
    end interface RemoteProxyTestCase
 
-   real, parameter :: MAX_TIME_TEST = 0.10 ! in seconds
+   real, parameter :: MAX_TIME_TEST = 1.00 ! in seconds
 
 contains
 
