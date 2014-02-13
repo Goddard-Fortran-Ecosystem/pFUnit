@@ -35,6 +35,7 @@ module Test_mod
       procedure(countTestCases), deferred :: countTestCases
       procedure(run), deferred :: run
       procedure(getName), deferred :: getName
+      procedure :: setName
    end type Test
 
    abstract interface
@@ -60,5 +61,11 @@ module Test_mod
       end function getName
 
    end interface
+contains
+   subroutine setName(this, name)
+      class (Test), intent(inout) :: this
+      character(len=*), intent(in) :: name
+      ! Default: Cannot change name
+   end subroutine setName
 
 end module Test_mod

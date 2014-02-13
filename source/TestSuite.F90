@@ -114,9 +114,12 @@ contains
    recursive subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
+      character(MAX_LENGTH_NAME) :: name
       
       call extend(this%tests)
       allocate(this%tests(this%getNumTests())%pTest, source=aTest)
+      name = this%getName() // '.' // this%tests(this%getNumTests())%pTest%getName()
+      call this%tests(this%getNumTests())%pTest%setName(name)
       
    contains   
       
