@@ -139,9 +139,11 @@ program main
 
    call finalize()
 
-   inquire(unit=xmlFileUnit, opened=xmlFileOpened)
-   if(printXmlFile .and. xmlFileOpened) then
-      close(xmlFileUnit)
+   if(printXmlFile) then
+      inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+      if(xmlFileOpened) then
+         close(xmlFileUnit)
+      end if
    end if
 
    call exit(returnCode)
