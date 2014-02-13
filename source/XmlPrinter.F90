@@ -87,7 +87,7 @@ contains
       type (TestResult), intent(in) :: result
       real, intent(in) :: runTime
 
-      call this%printHeader(name, result)
+      call this%printHeader(name, result, runTime)
       call this%printSuccesses(result%successes)
       call this%printFailures('error', result%errors)
       call this%printFailures('failure', result%failures)
@@ -95,17 +95,19 @@ contains
 
    end subroutine print
 
-   subroutine printHeader(this, name, result)
+   subroutine printHeader(this, name, result, runTime)
       use TestResult_mod
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: name
       type(TestResult), intent(in) :: result
+      real, intent(in) :: runTime
 
-      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a)') &
+      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,e12.3,a)') &
            '<testsuite name="', name, &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
-           '" tests="', result%runCount(),'">'
+           '" tests="', result%runCount(),&
+           '" time="', runTime, '">'
 
    end subroutine printHeader
 
