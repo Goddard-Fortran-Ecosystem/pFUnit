@@ -34,10 +34,16 @@ OPENMP
 GNU Make
 Python
 
+A CMake build process is also available.
+
 Doxygen is used to generate documentation (see http://www.doxygen.org).
 
 The system is routinely undergoes regression testing, including with GNU,
 Intel, and NAG fortran compilers and OpenMPI.
+
+pFUnit makes extensive use of leading edge Fortran language features,
+which are generally best supported with by the latest compiler
+versions.  The capacity to support older compilers is limited.
 
 2. OBTAINING PFUNIT
 

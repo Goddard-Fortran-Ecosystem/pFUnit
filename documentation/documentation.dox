@@ -679,8 +679,11 @@ important directives follow.
 
 This directive is used to indicate a test routine to the preprocessor,
 which then includes it in the test suite.  There may be multiple
-tests in the .pf file, each annotated by the @Test directive.  For
-example, from Examples/Fixture:
+tests in the .pf file, each annotated by the @Test directive.  
+
+@Test also supports MPI-parallel tests (see \ref s3_atMPITest ).
+
+An example, from Examples/Fixture:
 
 \code
 @Test
@@ -698,13 +701,15 @@ example, from Examples/Fixture:
 
 \subsubsection s3_atMPITest @MPITest
 
+@MPITest is deprecated as @Test now handles this case.
+
 This directive indicates an MPI parallel test to the preprocessor,
 which then includes it in an MPI enabled test suite.  The directive
 takes a single argument, the requested number of MPI processes to run.
 The syntax, exemplified by one of the tests from Examples/MPI_Halo:
 
 \code
-@mpiTest( npes=[1,2,3])
+@Test( npes=[1,2,3])
 subroutine testHaloInterior(this)
    use Halo_mod
    use pfunit_mod
