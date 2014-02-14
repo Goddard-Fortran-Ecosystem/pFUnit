@@ -8,7 +8,6 @@ tests: $(OBJS)
 
 testSuites.inc: $(SRCS)
 
-
 FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
 ifeq ($(F90),nagfor)
    FFLAGS += -fpp

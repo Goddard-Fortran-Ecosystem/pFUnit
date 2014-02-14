@@ -1,7 +1,6 @@
 program main
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
-   use ParallelContext_mod
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
@@ -60,11 +59,11 @@ program main
               & status='unknown', access='sequential')
 
       case ('-robust')
-#ifndef Windows
+#ifdef BUILD_ROBUST
          useRobustRunner = .true.
 #else
          ! TODO: This should be a failing test.
-         write (*,*) 'Robust mode not supported under Windows'
+         write (*,*) 'Robust runner not built.'
          useRobustRunner = .false.
 #endif
       case ('-skip')
@@ -95,7 +94,7 @@ program main
 
    if (useRobustRunner) then
       useMpi = .false. ! override build
-#ifndef Windows
+#ifdef BUILD_ROBUST
 #ifdef USE_MPI
       allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable, outputUnit))
 #else
@@ -103,7 +102,7 @@ program main
 #endif
 #else
       ! TODO: This should be a failing test.
-      write (*,*) 'Robust mode not supported under Windows'
+      write (*,*) 'Robust runner not built.'
 #endif
    else if (useSubsetRunner) then
       allocate(runner, source=SubsetRunner(numSkip=numSkip))

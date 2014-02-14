@@ -4,11 +4,10 @@ I=-I
 M=-I
 L=-L
 
+FFLAGS += -g -O0 -f2008 -w=uda -gline -fpp -mismatch_all
 
 ifeq ($(USEOPENMP),YES)
-F90FLAGS += -g -O0 -f2008 -w=uda -openmp -fpp -mismatch_all
-else
-F90FLAGS += -g -O0 -f2008 -w=uda -gline -fpp -mismatch_all
+FFLAGS += -openmp
 endif
 
 F90_HAS_CPP=NO

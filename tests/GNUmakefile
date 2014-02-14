@@ -18,7 +18,7 @@ dependencies.inc:
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
 EXCLUDE = $(PROGRAMS)
-ifeq ($(UNAME),Windows)
+ifneq ($(BUILDROBUST),YES)
 EXCLUDE += RobustRunner.F90 Test_RobustRunner.F90 Test_UnixProcess.F90
 endif
 
@@ -31,7 +31,7 @@ ifneq ($(USEMPI),YES)
    OBJS_SERIAL=$(SRCS_SERIAL:%.F90=%$(OBJ_EXT))
 endif
 
-F90FLAGS +=$M$(MOD_DIR)
+FFLAGS +=$M$(MOD_DIR)
 
 ifneq ($(UNAME),Windows)
 LIBS = $L$(LIB_DIR) -lpfunit
@@ -53,16 +53,16 @@ ifeq ($(USEMPI),YES)
 
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) -g
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) -g
 
 else
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(F90FLAGS) $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
 
 endif
 

@@ -1,4 +1,4 @@
-.PHONY: tests all documentation
+.PHONY: tests all documentation config
 
 TOP_DIR ?=$(shell pwd)
 
@@ -15,9 +15,9 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 # code that also do not respect the CamelCase convention.  The Fortran
 # standard specifies case insensitivity.
 #
-DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 # DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
-# DOXYGEN ?= doxygen
+DOXYGEN ?= doxygen
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -69,6 +69,12 @@ endif
 MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
 
+ifneq ($(UNAME),Windows)
+ROBUST ?=YES # for now include RobustRunner by default
+else
+ROBUST = NO
+endif
+
 # F90 Vendor common elements (override below)
 FFLAGS ?=
 D=-D
@@ -89,7 +95,7 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
-  else ifeq ($(F90),xlf)
+  else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
@@ -126,6 +132,13 @@ ifneq ($(findstring $(OPENMP),yes YES Yes),)
   USEOPENMP=YES
 endif
 
+ifneq ($(findstring $(ROBUST),yes YES Yes),)
+  BUILDROBUST=YES
+  FFLAGS += $DBUILD_ROBUST
+  FPPFLAGS += $DBUILD_ROBUST
+  CPPFLAGS += -DBUILD_ROBUST
+endif
+
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
 CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
 
@@ -141,7 +154,7 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all:
+all: include/configuration.mk
 	$(MAKE) -C $(SOURCE_DIR) all
 	$(MAKE) -C $(TESTS_DIR) all
 
@@ -156,11 +169,13 @@ documentation/pFUnit2-ReferenceManual.pdf: documentation
 clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
+	\rm -f include/configuration.mk
 
 distclean:
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(MAKE) -C $(DOC_DIR) distclean
+	\rm -f include/configuration.mk
 
 tests: all
 ifeq ($(USEMPI),YES)
@@ -174,15 +189,23 @@ develop:
 
 install: libpfunit$(LIB_EXT)
 INSTALL_DIR ?= $(CURDIR)
-install:
+install: 
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	tools/install $(INSTALL_DIR)/lib source/lib*
 	tools/install $(INSTALL_DIR)/mod source/*.mod
 	tools/install $(INSTALL_DIR) include
-	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
+	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
 	tools/install $(INSTALL_DIR) bin
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
+
+include/configuration.mk:
+	@echo "# include/configuration.mk generated automatically during build" \
+		> include/configuration.mk
+	@echo COMPILER  ?= $(COMPILER) >> include/configuration.mk
+	@echo USEOPENMP ?= $(USEOPENMP) >> include/configuration.mk
+	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
+	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
 
 export UNAME
 export OBJ_EXT
@@ -206,6 +229,7 @@ export VPATH
 export MPI
 export USEMPI
 export USEOPENMP
+export BUILDROBUST
 export MPIF90
 export LIBMPI
 export COMPILER

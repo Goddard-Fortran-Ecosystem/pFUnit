@@ -1,12 +1,13 @@
 .PHONY: clean distclean tests
 
+
 TOP_DIR := $(shell pwd)
 TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(TEST_DIR)
 
-# Decide the file extensions.
-include $(PFUNIT)/include/extensions.mk
+#
+include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp
@@ -22,7 +23,7 @@ all: $(EXE)
 	mpirun -np 4 ./$(EXE)
 
 $(EXE): testSuites.inc parameterizedTests.pf tests
-	$(MPIF90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit -DUSE_MPI $(FFLAGS)
+	$(MPIF90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) -DUSE_MPI $(FFLAGS)
 
 clean:
 	make -C $(TEST_DIR) clean

@@ -8,11 +8,11 @@ ifneq ($(UNAME),Windows)
 # Non-Windows (Linux) command line options for the intel compiler
 version = $(shell $(F90) --version | grep -E '\(IFORT\) 13')
 
-F90FLAGS += -assume realloc_lhs
-F90FLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check uninit
+FFLAGS += -assume realloc_lhs
+FFLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check uninit
 
 ifeq ($(USEOPENMP),YES)
-F90FLAGS += -openmp
+FFLAGS += -openmp
 endif
 
 
@@ -21,11 +21,11 @@ else
 version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
 
 # Suppress version information with each compile.
-F90FLAGS += /nologo
-F90FLAGS += /assume:realloc_lhs
-F90FLAGS += /Z7 /Od /traceback /check:uninit /check:bounds /check:stack /check:uninit
+FFLAGS += /nologo
+FFLAGS += /assume:realloc_lhs
+FFLAGS += /Z7 /Od /traceback /check:uninit /check:bounds /check:stack /check:uninit
 # Enable the Fortran preprocessor
-F90FLAGS += /fpp
+FFLAGS += /fpp
 
 # Remove the DEBUG_FLAGS -g option.
 DEBUG_FLAGS = /Z7
@@ -33,7 +33,7 @@ endif
 
 
 # Common command line options.
-F90FLAGS += -DSTRINGIFY_OPERATOR
+FFLAGS += -DSTRINGIFY_OPERATOR
 
 
 CPPFLAGS +=-DSTRINGIFY_OPERATOR -DIntel
@@ -45,4 +45,7 @@ ifneq ($(version),)
   FPPFLAGS+=-DINTEL_13
 endif
 
-
+ifeq ($(USEOPENMP),YES)
+FFLAGS += -openmp
+LIBS += -openmp
+endif

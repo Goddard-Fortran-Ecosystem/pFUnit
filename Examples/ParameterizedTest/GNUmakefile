@@ -6,8 +6,8 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-# Decide the file extensions.
-include $(PFUNIT)/include/extensions.mk
+#
+include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp
@@ -19,7 +19,7 @@ all: $(EXE)
 	./$(EXE)
 
 $(EXE): testSuites.inc SUT tests
-	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
 
 clean:
 	make -C $(SRC_DIR) clean

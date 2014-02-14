@@ -31,10 +31,10 @@ module pFUnit_mod
    use AbstractTestParameter_mod
    use ParameterizedTestCase_mod
    use TestResult_mod
-   use BaseTestRunner_mod
    use TestRunner_mod
+   use BaseTestRunner_mod
    use SubsetRunner_mod
-#ifndef Windows
+#ifdef BUILD_ROBUST
    use RobustRunner_mod
 #endif
    use Assert_mod
@@ -61,7 +61,7 @@ module pFUnit_mod
    public :: TestRunner, newTestRunner
    public :: BaseTestRunner
    public :: SubsetRunner
-#ifndef Windows
+#ifdef BUILD_ROBUST
    public :: RobustRunner
 #endif
    public :: TestCase
@@ -133,6 +133,8 @@ contains
          call MPI_Bcast(allSuccessful, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, error)
          call mpi_finalize(error)
       else
+         ! If using MPI-PFUNIT on serial code, ensure amRoot is set.
+         amRoot = .true.
       end if
 #else
       amRoot = .true.

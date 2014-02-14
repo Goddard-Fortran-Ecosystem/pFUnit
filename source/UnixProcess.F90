@@ -50,7 +50,7 @@ module UnixProcess_mod
 
    type UnixProcess
       private
-      type (C_PTR) :: file
+      type (C_PTR) :: file = C_NULL_PTR
       integer :: pid = -1
    contains
       procedure :: getLine
@@ -166,7 +166,7 @@ contains
       integer, parameter :: MAX_BUFFER_SIZE = 100000
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
-      integer :: rc
+      integer (kind=C_SIZE_T) :: rc
 !      integer :: i
 
 !!$      line = this%getDelim(new_line('$'))
@@ -196,7 +196,7 @@ contains
       integer, parameter :: MAX_BUFFER_SIZE = 100000
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
-      integer :: rc
+      integer (kind=C_SIZE_T) :: rc
 !      integer :: i
 
       integer(kind=C_INT) :: useDelimeter
