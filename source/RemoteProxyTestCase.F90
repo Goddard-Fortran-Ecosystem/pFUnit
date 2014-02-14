@@ -72,7 +72,7 @@ contains
       integer :: numExceptions, iException
       integer :: lineNumber
       integer :: length
-!      character(len=100) :: ignore
+      character(len=100) :: timeText
 
       call this%setStartTime()
 
@@ -122,7 +122,10 @@ contains
                   call throw('RUNTIME-ERROR: terminated during execution')
                   return
                else ! child has completed - implies test was hung and processing terminated
-                  call throw('RUNTIME-ERROR: hung')
+                  write(timeText, '(a,f0.3,a)') &
+                       'RUNTIME-ERROR: hung (used more than ',&
+                       MAX_TIME_TEST, ' s)'
+                  call throw(timeText)
                   return
                end if
             end if

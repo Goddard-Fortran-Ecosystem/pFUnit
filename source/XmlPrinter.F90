@@ -106,7 +106,7 @@ contains
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
-      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f8.4,a)') &
+      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f0.4,a)') &
            '<testsuite name="', cleanXml(trim(result%getName())), &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
