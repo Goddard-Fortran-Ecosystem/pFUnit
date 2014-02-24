@@ -54,6 +54,7 @@ module SubsetRunner_mod
       procedure :: addFailure
       procedure :: startTest
       procedure :: endTest
+      procedure :: endRun
    end type SubsetRunner
 
    interface SubsetRunner
@@ -166,5 +167,11 @@ contains
       character(len=*), intent(in) :: testName
       write(this%unit,'(a,a)')'ended: ', trim(testName)
    end subroutine endTest
+
+   subroutine endRun(this, result)
+     use AbstractTestResult_mod, only : AbstractTestResult
+     class (SubsetRunner), intent(inout) :: this
+     class (AbstractTestResult), intent(in) :: result
+   end subroutine endRun
 
 end module SubsetRunner_mod
