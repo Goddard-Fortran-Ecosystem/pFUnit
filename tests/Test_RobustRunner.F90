@@ -28,15 +28,19 @@ contains
       use TestSuite_mod
       use TestResult_mod
       use Assert_mod
+      use TestListener_mod
+      use ResultPrinter_mod
 
       type (RobustRunner) :: runner
       type (TestSuite) :: suite
       type (TestResult) :: result
+      type (ListenerPointer) :: listeners(1)
 
       integer :: unit
 
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      runner = RobustRunner('./tests/remote.x',unit)
+      allocate(listeners(1)%pListener, source=newResultPrinter(unit))
+      runner = RobustRunner('./tests/remote.x', listeners)
       result = newTestResult()
       suite = remoteSuite()
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)

@@ -3,8 +3,11 @@ cmake_minimum_required(VERSION 2.8)
 SET (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
 set(srcs Assert.F90 AssertBasic.F90 AssertInteger.F90)
+
+list(APPEND srcs AbstractTestResult.F90)
 list(APPEND srcs BaseTestRunner.F90)
 list(APPEND srcs DebugListener.F90)
+
 list(APPEND srcs DynamicTestCase.F90)
 list(APPEND srcs Exception.F90)
 list(APPEND srcs MockCall.F90)
@@ -15,6 +18,8 @@ list(APPEND srcs ParallelException.F90)
 list(APPEND srcs AbstractTestParameter.F90)
 list(APPEND srcs ParameterizedTestCase.F90)
 list(APPEND srcs Params.F90)
+
+list(APPEND srcs XmlPrinter.F90)
 list(APPEND srcs ResultPrinter.F90)
 
 if ( ROBUST )

@@ -33,6 +33,7 @@ module DebugListener_mod
       procedure :: addFailure
       procedure :: startTest
       procedure :: endTest
+      procedure :: endRun
    end type DebugListener
 
    interface DebugListener
@@ -45,14 +46,14 @@ contains
    function newDebugListener_unit(unit) result(listener)
       type (DebugListener) :: listener
       integer, intent(in) :: unit
-
+      call listener%setDebug()
       listener%unit = unit
    end function newDebugListener_unit
 
    function newDebugListener_default() result(listener)
       use iso_fortran_env, only: OUTPUT_UNIT
       type (DebugListener) :: listener
-
+      call listener%setDebug()
       listener = DebugListener(OUTPUT_UNIT)
    end function newDebugListener_default
 
@@ -84,5 +85,11 @@ contains
      flush(this%unit)
 
    end subroutine endTest
+
+   subroutine endRun(this, result)
+     use AbstractTestResult_mod, only : AbstractTestResult
+     class (DebugListener), intent(inout) :: this
+     class (AbstractTestResult), intent(in) :: result
+   end subroutine endRun
 
 end module DebugListener_mod

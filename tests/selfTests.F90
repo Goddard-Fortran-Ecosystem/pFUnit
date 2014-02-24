@@ -16,6 +16,8 @@ program main
    use pFUnit_mod, only: initialize
    use pFUnit_mod, only: finalize
    use pFUnit_mod, only: TestResult
+   use pFUnit_mod, only: ListenerPointer
+   use pFUnit_mod, only: newResultPrinter
    implicit none
 
    logical :: success
@@ -71,13 +73,19 @@ contains
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
       use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
+      use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
+      class (ListenerPointer), allocatable :: listeners(:)
+
+      allocate(listeners(1))
+      allocate(listeners(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+
       allTests = newTestSuite('allTests')
-      runner = newTestRunner()
+      runner = newTestRunner(listeners)
 
 #define ADD(suite) call allTests%addTest(suite())
 
