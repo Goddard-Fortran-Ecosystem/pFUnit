@@ -34,13 +34,15 @@ contains
       type (RobustRunner) :: runner
       type (TestSuite) :: suite
       type (TestResult) :: result
-      type (ListenerPointer) :: listeners(1)
+      !mlr -problem on intel 13- type (ListenerPointer) :: listeners(1)
+      class (ListenerPointer), allocatable :: listeners1(:)
 
       integer :: unit
 
+      allocate(listeners1(1))
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      allocate(listeners(1)%pListener, source=newResultPrinter(unit))
-      runner = RobustRunner('./tests/remote.x', listeners)
+      allocate(listeners1(1)%pListener, source=newResultPrinter(unit))
+      runner = RobustRunner('./tests/remote.x', listeners1)
       result = newTestResult()
       suite = remoteSuite()
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)

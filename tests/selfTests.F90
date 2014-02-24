@@ -74,18 +74,26 @@ contains
       use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
       use iso_fortran_env, only: OUTPUT_UNIT
+      use ResultPrinter_mod, only : ResultPrinter
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-      class (ListenerPointer), allocatable :: listeners(:)
-
-      allocate(listeners(1))
-      allocate(listeners(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+      !- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
+      class (ListenerPointer), allocatable :: listeners1(:)
+#ifndef INTEL_13
+      allocate(listeners1(1))
+      allocate(listeners1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+#else
+      type (ResultPrinter), target :: printer
+      allocate(listeners1(1))
+      printer = newResultPrinter(OUTPUT_UNIT)
+      listeners1(1)%pListener=>printer
+#endif
 
       allTests = newTestSuite('allTests')
-      runner = newTestRunner(listeners)
+      runner = newTestRunner(listeners1)
 
 #define ADD(suite) call allTests%addTest(suite())
 
