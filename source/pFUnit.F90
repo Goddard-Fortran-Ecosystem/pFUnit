@@ -69,6 +69,7 @@ module pFUnit_mod
    public :: SubsetRunner
 
    public :: ListenerPointer
+!   public :: ResultPrinter
    public :: newResultPrinter
    public :: newXmlPrinter
    public :: DebugListener

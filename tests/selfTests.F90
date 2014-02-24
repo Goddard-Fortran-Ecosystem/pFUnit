@@ -18,6 +18,7 @@ program main
    use pFUnit_mod, only: TestResult
    use pFUnit_mod, only: ListenerPointer
    use pFUnit_mod, only: newResultPrinter
+!   use pFUnit_mod, only: ResultPrinter
    implicit none
 
    logical :: success
@@ -74,26 +75,18 @@ contains
       use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
       use iso_fortran_env, only: OUTPUT_UNIT
-      use ResultPrinter_mod, only : ResultPrinter
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-      !- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
-      class (ListenerPointer), allocatable :: listeners1(:)
-#ifndef INTEL_13
-      allocate(listeners1(1))
-      allocate(listeners1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
-#else
-      type (ResultPrinter), target :: printer
-      allocate(listeners1(1))
-      printer = newResultPrinter(OUTPUT_UNIT)
-      listeners1(1)%pListener=>printer
-#endif
+!- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
+      type (ListenerPointer), allocatable :: l1(:)
+      allocate(l1(1))
+      allocate(l1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
 
       allTests = newTestSuite('allTests')
-      runner = newTestRunner(listeners1)
+      runner = newTestRunner(l1)
 
 #define ADD(suite) call allTests%addTest(suite())
 
@@ -143,3 +136,12 @@ contains
 
 end program main
 
+!if ! defined INTEL_13 
+!...
+!else
+!      class (ListenerPointer), allocatable :: l1(:)
+!      type (ResultPrinter), target :: printer
+!      allocate(listeners1(1))
+!      printer = newResultPrinter(OUTPUT_UNIT)
+!      listeners1(1)%pListener=>printer
+!endif
