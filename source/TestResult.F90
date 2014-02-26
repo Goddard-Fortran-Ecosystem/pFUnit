@@ -137,7 +137,8 @@ contains
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
-      integer :: i, n
+!      integer :: i, n
+      integer :: n
       type (TestFailure), allocatable :: tmp(:)
       type (Exception) :: noExceptions(0)
 
@@ -200,7 +201,7 @@ contains
       class (SurrogateTestCase) :: test
       class (ParallelContext), intent(in) :: context
 
-      type (Exception) :: anException
+!      type (Exception) :: anException
 
       if (context%isRootProcess()) call this%startTest(test)
 

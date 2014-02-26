@@ -69,7 +69,7 @@ module pFUnit_mod
    public :: SubsetRunner
 
    public :: ListenerPointer
-!   public :: ResultPrinter
+   public :: ResultPrinter
    public :: newResultPrinter
    public :: newXmlPrinter
    public :: DebugListener
@@ -104,7 +104,9 @@ module pFUnit_mod
 
    public :: throw, catchAny, catch, anyExceptions
 
+#ifdef USE_MPI
    logical :: useMpi_
+#endif
 
 contains
 

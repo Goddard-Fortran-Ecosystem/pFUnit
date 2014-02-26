@@ -43,7 +43,7 @@ contains
    logical function anyExceptions_context(context) result(anyExcept)
       class (ParallelContext) :: context
 
-      logical, allocatable :: anyTable(:)
+!      logical, allocatable :: anyTable(:)
 
       anyExcept = context%allReduce(anyExceptions())
    end function anyExceptions_context
@@ -64,7 +64,7 @@ contains
 
       type (ExceptionList) :: globalList
       type (ExceptionList) :: localList
-      character(len=MAXLEN_MESSAGE) :: msg
+!      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
       integer :: totalExceptions, n

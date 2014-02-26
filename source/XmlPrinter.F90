@@ -179,7 +179,7 @@ contains
 
       type (TestFailure) :: aSuccessTest
       integer :: i
-      character(len=80) :: locationString
+!      character(len=80) :: locationString
 
       do i = 1, size(successes)
          aSuccessTest = successes(i)

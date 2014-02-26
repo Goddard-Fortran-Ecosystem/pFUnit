@@ -67,9 +67,10 @@ module UnixProcess_mod
 contains
 
    function newProcess(command, runInBackground) result(process)
-      use UnixPipeInterfaces_mod, only: popen, getLine
+!      uze UnixPipeInterfaces_mod, only: getLine
+      use UnixPipeInterfaces_mod, only: popen
       use StringConversionUtilities_mod, only: nullTerminate
-      use, intrinsic :: iso_c_binding, only: C_PTR
+!      uze, intrinsic :: iso_c_binding, only: C_PTR
       use Assert_mod
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command

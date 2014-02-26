@@ -22,7 +22,7 @@ module AbstractTestResult_mod
 
   abstract interface
      function getRunTime(this) result(time)
-       use TestFailure_mod, only : TestFailure
+!        TestFailure_mod, only : TestFailure
        import AbstractTestResult
        class (AbstractTestResult), intent(in) :: this
        real :: time

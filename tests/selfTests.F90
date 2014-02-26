@@ -18,7 +18,7 @@ program main
    use pFUnit_mod, only: TestResult
    use pFUnit_mod, only: ListenerPointer
    use pFUnit_mod, only: newResultPrinter
-!   use pFUnit_mod, only: ResultPrinter
+   use pFUnit_mod, only: ResultPrinter
    implicit none
 
    logical :: success
@@ -80,10 +80,19 @@ contains
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
+#ifdef INTEL_13
+      type (ResultPrinter), target :: printer
+#endif
+
 !- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
       type (ListenerPointer), allocatable :: l1(:)
       allocate(l1(1))
+#ifndef INTEL_13
       allocate(l1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+#else
+      printer = newResultPrinter(OUTPUT_UNIT)
+      l1(1)%pListener => printer
+#endif
 
       allTests = newTestSuite('allTests')
       runner = newTestRunner(l1)

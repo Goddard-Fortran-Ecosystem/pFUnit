@@ -34,8 +34,9 @@ contains
       type (RobustRunner) :: runner
       type (TestSuite) :: suite
       type (TestResult) :: result
-      !mlr -problem on intel 13- type (ListenerPointer) :: listeners(1)
-      class (ListenerPointer), allocatable :: listeners1(:)
+      !mlr -problem on intel 13- type (ListenerPointer) :: listeners1(1)
+      type (ListenerPointer), allocatable :: listeners1(:)
+      ! class (ListenerPointer), allocatable :: listeners1(:)
 
       integer :: unit
 

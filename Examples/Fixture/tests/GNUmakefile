@@ -20,7 +20,7 @@ endif
 #	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $<
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod

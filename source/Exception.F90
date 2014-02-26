@@ -184,7 +184,7 @@ contains
 
       type (ExceptionList) :: list
       integer :: globalExceptionCount
-      character(len=MAXLEN_MESSAGE) :: msg
+!      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
       globalExceptionCount = context%sum(size(this%exceptions))

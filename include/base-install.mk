@@ -50,10 +50,16 @@ else
 	$(RM) $*_cpp.F90
 endif
 
-.PHONY: clean distclean
+.PHONY: clean distclean echo
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
 
 distclean: clean
 	$(RM) *$(LIB_EXT) *$(EXE_EXT)
+
+echo:
+	@echo COMPILER: $(COMPILER)
+	@echo FC:	$(FC)
+	@echo USEMPI:   $(USEMPI)
+

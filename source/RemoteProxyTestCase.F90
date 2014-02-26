@@ -69,10 +69,10 @@ contains
 
       character(len=80) :: timeCommand
       type (UnixProcess) :: timerProcess
-      integer :: numExceptions, iException ,i
+      integer :: numExceptions, iException
       integer :: lineNumber
       integer :: length
-      character(len=100) :: ignore
+!      character(len=100) :: ignore
 
       call this%setStartTime()
 
