@@ -62,4 +62,8 @@ echo:
 	@echo COMPILER: $(COMPILER)
 	@echo FC:	$(FC)
 	@echo USEMPI:   $(USEMPI)
+	@echo FFLAGS:   $(FFLAGS)
+	@echo FPPFLAGS: $(FPPFLAGS)
+	@echo CPPFLAGS: $(CPPFLAGS)
+
 

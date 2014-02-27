@@ -32,7 +32,8 @@ endif
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(FC) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<
+#	$(FC) -c $(FFLAGS) $<
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod
