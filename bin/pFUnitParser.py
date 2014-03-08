@@ -400,7 +400,7 @@ class Parser():
         if not self.userModuleName:
             for testMethod in self.userTestMethods:
                 if ('ifdef' in testMethod):
-                    self.outputFile.write('#ifdef ' + test['ifdef'] + '\n')
+                    self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
                 self.outputFile.write('   external ' + testMethod['name'] + '\n')
                 if ('ifdef' in testMethod):
                     self.outputFile.write('#endif\n')
@@ -421,7 +421,7 @@ class Parser():
 
         for testMethod in self.userTestMethods:
             if ('ifdef' in testMethod):
-                self.outputFile.write('#ifdef ' + test['ifdef'] + '\n')
+                self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
             if 'type' in self.userTestCase:
                 self.addUserTestMethod(testMethod)
             else:

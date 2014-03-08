@@ -66,6 +66,8 @@ tests: SUT
 ifeq ($(UNAME),Windows)
 	export PFUNIT
 endif
+
+
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT

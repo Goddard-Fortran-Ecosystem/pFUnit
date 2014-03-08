@@ -14,6 +14,11 @@ ifeq ($(F90),nagfor)
    FFLAGS += -fpp
 endif
 
+
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
+endif
+
 %.F90: %.pf
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 

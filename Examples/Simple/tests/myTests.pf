@@ -8,7 +8,7 @@ subroutine testAdd()
 
 end subroutine testAdd
 
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testAddBroken()
    use add_mod
    use pfunit_mod
@@ -44,7 +44,7 @@ subroutine testAddComplexMultiDim()
 
 end subroutine testAddComplexMultiDim
 
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testAddComplexMultiDimBroken()
    use pfunit_mod
    implicit none

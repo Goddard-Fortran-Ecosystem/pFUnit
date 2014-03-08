@@ -16,6 +16,12 @@ ifeq ($(UNAME),Windows)
 	endif
 endif
 
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
+endif
+
+
+
 tests: $(OBJS)
 
 testSuites.inc: $(SRCS)

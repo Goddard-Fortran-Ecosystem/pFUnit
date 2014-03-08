@@ -19,6 +19,10 @@ ifeq ($(F90),ifort)
   FFLAGS += -assume realloc_lhs
 endif
 
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
+endif
+
 %.F90: %.pf
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
