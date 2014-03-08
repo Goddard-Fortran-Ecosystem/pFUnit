@@ -31,6 +31,7 @@ clean:
 distclean: clean
 	rm *$(EXE_EXT)
 
+.DEFAULT_GOAL = tests
 tests:
 	make -C $(TEST_DIR) tests
 

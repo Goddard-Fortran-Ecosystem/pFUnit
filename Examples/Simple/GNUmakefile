@@ -1,4 +1,4 @@
-.PHONY: clean tests all
+.PHONY: tests cleand all
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -49,19 +49,22 @@ endif
 all: $(EXE)
 	./$(EXE)
 
+.DEFAULT_GOAL = tests
+tests: SUT
+	make -C $(TEST_DIR) tests
+
+SUT:
+	make -C $(SRC_DIR) SUT
 
 $(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT tests
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+
 
 clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
 
-SUT:
-	make -C $(SRC_DIR) SUT
-tests: SUT
-	make -C $(TEST_DIR) tests
 
 ifeq ($(UNAME),Windows)
 	export PFUNIT

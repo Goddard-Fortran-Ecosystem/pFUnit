@@ -31,6 +31,8 @@ clean:
 
 SUT:
 	make -C $(SRC_DIR) SUT
+
+.DEFAULT_GOAL = tests
 tests: SUT
 	make -C $(TEST_DIR) tests
 
