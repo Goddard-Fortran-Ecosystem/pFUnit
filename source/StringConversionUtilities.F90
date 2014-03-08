@@ -116,7 +116,7 @@ contains
       integer, intent(in) :: arrayShape(:)
       character(len=MAXLEN_STRING) :: string
 
-      integer :: i
+!      integer :: i
       
       select case (size(arrayShape)) ! rank
       case (0) ! scalar

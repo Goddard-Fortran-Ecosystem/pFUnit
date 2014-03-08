@@ -14,13 +14,18 @@ ifeq ($(F90),nagfor)
    FFLAGS += -fpp
 endif
 
+
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
+endif
+
 %.F90: %.pf
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 #	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $<
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod

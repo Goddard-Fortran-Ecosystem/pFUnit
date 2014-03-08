@@ -190,7 +190,7 @@ contains
        & expected, found, iLocation, tolerance, location)
     real, intent(in) :: expected, found
     integer, intent(in) :: iLocation(:)
-    integer :: iLocationSize
+!    integer :: iLocationSize
     real, intent(in) :: tolerance
     type (SourceLocation), optional, intent(in) :: location
 

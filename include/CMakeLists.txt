@@ -15,7 +15,11 @@ function(file_compile_configuration)
    file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "COMPILER  ?= ${CMAKE_Fortran_COMPILER_ID}\n")
    file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "USEOPENMP ?= ${OPENMP}\n")
    file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "USEMPI    ?= ${MPI}\n")
-   file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= ${ROBUST}\n")
+   IF(ROBUST)
+      file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= YES\n") 
+   ELSE()
+      file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= \n") 
+   ENDIF()
 endfunction()
 
 # message("***--- COMPILER:   ${COMPILER}")
@@ -31,7 +35,7 @@ file_compile_configuration()
 
 # Perform the install.
 #
-install(FILES GNU.mk IBM.mk Intel.mk NAG.mk PGI.mk extensions.mk driver.F90 DESTINATION include)
+install(FILES GNU.mk IBM.mk Intel.mk intel.mk NAG.mk nag.mk PGI.mk extensions.mk driver.F90 DESTINATION include)
 install(FILES base-install.mk DESTINATION include RENAME base.mk)
 install(FILES ${CMAKE_BINARY_DIR}/include/configuration.mk DESTINATION include)
 

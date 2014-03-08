@@ -21,15 +21,29 @@ all: $(EXE)
 $(EXE): testSuites.inc myTests.pf Halo.F90 SUT tests
 	$(MPIF90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) -DUSE_MPI $(FFLAGS)
 
+echo:
+	@echo PFUNIT: $(PFUNIT)
+	@echo BUILDROBUST: \"$(BUILDROBUST)\"
+	@echo COMPILER: $(COMPILER)
+	@echo FFLAGS: $(FFLAGS)
+	@echo FPPFLAGS: $(FPPFLAGS)
+	@echo FC: $(FC)
+	@echo MPI: $(MPI)
+	@echo CPPFLAGS: $(CPPFLAGS)
+	@echo LIBS: $(LIBS)
+
 clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
+	$(RM) *.o *.mod *.i90
 
 distclean: clean
 	rm *$(EXE_EXT)
 
 SUT:
 	make -C $(SRC_DIR) SUT
+
+.DEFAULT_GOAL = tests
 tests:
 	make -C $(TEST_DIR) tests
 

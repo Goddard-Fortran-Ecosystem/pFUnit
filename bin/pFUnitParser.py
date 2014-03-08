@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # For python 2.6-2.7
 from __future__ import print_function
 
@@ -399,7 +399,11 @@ class Parser():
 
         if not self.userModuleName:
             for testMethod in self.userTestMethods:
+                if ('ifdef' in testMethod):
+                    self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
                 self.outputFile.write('   external ' + testMethod['name'] + '\n')
+                if ('ifdef' in testMethod):
+                    self.outputFile.write('#endif\n')
             self.outputFile.write('\n')
             if 'setUp' in self.userTestCase:
                 self.outputFile.write('   external ' + self.userTestCase['setUp'] + '\n')
@@ -415,52 +419,56 @@ class Parser():
 
         self.outputFile.write("   suite = newTestSuite('" + self.suiteName + "')\n\n")
 
-        for method in self.userTestMethods:
+        for testMethod in self.userTestMethods:
+            if ('ifdef' in testMethod):
+                self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
             if 'type' in self.userTestCase:
-                self.addUserTestMethod(method)
+                self.addUserTestMethod(testMethod)
             else:
-                if 'npRequests' in method:
-                    self.addMpiTestMethod(method)
+                if 'npRequests' in testMethod:
+                    self.addMpiTestMethod(testMethod)
                 else: # vanilla
-                    self.addSimpleTestMethod(method)
+                    self.addSimpleTestMethod(testMethod)
             self.outputFile.write('\n')
+            if ('ifdef' in testMethod):
+                self.outputFile.write('#endif\n')
 
         self.outputFile.write('\nend function ' + self.suiteName + '\n\n')
 
-    def addSimpleTestMethod(self, method):
-        args = "'" + method['name'] + "', " + method['name']
-        if 'setUp' in method:
-            args += ', ' + method['setUp']
+    def addSimpleTestMethod(self, testMethod):
+        args = "'" + testMethod['name'] + "', " + testMethod['name']
+        if 'setUp' in testMethod:
+            args += ', ' + testMethod['setUp']
         elif 'setUp' in self.userTestCase:
             args += ', ' + self.userTestCase['setUp']
 
-        if 'tearDown' in method:
-            args += ', ' + method['tearDown']
+        if 'tearDown' in testMethod:
+            args += ', ' + testMethod['tearDown']
         elif 'tearDown' in self.userTestCase:
             args += ', ' + self.userTestCase['tearDown']
 
         self.outputFile.write('   call suite%addTest(newTestMethod(' + args + '))\n')
 
-    def addMpiTestMethod(self, method):
-        for npes in method['npRequests']:
-            args = "'" + method['name'] + "', " + method['name'] + ", " + str(npes)
-            if 'setUp' in method:
-                args += ', ' + method['setup'] + ', ' + method['tearDown']
+    def addMpiTestMethod(self, testMethod):
+        for npes in testMethod['npRequests']:
+            args = "'" + testMethod['name'] + "', " + testMethod['name'] + ", " + str(npes)
+            if 'setUp' in testMethod:
+                args += ', ' + testMethod['setup'] + ', ' + testMethod['tearDown']
             self.outputFile.write('   call suite%addTest(newMpiTestMethod(' + args + '))\n')
     
-    def addUserTestMethod(self, method):
+    def addUserTestMethod(self, testMethod):
 
-        args = "'" + method['name'] + "', " + method['name']
-        if 'npRequests' in method:
-            npRequests = method['npRequests']
+        args = "'" + testMethod['name'] + "', " + testMethod['name']
+        if 'npRequests' in testMethod:
+            npRequests = testMethod['npRequests']
         else:
             if 'npRequests' in self.userTestCase:
                 npRequests = self.userTestCase['npRequests']
             else:
                 npRequests = [1]
 
-        if 'cases' in method:
-            cases = method['cases']
+        if 'cases' in testMethod:
+            cases = testMethod['cases']
         elif 'cases' in self.userTestCase:
             cases = self.userTestCase['cases']
 
@@ -468,19 +476,19 @@ class Parser():
 
         if 'cases' in locals():
             testParameterArg = ', testParameter'
-            self.outputFile.write('   cases = ' + method['cases'] + '\n')
+            self.outputFile.write('   cases = ' + testMethod['cases'] + '\n')
             self.outputFile.write('   testParameters = [(' + 
                                   self.userTestCase['testParameterConstructor'] + 
                                   '(cases(iCase)), iCase = 1, size(cases))]\n\n')
 
         if 'testParameterType' in self.userTestCase:
-            if 'testParameters' in method:
-                testParameters = method['testParameters']
+            if 'testParameters' in testMethod:
+                testParameters = testMethod['testParameters']
             elif 'testParameters' in self.userTestCase:
                 testParameters = self.userTestCase['testParameters']
 
         isMpiTestCase = 'npRequests' in self.userTestCase
-        isMpiTestCase = isMpiTestCase or any('npRequests' in method for method in self.userTestMethods)
+        isMpiTestCase = isMpiTestCase or any('npRequests' in testMethod for testMethod in self.userTestMethods)
 
         if 'testParameters' in locals():
             testParameterArg = ', testParameter'
@@ -549,7 +557,7 @@ class Parser():
 
         if 'type' in self.userTestCase:
             isMpiTestCase = 'npRequests' in self.userTestCase
-            isMpiTestCase = isMpiTestCase or any('npRequests' in method for method in self.userTestMethods)
+            isMpiTestCase = isMpiTestCase or any('npRequests' in testMethod for testMethod in self.userTestMethods)
             if isMpiTestCase and not 'testParameterType' in self.userTestCase:
                 self.userTestCase['testParameterType'] = 'MpiTestParameter'
 

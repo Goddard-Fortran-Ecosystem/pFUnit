@@ -25,7 +25,7 @@ DEBUG_FLAGS =-g
 COMPILER ?= COMPILER_NOT_SET
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
-F90FLAGS += $I$(INCLUDE_DIR)
+FFLAGS += $I$(INCLUDE_DIR)
 
 ifeq ($(BUILDROBUST),YES)
   FFLAGS += $DBUILD_ROBUST
@@ -33,7 +33,8 @@ ifeq ($(BUILDROBUST),YES)
   CPPFLAGS += -DBUILD_ROBUST
 endif
 
-ifneq ($(MPI),YES)
+# include/driver.F90 needs both BUILD_ROBUST
+ifneq ($(USEMPI),YES)
   FC=$(F90)
 else
   FC=$(MPIF90)
@@ -41,18 +42,28 @@ endif
 
 ifeq ($(F90_HAS_CPP),YES)
 %$(OBJ_EXT): %.F90
-	$(FC) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
+	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
 else
 %$(OBJ_EXT):%.F90
 	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(F90FLAGS)  $*_cpp.F90 -o $@
+	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
 	$(RM) $*_cpp.F90
 endif
 
-.PHONY: clean distclean
+.PHONY: clean distclean echo
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
 
 distclean: clean
 	$(RM) *$(LIB_EXT) *$(EXE_EXT)
+
+echo:
+	@echo COMPILER: $(COMPILER)
+	@echo FC:	$(FC)
+	@echo USEMPI:   $(USEMPI)
+	@echo FFLAGS:   $(FFLAGS)
+	@echo FPPFLAGS: $(FPPFLAGS)
+	@echo CPPFLAGS: $(CPPFLAGS)
+
+

@@ -22,7 +22,7 @@ all: $(EXE)
 
 
 $(EXE): testSuites.inc myTests.pf add.F90 SUT tests
-	$(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
 
 clean:
 	make -C $(SRC_DIR) clean
@@ -31,6 +31,8 @@ clean:
 
 SUT:
 	make -C $(SRC_DIR) SUT
+
+.DEFAULT_GOAL = tests
 tests: SUT
 	make -C $(TEST_DIR) tests
 

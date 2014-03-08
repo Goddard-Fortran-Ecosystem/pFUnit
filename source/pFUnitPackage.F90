@@ -78,6 +78,10 @@ module pFUnit
    use RobustRunner_mod, only: RENAME(RobustRunner)
 #endif
 
+   use TestListener_mod, only: RENAME(ListenerPointer)
+   use XmlPrinter_mod, only: RENAME(XmlPrinter)
+   use DebugListener_mod, only: RENAME(DebugListener)
+
    use ParallelContext_mod, only: RENAME(ParallelContext)
    use SerialContext_mod, only: RENAME(SerialContext)
    use SerialContext_mod, only: RENAME(newSerialContext)

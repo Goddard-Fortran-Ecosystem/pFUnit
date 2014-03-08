@@ -34,6 +34,12 @@ module pFUnit_mod
    use TestRunner_mod
    use BaseTestRunner_mod
    use SubsetRunner_mod
+
+   use TestListener_mod
+   use XmlPrinter_mod
+   use ResultPrinter_mod
+   use DebugListener_mod
+
 #ifdef BUILD_ROBUST
    use RobustRunner_mod
 #endif
@@ -61,6 +67,13 @@ module pFUnit_mod
    public :: TestRunner, newTestRunner
    public :: BaseTestRunner
    public :: SubsetRunner
+
+   public :: ListenerPointer
+   public :: ResultPrinter
+   public :: newResultPrinter
+   public :: newXmlPrinter
+   public :: DebugListener
+
 #ifdef BUILD_ROBUST
    public :: RobustRunner
 #endif
@@ -91,7 +104,9 @@ module pFUnit_mod
 
    public :: throw, catchAny, catch, anyExceptions
 
+#ifdef USE_MPI
    logical :: useMpi_
+#endif
 
 contains
 
@@ -133,6 +148,8 @@ contains
          call MPI_Bcast(allSuccessful, 1, MPI_LOGICAL, 0, MPI_COMM_WORLD, error)
          call mpi_finalize(error)
       else
+         ! If using MPI-PFUNIT on serial code, ensure amRoot is set.
+         amRoot = .true.
       end if
 #else
       amRoot = .true.

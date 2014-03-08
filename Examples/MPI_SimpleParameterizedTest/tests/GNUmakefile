@@ -19,11 +19,15 @@ ifeq ($(F90),ifort)
   FFLAGS += -assume realloc_lhs
 endif
 
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
+endif
+
 %.F90: %.pf
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(MPIF90) -c $(FFLAGS) $<
+	$(MPIF90) -c $(FFLAGS) $(FPPFLAGS) $<
 
 clean:
 	$(RM) *$(OBJ_EXT) *.mod
