@@ -227,7 +227,7 @@ contains
 
    integer function newunit(unit)
      integer, intent(out), optional :: unit
-     integer, parameter :: LUN_MIN=10, LUN_MAX=1000
+     integer, parameter :: LUN_MIN=20, LUN_MAX=1000
      logical :: opened
      integer :: lun
      newunit=-1

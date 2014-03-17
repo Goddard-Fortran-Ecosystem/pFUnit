@@ -86,16 +86,16 @@ contains
      class (XmlPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
+     call this%print(name, result)
    end subroutine endRun
 
-   subroutine print(this, name, result, runTime)
-      use TestResult_mod
+   subroutine print(this, name, result)
+      use AbstractTestResult_mod, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: name
-      type (TestResult), intent(in) :: result
-      real, intent(in) :: runTime
+      class (AbstractTestResult), intent(in) :: result
 
-      call this%printHeader(name, result, runTime)
+      call this%printHeader(name, result)
       call this%printSuccesses(result%getSuccesses())
       call this%printFailures('error', result%getErrors())
       call this%printFailures('failure', result%getFailures())
@@ -103,24 +103,23 @@ contains
 
    end subroutine print
 
-   subroutine printHeader(this, name, result, runTime)
-      use TestResult_mod
+   subroutine printHeader(this, name, result)
+      use AbstractTestResult_mod, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: name
-      type(TestResult), intent(in) :: result
-      real, intent(in) :: runTime
+      class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f8.4,a)') &
            '<testsuite name="', name, &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
            '" tests="', result%runCount(),&
-           '" time="', runTime, '">'
+           '" time="', result%getRunTime(), '">'
 
    end subroutine printHeader
 
    subroutine printFailures(this, label, failures)
-      use TestResult_mod
+      use AbstractTestResult_mod
       use TestFailure_mod
       use SourceLocation_mod
       class (XmlPrinter), intent(in) :: this
@@ -146,7 +145,7 @@ contains
             write(this%unit,'(a,a,a)',advance='no') &
                  'Location: ', trim(locationString), ', '
             write(this%unit,'(a)',advance='no') &
-                 trim(aFailedTest%exceptions(j)%getMessage())
+                 removeTags(trim(aFailedTest%exceptions(j)%getMessage()))
             write(this%unit,*) '"/>'
          end do
          write(this%unit,'(a)') '</testcase>'
@@ -160,7 +159,7 @@ contains
 
          if (location%fileName == UNKNOWN_FILE_NAME) then
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = '<unknown location>'
+               string = '[unknown location]'
             else
                write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
             end if
@@ -195,12 +194,34 @@ contains
    end subroutine printSuccesses
 
    subroutine printFooter(this, result)
-      use TestResult_mod
+      use AbstractTestResult_mod
       class (XmlPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
+      class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a)') '</testsuite>'
 
    end subroutine printFooter
 
+   function removeTags(string_in) result(out)
+      character(len=*), intent(in) :: string_in
+      character(:), allocatable :: out
+      integer :: i
+      out = string_in
+      out = replaceAll(out, '<', '[')
+      out = replaceAll(out, '>', ']')
+      out = replaceAll(out, '"', "'")
+   end function removeTags
+
+   function replaceAll(string_in, from, to) result(out)
+      character(len=*), intent(in) :: string_in
+      character, intent(in) :: from, to
+      character(:), allocatable :: out
+      integer :: i
+      out = string_in
+      i = index(out, from)
+      do while(i /= 0)
+         out = out(:i-1) // to // out(i+1:)
+         i = index(out, from)
+      end do
+   end function replaceAll
 end module XmlPrinter_mod
