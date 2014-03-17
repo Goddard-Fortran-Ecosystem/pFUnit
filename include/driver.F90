@@ -14,6 +14,7 @@ program main
    character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
    integer :: length
+   integer, parameter :: RETURN_OK = 0, RETURN_FAILURE = 1
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
@@ -172,7 +173,7 @@ program main
 
    call getContext(context, useMpi)
 
-   result = runner%run(all, context, returnCode)
+   result = runner%run(all, context)
 
    if (outputUnit /= OUTPUT_UNIT) then
       close(outputUnit)
@@ -188,6 +189,7 @@ program main
       end if
    end if
 
+   returnCode = getReturnCode(result)
    call exit(returnCode)
 
 contains
@@ -278,6 +280,16 @@ contains
       write(OUTPUT_UNIT,*)" "
 
    end subroutine printHelpMessage
+
+   integer function getReturnCode(aTestResult) result(returnCode)
+      use TestResult_mod
+      type (TestResult), intent(in) :: aTestResult
+      if(aTestResult%wasSuccessful()) then
+         returnCode = RETURN_OK
+      else
+         returnCode = RETURN_FAILURE
+      end if
+   end function getReturnCode
 
 end program main
 

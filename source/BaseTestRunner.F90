@@ -25,9 +25,7 @@ module BaseTestRunner_mod
    implicit none
    private
 
-   integer, parameter :: RETURN_OK = 0, RETURN_FAILURE = 1
-
-   public :: BaseTestRunner, getReturnCode, RETURN_OK, RETURN_FAILURE
+   public :: BaseTestRunner
 
    type, abstract, extends(TestListener) :: BaseTestRunner
       private
@@ -54,17 +52,5 @@ module BaseTestRunner_mod
       end function run2
 
    end interface
-
-contains
-
-   integer function getReturnCode(aTestResult) result(returnCode)
-      use TestResult_mod
-      type (TestResult), intent(in) :: aTestResult
-      if(aTestResult%wasSuccessful()) then
-         returnCode = RETURN_OK
-      else
-         returnCode = RETURN_FAILURE
-      end if
-   end function getReturnCode
 
 end module BaseTestRunner_mod
