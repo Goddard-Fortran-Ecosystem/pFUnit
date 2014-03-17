@@ -23,6 +23,7 @@ contains
       integer :: numSkip, strLength
       integer :: skipArg
       character(len=100) :: command
+      integer :: returnCode
 
       type (TestResult) :: result
 
@@ -42,8 +43,8 @@ contains
       allocate(context, source=newSerialContext())
       s = suite()
 
-      result = runner%run(s, context)
-      
+      result = runner%run(s, context, returnCode)
+
    end subroutine runTests
 
 end program main

@@ -73,10 +73,11 @@ module TestListener_mod
 !      end subroutine startRun
 !
       ! Stub for future implementation.
-      subroutine endRun(this, result)
+      subroutine endRun(this, name, result)
          use AbstractTestResult_mod, only : AbstractTestResult
          import TestListener
          class (TestListener), intent(inout) :: this
+         character(len=*), intent(in) :: name
          class (AbstractTestResult), intent(in) :: result
       end subroutine endRun
 

@@ -1,3 +1,4 @@
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
 !-------------------------------------------------------------------------------
@@ -127,6 +128,8 @@ contains
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
+      real :: runTime
+      character(:), allocatable :: name
 
       call system_clock(clockStart)
 
@@ -142,7 +145,6 @@ contains
 #else
          call aTest%getTestCases(testCases)
 #endif
-
       class is (TestCase)
          testCases = [TestCaseReference(aTest)]
       class default
@@ -151,6 +153,7 @@ contains
 
 ! mlr q: set up named pipes or units to handle comm between remote processes
 ! mlr q: and the root... being done at ukmet?
+      name = aTest%getName()
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
@@ -166,10 +169,10 @@ contains
       ! Maybe push this call up into parent, i.e. loop over all of the listeners there...
       if (context%isRootProcess())  then
          do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(result)
+            call this%extListeners(i)%pListener%endRun(name, result)
          end do
       end if
-         
+
    end subroutine runWithResult
 
    subroutine launchRemoteRunner(this, numSkip)
@@ -235,9 +238,10 @@ contains
       character(len=*), intent(in) :: testName
    end subroutine endTest
 
-   subroutine endRun(this, result)
+   subroutine endRun(this, name, result)
      use AbstractTestResult_mod
      class (RobustRunner), intent(inout) :: this
+     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 

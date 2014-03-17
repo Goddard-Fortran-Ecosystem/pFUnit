@@ -33,7 +33,7 @@ contains
       use pFUnit_mod, only: newTestSuite
       use pFUnit_mod, only: TestSuite
       use pFUnit_mod, only: TestRunner, newTestRunner
-      use pFUnit_mod, only: newResultPrinter, PrinterPointer
+      use pFUnit_mod, only: newResultPrinter
       use iso_fortran_env, only: OUTPUT_UNIT
 #ifdef USE_MPI
       use MpiContext_mod

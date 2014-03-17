@@ -81,19 +81,21 @@ contains
 
    end subroutine endTest
 
-   subroutine endRun(this, result)
+   subroutine endRun(this, name, result)
      use AbstractTestResult_mod, only : AbstractTestResult
      class (XmlPrinter), intent(inOut) :: this
+     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 
-   subroutine print(this, result, runTime)
+   subroutine print(this, name, result, runTime)
       use TestResult_mod
       class (XmlPrinter), intent(in) :: this
+      character(len=*), intent(in) :: name
       type (TestResult), intent(in) :: result
       real, intent(in) :: runTime
 
-      call this%printHeader(result)
+      call this%printHeader(name, result, runTime)
       call this%printSuccesses(result%getSuccesses())
       call this%printFailures('error', result%getErrors())
       call this%printFailures('failure', result%getFailures())
@@ -101,15 +103,19 @@ contains
 
    end subroutine print
 
-   subroutine printHeader(this, result)
+   subroutine printHeader(this, name, result, runTime)
       use TestResult_mod
       class (XmlPrinter), intent(in) :: this
+      character(len=*), intent(in) :: name
       type(TestResult), intent(in) :: result
+      real, intent(in) :: runTime
 
-      write(this%unit,'(a,i0,a,i0,a,i0,a)') &
-           '<testsuite errors="', result%errorCount(),&
+      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f8.4,a)') &
+           '<testsuite name="', name, &
+           '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
-           '" tests="', result%runCount(),'">'
+           '" tests="', result%runCount(),&
+           '" time="', runTime, '">'
 
    end subroutine printHeader
 

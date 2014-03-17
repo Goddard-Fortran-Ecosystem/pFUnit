@@ -53,7 +53,7 @@ contains
       call assertEqual(2, result%errorCount(), 'errorCount()')
 
       close(unit)
-      
+
    end subroutine testRunVariety
 
 end module Test_RobustRunner_mod

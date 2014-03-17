@@ -33,6 +33,9 @@ program main
    integer :: numListeners, iListener
    class (ListenerPointer), allocatable :: listeners(:)
    type (DebugListener) :: debugger
+   character(len=128) :: suiteName
+
+   integer :: returnCode
 ! Support for the runs
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
@@ -50,6 +53,9 @@ program main
 
    ! Loop over optional arguments in the command line
    numArguments = command_argument_count()
+
+   suiteName = 'default_suite_name'
+
    i = 0
    do
       i = i + 1
@@ -105,6 +111,9 @@ program main
             printXmlFile = .true.
             numListeners = numListeners + 1
          end if
+      case ('-name')
+         i = i + 1
+         call get_command_argument(i, value=suiteName)
       end select
 
    end do
@@ -159,9 +168,11 @@ program main
    end if
 
    all = getTestSuites()
+   call all%setName(suiteName)
+
    call getContext(context, useMpi)
 
-   result = runner%run(all, context)
+   result = runner%run(all, context, returnCode)
 
    if (outputUnit /= OUTPUT_UNIT) then
       close(outputUnit)
@@ -170,10 +181,14 @@ program main
    call finalize(result%wasSuccessful())
    stop
 
-   inquire(unit=xmlFileUnit, opened=xmlFileOpened)
-   if(printXmlFile .and. xmlFileOpened) then
-      close(xmlFileUnit)
+   if(printXmlFile) then
+      inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+      if(xmlFileOpened) then
+         close(xmlFileUnit)
+      end if
    end if
+
+   call exit(returnCode)
 
 contains
 

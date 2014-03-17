@@ -168,9 +168,10 @@ contains
       write(this%unit,'(a,a)')'ended: ', trim(testName)
    end subroutine endTest
 
-   subroutine endRun(this, result)
+   subroutine endRun(this, name, result)
      use AbstractTestResult_mod, only : AbstractTestResult
      class (SubsetRunner), intent(inout) :: this
+     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 

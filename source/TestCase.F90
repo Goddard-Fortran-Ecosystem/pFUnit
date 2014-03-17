@@ -40,10 +40,6 @@ module TestCase_mod
       procedure :: getName => getName_surrogate
    end type ConcreteSurrogate
    
-#ifndef DEFERRED_LENGTH_CHARACTER
-   integer, parameter :: MAX_LENGTH_NAME = 64
-#endif
-
    type, abstract, extends(Test) :: TestCase
       private
       type (ConcreteSurrogate) :: surrogate

@@ -72,6 +72,8 @@ contains
 
     function run(this, aTest, context) result(result)
       use Test_mod
+      use TestSuite_mod
+      use TestCase_mod
       use TestResult_mod
       use ParallelContext_mod
 
@@ -79,11 +81,12 @@ contains
       class (TestRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
-
+      
       integer :: clockStart
       integer :: clockStop
       integer :: clockRate
       integer :: i
+      character(:), allocatable :: name
 
 
       call system_clock(clockStart)
@@ -102,14 +105,14 @@ contains
 ! E.g. and end-run method & move this up to basetestrunner...
 
 ! e.g. call result%endRun()...
+      name = aTest%getName()
       if (context%isRootProcess())  then
          do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(result)
+            call this%extListeners(i)%pListener%endRun(name, result)
          end do
       end if
 !tc: 2+1 lists -- extListeners, listeners and in testresult too...
    end function run
-
 
 ! Recall, runner is also a listener and these will be called from
 ! TestResult, adding the ability to put in functionality here. In
@@ -125,9 +128,10 @@ contains
        character(len=*), intent(in) :: testName
     end subroutine endTest
 
-    subroutine endRun(this, result)
+    subroutine endRun(this, name, result)
       use AbstractTestResult_mod, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
+      character(len=*), intent(in) :: name
       class (AbstractTestResult), intent(in) :: result
     end subroutine endRun
 

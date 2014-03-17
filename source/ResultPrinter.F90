@@ -113,18 +113,20 @@ contains
 
    end subroutine endTest
 
-   subroutine endRun(this, result)
+   subroutine endRun(this, name, result)
       use AbstractTestResult_mod, only : AbstractTestResult
       class (ResultPrinter), intent(inout) :: this
+      character(len=*), intent(in) :: name
       class (AbstractTestResult), intent(in) :: result
 
-      call this%print(result)
+      call this%print(name, result)
 
     end subroutine endRun
 
-   subroutine print(this, result)
+   subroutine print(this, name, result)
       use AbstractTestResult_mod, only : AbstractTestResult
       class (ResultPrinter), intent(in) :: this
+      character(len=*), intent(in) :: name
       class (AbstractTestResult), intent(in) :: result
 
       call this%printHeader(result%getRunTime())
