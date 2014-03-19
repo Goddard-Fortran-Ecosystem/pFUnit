@@ -24,6 +24,7 @@ list(APPEND TEST_SRCS Test_StringConversionUtilities.F90)
 list(APPEND TEST_SRCS Test_TestMethod.F90)
 list(APPEND TEST_SRCS Test_TestResult.F90)
 list(APPEND TEST_SRCS Test_UnixProcess.F90)
+list(APPEND TEST_SRCS Test_XmlPrinter.F90)
 
 if (ROBUST)
   list(APPEND TEST_SRCS Test_RobustRunner.F90)

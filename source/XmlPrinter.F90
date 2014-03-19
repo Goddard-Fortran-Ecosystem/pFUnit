@@ -110,7 +110,7 @@ contains
       class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f8.4,a)') &
-           '<testsuite name="', name, &
+           '<testsuite name="', cleanXml(trim(name)), &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
            '" tests="', result%runCount(),&
@@ -136,16 +136,17 @@ contains
 !mlr testcase should likely be testname or testmethod or maybe test
 !mlr Q?  What does JUnit do?
 !mlr  Ask Halvor -- good for 3.0
-         write(this%unit,'(a,a,a)') '<testcase name="', trim(aFailedTest%testName), '">'
+         write(this%unit,'(a,a,a)') '<testcase name="', &
+              cleanXml(trim(aFailedTest%testName)), '">'
          do j= 1, size(aFailedTest%exceptions)
             locationString = toString(aFailedTest%exceptions(j)%location)
 
-            write(this%unit,'(a,a,a)',advance='no') '<', label, ' message="'
-
             write(this%unit,'(a,a,a)',advance='no') &
-                 'Location: ', trim(locationString), ', '
+                 '<', cleanXml(label), ' message="'
+            write(this%unit,'(a,a,a)',advance='no') &
+                 'Location: ', cleanXml(trim(locationString)), ', '
             write(this%unit,'(a)',advance='no') &
-                 removeTags(trim(aFailedTest%exceptions(j)%getMessage()))
+                 cleanXml(trim(aFailedTest%exceptions(j)%getMessage()))
             write(this%unit,*) '"/>'
          end do
          write(this%unit,'(a)') '</testcase>'
@@ -161,13 +162,15 @@ contains
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
                string = '[unknown location]'
             else
-               write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
+               write(string,'(a,":",i0)') &
+                    trim(UNKNOWN_FILE_NAME), location%lineNumber
             end if
          else
             if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
                string = trim(location%fileName)
             else
-               write(string,'(a,":",i0)') trim(location%fileName), location%lineNumber
+               write(string,'(a,":",i0)') &
+                    trim(location%fileName), location%lineNumber
             end if
          end if
 
@@ -184,12 +187,12 @@ contains
 
       type (TestFailure) :: aSuccessTest
       integer :: i
-!      character(len=80) :: locationString
 
       do i = 1, size(successes)
          aSuccessTest = successes(i)
 
-         write(this%unit,'(a,a,a)') '<testcase name="', trim(aSuccessTest%testName), '"/>'
+         write(this%unit,'(a,a,a)') '<testcase name="', &
+              cleanXml(trim(aSuccessTest%testName)), '"/>'
       end do
    end subroutine printSuccesses
 
@@ -202,7 +205,7 @@ contains
 
    end subroutine printFooter
 
-   function removeTags(string_in) result(out)
+   function cleanXml(string_in) result(out)
       character(len=*), intent(in) :: string_in
       character(:), allocatable :: out
       integer :: i
@@ -210,18 +213,18 @@ contains
       out = replaceAll(out, '<', '[')
       out = replaceAll(out, '>', ']')
       out = replaceAll(out, '"', "'")
-   end function removeTags
+   end function cleanXml
 
-   function replaceAll(string_in, from, to) result(out)
+   function replaceAll(string_in, search, replace) result(out)
       character(len=*), intent(in) :: string_in
-      character, intent(in) :: from, to
+      character, intent(in) :: search, replace
       character(:), allocatable :: out
       integer :: i
       out = string_in
-      i = index(out, from)
+      i = index(out, search)
       do while(i /= 0)
-         out = out(:i-1) // to // out(i+1:)
-         i = index(out, from)
+         out = out(:i-1) // replace // out(i+1:)
+         i = index(out, search)
       end do
    end function replaceAll
 end module XmlPrinter_mod
