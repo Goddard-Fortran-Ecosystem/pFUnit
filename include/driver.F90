@@ -102,8 +102,8 @@ program main
       case ('-xml')
          i = i + 1
          if (i > numArguments) call commandLineArgumentError()
-         xmlFileName = getCommandLineArgument(i)         
-         xmlFileUnit = newunit()
+         xmlFileName = getCommandLineArgument(i)
+         xmlFileUnit = newUnit()
          open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
          if(iostat /= 0) then
             write(*,*) 'Could not open XML file ', xmlFileName, &
@@ -180,7 +180,6 @@ program main
    end if
 
    call finalize(result%wasSuccessful())
-   stop
 
    if(printXmlFile) then
       inquire(unit=xmlFileUnit, opened=xmlFileOpened)
@@ -224,22 +223,6 @@ contains
 #undef ADD_TEST_SUITE
 
    end function getTestSuites
-
-   integer function newunit(unit)
-     integer, intent(out), optional :: unit
-     integer, parameter :: LUN_MIN=20, LUN_MAX=1000
-     logical :: opened
-     integer :: lun
-     newunit=-1
-     do lun=LUN_MIN,LUN_MAX
-       inquire(unit=lun,opened=opened)
-       if (.not. opened) then
-         newunit=lun
-         exit
-       end if
-     end do
-     if (present(unit)) unit=newunit
-   end function newunit
 
    function getCommandLineArgument(i) result(argument)
       integer, intent(in) :: i

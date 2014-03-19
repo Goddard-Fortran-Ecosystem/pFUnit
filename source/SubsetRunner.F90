@@ -116,6 +116,7 @@ contains
       end select
 
       result = newTestResult()
+      call result%setName(aTest%getName())
       call result%addListener( this )
 
       ! This should be a named pipe
@@ -168,10 +169,9 @@ contains
       write(this%unit,'(a,a)')'ended: ', trim(testName)
    end subroutine endTest
 
-   subroutine endRun(this, name, result)
+   subroutine endRun(this, result)
      use AbstractTestResult_mod, only : AbstractTestResult
      class (SubsetRunner), intent(inout) :: this
-     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 

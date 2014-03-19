@@ -86,10 +86,9 @@ contains
 
    end subroutine endTest
 
-   subroutine endRun(this, name, result)
+   subroutine endRun(this, result)
      use AbstractTestResult_mod, only : AbstractTestResult
      class (DebugListener), intent(inout) :: this
-     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 

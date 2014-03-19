@@ -17,6 +17,8 @@ module AbstractTestResult_mod
      procedure(runCount), deferred      :: runCount
      procedure(failureCount), deferred  :: failureCount
      procedure(errorCount), deferred    :: errorCount
+     procedure(getName), deferred       :: getName
+     procedure(setName), deferred       :: setName
 
   end type AbstractTestResult
 
@@ -65,6 +67,18 @@ module AbstractTestResult_mod
        import AbstractTestResult
       class (AbstractTestResult), intent(in) :: this
     end function failureCount
+
+   function getName(this) result(name)
+      import AbstractTestResult
+      class (AbstractTestResult), intent(in) :: this
+      character(:), allocatable :: name
+   end function getName
+
+   subroutine setName(this, name)
+      import AbstractTestResult
+      class (AbstractTestResult), intent(inout) :: this
+      character(len=*),intent(in) :: name
+   end subroutine setName
 
 
   end interface

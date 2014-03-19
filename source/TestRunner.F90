@@ -86,12 +86,12 @@ contains
       integer :: clockStop
       integer :: clockRate
       integer :: i
-      character(:), allocatable :: name
 
 
       call system_clock(clockStart)
 
       result = this%createTestResult()
+      call result%setName(aTest%getName())
 ! Add the extListeners to the listeners list.
       do i=1,size(this%extListeners)
          call result%addListener(this%extListeners(i)%pListener)
@@ -105,10 +105,9 @@ contains
 ! E.g. and end-run method & move this up to basetestrunner...
 
 ! e.g. call result%endRun()...
-      name = aTest%getName()
       if (context%isRootProcess())  then
          do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(name, result)
+            call this%extListeners(i)%pListener%endRun(result)
          end do
       end if
 !tc: 2+1 lists -- extListeners, listeners and in testresult too...
@@ -128,10 +127,9 @@ contains
        character(len=*), intent(in) :: testName
     end subroutine endTest
 
-    subroutine endRun(this, name, result)
+    subroutine endRun(this, result)
       use AbstractTestResult_mod, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
-      character(len=*), intent(in) :: name
       class (AbstractTestResult), intent(in) :: result
     end subroutine endRun
 

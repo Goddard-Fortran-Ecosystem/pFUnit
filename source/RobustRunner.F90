@@ -108,6 +108,7 @@ contains
       class (ParallelContext), intent(in) :: context
 
       result = this%createTestResult()
+      call result%setName(aTest%getName())
       call this%runWithResult(aTest, context, result)
 
    end function run
@@ -128,8 +129,6 @@ contains
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
-      real :: runTime
-      character(:), allocatable :: name
 
       call system_clock(clockStart)
 
@@ -153,7 +152,6 @@ contains
 
 ! mlr q: set up named pipes or units to handle comm between remote processes
 ! mlr q: and the root... being done at ukmet?
-      name = aTest%getName()
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
@@ -169,7 +167,7 @@ contains
       ! Maybe push this call up into parent, i.e. loop over all of the listeners there...
       if (context%isRootProcess())  then
          do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(name, result)
+            call this%extListeners(i)%pListener%endRun(result)
          end do
       end if
 
@@ -238,10 +236,9 @@ contains
       character(len=*), intent(in) :: testName
    end subroutine endTest
 
-   subroutine endRun(this, name, result)
+   subroutine endRun(this, result)
      use AbstractTestResult_mod
      class (RobustRunner), intent(inout) :: this
-     character(len=*), intent(in) :: name
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 

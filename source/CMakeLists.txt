@@ -48,6 +48,7 @@ list(APPEND srcs pFUnitPackage.F90)
 list(APPEND srcs AssertComplex.F90)
 list(APPEND srcs AssertInteger1.F90)
 list(APPEND srcs AssertReal.F90)
+list(APPEND srcs Utilities.F90)
 
 if (MPI) 
   list(APPEND srcs MpiContext.F90)
