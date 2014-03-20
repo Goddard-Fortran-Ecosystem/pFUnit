@@ -136,7 +136,7 @@ contains
          write(this%unit,'(a,a,a)') '<testcase name="', &
               cleanXml(trim(aFailedTest%testName)), '">'
          do j= 1, size(aFailedTest%exceptions)
-            locationString = toString(aFailedTest%exceptions(j)%location)
+            locationString = aFailedTest%exceptions(j)%location%toString()
 
             write(this%unit,'(a,a,a)',advance='no') &
                  '<', cleanXml(label), ' message="'
@@ -148,32 +148,6 @@ contains
          end do
          write(this%unit,'(a)') '</testcase>'
       end do
-
-   contains
-
-      function toString(location) result(string)
-         type (SourceLocation), intent(in) :: location
-         character(len=80) :: string
-
-         if (location%fileName == UNKNOWN_FILE_NAME) then
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = '[unknown location]'
-            else
-               write(string,'(a,":",i0)') &
-                    trim(UNKNOWN_FILE_NAME), location%lineNumber
-            end if
-         else
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = trim(location%fileName)
-            else
-               write(string,'(a,":",i0)') &
-                    trim(location%fileName), location%lineNumber
-            end if
-         end if
-
-         string = '[' // trim(string) // ']'
-
-      end function toString
 
    end subroutine printFailures
 
