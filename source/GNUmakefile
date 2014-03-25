@@ -7,7 +7,7 @@ all: dependencies.inc libpfunit$(LIB_EXT)
 GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 
 $(GENERATED_CODE):
-	./GenerateRealArrayNewSignature.py
+	./GenerateAssertsOnArrays.py
 
 testCodeMacs:
 	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
