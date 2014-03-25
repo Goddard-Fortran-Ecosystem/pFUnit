@@ -59,13 +59,13 @@ endif()
 
 
 list(APPEND pysrcs CodeUtilities.py)
-list(APPEND pysrcs GenerateRealArrayNewSignature.py)
+list(APPEND pysrcs GenerateAssertsOnArrays.py)
 list(APPEND pysrcs Utilities.py)
 
 ADD_CUSTOM_COMMAND(
    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/AssertReal.F90 ${CMAKE_CURRENT_BINARY_DIR}/AssertComplex.F90 ${CMAKE_CURRENT_BINARY_DIR}/AssertInteger1.F90
-   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateRealArrayNewSignature.py
-   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/GenerateRealArrayNewSignature.py
+   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py
+   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py
    )
 
 list(APPEND srcs AssertReal.F90 AssertComplex.F90 AssertInteger1.F90)

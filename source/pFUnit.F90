@@ -97,6 +97,7 @@ module pFUnit_mod
    public :: assertNotAll
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
+   public :: assertRelativelyEqual
    public :: assertExceptionRaised
    public :: assertSameShape
    public :: assertIsNan
