@@ -24,7 +24,9 @@ all: $(EXE)
 $(EXE): testSuites.inc myTests.pf add.F90 SUT tests
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
 
-clean:
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f tests.x

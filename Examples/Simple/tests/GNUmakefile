@@ -41,5 +41,7 @@ endif
 	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<
 #	$(FC) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

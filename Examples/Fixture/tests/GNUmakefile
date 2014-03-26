@@ -27,5 +27,7 @@ endif
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

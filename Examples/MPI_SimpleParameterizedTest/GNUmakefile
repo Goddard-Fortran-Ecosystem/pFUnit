@@ -25,11 +25,15 @@ all: $(EXE)
 $(EXE): testSuites.inc parameterizedTests.pf tests
 	$(MPIF90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) -DUSE_MPI $(FFLAGS) $(FPPFLAGS)
 
-clean:
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(TEST_DIR) clean
 
-distclean: clean
-	rm *$(EXE_EXT)
+distclean: local-E0-distclean
+
+local-E0-distclean: clean
+	$(RM) *$(EXE_EXT)
 
 .DEFAULT_GOAL = tests
 tests:

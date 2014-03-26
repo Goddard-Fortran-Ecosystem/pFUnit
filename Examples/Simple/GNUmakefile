@@ -1,4 +1,4 @@
-.PHONY: tests cleand all
+.PHONY: tests clean all
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -60,7 +60,9 @@ $(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT tests
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS)
 
 
-clean:
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
