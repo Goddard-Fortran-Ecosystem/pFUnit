@@ -52,6 +52,7 @@ SUT:
 .DEFAULT_GOAL = tests
 tests:
 	make -C $(TEST_DIR) tests
+	mpirun -np 4 ./$(EXE)
 
 export SRC_DIR
 export TEST_DIR

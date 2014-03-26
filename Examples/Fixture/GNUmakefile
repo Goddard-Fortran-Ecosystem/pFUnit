@@ -33,6 +33,7 @@ SUT:
 .DEFAULT_GOAL = tests
 tests: SUT
 	make -C $(TEST_DIR) tests
+	./$(EXE)
 
 export SRC_DIR
 export TEST_DIR

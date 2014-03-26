@@ -38,6 +38,7 @@ local-E0-distclean: clean
 .DEFAULT_GOAL = tests
 tests:
 	make -C $(TEST_DIR) tests
+	mpirun -np 4 ./$(EXE)
 
 export TEST_DIR
 export OBJ_EXT
