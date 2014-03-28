@@ -44,7 +44,7 @@ module pFUnit
    use pFUnit_mod, only: RENAME(finalize)
 
    use SourceLocation_mod, only: RENAME(SourceLocation)
-   use Exception_mod, only:  RENAME(throw), RENAME(catch), RENAME(catchAny)
+   use Exception_mod, only:  RENAME(throw), RENAME(catch), RENAME(catchNext)
    use Exception_mod, only:  RENAME(anyExceptions)
    use ParallelException_mod, only:  RENAME(anyExceptions)
    use Assert_mod, only: RENAME(assertTrue), RENAME(assertFalse)
