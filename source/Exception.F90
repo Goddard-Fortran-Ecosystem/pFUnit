@@ -406,20 +406,6 @@ contains
 
    end subroutine throw_message
 
-   subroutine throw_messageWithLocation(message, location)
-      use SourceLocation_mod
-      character(len=*), intent(in) :: message
-      type (SourceLocation), intent(in) :: location
-
-      !$omp critical
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      call globalExceptionList%throw(message, location)
-      !$omp end critical
-   end subroutine throw_messageWithLocation
-
    function catchAny(preserve) result(anException)
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
