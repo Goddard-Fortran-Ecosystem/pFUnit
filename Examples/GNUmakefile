@@ -4,7 +4,7 @@ EXDIRS := $(filter-out $(MPIDIRS),$(ALLDIRS))
 
 MPI=NO
 ifeq ($(MPI),YES)
-  EXDIRS = $(ALLDIRS)
+  EXDIRS := $(ALLDIRS)
 endif
 
 all:
@@ -13,10 +13,10 @@ all:
 
 tests:
 	@for dir in $(EXDIRS); do \
-	make -C $$dir all; done
+	make -C $$dir tests; done
 
 clean:
-	@for dir in $(EXDIRS); do \
+	@for dir in $(ALLDIRS); do \
 	make -C $$dir clean; done
 	rm -f tests.x
 
