@@ -516,6 +516,10 @@ class Parser():
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
         declareArgs =  '      type (WrapUserTestCase) :: aTest\n'
+        declareArgs +=  '#ifdef INTEL_13\n'
+        declareArgs +=  '      target :: aTest\n'
+        declareArgs +=  '      class (WrapUserTestCase), pointer :: aTest\n'
+        declareArgs +=  '#endif\n'
         declareArgs += '      character(len=*), intent(in) :: methodName\n'
         declareArgs += '      procedure(userTestMethod) :: testMethod\n'
         
@@ -534,7 +538,13 @@ class Parser():
             self.outputFile.write('      aTest%' + self.userTestCase['type'] + ' = ' + constructor + '\n\n')
 
         self.outputFile.write('      aTest%testMethodPtr => testMethod\n')
+        
+        self.outputFile.write('#ifdef INTEL_13\n')
+        self.outputFile.write('      p => aTest\n')
+        self.outputFile.write('      call p%setName(methodName)\n')
+        self.outputFile.write('#else\n')
         self.outputFile.write('      call aTest%setName(methodName)\n')
+        self.outputFile.write('#endif\n')
 
         if 'testParameterType' in self.userTestCase:
             self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
