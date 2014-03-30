@@ -19,6 +19,8 @@ SUT: add$(OBJ_EXT) addComplex$(OBJ_EXT)
 	$(F90) -c $(FFLAGS) $(FPPFLAGS) $<
 #	$(F90) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod
 

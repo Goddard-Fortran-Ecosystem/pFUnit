@@ -25,7 +25,9 @@ endif
 #	python $(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(FC) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

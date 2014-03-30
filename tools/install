@@ -24,10 +24,12 @@ for OBJECT in $*; do
     if [ $OBJECT != $TARGET_DIR ]; then
         if [ -f $OBJECT ]; then
             mkdir -p $TARGET_DIR
-            cp -v $OBJECT $TARGET_DIR/`basename $OBJECT`
+#            cp -v $OBJECT $TARGET_DIR/`basename $OBJECT`
+            cp $OBJECT $TARGET_DIR/`basename $OBJECT`
         elif [ -d $OBJECT ]; then
             find $OBJECT -type d -name '[^.]*' -exec mkdir -p $TARGET_DIR/{} \;
-            find $OBJECT -type f -name '[^.]*' -exec cp -v {} $TARGET_DIR/{} \;
+#            find $OBJECT -type f -name '[^.]*' -exec cp -v {} $TARGET_DIR/{} \;
+            find $OBJECT -type f -name '[^.]*' -exec cp {} $TARGET_DIR/{} \;
         fi
     fi
 done

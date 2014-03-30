@@ -166,12 +166,16 @@ documentation/pFUnit2-ReferenceManual.pdf: documentation
 	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
 
 
-clean:
+clean: local-top1-clean
+
+local-top1-clean:
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
 	\rm -f include/configuration.mk
 
-distclean:
+distclean: local-top1-distclean
+
+local-top1-distclean:
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(MAKE) -C $(DOC_DIR) distclean

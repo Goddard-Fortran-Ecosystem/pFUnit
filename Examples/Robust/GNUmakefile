@@ -1,5 +1,5 @@
 .PHONY: clean tests all
-
+.DEFAULT_GOAL = tests
 
 TOP_DIR := $(shell pwd)
 SRC_DIR=$(TOP_DIR)/src
@@ -7,11 +7,14 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-#
 include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
   FFLAGS += -fpp
+endif
+
+ifeq ($(USEMPI),YES)
+   FC=mpif90
 endif
 
 EXE = tests$(EXE_EXT)
@@ -20,21 +23,21 @@ EXE = tests$(EXE_EXT)
 all: $(EXE)
 	./$(EXE) -robust
 
+SUT:
+	make -C $(SRC_DIR) SUT
+	make -C $(TEST_DIR) tests
 
-$(EXE): testSuites.inc myTests.pf add.F90 SUT tests
+tests: all
+
+$(EXE): testSuites.inc myTests.pf add.F90 SUT
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
 
-clean:
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f tests.x
-
-SUT:
-	make -C $(SRC_DIR) SUT
-
-.DEFAULT_GOAL = tests
-tests: SUT
-	make -C $(TEST_DIR) tests
 
 export SRC_DIR
 export TEST_DIR
