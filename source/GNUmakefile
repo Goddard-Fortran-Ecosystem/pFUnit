@@ -18,7 +18,9 @@ testCodeMacs:
 clean_generated_code:
 	rm -f $(GENERATED_CODE)
 
-distclean: clean_generated_code
+distclean: local-build1-distclean
+
+local-build1-distclean: clean_generated_code
 
 dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude

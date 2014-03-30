@@ -1,4 +1,5 @@
-.PHONY: tests cleand all
+.PHONY: tests clean all
+.DEFAULT_GOAL = tests
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -26,7 +27,6 @@ endif
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-#
 include $(PFUNIT)/include/base.mk
 
 ifeq ($(F90),nagfor)
@@ -39,6 +39,10 @@ ifeq ($(UNAME),Windows)
 	endif
 endif
 
+ifeq ($(USEMPI),YES)
+   FC=mpif90
+endif
+
 EXE = tests$(EXE_EXT)
 ifneq ($(UNAME),Windows)
 	LIBS = -L$(PFUNIT)/lib -lpfunit 
@@ -49,22 +53,22 @@ endif
 all: $(EXE)
 	./$(EXE)
 
-.DEFAULT_GOAL = tests
-tests: SUT
-	make -C $(TEST_DIR) tests
-
 SUT:
 	make -C $(SRC_DIR) SUT
+	make -C $(TEST_DIR) tests
 
-$(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT tests
+tests: all
+
+$(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS)
 
 
-clean:
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
-
 
 ifeq ($(UNAME),Windows)
 	export PFUNIT

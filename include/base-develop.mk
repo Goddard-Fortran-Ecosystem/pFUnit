@@ -30,8 +30,12 @@ endif
 
 .PHONY: clean distclean
 
-clean:
+clean: local-base0-clean
+
+local-base0-clean:
 	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
 
-distclean: clean
+distclean: local-base0-distclean
+
+local-base0-distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc

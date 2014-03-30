@@ -58,7 +58,7 @@ subroutine testHaloExterior(this)
 end subroutine testHaloExterior
 
 ! The next test is intentionally broken.
-@test( npes=[3])
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN, npes=[3])
 subroutine testBrokenHalo(this)
    use Halo_mod
    use pfunit_mod
