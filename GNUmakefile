@@ -134,7 +134,6 @@ endif
 
 ifneq ($(findstring $(ROBUST),yes YES Yes),)
   BUILDROBUST=YES
-  FFLAGS += $DBUILD_ROBUST
   FPPFLAGS += $DBUILD_ROBUST
   CPPFLAGS += -DBUILD_ROBUST
 endif
