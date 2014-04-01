@@ -2,8 +2,6 @@
 
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
-#SRCS = Foo.F90
-#OBJS = $(SRCS:.F90=$(OBJ_EXT))
 
 tests: $(OBJS)
 
