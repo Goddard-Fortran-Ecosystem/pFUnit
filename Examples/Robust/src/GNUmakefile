@@ -3,7 +3,7 @@
 SUT: add$(OBJ_EXT)
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $<
 
 clean: local-E1-clean
 
