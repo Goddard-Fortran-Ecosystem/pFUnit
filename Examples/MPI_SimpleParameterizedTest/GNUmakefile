@@ -8,14 +8,6 @@ VPATH = . $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-  FFLAGS += -fpp
-endif
-
-ifeq ($(F90),ifort)
-  FFLAGS += -assume realloc_lhs
-endif
-
 ifeq ($(USEMPI),YES)
    MPIF90=mpif90
 endif
@@ -39,6 +31,8 @@ local-E0-clean:
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
 
+export FPPFLAGS
+export FFLAGS
 export TEST_DIR
 export OBJ_EXT
 export LIB_EXT

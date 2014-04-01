@@ -9,10 +9,6 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-  FFLAGS += -fpp
-endif
-
 ifeq ($(USEMPI),YES)
    FC=mpif90
 endif
@@ -30,7 +26,7 @@ SUT:
 tests: all
 
 $(EXE): testSuites.inc myTests.pf add.F90 SUT
-	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) $(FPPFLAGS)
 
 clean: local-E0-clean
 
@@ -39,6 +35,8 @@ local-E0-clean:
 	make -C $(TEST_DIR) clean
 	rm -f tests.x
 
+export FPPFLAGS
+export FFLAGS
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT
