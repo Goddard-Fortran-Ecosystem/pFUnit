@@ -103,6 +103,7 @@ function doMake {
    local VER=$2
    local PAR=$3
    local MAK=$4
+   local BUILDOK
 
    # Avoid repeating some MPI combinations
    if [[ "$PAR" == "mpi"  || "$PAR" == "hybrid" ]]; then
@@ -150,12 +151,9 @@ function doMake {
      echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
      $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
      buildErrorFile "$makeLog"
-     NOEXAMPLES=0
-     if [ $? == "1" ]; then
-        NOEXAMPLES=1
-     fi
+     BUILDOK=$?
      runError "$COM" "$VER" "$PAR" 0 "$makeLog"
-     if [ $NOEXAMPLES == "0" ]; then
+     if [ $BUILDOK == $OK ]; then
        # Test examples
        export PFUNIT=$SCR_DIR/pFUnit_${COM}_${VER}_PAR-${PAR}
        make install INSTALL_DIR=$PFUNIT 1>> $makeLog 2>&1
@@ -181,9 +179,9 @@ buildErrorFile() {
       echo " --- tests.x not found" 
       touch $SCR_DIR/.fail
       cd $SCR_DIR/$BRANCH
-      return -1
+      return $ERR
    fi
-   return 0
+   return $OK
 }
 runError() {
    local COM=$1
@@ -191,19 +189,31 @@ runError() {
    local PAR=$3
    local EXA=$4
    local makeLog=$5
-   anyError=`grep 'make: ***' $makeLog`
-   if [ "$anyError" ]; then
-      if [ $EXA == "0" ]; then
+   local anyError=`grep 'make: ***' $makeLog`
+   local failMsg=`grep Failures $makeLog`
+   local errorMsg=`grep Errors $makeLog`
+   if [[ "$anyError" != "" || "$failMsg" != "" || "$errorMsg" != "" ]]; then
+     if [ "$anyError" != "" ]; then
+       if [ $EXA == "0" ]; then
+         results[0]="Run_err"
+       else
+         results[1]="Run_err"
+       fi
+       echo " --- runtime error" 
+     fi
+     if [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
+       if [ $EXA == "0" ]; then
          results[0]="Tst_err"
-      else
+       else
          results[1]="Tst_err"
-      fi
-      echo " --- some tests failed" 
-      touch $SCR_DIR/.fail
-      cd $SCR_DIR/$BRANCH
-      return 3
+       fi
+       echo " --- some tests failed" 
+     fi
+     touch $SCR_DIR/.fail
+     cd $SCR_DIR/$BRANCH
+     return $ERR
    fi
-   return 0
+   return $OK
 }
 
 # -------------------------------------------------------------------
@@ -275,12 +285,6 @@ declare -a report
 
 for eachMake in "${MAKE_TYPE[@]}"; do
 
-  # default results: all is OK
-  unitTests=OK
-  examples=OK
-  [ $eachMake == "cmake" ] && examples=na || examples=OK
-  results=("|" $unitTests $examples)
-
   for eachFC in "${COMPILERS[@]}"; do
     if [ "$eachFC" == "INTEL" ]; then
       F90_VERSIONS=( "${INTEL_VERSIONS[@]}" )
@@ -295,9 +299,14 @@ for eachMake in "${MAKE_TYPE[@]}"; do
       for eachPara in "${PARALLEL[@]}"; do
         logFile=$LOG_DIR/pFUnit_${eachFC}_${version}_MPI-${eachPara}.log
         echo " - TEST: $eachMake with Compiler=$eachFC, Version=$version, Parallel=$eachPara"
+        # Initialize results
+        unitTests=OK
+        examples=OK
+        [ $eachMake == "cmake" ] && examples=na || examples=OK
+        results=("|" $unitTests $examples)
         setModule $eachFC $version $eachPara
         doMake $eachFC $version $eachPara $eachMake
-
+        # Update report
         resultString="$eachMake $eachFC $version $eachPara ${results[@]}"
         report=( "${report[@]}" "$resultString" )
 
