@@ -17,7 +17,11 @@ EXE = tests$(EXE_EXT)
 
 # NOTE: use the -robust flag
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE) -robust
+else
 	./$(EXE) -robust
+endif
 
 SUT:
 	make -C $(SRC_DIR) SUT

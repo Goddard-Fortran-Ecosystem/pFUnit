@@ -48,7 +48,11 @@ else
 endif
 
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE)
+else
 	./$(EXE)
+endif
 
 SUT:
 	make -C $(SRC_DIR) SUT
