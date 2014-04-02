@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l select=1:mpiprocs=16
-#PBS -l walltime=00:30:00
+#PBS -l walltime=01:00:00
 #PBS -W group_list=k3002
 #PBS -N pFUnit
 #PBS -j eo
@@ -9,6 +9,8 @@
 # It gets called from mainRegress.sh.
 # It is tailored to work on NCCS's DISCOVER machine.
 
+OK=0
+ERR=1
 umask 022
 
 function abortNotify {
@@ -45,18 +47,18 @@ function setModule {
       elif [ "$version" == "13.0" ]; then
          moduleFortran='comp/intel-13.0.1.117'
       elif [ "$version" == "14.0" ]; then
-         moduleFortran='comp/intel-14.0.1.106'
+         moduleFortran='comp/intel-14.0.2.144'
       else
          msg="$fortranCompiler version $version is not supported yet"
          echo -e "$msg\n\n" >> $DebugLog
       fi
       if [[ "$parallel" == "mpi" || "$parallel" == "hybrid" ]]; then
-         moduleMPI=' mpi/impi-4.1.1.036'
+         moduleMPI=' mpi/impi-4.1.3.048'
       fi
    elif [ "$fortranCompiler" == "PGI" ]; then
-      moduleFortran='comp/pgi-13.9.0'
+      moduleFortran='comp/pgi-14.3.0'
       if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
-         moduleMPI=' other/mpi/openmpi/1.7.3-pgi-13.9.0'
+         moduleMPI=' other/mpi/openmpi/1.7.4-pgi-14.3.0'
       fi
    elif [ "$fortranCompiler" == "NAG" ]; then
       moduleFortran='comp/nag-5.3'
@@ -101,6 +103,7 @@ function doMake {
    local VER=$2
    local PAR=$3
    local MAK=$4
+   local BUILDOK
 
    # Avoid repeating some MPI combinations
    if [[ "$PAR" == "mpi"  || "$PAR" == "hybrid" ]]; then
@@ -132,45 +135,112 @@ function doMake {
    fi
 
    makeLog=$LOG_DIR/${MAK}_${COM}_${VER}_PAR-${PAR}.log
+   makeExLog=$LOG_DIR/${MAK}_${COM}_${VER}_PAR-${PAR}_Ex.log
 
    MAKE=/usr/bin/make
 
-   if [ "$MAK" == "CMAKE" ]; then
+   if [ "$MAK" == "cmake" ]; then
      mkdir -p ${COM}_${VER}_PAR-${PAR}; cd ${COM}_${VER}_PAR-${PAR}
      echo " -- cmake -DMPI=$USEMPI -DOPENMP=$USEOPENMP ../"
      cmake -DMPI=$USEMPI -DOPENMP=$USEOPENMP ../ 1> $makeLog 2>&1
      $MAKE -j 8 tests 1>> $makeLog 2>&1
+     buildErrorFile "$makeLog"
+     runError "$COM" "$VER" "$PAR" 0 "$makeLog"
    else
      $MAKE --quiet distclean F90_VENDOR=$COM 1> $makeLog 2>&1
      echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
      $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+     buildErrorFile "$makeLog"
+     BUILDOK=$?
+     runError "$COM" "$VER" "$PAR" 0 "$makeLog"
+     if [ $BUILDOK == $OK ]; then
+       # Test examples
+       export PFUNIT=$SCR_DIR/pFUnit_${COM}_${VER}_PAR-${PAR}
+       make install INSTALL_DIR=$PFUNIT 1>> $makeLog 2>&1
+       cd $SCR_DIR/$BRANCH/Examples
+       export SKIP_INTENTIONALLY_BROKEN=1
+       $MAKE --quiet clean
+       $MAKE all MPI=$USEMPI 1>> $makeExLog 2>&1
+       buildErrorFile "$makeExLog"
+       runError "$COM" "$VER" "$PAR" 1 "$makeExLog"
+       cd -
+     fi
    fi
-   result=`find . -name tests.x`
-   if [ "$result" == "" ]; then
-      echo " --- tests.x not found" 
-      touch $SCR_DIR/.fail
-      printf "$format" $COM $VER $PAR " | " "Build error" >> $EmailLog
-      cd $SCR_DIR/$BRANCH
-      return 0
-   fi
-
-   anyError=`grep 'make: ***' $makeLog`
-   if [ -n "$anyError" ]; then
-      echo " --- some tests failed" 
-      touch $SCR_DIR/.fail
-      printf "$format" $COM $VER $PAR " | " "Tests failed" >> $EmailLog
-      cd $SCR_DIR/$BRANCH
-      return 0
-   fi
-
-   printf "$format" $COM $VER $PAR " | " "OK" >> $EmailLog
    cd $SCR_DIR/$BRANCH
 
+}
+
+buildErrorFile() {
+   local makeLog=$1
+   rc=`cat $makeLog | grep tests.x | grep 'Command not found'`
+   intError=`grep '**Internal compiler error' $makeLog`
+   if [[ "$rc" != "" || "$intError" != "" ]]; then
+      results[1]="Bld_err"
+      echo " --- tests.x not found" 
+      touch $SCR_DIR/.fail
+      cd $SCR_DIR/$BRANCH
+      return $ERR
+   fi
+   return $OK
+}
+runError() {
+   local COM=$1
+   local VER=$2
+   local PAR=$3
+   local EXA=$4
+   local makeLog=$5
+   local anyError=`grep 'make: ***' $makeLog`
+   local failMsg=`grep Failures $makeLog`
+   local errorMsg=`grep Errors $makeLog`
+   if [[ "$anyError" != "" || "$failMsg" != "" || "$errorMsg" != "" ]]; then
+     if [ "$anyError" != "" ]; then
+       if [ $EXA == "0" ]; then
+         results[0]="Run_err"
+       else
+         results[1]="Run_err"
+       fi
+       echo " --- runtime error" 
+     fi
+     if [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
+       if [ $EXA == "0" ]; then
+         results[0]="Tst_err"
+       else
+         results[1]="Tst_err"
+       fi
+       echo " --- some tests failed" 
+     fi
+     touch $SCR_DIR/.fail
+     cd $SCR_DIR/$BRANCH
+     return $ERR
+   fi
+   return $OK
+}
+
+# -------------------------------------------------------------------
+createEmailReport()
+# -------------------------------------------------------------------
+{
+  local numLines=${#report[*]}
+  local i=0
+  while [ $i -lt $numLines ]; do
+     echo "${report[$i]}" 
+     echo "${report[$i]}" >> $LOG_DIR/.report
+     let i++
+  done
+
+echo "pFUnit test results, branch=$BRANCH" >> $LOG_DIR/.foo
+echo "------------------------------------------------------------" >> $LOG_DIR/.foo
+echo "Make    ""Compiler  ""Version   ""Parallel  " "|" " Code    ""Examples" >> $LOG_DIR/.foo
+echo "------------------------------------------------------------" >> $LOG_DIR/.foo
+awk '{ printf "%-8s%-10s%-10s%-10s %s  %-8s%-8s \n", $1, $2, $3, $4, $5, $6, $7}' $LOG_DIR/.report  >> $LOG_DIR/.foo
+
+   mv $LOG_DIR/.foo $EmailLog
 }
 
 # -------------------------------------------------------------------
 # MAIN PROGRAM
 # -------------------------------------------------------------------
+
 
 DebugLog=$LOG_DIR/debug.log
 EmailLog=$LOG_DIR/email.log
@@ -180,7 +250,7 @@ declare -a GNU_VERSIONS
 declare -a INTEL_VERSIONS
 
 # We support two build types
-MAKE_TYPE=(CMAKE GMAKE)
+MAKE_TYPE=(cmake gmake)
 
 # Three compilers
 COMPILERS=(GNU INTEL NAG)
@@ -199,10 +269,6 @@ PARALLEL=(off mpi omp hybrid)
 
 curDate=`date +"%Y_%m_%d"`
 
-length=49
-header="%-10s %-10s %-10s %3s %-12s\n"
-format="%-10s %-10s %-10s %3s %-12s\n"
-
 cd $SCR_DIR/$BRANCH
 
 # BRANCH is an input argument to mainRegress.sh
@@ -214,10 +280,10 @@ else
   INTEL_VERSIONS=( "${INTEL_VERSIONS_master[@]}" )
 fi
 
+declare -a results
+declare -a report
+
 for eachMake in "${MAKE_TYPE[@]}"; do
-  echo "$eachMake"  >> $EmailLog; echo "=====" >> $EmailLog
-  printf "$header" "Compiler" "Version" "Parallel" " | " "Result" >> $EmailLog
-  printf -v line '%*s' "$length"; echo ${line// /-} >> $EmailLog
 
   for eachFC in "${COMPILERS[@]}"; do
     if [ "$eachFC" == "INTEL" ]; then
@@ -233,16 +299,26 @@ for eachMake in "${MAKE_TYPE[@]}"; do
       for eachPara in "${PARALLEL[@]}"; do
         logFile=$LOG_DIR/pFUnit_${eachFC}_${version}_MPI-${eachPara}.log
         echo " - TEST: $eachMake with Compiler=$eachFC, Version=$version, Parallel=$eachPara"
+        # Initialize results
+        unitTests=OK
+        examples=OK
+        [ $eachMake == "cmake" ] && examples=na || examples=OK
+        results=("|" $unitTests $examples)
         setModule $eachFC $version $eachPara
         doMake $eachFC $version $eachPara $eachMake
+        # Update report
+        resultString="$eachMake $eachFC $version $eachPara ${results[@]}"
+        report=( "${report[@]}" "$resultString" )
+
       done # eachPara
 
     done # eachVersion
     F90_VERSIONS=( )
 
   done #eachCompiler
-  echo >> $EmailLog
 
 done #eachMake
+
+createEmailReport
 
 exit 0

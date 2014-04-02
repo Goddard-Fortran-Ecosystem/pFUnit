@@ -515,7 +515,10 @@ class Parser():
 
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
-        declareArgs =  '      type (WrapUserTestCase) :: aTest\n'
+        declareArgs =  '#ifdef INTEL_13\n'
+        declareArgs +=  '      use pfunit_mod, only: testCase\n'
+        declareArgs +=  '#endif\n'
+        declareArgs +=  '      type (WrapUserTestCase) :: aTest\n'
         declareArgs +=  '#ifdef INTEL_13\n'
         declareArgs +=  '      target :: aTest\n'
         declareArgs +=  '      class (WrapUserTestCase), pointer :: p\n'

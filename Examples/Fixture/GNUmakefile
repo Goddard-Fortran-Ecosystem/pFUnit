@@ -9,10 +9,6 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-  FFLAGS += -fpp
-endif
-
 ifeq ($(USEMPI),YES)
    FC=mpif90
 endif
@@ -20,7 +16,12 @@ endif
 EXE = tests$(EXE_EXT)
 
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE)
+else
 	./$(EXE)
+endif
+
 
 SUT:
 	make -C $(SRC_DIR) SUT
@@ -29,16 +30,17 @@ SUT:
 tests: all
 
 $(EXE): testSuites.inc SUT
-	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(FFLAGS)
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(FFLAGS) $(FPPFLAGS)
 
 clean: local-E0-clean
 
 local-E0-clean:
-	make -C $(SRC_DIR) clean
-	make -C $(TEST_DIR) clean
-	rm -f $(EXE) *$(OBJ_EXT)
+	$(MAKE) -C $(SRC_DIR) clean
+	$(MAKE) -C $(TEST_DIR) clean
+	$(RM) -f $(EXE) *$(OBJ_EXT)
 
 export FPPFLAGS
+export FFLAGS
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT

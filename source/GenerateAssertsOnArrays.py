@@ -365,6 +365,7 @@ ifElseString(tolerance == 0,\
     logical OK
     integer, dimension(size(fShape)) :: iLocation
     character(len=MAXLEN_SHAPE) :: locationInArray
+    real :: denominator
 
     ! Return immediately if the two are precisely equal.
     ! This is necessary to deal with identical infinities, which cannot be
@@ -381,6 +382,7 @@ ifElseString(tolerance == 0,\
 !    print *,'0800 ',product(fShape),fShape
     m = product(fShape)
     i = 0
+!    
     OK = .true.
     
 ! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
@@ -431,7 +433,9 @@ ifElseString(fType != 'complex', \
               &    L_INFINITY_NORM )
               end if
             case default
-              print *,'select-error-1'
+              ! This case should not occur for this type-kind-rank.
+              print *,'internal: """+subroutineName +""" select-error-1'
+              OK = .false.
          end select
          
 !         OK = .not. ( expected(i) /= found(i) )
@@ -481,7 +485,9 @@ ifElseString(fType != 'complex', \
               &    L_INFINITY_NORM )
               end if
             case default
-              print *,'select-error-2'
+              ! This case should not occur for this type-kind-rank.
+              print *,'internal: """+subroutineName +""" select-error-2'
+              OK = .false.
          end select
 
 !         OK = &
@@ -534,9 +540,9 @@ ifElseString(fType != 'complex', \
     case (NEQP)
        call throw( &
        & appendWithSpace(message, &
-       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & 'NOT: '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
+       & unlessScalar(fShape,';  first equality at element '//trim(locationInArray))//'.'), &
        & location = location &
        ) """ + \
 ifElseString(fType != 'complex', \
@@ -578,19 +584,37 @@ ifElseString(fType != 'complex', \
        & location = location &
        ) """,'') + \
 """
-    case (RELEQP)    
+    case (RELEQP)
+       if (expected_ .eq. 0) then
+          denominator = expected_
+       else
+          denominator = 1.0
+       end if 
        call throw( &
        & appendWithSpace(message, &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='RELEQ: expected', &
+       &   fPrefix='to be near:')) // &
+       & '; '//trim(differenceReport( &
+       &   abs(found_ - expected_)/denominator, tolerance_)) // &
        & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case default
-       print *,appendWithSpace(message,'select-error-3')
+       ! This case should not occur for this type-kind-rank.
+       print *,'internal: """+subroutineName +""" select-error-3'
+       call throw( &
+       & appendWithSpace(message, &
+       & 'pFUnit internal error:  unexpected comparison given type-kind-rank'), &
+       & location = location &
+       & )
     end select
 
     end if
 
     end subroutine """+subroutineName+"""
+
+       
 
 """
 
@@ -848,7 +872,7 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
       &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
 
       if( .not.present(ePrefix) ) then
-         ePrefix_ = 'expected:'
+         ePrefix_ = 'expected'
       else
          ePrefix_ = ePrefix
       end if
@@ -897,8 +921,14 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
      """+expectedDeclaration+"""
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
+     character(len=2) rel
+     if (abs("""+coercedDifference+""") .gt. tolerance) then
+        rel = '> '
+     else
+        rel = '<='
+     end if
       differenceReport = '    difference: |' // trim(toString("""+coercedDifference+""")) // &
-      & '| > tolerance:' // trim(toString("""+'tolerance'+"""))
+      & '| '// trim(rel) //' tolerance:' // trim(toString("""+'tolerance'+"""))
     end function 
 """)
 
@@ -1214,7 +1244,7 @@ def makeModuleComplex():
     # mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     #
     mod = constructModule(baseName='AssertComplex',\
-                          assertionShortNames=['Equal'],\
+                          assertionShortNames=['NotEqual','Equal','RelativelyEqual'],\
                           foundFTypes=['real','complex'])
     # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     # print('makeModuleComplex: opening    '+mod.getFileName())
