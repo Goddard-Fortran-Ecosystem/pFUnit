@@ -1,4 +1,4 @@
-.PHONY: tests all install documentation config
+.PHONY: tests all documentation config
 
 TOP_DIR ?=$(shell pwd)
 
@@ -153,7 +153,7 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all:
+all: include/configuration.mk
 	$(MAKE) -C $(SOURCE_DIR) all
 	$(MAKE) -C $(TESTS_DIR) all
 
@@ -190,11 +190,9 @@ endif
 develop:
 	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
-install: include/configuration.mk libpfunit$(LIB_EXT)
-ifndef INSTALL_DIR
-	@echo Please specify INSTALL_DIR. Example: make install INSTALL_DIR=SOME_PATH
-	@echo Where SOME_PATH is different than $(TOP_DIR)
-else
+install: libpfunit$(LIB_EXT)
+INSTALL_DIR ?= $(CURDIR)
+install: 
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	tools/install $(INSTALL_DIR)/lib source/lib*
 	tools/install $(INSTALL_DIR)/mod source/*.mod
@@ -203,7 +201,6 @@ else
 	tools/install $(INSTALL_DIR) bin
 	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
 	@echo For example:  export PFUNIT=$(INSTALL_DIR)
-endif
 
 include/configuration.mk:
 	@echo "# include/configuration.mk generated automatically during build" \
