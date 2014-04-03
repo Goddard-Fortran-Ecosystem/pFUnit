@@ -81,6 +81,8 @@ contains
       use ParallelException_mod
       class (MpiTestCase), intent(inout) :: this
 
+      logical :: discard
+
       ! create subcommunicator
       this%context = this%parentContext%makeSubcontext(this%getNumProcessesRequested())
 
@@ -93,7 +95,11 @@ contains
                call this%tearDown()
             end if
          end if
-
+      else
+         ! only report context failure on root PE
+         if (.not. this%parentContext%isRootProcess()) then
+            discard = catch()
+         end if
       end if
 
       call gather(this%parentContext)
