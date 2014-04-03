@@ -1,4 +1,4 @@
-.PHONY: tests all documentation config
+.PHONY: tests all install documentation config
 
 TOP_DIR ?=$(shell pwd)
 
@@ -196,8 +196,16 @@ develop:
 	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
 install: libpfunit$(LIB_EXT)
-INSTALL_DIR ?= $(CURDIR)
-install: 
+ifndef INSTALL_DIR
+	$(error Must specify INSTALL_DIR. Example: make install INSTALL_DIR=SOME_PATH, \
+	where SOME_PATH is different than $(TOP_DIR))
+else
+ifeq ($(INSTALL_DIR),$(TOP_DIR))
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
+ifeq ($(INSTALL_DIR),.)
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	tools/install $(INSTALL_DIR)/lib source/lib*
 	tools/install $(INSTALL_DIR)/mod source/*.mod
@@ -208,6 +216,7 @@ install:
 	@echo PFUNIT has been installed in $(INSTALL_DIR).
 	@echo For normal usage please ensure PFUNIT is set to $(INSTALL_DIR).
 	@echo For example, in bash:  export PFUNIT=$(INSTALL_DIR)
+endif
 
 include/configuration.mk:
 	@echo "# include/configuration.mk generated automatically during build" \
