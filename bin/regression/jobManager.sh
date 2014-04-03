@@ -104,6 +104,7 @@ function doMake {
    local PAR=$3
    local MAK=$4
    local BUILDOK
+   local RUNOK
 
    # Avoid repeating some MPI combinations
    if [[ "$PAR" == "mpi"  || "$PAR" == "hybrid" ]]; then
@@ -145,24 +146,50 @@ function doMake {
      cmake -DMPI=$USEMPI -DOPENMP=$USEOPENMP ../ 1> $makeLog 2>&1
      $MAKE -j 8 tests 1>> $makeLog 2>&1
      buildErrorFile "$makeLog"
-     runError "$COM" "$VER" "$PAR" 0 "$makeLog"
+     runError "$COM" "$VER" "$PAR" "$makeLog"
    else
      $MAKE --quiet distclean F90_VENDOR=$COM 1> $makeLog 2>&1
-     echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
-     $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+     echo " -- $MAKE all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
+     $MAKE -j 8 all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
      buildErrorFile "$makeLog"
      BUILDOK=$?
-     runError "$COM" "$VER" "$PAR" 0 "$makeLog"
-     if [ $BUILDOK == $OK ]; then
+     echo " --- bld RC = $BUILDOK"
+     if [ $BUILDOK == "$OK" ]; then
+       echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
+       $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+       runError "$COM" "$VER" "$PAR" "$makeLog"
+       RUNOK=$?
+       echo " --- run RC = $RUNOK"
+       if [ $RUNOK == "-1" ]; then
+         results[1]="Run_err"
+       elif [ $RUNOK == "-2" ]; then
+         results[1]="Tst_err"
+       fi
+     else
+       results[1]="Bld_err"
+       results[2]="na"
+     fi
+     if [ $BUILDOK == "$OK" ]; then
        # Test examples
        export PFUNIT=$SCR_DIR/pFUnit_${COM}_${VER}_PAR-${PAR}
        make install INSTALL_DIR=$PFUNIT 1>> $makeLog 2>&1
        cd $SCR_DIR/$BRANCH/Examples
-       export SKIP_INTENTIONALLY_BROKEN=1
        $MAKE --quiet clean
-       $MAKE all MPI=$USEMPI 1>> $makeExLog 2>&1
+       echo " -- $MAKE all MPI=$USEMPI SKIP_INTENTIONALLY_BROKEN=YES"
+       $MAKE all MPI=$USEMPI OPENMP=$USEOPENMP SKIP_INTENTIONALLY_BROKEN=YES 1>> $makeExLog 2>&1
        buildErrorFile "$makeExLog"
-       runError "$COM" "$VER" "$PAR" 1 "$makeExLog"
+       BUILDOK=$?
+       echo " --- bld RC = $BUILDOK"
+       if [ $BUILDOK == "$ERR" ]; then
+         results[2]="Bld_err"
+       else
+         runError "$COM" "$VER" "$PAR" "$makeExLog"
+         RUNOK=$?
+         echo " --- run RC = $RUNOK"
+         if [ $RUNOK != "$OK" ]; then
+           results[2]="Run_err"
+         fi
+       fi
        cd -
      fi
    fi
@@ -172,48 +199,41 @@ function doMake {
 
 buildErrorFile() {
    local makeLog=$1
-   rc=`cat $makeLog | grep tests.x | grep 'Command not found'`
-   intError=`grep '**Internal compiler error' $makeLog`
-   if [[ "$rc" != "" || "$intError" != "" ]]; then
-      results[1]="Bld_err"
-      echo " --- tests.x not found" 
-      touch $SCR_DIR/.fail
-      cd $SCR_DIR/$BRANCH
-      return $ERR
+   local noExe=`cat $makeLog | grep tests.x | grep 'Command not found'`
+   local intError=`grep '**Internal compiler error' $makeLog`
+   if [[ "$rc" == "" && "$intError" == "" ]]; then
+     echo " --- Build phase OK" 
+     return $OK
+   else
+     echo " --- tests.x not found" 
+     touch $SCR_DIR/.fail
+     cd $SCR_DIR/$BRANCH
+     return $ERR
    fi
-   return $OK
 }
 runError() {
    local COM=$1
    local VER=$2
    local PAR=$3
-   local EXA=$4
-   local makeLog=$5
+   local makeLog=$4
    local anyError=`grep 'make: ***' $makeLog`
    local failMsg=`grep Failures $makeLog`
    local errorMsg=`grep Errors $makeLog`
-   if [[ "$anyError" != "" || "$failMsg" != "" || "$errorMsg" != "" ]]; then
-     if [ "$anyError" != "" ]; then
-       if [ $EXA == "0" ]; then
-         results[0]="Run_err"
-       else
-         results[1]="Run_err"
-       fi
-       echo " --- runtime error" 
-     fi
-     if [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
-       if [ $EXA == "0" ]; then
-         results[0]="Tst_err"
-       else
-         results[1]="Tst_err"
-       fi
-       echo " --- some tests failed" 
-     fi
+   if [[ "$anyError" == "" && "$failMsg" == "" && "$errorMsg" == "" ]]; then
+     echo " --- Run phase OK" 
+     return $OK
+   else
      touch $SCR_DIR/.fail
      cd $SCR_DIR/$BRANCH
-     return $ERR
+     if [ "$anyError" != "" ]; then
+       echo " --- runtime error" 
+       return -1
+     fi
+     if [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
+       echo " --- some tests failed" 
+       return -2
+     fi
    fi
-   return $OK
 }
 
 # -------------------------------------------------------------------
