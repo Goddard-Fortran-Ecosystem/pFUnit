@@ -1,0 +1,20 @@
+#!/bin/bash
+
+opDir=
+
+if [ "$#" -eq 0 ];then
+   export opDir=`pwd`
+else
+   export opDir=$1
+fi
+
+echo pfunit/tools/clean:  Removing files ending in ".([oax]|mod|i90|dSYM)".
+
+pushd ${opDir}
+for i in `find -E . -regex '.*\.([oax]|mod|i90)$'`; do
+   rm $i
+done
+for i in `find -E . -regex '.*\.(dSYM)$'`; do
+   \rm -rf $i
+done
+popd
