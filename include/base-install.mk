@@ -55,6 +55,7 @@ clean: local-base0-clean
 
 local-base0-clean:
 	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	$(RM) -r *.dSYM
 
 distclean: local-base0-distclean
 

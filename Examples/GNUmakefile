@@ -19,4 +19,3 @@ clean:
 	@for dir in $(ALLDIRS); do \
 	make -C $$dir clean; done
 	rm -f tests.x
-

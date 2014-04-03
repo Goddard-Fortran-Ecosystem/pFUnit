@@ -474,6 +474,7 @@ pFUnit supports the software development of several weather and climate simulati
    <ul>
    <li>\ref ZeroTestsRun</li>
    <li>\ref SomeOfMyTestsAreNotRunning</li>
+   <li>\ref FAQIntel13</li>
    </ul>
    <li>\ref sec_Tips</li>
    <ul>
@@ -506,6 +507,13 @@ Time:         0.004 seconds
   
  OK\endcode
 </li></ul></p>
+
+\subsection FAQIntel13 Intel Fortran Version 13: -DINTEL_13
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+<code>-DINTEL_13</code> is passed to the compiler when building or
+using pFUnit. In the build process for pFUnit, this is added to the
+make variables CPPFLAGS and FPPFLAGS.
+
 
 \section sec_Tips Tips
 
@@ -553,6 +561,12 @@ currently not tested and supported by the pFUnit team. At this
 writing, 2013-1031, serial Examples and MPI are not known to be
 supported.  Please contact us if you wish to either contribute or
 otherwise discuss this port.
+
+\section sec_Intel13 Intel Fortran Version 13: -DINTEL_13
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+<code>-DINTEL_13</code> is passed to the compiler when building or
+using pFUnit. In the build process for pFUnit, this is added to the
+make variables CPPFLAGS and FPPFLAGS.
 
 
 \page page_Acknowledgments Acknowledgments
