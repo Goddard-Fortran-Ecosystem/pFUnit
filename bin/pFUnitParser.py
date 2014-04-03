@@ -211,8 +211,10 @@ class AtMpiAssert(Action):
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
-        
-        p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
+
+        # 'this' object may not exist if test is commented out.
+        if hasattr(p,'currentSelfObjectName'):
+            p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 class AtBefore(Action):
@@ -515,7 +517,10 @@ class Parser():
 
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
-        declareArgs =  '      type (WrapUserTestCase) :: aTest\n'
+        declareArgs =  '#ifdef INTEL_13\n'
+        declareArgs +=  '      use pfunit_mod, only: testCase\n'
+        declareArgs +=  '#endif\n'
+        declareArgs +=  '      type (WrapUserTestCase) :: aTest\n'
         declareArgs +=  '#ifdef INTEL_13\n'
         declareArgs +=  '      target :: aTest\n'
         declareArgs +=  '      class (WrapUserTestCase), pointer :: p\n'

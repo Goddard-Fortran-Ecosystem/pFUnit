@@ -103,7 +103,7 @@ module pFUnit_mod
    public :: assertIsNan
    public :: assertIsFinite
 
-   public :: throw, catchAny, catch, anyExceptions
+   public :: throw, catchNext, catch, anyExceptions
 
 #ifdef USE_MPI
    logical :: useMpi_

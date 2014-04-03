@@ -27,7 +27,7 @@ contains
 #define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       ADD(testGetNumExceptions)
-      ADD(testCatchEmpty)
+      ADD(testCatchNextEmpty)
       ADD(testThrow1)
       ADD(testCatchFail)
       ADD(testCatchSucceed)
@@ -36,9 +36,9 @@ contains
       ADD(testCatchButPreserveA)
       ADD(testCatchButPreserveB)
       ADD(testCatchButPreserveC)
-      ADD(testCatchAnyButPreserveA)
-      ADD(testCatchAnyButPreserveB)
-      ADD(testCatchAnyButPreserveC)
+      ADD(testCatchNextButPreserveA)
+      ADD(testCatchNextButPreserveB)
+      ADD(testCatchNextButPreserveC)
 
       ADD(testGetLineNumberNoInfo)
       ADD(testGetLineNumber)
@@ -75,17 +75,17 @@ contains
    ! None
    !---------------------------------------------------------------------------
    ! !INTERFACE:
-   subroutine testCatchEmpty()
+   subroutine testCatchNextEmpty()
       type (ExceptionList) :: list
       type (Exception) :: anException
 
       !EOP
       !BOC
       list = newExceptionList()
-      anException = list%catchAny()
+      anException = list%catchNext()
       call assertTrue(anException%isNull())
       !EOC
-   end subroutine testCatchEmpty
+   end subroutine testCatchNextEmpty
 
    !---------------------------------------------------------------------------
    !BOP
@@ -112,7 +112,7 @@ contains
       list = newExceptionList()
 
       call list%throwMessage(message)
-      anException = list%catchAny()
+      anException = list%catchNext()
       call assertEqual(message, anException%getMessage())
 
       !EOC
@@ -142,7 +142,7 @@ contains
       list = newExceptionList()
 
       call list%throwMessage(message)
-      anException = list%catchAny()
+      anException = list%catchNext()
       call assertFalse(list%catch('different exception'))
       !EOC
    end subroutine testCatchFail
@@ -215,8 +215,8 @@ contains
       list = newExceptionList()
 
       call list%throwMessage(message1)
-      anException = list%catchAny()
-      call assertEqual(0, list%getNumExceptions())!, 'catchAny() did not remove only exception')
+      anException = list%catchNext()
+      call assertEqual(0, list%getNumExceptions())!, 'catchNext() did not remove only exception')
       call assertFalse(list%catch(message1))
 
       call list%throwMessage(message1)
@@ -323,7 +323,7 @@ contains
 
    !---------------------------------------------------------------------------
    !BOP
-   ! !IROUTINE: testCatchAnyButPreserveA
+   ! !IROUTINE: testCatchNextButPreserveA
    !
    ! !AUTHORS: Tom Clune
    !
@@ -335,7 +335,7 @@ contains
    !---------------------------------------------------------------------------
 
    ! !INTERFACE:
-   subroutine testCatchAnyButPreserveA()
+   subroutine testCatchNextButPreserveA()
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -345,15 +345,15 @@ contains
       list = newExceptionList()
 
       call list%throwMessage(message)
-      anException = list%catchAny(preserve = .true.)
+      anException = list%catchNext(preserve = .true.)
       call assertFalse(anException%isNull())
       call assertEqual(message, anException%getMessage())
       !EOC
-   end subroutine testCatchAnyButPreserveA
+   end subroutine testCatchNextButPreserveA
 
    !---------------------------------------------------------------------------
    !BOP
-   ! !IROUTINE: testCatchAnyButPreserveB
+   ! !IROUTINE: testCatchNextButPreserveB
    !
    ! !AUTHORS: Tom Clune
    !
@@ -365,7 +365,7 @@ contains
    !---------------------------------------------------------------------------
 
    ! !INTERFACE:
-   subroutine testCatchAnyButPreserveB()
+   subroutine testCatchNextButPreserveB()
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -375,10 +375,10 @@ contains
       list = newExceptionList()
 
       call list%throwMessage(message)
-      anException = list%catchAny(preserve=.true.)
+      anException = list%catchNext(preserve=.true.)
       call assertTrue(list%catch(message)) 
       !EOC
-   end subroutine testCatchAnyButPreserveB
+   end subroutine testCatchNextButPreserveB
 
    !---------------------------------------------------------------------------
    !BOP
@@ -394,7 +394,7 @@ contains
    !---------------------------------------------------------------------------
 
    ! !INTERFACE:
-   subroutine testCatchAnyButPreserveC()
+   subroutine testCatchNextButPreserveC()
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -406,10 +406,10 @@ contains
 
       call list%throwMessage(message1)
       call list%throwMessage(message2)
-      anException = list%catchAny(preserve =.true.)
+      anException = list%catchNext(preserve =.true.)
       call assertEqual(2, list%getNumExceptions())
       !EOC
-   end subroutine testCatchAnyButPreserveC
+   end subroutine testCatchNextButPreserveC
 
    subroutine testGetLineNumberNoInfo()
       use Exception_mod, only: UNKNOWN_LINE_NUMBER
@@ -456,7 +456,7 @@ contains
       list = newExceptionList()
       call list%throw('message', &
            & SourceLocation(fileName=FILE_NAME, lineNumber=2))
-      anException = list%catchAny()
+      anException = list%catchNext()
       call assertEqual(FILE_NAME, anException%getFileName())
 
    end subroutine testThrowWithLineAndFile

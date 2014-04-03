@@ -28,7 +28,6 @@ include $(INCLUDE_DIR)/$(COMPILER).mk
 FFLAGS += $I$(INCLUDE_DIR)
 
 ifeq ($(BUILDROBUST),YES)
-  FFLAGS += $DBUILD_ROBUST
   FPPFLAGS += $DBUILD_ROBUST
   CPPFLAGS += -DBUILD_ROBUST
 endif
@@ -56,6 +55,7 @@ clean: local-base0-clean
 
 local-base0-clean:
 	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	$(RM) -r *.dSYM
 
 distclean: local-base0-distclean
 

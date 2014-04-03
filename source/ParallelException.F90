@@ -77,7 +77,7 @@ contains
 
          n = getNumExceptions()
          do i = 1, n
-            localList%exceptions(i) = catchAny() ! drains singleton exception list on all PEs
+            localList%exceptions(i) = catchNext() ! drains singleton exception list on all PEs
             call context%labelProcess(localList%exceptions(i)%message)
          end do
 

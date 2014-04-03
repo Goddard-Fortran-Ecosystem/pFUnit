@@ -18,6 +18,8 @@ module Test_AssertComplex_mod ! note name
   use AssertBasic_mod
   use AssertReal_mod, only: assertEqual, differenceReport, valuesReport
   use AssertComplex_mod, only: assertEqual
+  use AssertComplex_mod, only: assertNotEqual
+  use AssertComplex_mod, only: assertRelativelyEqual
   use ThrowFundamentalTypes_mod, only: locationFormat
 ! , differenceReport, valuesReport
   use SourceLocation_mod
@@ -68,6 +70,9 @@ contains
     ADD(testEquals_C_MultiDWithTolerance64_2)
     ADD(testEquals_C_MultiDSourceLocation)
     ADD(testEquals_4DPComplex_DifferenceReport)
+    ADD(testEquals_ComplexMultiD_SingleElementNE1)
+    ADD(testEquals_ComplexMultiD_SingleElementRE1)
+    ADD(testEquals_ComplexMultiD_SingleEltVarious1)
 
   end function suite
 
@@ -1213,18 +1218,180 @@ end subroutine testEquals_C_MultiDWithTolerance64
 
   end subroutine testEquals_4DPComplex_DifferenceReport
 
+  subroutine testEquals_ComplexMultiD_SingleElementNE1
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+
+    complex, parameter :: good = 1
+
+    complex(kind=r32), dimension(:,:,:,:), allocatable :: expected, found
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4
+    integer :: n1, n2, n3, n4
+
+    !dbg1 print *,'5000'
+
+    n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
+    allocate(expected(n1,n2,n3,n4),found(n1,n2,n3,n4))
+    expected = good + 1 ; found = good;
+    i1 = 1; i2 = 2; i3 = 1; i4 = 2
+    found(i1,i2,i3,i4) = expected(i1,i2,i3,i4)
+
+    allocate(msg,source='testEquals_MultiD_SingleElementNE1')
+
+    ! The following should not throw an exception...
+    call assertNotEqual(expected,found, message=msg)
+
+!    "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
+
+    call assertCatch( &
+         & appendWithSpace(msg, &
+         & trim(valuesReport(good+1, good+1, & 
+         &      ePrefix='NOT: expected', &
+         &      fPrefix='but found:' )) // &
+         & '; '//trim(differenceReport(0.,0.))// &
+         & ';  first equality at element ' // trim(locationInArray) // '.') &
+         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ComplexMultiD_SingleElementNE1
+
+  subroutine testEquals_ComplexMultiD_SingleElementRE1
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+
+    complex, parameter :: good = 1
+
+    complex(kind=r32), dimension(:,:,:,:), allocatable :: expected, found
+
+    real(kind=r32) :: tolerance32,numerator,denominator
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4
+    integer :: n1, n2, n3, n4
+
+    !dbg1 print *,'5000'
+
+    tolerance32 = 0.001
+
+    n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
+    allocate(expected(n1,n2,n3,n4),found(n1,n2,n3,n4))
+    expected = good ; found = good + tolerance32*0.5;
+    i1 = 1; i2 = 2; i3 = 1; i4 = 2
+    found(i1,i2,i3,i4) = expected(i1,i2,i3,i4) + 1.0
+
+    numerator   = abs(found(i1,i2,i3,i4) - expected(i1,i2,i3,i4) )
+    denominator = abs(expected(i1,i2,i3,i4)) ! zero? 
+
+    allocate(msg,source='testEquals_MultiD_SingleElementRE1')
+
+    ! The following should not throw an exception...
+    call assertRelativelyEqual(expected,found, tolerance32, message=msg)
+
+!    "locationInArray" is not used in the original AssertEqual code.
+    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
+
+    call assertCatch( &
+         & appendWithSpace(msg, &
+         & trim(valuesReport(expected(i1,i2,i3,i4), found(i1,i2,i3,i4), & 
+         &      ePrefix='RELEQ: expected', &
+         &      fPrefix='to be near:' )) // &
+         & '; '//trim(differenceReport(numerator/denominator,tolerance32))// &
+         & ';  first difference at element ' // trim(locationInArray) // '.') &
+         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ComplexMultiD_SingleElementRE1
+
+
+  subroutine testEquals_ComplexMultiD_SingleEltVarious1
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+
+    complex, parameter :: good = 1
+
+    complex(kind=r32), dimension(:,:,:,:), allocatable :: expected, found
+    real(kind=r32) :: tolerance32
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+    integer :: i1, i2, i3, i4
+    integer :: n1, n2, n3, n4
+
+    !dbg1 print *,'5000'
+
+    n1 = 2; n2 = 3; n3 = 2; n4 = 2; 
+    allocate(expected(n1,n2,n3,n4),found(n1,n2,n3,n4))
+    i1 = 1; i2 = 2; i3 = 1; i4 = 2
+
+    allocate(msg,source='testEquals_ComplexMultiD_SingleEltVarious1')
+
+    ! The following should not throw an exception...
+
+    expected = good; found = good;
+    call assertEqual(expected, found, message=msg)
+
+    expected = good+1; found = good;
+    call assertNotEqual(expected, found, message=msg)
+
+!    expected = good+1; found = good;
+!    call assertGreaterThan(expected, found, message=msg)
+!
+!    expected = good+1; found = good; found(i1,i2,i3,i4) = good+1
+!    call assertGreaterThanOrEqual(expected, found, message=msg)
+!
+!    expected = good; found = good+1;
+!    call assertLessThan(expected, found, message=msg)
+!
+!    expected = good; found = good+1; found(i1,i2,i3,i4) = good
+!    call assertLessThanOrEqual(expected, found, message=msg)
+
+    tolerance32 = 0.001
+    expected = good; found = good + tolerance32*0.5;
+    call assertRelativelyEqual(expected, found, tolerance32, message=msg )
+
+!    "locationInArray" is not used in the original AssertEqual code.
+!    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
+
+!    call assertCatch( &
+!         & appendWithSpace(msg, &
+!         & trim(valuesReport(good+1, good, & 
+!         &      ePrefix='expected', &
+!         &      fPrefix='to be greater than:' )) // &
+!         & ';  first difference at element ' // trim(locationInArray) // '.') &
+!         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_ComplexMultiD_SingleEltVarious1
+
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
     use Params_mod
-    use Exception_mod, only: getNumExceptions, Exception, catchAny
+    use Exception_mod, only: getNumExceptions, Exception, catchNext
     use Assert_mod, only: assertEqual
     character(len=*), intent(in) :: string
     type (SourceLocation), optional, intent(in) :: location
     type (Exception) :: anException
 
     if (getNumExceptions() > 0) then
-       anException = catchAny()
+       anException = catchNext()
 
        !, 'exceptions do not match')
        call assertEqual(string,anException%getMessage()) ! ,message='Exception message test')

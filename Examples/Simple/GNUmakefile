@@ -29,12 +29,9 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-	FFLAGS += -fpp
-endif
 ifeq ($(UNAME),Windows)
 	FFLAGS += -DWindows
-	ifeq ($(F90),ifort)
+	ifeq ($(FC),ifort)
 		FFLAGS += /nologo
 	endif
 endif
@@ -51,7 +48,11 @@ else
 endif
 
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE)
+else
 	./$(EXE)
+endif
 
 SUT:
 	make -C $(SRC_DIR) SUT
@@ -60,7 +61,7 @@ SUT:
 tests: all
 
 $(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT
-	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS) $(FPPFLAGS)
 
 
 clean: local-E0-clean
@@ -74,7 +75,8 @@ ifeq ($(UNAME),Windows)
 	export PFUNIT
 endif
 
-
+export FPPFLAGS
+export FFLAGS
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT
