@@ -1384,14 +1384,14 @@ end subroutine testEquals_C_MultiDWithTolerance64
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
     use Params_mod
-    use Exception_mod, only: getNumExceptions, Exception, catchAny
+    use Exception_mod, only: getNumExceptions, Exception, catchNext
     use Assert_mod, only: assertEqual
     character(len=*), intent(in) :: string
     type (SourceLocation), optional, intent(in) :: location
     type (Exception) :: anException
 
     if (getNumExceptions() > 0) then
-       anException = catchAny()
+       anException = catchNext()
 
        !, 'exceptions do not match')
        call assertEqual(string,anException%getMessage()) ! ,message='Exception message test')

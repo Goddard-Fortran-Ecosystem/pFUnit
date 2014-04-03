@@ -442,6 +442,12 @@ writing, 2013-1031, serial Examples and MPI are not known to be
 supported.  Please contact us if you wish to either contribute or
 otherwise discuss this port.
 
+9.4.3 Intel Fortran Version 13:  -DINTEL_13
+
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+"-DINTEL_13" is passed to the compiler when building or using
+pFUnit. In the build process for pFUnit, this is added to the make
+variables CPPFLAGS and FPPFLAGS.
 
 10. ACKNOWLEDGMENTS
 
