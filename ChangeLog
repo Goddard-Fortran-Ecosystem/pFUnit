@@ -1,0 +1,12 @@
+Note: Should add info for earlier releases.
+
+
+3.0.0	April 04, 2014
+	- Design improvement that unfortunately breaks GFortran prior to
+	  4.8.3 and 4.9.0 (main reason for major release)
+	- Default driver now produces useful return code in serial (and some MPI)
+	- New assertions for floating point:  <, <=, >, >=
+	- Various improvements to parser
+
+
+
