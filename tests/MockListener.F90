@@ -10,6 +10,7 @@ module MockListener_mod
      procedure :: addFailure
      procedure :: startTest
      procedure :: endTest
+     procedure :: endRun
    end type MockListener
 
 contains
@@ -39,5 +40,12 @@ contains
      write(this%log,'(a)') 'endTest() was called'
 
    end subroutine endTest
+
+   subroutine endRun(this, result)
+     use AbstractTestResult_mod, only : AbstractTestResult
+     class (MockListener), intent(inOut) :: this
+     class (AbstractTestResult), intent(in) :: result
+   end subroutine endRun
+
 
 end module MockListener_mod

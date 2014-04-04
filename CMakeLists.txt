@@ -39,23 +39,41 @@ IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
 ENDIF()
 MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
 
-OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
 OPTION(MPI "Use MPI for parallel runs" NO)
+OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
+# The following sets robust to "ON".
+OPTION(ROBUST "Build robust test runner" YES)
+
+# If the user specifies this on the command line (or equivalently, in the
+# CMake cache), we take them at their word and do not attempt any kind of
+# autodetection.
+set(OPENMP_FLAGS "OPENMP_FLAGS-NOTFOUND"
+  CACHE STRING "OpenMP flags for the Fortran compiler.")
+
+
+# OPTION doesn't seem to work as expected.
+OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
+if ( NOT INSTALL_PATH )
+   set (INSTALL_PATH "$ENV{PFUNIT}" )
+endif()
 
 if (MPI)
     add_definitions(-DUSE_MPI)
-    find_package(MPI REQUIRED) 
-    include_directories(${MPI_INCLUDE_PATH}) 
-    set (COMPILER_WRAPPER mpif90)
+    if (FIND_MPI)
+        find_package(MPI REQUIRED)
+        include_directories(${MPI_INCLUDE_PATH})
+        set (COMPILER_WRAPPER mpif90)
+    endif()
     message( STATUS "MPI enabled")
 endif()
 
+if (ROBUST)
+    add_definitions(-DBUILD_ROBUST)
+endif()
 
-get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
-
-if (Fortran_COMPILER_NAME STREQUAL "ifort")
+if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 
     # Use ifort
     execute_process(COMMAND ifort --version 
@@ -70,20 +88,27 @@ if (Fortran_COMPILER_NAME STREQUAL "ifort")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
 
 
-elseif(Fortran_COMPILER_NAME STREQUAL "gfortran" OR Fortran_COMPILER_NAME STREQUAL "gfortran-mp-4.8")
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
     # Use Gfortran
     add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
 
-elseif(Fortran_COMPILER_NAME STREQUAL "nagfor")
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
     # use nagfor			     
     add_definitions(-DNAG)
     add_definitions(-DSTRINGIFY_SIMPLE)
     set(HAS_CPP NO)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
+
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
+
+    # Use XLF.
+    add_definitions(-DIBM)
+    add_definitions(-DSTRINGIFY_SIMPLE)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
 else()
 
@@ -94,12 +119,20 @@ endif()
 # Fortran OpenMP support is not yet integrated into the CMake distribution.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/include/cmake/Modules/")
 if (OPENMP)
-    find_package(OpenMP_Fortran REQUIRED) 
-    if(OPENMP_FORTRAN_FOUND)
-      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
-      set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
-      message( STATUS "OpenMP enabled")
-    endif()
+#    find_package(OpenMP_Fortran REQUIRED) 
+#    if(OPENMP_FORTRAN_FOUND)
+#      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+#      set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+#      message( STATUS "OpenMP enabled")
+#    endif()
+   if (OPENMP_FLAGS)
+     set(OpenMP_Fortran_FLAGS "${OPENMP_FLAGS}")
+   else()
+     find_package(OpenMP_Fortran REQUIRED)
+   endif()
+   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+   set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
+   message( STATUS "OpenMP enabled")
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
@@ -114,5 +147,4 @@ add_subdirectory (bin)
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
 endif()
-
 

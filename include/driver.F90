@@ -1,7 +1,6 @@
 program main
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
-   use ParallelContext_mod
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
@@ -12,26 +11,40 @@ program main
 
    integer :: i
    character(len=:), allocatable :: executable
+   character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
    integer :: length
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
+   logical :: printXmlFile
    integer :: numSkip
    logical :: useMpi
+! Regular Output
    integer :: numArguments
    logical :: debug = .false. ! override with -d
    integer :: outputUnit ! override with -o <filename>
    character(len=:), allocatable :: outputFile
-
+! XML Additions
+   character(len=:), allocatable :: xmlFileName
+   integer :: iostat
+   integer :: xmlFileUnit
+   logical :: xmlFileOpened
+   integer :: numListeners, iListener
+   class (ListenerPointer), allocatable :: listeners(:)
+   type (DebugListener) :: debugger
+! Support for the runs
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
+   printXmlFile = .false.
    numSkip = 0
+   numListeners = 1; iListener = 0
 
    executable = getCommandLineArgument(0)
+!   allocate(character(len=length+30) :: fullExecutable)
 
    outputUnit = OUTPUT_UNIT ! stdout unless modified below
 
@@ -50,6 +63,7 @@ program main
          call finalize(successful=.true.)
       case ('-v','--verbose','-d','--debug')
          debug = .true.
+         numListeners = numListeners + 1
       case ('-o')
          i = i + 1
          if (i > numArguments) call commandLineArgumentError()
@@ -60,11 +74,11 @@ program main
               & status='unknown', access='sequential')
 
       case ('-robust')
-#ifndef Windows
+#ifdef BUILD_ROBUST
          useRobustRunner = .true.
 #else
          ! TODO: This should be a failing test.
-         write (*,*) 'Robust mode not supported under Windows'
+         write (*,*) 'Robust runner not built.'
          useRobustRunner = .false.
 #endif
       case ('-skip')
@@ -77,9 +91,41 @@ program main
 
       case default
          call commandLineArgumentError()
+
+      case ('-xml')
+         i = i + 1
+         if (i > numArguments) call commandLineArgumentError()
+         xmlFileName = getCommandLineArgument(i)         
+         xmlFileUnit = newunit()
+         open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
+         if(iostat /= 0) then
+            write(*,*) 'Could not open XML file ', xmlFileName, &
+                 ', error: ', iostat
+         else
+            printXmlFile = .true.
+            numListeners = numListeners + 1
+         end if
       end select
 
    end do
+
+
+! Allocate and fill listeners array.
+   allocate(listeners(numListeners))
+! Default listener
+   iListener = iListener + 1
+   allocate(listeners(iListener)%pListener, source=newResultPrinter(outputUnit))
+! XML listener
+   if(printXmlFile) then
+      iListener = iListener + 1
+      allocate(listeners(iListener)%pListener, source=newXmlPrinter(xmlFileUnit))
+   end if
+! Debugger
+   if(debug) then
+      iListener = iListener + 1
+      debugger=DebugListener(outputUnit)
+      allocate(listeners(iListener)%pListener, source=debugger)
+   end if
 
    if (useRobustRunner) then
       call initialize(useMPI=.false.)
@@ -95,23 +141,22 @@ program main
 
    if (useRobustRunner) then
       useMpi = .false. ! override build
-#ifndef Windows
+#ifdef BUILD_ROBUST
 #ifdef USE_MPI
-      allocate(runner, source=RobustRunner('mpirun -np 4 ' // executable, outputUnit))
+      fullExecutable = 'mpirun -np 4 ' // executable
 #else
-      allocate(runner, source=RobustRunner(executable,outputUnit))
+      fullExecutable = executable
 #endif
+      allocate(runner, source=RobustRunner(fullExecutable, listeners))
 #else
       ! TODO: This should be a failing test.
-      write (*,*) 'Robust mode not supported under Windows'
+      write (*,*) 'Robust runner not built.'
 #endif
    else if (useSubsetRunner) then
       allocate(runner, source=SubsetRunner(numSkip=numSkip))
    else
-      allocate(runner, source=newTestRunner(outputUnit))
+      allocate(runner, source=newTestRunner(listeners))
    end if
-
-   if (debug) call runner%setDebug()
 
    all = getTestSuites()
    call getContext(context, useMpi)
@@ -124,6 +169,11 @@ program main
 
    call finalize(result%wasSuccessful())
    stop
+
+   inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+   if(printXmlFile .and. xmlFileOpened) then
+      close(xmlFileUnit)
+   end if
 
 contains
 
@@ -158,6 +208,21 @@ contains
 
    end function getTestSuites
 
+   integer function newunit(unit)
+     integer, intent(out), optional :: unit
+     integer, parameter :: LUN_MIN=10, LUN_MAX=1000
+     logical :: opened
+     integer :: lun
+     newunit=-1
+     do lun=LUN_MIN,LUN_MAX
+       inquire(unit=lun,opened=opened)
+       if (.not. opened) then
+         newunit=lun
+         exit
+       end if
+     end do
+     if (present(unit)) unit=newunit
+   end function newunit
 
    function getCommandLineArgument(i) result(argument)
       integer, intent(in) :: i

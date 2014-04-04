@@ -16,6 +16,9 @@ program main
    use pFUnit_mod, only: initialize
    use pFUnit_mod, only: finalize
    use pFUnit_mod, only: TestResult
+   use pFUnit_mod, only: ListenerPointer
+   use pFUnit_mod, only: newResultPrinter
+   use pFUnit_mod, only: ResultPrinter
    implicit none
 
    logical :: success
@@ -39,7 +42,7 @@ contains
       use ParallelContext_mod
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
-#ifndef Windows
+#ifdef BUILD_ROBUST
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
 #endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
@@ -61,27 +64,43 @@ contains
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
 
-#ifndef Windows
+#ifdef BUILD_ROBUST
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
 #endif
 
 #ifdef USE_MPI
-      use Test_MpiContext_mod, only: MpiContextSuite => suite            ! (12)
+      use Test_MpiContext_mod, only: MpiContextSuite => suite
       use Test_MpiException_mod, only: ParallelExceptionSuite => suite
-      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite            ! (12)
+      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
+      use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
+      use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
+#ifdef INTEL_13
+      type (ResultPrinter), target :: printer
+#endif
+
+!- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
+      type (ListenerPointer), allocatable :: l1(:)
+      allocate(l1(1))
+#ifndef INTEL_13
+      allocate(l1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+#else
+      printer = newResultPrinter(OUTPUT_UNIT)
+      l1(1)%pListener => printer
+#endif
+
       allTests = newTestSuite('allTests')
-      runner = newTestRunner()
+      runner = newTestRunner(l1)
 
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
-#ifndef Windows
+#ifdef BUILD_ROBUST
       ADD(UnixProcessSuite)
 #endif
       ADD(exceptionSuite)
@@ -104,7 +123,7 @@ contains
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
 
-#ifndef Windows
+#ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
 #endif
 
@@ -112,6 +131,7 @@ contains
       ADD(MpiContextSuite)
       ADD(ParallelExceptionSuite)
       ADD(MpiTestCaseSuite)
+      ADD(MpiParameterizedTestCaseSuite)
 #endif
 
 #ifdef USE_MPI
@@ -125,3 +145,12 @@ contains
 
 end program main
 
+!if ! defined INTEL_13 
+!...
+!else
+!      class (ListenerPointer), allocatable :: l1(:)
+!      type (ResultPrinter), target :: printer
+!      allocate(listeners1(1))
+!      printer = newResultPrinter(OUTPUT_UNIT)
+!      listeners1(1)%pListener=>printer
+!endif

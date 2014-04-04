@@ -1,8 +1,9 @@
-.PHONY: tests all documentation
+.PHONY: tests all install documentation config
 
 TOP_DIR ?=$(shell pwd)
 
 DOC_DIR  = $(TOP_DIR)/documentation
+EXAMPLES_DIR  = $(TOP_DIR)/Examples
 SOURCE_DIR  = $(TOP_DIR)/source
 TESTS_DIR   = $(TOP_DIR)/tests
 INCLUDE_DIR = $(TOP_DIR)/include
@@ -15,9 +16,9 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 # code that also do not respect the CamelCase convention.  The Fortran
 # standard specifies case insensitivity.
 #
-DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 # DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
-# DOXYGEN ?= doxygen
+DOXYGEN ?= doxygen
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -69,6 +70,12 @@ endif
 MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
 
+ifneq ($(UNAME),Windows)
+ROBUST ?=YES # for now include RobustRunner by default
+else
+ROBUST = NO
+endif
+
 # F90 Vendor common elements (override below)
 FFLAGS ?=
 D=-D
@@ -89,7 +96,7 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=NAG
   else ifeq ($(F90),pgfortran)
      COMPILER=PGI
-  else ifeq ($(F90),xlf)
+  else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
   endif
 else # use F90_VENDOR to specify
@@ -126,6 +133,12 @@ ifneq ($(findstring $(OPENMP),yes YES Yes),)
   USEOPENMP=YES
 endif
 
+ifneq ($(findstring $(ROBUST),yes YES Yes),)
+  BUILDROBUST=YES
+  FPPFLAGS += $DBUILD_ROBUST
+  CPPFLAGS += -DBUILD_ROBUST
+endif
+
 FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
 CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
 
@@ -141,7 +154,7 @@ ifeq ($(DEBUG),YES)
         FFLAGS += $(DEBUG_FLAGS)
 endif
 
-all:
+all: include/configuration.mk
 	$(MAKE) -C $(SOURCE_DIR) all
 	$(MAKE) -C $(TESTS_DIR) all
 
@@ -153,14 +166,24 @@ documentation/pFUnit2-ReferenceManual.pdf: documentation
 	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
 
 
-clean:
+clean: local-top1-clean local-top1-cleanExamples
+
+local-top1-clean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
+	tools/clean Examples
+	\rm -f include/configuration.mk
 
-distclean:
+local-top1-cleanExamples:
+	tools/clean Examples
+
+distclean: local-top1-distclean
+
+local-top1-distclean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(MAKE) -C $(DOC_DIR) distclean
+	\rm -f include/configuration.mk
 
 tests: all
 ifeq ($(USEMPI),YES)
@@ -173,16 +196,35 @@ develop:
 	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
 install: libpfunit$(LIB_EXT)
-INSTALL_DIR ?= $(CURDIR)
-install:
+ifndef INSTALL_DIR
+	$(error Must specify INSTALL_DIR. Example: make install INSTALL_DIR=SOME_PATH, \
+	where SOME_PATH is different than $(TOP_DIR))
+else
+ifeq ($(INSTALL_DIR),$(TOP_DIR))
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
+ifeq ($(INSTALL_DIR),.)
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	tools/install $(INSTALL_DIR)/lib source/lib*
 	tools/install $(INSTALL_DIR)/mod source/*.mod
 	tools/install $(INSTALL_DIR) include
-	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk 
+	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
 	tools/install $(INSTALL_DIR) bin
-	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
-	@echo For example:  export PFUNIT=$(INSTALL_DIR)
+	@echo +++
+	@echo PFUNIT has been installed in $(INSTALL_DIR).
+	@echo For normal usage please ensure PFUNIT is set to $(INSTALL_DIR).
+	@echo For example, in bash:  export PFUNIT=$(INSTALL_DIR)
+endif
+
+include/configuration.mk:
+	@echo "# include/configuration.mk generated automatically during build" \
+		> include/configuration.mk
+	@echo COMPILER  ?= $(COMPILER) >> include/configuration.mk
+	@echo USEOPENMP ?= $(USEOPENMP) >> include/configuration.mk
+	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
+	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
 
 export UNAME
 export OBJ_EXT
@@ -206,6 +248,7 @@ export VPATH
 export MPI
 export USEMPI
 export USEOPENMP
+export BUILDROBUST
 export MPIF90
 export LIBMPI
 export COMPILER

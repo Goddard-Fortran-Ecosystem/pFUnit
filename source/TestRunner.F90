@@ -23,10 +23,8 @@
 
 module TestRunner_mod
    use Test_mod
-   use TestListener_mod
    use BaseTestRunner_mod
-   use ResultPrinter_mod
-   use DebugListener_mod
+   use TestListener_mod
    implicit none
    private
 
@@ -34,15 +32,14 @@ module TestRunner_mod
    public :: newTestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
-!!$      private
-      type (ResultPrinter) :: printer
-      type (DebugListener) :: debugger
+      type (ListenerPointer), allocatable :: extListeners(:)
    contains
       procedure :: run
       procedure :: createTestResult
       procedure :: addFailure
       procedure :: startTest
       procedure :: endTest
+      procedure :: endRun
    end type TestRunner
 
    interface newTestRunner
@@ -53,16 +50,15 @@ module TestRunner_mod
 contains
 
    function newTestRunner_default() result(runner)
-      use iso_fortran_env, only: OUTPUT_UNIT
+!mlr-      use iso_fortran_env, only: OUTPUT_UNIT
       type (TestRunner) :: runner
-      runner = newTestRunner(OUTPUT_UNIT)
+      allocate(runner%extListeners(0))
    end function newTestRunner_default
 
-   function newTestRunner_unit(unit) result(runner)
-      integer, intent(in) :: unit
+   function newTestRunner_unit(extListeners) result(runner)
+      type(ListenerPointer), intent(in) :: extListeners(:)
       type (TestRunner) :: runner
-      runner%printer = newResultPrinter(unit)
-      runner%debugger = DebugListener(unit)
+      allocate(runner%extListeners(size(extListeners)), source=extListeners)
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
@@ -71,8 +67,6 @@ contains
       type (TestResult) :: tstResult
 
       tstResult = newTestResult()
-      call tstResult%addListener(this%printer)
-      if (this%debug()) call tstResult%addListener(this%debugger)
 
     end function createTestResult
 
@@ -80,7 +74,6 @@ contains
       use Test_mod
       use TestResult_mod
       use ParallelContext_mod
-      use DebugListener_mod
 
       type (TestResult) :: result
       class (TestRunner), intent(inout) :: this
@@ -90,22 +83,38 @@ contains
       integer :: clockStart
       integer :: clockStop
       integer :: clockRate
-      real :: runTime
+      integer :: i
 
 
       call system_clock(clockStart)
 
       result = this%createTestResult()
-
+! Add the extListeners to the listeners list.
+      do i=1,size(this%extListeners)
+         call result%addListener(this%extListeners(i)%pListener)
+      end do
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
-      runTime = real(clockStop - clockStart) / clockRate
-      if (context%isRootProcess())  then
-         call this%printer%print(result, runTime)
-      end if
 
+      call result%addRunTime(real(clockStop - clockStart) / clockRate)
+
+! Post run printing. Q: Should we do this for listeners too?
+! E.g. and end-run method & move this up to basetestrunner...
+
+! e.g. call result%endRun()...
+      if (context%isRootProcess())  then
+         do i=1,size(this%extListeners)
+            call this%extListeners(i)%pListener%endRun(result)
+         end do
+      end if
+!tc: 2+1 lists -- extListeners, listeners and in testresult too...
    end function run
 
+
+! Recall, runner is also a listener and these will be called from
+! TestResult, adding the ability to put in functionality here. In
+! addition to other listeners added above.
+!
     subroutine startTest(this, testName)
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
@@ -115,6 +124,12 @@ contains
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
     end subroutine endTest
+
+    subroutine endRun(this, result)
+      use AbstractTestResult_mod, only : AbstractTestResult
+      class (TestRunner), intent(inout) :: this
+      class (AbstractTestResult), intent(in) :: result
+    end subroutine endRun
 
     subroutine addFailure(this, testName, exceptions)
        use Exception_mod

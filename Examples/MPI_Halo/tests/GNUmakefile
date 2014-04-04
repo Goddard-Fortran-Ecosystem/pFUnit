@@ -1,5 +1,4 @@
 .PHONY: clean tests
-# .PRECIOUS: %.F90
 
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
@@ -8,10 +7,10 @@ tests: $(OBJS)
 
 testSuites.inc: $(SRCS)
 
-
 FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
-ifeq ($(F90),nagfor)
-   FFLAGS += -fpp
+
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
 endif
 
 %.F90: %.pf
@@ -20,5 +19,7 @@ endif
 %$(OBJ_EXT): %.F90
 	$(MPIF90) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

@@ -44,7 +44,7 @@ SET (OpenMP_Fortran_FLAG_CANDIDATES
      #HP
      "+Oopenmp"
      #IBM XL C/c++
-     "-qsmp"
+     "-qsmp=omp"
      #Portland Group
      "-mp"
 )
@@ -66,14 +66,16 @@ program TestOpenMP
  write(*,'(I2)',ADVANCE='NO') omp_get_num_procs()
 end program TestOpenMP
 ")
+
     SET (MACRO_CHECK_FUNCTION_DEFINITIONS
-         "-DOpenMP_FLAG_DETECTED ${CMAKE_REQUIRED_FLAGS}")
+         "${CMAKE_REQUIRED_FLAGS}")
     TRY_RUN (OpenMP_RUN_FAILED OpenMP_FLAG_DETECTED ${CMAKE_BINARY_DIR}
         ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeTmp/testFortranOpenMP.f90
-        COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
+        COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} -DOpenMP_FLAG_DETECTED
         CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FUNCTION_DEFINITIONS}
-        COMPILE_OUTPUT_VARIABLE OUTPUT
+        COMPILE_OUTPUT_VARIABLEOUTPUT
         RUN_OUTPUT_VARIABLE OMP_NUM_PROCS_INTERNAL)
+
     IF (OpenMP_FLAG_DETECTED)
         FILE (APPEND ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeOutput.log
              "Determining if the Fortran compiler supports OpenMP passed with "

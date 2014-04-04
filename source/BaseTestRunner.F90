@@ -29,11 +29,9 @@ module BaseTestRunner_mod
 
    type, abstract, extends(TestListener) :: BaseTestRunner
       private
-      logical :: useDebug = .false.
+
    contains
       procedure(run2), deferred :: run
-      procedure :: setDebug
-      procedure :: debug
    end type BaseTestRunner
 
    abstract interface
@@ -53,38 +51,9 @@ module BaseTestRunner_mod
          class (ParallelContext), intent(in) :: context
       end function run2
       
-!!$      subroutine startTest(this, testName)
-!!$         import BaseTestRunner
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$      end subroutine startTest
-!!$
-!!$      subroutine endTest(this, testName)
-!!$         import BaseTestRunner
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$      end subroutine endTest
-!!$
-!!$      subroutine addFailure(this, testName, exceptions)
-!!$         import BaseTestRunner
-!!$         use Exception_mod
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$         type (Exception), intent(in) :: exceptions(:)
-!!$      end subroutine addFailure
    end interface
 
 contains
 
-    subroutine setDebug(this)
-       class (BaseTestRunner), intent(inout) :: this
-       this%useDebug = .true.
-    end subroutine setDebug
-
-
-    logical function debug(this)
-       class (BaseTestRunner), intent(inout) :: this
-       debug = this%useDebug
-    end function debug
 
 end module BaseTestRunner_mod

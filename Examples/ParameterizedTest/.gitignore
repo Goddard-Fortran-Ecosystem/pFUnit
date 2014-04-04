@@ -1,3 +1,5 @@
-*~
-/tests.x
+*.i90
 *.mod
+*~
+*.o
+/tests.x

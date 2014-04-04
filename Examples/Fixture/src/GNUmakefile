@@ -3,8 +3,10 @@
 SUT: LinearInterpolator$(OBJ_EXT)
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod
 

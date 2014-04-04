@@ -114,6 +114,8 @@ or contact the pFUnit team.
 In the top level of the pFUnit distribution you will see the following
 files.
 
+CMakeLists.txt - Initial support for cmake-based builds.
+
 COPYRIGHT - Contains information pertaining to the use and
 distribution of pFUnit.
 
@@ -122,6 +124,11 @@ installed.
 
 GNUmakefile - The top level makefile for building and installing
 pFUnit.
+
+LICENSE - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT, also
+known as pFUnit.
+
+README-INSTALL - Basic documentation on pFUnit installation and use.
 
 bin - Executables used to construct and perform unit tests.
 
@@ -173,7 +180,7 @@ $ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen\endcode
 \subsection sec_BuildingPFUNITSerial Building pFUnit for testing serial codes (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
-2. Set the environment variables (in bash):
+2. Set the environment variables (for example in bash):
 \code
 $ export F90=gfortran-mp-4.8
 $ export F90_VENDOR=GNU\endcode
@@ -219,7 +226,7 @@ similar to that for other paradigms.
 
 3. To compile for OPENMP support execute make as follows.
 \code
-$make tests OPENMP=YES\endcode
+$ make tests OPENMP=YES\endcode
 
 4. At this point the OPENMP-enabled pFUnit is ready to be installed.
 
@@ -244,7 +251,8 @@ products in subdirectories.
 A start at documentation for pFUnit is in the documentation directory.
 <a href="http://www.doxygen.org">Doxygen</a> is our primary
 documentation tool.  To make the documentation, which will be
-generated in the documentation directory, please invoke the following.
+generated in the documentation directory, please invoke the following
+from the top level of your pFUnit distribution.
 
 \code
 $ make documentation\endcode
@@ -258,6 +266,27 @@ To select a specific version of Doxygen, please set the DOXYGEN
 environment variable as in \ref sec_Configuration. You may wish to do
 this if your code uses CamelCase names as current versions of Doxygen
 (1.8.5) do not respect this convention for Fortran.
+
+\subsection sec_BuildingPFUNITCMAKE CMAKE
+
+Initial support for CMAKE has been implemented.  At this
+writing, a basic functionality is available.
+
+3. The process for building pFUnit using cmake is as follows.  In the
+top directory of the distribution make a new directory to support the
+build, then change to that directory and run cmake (pointing back to
+the source) to generate the required makefiles.
+\code
+$ mkdir build
+$ cd build
+$ # e.g. cmake -DMPI=YES -DOPENMP=NO -DINSTALL_PATH=<A path> <path to source>
+$ cmake -DMPI=NO ..
+$ make tests\endcode
+
+One may also set the environment variable PFUNIT instead of setting
+INSTALL_PATH on the cmake command line as given above.
+
+4. If the build is successful, then at this point make install should work.
 
 \section sec_Installation Installation
 \subsection sec_InstallationSerial Installation - Serial
@@ -280,7 +309,7 @@ expected failures.
 \code
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
-$ pushd Examples
+$ cd Examples
 $ ./buildIt\endcode
 
 \subsection sec_InstallationMPI Installation - MPI
@@ -298,7 +327,7 @@ $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-parallel
 $ # The variable MPIF90 must be set to the appropriate build script.
 $ export MPIF90=mpif90
-$ cd Examples/MPI_Halo/Semi-Automatic
+$ cd Examples/MPI_Halo
 $ make\endcode
 
 This will compile and run a set of parallel examples that includes
@@ -328,6 +357,7 @@ build directory.
 \li \ref sec_UsageConfiguration
 \li \ref sec_UsageHelloWorld
 \li \ref sec_UsagePreprocessor
+\li \ref sec_UsageExecutingTheTest
 
 \section Usage
 \subsection sec_UsageConfiguration Usage - Configuration
@@ -343,7 +373,7 @@ set, to configure pFUnit, please set the following.
 
 \subsection sec_UsageHelloWorld Usage - Hello World
 
-For an example of a simple usage of pFUnit, see Examples/Simple/Semi-Automatic/tests.
+For an example of a simple usage of pFUnit, see Examples/Simple/tests.
 
 The simplest way to write a test is to write a preprocessor input file (extension ".pf"), which is a Fortran free format file with preprocessor directives added.  An example from "helloWorld.pf" follows.
 \code
@@ -361,9 +391,49 @@ ADD_TEST_SUITE(helloWorld_suite)\endcode
 
 At this point, one can invoke the preprocessor to generate a Fortran file that when compiled and linked with pFUnit will execute the tests. For more information please see \ref page_pFUnitParser or try out the examples in Example/Simple.
 
-
-\subsection sec_UsagePreprocessor Usage - Preprocessor
+\section sec_UsagePreprocessor Usage - Preprocessor
 Please see \ref page_pFUnitParser.
+
+\section sec_UsageExecutingTheTest Compiling and Executing The Test
+
+An example of a GNU make rule for for the final step of compiling a test follows.
+
+\code
+# This step presumes "include $(PFUNIT)/include/base.mk" earlier in the makefile.
+tests.x: testSuites.inc myTests.pf
+         $(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include \
+                $(PFUNIT)/include/driver.F90 \
+                ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)\endcode
+
+To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+\subsection ss_UsageExecutingTheTestParallel - Compiling and Executing the Tests (MPI PARALLEL)
+
+One invokes MPI-based parallel tests according to the MPI framework being used.  For example:
+
+\code
+$ mpirun -np 4 tests.x\endcode
+
+
+\subsection ss_CommandLineOptions Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+<table border="0" >
+<tr><td>-v or -verbose        </td><td>Verbose execution.</td></tr>
+<tr><td>-d or -debug  </td><td>Provide debugging information.</td></tr>
+<tr><td>-h            </td><td>Print help message.</td></tr>
+<tr><td>-o \<outputfile\> </td><td>Direct pFUnit messages to a file.
+<tr><td>-robust       </td><td>Use the robust runner. Runs tests as processes so failures do not halt testing.</td></tr>
+<tr><td>-skip \<number of tests to skip\></td><td>Use the subset runner, which runs a subset of the tests in a suite.</td></tr>
+</table>
+
+An example from Examples/Robust:
+
+\code
+$ ./tests.x -robust\endcode
 
 \page page_Development Development
 
@@ -404,6 +474,7 @@ pFUnit supports the software development of several weather and climate simulati
    <ul>
    <li>\ref ZeroTestsRun</li>
    <li>\ref SomeOfMyTestsAreNotRunning</li>
+   <li>\ref FAQIntel13</li>
    </ul>
    <li>\ref sec_Tips</li>
    <ul>
@@ -436,6 +507,13 @@ Time:         0.004 seconds
   
  OK\endcode
 </li></ul></p>
+
+\subsection FAQIntel13 Intel Fortran Version 13: -DINTEL_13
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+<code>-DINTEL_13</code> is passed to the compiler when building or
+using pFUnit. In the build process for pFUnit, this is added to the
+make variables CPPFLAGS and FPPFLAGS.
+
 
 \section sec_Tips Tips
 
@@ -484,6 +562,12 @@ writing, 2013-1031, serial Examples and MPI are not known to be
 supported.  Please contact us if you wish to either contribute or
 otherwise discuss this port.
 
+\section sec_Intel13 Intel Fortran Version 13: -DINTEL_13
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+<code>-DINTEL_13</code> is passed to the compiler when building or
+using pFUnit. In the build process for pFUnit, this is added to the
+make variables CPPFLAGS and FPPFLAGS.
+
 
 \page page_Acknowledgments Acknowledgments
 
@@ -501,8 +585,9 @@ Initial pFUnit 2 documentation by Michael Rilee (Rilee Systems Technologies).
 
 \page page_KnownInstallationsAndVersions Known Installations & Versions
 
-TBD
+master - The cutting edge of pFUnit development.
 
+pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
 \page page_TODO TODO
 
@@ -519,6 +604,7 @@ Overview of Preprocessor (pFUnitParser.py)
       <ul>
       <li>\ref ss_Configuration</li>
       <li>\ref ss_Invocation</li>
+      <li>\ref ss_CommandLineOptions</li>
       <li>\ref ss_PreprocessorInput</li>
       <li>\ref ss_Directives</li>
       <ul>
@@ -537,8 +623,7 @@ Overview of Preprocessor (pFUnitParser.py)
 How to write tests using the ".pf" files.  We expect this to be the
 main way people write pFUnit-based tests.  Please see the Examples
 directory for a wide range of examples.  The .pf files themselves are
-generally to be found in an example's semi-automatic/tests
-subdirectory.
+generally to be found in an example's "tests" subdirectory.
 
 \subsection ss_Configuration Configuration - testSuites.inc
 
@@ -582,7 +667,7 @@ referred to by "testSuites.inc".  Currently only one test suite per
 parser.
 
 Many example .pf files may be found in the examples'
-semi-automatic/tests subdirectories in the Examples directory.
+"tests" subdirectories in the Examples directory.
 
 Below we present the most commonly used directives first, but in a .pf
 file using all of these capabilities, the most common order is as
@@ -608,8 +693,11 @@ important directives follow.
 
 This directive is used to indicate a test routine to the preprocessor,
 which then includes it in the test suite.  There may be multiple
-tests in the .pf file, each annotated by the @Test directive.  For
-example, from Examples/Fixture:
+tests in the .pf file, each annotated by the @Test directive.  
+
+@Test also supports MPI-parallel tests (see \ref s3_atMPITest ).
+
+An example, from Examples/Fixture:
 
 \code
 @Test
@@ -627,13 +715,15 @@ example, from Examples/Fixture:
 
 \subsubsection s3_atMPITest @MPITest
 
+@MPITest is deprecated as @Test now handles this case.
+
 This directive indicates an MPI parallel test to the preprocessor,
 which then includes it in an MPI enabled test suite.  The directive
 takes a single argument, the requested number of MPI processes to run.
 The syntax, exemplified by one of the tests from Examples/MPI_Halo:
 
 \code
-@mpiTest( npes=[1,2,3])
+@Test( npes=[1,2,3])
 subroutine testHaloInterior(this)
    use Halo_mod
    use pfunit_mod

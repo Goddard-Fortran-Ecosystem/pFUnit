@@ -4,11 +4,12 @@ perform unit testing.  They presume a working installation of pFUnit,
 with the PFUNIT environment variable set to the directory where it is
 installed.  
 
-The "buildIt" script in this directory builds and runs the serial
-tests.  In general, to run the tests:
+The GNUmakefile in this directory builds and runs the tests in serial
+ or MPI mode. In general, to run the tests:
   - Set PFUNIT environment variable to directory where you installed pFUnit
 and execute in the appropriate directory:
-  - % make    # should build and run tests
+  - % make    # should build and run serial tests
+  - % make MPI=YES   # should build and run all tests
 
 Multiple approaches to unit-testing are possible with PFUNIT.
 
@@ -54,7 +55,8 @@ The current examples are:
   framework driver that allows for tests that crash or hang.
 
 Note:
-* These examples are not currently supported on Windows/CYGWIN.
+* These examples are not currently supported on Windows/CYGWIN, though a preliminary
+  example is given in "Examples/Simple".
 * For modifications and feature requests please see "sourceforge.net/projects/pfunit".
 
 

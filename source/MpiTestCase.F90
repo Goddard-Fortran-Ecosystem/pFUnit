@@ -38,7 +38,6 @@ module MpiTestCase_mod
       type (MpiContext) :: context
       type (MpiContext) :: parentContext
    contains
-      procedure :: setNumProcessesRequested
       procedure :: countTestCases => countTestCases_mpi
       procedure :: run
       procedure :: runBare
@@ -82,6 +81,8 @@ contains
       use ParallelException_mod
       class (MpiTestCase), intent(inout) :: this
 
+      logical :: discard
+
       ! create subcommunicator
       this%context = this%parentContext%makeSubcontext(this%getNumProcessesRequested())
 
@@ -94,7 +95,11 @@ contains
                call this%tearDown()
             end if
          end if
-
+      else
+         ! only report context failure on root PE
+         if (.not. this%parentContext%isRootProcess()) then
+            discard = catch()
+         end if
       end if
 
       call gather(this%parentContext)
@@ -134,11 +139,5 @@ contains
       allocate(context, source=this%context)
 
    end function getContext
-
-   subroutine setNumProcessesRequested(this, numProcessesRequested)
-      class (MpiTestCase), intent(inout) :: this
-      integer, intent(in) :: numProcessesRequested
-      call this%setTestParameter(MpiTestParameter(numProcessesRequested))
-   end subroutine setNumProcessesRequested
 
 end module MpiTestCase_mod
