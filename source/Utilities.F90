@@ -3,6 +3,7 @@ module Utilities_mod
    public :: newUnit
 contains
    integer function newUnit(unit)
+      ! Returns the number of a free/unopened unit.
       integer, intent(out), optional :: unit
       integer, parameter :: LUN_MIN=20, LUN_MAX=1000
       logical :: opened
