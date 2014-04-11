@@ -1,5 +1,5 @@
 
-PFUNIT VERSION 2.1.0 INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 3.0.0 INSTALLATION AND BASIC USAGE GUIDE
 
 VERSION 2014-0206 M. Rilee mike@rilee.net
 
@@ -442,6 +442,12 @@ writing, 2013-1031, serial Examples and MPI are not known to be
 supported.  Please contact us if you wish to either contribute or
 otherwise discuss this port.
 
+9.4.3 Intel Fortran Version 13:  -DINTEL_13
+
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+"-DINTEL_13" is passed to the compiler when building or using
+pFUnit. In the build process for pFUnit, this is added to the make
+variables CPPFLAGS and FPPFLAGS.
 
 10. ACKNOWLEDGMENTS
 
@@ -471,6 +477,7 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2014-0404 Updated for release of 3.0. TLC
 2014-0131, 2014-0205. Updated. MLR
 2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR

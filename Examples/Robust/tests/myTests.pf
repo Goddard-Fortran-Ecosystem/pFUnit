@@ -4,7 +4,7 @@
 ! a runtime error.
 !---------
 
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testStops()
    use add_mod
    use pfunit_mod
@@ -21,7 +21,7 @@ end subroutine testStops
 ! Currently time limit is 100 ms, but that is expected to be configurable
 ! in the near future.
 !---------
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testAddHangs()
    use add_mod
    use pfunit_mod
@@ -42,7 +42,7 @@ subroutine testAdd()
 
 end subroutine testAdd
 
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testAddBroken()
    use add_mod
    use pfunit_mod

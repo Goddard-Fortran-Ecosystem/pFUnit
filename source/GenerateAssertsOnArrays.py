@@ -5,13 +5,15 @@ from __future__ import print_function
 # from __future__ import with_statement
 
 # 
-# Generate AssertRealArrays.F90, which provides assertEqual for arrays.
+# Generate Assert<Type>.F90, which provides assertEqual and others for arrays.
 # 
-# Usage:  ./GenerateRealArrayNewSignature.py
+# Usage:  ./GenerateAssertsOnArrays.py
 #
 # M. Rilee
 #    Initial: 2013-0304
-# 
+#
+#    2014-0324:  Fully implemented relational operators beyond "=".
+#
 #    2013-0814:  Added default r64 to call from assertEqual_w/o_tol to internal proc.
 #                Added logical to makeExpectedFTypes - but not for prime time.
 # 
@@ -120,17 +122,28 @@ def tolDECLARE(tolerance,descr,opts=', optional, intent(in)',name='tolerance'):
         retStr = """real(kind=r"""+str(tolerance)+""")"""+opts+""" :: """+name
     return retStr
 
-def makeSubroutineName(expectedName,foundName,tolerance):
+def makeSubroutineName(assertionName,expectedName,foundName,tolerance):
     return \
-       """assertEqual_""" + \
+       """assert"""+assertionName+"""_""" + \
        expectedName + """_""" + foundName + """_tol""" + tolerance
 
        #
        # What does it mean to compare a 0D with a 1D array? MLR ***
        #
 
-def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
-    subroutineName = makeSubroutineName(expectedDescr.NAME(), \
+comparisonCase = {
+    "NotEqual":"NEQP",
+    "Equal":"EQP",
+    "GreaterThan":"GTP",
+    "GreaterThanOrEqual":"GEP",
+    "LessThan":"LTP",
+    "LessThanOrEqual":"LEP",
+    "RelativelyEqual":"RELEQP"
+    }
+
+def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
+    subroutineName = makeSubroutineName(assertionName, \
+                                        expectedDescr.NAME(), \
                                         foundDescr.NAME(), \
                                         str(tolerance))
     
@@ -172,7 +185,8 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 
     # eType = expectedDescr.FTYPE(); fType=foundDescr.FTYPE()
     # ePrec = expectedDescr.KIND();  fPrec=foundDescr.KIND()
-    internalSubroutineName = makeAssertEqualInternalName(expectedDescr,foundDescr,tolerance)
+    internalSubroutineName = makeAssertInternalName(assertionName,
+                                                    expectedDescr,foundDescr,tolerance)
 
     if 'complex' in [foundDescr.FTYPE(),expectedDescr.FTYPE()] :
         declareDelta = \
@@ -230,7 +244,7 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 !mlr-NextStep-Begin
      call """+internalSubroutineName+"""(&
      &  expected, shape(expected), found, shape(found), &
-     &  tolerance_, message_, location_, EQP )
+     &  tolerance_, message_, location_, """+ comparisonCase[assertionName] +""" )
 !mlr-NextStep-End
      
    end subroutine
@@ -261,25 +275,25 @@ def generateASSERTEQUAL(expectedDescr, foundDescr, tolerance):
 
     return retString
 
-def makeAssertEqualInternalName(eDescr,fDescr,tolerance):
+def makeAssertInternalName(assertionName,eDescr,fDescr,tolerance):
     eType=eDescr.FTYPE(); fType=fDescr.FTYPE()
     ePrec=eDescr.KIND();  fPrec=fDescr.KIND()
     eRank=min(eDescr.RANK(),1)
     fRank=min(fDescr.RANK(),1)
     subroutineName = \
-        'assertEqual' + \
+        'assert' + assertionName + \
         '_e'+ str(eRank) +'_'+eType+str(ePrec)+ \
         '_f'+ str(fRank) +'_'+fType+str(fPrec)+ \
         '_tol'+str(tolerance)+'_'
     return subroutineName
 
-def makeAssertEqualInternal_type(eDescr,fDescr,tolerance):
+def makeAssertInternal_type(assertionName,eDescr,fDescr,tolerance):
     eType=eDescr.FTYPE(); fType=fDescr.FTYPE()
     ePrec=eDescr.KIND();  fPrec=fDescr.KIND()
     eRank=min(eDescr.RANK(),1)
     fRank=min(fDescr.RANK(),1)
 
-    subroutineName = makeAssertEqualInternalName(eDescr,fDescr,tolerance)
+    subroutineName = makeAssertInternalName(assertionName,eDescr,fDescr,tolerance)
 
     if(eRank != 0):
         expected_i = 'expected(i)'
@@ -351,6 +365,7 @@ ifElseString(tolerance == 0,\
     logical OK
     integer, dimension(size(fShape)) :: iLocation
     character(len=MAXLEN_SHAPE) :: locationInArray
+    real :: denominator
 
     ! Return immediately if the two are precisely equal.
     ! This is necessary to deal with identical infinities, which cannot be
@@ -367,6 +382,7 @@ ifElseString(tolerance == 0,\
 !    print *,'0800 ',product(fShape),fShape
     m = product(fShape)
     i = 0
+!    
     OK = .true.
     
 ! Note:  Comparison occurs here.  Could use isWithinTolerance or other comparison function.
@@ -417,7 +433,9 @@ ifElseString(fType != 'complex', \
               &    L_INFINITY_NORM )
               end if
             case default
-              print *,'select-error-1'
+              ! This case should not occur for this type-kind-rank.
+              print *,'internal: """+subroutineName +""" select-error-1'
+              OK = .false.
          end select
          
 !         OK = .not. ( expected(i) /= found(i) )
@@ -467,7 +485,9 @@ ifElseString(fType != 'complex', \
               &    L_INFINITY_NORM )
               end if
             case default
-              print *,'select-error-2'
+              ! This case should not occur for this type-kind-rank.
+              print *,'internal: """+subroutineName +""" select-error-2'
+              OK = .false.
          end select
 
 !         OK = &
@@ -520,9 +540,9 @@ ifElseString(fType != 'complex', \
     case (NEQP)
        call throw( &
        & appendWithSpace(message, &
-       & 'NOT '//trim(valuesReport(expected_,found_)) // &
+       & 'NOT: '//trim(valuesReport(expected_,found_)) // &
        & '; '//trim(differenceReport(abs(found_ - expected_), tolerance_)) // &
-       & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
+       & unlessScalar(fShape,';  first equality at element '//trim(locationInArray))//'.'), &
        & location = location &
        ) """ + \
 ifElseString(fType != 'complex', \
@@ -564,19 +584,37 @@ ifElseString(fType != 'complex', \
        & location = location &
        ) """,'') + \
 """
-    case (RELEQP)    
+    case (RELEQP)
+       if (expected_ .eq. 0) then
+          denominator = expected_
+       else
+          denominator = 1.0
+       end if 
        call throw( &
        & appendWithSpace(message, &
+       & trim(valuesReport(expected_,found_, &
+       &   ePrefix='RELEQ: expected', &
+       &   fPrefix='to be near:')) // &
+       & '; '//trim(differenceReport( &
+       &   abs(found_ - expected_)/denominator, tolerance_)) // &
        & unlessScalar(fShape,';  first difference at element '//trim(locationInArray))//'.'), &
        & location = location &
        )
     case default
-       print *,appendWithSpace(message,'select-error-3')
+       ! This case should not occur for this type-kind-rank.
+       print *,'internal: """+subroutineName +""" select-error-3'
+       call throw( &
+       & appendWithSpace(message, &
+       & 'pFUnit internal error:  unexpected comparison given type-kind-rank'), &
+       & location = location &
+       & )
     end select
 
     end if
 
     end subroutine """+subroutineName+"""
+
+       
 
 """
 
@@ -586,14 +624,14 @@ ifElseString(fType != 'complex', \
     return runit
     
 
-class constraintASSERTEQUAL(routineUnit):
+class constraintASSERT(routineUnit):
     "Defines the comparison code as a routineUnit so that it can be \
     used by the module generation code.  These declarations are used \
     to construct interface blocks as well as the routines themeselves."
-    def __init__(self, expectedDescr, foundDescr, tolerance):
+    def __init__(self, assertionName, expectedDescr, foundDescr, tolerance):
         self.expectedDescr = expectedDescr
         self.foundDescr = foundDescr
-        self.name = makeSubroutineName( \
+        self.name = makeSubroutineName( assertionName, \
                                         expectedDescr.NAME(), \
                                         foundDescr.NAME(), \
                                         str(tolerance) )
@@ -608,18 +646,22 @@ class constraintASSERTEQUAL(routineUnit):
         ## conditioned on eDesc., fDesc., or tol, then that logic
         ## would go here... E.g. to implement assertEqual(Logical(...))
         ##
+        ## Dependency injection.  Will generate "assert"+assertionName
+        ## assertionName="Equal"
         ## This next line actually generates the text of the code.
-        self.setImplementation(generateASSERTEQUAL(expectedDescr, \
-                                                   foundDescr, \
-                                                   tolerance ))
+        self.setImplementation(generateASSERT(assertionName, \
+                                              expectedDescr, \
+                                              foundDescr, \
+                                              tolerance ))
         self.tolerance = tolerance
         return
 
-def constructAssertEqualInterfaceBlock(foundFTypes=['real']):
-    AssertEqualInterfaceBlock = interfaceBlock('assertEqual')
+def constructAssertInterfaceBlock(assertionName,foundFTypes=['real']):
+    AssertInterfaceBlockName='assert'+assertionName
+    AssertInterfaceBlock = interfaceBlock(AssertInterfaceBlockName)
     # Construct asserts generates the combinations based on what is passed in here.
-    [AssertEqualInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(foundFTypes=foundFTypes)]
-    return AssertEqualInterfaceBlock
+    [AssertInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(assertionName,foundFTypes=foundFTypes)]
+    return AssertInterfaceBlock
 
 def VECTOR_NORM_NAME(rank,fType='real',precision=64):
     return """vectorNorm_"""+str(rank)+"D"+"_"+fType+str(precision)
@@ -721,16 +763,20 @@ def constructValuesReportInterfaceBlock():
     return ValuesReportInterface
 
 # Scalar args?
-def constructAssertEqualInternalInterfaceBlock():
-    AssertEqualInternalInterface = interfaceBlock('assertEqual_internal')
-    list(map(AssertEqualInternalInterface.addRoutineUnit,
-             [makeAssertEqualInternal_type(a.getExpectedDescription(),
+# Need assertionName...
+# def constructAssertInternalInterfaceBlock(assertionName="Equal"):
+def constructAssertInternalInterfaceBlock(assertionName):
+    AssertInternalInterfaceBlockName='assert'+assertionName+'_internal'
+    AssertInternalInterface = interfaceBlock(AssertInternalInterfaceBlockName)
+    list(map(AssertInternalInterface.addRoutineUnit,
+             [makeAssertInternal_type(assertionName,
+                                      a.getExpectedDescription(),
                                            a.getFoundDescription(),
                                            a.getTolerance()
                                        )
               for a in
               flattened(
-                  [[[[[[[[AssertRealArrayArgument(te,pe,re,tf,pf,rf,tol)
+                  [[[[[[[[AssertRealArrayArgument(assertionName,te,pe,re,tf,pf,rf,tol)
                           for re in [0,1] ]
                          for rf in [0,1] ]
                         for tol in makeTolerances(pe,pf) ]
@@ -739,7 +785,7 @@ def constructAssertEqualInternalInterfaceBlock():
                      for te in allowedExpected(tf) ]
                     for tf in ['integer','real','complex']
                 ]])]))
-    return AssertEqualInternalInterface
+    return AssertInternalInterface
 
 def isWithinToleranceName(rank,fType='real',precision=64):
     return """isWithinTolerance_"""+str(rank)+"""D"""+"_"+fType+str(precision)
@@ -826,7 +872,7 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
       &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
 
       if( .not.present(ePrefix) ) then
-         ePrefix_ = 'expected:'
+         ePrefix_ = 'expected'
       else
          ePrefix_ = ePrefix
       end if
@@ -875,8 +921,14 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
      """+expectedDeclaration+"""
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
+     character(len=2) rel
+     if (abs("""+coercedDifference+""") .gt. tolerance) then
+        rel = '> '
+     else
+        rel = '<='
+     end if
       differenceReport = '    difference: |' // trim(toString("""+coercedDifference+""")) // &
-      & '| > tolerance:' // trim(toString("""+'tolerance'+"""))
+      & '| '// trim(rel) //' tolerance:' // trim(toString("""+'tolerance'+"""))
     end function 
 """)
 
@@ -901,10 +953,13 @@ def declareDISCIPLINE():
    private
 """
 
-def declareEXPORTS(basename='AssertReal'):
-    retPublic = \
-"""
-   public :: assertEqual
+# Flag AssertEqual
+
+def declareEXPORTS(assertionRoutines,basename='AssertReal'):
+    retPublic = ""
+    for aRoutineName in assertionRoutines:
+        retPublic = retPublic + \
+"""   public :: """+aRoutineName+"""
 """
     if basename == 'AssertReal' :
         retPublic = retPublic + """
@@ -992,8 +1047,9 @@ def makeTolerances(expectedP, foundP) :
     return [tol]
 
 class AssertRealArrayArgument:
-    def __init__(self,eft,ep,er,fft,fp,fr,tol):
+    def __init__(self,aName,eft,ep,er,fft,fp,fr,tol):
         # print(' ',eft,ep,er,fft,fp,fr,tol)
+        self.assertionName = aName
         self.expectedFType = eft
         self.expectedPrecision = ep
         self.expectedRank = er
@@ -1018,6 +1074,8 @@ class AssertRealArrayArgument:
                                                   self.foundRank )
         return
 
+    def getAssertionName(self):
+        return self.assertionName
     def getExpectedDescription(self):
         return self.expectedDescription
     def getFoundDescription(self):
@@ -1046,7 +1104,7 @@ def ca_MakeAllowedPrecisions(foundFType) :
             precs = precs + [int(i)]
     return precs
 
-def constructASSERTS(foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
+def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
 
     AssertList = []
 
@@ -1084,14 +1142,15 @@ def constructASSERTS(foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
     AssertList = \
     [ \
       #test      a \
-      constraintASSERTEQUAL(a.getExpectedDescription(),\
+      constraintASSERT(a.getAssertionName(),\
+                            a.getExpectedDescription(),\
                             a.getFoundDescription(),\
                             a.getTolerance()\
                             ) \
     for a in \
     flattened( \
                [[[[[[[ \
-                       AssertRealArrayArgument(eft,ep,er,fft,fp,fr,tol) \
+                       AssertRealArrayArgument(assertionName,eft,ep,er,fft,fp,fr,tol) \
                        for eft in makeExpectedFTypes(ep,fft,foundFTypes=foundFTypes) ]  \
                        for tol in makeTolerances(ep,fp) ] \
                        for ep in makeExpectedPrecisions(fp,foundFType=fft)  ] \
@@ -1108,34 +1167,38 @@ def constructASSERTS(foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
     ## The code is generated when the routineUnit is instantiated, so that support code would
     ## need to be available.
     
-    
     return AssertList
 
-def constructDeclarations(basename=''):
+def constructDeclarations(assertionRoutines,basename=''):
     "Construct declarations to be used at the beginning of the Module."
     declarations = \
         [ \
           declaration('uses',declareUSES()), \
           declaration('discipline',declareDISCIPLINE()), \
-          declaration('exports',declareEXPORTS(basename)), \
+          declaration('exports',declareEXPORTS(assertionRoutines,basename)), \
           declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
           ]
     return declarations
 
-def constructModule(baseName='AssertReal',foundFTypes=['real']):
+def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real']):
+#    assertionShortNames=['Equal']
+#    assertionShortNames=['GreaterThan']
+    assertionNames=['assert'+Suffix for Suffix in assertionShortNames]
     "A main test of how to construct the module."
     m1 = module(baseName+'_mod')
     m1.setFileName(baseName+'.F90')
-    [m1.addDeclaration(d) for d in constructDeclarations(basename=baseName)]
+    [m1.addDeclaration(d) for d in constructDeclarations(assertionNames,basename=baseName)]
     # add interface blocks (and the implementations)
     m1.addInterfaceBlock(constructVectorNormInterfaceBlock())
     m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock())
-    m1.addInterfaceBlock(constructAssertEqualInterfaceBlock(foundFTypes=foundFTypes))
+    for assertionName in assertionShortNames:
+        m1.addInterfaceBlock(constructAssertInterfaceBlock(assertionName,foundFTypes=foundFTypes))
     m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
     m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
     # *in test*
     # This is where the "list of asserts" is generated.
-    m1.addInterfaceBlock(constructAssertEqualInternalInterfaceBlock())
+    for assertionName in assertionShortNames:
+        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionName))
     # add individual routine units
     #    m1.addRoutineUnit(makeThrowDifferentValues()) # arg. provides a routine unit.
     return m1
@@ -1146,7 +1209,7 @@ def filePreamble(filename):
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 !  This file '"""+filename+"""' is automatically generated by
-!  'GenerateRealArrayNewSignature.py'.  Changes made here will be
+!  'GenerateAssertsOnArrays.py'.  Changes made here will be
 !  overwritten the next time that script is run.
 !
 !  2013-0722 MLR Michael.L.Rilee-1@nasa.gov
@@ -1156,7 +1219,16 @@ def filePreamble(filename):
 """
 
 def makeModuleReal():
-    mod = constructModule()
+#    mod = constructModule(assertionShortNames=['Equal'])
+    mod = constructModule( \
+                           assertionShortNames=["NotEqual",\
+                                                "Equal",\
+                                                "GreaterThan",\
+                                                "GreaterThanOrEqual",\
+                                                "LessThan",\
+                                                "LessThanOrEqual",\
+                                                "RelativelyEqual",\
+                                                ])
     # print('\n'.join(mod.generate()))
     # print(mod)
     # print('makeModuleReal: opening    '+mod.getFileName())
@@ -1171,7 +1243,9 @@ def makeModuleComplex():
     #
     # mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     #
-    mod = constructModule(baseName='AssertComplex',foundFTypes=['real','complex'])
+    mod = constructModule(baseName='AssertComplex',\
+                          assertionShortNames=['NotEqual','Equal','RelativelyEqual'],\
+                          foundFTypes=['real','complex'])
     # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
     # print('makeModuleComplex: opening    '+mod.getFileName())
     with open(mod.getFileName(),'w') as f:
@@ -1182,7 +1256,9 @@ def makeModuleComplex():
     return
 
 def makeModuleInteger():
-    mod = constructModule(baseName='AssertInteger1',foundFTypes=['integer'])
+    mod = constructModule(baseName='AssertInteger1',\
+                          assertionShortNames=['Equal'],\
+                          foundFTypes=['integer'])
     with open(mod.getFileName(),'w') as f:
         f.write(filePreamble(mod.getFileName()))
         f.write('\n'.join(mod.generate()))

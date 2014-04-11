@@ -8,12 +8,16 @@ ifeq ($(UNAME),Windows)
 	TOP_DIR := ..
 	# Since this is a Windows compilation, add the Windows define.
 	FFLAGS += -DWindows
-	ifeq ($(F90),nagfor)
+	ifeq ($(FC),nagfor)
 		FFLAGS += -fpp
 	endif
-	ifeq ($(F90),ifort)
+	ifeq ($(FC),ifort)
 		FFLAGS += /nologo
 	endif
+endif
+
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
 endif
 
 tests: $(OBJS)
@@ -23,7 +27,7 @@ testSuites.inc: $(SRCS)
 FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
 
 ifneq ($(UNAME),Windows)
-	ifeq ($(F90),nagfor)
+	ifeq ($(FC),nagfor)
 	   FFLAGS += -fpp
 	endif
 endif
@@ -33,7 +37,8 @@ endif
 
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<
-#	$(FC) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

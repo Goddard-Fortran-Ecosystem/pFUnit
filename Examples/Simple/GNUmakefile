@@ -1,4 +1,5 @@
-.PHONY: clean tests all
+.PHONY: tests clean all
+.DEFAULT_GOAL = tests
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -26,17 +27,17 @@ endif
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-#
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-	FFLAGS += -fpp
-endif
 ifeq ($(UNAME),Windows)
 	FFLAGS += -DWindows
-	ifeq ($(F90),ifort)
+	ifeq ($(FC),ifort)
 		FFLAGS += /nologo
 	endif
+endif
+
+ifeq ($(USEMPI),YES)
+   FC=mpif90
 endif
 
 EXE = tests$(EXE_EXT)
@@ -47,25 +48,35 @@ else
 endif
 
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE)
+else
 	./$(EXE)
+endif
+
+SUT:
+	make -C $(SRC_DIR) SUT
+	make -C $(TEST_DIR) tests
+
+tests: all
+
+$(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS) $(FPPFLAGS)
 
 
-$(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT tests
-	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+clean: local-E0-clean
 
-clean:
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
 
-SUT:
-	make -C $(SRC_DIR) SUT
-tests: SUT
-	make -C $(TEST_DIR) tests
-
 ifeq ($(UNAME),Windows)
 	export PFUNIT
 endif
+
+export FPPFLAGS
+export FFLAGS
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT

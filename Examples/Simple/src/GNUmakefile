@@ -5,10 +5,10 @@ ifeq ($(UNAME),Windows)
 	TOP_DIR := ..
 	# Since this is a Windows compilation, add the Windows define.
 	FFLAGS += -DWindows
-	ifeq ($(F90),nagfor)
+	ifeq ($(FC),nagfor)
 		FFLAGS += -fpp
 	endif
-	ifeq ($(F90),ifort)
+	ifeq ($(FC),ifort)
 		FFLAGS += /nologo
 	endif
 endif
@@ -16,9 +16,10 @@ endif
 SUT: add$(OBJ_EXT) addComplex$(OBJ_EXT)
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $(FPPFLAGS) $<
-#	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod
 

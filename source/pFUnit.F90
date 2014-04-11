@@ -99,12 +99,13 @@ module pFUnit_mod
    public :: assertNotAll
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
+   public :: assertRelativelyEqual
    public :: assertExceptionRaised
    public :: assertSameShape
    public :: assertIsNan
    public :: assertIsFinite
 
-   public :: throw, catchAny, catch, anyExceptions
+   public :: throw, catchNext, catch, anyExceptions
 
 #ifdef USE_MPI
    logical :: useMpi_

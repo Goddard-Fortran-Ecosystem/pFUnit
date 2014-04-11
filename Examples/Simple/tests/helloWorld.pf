@@ -5,7 +5,7 @@ subroutine testHelloWorld()
    @assertEqual("Hello World!","Hello World!")
 end subroutine testHelloWorld
 
-@test
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testBrokenHelloWorld()
    use pfunit_mod
    implicit none

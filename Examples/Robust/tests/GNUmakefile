@@ -1,6 +1,5 @@
 .PHONY: clean tests
 
-
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
 
@@ -9,15 +8,18 @@ tests: $(OBJS)
 testSuites.inc: $(SRCS)
 
 FFLAGS += -I$(SRC_DIR) -I$(PFUNIT)/mod
-ifeq ($(F90),nagfor)
-   FFLAGS += -fpp
+
+ifndef SKIP_INTENTIONALLY_BROKEN
+  FFLAGS += -DINCLUDE_INTENTIONALLY_BROKEN
 endif
 
 %.F90: %.pf
 	$(PFUNIT)/bin/pFUnitParser.py $<  $@
 
 %$(OBJ_EXT): %.F90
-	$(F90) -c $(FFLAGS) $<
+	$(FC) -c $(FFLAGS) $<
 
-clean:
+clean: local-E1-clean
+
+local-E1-clean:
 	$(RM) *$(OBJ_EXT) *.mod

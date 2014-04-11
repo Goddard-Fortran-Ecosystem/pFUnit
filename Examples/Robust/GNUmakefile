@@ -1,5 +1,5 @@
 .PHONY: clean tests all
-
+.DEFAULT_GOAL = tests
 
 TOP_DIR := $(shell pwd)
 SRC_DIR=$(TOP_DIR)/src
@@ -7,33 +7,40 @@ TEST_DIR=$(TOP_DIR)/tests
 
 VPATH = . $(SRC_DIR) $(TEST_DIR)
 
-#
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(F90),nagfor)
-  FFLAGS += -fpp
+ifeq ($(USEMPI),YES)
+   FC=mpif90
 endif
 
 EXE = tests$(EXE_EXT)
 
 # NOTE: use the -robust flag
 all: $(EXE)
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE) -robust
+else
 	./$(EXE) -robust
+endif
 
+SUT:
+	make -C $(SRC_DIR) SUT
+	make -C $(TEST_DIR) tests
 
-$(EXE): testSuites.inc myTests.pf add.F90 SUT tests
-	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) #-DUSE_MPI
+tests: all
 
-clean:
+$(EXE): testSuites.inc myTests.pf add.F90 SUT
+	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) -L$(PFUNIT)/lib -lpfunit $(LIBS) $(FFLAGS) $(FPPFLAGS)
+
+clean: local-E0-clean
+
+local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
 	rm -f tests.x
 
-SUT:
-	make -C $(SRC_DIR) SUT
-tests: SUT
-	make -C $(TEST_DIR) tests
-
+export FPPFLAGS
+export FFLAGS
 export SRC_DIR
 export TEST_DIR
 export OBJ_EXT

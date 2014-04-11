@@ -1,8 +1,9 @@
-.PHONY: tests all documentation config
+.PHONY: tests all install documentation config
 
 TOP_DIR ?=$(shell pwd)
 
 DOC_DIR  = $(TOP_DIR)/documentation
+EXAMPLES_DIR  = $(TOP_DIR)/Examples
 SOURCE_DIR  = $(TOP_DIR)/source
 TESTS_DIR   = $(TOP_DIR)/tests
 INCLUDE_DIR = $(TOP_DIR)/include
@@ -134,7 +135,6 @@ endif
 
 ifneq ($(findstring $(ROBUST),yes YES Yes),)
   BUILDROBUST=YES
-  FFLAGS += $DBUILD_ROBUST
   FPPFLAGS += $DBUILD_ROBUST
   CPPFLAGS += -DBUILD_ROBUST
 endif
@@ -166,12 +166,20 @@ documentation/pFUnit2-ReferenceManual.pdf: documentation
 	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
 
 
-clean:
+clean: local-top1-clean local-top1-cleanExamples
+
+local-top1-clean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
+	tools/clean Examples
 	\rm -f include/configuration.mk
 
-distclean:
+local-top1-cleanExamples:
+	tools/clean Examples
+
+distclean: local-top1-distclean
+
+local-top1-distclean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(MAKE) -C $(DOC_DIR) distclean
@@ -188,16 +196,27 @@ develop:
 	cp -f $(TOP_DIR)/include/base-develop.mk $(TOP_DIR)/include/base.mk
 
 install: libpfunit$(LIB_EXT)
-INSTALL_DIR ?= $(CURDIR)
-install: 
+ifndef INSTALL_DIR
+	$(error Must specify INSTALL_DIR. Example: make install INSTALL_DIR=SOME_PATH, \
+	where SOME_PATH is different than $(TOP_DIR))
+else
+ifeq ($(INSTALL_DIR),$(TOP_DIR))
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
+ifeq ($(INSTALL_DIR),.)
+        $(error INSTALL_DIR cannot be the same as TOP_DIR)
+endif
 	@echo Installing pFUnit in $(INSTALL_DIR)
 	tools/install $(INSTALL_DIR)/lib source/lib*
 	tools/install $(INSTALL_DIR)/mod source/*.mod
 	tools/install $(INSTALL_DIR) include
 	mv -f $(INSTALL_DIR)/include/base-install.mk $(INSTALL_DIR)/include/base.mk
 	tools/install $(INSTALL_DIR) bin
-	@echo For normal usage please set PFUNIT to $(INSTALL_DIR).
-	@echo For example:  export PFUNIT=$(INSTALL_DIR)
+	@echo +++
+	@echo PFUNIT has been installed in $(INSTALL_DIR).
+	@echo For normal usage please ensure PFUNIT is set to $(INSTALL_DIR).
+	@echo For example, in bash:  export PFUNIT=$(INSTALL_DIR)
+endif
 
 include/configuration.mk:
 	@echo "# include/configuration.mk generated automatically during build" \
