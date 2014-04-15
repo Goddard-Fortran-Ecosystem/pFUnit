@@ -163,4 +163,18 @@ contains
 
    end subroutine testAssertIsFinite
 
+   subroutine testAssertExceptionRaised()
+      use Exception_mod, only: throw
+      use SourceLocation_mod
+
+      character(len=*), parameter :: message = 'a message'
+
+      call throw(message)
+      call assertExceptionRaised(message)
+
+      call throw(message)
+      call assertExceptionRaised(message,SourceLocation('here',5))
+
+   end subroutine testAssertExceptionRaised
+
 end module Test_AssertBasic_mod

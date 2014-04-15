@@ -100,7 +100,6 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       character(len=:), allocatable :: message_
-      type (SourceLocation) :: location_
 
       if(present(message))then
          message_ = message
@@ -108,30 +107,27 @@ contains
          message_ = NULL_MESSAGE
       end if
 
-      if(present(location))then
-         location_ = location
-      else
-         location_ = UNKNOWN_SOURCE_LOCATION
-      end if
-
       if (.not. condition) call throw(trim(message), location)
     end subroutine assertTrue_
 
-   subroutine assertExceptionRaisedBasic()
+   subroutine assertExceptionRaisedBasic(location)
       use Exception_mod, only: throw, catch
+      type (SourceLocation), optional, intent(in) :: location
 
       if (.not. catch()) then
-         call throw('Failed to throw exception.')
+         call throw('Failed to throw exception.', location)
       end if
 
    end subroutine assertExceptionRaisedBasic
 
-   subroutine assertExceptionRaisedMessage(message)
+   subroutine assertExceptionRaisedMessage(message, location)
       use Exception_mod, only: throw, catch
       character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
 
       if (.not. catch(message)) then
-         call throw('Failed to throw exception: <' // trim(message) // '>')
+         call throw('Failed to throw exception: <' // trim(message) // '>', &
+              & location)
       end if
 
    end subroutine assertExceptionRaisedMessage
@@ -200,7 +196,6 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: message_
-      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: i
@@ -210,12 +205,6 @@ contains
          message_ = message
       else
          message_ = NULL_MESSAGE
-      end if
-
-      if(present(location))then
-         location_ = location
-      else
-         location_ = UNKNOWN_SOURCE_LOCATION
       end if
 
       if (trim(expected) /= trim(found)) then
@@ -228,7 +217,7 @@ contains
               & '    expected: <"', trim(expected), '">', new_line('A'), &
               & '   but found: <"', trim(found), '">', new_line('A'), &
               & '  first diff:   ', repeat('-', numSameCharacters), '^'
-         call throw(appendWithSpace(message, throwMessage), location_)
+         call throw(appendWithSpace(message, throwMessage), location)
       end if
 
    end subroutine assertEqualString_
