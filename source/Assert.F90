@@ -28,6 +28,7 @@ module Assert_mod
    implicit none
    private
 
+   public :: assertFail
    public :: assertTrue
    public :: assertFalse
    public :: assertEqual

@@ -28,6 +28,7 @@ module AssertBasic_mod
    private
    
    public :: fail
+   public :: assertFail
 
    public :: assertTrue
    public :: assertFalse
@@ -53,6 +54,10 @@ module AssertBasic_mod
    interface fail
       module procedure fail_
    end interface fail
+
+   interface assertFail
+      module procedure fail_
+   end interface assertFail
 
    interface assertTrue
       module procedure assertTrue_

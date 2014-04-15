@@ -89,6 +89,7 @@ module pFUnit_mod
    public :: MpiTestMethod, newMpiTestMethod
 #endif
 
+   public :: assertFail
    public :: assertTrue, assertFalse
    public :: assertEqual
    public :: assertAny
