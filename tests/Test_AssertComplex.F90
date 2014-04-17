@@ -16,10 +16,12 @@ module Test_AssertComplex_mod ! note name
   use Params_mod, only : r32
   use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
-  use AssertReal_mod, only: assertEqual, differenceReport, valuesReport
-  use AssertComplex_mod, only: assertEqual
-  use AssertComplex_mod, only: assertNotEqual
-  use AssertComplex_mod, only: assertRelativelyEqual
+  use Assert_mod
+  use AssertArraysSupport_mod, only: differenceReport, valuesReport
+!   AssertReal_mod, only: assertEqual, differenceReport, valuesReport
+!   AssertComplex_mod, only: assertEqual
+!   AssertComplex_mod, only: assertNotEqual
+!   AssertComplex_mod, only: assertRelativelyEqual
   use ThrowFundamentalTypes_mod, only: locationFormat
 ! , differenceReport, valuesReport
   use SourceLocation_mod

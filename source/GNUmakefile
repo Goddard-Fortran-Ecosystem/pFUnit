@@ -2,12 +2,24 @@ TOP = ..
 include ../include/base.mk
 .PHONY: all generate clean_generated_code testCodeMacs
 
-all: dependencies.inc libpfunit$(LIB_EXT)
+all: dependencies.inc generated.inc libpfunit$(LIB_EXT)
 
-GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
-
-$(GENERATED_CODE):
+# "GENERATED_CODE" is defined in "generated.inc".
+# GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
+# 
+generated.inc:
 	./GenerateAssertsOnArrays.py
+
+# 	@echo "# This file automatically generated. Do not modify." > ./generated.inc
+
+AssertArrays.fh: generated.inc
+
+Assert.F90: AssertArrays.fh
+
+include ./generated.inc
+
+# $(GENERATED_CODE):
+#	./GenerateAssertsOnArrays.py
 
 testCodeMacs:
 	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
@@ -16,14 +28,16 @@ testCodeMacs:
 #	python $(TOP)/bin/codeMacs.py $< $@
 
 clean_generated_code:
+	rm -f generated.inc AssertArrays.fh
 	rm -f $(GENERATED_CODE)
 
 distclean: local-build1-distclean
 
 local-build1-distclean: clean_generated_code
 
-dependencies.inc: $(GENERATED_CODE)
-	./MakeDependenciesInclude
+# dependencies.inc: $(GENERATED_CODE)
+dependencies.inc: generated.inc
+	./MakeDependenciesInclude $(FFLAGS) $(FPPFLAGS)
 
 ifneq ($(BUILDROBUST),YES)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90

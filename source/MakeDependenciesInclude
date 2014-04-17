@@ -32,12 +32,17 @@ IGNORE="PrivateException"
 echo "# pFUnit: source/MakeDependenciesInclude..." > ${tmpFile}; 
 echo -e "# source/${outFile} automatically generated: " `date "+%Y-%m%d-%H%M-%S"` "\n" >> ${tmpFile}; 
 
+rm -f tmp999.F90
 for i in *.F90; do 
+   # echo $i
+   # Dangerous -- but get the command line args...
+   ${FC} $* -E ${i} > tmp999.F90
    echo `echo $i | cut -f 1 -d. - `".o: " | tr -d "\n" >> ${tmpFile};
-      grep -i use $i | grep -v used | cut -d, -f1 - | sort | tr -s " \t\v" | uniq - | \
+      grep -i use tmp999.F90 | grep -v used | cut -d, -f1 - | sort | tr -s " \t\v" | uniq - | \
       egrep -v ${IGNORE} | \
       sed 's/use//g' | sed 's/_mod/.o/g' | egrep "\.o" | grep -v "\!\!" | tr -d "\n" | tr -s " \t\v" >> ${tmpFile};  
    echo -e "\n" >> ${tmpFile}; 
+   rm -f tmp999.F90
 done; 
 
 cat ${tmpFile} | grep -iv Mpi\*.o > ${outFile}; 

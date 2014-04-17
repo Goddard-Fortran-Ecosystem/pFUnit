@@ -16,12 +16,13 @@ module Test_AssertReal_mod ! note name
   use Params_mod, only : r32
   use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
-  use AssertReal_mod, only: assertEqual, differenceReport, valuesReport   ! note name
-  use AssertReal_mod, only: assertGreaterThan
-  use AssertReal_mod, only: assertGreaterThanOrEqual
-  use AssertReal_mod, only: assertLessThan
-  use AssertReal_mod, only: assertLessThanOrEqual
-  use AssertReal_mod, only: assertRelativelyEqual
+  use Assert_mod, only: assertEqual
+  use Assert_mod, only: assertGreaterThan
+  use Assert_mod, only: assertGreaterThanOrEqual
+  use Assert_mod, only: assertLessThan
+  use Assert_mod, only: assertLessThanOrEqual
+  use Assert_mod, only: assertRelativelyEqual
+  use AssertArraysSupport_mod, only: differenceReport, valuesReport
   use ThrowFundamentalTypes_mod, only: locationFormat
   use SourceLocation_mod
 
