@@ -40,6 +40,9 @@ contains
 
       ADD(testAssertIsNaN)
       ADD(testAssertIsFinite)
+
+      ADD(testAssertFail)
+      ADD(testAssertExceptionRaised)
    end function suite
 
    subroutine testAssertTrueF()
@@ -162,5 +165,31 @@ contains
       call assertExceptionRaised('not finite')
 
    end subroutine testAssertIsFinite
+
+   subroutine testAssertExceptionRaised()
+      use Exception_mod, only: throw
+      use SourceLocation_mod
+
+      character(len=*), parameter :: message = 'a message'
+
+      call throw(message)
+      call assertExceptionRaised(message)
+
+      call throw(message)
+      call assertExceptionRaised(message,SourceLocation('here',5))
+
+   end subroutine testAssertExceptionRaised
+
+   subroutine testAssertFail()
+      use SourceLocation_mod
+
+      character(len=*), parameter :: message = 'a message'
+
+      call assertFail(message)
+      call assertExceptionRaised(message)
+
+      call assertFail(message)
+      call assertExceptionRaised(message,SourceLocation('here',5))
+   end subroutine testAssertFail
 
 end module Test_AssertBasic_mod

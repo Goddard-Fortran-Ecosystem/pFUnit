@@ -47,6 +47,7 @@ module pFUnit
    use Exception_mod, only:  RENAME(throw), RENAME(catch), RENAME(catchNext)
    use Exception_mod, only:  RENAME(anyExceptions)
    use ParallelException_mod, only:  RENAME(anyExceptions)
+   use Assert_mod, only: RENAME(assertFail)
    use Assert_mod, only: RENAME(assertTrue), RENAME(assertFalse)
    use Assert_mod, only: RENAME(assertSameShape)
    use Assert_mod, only: RENAME(assertEqual)
