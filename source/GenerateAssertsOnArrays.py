@@ -12,11 +12,17 @@ from __future__ import print_function
 # M. Rilee
 #    Initial: 2013-0304
 #
+#    2014-0418:  Moved effective assert routines to own file.  Segregated other routines into files by rank.
+#
 #    2014-0324:  Fully implemented relational operators beyond "=".
 #
 #    2013-0814:  Added default r64 to call from assertEqual_w/o_tol to internal proc.
 #                Added logical to makeExpectedFTypes - but not for prime time.
 # 
+
+##### system code #####
+
+import argparse
 
 ##### utility code #####
 
@@ -26,6 +32,16 @@ import textwrap
 import random
 import copy
 
+##### preliminaries #####
+
+parser = argparse.ArgumentParser( \
+                                  description='Generate assertions with relational operators on arrays.', \
+                                  usage='%(prog) --maxRank MaximumRankOfArrays' \
+                                  )
+parser.add_argument('--maxRank', help='The maximum rank of the arrays for which to generate code.')
+args = parser.parse_args()
+
+                                  
 ##### begin generation code #####
 
 
@@ -1243,7 +1259,7 @@ def constructSupportModuleDeclarations(exportedRoutineNames=[]):
           ]
     return declarations
 
-def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[],foundRanks=[]):
+def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[],foundRanks=[],maxRank=5):
     # Just a rename to capture an idea.  Will fix later. MLR
 #    exportedRoutineNames = ['assert'+i+'_internal' for i in assertionShortNames]
     exportedRoutineNames = []
@@ -1254,8 +1270,8 @@ def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[]
     m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
     m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
     # Generate internals for all ranks.
-    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=range(6)))
-    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(6)))
+    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=range(maxRank+1)))
+    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(maxRank+1)))
     
     # The following will add "assert" to the shortname.
     for assertionShortName in assertionShortNames:
@@ -1335,8 +1351,7 @@ relationalOperatorShortNames=["NotEqual",\
                             "LessThan",\
                             "LessThanOrEqual",\
                             "RelativelyEqual"]
-def makeModuleReal():
-    maxRank=5
+def makeModuleReal(maxRank=5):
     assertionShortNames=relationalOperatorShortNames
 #    assertionShortNames=["NotEqual",\
 #                        "Equal",\
@@ -1359,8 +1374,7 @@ def makeModuleReal():
     print('makeModuleReal: done')
     return
 
-def makeModuleComplex():
-    maxRank=5
+def makeModuleComplex(maxRank=5):
     assertionShortNames=['NotEqual','Equal','RelativelyEqual']
     for iRank in range(0,maxRank+1):
         foundRanks = [iRank]
@@ -1377,8 +1391,7 @@ def makeModuleComplex():
     print('makeModuleComplex: done')
     return
 
-def makeModuleInteger():
-    maxRank=5
+def makeModuleInteger(maxRank=5):
     assertionShortNames=['Equal']
     for iRank in range(0,maxRank+1):
         foundRanks=[iRank]
@@ -1404,9 +1417,9 @@ def makeModuleInteger():
 #     print('makeModuleInteger: done')
 #     return
 
-def makeSupportModule(assertionShortNames=[]):
+def makeSupportModule(assertionShortNames=[],maxRank=5):
 #        print ('1000: aSN: ',assertionShortNames)
-        mod = constructSupportModule(assertionShortNames=assertionShortNames)
+        mod = constructSupportModule(assertionShortNames=assertionShortNames,maxRank=maxRank)
         with open(mod.getFileName(),'w') as f:
             f.write(filePreamble(mod.getFileName()))
             f.write('\n'.join(mod.generate()))
@@ -1416,21 +1429,21 @@ def makeSupportModule(assertionShortNames=[]):
         print('makeSupportModule: done')
         return
 
-def main():
+def main(maxRank=5):
     # Make the modules for the different types...
     #
     makeGeneratedInclude(includeFile="generated.inc")
     #++
-    makeModuleReal()
+    makeModuleReal(maxRank=maxRank)
     #++
-    makeModuleComplex()
+    makeModuleComplex(maxRank=maxRank)
     #? The following requires testing.
-    makeModuleInteger()
+    makeModuleInteger(maxRank=maxRank)
     #? Just started...
     #- makeModuleLogical()
-    makeSupportModule(assertionShortNames=relationalOperatorShortNames)
+    makeSupportModule(assertionShortNames=relationalOperatorShortNames,maxRank=maxRank)
     return
 
 if __name__ == "__main__":
-    main()
+    main(maxRank=int(args.maxRank))
 

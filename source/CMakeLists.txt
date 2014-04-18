@@ -13,7 +13,7 @@ set(srcs Assert.F90)
 
 # Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
 execute_process(
-   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py
+   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_RANK}
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    RESULT_VARIABLE generated_result
    OUTPUT_VARIABLE generated_output

@@ -69,6 +69,11 @@ endif
 # Other defaults
 MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
+# MAX_RANK ?=$(PFUNIT_MAX_RANK) # Maximum rank of arrays in assertions
+MAX_RANK ?=5
+ifneq ($(origin PFUNIT_MAX_RANK), undefined)
+   MAX_RANK=$(PFUNIT_MAX_RANK)
+endif
 
 ifneq ($(UNAME),Windows)
 ROBUST ?=YES # for now include RobustRunner by default
@@ -224,6 +229,7 @@ include/configuration.mk:
 	@echo COMPILER  ?= $(COMPILER) >> include/configuration.mk
 	@echo USEOPENMP ?= $(USEOPENMP) >> include/configuration.mk
 	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
+	@echo MAX_RANK 	?= $(MAX_RANK) >> include/configuration.mk
 	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
 
 export UNAME
@@ -248,6 +254,7 @@ export VPATH
 export MPI
 export USEMPI
 export USEOPENMP
+export MAX_RANK
 export BUILDROBUST
 export MPIF90
 export LIBMPI
