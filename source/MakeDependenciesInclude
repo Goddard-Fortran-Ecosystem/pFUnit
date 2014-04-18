@@ -9,6 +9,13 @@
 
 # TODO:  Move this and its cousins to a single "$(TOP)/bin/MakeDependenciesInclude".
 
+# Check on Fortran
+
+if [ x${FC} = x ]; then
+    echo $0 ERROR: Environment variable FC not set to Fortran compiler.
+    exit
+fi
+
 # Dependency injection...
 # Intermediate & target files...
 export tmpFile=./DependencyCheck-1.tmp; 
@@ -34,7 +41,6 @@ echo -e "# source/${outFile} automatically generated: " `date "+%Y-%m%d-%H%M-%S"
 
 rm -f tmp999.F90
 for i in *.F90; do 
-   # echo $i
    # Dangerous -- but get the command line args...
    ${FC} $* -E ${i} > tmp999.F90
    echo `echo $i | cut -f 1 -d. - `".o: " | tr -d "\n" >> ${tmpFile};
