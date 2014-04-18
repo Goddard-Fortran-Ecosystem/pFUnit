@@ -138,6 +138,12 @@ MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
 
+PFUNIT_MAX_RANK - controls the maximum size of the arrays asserts are
+defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
+assertions will be able to handle arrays up to rank 5.
+
+$ export PFUNIT_MAX_RANK=8
+
 DOXYGEN - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
 names from Fortran source code by currently converting all to
