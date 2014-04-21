@@ -166,9 +166,9 @@ all: include/configuration.mk
 documentation:
 	$(DOXYGEN) documentation/doxygen.conf
 
-documentation/pFUnit2-ReferenceManual.pdf: documentation
+documentation/pFUnit3-ReferenceManual.pdf: documentation
 	$(MAKE) -C documentation/latex all
-	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
+	mv -f documentation/latex/refman.pdf documentation/pFUnit3-ReferenceManual.pdf
 
 
 clean: local-top1-clean local-top1-cleanExamples
