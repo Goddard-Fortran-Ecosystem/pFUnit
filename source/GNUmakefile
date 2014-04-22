@@ -8,7 +8,7 @@ all: dependencies.inc generated.inc libpfunit$(LIB_EXT)
 # GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 # 
 generated.inc:
-	./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
+	python ./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
 
 # 	@echo "# This file automatically generated. Do not modify." > ./generated.inc
 

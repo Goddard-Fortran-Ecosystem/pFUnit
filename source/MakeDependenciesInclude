@@ -9,6 +9,16 @@
 
 # TODO:  Move this and its cousins to a single "$(TOP)/bin/MakeDependenciesInclude".
 
+# NAG_IgnoreCompilerFlags - A klugly edit of the flags passed to NAG to appease cpp.
+
+NAG_IgnoreCompilerFlags () {
+   echo $* | \
+       sed s/-fpp//g | \
+       sed s/-mismatch_all//g | \
+       sed s/-f2008//g | \
+       sed s/-w=uda//g
+}
+
 # Check on Fortran
 
 if [ x${FC} = x ]; then
@@ -42,7 +52,13 @@ echo -e "# source/${outFile} automatically generated: " `date "+%Y-%m%d-%H%M-%S"
 rm -f tmp999.F90
 for i in *.F90; do 
    # Dangerous -- but get the command line args...
-   ${FC} $* -E ${i} > tmp999.F90
+   # ${FC} $* -E ${i} > tmp999.F90
+   if [[ x${FC} =~ .*[nagfor|NAGFOR].* ]]; then
+       # See include/nag.mk.                                                         
+       cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} > tmp999.F90
+   else
+       ${FC} $* -E ${i} > tmp999.F90
+   fi
    echo `echo $i | cut -f 1 -d. - `".o: " | tr -d "\n" >> ${tmpFile};
       grep -i use tmp999.F90 | grep -v used | cut -d, -f1 - | sort | tr -s " \t\v" | uniq - | \
       egrep -v ${IGNORE} | \
