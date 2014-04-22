@@ -53,7 +53,7 @@ rm -f tmp999.F90
 for i in *.F90; do 
    # Dangerous -- but get the command line args...
    # ${FC} $* -E ${i} > tmp999.F90
-   if [[ x${FC} =~ .*[nagfor|NAGFOR].* ]]; then
+   if [[ x${FC} =~ .*(nagfor|NAGFOR).* ]]; then
        # See include/nag.mk.                                                         
        cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} > tmp999.F90
    else
