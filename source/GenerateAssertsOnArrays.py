@@ -794,7 +794,7 @@ def constructValuesReportInterfaceBlock():
 # Scalar args?
 # Need assertionName...
 # def constructAssertInternalInterfaceBlock(assertionName="Equal"):
-def constructAssertInternalInterfaceBlock(assertionName,foundRanks=[],expose=False):
+def constructAssertInternalInterfaceBlock(assertionName,expose=False):
     # foundRanks... mlr... how would foundRanks work here?
     AssertInternalInterfaceBlockName='assert'+assertionName+'_internal'
     AssertInternalInterface = interfaceBlock(AssertInternalInterfaceBlockName)
@@ -967,8 +967,8 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
 #    runit.setDeclaration(declaration(runit.getName(),'public '+runit.getName()))
     return runit
 
-def declareUSES():
-    return \
+def declareUSES(internalRoutines=[]):
+    retStr=\
 """
    use Params_mod
    use AssertBasic_mod
@@ -977,6 +977,11 @@ def declareUSES():
    use StringConversionUtilities_mod
    use AssertArraysSupport_mod
 """
+    for i in internalRoutines:
+        retStr=retStr+\
+"""   use AssertArraysInternal"""+i+"""_mod
+"""
+    return retStr
 
 def declareDISCIPLINE():
     return \
@@ -1207,7 +1212,7 @@ def constructDeclarations(assertionRoutines,basename='',foundRanks=[]):
     # foundRanks works into this... how? mlr 2014-0407
     declarations = \
         [ \
-          declaration('uses',declareUSES()), \
+          declaration('uses',declareUSES(internalRoutines=assertionRoutines)), \
           declaration('discipline',declareDISCIPLINE()), \
           declaration('exports',declareEXPORTS(assertionRoutines,basename)), \
           declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
@@ -1226,6 +1231,8 @@ def declareUSES_() :
    use SourceLocation_mod
    use StringConversionUtilities_mod
 """
+
+
 # Use "global" declareDISCIPLINE()
 def declareEXPORTS_(exportedRoutines) :
     retPublic=""
@@ -1245,6 +1252,25 @@ def declareEXPORTS_(exportedRoutines) :
 #    print ('3000: retPublic: ',retPublic)
     return retPublic
 
+def declareEXPORTS_INTERNAL_(exportedRoutines) :
+    retPublic=""
+    for aRoutineName in exportedRoutines :
+         retPublic = retPublic + \
+"""   public :: """+aRoutineName+"""
+"""
+#-    retPublic = retPublic + \
+#-"""
+#-   public :: valuesReport
+#-   public :: differenceReport
+#-
+#-   public :: vectorNorm
+#-   public :: isWithinTolerance
+#-   
+#-"""
+#    print ('3000: retPublic: ',retPublic)
+    return retPublic
+
+
 # Use "global" declareEXPORTS_PARAMETERS():
 
 def constructSupportModuleDeclarations(exportedRoutineNames=[]):
@@ -1259,6 +1285,19 @@ def constructSupportModuleDeclarations(exportedRoutineNames=[]):
           ]
     return declarations
 
+def constructInternalModuleDeclarations(exportedRoutineNames=[]):
+#    print ('2000: eRN: ',exportedRoutineNames)
+# Start main of constructSupportModuleDeclarations
+    declarations = \
+        [ \
+          declaration('uses',declareUSES_()), \
+          declaration('discipline',declareDISCIPLINE()), \
+          declaration('exports',declareEXPORTS_INTERNAL_(exportedRoutineNames)), \
+          declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
+          ]
+    return declarations
+
+
 def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[],foundRanks=[],maxRank=5):
     # Just a rename to capture an idea.  Will fix later. MLR
 #    exportedRoutineNames = ['assert'+i+'_internal' for i in assertionShortNames]
@@ -1266,6 +1305,7 @@ def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[]
 #    print ('1500: exportedRoutineNames: ',exportedRoutineNames)
     m1 = module(baseName+'_mod')
     m1.setFileName(baseName+'.F90')
+    # Note exportedRoutineNames may be empty but still makes a bunch of declarations.
     [m1.addDeclaration(d) for d in constructSupportModuleDeclarations(exportedRoutineNames)]
     m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
     m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
@@ -1274,10 +1314,32 @@ def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[]
     m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(maxRank+1)))
     
     # The following will add "assert" to the shortname.
-    for assertionShortName in assertionShortNames:
-        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,foundRanks=foundRanks,expose=True),expose=True)
+#+    for assertionShortName in assertionShortNames:
+#+        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,foundRanks=foundRanks,expose=True),expose=True)
+#?        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,expose=True),expose=True)
 
     return m1
+
+def constructInternalModule(baseName='AssertArraysInternal',assertionShortName="",exportedRoutineNames=[],maxRank=[]):
+# oops -- hardwired longname here
+    baseName_ = baseName+"assert"+str(assertionShortName)
+    m1 = module(baseName_+'_mod')
+    m1.setFileName(baseName_+'.F90')
+    
+    [m1.addDeclaration(d) for d in constructInternalModuleDeclarations(exportedRoutineNames)]
+
+    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
+    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
+    # Generate internals for all ranks.
+    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=range(maxRank+1)))
+    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(maxRank+1)))
+    
+    
+    # The following will add "assert" to the shortname.
+    m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,expose=True),expose=True)
+
+    return m1
+
 
 def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[]):
 #    assertionShortNames=['Equal']
@@ -1429,6 +1491,23 @@ def makeSupportModule(assertionShortNames=[],maxRank=5):
         print('makeSupportModule: done')
         return
 
+def makeInternalModule(assertionShortNames=[],maxRank=5):
+        for iAssertion in assertionShortNames :
+                mod = constructInternalModule(assertionShortName=iAssertion,maxRank=maxRank)
+                with open(mod.getFileName(),'w') as f:
+                    f.write(filePreamble(mod.getFileName()))
+                    f.write('\n'.join(mod.generate()))
+                addFileToMakefile(mod.getFileName())
+#???                
+#                Do I need to addModToF90Include?
+
+#????
+#        for iName in assertionShortNames : 
+#           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)
+        print('makeInternalModule: done')
+        return
+
+    
 def main(maxRank=5):
     # Make the modules for the different types...
     #
@@ -1441,9 +1520,14 @@ def main(maxRank=5):
     makeModuleInteger(maxRank=maxRank)
     #? Just started...
     #- makeModuleLogical()
+
+    # Make the routines that do the work.
+    makeInternalModule(assertionShortNames=relationalOperatorShortNames,maxRank=maxRank)
+    
+    # Make the intermediate routines.
     makeSupportModule(assertionShortNames=relationalOperatorShortNames,maxRank=maxRank)
+    
     return
 
 if __name__ == "__main__":
-    main(maxRank=int(args.maxRank))
-
+    main(maxRank=int(args.maxRank or 5))
