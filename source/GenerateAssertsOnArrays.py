@@ -238,7 +238,7 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
      declareExpected + \
      declareFound + \
      declareTolerance + """
-     character(len=*), optional, intent(in) :: message  ! not used yet!
+     character(len=*), optional, intent(in) :: message
      type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
@@ -290,8 +290,7 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
      implicit none\n""" + \
      declareExpected + \
      declareFound + """
-!     character(len=*), intent(in) :: message  ! not used yet!
-     character(len=*), optional, intent(in) :: message  ! not used yet!
+     character(len=*), optional, intent(in) :: message 
      type (SourceLocation), optional, intent(in) :: location
 
      call """+subroutineName+"""(&

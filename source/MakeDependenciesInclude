@@ -68,7 +68,7 @@ for i in *.F90; do
 #+       echo cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} \> tmp999.F90
        cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} > tmp999.F90
    else
-       echo MakeDependenciesInclude: FC -E
+#+       echo MakeDependenciesInclude: FC -E
        ${FC} $* -E ${i} > tmp999.F90
    fi
 #+   echo MakeDependenciesInclude:  Writing to ${tmpFile}
