@@ -81,6 +81,7 @@ contains
     ADD(testEquals_MultiD_SingleElementGT1)
     ADD(testEquals_MultiD_SingleElementGT2)
     ADD(testEquals_MultiD_SingleEltVarious1)
+    ADD(testEquals_MultiD_SingleEltVarious2)
 
   end function suite
 
@@ -1461,6 +1462,61 @@ end subroutine testEquals_MultiDWithTolerance64
     deallocate(msg)
 
   end subroutine testEquals_MultiD_SingleEltVarious1
+
+  subroutine testEquals_MultiD_SingleEltVarious2
+    use Params_mod
+!    use Assert_mod, only: assertEqual
+
+    real, parameter :: good = 1
+
+    real(kind=r32) :: expected, found
+    real(kind=r32) :: tolerance32
+
+    character(len=:), allocatable :: msg
+
+    !mlr maybe move this to a larger scope...
+    integer, parameter :: MAXLEN_SHAPE = 80
+    character(len=MAXLEN_SHAPE) :: locationInArray
+
+    !dbg1 print *,'5000'
+
+    allocate(msg,source='testEquals_MultiD_SingleEltVarious2')
+
+    ! The following should not throw an exception...
+
+    expected = good; found = good;
+    call assertEqual(expected, found, message=msg)
+
+    expected = good+1; found = good;
+    call assertGreaterThan(expected, found, message=msg)
+
+    expected = good+1; found = good; found = good+1
+    call assertGreaterThanOrEqual(expected, found, message=msg)
+
+    expected = good; found = good+1;
+    call assertLessThan(expected, found, message=msg)
+
+    expected = good; found = good+1; found = good
+    call assertLessThanOrEqual(expected, found, message=msg)
+
+    tolerance32 = 0.001
+    expected = good; found = good + tolerance32*0.5;
+    call assertRelativelyEqual(expected, found, tolerance32, message=msg )
+
+!    "locationInArray" is not used in the original AssertEqual code.
+!    write(locationInArray,locationFormat( [i1,i2,i3,i4] )) [i1, i2, i3, i4]
+
+!    call assertCatch( &
+!         & appendWithSpace(msg, &
+!         & trim(valuesReport(good+1, good, & 
+!         &      ePrefix='expected', &
+!         &      fPrefix='to be greater than:' )) // &
+!         & ';  first difference at element ' // trim(locationInArray) // '.') &
+!         & )
+
+    deallocate(msg)
+
+  end subroutine testEquals_MultiD_SingleEltVarious2
 
 
 
