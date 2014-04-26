@@ -7,15 +7,17 @@ MOD_DIR     =$(TOP)/source
 # Set the required file extensions.
 include $(INCLUDE_DIR)/extensions.mk
 
+COMPILER_ = $(shell echo $(COMPILER) | tr a-z A-Z )
+
 # Include the compiler-specific options.
-include $(INCLUDE_DIR)/$(COMPILER).mk
+include $(INCLUDE_DIR)/$(COMPILER_).mk
 
 FFLAGS += $I$(INCLUDE_DIR)
 
-ifneq ($(USEMPI),YES)
+ifeq ($(USEMPI),)
   FC=$(F90)
 else
-  FC=$(MPIF90)
+  override FC=$(MPIF90)
 endif
 
 ifeq ($(F90_HAS_CPP),YES)
@@ -30,13 +32,9 @@ endif
 
 .PHONY: clean distclean
 
-clean: local-base0-clean
-
-local-base0-clean:
-	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp *.s
+clean:
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
 	-$(RM) -r *.dSYM
 
-distclean: local-base0-distclean
-
-local-base0-distclean: clean
+distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc

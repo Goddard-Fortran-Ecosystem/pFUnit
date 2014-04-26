@@ -23,7 +23,8 @@ DEBUG_FLAGS =-g
 
 # Include the compiler-specific options.
 COMPILER ?= COMPILER_NOT_SET
-include $(INCLUDE_DIR)/$(COMPILER).mk
+COMPILER_ = $(shell echo $(COMPILER) | tr a-z A-Z )
+include $(INCLUDE_DIR)/$(COMPILER_).mk
 
 FFLAGS += $I$(INCLUDE_DIR)
 
