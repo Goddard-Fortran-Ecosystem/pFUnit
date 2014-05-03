@@ -1,11 +1,11 @@
-
+*.bak
 *.a
 *.i90
 *.lib
 *.mod
 *.o
-*.tmp
 *.obj
+*.tmp
 *~
 /*.exe
 /*.ilk

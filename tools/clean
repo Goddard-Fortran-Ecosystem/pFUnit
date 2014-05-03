@@ -8,13 +8,18 @@ else
    export opDir=$1
 fi
 
-echo pfunit/tools/clean:  Removing files ending in ".([oax]|mod|i90|dSYM)".
+if [ x`uname -o` == x"Cygwin" ];then
+  OAX_STRING="exe|obj|lib"
+else
+  OAX_STRING="[oax]"
+fi
+echo pfunit/tools/clean:  Removing files ending in ".($OAX_STRING|mod|i90|dSYM)" from $opDir.
 
 pushd ${opDir}
-for i in `find -E . -regex '.*\.([oax]|mod|i90)$'`; do
+for i in `find . -regextype posix-extended -regex '.*\.($OAX_STRING|mod|i90)$'`; do
    rm $i
 done
-for i in `find -E . -regex '.*\.(dSYM)$'`; do
+for i in `find . -regextype posix-extended -regex '.*\.(dSYM)$'`; do
    \rm -rf $i
 done
 popd

@@ -7,7 +7,6 @@
 *.pyc
 *.tmp
 *~
-*~
 /.#*
 /AssertComplex.F90
 /AssertComplex_mod.F90
