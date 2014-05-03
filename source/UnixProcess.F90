@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: UnixProcess
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 ! This module encapsulates the ability to issue background system commands
 ! Unix pipes are used under the hood soo that results from such commands
 ! can be returned to the program for further processing.
@@ -28,7 +50,7 @@ module UnixProcess_mod
 
    type UnixProcess
       private
-      type (C_PTR) :: file
+      type (C_PTR) :: file = C_NULL_PTR
       integer :: pid = -1
    contains
       procedure :: getLine
@@ -45,9 +67,10 @@ module UnixProcess_mod
 contains
 
    function newProcess(command, runInBackground) result(process)
-      use UnixPipeInterfaces_mod, only: popen, getLine
+!      uze UnixPipeInterfaces_mod, only: getLine
+      use UnixPipeInterfaces_mod, only: popen
       use StringConversionUtilities_mod, only: nullTerminate
-      use, intrinsic :: iso_c_binding, only: C_PTR
+!      uze, intrinsic :: iso_c_binding, only: C_PTR
       use Assert_mod
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
@@ -144,7 +167,7 @@ contains
       integer, parameter :: MAX_BUFFER_SIZE = 100000
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
-      integer :: rc
+      integer (kind=C_SIZE_T) :: rc
 !      integer :: i
 
 !!$      line = this%getDelim(new_line('$'))
@@ -174,7 +197,7 @@ contains
       integer, parameter :: MAX_BUFFER_SIZE = 100000
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
-      integer :: rc
+      integer (kind=C_SIZE_T) :: rc
 !      integer :: i
 
       integer(kind=C_INT) :: useDelimeter

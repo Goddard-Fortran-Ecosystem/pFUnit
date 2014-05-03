@@ -17,6 +17,7 @@ contains
       suite = newTestSuite('Test_TestCase')
 
       ADD(testRunSuite)
+      ADD(testRunMethodShouldFail)
 
    end function suite
 
@@ -41,10 +42,10 @@ contains
       use Assert_mod, only: assertEqual
       use SerialContext_mod
 
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method1', aTest%runLog)
@@ -64,10 +65,10 @@ contains
       use Assert_mod, only: assertEqual
       use SerialContext_mod
 
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       aTest = newSimpleTestCase('method1', method1)
       call aTest%run(aTestResult, newSerialContext())
       call assertEqual('run method2', aTest%runLog)
@@ -79,16 +80,33 @@ contains
       use TestResult_mod, only: TestResult, newTestResult
       use Assert_mod, only: assertEqual
       use SerialContext_mod
-      type (TestResult), pointer :: aTestResult
+      type (TestResult) :: aTestResult
       type (TestSuite) :: aSuite
 
       aSuite = internalSuite()
-      aTestResult => newTestResult()
+      aTestResult = newTestResult()
       call aSuite%run(aTestResult, newSerialContext())
       call assertEqual(2, aTestResult%runCount())
       call assertEqual(1, aTestResult%failureCount())
 
     end subroutine testRunSuite
+
+    ! Previously TestCase deferred implementation of runMethod()
+    ! New changes though require there to be a default implementation
+    ! (to avoid user types being ABSTRACT), but it should never be used.
+    ! This test ensures that the default throws an exception.
+    subroutine testRunMethodShouldFail()
+       use TestCase_mod
+       use Assert_mod
+
+       type, extends(TestCase) :: TempTestCase
+       end type TempTestCase
+
+       type (TempTestCase) :: testObject
+
+       call testObject%runMethod()
+       call assertExceptionRaised('TestCase::runMethod() must be overridden.')
+    end subroutine testRunMethodShouldFail
 
 end module Test_SimpleTestCase_mod
 

@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: BaseTestRunner
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module BaseTestRunner_mod
    use TestListener_mod
    implicit none
@@ -6,40 +28,32 @@ module BaseTestRunner_mod
    public :: BaseTestRunner
 
    type, abstract, extends(TestListener) :: BaseTestRunner
+      private
+
    contains
-      procedure(run), deferred :: run
+      procedure(run2), deferred :: run
    end type BaseTestRunner
 
    abstract interface
-      subroutine run(this, aTest, context)
+
+      ! TODO - report bug to NAG.  If this is named "run" then
+      ! RubustRunner fails to compile with message about conflicting types
+
+      function run2(this, aTest, context) result(result)
          use Test_mod
          use ParallelContext_mod
+         use TestResult_mod
          import BaseTestRunner
-         
+
+         type (TestResult) :: result
          class (BaseTestRunner), intent(inout) :: this
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context
-      end subroutine run
+      end function run2
       
-!!$      subroutine startTest(this, testName)
-!!$         import BaseTestRunner
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$      end subroutine startTest
-!!$
-!!$      subroutine endTest(this, testName)
-!!$         import BaseTestRunner
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$      end subroutine endTest
-!!$
-!!$      subroutine addFailure(this, testName, exceptions)
-!!$         import BaseTestRunner
-!!$         use Exception_mod
-!!$         class (BaseTestRunner), intent(inout) :: this
-!!$         character(len=*), intent(in) :: testName
-!!$         type (Exception), intent(in) :: exceptions(:)
-!!$      end subroutine addFailure
    end interface
+
+contains
+
 
 end module BaseTestRunner_mod

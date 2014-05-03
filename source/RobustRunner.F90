@@ -1,9 +1,31 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: RobustRunner
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module RobustRunner_mod
    use Test_mod
    use TestCase_mod
    use BaseTestRunner_mod
+   use TestListener_mod
    use UnixProcess_mod
-   use ResultPrinter_mod
    implicit none
    private
 
@@ -14,20 +36,20 @@ module RobustRunner_mod
 
    type, extends(BaseTestRunner) :: RobustRunner
       private
-      integer :: unit
 #ifdef DEFERRED_LENGTH_CHARACTER
       character(len=:), allocatable :: remoteRunCommand
 #else
       character(len=MAX_LENGTH_COMMAND) :: remoteRunCommand
 #endif
       integer :: numSkip
-      type (ResultPrinter) :: printer
+      type (ListenerPointer), allocatable :: extListeners(:)
       type (UnixProcess) :: remoteProcess
    contains
       procedure :: run
       procedure :: runWithResult
       procedure :: startTest
       procedure :: endTest
+      procedure :: endRun
       procedure :: addFailure
       procedure :: addError
       procedure :: launchRemoteRunner
@@ -36,7 +58,7 @@ module RobustRunner_mod
 
    interface RobustRunner
       module procedure newRobustRunner
-      module procedure newRobustRunner_unit
+      module procedure newRobustRunner_extListeners
    end interface RobustRunner
 
    type, extends(TestCase) :: TestCaseMonitor
@@ -51,42 +73,43 @@ module RobustRunner_mod
 contains
 
    function newRobustRunner(remoteRunCommand) result(runner)
-      use iso_fortran_env, only: OUTPUT_UNIT
       type (RobustRunner) :: runner
       character(len=*), intent(in) :: remoteRunCommand
-      
-      runner = RobustRunner(remoteRunCommand, OUTPUT_UNIT)
-   end function newRobustRunner
-
-   function newRobustRunner_unit(remoteRunCommand, unit) result(runner)
-      type (RobustRunner) :: runner
-      character(len=*), intent(in) :: remoteRunCommand
-      integer, intent(in) :: unit
       
       runner%remoteRunCommand = trim(remoteRunCommand)
+      allocate(runner%extListeners(0))
+   end function newRobustRunner
+
+   function newRobustRunner_extListeners(remoteRunCommand, extListeners) result(runner)
+!mlr- unit was a dummy e.g. from iso_fortran_env OUTPUT_UNIT
+      type (RobustRunner) :: runner
+      character(len=*), intent(in) :: remoteRunCommand
+      type(ListenerPointer), intent(in) :: extListeners(:)
+
+      allocate(runner%extListeners(size(extListeners)), source=extListeners)
+      runner%remoteRunCommand = trim(remoteRunCommand)
       runner%numSkip = 0
-      runner%printer = newResultPrinter(unit)
-   end function newRobustRunner_unit
+   end function newRobustRunner_extListeners
 
    subroutine runMethod(this)
       class (TestCaseMonitor), intent(inout) :: this
    end subroutine runMethod
 
-   subroutine run(this, aTest, context)
+   function run(this, aTest, context) result(result)
       use Test_mod
       use TestSuite_mod
       use TestResult_mod
       use ParallelContext_mod
+
+      type (TestResult) :: result
       class (RobustRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestResult) :: result
-
       result = this%createTestResult()
       call this%runWithResult(aTest, context, result)
 
-   end subroutine run
+   end function run
 
    subroutine runWithResult(this, aTest, context, result)
       use Test_mod
@@ -104,11 +127,12 @@ contains
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
-      real :: runTime
 
       call system_clock(clockStart)
 
-      call result%addListener(this%printer)
+      do i=1,size(this%extListeners)
+         call result%addListener(this%extListeners(i)%pListener)
+      end do
       call result%addListener( this ) ! - monitoring
 
       select type (aTest)
@@ -125,6 +149,8 @@ contains
          stop
       end select
 
+! mlr q: set up named pipes or units to handle comm between remote processes
+! mlr q: and the root... being done at ukmet?
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
@@ -134,10 +160,14 @@ contains
       end do
 
       call system_clock(clockStop, clockRate)
-      runTime = real(clockStop - clockStart) / clockRate
 
+      call result%addRunTime(real(clockStop - clockStart) / clockRate)
+
+      ! Maybe push this call up into parent, i.e. loop over all of the listeners there...
       if (context%isRootProcess())  then
-         call this%printer%print(result, runTime)
+         do i=1,size(this%extListeners)
+            call this%extListeners(i)%pListener%endRun(result)
+         end do
       end if
          
    end subroutine runWithResult
@@ -205,6 +235,12 @@ contains
       character(len=*), intent(in) :: testName
    end subroutine endTest
 
+   subroutine endRun(this, result)
+     use AbstractTestResult_mod
+     class (RobustRunner), intent(inout) :: this
+     class (AbstractTestResult), intent(in) :: result
+   end subroutine endRun
+
    subroutine addFailure(this, testName, exceptions)
       use Exception_mod
       class (RobustRunner), intent(inout) :: this
@@ -225,6 +261,7 @@ contains
       use TestResult_mod
       class (RobustRunner), intent(inout) :: this
       type (TestResult) :: tstResult
+
       tstResult = newTestResult()
     end function createTestResult
 

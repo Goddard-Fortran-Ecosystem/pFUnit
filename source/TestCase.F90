@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: TestCase
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 ! Serial TestCase 
 module TestCase_mod
    use SurrogateTestCase_mod
@@ -41,19 +63,12 @@ module TestCase_mod
       procedure :: setUp
       procedure :: tearDown
       procedure :: getSurrogate
-      procedure(runMethod), deferred :: runMethod
+      procedure :: runMethod
    end type TestCase
 
    type TestCaseReference
       class (TestCase), allocatable :: test
    end type TestCaseReference
-
-   abstract interface
-      recursive subroutine runMethod(this)
-         import TestCase
-         class (TestCase), intent(inout) :: this
-      end subroutine runMethod
-   end interface
 
 contains
 
@@ -150,5 +165,11 @@ contains
       class (TestCase), target :: this
       this%surrogate%tCase => this
    end subroutine setSurrogate
+
+   recursive subroutine runMethod(this)
+      use Exception_mod, only: throw
+      class (TestCase), intent(inout) :: this
+      call throw('TestCase::runMethod() must be overridden.')
+   end subroutine runMethod
 
 end module TestCase_mod

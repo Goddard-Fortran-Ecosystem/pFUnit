@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: PrivateException
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module PrivateException_mod
    use SourceLocation_mod
    implicit none
@@ -37,9 +59,9 @@ module PrivateException_mod
       
       procedure :: getNumExceptions
 
-      procedure :: catchAny
-      procedure :: gather
       procedure :: catch_any
+      procedure :: catchNext
+      procedure :: gather
       procedure :: catch_message
       generic :: catch => catch_any
       generic :: catch => catch_message
@@ -142,7 +164,7 @@ contains
 
    end subroutine throwException
 
-   function catchAny(this, preserve) result(anException)
+   function catchNext(this, preserve) result(anException)
       class (ExceptionList), intent(inOut) :: this
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
@@ -153,7 +175,7 @@ contains
          anException = NULL_EXCEPTION
       end if
 
-   end function catchAny
+   end function catchNext
 
    subroutine gather(this, context)
       use ParallelContext_mod
@@ -162,7 +184,7 @@ contains
 
       type (ExceptionList) :: list
       integer :: globalExceptionCount
-      character(len=MAXLEN_MESSAGE) :: msg
+!      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
       globalExceptionCount = context%sum(size(this%exceptions))
@@ -325,7 +347,7 @@ module Exception_mod
    public :: getNumExceptions
    public :: throw
    public :: gatherExceptions
-   public :: catchAny
+   public :: catchNext
    public :: catch
    public :: getExceptions
    public :: noExceptions
@@ -374,26 +396,17 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
+      !$omp critical
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
       call globalExceptionList%throw(message, location)
+      !$omp end critical
+
    end subroutine throw_message
 
-   subroutine throw_messageWithLocation(message, location)
-      use SourceLocation_mod
-      character(len=*), intent(in) :: message
-      type (SourceLocation), intent(in) :: location
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      call globalExceptionList%throw(message, location)
-   end subroutine throw_messageWithLocation
-
-   function catchAny(preserve) result(anException)
+   function catchNext(preserve) result(anException)
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
 
@@ -401,8 +414,8 @@ contains
          call initializeGlobalExceptionList()
       end if
 
-      anException = globalExceptionList%catchAny(preserve)
-   end function catchAny
+      anException = globalExceptionList%catchNext(preserve)
+   end function catchNext
 
    logical function catch_any(preserve)
       logical, optional, intent(in) :: preserve
@@ -444,13 +457,13 @@ contains
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
-   logical function anyExceptions_local()
+   logical function anyExceptions_local() result(anyExceptions)
 
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
-      anyExceptions_local = globalExceptionList%anyExceptions()
+      anyExceptions = globalExceptionList%anyExceptions()
    end function anyExceptions_local
 
    logical function anyErrors()

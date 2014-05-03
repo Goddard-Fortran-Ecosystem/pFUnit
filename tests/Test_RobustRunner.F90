@@ -24,23 +24,29 @@ contains
    subroutine testRunVariety()
       use iso_fortran_env
       use robustTestSuite_mod, only: remoteSuite => suite
-      use SerialContext_mod, only: SerialContext
+      use SerialContext_mod, only: THE_SERIAL_CONTEXT
       use TestSuite_mod
       use TestResult_mod
       use Assert_mod
+      use TestListener_mod
+      use ResultPrinter_mod
 
       type (RobustRunner) :: runner
-      type (SerialContext) :: context
       type (TestSuite) :: suite
       type (TestResult) :: result
+      !mlr -problem on intel 13- type (ListenerPointer) :: listeners1(1)
+      type (ListenerPointer), allocatable :: listeners1(:)
+      ! class (ListenerPointer), allocatable :: listeners1(:)
 
       integer :: unit
 
+      allocate(listeners1(1))
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      runner = RobustRunner('./tests/remote.x',unit)
+      allocate(listeners1(1)%pListener, source=newResultPrinter(unit))
+      runner = RobustRunner('./tests/remote.x', listeners1)
       result = newTestResult()
       suite = remoteSuite()
-      call runner%runWithResult(suite, context, result)
+      call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
       call assertEqual(4, result%runCount(),'runCount()')
       call assertEqual(1, result%failureCount(), 'failureCount()')

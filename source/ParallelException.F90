@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: ParallelException
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module ParallelException_mod
    use ParallelContext_mod
    use Exception_mod
@@ -18,16 +40,12 @@ module ParallelException_mod
 
 contains
 
-   logical function anyExceptions_context(context) result(anyExcepts)
+   logical function anyExceptions_context(context) result(anyExcept)
       class (ParallelContext) :: context
 
-      logical, allocatable :: anyTable(:)
+!      logical, allocatable :: anyTable(:)
 
-      allocate(anyTable(context%getNumProcesses()))
-
-      call context%gather([anyExceptions()], anyTable)
-      anyExcepts = any(anyTable)
-
+      anyExcept = context%allReduce(anyExceptions())
    end function anyExceptions_context
 
    integer function getNumExceptions_context(context) result(numExceptions)
@@ -46,7 +64,7 @@ contains
 
       type (ExceptionList) :: globalList
       type (ExceptionList) :: localList
-      character(len=MAXLEN_MESSAGE) :: msg
+!      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
       integer :: totalExceptions, n
@@ -59,7 +77,7 @@ contains
 
          n = getNumExceptions()
          do i = 1, n
-            localList%exceptions(i) = catchAny() ! drains singleton exception list on all PEs
+            localList%exceptions(i) = catchNext() ! drains singleton exception list on all PEs
             call context%labelProcess(localList%exceptions(i)%message)
          end do
 

@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: SerialContext
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module SerialContext_mod
    use ParallelContext_mod
    implicit none
@@ -8,7 +30,6 @@ module SerialContext_mod
    public :: THE_SERIAL_CONTEXT
 
    type, extends(ParallelContext) :: SerialContext
-      integer :: placeholder
    contains
       procedure :: getNumProcesses
       procedure :: processRank
@@ -16,17 +37,17 @@ module SerialContext_mod
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
+      procedure :: allReduce
 !TODO - NAG does not yet support FINAL keyword
 !!$$      final :: clean
    end type SerialContext
 
-   type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext(1)
+   type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext()
 
 contains
 
    function newSerialContext() result(context)
       type (SerialContext) :: context
-      context%placeholder = 1
    end function newSerialContext
 
    integer function getNumProcesses(this)
@@ -73,6 +94,12 @@ contains
 
       list = values
    end subroutine gatherLogical
+
+   logical function allReduce(this, q) result(anyQ)
+      class (SerialContext), intent(in) :: this
+      logical, intent(in) :: q
+      anyQ = q
+   end function allReduce
 
    subroutine clean(this)
       type (SerialContext), intent(inout) :: this

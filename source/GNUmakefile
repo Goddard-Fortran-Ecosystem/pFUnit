@@ -7,7 +7,7 @@ all: dependencies.inc libpfunit$(LIB_EXT)
 GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 
 $(GENERATED_CODE):
-	./GenerateRealArrayNewSignature.py
+	./GenerateAssertsOnArrays.py
 
 testCodeMacs:
 	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
@@ -18,13 +18,14 @@ testCodeMacs:
 clean_generated_code:
 	rm -f $(GENERATED_CODE)
 
-distclean: clean_generated_code
+distclean: local-build1-distclean
+
+local-build1-distclean: clean_generated_code
 
 dependencies.inc: $(GENERATED_CODE)
 	./MakeDependenciesInclude
 
-EXCLUDE = BasicElements.F90
-ifeq ($(UNAME),Windows)
+ifneq ($(BUILDROBUST),YES)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90
 endif
 SRCS = $(filter-out $(EXCLUDE),$(wildcard *.F90))

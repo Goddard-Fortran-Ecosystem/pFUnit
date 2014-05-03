@@ -3,6 +3,7 @@ module Test_MpiTestCase_mod
    use Test_mod
    use TestCase_mod
    use MpiTestCase_mod
+   use MpiTestParameter_mod
    implicit none
    private
 
@@ -45,9 +46,10 @@ contains
       procedure(method) :: userMethod
       integer, intent(in) :: numProcesses
 
+
       call this%setName(name)
       this%testMethod => userMethod
-      call this%setNumProcessesRequested(numProcesses)
+      call this%setTestParameter(MpiTestParameter(numProcesses))
 
     end function newTest_MpiTestCase
 
@@ -188,7 +190,7 @@ contains
       type (TestFailure) :: failure
       integer, parameter :: TOO_MANY_PES = 5
       integer, parameter :: AVAILABLE_PES = 4
-      integer :: i, process
+
       character(len=100) :: expectedMessage
       character(len=20) :: suffix
 
@@ -202,17 +204,14 @@ contains
 
          failure = reslt%getIthFailure(1)
 
-         do i = 1, AVAILABLE_PES
-            call assertEqual('brokenOnProcess2[npes=5]', failure%testName)
-            if (anyExceptions()) return
-            expectedMessage = "Insufficient processes to run this test."
-            process = i - 1 ! C numbering convention in MPI process rank
-            suffix=''
-            call this%context%labelProcess(suffix)
-            write(suffix,'(" (PE=",i0,")")') i-1
-            call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(i)%getMessage())
-            if (anyExceptions()) return
-         end do
+         call assertEqual('brokenOnProcess2[npes=5]', failure%testName)
+         if (anyExceptions()) return
+         expectedMessage = "Insufficient processes to run this test."
+         suffix=''
+         call this%context%labelProcess(suffix)
+         write(suffix,'(" (PE=",i0,")")') 0
+         call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(1)%getMessage())
+         if (anyExceptions()) return
 
       end if
 

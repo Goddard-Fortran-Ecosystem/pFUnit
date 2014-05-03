@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: MpiContext
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module MpiContext_mod
    use Assert_mod
    use ParallelContext_mod
@@ -26,6 +48,7 @@ module MpiContext_mod
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
+      procedure :: allReduce
       procedure :: labelProcess
 
 !!$      final :: clean
@@ -282,6 +305,18 @@ contains
       message = trim(message) // trim(suffix)
 
    end subroutine labelProcess
+
+   logical function allReduce(this, q) result(anyQ)
+      class (MpiContext), intent(in) :: this
+      logical, intent(in) :: q
+
+      integer :: ier
+
+      call MPI_Allreduce(q, anyQ, 1, MPI_LOGICAL, MPI_LOR, &
+           & this%mpiCommunicator, ier)
+
+   end function allReduce
+
 
    subroutine clean(this)
       type (MpiContext), intent(inout) :: this

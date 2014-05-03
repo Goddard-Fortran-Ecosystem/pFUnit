@@ -1,6 +1,28 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: ResultPrinter
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module ResultPrinter_mod
    use Exception_mod
-   use TestListener_mod
+   use TestListener_mod, only : TestListener
    implicit none
    private
 
@@ -15,6 +37,7 @@ module ResultPrinter_mod
       procedure :: addError
       procedure :: startTest
       procedure :: endTest
+      procedure :: endRun
       procedure :: print
       procedure :: printHeader
       procedure :: printFailures
@@ -90,15 +113,23 @@ contains
 
    end subroutine endTest
 
-   subroutine print(this, result, runTime)
-      use TestResult_mod
-      class (ResultPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
-      real, intent(in) :: runTime
+   subroutine endRun(this, result)
+      use AbstractTestResult_mod, only : AbstractTestResult
+      class (ResultPrinter), intent(inout) :: this
+      class (AbstractTestResult), intent(in) :: result
 
-      call this%printHeader(runTime)
-      call this%printFailures('Error', result%errors)
-      call this%printFailures('Failure', result%failures)
+      call this%print(result)
+
+    end subroutine endRun
+
+   subroutine print(this, result)
+      use AbstractTestResult_mod, only : AbstractTestResult
+      class (ResultPrinter), intent(in) :: this
+      class (AbstractTestResult), intent(in) :: result
+
+      call this%printHeader(result%getRunTime())
+      call this%printFailures('Error', result%getErrors())
+      call this%printFailures('Failure', result%getFailures())
       call this%printFooter(result)
 
    end subroutine print
@@ -114,7 +145,7 @@ contains
    end subroutine printHeader
 
    subroutine printFailures(this, label, failures)
-      use TestResult_mod
+!?      u TestResult_mod
       use TestFailure_mod
       use SourceLocation_mod
       class (ResultPrinter), intent(in) :: this
@@ -165,9 +196,9 @@ contains
    end subroutine printFailures
 
    subroutine printFooter(this, result)
-      use TestResult_mod
+      use AbstractTestResult_mod
       class (ResultPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
+      class (AbstractTestResult), intent(in) :: result
 
       if (result%wasSuccessful()) then
          write(this%unit,*)"OK"

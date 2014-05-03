@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: TestMethod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module TestMethod_mod
    use TestCase_mod, only: TestCase
    implicit none
@@ -25,6 +47,12 @@ module TestMethod_mod
       module procedure TestMethod_
       module procedure TestMethod_setUpTearDown
    end interface newTestMethod
+
+! TODO: ifort 14.0.1 still has indirect issues with the following overload
+!!$   interface TestMethod
+!!$      module procedure TestMethod_
+!!$      module procedure TestMethod_setUpTearDown
+!!$   end interface TestMethod
 
 contains
 

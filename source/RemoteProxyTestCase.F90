@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: RemoteProxyTestCase
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module RemoteProxyTestCase_mod
    use UnixProcess_mod
    use Exception_mod
@@ -47,10 +69,10 @@ contains
 
       character(len=80) :: timeCommand
       type (UnixProcess) :: timerProcess
-      integer :: numExceptions, iException ,i
+      integer :: numExceptions, iException
       integer :: lineNumber
       integer :: length
-      character(len=100) :: ignore
+!      character(len=100) :: ignore
 
       call this%setStartTime()
 
@@ -85,6 +107,7 @@ contains
       ! Poll for exceptions or test finished
       do
          ! important to check status _before_ getLine()
+! MLR Any guarantees on line?
          line = this%process%getLine()
          if (len(line) == 0) then
             if (this%process%isActive()) then
@@ -106,11 +129,15 @@ contains
 
          else ! have some output to process
 
+! MLR Need to check on length of line.
+
             if (line == ('ended: ' // trim(this%getName()))) then
 
                call timerProcess%terminate()
                return
 
+! 2014-0211-1843-18-UTC MLR Huh?  Hard coding? Getting two errors here... Both Intel & GNU.
+! It turns out that printing from processes can screw up the communications that go on here.
             elseif (line(1:22) == 'failed: numExceptions=') then
 
                read(line(23:),*) numExceptions

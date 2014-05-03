@@ -1,4 +1,28 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: TestResult
+!
+!> @brief
+!! <BriefDescription>
+!! Note: A possible extension point for user-specialized TestResults.
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module TestResult_mod
+   use AbstractTestResult_mod
    use SurrogateTestCase_mod
    use TestListener_mod
    use TestFailure_mod
@@ -8,38 +32,51 @@ module TestResult_mod
    public :: TestResult
    public :: newTestResult
 
-   type :: TestResult
-      integer :: numFailed
-      integer :: numErrors
-      integer :: numRun
+   type, extends(AbstractTestResult) :: TestResult
+      private
+      integer :: numFailed = 0
+      integer :: numErrors = 0
+      integer :: numRun = 0
+      integer :: numSuccesses
+      real    :: runTime
       type (ListenerPointer), allocatable :: listeners(:)
       type (TestFailure), allocatable :: failures(:)
       type (TestFailure), allocatable :: errors(:)
+      type (TestFailure), allocatable :: successes(:)
    contains
       procedure :: addFailure
       procedure :: addError
+      procedure :: addSuccess
+      procedure :: zeroRunTime
+      procedure :: addRunTime
+      procedure :: getRunTime
       procedure :: failureCount
       procedure :: errorCount
-      procedure :: getIthFailure
       procedure :: startTest
       procedure :: endTest
       procedure :: runCount
       procedure :: run
       procedure :: addListener
       procedure :: wasSuccessful
+      procedure :: getSuccesses
+      procedure :: getErrors
+      procedure :: getFailures
+      procedure :: getIthFailure
    end type TestResult
 
 contains
 
    function newTestResult()
-      type (TestResult), pointer :: newTestResult
-      allocate(newTestResult)
+      type (TestResult) :: newTestResult
       allocate(newTestResult%listeners(0))
       allocate(newTestResult%failures(0))
       allocate(newTestResult%errors(0))
+      allocate(newTestResult%successes(0))
       newTestResult%numFailed = 0
       newTestResult%numErrors = 0
       newTestResult%numRun = 0
+      newTestResult%numSuccesses = 0
+      newTestResult%runTime = 0
    end function newTestResult
 
    subroutine addFailure(this, aTest, exceptions)
@@ -94,6 +131,30 @@ contains
 
    end subroutine addError
 
+   subroutine addSuccess(this, aTest)
+      use Exception_mod, only: Exception
+      use TestFailure_mod
+      class (TestResult), intent(inout) :: this
+      class (SurrogateTestCase), intent(in) :: aTest
+
+!      integer :: i, n
+      integer :: n
+      type (TestFailure), allocatable :: tmp(:)
+      type (Exception) :: noExceptions(0)
+
+      n = this%numSuccesses
+      allocate(tmp(n))
+      tmp(1:n) = this%successes(1:n)
+      deallocate(this%successes)
+      allocate(this%successes(n+1))
+      this%successes(1:n) = tmp
+      deallocate(tmp)
+      this%successes(n+1) = TestFailure(aTest%getName(), noExceptions)
+
+      this%numSuccesses = n + 1
+
+   end subroutine addSuccess
+
    integer function failureCount(this)
       class (TestResult), intent(in) :: this
       failureCount = this%numFailed
@@ -140,7 +201,7 @@ contains
       class (SurrogateTestCase) :: test
       class (ParallelContext), intent(in) :: context
 
-      type (Exception) :: anException
+!      type (Exception) :: anException
 
       if (context%isRootProcess()) call this%startTest(test)
 
@@ -151,6 +212,8 @@ contains
             call this%addError(test, getExceptions())
          elseif (anyExceptions()) then
             call this%addFailure(test, getExceptions())
+         else
+            call this%addSuccess(test)
          end if
       end if
 
@@ -173,16 +236,16 @@ contains
 
       subroutine extend(listeners)
          type (ListenerPointer), allocatable, intent(inout) :: listeners(:)
-         type (ListenerPointer) :: temp(size(listeners))
+         type (ListenerPointer), allocatable :: temp(:)
          integer :: n
 
-         temp = listeners
-
-         deallocate(listeners)
          n = size(listeners)
-         allocate(listeners(n+1))
+         temp = listeners
+         deallocate(listeners)
 
+         allocate(listeners(n+1))
          listeners(:n) = temp
+         deallocate(temp)
 
       end subroutine extend
 
@@ -201,5 +264,40 @@ contains
       class (TestResult), intent(in) :: this
       wasSuccessful = (this%failureCount() ==  0) .and. (this%errorCount() == 0)
    end function wasSuccessful
+
+   function getSuccesses(this) result(successes)
+     class (TestResult), intent(in) :: this
+     type (TestFailure), allocatable :: successes(:)
+     successes = this%successes
+   end function getSuccesses
+
+   function getErrors(this) result(errors)
+      class (TestResult), intent(in) :: this
+      type (TestFailure), allocatable :: errors(:)
+      errors = this%errors
+   end function getErrors
+
+   function getFailures(this) result(failures)
+      class (TestResult), intent(in) :: this
+      type (TestFailure), allocatable :: failures(:)
+      failures = this%failures
+   end function getFailures
+
+   subroutine zeroRunTime(this)
+     class (TestResult), intent(inout) :: this
+     this%runTime = 0
+   end subroutine zeroRunTime
+
+   subroutine addRunTime(this, time)
+     class (TestResult), intent(inout) :: this
+     real, intent(in) :: time
+     this%runTime = this%runTime + time
+   end subroutine addRunTime
+
+   function getRunTime(this) result(duration)
+     class (TestResult), intent(in) :: this
+     real :: duration
+     duration = this%runTime
+   end function getRunTime
 
 end module TestResult_mod

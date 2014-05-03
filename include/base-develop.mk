@@ -10,9 +10,9 @@ include $(INCLUDE_DIR)/extensions.mk
 # Include the compiler-specific options.
 include $(INCLUDE_DIR)/$(COMPILER).mk
 
-F90FLAGS += $I$(INCLUDE_DIR)
+FFLAGS += $I$(INCLUDE_DIR)
 
-ifneq ($(MPI),YES)
+ifneq ($(USEMPI),YES)
   FC=$(F90)
 else
   FC=$(MPIF90)
@@ -20,18 +20,23 @@ endif
 
 ifeq ($(F90_HAS_CPP),YES)
 %$(OBJ_EXT): %.F90
-	$(FC) -c $(F90FLAGS) $(CPPFLAGS) -o $@ $<
+	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
 else
 %$(OBJ_EXT):%.F90
 	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(F90FLAGS)  $*_cpp.F90 -o $@
+	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
 	$(RM) $*_cpp.F90
 endif
 
 .PHONY: clean distclean
 
-clean:
-	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+clean: local-base0-clean
 
-distclean: clean
+local-base0-clean:
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	-$(RM) -r *.dSYM
+
+distclean: local-base0-distclean
+
+local-base0-distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc

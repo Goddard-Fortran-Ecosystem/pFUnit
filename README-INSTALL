@@ -1,7 +1,7 @@
 
-PFUNIT INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 2.1.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2013-0830 M. Rilee mike@rilee.net
+VERSION 2014-0206 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -28,13 +28,22 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.1., IBM's XLF)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
 The Message Passing Interface (MPI)
+OPENMP
 GNU Make
 Python
 
-The system is routinely tested with GNU, Intel, and NAG fortran
-compilers and OpenMPI, as well as nightly regression testing.
+A CMake build process is also available.
+
+Doxygen is used to generate documentation (see http://www.doxygen.org).
+
+The system is routinely undergoes regression testing, including with GNU,
+Intel, and NAG fortran compilers and OpenMPI.
+
+pFUnit makes extensive use of leading edge Fortran language features,
+which are generally best supported with by the latest compiler
+versions.  The capacity to support older compilers is limited.
 
 2. OBTAINING PFUNIT
 
@@ -73,6 +82,8 @@ or contact the pFUnit team.
 In the top level of the pFUnit distribution you will see the following
 files.
 
+CMakeLists.txt - Initial support for cmake-based builds.
+
 COPYRIGHT - Contains information pertaining to the use and
 distribution of pFUnit.
 
@@ -84,14 +95,20 @@ pFUnit.
 
 bin - Executables used to construct and perform unit tests.
 
+documentation - Provides information about the pFUnit.
+
 include - Files to be included into makefiles or source, including use
 code.
+
+LICENSE - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT, also known as pFUnit.
 
 README-INSTALL - This file.
 
 source - Source code and scripts of the pFUnit library and framework.
 
 tests - Source code for unit testing pFUnit itself.
+
+tools - Tools used to help develop, build, and install pFUnit.
 
 4. CONFIGURATION
 
@@ -121,10 +138,20 @@ MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
 
+DOXYGEN - To generate documentation, set DOXYGEN to the desired
+executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
+names from Fortran source code by currently converting all to
+lowercase.  It does this to get HTML links correct for references in
+the source code that also do not respect the CamelCase convention.
+The Fortran standard specifies case insensitivity.  Doxygen 1.7.x
+seems to better respect CamelCase.
+$ #.e.g.
+$ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+
 5.1 BUILDING PFUNIT FOR TESTING SERIAL CODES (Non-MPI)
 
 1. Change to the directory into which pFUnit has been placed.
-2. Set the environment variables (in bash):
+2. Set these environment variables (bash example):
 $ export F90=gfortran-mp-4.8
 $ export F90_VENDOR=GNU
 3. To build pFUnit for unit testing of serial codes, execute make.
@@ -136,7 +163,7 @@ Re-execute "make tests" to check again.
 4. At this point the pFUnit object library is in the source directory,
 along with a large number of Fortran module files.
 
-5.2 BUILDING THE PFUNIT FOR TESTING PARALLEL CODES (MPI)
+5.2 BUILDING PFUNIT FOR TESTING PARALLEL CODES (MPI)
 
 To build pFUnit for unit testing MPI-based codes, be sure that the
 environment is properly set up for the MPI implementation you are
@@ -146,7 +173,7 @@ batch job under PBS. The steps for building pFUnit start out the same
 as for the serial case above, but add MPI=YES to the environment to
 switch on MPI support.  The MPI-based unit tests for pFUnit itself
 will run automatically.  Again, occasionally a spurious (runtime)
-error may appear on the first execution.  
+error may appear on the first execution.
 
 3. Execute make as follows.
 $ make tests MPI=YES 
@@ -156,7 +183,20 @@ directory, along with a large number of Fortran module files.
 
 Also, one may get some harmless "no symbols" warnings when the pFUnit library is constructed.
 
-5.3 CLEANING
+5.3 BUILDING PFUNIT FOR TESTING PARALLEL CODES (OPENMP)
+
+Initial (limited) support for OPENMP has been implemented.  At this
+writing, a basic functionality is available.
+
+The process for building pFUnit for testing OPENMP-based codes is
+similar to that for other paradigms.
+
+3. To compile for OPENMP support execute make as follows.
+$ make tests OPENMP=YES 
+
+4. At this point the OPENMP-enabled pFUnit is ready to be installed.
+
+5.4 CLEANING
 
 To clean the pFUnit build directory for the space or to rebuild there
 are two options.
@@ -169,6 +209,50 @@ $ make distclean
 
 3. Some directories support a "make src_clean" to remove intermediate
 products in subdirectories.
+
+5.5 BUILDING THE DOCUMENTATION
+
+A start at documentation for pFUnit is in the documentation directory.
+Doxygen is our primary documentation tool.  To make the documentation,
+which will be generated in the documentation directory, please invoke
+the following from the top level of the PFUNIT distribution.
+
+$ make documentation
+
+Or to make a reference manual:
+
+$ make documentation/pFUnit2-ReferenceManual.pdf
+
+To select a specific version of Doxygen, please set the DOXYGEN
+environment variable as in the Configuration section above.  You 
+may wish to do this if your code uses CamelCase names as current
+versions of Doxygen (1.8.5) do not respect this convention for
+Fortran.
+
+5.6 BUILDING PFUNIT USING CMAKE
+
+Initial support for CMAKE has been implemented.  At this
+writing, a basic functionality is available.
+
+3. The process for building pFUnit using cmake is as follows.  In the
+top directory of the distribution make a new directory to support the
+build, then change to that directory and run cmake (pointing back to
+the source) to generate the required makefiles.
+
+$ mkdir build
+$ cd build
+$ # e.g. cmake -DMPI=YES -DOPENMP=NO -DINSTALL_PATH=<A path> <path to source>
+$ cmake -DMPI=NO ..
+$ make tests
+
+One may also set the environment variable PFUNIT instead of setting
+INSTALL_PATH on the cmake command line as given above.
+
+4. If the build is successful, then at this point make install should work.
+
+6. INSTALLATION
+
+Installations 6.1-6.5 are based on GNU make and the project makefiles.
 
 6.1 INSTALLATION - SERIAL
 
@@ -190,7 +274,7 @@ expected failures.
 
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
-$ pushd Examples
+$ cd Examples
 $ ./buildIt
 
 6.2 INSTALLATION - MPI
@@ -208,13 +292,19 @@ $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-parallel
 $ # The variable MPIF90 must be set to the appropriate build script.
 $ export MPIF90=mpif90
-$ cd Examples/MPI_Halo/Semi-Automatic
+$ cd Examples/MPI_Halo/
 $ make
 
 This will compile and run a set of parallel examples that includes
 intentional failures.
 
-6.3 INSTALLATION - DEFAULT DIRECTORY
+6.3 INSTALLATION - OPENMP
+
+At this time the OPENMP version of pFUnit can be installed in the same
+way as for the serial or MPI-parallel codes.  OPENMP support, tests,
+and examples are limited as of this writing.
+
+6.4 INSTALLATION - DEFAULT DIRECTORY
 
 If INSTALL_DIR is not set, "make install" will attempt to install
 pFUnit into the top build directory.  This will create directories
@@ -235,13 +325,69 @@ set, to configure pFUnit, please set the following.
 PFUNIT - set to the directory into which pFUnit was installed.
 F90_VENDOR - set to Intel, GNU, NAG, or PGI accordingly.
 
-7.2 USAGE - HELLO WORLD
+7.2 USAGE - PREPROCESSOR - HELLO WORLD
 
-TBD
+An example of how to use the preprocessor can be found in
+Examples/Simple.  The GNU makefile shows how to construct an F90 file
+from a preprocessor input file.  For example, the GNU make rule can be:
 
-7.3 USAGE - PREPROCESSOR
+# GNU makefile rule
+%.F90: %.pf
+       $(PFUNIT)/bin/pFUnitParser.py $< $@
 
-TBD
+The file testSuites.inc is included in the include/driver.F90 file
+during the build process.  To include tests, one must add the test
+suite module to testSuites.inc, as follows.
+
+! Add a test suite to the build.
+ADD_TESTS_SUITE(helloWorld_suite)
+
+A preprocessor input file contains tests and is a 
+Fortran free-format file with directives, for example:
+
+! helloWorld.pf - with a successful test...
+@test
+subroutine testHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello World!","Hello World!")
+end subroutine testHelloWorld
+
+7.3 USAGE - Compiling and Executing the Tests (SERIAL)
+
+An example of a GNU make rule for for the final step of compiling a test follows.
+
+# This step presumes "include $(PFUNIT)/include/base.mk" earlier in the makefile.
+tests.x: testSuites.inc myTests.pf
+         $(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include \
+                $(PFUNIT)/include/driver.F90 \
+                ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+
+To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+7.3.1 USAGE - Compiling and Executing the Tests (MPI PARALLEL)
+
+One invokes MPI-based parallel tests according to the MPI framework being used.  For example:
+
+$ mpirun -np 4 tests.x
+
+
+7.4 USAGE - Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+-v or -verbose                  Verbose execution.
+-d or -debug                    Provide debugging information.
+-h                              Print help message.
+-o <outputfile>                 Direct pFUnit messages to a file.
+-robust                         Use the robust runner. Runs tests as processes so failures do not halt testing.
+-skip <number of tests to skip> Use the subset runner, which runs a subset of the tests in a suite.
+
+An example from Examples/Robust:
+
+$ ./tests.x -robust
 
 8. DEVELOPMENT
 
@@ -296,16 +442,26 @@ writing, 2013-1031, serial Examples and MPI are not known to be
 supported.  Please contact us if you wish to either contribute or
 otherwise discuss this port.
 
+9.4.3 Intel Fortran Version 13:  -DINTEL_13
+
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+"-DINTEL_13" is passed to the compiler when building or using
+pFUnit. In the build process for pFUnit, this is added to the make
+variables CPPFLAGS and FPPFLAGS.
 
 10. ACKNOWLEDGMENTS
 
 Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
-Windows/CYGWIN contributions from Evan Lezar.
+Windows/CYGWIN contributions from E. Lezar.
 
-Other acknowledgments:  Sean Patrick Santos (NCAR).
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley.
 
-11. KNOWN INSTALLATIONS/VERSIONS
+11. KNOWN INSTALLATIONS/VERSIONS (git cognizant from "sourceforge.net/projects/pfunit")
+
+master - The cutting edge of pFUnit development.
+
+pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
 12. NOTES
 
@@ -321,6 +477,8 @@ Make "hello world" examples for section 7 above.
 
 14. REVISIONS TO THIS DOCUMENT
 
+2014-0131, 2014-0205. Updated. MLR
+2013-1107. Minor edits. MLR
 2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR
 2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR
 2013-0806-1345. Corrected git reference. Was using old URL.  MLR

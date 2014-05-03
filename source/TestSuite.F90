@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: TestSuite
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module TestSuite_mod
    use Test_mod
    implicit none
@@ -83,7 +105,7 @@ contains
       class (ParallelContext), intent(in) :: context
 
       integer :: i
-      
+
       do i = 1, this%getNumTests()
          call this%tests(i)%ptest%run(tstResult, context)
       end do
@@ -190,6 +212,7 @@ contains
       class (TestSuite), intent(in) :: this
       type (TestCaseReference), allocatable :: testList(:)
 
+! 2013-1202 MLR Is n used for anything?
       integer :: n
 
       allocate(testList(this%countTestCases()))
@@ -217,7 +240,7 @@ contains
                class is (TestSuite)
                   call accumulateTestCases(t, testList, n)
                class default
-                  call throw('Unsupportes Test subclass in TestSuite::getTestCases()')
+                  call throw('Unsupported Test subclass in TestSuite::getTestCases()')
                end select
              end associate
           end do

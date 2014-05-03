@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: ParallelContext
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC 
+!!
+!! @date
+!! 07 Nov 2013
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 ! Default implementation is for a serial process
 ! Subclass for MPI operations
 module ParallelContext_mod
@@ -21,6 +43,7 @@ module ParallelContext_mod
       procedure(gatherLogical), deferred :: gatherLogical
       procedure :: labelProcess
       procedure :: barrier
+      procedure(allReduceLogical), deferred :: allReduce
    end type ParallelContext
 
    abstract interface
@@ -60,6 +83,12 @@ module ParallelContext_mod
          logical, intent(in) :: values(:)
          logical, intent(out) :: list(:)
       end subroutine gatherLogical
+
+      logical function allReduceLogical(this, q) result(anyQ)
+         import ParallelContext
+         class (ParallelContext), intent(in) :: this
+         logical, intent(in) :: q
+      end function allReduceLogical
 
    end interface
 

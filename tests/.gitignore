@@ -1,17 +1,18 @@
 
-*.lib
 *.a
 *.i90
+*.lib
 *.mod
-*.obj
 *.o
 *.tmp
+*.obj
 *~
-/Test_AssertComplex_cpp.F90
-/Test_Assert_cpp.F90
-/remote.x
-/tests.x
 /*.exe
 /*.ilk
 /*.pdb
+/Test_AssertComplex_cpp.F90
+/Test_Assert_cpp.F90
 /dependencies.inc
+/dependencies.inc.save
+/remote.x
+/tests.x
