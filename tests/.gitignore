@@ -5,6 +5,7 @@
 *.mod
 *.obj
 *.o
+*.tmp
 *~
 /Test_AssertComplex_cpp.F90
 /Test_Assert_cpp.F90
