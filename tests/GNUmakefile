@@ -51,22 +51,27 @@ $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
 ifeq ($(USEMPI),YES)
 
-
+# Note that for Windows compilation, the command line should look as follows:
+# ifort /nologo /Fetests.exe *.obj
+# Here there is NO SPACE between the /Fe flag an the executable name.
+# The inclusion of a space results in the error:
+#    ifort: command line warning #10161: unrecognized source type 'tests.exe'; object file assumed
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(FFLAGS) $(LIBS) -g
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) -g
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(FFLAGS) $(LIBS) -g
 
 else
 
 $(EXE): selfTests$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
-	$(FC) $(OUTPUT_FLAG) $@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
+	$(FC) $(OUTPUT_FLAG)$@ $^ $(FFLAGS) $(LIBS) $(DEBUG_FLAGS)
 
 endif
 
-# Only include the dependencies file if we are not doing a clean.
+# Only include the dependencies file if we are not doing a clean, otherwise the
+# Files are generated, only to be deleted again.
 ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
 endif
