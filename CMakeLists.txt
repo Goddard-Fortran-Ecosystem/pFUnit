@@ -148,3 +148,6 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
 endif()
 
+# Packaging
+set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")
+include(CPack)
