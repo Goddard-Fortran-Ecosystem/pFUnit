@@ -231,6 +231,7 @@ include/configuration.mk:
 	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
 	@echo MAX_RANK 	?= $(MAX_RANK) >> include/configuration.mk
 	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
+	@echo VERSION = \"`cat VERSION`\" >> include/configuration.mk
 
 export UNAME
 export OBJ_EXT
