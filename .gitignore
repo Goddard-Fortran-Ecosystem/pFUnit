@@ -5,4 +5,5 @@
 /mpi_pFUnit.x
 /.DS_Store
 /*.patch
+build/
 include/configuration.mk
