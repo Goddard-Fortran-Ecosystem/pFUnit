@@ -39,6 +39,7 @@ local-E0-clean:
 	$(MAKE) -C $(TEST_DIR) clean
 	$(RM) -f $(EXE) *$(OBJ_EXT)
 
+export FC
 export FPPFLAGS
 export FFLAGS
 export SRC_DIR
