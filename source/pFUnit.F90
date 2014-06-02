@@ -24,6 +24,7 @@ module pFUnit_mod
    use SourceLocation_mod
    use Exception_mod
    use ParallelException_mod
+   use Expectation_mod
    use Test_mod
    use TestSuite_mod
    use TestCase_mod
@@ -105,6 +106,9 @@ module pFUnit_mod
    public :: assertIsFinite
 
    public :: throw, catchNext, catch, anyExceptions
+
+   public :: Expectation, Subject, Predicate
+   public :: wasCalled, wasNotCalled, wasCalledOnce
 
 #ifdef USE_MPI
    logical :: useMpi_
