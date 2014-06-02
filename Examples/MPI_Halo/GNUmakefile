@@ -47,6 +47,7 @@ local-E0-clean:
 	make -C $(TEST_DIR) clean
 	rm -f $(EXE) *$(OBJ_EXT)
 
+export FC
 export FPPFLAGS
 export FFLAGS
 export SRC_DIR

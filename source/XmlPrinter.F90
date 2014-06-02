@@ -85,13 +85,15 @@ contains
      use AbstractTestResult_mod, only : AbstractTestResult
      class (XmlPrinter), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
+
+     call this%print(result)
+
    end subroutine endRun
 
-   subroutine print(this, result, runTime)
-      use TestResult_mod
+   subroutine print(this, result)
+      use AbstractTestResult_mod
       class (XmlPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
-      real, intent(in) :: runTime
+      class (AbstractTestResult), intent(in) :: result
 
       call this%printHeader(result)
       call this%printSuccesses(result%getSuccesses())
@@ -102,9 +104,9 @@ contains
    end subroutine print
 
    subroutine printHeader(this, result)
-      use TestResult_mod
+      use AbstractTestResult_mod
       class (XmlPrinter), intent(in) :: this
-      type(TestResult), intent(in) :: result
+      class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a,i0,a,i0,a,i0,a)') &
            '<testsuite errors="', result%errorCount(),&
@@ -114,7 +116,6 @@ contains
    end subroutine printHeader
 
    subroutine printFailures(this, label, failures)
-      use TestResult_mod
       use TestFailure_mod
       use SourceLocation_mod
       class (XmlPrinter), intent(in) :: this
@@ -189,9 +190,9 @@ contains
    end subroutine printSuccesses
 
    subroutine printFooter(this, result)
-      use TestResult_mod
+      use AbstractTestResult_mod
       class (XmlPrinter), intent(in) :: this
-      type (TestResult), intent(in) :: result
+      class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a)') '</testsuite>'
 
