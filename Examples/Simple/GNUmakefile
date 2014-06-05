@@ -48,17 +48,18 @@ else
 endif
 
 all: $(EXE)
-ifeq ($(USEMPI),YES)
-	mpirun -np 1 ./$(EXE)
-else
-	./$(EXE)
-endif
 
-#xml ifeq ($(USEMPI),YES)
-#xml 	mpirun -np 1 ./$(EXE) -xml tests.xml
-#xml else
-#xml 	./$(EXE) -xml tests.xml
-#xml endif
+# ifeq ($(USEMPI),YES)
+# 	mpirun -np 1 ./$(EXE)
+# else
+# 	./$(EXE)
+# endif
+
+ifeq ($(USEMPI),YES)
+	mpirun -np 1 ./$(EXE) -xml tests.xml
+else
+	./$(EXE) -xml tests.xml
+endif
 
 SUT:
 	make -C $(SRC_DIR) SUT
@@ -69,13 +70,14 @@ tests: all
 $(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS) $(FPPFLAGS)
 
+distclean: clean
 
 clean: local-E0-clean
 
 local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
-	rm -f $(EXE) *$(OBJ_EXT)
+	rm -f $(EXE) *$(OBJ_EXT) tests.xml
 
 ifeq ($(UNAME),Windows)
 	export PFUNIT

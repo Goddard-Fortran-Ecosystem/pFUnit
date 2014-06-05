@@ -16,6 +16,11 @@
 !! Need to improve the handling of nested quotes.
 !
 ! REVISION HISTORY:
+! 2014 June 4 ML Rilee
+!    Added intermediate status output. Refactored prints to handle both single
+!    and arrays of Failure and Success.  Exceptions can be printed too. Quotes 
+!    are not handled well: need to consider going to "&quot;" and "&apos;".
+!    May need to separate status reports from the end-of-run summary
 !
 !-------------------------------------------------------------------------------
 module XmlPrinter_mod
@@ -81,7 +86,7 @@ contains
       character(len=*), intent(in) :: testName
       
       write(this%unit,'(a,a,a)') &
-           & "<test name='",trim(testName), "'>"
+           & "<testStatus name='",trim(testName), "'>"
 
       flush(this%unit)
 
@@ -92,7 +97,7 @@ contains
       character(len=*), intent(in) :: testName
 
       write(this%unit,'(a,a,a)') &
-           & "</test name='",trim(testName), "'>"
+           & "</testStatus name='",trim(testName), "'>"
 
       flush(this%unit)
 

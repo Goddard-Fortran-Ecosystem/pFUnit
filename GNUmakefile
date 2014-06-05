@@ -176,10 +176,10 @@ clean: local-top1-clean local-top1-cleanExamples
 local-top1-clean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
-	tools/clean Examples
 	\rm -f include/configuration.mk
 
 local-top1-cleanExamples:
+	\rm -f Examples/Simple/tests.xml
 	tools/clean Examples
 
 distclean: local-top1-distclean
