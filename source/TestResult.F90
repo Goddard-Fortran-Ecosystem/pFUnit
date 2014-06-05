@@ -194,11 +194,12 @@ contains
       runCount = this%numRun
    end function runCount
 
+! only invoked for a "real" test, not suites etc.
    recursive subroutine run(this, test, context)
       use Exception_mod
       use ParallelContext_mod
       class (TestResult), intent(inout) :: this
-      class (SurrogateTestCase) :: test
+      class (SurrogateTestCase) :: test 
       class (ParallelContext), intent(in) :: context
 
 !      type (Exception) :: anException
