@@ -90,6 +90,7 @@ contains
 
       result = this%createTestResult()
 ! Add the extListeners to the listeners list.
+
       do i=1,size(this%extListeners)
          call result%addListener(this%extListeners(i)%pListener)
       end do

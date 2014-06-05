@@ -96,8 +96,10 @@ program main
          i = i + 1
          if (i > numArguments) call commandLineArgumentError()
          xmlFileName = getCommandLineArgument(i)         
-         xmlFileUnit = newunit()
-         open(unit=xmlFileUnit, file=xmlFileName, iostat=iostat)
+!         xmlFileUnit = newunit()
+!         open(unit=xmlFileUnit, file=xmlFileName,  form='formatted', &
+         open(newUnit=xmlFileUnit, file=xmlFileName,  form='formatted', &
+              & status='unknown', access='sequential', iostat=iostat)
          if(iostat /= 0) then
             write(*,*) 'Could not open XML file ', xmlFileName, &
                  ', error: ', iostat
@@ -168,12 +170,15 @@ program main
    end if
 
    call finalize(result%wasSuccessful())
-   stop
+!?   stop
 
-   inquire(unit=xmlFileUnit, opened=xmlFileOpened)
-   if(printXmlFile .and. xmlFileOpened) then
-      close(xmlFileUnit)
+   if(printXmlFile)then
+      inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+      if(xmlFileOpened) then
+         close(xmlFileUnit)
+      end if
    end if
+   stop
 
 contains
 

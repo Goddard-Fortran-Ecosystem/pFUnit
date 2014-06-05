@@ -54,6 +54,12 @@ else
 	./$(EXE)
 endif
 
+#xml ifeq ($(USEMPI),YES)
+#xml 	mpirun -np 1 ./$(EXE) -xml tests.xml
+#xml else
+#xml 	./$(EXE) -xml tests.xml
+#xml endif
+
 SUT:
 	make -C $(SRC_DIR) SUT
 	make -C $(TEST_DIR) tests
