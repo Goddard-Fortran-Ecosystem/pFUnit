@@ -36,6 +36,8 @@ ifeq ($(UNAME),Windows)
 	endif
 endif
 
+# The following may be redundant since FC should already be
+# appropriately set in include/base.mk.
 ifeq ($(USEMPI),YES)
    FC=mpif90
 endif
@@ -83,6 +85,7 @@ ifeq ($(UNAME),Windows)
 	export PFUNIT
 endif
 
+export FC
 export FPPFLAGS
 export FFLAGS
 export SRC_DIR
@@ -90,3 +93,4 @@ export TEST_DIR
 export OBJ_EXT
 export LIB_EXT
 export EXE_EXT
+
