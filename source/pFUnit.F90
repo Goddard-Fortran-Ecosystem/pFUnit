@@ -45,7 +45,7 @@ module pFUnit_mod
    use RobustRunner_mod
 #endif
    use Assert_mod
-   use AssertReal_mod
+!  AssertReal mod
    use ParallelContext_mod
    use SerialContext_mod
 #ifdef USE_MPI
@@ -91,6 +91,7 @@ module pFUnit_mod
    public :: MpiTestMethod, newMpiTestMethod
 #endif
 
+   public :: assertFail
    public :: assertTrue, assertFalse
    public :: assertEqual
    public :: assertAny

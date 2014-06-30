@@ -1,5 +1,7 @@
 #!/bin/bash
 
+UNAME=`uname`
+
 opDir=
 
 if [ "$#" -eq 0 ];then
@@ -11,10 +13,23 @@ fi
 echo pfunit/tools/clean:  Removing files ending in ".([oax]|mod|i90|dSYM)".
 
 pushd ${opDir}
-for i in `find -E . -regex '.*\.([oax]|mod|i90)$'`; do
-   rm $i
-done
-for i in `find -E . -regex '.*\.(dSYM)$'`; do
-   \rm -rf $i
-done
+if [[ ${UNAME} =~ (Darwin) ]]; then
+   for i in `find -E . -regex '.*\.([oax]|mod|i90)$'`; do
+      rm $i
+   done
+   for i in `find -E . -regex '.*\.(dSYM)$'`; do
+      \rm -rf $i
+   done
+else if [[ ${UNAME} =~ (Linux) ]]; then
+   for i in `find . -regextype posix-extended -regex '.*\.([oax]|mod|i90)$'`; do
+      rm $i
+   done
+   for i in `find . -regextype posix-extended -regex '.*\.(dSYM)$'`; do
+      \rm -rf $i
+   done
+else
+   echo \"tools/clean\": Not sure how to clean on UNAME=\"${UNAME}\". Exiting...
+fi; fi
+
+
 popd

@@ -36,6 +36,8 @@ ifeq ($(UNAME),Windows)
 	endif
 endif
 
+# The following may be redundant since FC should already be
+# appropriately set in include/base.mk.
 ifeq ($(USEMPI),YES)
    FC=mpif90
 endif
@@ -48,10 +50,17 @@ else
 endif
 
 all: $(EXE)
+
+# ifeq ($(USEMPI),YES)
+# 	mpirun -np 1 ./$(EXE)
+# else
+# 	./$(EXE)
+# endif
+
 ifeq ($(USEMPI),YES)
-	mpirun -np 1 ./$(EXE)
+	mpirun -np 1 ./$(EXE) -xml tests.xml
 else
-	./$(EXE)
+	./$(EXE) -xml tests.xml
 endif
 
 SUT:
@@ -63,18 +72,20 @@ tests: all
 $(EXE): testSuites.inc myTests.pf add.F90 addComplex.F90 SUT
 	$(FC) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include -Itests $(PFUNIT)/include/driver.F90 $(TEST_DIR)/*$(OBJ_EXT) $(SRC_DIR)/*$(OBJ_EXT) $(LIBS) $(FFLAGS) $(FPPFLAGS)
 
+distclean: clean
 
 clean: local-E0-clean
 
 local-E0-clean:
 	make -C $(SRC_DIR) clean
 	make -C $(TEST_DIR) clean
-	rm -f $(EXE) *$(OBJ_EXT)
+	rm -f $(EXE) *$(OBJ_EXT) tests.xml
 
 ifeq ($(UNAME),Windows)
 	export PFUNIT
 endif
 
+export FC
 export FPPFLAGS
 export FFLAGS
 export SRC_DIR
@@ -82,3 +93,4 @@ export TEST_DIR
 export OBJ_EXT
 export LIB_EXT
 export EXE_EXT
+

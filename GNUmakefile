@@ -69,6 +69,11 @@ endif
 # Other defaults
 MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
+# MAX_RANK ?=$(PFUNIT_MAX_RANK) # Maximum rank of arrays in assertions
+MAX_RANK ?=5
+ifneq ($(origin PFUNIT_MAX_RANK), undefined)
+   MAX_RANK=$(PFUNIT_MAX_RANK)
+endif
 
 ifneq ($(UNAME),Windows)
 ROBUST ?=YES # for now include RobustRunner by default
@@ -161,9 +166,9 @@ all: include/configuration.mk
 documentation:
 	$(DOXYGEN) documentation/doxygen.conf
 
-documentation/pFUnit2-ReferenceManual.pdf: documentation
+documentation/pFUnit3-ReferenceManual.pdf: documentation
 	$(MAKE) -C documentation/latex all
-	mv -f documentation/latex/refman.pdf documentation/pFUnit2-ReferenceManual.pdf
+	mv -f documentation/latex/refman.pdf documentation/pFUnit3-ReferenceManual.pdf
 
 
 clean: local-top1-clean local-top1-cleanExamples
@@ -171,10 +176,10 @@ clean: local-top1-clean local-top1-cleanExamples
 local-top1-clean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
-	tools/clean Examples
 	\rm -f include/configuration.mk
 
 local-top1-cleanExamples:
+	\rm -f Examples/Simple/tests.xml
 	tools/clean Examples
 
 distclean: local-top1-distclean
@@ -224,7 +229,9 @@ include/configuration.mk:
 	@echo COMPILER  ?= $(COMPILER) >> include/configuration.mk
 	@echo USEOPENMP ?= $(USEOPENMP) >> include/configuration.mk
 	@echo USEMPI    ?= $(USEMPI) >> include/configuration.mk
+	@echo MAX_RANK 	?= $(MAX_RANK) >> include/configuration.mk
 	@echo BUILDROBUST ?= $(BUILDROBUST) >> include/configuration.mk
+	@echo VERSION = \"`cat VERSION`\" >> include/configuration.mk
 
 export UNAME
 export OBJ_EXT
@@ -248,6 +255,7 @@ export VPATH
 export MPI
 export USEMPI
 export USEOPENMP
+export MAX_RANK
 export BUILDROBUST
 export MPIF90
 export LIBMPI

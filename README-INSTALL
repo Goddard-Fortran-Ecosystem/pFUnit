@@ -1,7 +1,7 @@
 
 PFUNIT VERSION 3.0.0 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2014-0206 M. Rilee mike@rilee.net
+VERSION 2014-0421 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -110,6 +110,8 @@ tests - Source code for unit testing pFUnit itself.
 
 tools - Tools used to help develop, build, and install pFUnit.
 
+VERSION - Contains a string describing the current version of the framework.
+
 4. CONFIGURATION
 
 Little needs to be done to configure pFUnit for the build, however
@@ -137,6 +139,12 @@ also set the following.
 MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
+
+PFUNIT_MAX_RANK - controls the maximum size of the arrays asserts are
+defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
+assertions will be able to handle arrays up to rank 5.
+
+$ export PFUNIT_MAX_RANK=8
 
 DOXYGEN - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase

@@ -3,8 +3,10 @@
 # ------------------------------------------------------------------------ #
 #
 # Command line options:
-#     MPI=YES               ! defaults to NO
-#     INSTALL_PATH=<path>   ! defaults to $(PFUNIT)
+#     MPI=YES                                 ! defaults to NO
+#     INSTALL_PATH=<path>                     ! defaults to ${PFUNIT}
+#     MAX_RANK=<max rank for generated code>  ! defaults to 5 or
+#                                             !   ${PFUNIT_MAX_RANK}
 # 
 # Usage:
 #   cmake -DMPI=YES -DINSTALL_PATH=<A path> <path to source>
@@ -14,7 +16,7 @@ INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
 project (pFUnit)
 enable_language (Fortran)
-#set (CMAKE_VERBOSE_MAKEFILE 1)
+# set (CMAKE_VERBOSE_MAKEFILE 1)
 
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}") 
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
@@ -38,6 +40,16 @@ IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
    MESSAGE("**           Found: PFUNIT=$ENV{PFUNIT}")
 ENDIF()
 MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
+
+OPTION(MAX_RANK "Maximum rank for generated code." NO)
+IF(NOT MAX_RANK)
+   IF(DEFINED ENV{PFUNIT_MAX_RANK})
+      SET (MAX_RANK "$ENV{PFUNIT_MAX_RANK}")
+   ELSE()
+      SET (MAX_RANK 5)
+   ENDIF()
+ENDIF()
+
 
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
@@ -67,6 +79,10 @@ if (MPI)
         set (COMPILER_WRAPPER mpif90)
     endif()
     message( STATUS "MPI enabled")
+endif()
+
+if (MAX_RANK)
+   add_definitions(-DMAX_RANK=${MAX_RANK})
 endif()
 
 if (ROBUST)
@@ -148,3 +164,6 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
 endif()
 
+# Packaging
+set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")
+include(CPack)

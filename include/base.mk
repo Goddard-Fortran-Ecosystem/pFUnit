@@ -7,8 +7,10 @@ MOD_DIR     =$(TOP)/source
 # Set the required file extensions.
 include $(INCLUDE_DIR)/extensions.mk
 
+COMPILER_ = $(shell echo $(COMPILER) | tr a-z A-Z )
+
 # Include the compiler-specific options.
-include $(INCLUDE_DIR)/$(COMPILER).mk
+include $(INCLUDE_DIR)/$(COMPILER_).mk
 
 FFLAGS += $I$(INCLUDE_DIR)
 
@@ -31,7 +33,7 @@ endif
 .PHONY: clean distclean
 
 clean:
-	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp *.s
 	-$(RM) -r *.dSYM
 
 distclean: clean
