@@ -187,7 +187,6 @@ program main
          close(xmlFileUnit)
       end if
    end if
-   stop
 
    returnCode = getReturnCode(result)
    call exit(returnCode)

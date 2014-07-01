@@ -27,7 +27,6 @@ contains
       use SurrogateTestCase_mod
       use TestCase_mod
       use XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
-      use Utilities_mod, only: newUnit
       use TestResult_mod, only: TestResult, newTestResult
 
       type (TestResult) :: aResult
@@ -37,14 +36,12 @@ contains
       character(len=200) :: fileName, suiteName, command, &
            xsdPath, outFile, errMsg
 
-      xmlUnit = newUnit()
-      outUnit = newUnit()
       fileName = 'test.xml'
       suiteName = 'suitename<<>>""'
       xsdPath = 'tests/junit-4.xsd'
       outFile = 'tests/test_xmlprinter_output.tmp'
 
-      open(unit=xmlUnit, file=fileName, iostat=iostat)
+      open(newunit=xmlUnit, file=fileName, iostat=iostat)
       call assertEqual(iostat, 0, 'Could not open XML file')
 
       printer = newXmlPrinter(xmlUnit)
@@ -67,7 +64,7 @@ contains
            // ' ' // trim(fileName) // ' 2> ' // outFile
       stat = system(command)
       if(stat /= 0) then
-         open(unit=outUnit, file=outFile, iostat=iostat, &
+         open(newunit=outUnit, file=outFile, iostat=iostat, &
               status='old', action='read')
          call assertEqual(iostat, 0, 'XML validation failed, unknown cause')
          read(outUnit, '(a)') errMsg

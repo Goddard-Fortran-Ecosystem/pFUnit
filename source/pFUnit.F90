@@ -74,7 +74,6 @@ module pFUnit_mod
    public :: newResultPrinter
    public :: newXmlPrinter
    public :: DebugListener
-   public :: newUnit
 
 #ifdef BUILD_ROBUST
    public :: RobustRunner
