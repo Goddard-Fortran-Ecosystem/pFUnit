@@ -4,6 +4,8 @@ include_directories (${pFUnit_SOURCE_DIR}/include)
 #include_directories (${pFUnit_BINARY_DIR}/source)
 include_directories(${CMAKE_BINARY_DIR}/mod)
 
+configure_file( junit-4.xsd junit-4.xsd COPYONLY )
+
 set(OTHER_SOURCES MakeNaN.F90 MakeInfinity.F90 MockListener.F90)  
 list(APPEND OTHER_SOURCES BrokenTestCase.F90 BrokenSetUpCase.F90)
 list(APPEND OTHER_SOURCES FixtureTestCase.F90)

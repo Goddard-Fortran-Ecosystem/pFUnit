@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+!-------------------------------------------------------------------------------
+!  MODULE: Test_XmlPrinter
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Halvor Lund
+!!
+!! @date
+!! 2014 July
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 2014 July Initial commit.
+!
+!-------------------------------------------------------------------------------
 #include "reflection.h"
 module Test_XmlPrinter_mod
    implicit none
@@ -28,6 +50,10 @@ contains
       use TestCase_mod
       use XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
       use TestResult_mod, only: TestResult, newTestResult
+
+#ifdef Intel
+      use ifport, only: system
+#endif
 
       type (TestResult) :: aResult
       type (SimpleTestCase) :: aTest, aTest2
@@ -60,18 +86,70 @@ contains
       call printer%print(aResult)
       close(xmlUnit)
 
-      command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
-           // ' ' // trim(fileName) // ' 2> ' // outFile
+      ! Validate the file against the de facto JUnit xsd.
+      ! If xmlint not found, just move on quietly.
+      command = 'xmllint --version > /dev/null 2>&1'
       stat = system(command)
-      if(stat /= 0) then
-         open(newunit=outUnit, file=outFile, iostat=iostat, &
-              status='old', action='read')
-         call assertEqual(iostat, 0, 'XML validation failed, unknown cause')
-         read(outUnit, '(a)') errMsg
-         close(outUnit)
-         call assertEqual(stat, 0, 'XML validation failed: ' // errMsg)
+      if (stat == 0) then
+         command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
+              // ' ' // trim(fileName) // ' 2> ' // outFile
+         stat = system(command)
+         if(stat /= 0) then
+            open(newunit=outUnit, file=outFile, iostat=iostat, &
+                 status='old', action='read')
+            call assertEqual(iostat, 0, 'XML validation failed, unknown cause')
+            read(outUnit, '(a)') errMsg
+            close(outUnit)
+            call assertEqual(stat, 0, 'XML validation failed: ' // errMsg)
+         end if
       end if
 
+      ! Compare the output to our "gold standard" regression test.
+      !
+      call compareXMLFileToExpectation(fileName)
+
    end subroutine testValidXml
+
+   subroutine compareXMLFileToExpectation(xmlFile)
+     use Assert_mod, only: assertEqual
+     use Assert_mod, only: assertTrue
+     use iso_fortran_env, only: iostat_end
+
+     character(len=200), intent(in) :: xmlFile
+     integer :: iostat, xmlUnit, iExpectedLine
+
+     character(len=100) :: xmlFileLine
+     character(len=100), dimension(9) :: expected 
+
+     expected=(/ character(len=100) :: &
+'<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0" time=".0000">', &
+'<testcase name="successtest[]''"/>', &
+'<testcase name="failtest[]''">', &
+'<failure message="Location: [[unknown location]], [invalid] "/>', &
+'</testcase>', &
+'<testcase name="failtest[]''">', &
+'<failure message="Location: [[unknown location]], ''test'' "/>', &
+'</testcase>', &
+'</testsuite>' /)
+
+     open(newunit=xmlUnit, file=xmlFile, iostat=iostat, &
+          & status='old', action='read')
+     call assertEqual(iostat, 0, 'Could not open XML file for testing.')
+
+     iExpectedLine = 0
+     do
+        read(xmlUnit,'(a)',iostat=iostat) xmlFileLine
+        if (iostat == iostat_end) exit
+        call assertEqual(iostat, 0, 'Unexpected XMLFile error.')
+        iExpectedLine = iExpectedLine + 1
+        call assertTrue(iExpectedLine .lt. (size(expected) + 1), &
+             &'Too many lines in XMLFile.')
+        call assertEqual(expected(iExpectedLine),xmlFileLine, &
+             & 'XML output file error.')
+     end do
+     close(xmlUnit)
+
+   end subroutine compareXMLFileToExpectation
+
 
 end module Test_XmlPrinter_mod
