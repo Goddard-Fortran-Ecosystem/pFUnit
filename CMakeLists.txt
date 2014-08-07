@@ -81,9 +81,10 @@ if (MPI)
     message( STATUS "MPI enabled")
 endif()
 
-if (MAX_RANK)
-   add_definitions(-DMAX_RANK=${MAX_RANK})
-endif()
+# 2014-0807 MLR MAX_RANK needed for code generation, not here.
+#if (MAX_RANK)
+#   add_definitions(-DMAX_RANK=${MAX_RANK})
+#endif()
 
 if (ROBUST)
     add_definitions(-DBUILD_ROBUST)
