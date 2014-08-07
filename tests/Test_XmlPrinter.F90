@@ -1,10 +1,10 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC, Computational & Information Sciences & Technology, Code 606.
 !-------------------------------------------------------------------------------
 !  MODULE: Test_XmlPrinter
 !
 !> @brief
-!! <BriefDescription>
+!! Output test messages in junit.xsd-compatible XML.
 !!
 !! @author
 !! Halvor Lund
@@ -12,12 +12,16 @@
 !! @date
 !! 2014 July
 !! 
-!! @note <A note here.>
-!! <Or starting here...>
+!! @note Set up a test failure and feed it to an XML-based printer so
+!! that we can test its output. Use command line call (via "system")
+!! to try to find "xmllint," and if available, use it to validate the
+!! output against junit.xsd.  Either way, check the output against a
+!! hard-coded expected result (a regression test).
 !
 ! REVISION HISTORY:
 !
-! 2014 July Initial commit.
+! 2014 August 7. Added regression test and Intel support. MLR.
+! 2014 July. Initial commit.
 !
 !-------------------------------------------------------------------------------
 #include "reflection.h"
@@ -139,13 +143,19 @@ contains
      iExpectedLine = 0
      do
         read(xmlUnit,'(a)',iostat=iostat) xmlFileLine
-        if (iostat == iostat_end) exit
+        if (iostat == iostat_end) then
+           call assertTrue(iExpectedLine .ge. (size(expected)), &
+                &'Too few lines in XMLFile.')
+           exit
+        end if
         call assertEqual(iostat, 0, 'Unexpected XMLFile error.')
         iExpectedLine = iExpectedLine + 1
-        call assertTrue(iExpectedLine .lt. (size(expected) + 1), &
+        call assertTrue(iExpectedLine .le. size(expected), &
              &'Too many lines in XMLFile.')
-        call assertEqual(expected(iExpectedLine),xmlFileLine, &
-             & 'XML output file error.')
+        if (iExpectedLine .le. size(expected)) then
+           call assertEqual(expected(iExpectedLine),xmlFileLine, &
+                & 'XML output file error.')
+        end if
      end do
      close(xmlUnit)
 

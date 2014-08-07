@@ -176,7 +176,7 @@ clean: local-top1-clean local-top1-cleanExamples
 local-top1-clean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) clean
 	$(MAKE) -C $(TESTS_DIR) clean
-	\rm -f include/configuration.mk
+	\rm -f include/configuration.mk test.xml
 
 local-top1-cleanExamples:
 	\rm -f Examples/Simple/tests.xml
@@ -188,7 +188,7 @@ local-top1-distclean: local-top1-cleanExamples
 	$(MAKE) -C $(SOURCE_DIR) distclean
 	$(MAKE) -C $(TESTS_DIR) distclean
 	$(MAKE) -C $(DOC_DIR) distclean
-	\rm -f include/configuration.mk
+	\rm -f include/configuration.mk test.xml
 
 tests: all
 ifeq ($(USEMPI),YES)
