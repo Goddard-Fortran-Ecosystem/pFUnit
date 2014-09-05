@@ -4,7 +4,7 @@
 !  MODULE: StringConversionUtilities
 !
 !> @brief
-!! <BriefDescription>
+!! A collection of utilities used throughout the framework.
 !!
 !! @author
 !! Tom Clune,  NASA/GSFC 
@@ -17,7 +17,12 @@
 !
 ! REVISION HISTORY:
 !
-! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+! 05 Sep 2014 - Added options for working with whitespace including
+!               ignore, trim, or keep.  Note: trimAll trims both
+!               sides, while trimTrailingWhitespace is more like
+!               Fortran's trim. MLR
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 ! This module converts integers/real's to strings of a specific format
@@ -211,11 +216,6 @@ contains
         end if
      end do
      lenTrimmed = lenS-leadingWhite-trailingWhite
-     
-     !print *,1000,lenTrimmed
-     !print *,1001,leadingWhite
-     !print *,1002,trailingWhite
-     !print *,1003,lenS
      
      allocate(character(lenTrimmed) :: trimmed)
      do i = 1,lenTrimmed

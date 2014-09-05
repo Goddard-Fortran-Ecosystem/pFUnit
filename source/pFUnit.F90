@@ -106,6 +106,10 @@ module pFUnit_mod
 
    public :: throw, catchNext, catch, anyExceptions
 
+   ! Optional arguments for assertEqual
+   public :: WhitespaceOptions
+   public :: pleaseIgnore, pleaseTrim, pleaseKeep
+
 #ifdef USE_MPI
    logical :: useMpi_
 #endif

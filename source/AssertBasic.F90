@@ -4,7 +4,8 @@
 !  MODULE: AssertBasic
 !
 !> @brief
-!! <BriefDescription>
+!! Provides fundamental assertions over the most basic types, a
+!! foundation for providing test services to end users.
 !!
 !! @author
 !! Tom Clune,  NASA/GSFC 
@@ -12,10 +13,32 @@
 !! @date
 !! 07 Nov 2013
 !! 
-!! @note <A note here.>
-!! <Or starting here...>
+!! @note For assertions on strings whitespace may or may not be
+!! significant to a test.  We now have several options for dealing
+!! with whitespace via the optional argument
+!! <code>forWhitespace</code>.  These options are
+!! pleaseIgnore, pleaseTrim, and pleaseKeep.  Usage is as follows.
+!!
+!! <code>
+!! call assertEqual(expectedString, foundString, &
+!!                & forWhitespace=pleaseIgnore )
+!! </code>
+!! 
+!! <strong>WhitespaceOptions:</strong>
+!! <ul>
+!! <li><strong>pleaseTrim</strong> ignores leading and trailing whitespace.  </li>
+!! <li><strong>pleaseKeep</strong> keeps all whitespace as significant, even discriminating
+!!            between tabs and spaces.</li>
+!! <li><strong>pleaseIgnore</strong> ignores all whitespace (spaces & tabs).</li>
+!! </ul>
+!!
+!! Example usages can be seen in tests/Test_AssertBasic.F90 or
+!! Examples/Simple/tests/helloWorld.pf.
 !
 ! REVISION HISTORY:
+!
+! 05 Sep 2014 - Added polite whitespace options trim, ignore, and
+!               keep. MLR
 !
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
@@ -346,8 +369,6 @@ contains
          end if
 
       end if
-
-      !contains
 
    end subroutine assertEqualString_
 

@@ -488,6 +488,7 @@ pFUnit supports the software development of several weather and climate simulati
    <li>\ref TipEnvironmentModules</li>
    <li>\ref TipCompileTimeErrors</li>
    <li>\ref TipIntermediateFiles</li>
+   <li>\ref TipWhitespace</li>
    </ul>
 </ul>
 
@@ -552,6 +553,24 @@ in the makefile to keep them from being deleted. For example:
 \code
 # In GNUmakefile
 .PRECIOUS: %_cpp.F90\endcode 
+
+\subsection TipWhitespace Ignoring whitespace in assertions on strings.
+Several options exist for how to compare strings with assertEqual.
+
+\code
+call assertEqual(expectedString, foundString, &
+               & forWhitespace=pleaseIgnore )\endcode
+
+<strong>WhitespaceOptions:</strong>
+<ul>
+<li><strong>pleaseTrim</strong> ignores leading and trailing whitespace.  </li>
+<li><strong>pleaseKeep</strong> keeps all whitespace as significant, even discriminating
+           between tabs and spaces.</li>
+<li><strong>pleaseIgnore</strong> ignores all whitespace (spaces & tabs).</li>
+</ul>
+
+Example usages can be seen in tests/Test_AssertBasic.F90 or
+Examples/Simple/tests/helloWorld.pf.
 
 
 \page page_PlatformSpecific Platform Specific Notes

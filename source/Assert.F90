@@ -48,6 +48,10 @@ module Assert_mod
 
    public :: assertIsNan, assertIsFinite
 
+   ! Optional arguments for assertEqual.
+   public :: WhitespaceOptions
+   public :: pleaseIgnore, pleaseTrim, pleaseKeep
+
 contains
 
 end module Assert_mod
