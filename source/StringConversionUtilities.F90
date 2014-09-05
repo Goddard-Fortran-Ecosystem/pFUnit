@@ -40,6 +40,8 @@ module StringConversionUtilities_mod
    public :: MAXLEN_STRING
    public :: nullTerminate
    public :: unlessScalar
+   public :: WhitespaceOptions, pleaseIgnore, pleaseTrim, pleaseKeep
+   public :: whitespacep, trimAll, trimTrailingWhitespace
 
    integer, parameter :: MAXLEN_STRING = 80
 !   integer, parameter :: MAXLEN_STRING = 80*5
@@ -60,6 +62,18 @@ module StringConversionUtilities_mod
 
    character(len=*), parameter :: c32fmt1 = '("z=(",'//r32fmt1//',",",'//r32fmt1//',")")'
    character(len=*), parameter :: c64fmt1 = '("z=(",'//r64fmt1//',",",'//r64fmt1//',")")'
+
+!   enum, bind(c) :: WhitespaceOptions
+   type WhitespaceOptions
+      integer value
+   end type WhitespaceOptions
+   enum, bind(c)
+      enumerator :: pleaseIgnore_, pleaseTrim_, pleaseKeep_
+   end enum
+   type (WhitespaceOptions), parameter :: &
+        & pleaseIgnore=WhitespaceOptions(pleaseIgnore_), &
+        & pleaseTrim  =WhitespaceOptions(pleaseTrim_), &
+        & pleaseKeep  =WhitespaceOptions(pleaseKeep_)
 
 contains
 
@@ -163,5 +177,91 @@ contains
         retString=string
      end if
    end function unlessScalar
+
+   logical function whitespacep(c)
+     character, intent(in) :: c
+     integer, parameter :: iachar_spc = 32, iachar_tab = 9
+     whitespacep = &
+          & iachar(c) .eq. iachar_spc .or. &
+          & iachar(c) .eq. iachar_tab
+   end function whitespacep
+
+   function trimAll(s) result(trimmed)
+     character(len=*), intent(in) :: s
+     character(len=:), allocatable :: trimmed
+     integer :: i,lenS,leadingWhite,trailingWhite,lenTrimmed
+
+     lenS = len(s)
+
+     leadingWhite = 0
+     do i = 1,lenS
+        if (whitespacep(s(i:i))) then
+           leadingWhite = leadingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     trailingWhite = 0
+     do i = lenS,leadingWhite+1,-1
+        if (whitespacep(s(i:i))) then
+           trailingWhite = trailingWhite + 1
+        else
+           exit
+        end if
+     end do
+     lenTrimmed = lenS-leadingWhite-trailingWhite
+     
+     !print *,1000,lenTrimmed
+     !print *,1001,leadingWhite
+     !print *,1002,trailingWhite
+     !print *,1003,lenS
+     
+     allocate(character(lenTrimmed) :: trimmed)
+     do i = 1,lenTrimmed
+        trimmed(i:i) = s(i+leadingWhite:i+leadingWhite)
+     end do
+   end function trimAll
+
+   function trimTrailingWhitespace(s) result(trimmed)
+     character(len=*), intent(in) :: s
+     character(len=:), allocatable :: trimmed
+     integer :: i,lenS
+     integer :: trailingWhite,lenTrimmed
+     integer :: leadingWhite
+
+     lenS = len(s)
+
+     leadingWhite = 0
+     do i = 1,lenS
+        if (whitespacep(s(i:i))) then
+           leadingWhite = leadingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     trailingWhite = 0
+     do i = lenS,leadingWhite+1,-1
+        if (whitespacep(s(i:i))) then
+           trailingWhite = trailingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     lenTrimmed = lenS-trailingWhite
+     allocate(character(lenTrimmed) :: trimmed)
+     do i = 1,lenTrimmed
+        trimmed(i:i) = s(i:i)
+     end do
+
+   end function trimTrailingWhitespace
+
+
+
+     
+
+
 
 end module StringConversionUtilities_mod

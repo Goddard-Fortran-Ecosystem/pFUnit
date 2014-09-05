@@ -29,6 +29,19 @@ contains
       ADD(testAssertFalseF)
       ADD(testAssertEqualStringSame)
       ADD(testAssertEqualStringDifferent)
+
+      ADD(testAssertEqualStringIgnoreAllWhitespace1)
+      ADD(testAssertEqualStringIgnoreAllWhitespace2)
+      ADD(testAssertEqualStringIgnoreAllWhitespace3)
+      ADD(testAssertEqualStringIgnoreAllWhitespace4)
+      ADD(testAssertEqualStringIgnoreAllWhitespace5)
+      ADD(testAssertEqualStringIgnoreAllWhitespace6)
+      ADD(testAssertEqualStringIgnoreAllWhitespace7)
+      ADD(testAssertEqualStringTrimWhitespace1)
+      ADD(testAssertEqualStringTrimWhitespace2)
+      ADD(testAssertEqualStringKeepWhitespace1)
+      ADD(testAssertEqualStringKeepWhitespace2)
+
       ADD(testAssertAny)
       ADD(testAssertAnyFail)
       ADD(testAssertAll)
@@ -74,6 +87,79 @@ contains
            & '   but found: <"string B">' // new_line('A') // &
            & '  first diff:   -------^'))
    end subroutine testAssertEqualStringDifferent
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace1()
+     call assertEqual(expected="stringA", found="string A", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace1
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace2()
+     call assertEqual(expected="string A", found="stringA", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace2
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace3()
+     call assertEqual(expected="stringA ", found="string A", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace3
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace4()
+     call assertEqual(expected=" string A", found="string A", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace4
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace5()
+     call assertEqual(expected=" string A ", found="stringA", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace5
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace6()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found="stringA", &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace6
+
+   subroutine testAssertEqualStringIgnoreAllWhitespace7()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found=" stringA"//tab, &
+          & forWhitespace=pleaseIgnore )
+   end subroutine testAssertEqualStringIgnoreAllWhitespace7
+
+   subroutine testAssertEqualStringTrimWhitespace1()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found="string A", &
+          & forWhitespace=pleaseTrim )
+   end subroutine testAssertEqualStringTrimWhitespace1
+
+   subroutine testAssertEqualStringTrimWhitespace2()
+     character tab; tab = char(9)
+     ! Should fail !
+     call assertEqual(expected=tab//"string A ", found="stringA", &
+          & forWhitespace=pleaseTrim )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"'//tab//'string A">' // new_line('A') // &
+          & '   but found: <"stringA">'  // new_line('A') // &
+          & '  first diff:   ------^'))
+   end subroutine testAssertEqualStringTrimWhitespace2
+
+   subroutine testAssertEqualStringKeepWhitespace1()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found=tab//"string A ", &
+          & forWhitespace=pleaseKeep )
+   end subroutine testAssertEqualStringKeepWhitespace1
+
+   subroutine testAssertEqualStringKeepWhitespace2()
+     character tab; tab = char(9)
+     ! A strict interpretation of keep:  TAB != SPC !
+     call assertEqual(expected=tab//"string A ", found=" string A ", &
+          & forWhitespace=pleaseKeep )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"	string A ">' // new_line('A') // &
+          & '   but found: <" string A ">' // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace2
 
    ! Fail only if all .false.
    subroutine testAssertAny()
