@@ -14,7 +14,6 @@ program main
    character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
    integer :: length
-   integer, parameter :: RETURN_OK = 0, RETURN_FAILURE = 1
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
@@ -36,7 +35,6 @@ program main
    type (DebugListener) :: debugger
    character(len=128) :: suiteName
 
-   integer :: returnCode
 ! Support for the runs
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
@@ -179,8 +177,6 @@ program main
       close(outputUnit)
    end if
 
-   call finalize(result%wasSuccessful())
-
    if(printXmlFile) then
       inquire(unit=xmlFileUnit, opened=xmlFileOpened)
       if(xmlFileOpened) then
@@ -188,8 +184,7 @@ program main
       end if
    end if
 
-   returnCode = getReturnCode(result)
-   call exit(returnCode)
+   call finalize(result%wasSuccessful())
 
 contains
 
@@ -263,16 +258,6 @@ contains
       write(OUTPUT_UNIT,*)" "
 
    end subroutine printHelpMessage
-
-   integer function getReturnCode(aTestResult) result(returnCode)
-      use TestResult_mod
-      type (TestResult), intent(in) :: aTestResult
-      if(aTestResult%wasSuccessful()) then
-         returnCode = RETURN_OK
-      else
-         returnCode = RETURN_FAILURE
-      end if
-   end function getReturnCode
 
 end program main
 
