@@ -554,19 +554,20 @@ in the makefile to keep them from being deleted. For example:
 # In GNUmakefile
 .PRECIOUS: %_cpp.F90\endcode 
 
-\subsection TipWhitespace Ignoring whitespace in assertions on strings.
+\subsection TipWhitespace Ignoring whitespace differences in assertions on strings.
 Several options exist for how to compare strings with assertEqual.
 
 \code
 call assertEqual(expectedString, foundString, &
-               & forWhitespace=pleaseIgnore )\endcode
+               & whitespace=IGNORE_DIFFERENCES )\endcode
 
 <strong>WhitespaceOptions:</strong>
 <ul>
-<li><strong>pleaseTrim</strong> ignores leading and trailing whitespace.  </li>
-<li><strong>pleaseKeep</strong> keeps all whitespace as significant, even discriminating
+<li><strong>IGNORE_DIFFERENCES</strong> ignores whitespace differences (number and value).</li>
+<li><strong>IGNORE_ALL</strong> strictly ignores all whitespace (spaces & tabs).</li>
+<li><strong>TRIM_ALL</strong> strictly ignores leading and trailing whitespace.  </li>
+<li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating
            between tabs and spaces.</li>
-<li><strong>pleaseIgnore</strong> ignores all whitespace (spaces & tabs).</li>
 </ul>
 
 Example usages can be seen in tests/Test_AssertBasic.F90 or

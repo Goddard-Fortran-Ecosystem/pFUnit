@@ -45,7 +45,7 @@ module StringConversionUtilities_mod
    public :: MAXLEN_STRING
    public :: nullTerminate
    public :: unlessScalar
-   public :: WhitespaceOptions, pleaseIgnore, pleaseTrim, pleaseKeep
+   public :: WhitespaceOptions, IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
    public :: whitespacep, trimAll, trimTrailingWhitespace
 
    integer, parameter :: MAXLEN_STRING = 80
@@ -73,12 +73,13 @@ module StringConversionUtilities_mod
       integer value
    end type WhitespaceOptions
    enum, bind(c)
-      enumerator :: pleaseIgnore_, pleaseTrim_, pleaseKeep_
+      enumerator :: IGNORE_ALL_, TRIM_ALL_, KEEP_ALL_, IGNORE_DIFFERENCES_
    end enum
    type (WhitespaceOptions), parameter :: &
-        & pleaseIgnore=WhitespaceOptions(pleaseIgnore_), &
-        & pleaseTrim  =WhitespaceOptions(pleaseTrim_), &
-        & pleaseKeep  =WhitespaceOptions(pleaseKeep_)
+        & IGNORE_ALL=WhitespaceOptions(IGNORE_ALL_), &
+        & TRIM_ALL  =WhitespaceOptions(TRIM_ALL_), &
+        & KEEP_ALL  =WhitespaceOptions(KEEP_ALL_), &
+        & IGNORE_DIFFERENCES =WhitespaceOptions(IGNORE_DIFFERENCES_)
 
 contains
 

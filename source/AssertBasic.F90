@@ -16,20 +16,20 @@
 !! @note For assertions on strings whitespace may or may not be
 !! significant to a test.  We now have several options for dealing
 !! with whitespace via the optional argument
-!! <code>forWhitespace</code>.  These options are
-!! pleaseIgnore, pleaseTrim, and pleaseKeep.  Usage is as follows.
+!! <code>Whitespace</code>.  These options are
+!! IGNORE_ALL, TRIM_ALL, and KEEP_ALL.  Usage is as follows.
 !!
 !! <code>
 !! call assertEqual(expectedString, foundString, &
-!!                & forWhitespace=pleaseIgnore )
+!!                & Whitespace=IGNORE_ALL )
 !! </code>
 !! 
 !! <strong>WhitespaceOptions:</strong>
 !! <ul>
-!! <li><strong>pleaseTrim</strong> ignores leading and trailing whitespace.  </li>
-!! <li><strong>pleaseKeep</strong> keeps all whitespace as significant, even discriminating
+!! <li><strong>TRIM_ALL</strong> ignores leading and trailing whitespace.  </li>
+!! <li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating
 !!            between tabs and spaces.</li>
-!! <li><strong>pleaseIgnore</strong> ignores all whitespace (spaces & tabs).</li>
+!! <li><strong>IGNORE_ALL</strong> ignores all whitespace (spaces & tabs).</li>
 !! </ul>
 !!
 !! Example usages can be seen in tests/Test_AssertBasic.F90 or
@@ -76,7 +76,7 @@ module AssertBasic_mod
 
    ! from StringConversionUtilities
    public :: WhitespaceOptions
-   public :: pleaseIgnore, pleaseTrim, pleaseKeep
+   public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
    interface fail
       module procedure fail_
@@ -221,18 +221,18 @@ contains
    end subroutine assertFalse_
 
    subroutine assertEqualString_(expected, found, message, location, &
-        & forWhitespace)
+        & whitespace)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       type (WhitespaceOptions), optional, intent(in) :: &
-           & forWhitespace
+           & whitespace
 
       character(len=:), allocatable :: message_
       type (SourceLocation) :: location_
-      type (WhitespaceOptions) :: forWhitespace_
+      type (WhitespaceOptions) :: whitespace_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: i, j
@@ -243,6 +243,7 @@ contains
 
       logical :: checkForDifference, charDifference
       logical :: throwException
+      logical :: whitespaceYes
       character(len=:), allocatable :: expected_, found_
 
       if(present(message))then
@@ -257,20 +258,23 @@ contains
          location_ = UNKNOWN_SOURCE_LOCATION
       end if
 
-      if(present(forWhitespace))then
-         forWhitespace_ = forWhitespace
+      if(present(whitespace))then
+         whitespace_ = whitespace
       else
-         forWhitespace_ = pleaseTrim
+         whitespace_ = TRIM_ALL
       end if
 
-      select case (forWhitespace_%value)
-      case (pleaseTrim%value)
+      select case (whitespace_%value)
+      case (TRIM_ALL%value)
          expected_ = trimAll(expected)
          found_    = trimAll(found)
-      case (pleaseIgnore%value)
+      case (IGNORE_ALL%value)
          expected_ = trimAll(expected)
          found_    = trimAll(found)
-      case (pleaseKeep%value)
+      case (IGNORE_DIFFERENCES%value)
+         expected_ = trimAll(expected)
+         found_    = trimAll(found)
+      case (KEEP_ALL%value)
          expected_ = expected
          found_    = found
       end select
@@ -279,21 +283,30 @@ contains
       ! Trim: ignore leading & trailing white space.  
       ! Ignore: ignore all white space.
       ! Keep: white space is significant.
-      ! Worry:  Original code written to print out trimmed strings.  Not sure what effect
+      ! Worry:  Original code written to !print out trimmed strings.  Not sure what effect
       ! Keep will have.
+      !print *,1000
       checkForDifference = .true.
-      select case (forWhitespace_%value)
-         case (pleaseTrim%value)
+      select case (whitespace_%value)
+         case (TRIM_ALL%value)
             checkForDifference = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
-         case (pleaseIgnore%value)
+
+         case (IGNORE_ALL%value)
             checkForDifference = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
-!            numI = len_trim(expected); numJ = len_trim(found)
-         case (pleaseKeep%value)
+
+         case (IGNORE_DIFFERENCES%value)
             checkForDifference = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
-!            numI = len(expected); numJ = len(found)
+            !print *,1001,whitespace_%value
+            !print *,1002,'e="',expected_,'"'
+            !print *,1003,'f="',found_,'"'
+
+         case (KEEP_ALL%value)
+            checkForDifference = expected_ /= found_
+            numI = len(expected_); numJ = len(found_)
+
          case default
             write(throwMessage,'(a)')&
                  & 'assertEqualString_InternalError: ' &
@@ -302,6 +315,8 @@ contains
       end select
 
 
+      !print *,2000,whitespace_%value
+
       throwException = .false.
 !      if (trim(expected) /= trim(found)) then
       if (checkForDifference) then
@@ -309,52 +324,132 @@ contains
 
          ! Cycle over both strings, compare each element, skipping if needed.
          i = 1; j = 1
-         do
+         countNumSameCharacters: do
+
             ! Is a string traversal complete?
             if ( i .gt. numI .or. j .gt. numJ ) then
                ! If both made it to end, exit ok, else continue other traverse.
                if ( i .gt. numI .and. j .gt. numJ ) exit
             end if
 
-            ! Ignore?  Then skip that element.  Skip on i first, then j.
-            select case (forWhitespace_%value)
-            case (pleaseIgnore%value)
-               if( i .le. numI ) then
-                  if(whitespacep(expected_(i:i)))then
-                     i=i+1; cycle
-                  end if
-               end if
-               if( j .le. numJ ) then
-                  if(whitespacep(found_(j:j)))then
-                     j=j+1; cycle
-                  end if
-               end if
-            end select
+            ! Handle whitespace options.
+            whitespaceYes = .false.
+            if ( i .le. numI ) whitespaceYes = whitespacep(expected_(i:i)) 
+            if ( j .le. numJ ) whitespaceYes = whitespaceYes .or. &
+                & whitespacep(found_(j:j)) 
 
-            ! A character is not white space -- fail if a traverse is complete.
+            if ( whitespaceYes ) then
+
+               select case (whitespace_%value)
+
+                  ! IGNORE_ALL?  Then skip that element.  Skip on i first, then j.
+               case (IGNORE_ALL%value)
+                  if( i .le. numI ) then
+                     if(whitespacep(expected_(i:i)))then
+                        i=i+1; cycle
+                     end if
+                  end if
+                  if( j .le. numJ ) then
+                     if(whitespacep(found_(j:j)))then
+                        j=j+1; cycle
+                     end if
+                  end if
+
+                  ! IGNORE_DIFFERENCES?
+                  ! If either i & j start sequences that are white, skip past.
+               case (IGNORE_DIFFERENCES%value)
+
+                  !print *,2001
+
+                  ! Because we expect to be dealing with trimmed strings
+                  ! at this point, we need both sequences to be
+                  ! whitespace, else fail.
+
+                  if(  &
+                       & .not.( &
+                       &       whitespacep(expected_(i:i)) &
+                       &       .and.whitespacep(found_(j:j))) ) then
+                     throwException = .true.; exit
+                  end if
+
+                  !print *,2100
+
+                  ! Skip past i's whitespace.
+                  iWhitespace: if( i .le. numI ) then
+                     iLoop: do
+                        ! Found white char, skip.
+                        if(whitespacep(expected_(i:i)))then
+                           i=i+1; if (i .gt. numI) exit iLoop
+                        else
+                           exit iLoop
+                        end if
+                     end do iLoop
+                     ! i now either indexes non-whitespace or is past its bound.
+                  end if iWhitespace
+
+                  ! Skip past j's whitespace.
+                  jWhitespace: if( j .le. numJ ) then
+                     jLoop: do
+                        if(whitespacep(found_(j:j)))then
+                           ! Found white char, skip.
+                           j=j+1; if (j .gt. numJ) exit jLoop
+                        else
+                           exit jLoop
+                        end if
+                     end do jLoop
+                     ! j now either indexes non-whitespace or is past its bound.
+                  end if jWhitespace
+
+                  ! If both finish at the same time, i,j .gt. numI, numJ.
+                  ! should be an error condition.  Remember, we're
+                  ! dealing with trimmed sequences.
+                  !
+                  !if ( i .gt. numI .and. j .gt. numJ ) then
+                  !   ...cycle loop...
+                  !end if
+
+               end select
+
+            end if
+
+            ! Fail if a traverse is complete.
+            !print *,2500,i,numI
+            !print *,2501,j,numJ
             if ( i .gt. numI .or. j .gt. numJ ) then
+               !print *,2502
                throwException = .true. ; exit
             end if
+
+            ! A character is not white space!
 
             ! Both characters are not whitespace:  fail if unequal.
+            !print *,3001,i,j,whitespace_%value,expected_,found_
+            !print *,3002,expected_(i:i),found_(j:j)
+            !print *,3003,expected_(i:i) /= found_(j:j)
             if (expected_(i:i) /= found_(j:j)) then
+               !print *,3004,'x'
                throwException = .true. ; exit
             end if
+            !print *,3005
 
             ! Consume both of the equal characters.
             i=i+1; j=j+1; numSameCharacters = numSameCharacters + 1
 
-         end do
+         end do countNumSameCharacters
 
+         !print *,4000
          if (throwException) then
-            select case (forWhitespace_%value)
-            case (pleaseTrim%value)
+            select case (whitespace_%value)
+            case (TRIM_ALL%value)
                expected_ = trimTrailingWhitespace(expected)
                found_    = trimTrailingWhitespace(found)
-            case (pleaseIgnore%value)
+            case (IGNORE_ALL%value)
                expected_ = trimTrailingWhitespace(expected)
                found_    = trimTrailingWhitespace(found)
-            case (pleaseKeep%value)
+            case (IGNORE_DIFFERENCES%value)
+               expected_ = trimTrailingWhitespace(expected)
+               found_    = trimTrailingWhitespace(found)
+            case (KEEP_ALL%value)
                expected_ = expected
                found_    = found
             end select

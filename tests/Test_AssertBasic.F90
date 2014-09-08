@@ -30,13 +30,23 @@ contains
       ADD(testAssertEqualStringSame)
       ADD(testAssertEqualStringDifferent)
 
-      ADD(testAssertEqualStringIgnoreAllWhitespace1)
-      ADD(testAssertEqualStringIgnoreAllWhitespace2)
-      ADD(testAssertEqualStringIgnoreAllWhitespace3)
-      ADD(testAssertEqualStringIgnoreAllWhitespace4)
-      ADD(testAssertEqualStringIgnoreAllWhitespace5)
-      ADD(testAssertEqualStringIgnoreAllWhitespace6)
-      ADD(testAssertEqualStringIgnoreAllWhitespace7)
+      ADD(testAssertEqualStrIgnAllWhite1)
+      ADD(testAssertEqualStrIgnAllWhite2)
+      ADD(testAssertEqualStrIgnAllWhite3)
+      ADD(testAssertEqualStrIgnAllWhite4)
+      ADD(testAssertEqualStrIgnAllWhite5)
+      ADD(testAssertEqualStrIgnAllWhite6)
+      ADD(testAssertEqualStrIgnAllWhite7)
+
+      ADD(testAssertEqualStrIgnWhiDif1)
+      ADD(testAssertEqualStrIgnWhiDif2)
+      ADD(testAssertEqualStrIgnWhiDif3)
+      ADD(testAssertEqualStrIgnWhiDif4)
+      ADD(testAssertEqualStrIgnWhiDif5)
+      ADD(testAssertEqualStrIgnWhiDif6)
+      ADD(testAssertEqualStrIgnWhiDif7)
+      ADD(testAssertEqualStrIgnWhiDif8)
+
       ADD(testAssertEqualStringTrimWhitespace1)
       ADD(testAssertEqualStringTrimWhitespace2)
       ADD(testAssertEqualStringKeepWhitespace1)
@@ -88,54 +98,118 @@ contains
            & '  first diff:   -------^'))
    end subroutine testAssertEqualStringDifferent
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace1()
+   subroutine testAssertEqualStrIgnAllWhite1()
      call assertEqual(expected="stringA", found="string A", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace1
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite1
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace2()
+   subroutine testAssertEqualStrIgnAllWhite2()
      call assertEqual(expected="string A", found="stringA", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace2
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite2
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace3()
+   subroutine testAssertEqualStrIgnAllWhite3()
      call assertEqual(expected="stringA ", found="string A", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace3
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite3
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace4()
+   subroutine testAssertEqualStrIgnAllWhite4()
      call assertEqual(expected=" string A", found="string A", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace4
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite4
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace5()
+   subroutine testAssertEqualStrIgnAllWhite5()
      call assertEqual(expected=" string A ", found="stringA", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace5
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite5
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace6()
+   subroutine testAssertEqualStrIgnAllWhite6()
      character tab; tab = char(9)
      call assertEqual(expected=tab//"string A ", found="stringA", &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace6
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite6
 
-   subroutine testAssertEqualStringIgnoreAllWhitespace7()
+   subroutine testAssertEqualStrIgnAllWhite7()
      character tab; tab = char(9)
      call assertEqual(expected=tab//"string A ", found=" stringA"//tab, &
-          & forWhitespace=pleaseIgnore )
-   end subroutine testAssertEqualStringIgnoreAllWhitespace7
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite7
+
+   subroutine testAssertEqualStrIgnWhiDif1()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab, found=spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif2()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=spc, found=tab, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif3()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found="string A", &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif4()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found=spc//"string A", &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif5()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found=spc//"string A"//spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif6()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual( &
+          & expected =spc//"string"//tab//spc//"6", &
+          & found    ="string"//spc//spc//spc//spc//"6"//spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif7()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string 7 ", found="string7", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"'//tab//'string 7">' // new_line('A') // &
+          & '   but found: <"string7">'  // new_line('A') // &
+          & '  first diff:   ------^'))
+
+   end subroutine 
+
+   subroutine testAssertEqualStrIgnWhiDif8()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected="string8A ", found="string8B", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"string8A">' // new_line('A') // &
+          & '   but found: <"string8B">'  // new_line('A') // &
+          & '  first diff:   -------^'))
+
+   end subroutine 
 
    subroutine testAssertEqualStringTrimWhitespace1()
      character tab; tab = char(9)
      call assertEqual(expected=tab//"string A ", found="string A", &
-          & forWhitespace=pleaseTrim )
+          & whitespace=TRIM_ALL )
    end subroutine testAssertEqualStringTrimWhitespace1
 
    subroutine testAssertEqualStringTrimWhitespace2()
      character tab; tab = char(9)
      ! Should fail !
      call assertEqual(expected=tab//"string A ", found="stringA", &
-          & forWhitespace=pleaseTrim )
+          & whitespace=TRIM_ALL )
      call assertTrue(catch( &
           & 'String assertion failed:' // new_line('A') // &
           & '    expected: <"'//tab//'string A">' // new_line('A') // &
@@ -146,14 +220,14 @@ contains
    subroutine testAssertEqualStringKeepWhitespace1()
      character tab; tab = char(9)
      call assertEqual(expected=tab//"string A ", found=tab//"string A ", &
-          & forWhitespace=pleaseKeep )
+          & whitespace=KEEP_ALL )
    end subroutine testAssertEqualStringKeepWhitespace1
 
    subroutine testAssertEqualStringKeepWhitespace2()
      character tab; tab = char(9)
      ! A strict interpretation of keep:  TAB != SPC !
      call assertEqual(expected=tab//"string A ", found=" string A ", &
-          & forWhitespace=pleaseKeep )
+          & whitespace=KEEP_ALL )
      call assertTrue(catch( &
           & 'String assertion failed:' // new_line('A') // &
           & '    expected: <"	string A ">' // new_line('A') // &

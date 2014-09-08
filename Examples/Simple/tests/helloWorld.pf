@@ -16,6 +16,6 @@ end subroutine testBrokenHelloWorld
 subroutine testIgnoreWhitespaceHelloWorld()
    use pfunit_mod
    implicit none
-   @assertEqual("Hello World!","HelloWorld!",forWhitespace=pleaseIgnore)
+   @assertEqual("Hello     World!","Hello World!  ",whitespace=IGNORE_DIFFERENCES)
 end subroutine testIgnoreWhitespaceHelloWorld
 

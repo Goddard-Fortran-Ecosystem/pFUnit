@@ -50,7 +50,7 @@ module Assert_mod
 
    ! Optional arguments for assertEqual.
    public :: WhitespaceOptions
-   public :: pleaseIgnore, pleaseTrim, pleaseKeep
+   public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
 contains
 
