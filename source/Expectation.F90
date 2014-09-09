@@ -14,6 +14,7 @@ module Expectation_mod
   public :: wasCalled, wasNotCalled, wasCalledOnce
 
   type :: Subject
+     ! mlr todo allocatable strings
      character(len=MAXLEN_STRING) :: name
      procedure(subVoid), pointer, nopass :: ptr
   end type Subject
@@ -28,12 +29,23 @@ module Expectation_mod
      character(len=MAXLEN_STRING) :: name
   end type Predicate
 
+! TDD
   type(Predicate), parameter :: wasCalled     = Predicate('wasCalled')
   type(Predicate), parameter :: wasNotCalled  = Predicate('wasNotCalled')
   type(Predicate), parameter :: wasCalledOnce = Predicate('wasCalledOnce')
+! todo:  
+!    checking expectation sub called with right value (important for sci.)
+!    syntax for distinguishing arguments -- (position/keys)
+!    combined expectations -- one on method, one on argument
+!    -- or combined in the text...
+! todo expectation augment
+!    - vary numbers & kinds of arguments 
+! todo:  automatic generation -- for proposal
+! todo:  a trivial example of interleaved method calls
+! 
+! todo question: !    how to require mock functions to return certain values
 
   type :: Expectation
-     character(len=MAXLEN_STRING) :: name
      type(Subject) :: subj
      type(Predicate) :: pred
   end type Expectation
@@ -64,11 +76,9 @@ contains
 
 !  type(Subject) function newSubject(name) result(subj_)
 
-  type(Expectation) function newExpectation(name, subj, pred) result(exp_)
-    character(*) :: name
+  type(Expectation) function newExpectation(subj, pred) result(exp_)
     type(Subject), intent(in) :: subj
     type(Predicate), intent(in) :: pred
-    exp_%name = name
     exp_%subj = subj
     exp_%pred = pred
   end function newExpectation

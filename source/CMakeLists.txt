@@ -43,6 +43,7 @@ list(APPEND srcs DebugListener.F90)
 
 list(APPEND srcs DynamicTestCase.F90)
 list(APPEND srcs Exception.F90)
+list(APPEND srcs Expectation.F90)
 list(APPEND srcs MockCall.F90)
 list(APPEND srcs MockRepository.F90)
 

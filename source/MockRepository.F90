@@ -31,12 +31,15 @@ module MockRepository_mod
 
    public :: MockRepository
    public :: newMockRepository
+   public :: MockRepositoryPointer
    public :: MAX_LEN_METHOD_NAME
    public :: MAX_LEN_CALL_REGISTRATION
 
    integer, parameter :: MAX_LEN_METHOD_NAME = 32
    integer, parameter :: MAX_LEN_CALL_REGISTRATION = 32
    type MockRepository
+      ! mlr todo Allocatable strings are available...
+      ! mlr todo test under nag
       character(len=MAX_LEN_METHOD_NAME) :: method = ' '
       type(Expectation) :: Expectations(2)
       integer :: lastExpectation = 0
@@ -62,6 +65,9 @@ module MockRepository_mod
 
       procedure :: verify
 
+      ! final?
+      procedure :: delete
+
    end type MockRepository
 
    interface addExpectationThat_
@@ -82,14 +88,30 @@ module MockRepository_mod
 !      module procedure addExpectationThat_sub_
 !   end interface
 
+   class (MockRepository), pointer :: MockRepositoryPointer
+
 contains
+
+!! Begin older code
 
    function newMockRepository() result(repository)
       type (MockRepository), pointer :: repository
+!      type (MockRepository), allocatable, target :: repository
+      if ( associated(MockRepositoryPointer) ) then
+         print *,'MockRepository::ERROR::RepositoryAlreadyAllocated'
+      end if
       allocate(repository)
+      MockRepositoryPointer => repository
       repository%lastExpectation  = 0
       repository%lastRegistration = 0
    end function newMockRepository
+
+   subroutine delete (this)
+     class (MockRepository), intent(inout) :: this
+     
+     nullify(MockRepositoryPointer)
+
+   end subroutine delete
 
    subroutine verifyMocking(this, object)
       use Exception_mod
@@ -120,16 +142,16 @@ contains
       end if
    end subroutine hasCalled
 
-   subroutine addExpectationThat_sub_(this,name,sub,pred)
+!! End older code
+
+   subroutine addExpectationThat_sub_(this,sub,pred)
      class (MockRepository), intent(inout) :: this
-     character(len=*), intent(in) :: name
      procedure(subVoid), pointer, intent(in) :: sub
 !     procedure(subVoid), pointer, intent(in) :: subptr
      type(Predicate), intent(in) :: pred
      type(Expectation) exp
 
      exp = newExpectation( &
-          & name, &
           & newSubject( 'dummy-sub-name', sub), &
           & pred )
 
@@ -139,9 +161,8 @@ contains
 
    end subroutine addExpectationThat_sub_
 
-   subroutine addExpectationThat_subNameOnly_(this,name,subName,pred)
+   subroutine addExpectationThat_subNameOnly_(this,subName,pred)
      class (MockRepository), intent(inout) :: this
-     character(len=*), intent(in) :: name
      character(len=*), intent(in) :: subName
 !     procedure(subVoid), pointer, intent(in) :: sub
 !     procedure(subVoid), pointer, intent(in) :: subptr
@@ -149,7 +170,6 @@ contains
      type(Expectation) exp
 
      exp = newExpectation( &
-          & name, &
           & newSubjectNameOnly( subName ), &
           & pred )
 
@@ -167,8 +187,7 @@ contains
      ! <if space in registry>
      this%lastRegistration = this%lastRegistration + 1
      this%callRegistry(this%lastRegistration) &
-          & = newExpectation( &
-          &                  subName, &
+          & = newExpectation( & ! mlr todo Expectation --> foundAction -- "Result"
           &                  newSubjectNameOnly(subName), &
           &                  wasCalled )
    end subroutine registerMockCallBy_subName_
@@ -185,8 +204,13 @@ contains
       ! Need to work out more complex logic.  Ess. need logic analyzer.
       ! Eventually, expectations should probably be trees.
 
-      ! Mabye rework the following into "expected vs. found" for greater alignment
+      ! Maybe rework the following into "expected vs. found" for greater alignment
       ! with existing usage in PFUNIT.  Also consider existing capabilities in PFUNIT.
+
+! mlr todo -- verify should not be hardwired for the things it has to handle 
+! todo -- refactor expectations & foundActionResult -- recall interpreter implementation
+!
+
 
       do iExp=1,this%lastExpectation  ! 'with' syntax?
          exp => this%Expectations(iExp)
@@ -248,7 +272,7 @@ contains
          end if
 
          if(.not.ok)then
-            call throw('Expectations not met for '//trim(exp%name)//':  "'// &
+            call throw('Expectations not met:  "'// &
                  & trim(exp%subj%name)//'" "'//trim(exp%pred%name)//'" does not hold.')
          end if
       end do
