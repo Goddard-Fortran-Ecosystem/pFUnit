@@ -105,6 +105,7 @@ contains
       
       mocker => newMockRepository()
       mockObject = newMockSUT(mocker)
+      call mocker%delete() ! move to a final
 
    end subroutine testNoAction
 
@@ -144,6 +145,7 @@ contains
          mockObject = newMockSUT(mocker)
          call mocker%expectCall(mockObject,'method1')
          call mockObject%method1()
+         call mocker%delete() ! move to a final
 
       end subroutine internalProcedure
 

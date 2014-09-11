@@ -122,6 +122,9 @@ contains
          call throw('Expected method not called: method1() on object of class MockSUT.')
       end if
 
+      ! Only need to verify once. Finish it off...
+      call this%delete()
+
    end subroutine verifyMocking
 
    subroutine expectCall(this, obj, method)
