@@ -1,3 +1,4 @@
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
 !-------------------------------------------------------------------------------
@@ -107,6 +108,7 @@ contains
       class (ParallelContext), intent(in) :: context
 
       result = this%createTestResult()
+      call result%setName(aTest%getName())
       call this%runWithResult(aTest, context, result)
 
    end function run
@@ -142,7 +144,6 @@ contains
 #else
          call aTest%getTestCases(testCases)
 #endif
-
       class is (TestCase)
          testCases = [TestCaseReference(aTest)]
       class default
@@ -169,7 +170,7 @@ contains
             call this%extListeners(i)%pListener%endRun(result)
          end do
       end if
-         
+
    end subroutine runWithResult
 
    subroutine launchRemoteRunner(this, numSkip)

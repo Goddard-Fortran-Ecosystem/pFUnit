@@ -110,6 +110,11 @@ module pFUnit_mod
    public :: Expectation, Subject, Predicate
    public :: wasCalled, wasNotCalled, wasCalledOnce
 
+   ! Optional arguments for assertEqual
+   public :: WhitespaceOptions
+   public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
+
+
 #ifdef USE_MPI
    logical :: useMpi_
 #endif

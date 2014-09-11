@@ -26,11 +26,16 @@ module TestResult_mod
    use SurrogateTestCase_mod
    use TestListener_mod
    use TestFailure_mod
+
    implicit none
    private
 
    public :: TestResult
    public :: newTestResult
+
+#ifndef DEFERRED_LENGTH_CHARACTER
+   integer, parameter :: MAX_LENGTH_NAME = 64
+#endif
 
    type, extends(AbstractTestResult) :: TestResult
       private
@@ -43,6 +48,11 @@ module TestResult_mod
       type (TestFailure), allocatable :: failures(:)
       type (TestFailure), allocatable :: errors(:)
       type (TestFailure), allocatable :: successes(:)
+#ifdef DEFERRED_LENGTH_CHARACTER
+      character(:), allocatable :: name
+#else
+      character(len=MAX_LENGTH_NAME) :: name
+#endif
    contains
       procedure :: addFailure
       procedure :: addError
@@ -62,12 +72,15 @@ module TestResult_mod
       procedure :: getErrors
       procedure :: getFailures
       procedure :: getIthFailure
+      procedure :: getName
+      procedure :: setName
    end type TestResult
 
 contains
 
-   function newTestResult()
+   function newTestResult(name)
       type (TestResult) :: newTestResult
+      character(len=*), intent(in), optional :: name
       allocate(newTestResult%listeners(0))
       allocate(newTestResult%failures(0))
       allocate(newTestResult%errors(0))
@@ -77,6 +90,11 @@ contains
       newTestResult%numRun = 0
       newTestResult%numSuccesses = 0
       newTestResult%runTime = 0
+      if(present(name)) then
+         newTestResult%name = name
+      else
+         newTestResult%name = 'default_suite_name'
+      end if
    end function newTestResult
 
    subroutine addFailure(this, aTest, exceptions)
@@ -300,5 +318,18 @@ contains
      real :: duration
      duration = this%runTime
    end function getRunTime
+
+   function getName(this) result(name)
+      class (TestResult), intent(in) :: this
+      character(:), allocatable :: name
+      name = this%name
+   end function getName
+
+   subroutine setName(this, name)
+      class (TestResult), intent(inout) :: this
+      character(len=*),intent(in) :: name
+
+      this%name = trim(name)
+   end subroutine setName
 
 end module TestResult_mod

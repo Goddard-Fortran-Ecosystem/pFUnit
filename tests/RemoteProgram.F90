@@ -43,7 +43,7 @@ contains
       s = suite()
 
       result = runner%run(s, context)
-      
+
    end subroutine runTests
 
 end program main

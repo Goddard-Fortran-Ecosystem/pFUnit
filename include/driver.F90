@@ -33,6 +33,8 @@ program main
    integer :: numListeners, iListener
    class (ListenerPointer), allocatable :: listeners(:)
    type (DebugListener) :: debugger
+   character(len=128) :: suiteName
+
 ! Support for the runs
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
@@ -50,6 +52,9 @@ program main
 
    ! Loop over optional arguments in the command line
    numArguments = command_argument_count()
+
+   suiteName = 'default_suite_name'
+
    i = 0
    do
       i = i + 1
@@ -95,9 +100,7 @@ program main
       case ('-xml')
          i = i + 1
          if (i > numArguments) call commandLineArgumentError()
-         xmlFileName = getCommandLineArgument(i)         
-!         xmlFileUnit = newunit()
-!         open(unit=xmlFileUnit, file=xmlFileName,  form='formatted', &
+         xmlFileName = getCommandLineArgument(i)
          open(newUnit=xmlFileUnit, file=xmlFileName,  form='formatted', &
               & status='unknown', access='sequential', iostat=iostat)
          if(iostat /= 0) then
@@ -107,6 +110,9 @@ program main
             printXmlFile = .true.
             numListeners = numListeners + 1
          end if
+      case ('-name')
+         i = i + 1
+         call get_command_argument(i, value=suiteName)
       end select
 
    end do
@@ -161,6 +167,8 @@ program main
    end if
 
    all = getTestSuites()
+   call all%setName(suiteName)
+
    call getContext(context, useMpi)
 
    result = runner%run(all, context)
@@ -169,16 +177,14 @@ program main
       close(outputUnit)
    end if
 
-   call finalize(result%wasSuccessful())
-!?   stop
-
-   if(printXmlFile)then
+   if(printXmlFile) then
       inquire(unit=xmlFileUnit, opened=xmlFileOpened)
       if(xmlFileOpened) then
          close(xmlFileUnit)
       end if
    end if
-   stop
+
+   call finalize(result%wasSuccessful())
 
 contains
 
@@ -212,22 +218,6 @@ contains
 #undef ADD_TEST_SUITE
 
    end function getTestSuites
-
-   integer function newunit(unit)
-     integer, intent(out), optional :: unit
-     integer, parameter :: LUN_MIN=10, LUN_MAX=1000
-     logical :: opened
-     integer :: lun
-     newunit=-1
-     do lun=LUN_MIN,LUN_MAX
-       inquire(unit=lun,opened=opened)
-       if (.not. opened) then
-         newunit=lun
-         exit
-       end if
-     end do
-     if (present(unit)) unit=newunit
-   end function newunit
 
    function getCommandLineArgument(i) result(argument)
       integer, intent(in) :: i

@@ -84,9 +84,9 @@ contains
    subroutine startTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
-      
+
       write(this%unit,'(a,a,a)') &
-           & "<testStatus name='",trim(testName), "'>"
+           & '<testStatus name="', cleanXml(trim(testName)), '">'
 
       flush(this%unit)
 
@@ -97,7 +97,7 @@ contains
       character(len=*), intent(in) :: testName
 
       write(this%unit,'(a,a,a)') &
-           & "</testStatus name='",trim(testName), "'>"
+           & '</testStatus name="', cleanXml(trim(testName)), '">'
 
       flush(this%unit)
 
@@ -109,11 +109,10 @@ contains
      class (AbstractTestResult), intent(in) :: result
 
      call this%print(result)
-
    end subroutine endRun
 
    subroutine print(this, result)
-      use AbstractTestResult_mod
+      use AbstractTestResult_mod, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -126,14 +125,16 @@ contains
    end subroutine print
 
    subroutine printHeader(this, result)
-      use AbstractTestResult_mod
+      use AbstractTestResult_mod, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
-      write(this%unit,'(a,i0,a,i0,a,i0,a)') &
-           "<testsuite errors='", result%errorCount(),&
-           "' failures='", result%failureCount(),&
-           "' tests='", result%runCount(),"'>"
+      write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f0.4,a)') &
+           '<testsuite name="', cleanXml(trim(result%getName())), &
+           '" errors="', result%errorCount(),&
+           '" failures="', result%failureCount(),&
+           '" tests="', result%runCount(),&
+           '" time="', result%getRunTime(), '">'
 
       flush(this%unit)
 
@@ -149,9 +150,10 @@ contains
       integer :: i, j
       character(len=80) :: locationString
 
-      call this%printExceptions(label,aFailedTest%testName,aFailedTest%exceptions)
+      call this%printExceptions(label,aFailedTest%testName,&
+           aFailedTest%exceptions)
 
-    end subroutine printFailure
+   end subroutine printFailure
 
    subroutine printExceptions(this, label, testName, exceptions)
       use TestFailure_mod
@@ -160,6 +162,7 @@ contains
       character(len=*), intent(in) :: label
       character(len=*), intent(in) :: testName
       type(Exception), intent(in) :: exceptions(:)
+      type(Exception) :: anException
 
       integer :: j
       character(len=80) :: locationString
@@ -167,45 +170,23 @@ contains
 !mlr testcase should likely be testname or testmethod or maybe test
 !mlr Q?  What does JUnit do?
 !mlr  Ask Halvor -- good for 3.0
-      write(this%unit,'(a,a,a)') "<testcase name='", trim(testName), "'>"
+      write(this%unit,'(a,a,a)') '<testcase name="', &
+           cleanXml(trim(testName)), '">'
       do j= 1, size(exceptions)
-         locationString = toString(exceptions(j)%location)
-         
-         write(this%unit,'(a,a,a)',advance='no') '<', label, " message='"
-         
+         anException = exceptions(j)
+         locationString = anException%location%toString()
+
+         write(this%unit,'(a,a,a)',advance='no') '<', cleanXml(label),&
+              ' message="'
          write(this%unit,'(a,a,a)',advance='no') &
-              'Location: ', trim(locationString), ', '
+              'Location: ', cleanXml(trim(locationString)), ', '
          write(this%unit,'(a)',advance='no') &
-              trim(exceptions(j)%getMessage())
-         write(this%unit,*) "'/>"
+              cleanXml(trim(exceptions(j)%getMessage()))
+         write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
-      
+
       flush(this%unit)
-
-   contains
-
-      function toString(location) result(string)
-         type (SourceLocation), intent(in) :: location
-         character(len=80) :: string
-
-         if (location%fileName == UNKNOWN_FILE_NAME) then
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = '<unknown location>'
-            else
-               write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
-            end if
-         else
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = trim(location%fileName)
-            else
-               write(string,'(a,":",i0)') trim(location%fileName), location%lineNumber
-            end if
-         end if
-
-         string = '[' // trim(string) // ']'
-
-      end function toString
 
    end subroutine printExceptions
 
@@ -217,6 +198,7 @@ contains
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
+      type (Exception) :: anException
 
       integer :: i, j
       character(len=80) :: locationString
@@ -224,45 +206,23 @@ contains
 !mlr testcase should likely be testname or testmethod or maybe test
 !mlr Q?  What does JUnit do?
 !mlr  Ask Halvor -- good for 3.0
-      write(this%unit,'(a,a,a)') "<testcase name='", trim(aFailedTest%testName), "'>"
+      write(this%unit,'(a,a,a)') '<testcase name="', &
+           cleanXml(trim(aFailedTest%testName)), '">'
       do j= 1, size(aFailedTest%exceptions)
-         locationString = toString(aFailedTest%exceptions(j)%location)
-         
-         write(this%unit,'(a,a,a)',advance='no') '<', label, " message='"
-         
-         write(this%unit,'(a,a,a)',advance='no') &
-              'Location: ', trim(locationString), ', '
-         write(this%unit,'(a)',advance='no') &
-              trim(aFailedTest%exceptions(j)%getMessage())
-         write(this%unit,*) "'/>"
+        anException = aFailedTest%exceptions(j)
+        locationString = anException%location%toString()
+
+        write(this%unit,'(a,a,a)',advance='no') &
+             '<', cleanXml(label), ' message="'
+        write(this%unit,'(a,a,a)',advance='no') &
+             'Location: ', cleanXml(trim(locationString)), ', '
+        write(this%unit,'(a)',advance='no') &
+             cleanXml(trim(aFailedTest%exceptions(j)%getMessage()))
+        write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
-      
+
       flush(this%unit)
-
-   contains
-
-      function toString(location) result(string)
-         type (SourceLocation), intent(in) :: location
-         character(len=80) :: string
-
-         if (location%fileName == UNKNOWN_FILE_NAME) then
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = '<unknown location>'
-            else
-               write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), location%lineNumber
-            end if
-         else
-            if (location%lineNumber == UNKNOWN_LINE_NUMBER) then
-               string = trim(location%fileName)
-            else
-               write(string,'(a,":",i0)') trim(location%fileName), location%lineNumber
-            end if
-         end if
-
-         string = '[' // trim(string) // ']'
-
-      end function toString
 
    end subroutine printFailure1
 
@@ -289,7 +249,8 @@ contains
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: testName
 
-      write(this%unit,'(a,a,a)') "<testcase name='", trim(testName), "'/>"
+      write(this%unit,'(a,a,a)') '<testcase name="',&
+           cleanXml(trim(testName)), '"/>'
 
       flush(this%unit)
 
@@ -303,7 +264,8 @@ contains
       integer :: i
 !      character(len=80) :: locationString
 
-      write(this%unit,'(a,a,a)') "<testcase name='", trim(aSuccessTest%testName), "'/>"
+      write(this%unit,'(a,a,a)') '<testcase name="',&
+           cleanXml(trim(aSuccessTest%testName)), '"/>'
 
       flush(this%unit)
 
@@ -315,7 +277,6 @@ contains
       type (TestFailure), intent(in) :: successes(:)
 
       integer :: i
-!      character(len=80) :: locationString
 
       do i = 1, size(successes)
          call this%printSuccess(successes(i))
@@ -334,4 +295,26 @@ contains
 
    end subroutine printFooter
 
+   function cleanXml(string_in) result(out)
+      character(len=*), intent(in) :: string_in
+      character(:), allocatable :: out
+      integer :: i
+      out = string_in
+      out = replaceAll(out, '<', '[')
+      out = replaceAll(out, '>', ']')
+      out = replaceAll(out, '"', "'")
+   end function cleanXml
+
+   function replaceAll(string_in, search, replace) result(out)
+      character(len=*), intent(in) :: string_in
+      character, intent(in) :: search, replace
+      character(:), allocatable :: out
+      integer :: i
+      out = string_in
+      i = index(out, search)
+      do while(i /= 0)
+         out = out(:i-1) // replace // out(i+1:)
+         i = index(out, search)
+      end do
+   end function replaceAll
 end module XmlPrinter_mod

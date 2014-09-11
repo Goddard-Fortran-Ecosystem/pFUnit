@@ -4,7 +4,7 @@
 !  MODULE: StringConversionUtilities
 !
 !> @brief
-!! <BriefDescription>
+!! A collection of utilities used throughout the framework.
 !!
 !! @author
 !! Tom Clune,  NASA/GSFC 
@@ -17,7 +17,12 @@
 !
 ! REVISION HISTORY:
 !
-! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+! 05 Sep 2014 - Added options for working with whitespace including
+!               ignore, trim, or keep.  Note: trimAll trims both
+!               sides, while trimTrailingWhitespace is more like
+!               Fortran's trim. MLR
+!
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 ! This module converts integers/real's to strings of a specific format
@@ -40,6 +45,8 @@ module StringConversionUtilities_mod
    public :: MAXLEN_STRING
    public :: nullTerminate
    public :: unlessScalar
+   public :: WhitespaceOptions, IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
+   public :: whitespacep, trimAll, trimTrailingWhitespace
 
    integer, parameter :: MAXLEN_STRING = 80
 !   integer, parameter :: MAXLEN_STRING = 80*5
@@ -60,6 +67,19 @@ module StringConversionUtilities_mod
 
    character(len=*), parameter :: c32fmt1 = '("z=(",'//r32fmt1//',",",'//r32fmt1//',")")'
    character(len=*), parameter :: c64fmt1 = '("z=(",'//r64fmt1//',",",'//r64fmt1//',")")'
+
+!   enum, bind(c) :: WhitespaceOptions
+   type WhitespaceOptions
+      integer value
+   end type WhitespaceOptions
+   enum, bind(c)
+      enumerator :: IGNORE_ALL_, TRIM_ALL_, KEEP_ALL_, IGNORE_DIFFERENCES_
+   end enum
+   type (WhitespaceOptions), parameter :: &
+        & IGNORE_ALL=WhitespaceOptions(IGNORE_ALL_), &
+        & TRIM_ALL  =WhitespaceOptions(TRIM_ALL_), &
+        & KEEP_ALL  =WhitespaceOptions(KEEP_ALL_), &
+        & IGNORE_DIFFERENCES =WhitespaceOptions(IGNORE_DIFFERENCES_)
 
 contains
 
@@ -163,5 +183,86 @@ contains
         retString=string
      end if
    end function unlessScalar
+
+   logical function whitespacep(c)
+     character, intent(in) :: c
+     integer, parameter :: iachar_spc = 32, iachar_tab = 9
+     whitespacep = &
+          & iachar(c) .eq. iachar_spc .or. &
+          & iachar(c) .eq. iachar_tab
+   end function whitespacep
+
+   function trimAll(s) result(trimmed)
+     character(len=*), intent(in) :: s
+     character(len=:), allocatable :: trimmed
+     integer :: i,lenS,leadingWhite,trailingWhite,lenTrimmed
+
+     lenS = len(s)
+
+     leadingWhite = 0
+     do i = 1,lenS
+        if (whitespacep(s(i:i))) then
+           leadingWhite = leadingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     trailingWhite = 0
+     do i = lenS,leadingWhite+1,-1
+        if (whitespacep(s(i:i))) then
+           trailingWhite = trailingWhite + 1
+        else
+           exit
+        end if
+     end do
+     lenTrimmed = lenS-leadingWhite-trailingWhite
+     
+     allocate(character(lenTrimmed) :: trimmed)
+     do i = 1,lenTrimmed
+        trimmed(i:i) = s(i+leadingWhite:i+leadingWhite)
+     end do
+   end function trimAll
+
+   function trimTrailingWhitespace(s) result(trimmed)
+     character(len=*), intent(in) :: s
+     character(len=:), allocatable :: trimmed
+     integer :: i,lenS
+     integer :: trailingWhite,lenTrimmed
+     integer :: leadingWhite
+
+     lenS = len(s)
+
+     leadingWhite = 0
+     do i = 1,lenS
+        if (whitespacep(s(i:i))) then
+           leadingWhite = leadingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     trailingWhite = 0
+     do i = lenS,leadingWhite+1,-1
+        if (whitespacep(s(i:i))) then
+           trailingWhite = trailingWhite + 1
+        else
+           exit
+        end if
+     end do
+
+     lenTrimmed = lenS-trailingWhite
+     allocate(character(lenTrimmed) :: trimmed)
+     do i = 1,lenTrimmed
+        trimmed(i:i) = s(i:i)
+     end do
+
+   end function trimTrailingWhitespace
+
+
+
+     
+
+
 
 end module StringConversionUtilities_mod

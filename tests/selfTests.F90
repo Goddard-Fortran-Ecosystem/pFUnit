@@ -63,6 +63,7 @@ contains
 
       use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
+      use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
 
 #ifdef BUILD_ROBUST
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
@@ -122,6 +123,8 @@ contains
 
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)
+
+      ADD(testXmlPrinterSuite)
 
 #ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
