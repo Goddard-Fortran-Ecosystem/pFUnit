@@ -34,7 +34,7 @@ contains
       class (MpiTestMethod), intent(inout) :: this
    end subroutine succeeds
 
-@test(npes=[3])
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN, npes=[3])
    subroutine fails(this)
       class (MpiTestMethod), intent(inout) :: this
       @assertEqual(0, countStart, 'intentionally failing test')
