@@ -456,7 +456,15 @@ class Parser():
         for npes in testMethod['npRequests']:
             args = "'" + testMethod['name'] + "', " + testMethod['name'] + ", " + str(npes)
             if 'setUp' in testMethod:
-                args += ', ' + testMethod['setup'] + ', ' + testMethod['tearDown']
+                args += ', ' + testMethod['setUp']
+            elif 'setUp' in self.userTestCase:
+                args += ', ' + self.userTestCase['setUp']
+
+            if 'tearDown' in testMethod:
+                args += ', ' + testMethod['tearDown']
+            elif 'tearDown' in self.userTestCase:
+                args += ', ' + self.userTestCase['tearDown']
+
             self.outputFile.write('   call suite%addTest(newMpiTestMethod(' + args + '))\n')
     
     def addUserTestMethod(self, testMethod):

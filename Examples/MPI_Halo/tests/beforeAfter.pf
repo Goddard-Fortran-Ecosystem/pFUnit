@@ -22,6 +22,13 @@ contains
       countComplete = countComplete + 1
    end subroutine last
 
+@test(npes=[4])
+   subroutine firstAndLastCalled(this)
+     class (MpiTestMethod), intent(inout) :: this
+     @assertEqual(1,countStart,'checking call to first')
+     @assertEqual(0,countComplete,'checking call to last')
+   end subroutine firstAndLastCalled
+
 @test(npes=[1,2])
    subroutine succeeds(this)
       class (MpiTestMethod), intent(inout) :: this
