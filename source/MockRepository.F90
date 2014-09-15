@@ -88,7 +88,7 @@ module MockRepository_mod
 !      module procedure addExpectationThat_sub_
 !   end interface
 
-   class (MockRepository), pointer :: MockRepositoryPointer
+   class (MockRepository), pointer :: MockRepositoryPointer => null()
 
 contains
 
