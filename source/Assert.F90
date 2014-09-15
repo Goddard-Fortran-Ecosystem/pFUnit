@@ -23,11 +23,13 @@
 module Assert_mod
    use AssertBasic_mod
    use AssertInteger_mod
-   use AssertReal_mod
-   use AssertComplex_mod, only : AssertEqual
+!   AssertReal mod
+!   AssertComplex mod, only : AssertEqual
+#include "AssertArrays.fh"
    implicit none
    private
 
+   public :: assertFail
    public :: assertTrue
    public :: assertFalse
    public :: assertEqual
@@ -39,10 +41,16 @@ module Assert_mod
    public :: assertNone
    public :: assertNotAll
 
+   public :: assertNotEqual
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
+   public :: assertRelativelyEqual
 
    public :: assertIsNan, assertIsFinite
+
+   ! Optional arguments for assertEqual.
+   public :: WhitespaceOptions
+   public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
 contains
 

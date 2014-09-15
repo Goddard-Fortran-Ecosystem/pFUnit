@@ -11,11 +11,17 @@ from __future__ import with_statement
 # M. Rilee
 #    Initial: 2013-0304
 #
+#    2014-0418:  Moved effective assert routines to own file.  Segregated other routines into files by rank.
+#
 #    2014-0324:  Fully implemented relational operators beyond "=".
 #
 #    2013-0814:  Added default r64 to call from assertEqual_w/o_tol to internal proc.
 #                Added logical to makeExpectedFTypes - but not for prime time.
 # 
+
+##### system code #####
+
+import argparse
 
 ##### utility code #####
 
@@ -25,6 +31,16 @@ import textwrap
 import random
 import copy
 
+##### preliminaries #####
+
+parser = argparse.ArgumentParser( \
+                                  description='Generate assertions with relational operators on arrays.', \
+                                  usage='%(prog) --maxRank MaximumRankOfArrays' \
+                                  )
+parser.add_argument('--maxRank', help='The maximum rank of the arrays for which to generate code.')
+args = parser.parse_args()
+
+                                  
 ##### begin generation code #####
 
 
@@ -187,6 +203,17 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
     internalSubroutineName = makeAssertInternalName(assertionName,
                                                     expectedDescr,foundDescr,tolerance)
 
+    # 2014-0415 Need to go to an older style of reference since we're fooling
+    # the TKR system of the compilers.
+    # foundArray = 'found'+DIMS_SET([1]*foundDescr.RANK())
+    foundArray = 'found'
+
+# Subroutine name
+    callInternalSubroutineName = internalSubroutineName
+# Interface name
+#    callInternalSubroutineName = 'Assert'+assertionName+'_internal'
+    
+
     if 'complex' in [foundDescr.FTYPE(),expectedDescr.FTYPE()] :
         declareDelta = \
 "      " + "complex(kind=kind(found)) :: delta"+foundDescr.EXPANDSHAPE('found') +"\n"+ \
@@ -210,7 +237,7 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
      declareExpected + \
      declareFound + \
      declareTolerance + """
-     character(len=*), optional, intent(in) :: message  ! not used yet!
+     character(len=*), optional, intent(in) :: message
      type (SourceLocation), optional, intent(in) :: location
 
      real(kind=kind(tolerance)) :: tolerance_
@@ -241,8 +268,10 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
 
 ! Next allow call to here...
 !mlr-NextStep-Begin
-     call """+internalSubroutineName+"""(&
-     &  expected, shape(expected), found, shape(found), &
+! 2014-0414 Call interface here instead of internal subroutine name, if possible. mlr
+! """ + internalSubroutineName + """
+     call """+callInternalSubroutineName+"""(&
+     &  expected, shape(expected), """+foundArray+""", shape(found), &
      &  tolerance_, message_, location_, """+ comparisonCase[assertionName] +""" )
 !mlr-NextStep-End
      
@@ -260,8 +289,7 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
      implicit none\n""" + \
      declareExpected + \
      declareFound + """
-!     character(len=*), intent(in) :: message  ! not used yet!
-     character(len=*), optional, intent(in) :: message  ! not used yet!
+     character(len=*), optional, intent(in) :: message 
      type (SourceLocation), optional, intent(in) :: location
 
      call """+subroutineName+"""(&
@@ -655,11 +683,11 @@ class constraintASSERT(routineUnit):
         self.tolerance = tolerance
         return
 
-def constructAssertInterfaceBlock(assertionName,foundFTypes=['real']):
+def constructAssertInterfaceBlock(assertionName,foundFTypes=['real'],foundRanks=[]):
     AssertInterfaceBlockName='assert'+assertionName
     AssertInterfaceBlock = interfaceBlock(AssertInterfaceBlockName)
     # Construct asserts generates the combinations based on what is passed in here.
-    [AssertInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(assertionName,foundFTypes=foundFTypes)]
+    [AssertInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks)]
     return AssertInterfaceBlock
 
 def VECTOR_NORM_NAME(rank,fType='real',precision=64):
@@ -731,10 +759,10 @@ class VECTOR_NORM(routineUnit):
                 generateVECTOR_NORM(rank,fType=self.fType,precision=self.precision))
         return
 
-def constructVectorNormInterfaceBlock():
+def constructVectorNormInterfaceBlock(foundRanks=range(6)):
     VectorNormInterface = interfaceBlock('vectorNorm')
     list(map(VectorNormInterface.addRoutineUnit,
-             flattened( [[VECTOR_NORM(i,fType=t,precision=p) for i in range(6) \
+             flattened( [[VECTOR_NORM(i,fType=t,precision=p) for i in foundRanks \
                           for p in allowedPrecisions(t) ] \
                          for t in ['real','complex','integer']
                      ])))
@@ -764,10 +792,12 @@ def constructValuesReportInterfaceBlock():
 # Scalar args?
 # Need assertionName...
 # def constructAssertInternalInterfaceBlock(assertionName="Equal"):
-def constructAssertInternalInterfaceBlock(assertionName):
+def constructAssertInternalInterfaceBlock(assertionName,expose=False):
+    # foundRanks... mlr... how would foundRanks work here?
     AssertInternalInterfaceBlockName='assert'+assertionName+'_internal'
     AssertInternalInterface = interfaceBlock(AssertInternalInterfaceBlockName)
-    list(map(AssertInternalInterface.addRoutineUnit,
+    # 2014-0415 expose may not be necessary here! MLR
+    list(map((lambda x: AssertInternalInterface.addRoutineUnit(x,expose=expose)),
              [makeAssertInternal_type(assertionName,
                                       a.getExpectedDescription(),
                                            a.getFoundDescription(),
@@ -835,14 +865,14 @@ class IsWithinTolerance(routineUnit):
                                                                      precision=self.precision))
         return
 
-def constructIsWithinToleranceInterfaceBlock():
+def constructIsWithinToleranceInterfaceBlock(foundRanks=range(6)):
     "For the comparison function, make an interface block and \
     implementation for inclusion into a module."
     iwt_InterfaceBlock = interfaceBlock('isWithinTolerance')
     list(map(iwt_InterfaceBlock.addRoutineUnit,
              flattened(
                  [[IsWithinTolerance(i,fType=t,precision=p)
-                   for i in range(6)
+                   for i in foundRanks
                    for p in allowedPrecisions(t) ]
                   for t in ['real','complex','integer']
               ])))
@@ -935,15 +965,21 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
 #    runit.setDeclaration(declaration(runit.getName(),'public '+runit.getName()))
     return runit
 
-def declareUSES():
-    return \
+def declareUSES(internalRoutines=[]):
+    retStr=\
 """
    use Params_mod
    use AssertBasic_mod
    use Exception_mod
    use SourceLocation_mod
    use StringConversionUtilities_mod
+   use AssertArraysSupport_mod
 """
+    for i in internalRoutines:
+        retStr=retStr+\
+"""   use AssertArraysInternal"""+i+"""_mod
+"""
+    return retStr
 
 def declareDISCIPLINE():
     return \
@@ -962,6 +998,7 @@ def declareEXPORTS(assertionRoutines,basename='AssertReal'):
 """
     if basename == 'AssertReal' :
         retPublic = retPublic + """
+
    public :: vectorNorm
    public :: isWithinTolerance
  
@@ -969,8 +1006,6 @@ def declareEXPORTS(assertionRoutines,basename='AssertReal'):
    public :: L1_NORM
    public :: L2_NORM
 
-   public :: valuesReport
-   public :: differenceReport
 """
     return retPublic
 
@@ -1138,6 +1173,8 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
 # network of "make..." functions below, or one could add other routineUnits to AssertList, as long
 # as it make sense to include them in the list (and interface block).
 #
+#    print ('1000: ',foundRanks)
+
     AssertList = \
     [ \
       #test      a \
@@ -1168,36 +1205,171 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
     
     return AssertList
 
-def constructDeclarations(assertionRoutines,basename=''):
+def constructDeclarations(assertionRoutines,basename='',foundRanks=[]):
     "Construct declarations to be used at the beginning of the Module."
+    # foundRanks works into this... how? mlr 2014-0407
     declarations = \
         [ \
-          declaration('uses',declareUSES()), \
+          declaration('uses',declareUSES(internalRoutines=assertionRoutines)), \
           declaration('discipline',declareDISCIPLINE()), \
           declaration('exports',declareEXPORTS(assertionRoutines,basename)), \
           declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
           ]
     return declarations
 
-def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real']):
+
+
+def declareUSES_() :
+    "Set up use statements for SupportModule."
+    return \
+"""
+   use Params_mod
+   use AssertBasic_mod
+   use Exception_mod
+   use SourceLocation_mod
+   use StringConversionUtilities_mod
+"""
+
+
+# Use "global" declareDISCIPLINE()
+def declareEXPORTS_(exportedRoutines) :
+    retPublic=""
+    for aRoutineName in exportedRoutines :
+         retPublic = retPublic + \
+"""   public :: """+aRoutineName+"""
+"""
+    retPublic = retPublic + \
+"""
+   public :: valuesReport
+   public :: differenceReport
+
+   public :: vectorNorm
+   public :: isWithinTolerance
+   
+"""
+#    print ('3000: retPublic: ',retPublic)
+    return retPublic
+
+def declareEXPORTS_INTERNAL_(exportedRoutines) :
+    retPublic=""
+    for aRoutineName in exportedRoutines :
+         retPublic = retPublic + \
+"""   public :: """+aRoutineName+"""
+"""
+#-    retPublic = retPublic + \
+#-"""
+#-   public :: valuesReport
+#-   public :: differenceReport
+#-
+#-   public :: vectorNorm
+#-   public :: isWithinTolerance
+#-   
+#-"""
+#    print ('3000: retPublic: ',retPublic)
+    return retPublic
+
+
+# Use "global" declareEXPORTS_PARAMETERS():
+
+def constructSupportModuleDeclarations(exportedRoutineNames=[]):
+#    print ('2000: eRN: ',exportedRoutineNames)
+# Start main of constructSupportModuleDeclarations
+    declarations = \
+        [ \
+          declaration('uses',declareUSES_()), \
+          declaration('discipline',declareDISCIPLINE()), \
+          declaration('exports',declareEXPORTS_(exportedRoutineNames)), \
+          declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
+          ]
+    return declarations
+
+def constructInternalModuleDeclarations(exportedRoutineNames=[]):
+#    print ('2000: eRN: ',exportedRoutineNames)
+# Start main of constructSupportModuleDeclarations
+    declarations = \
+        [ \
+          declaration('uses',declareUSES_()), \
+          declaration('discipline',declareDISCIPLINE()), \
+          declaration('exports',declareEXPORTS_INTERNAL_(exportedRoutineNames)), \
+          declaration('exportsParameters',declareEXPORTS_PARAMETERS()) \
+          ]
+    return declarations
+
+
+def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[],foundRanks=[],maxRank=5):
+    # Just a rename to capture an idea.  Will fix later. MLR
+#    exportedRoutineNames = ['assert'+i+'_internal' for i in assertionShortNames]
+    exportedRoutineNames = []
+#    print ('1500: exportedRoutineNames: ',exportedRoutineNames)
+    m1 = module(baseName+'_mod')
+    m1.setFileName(baseName+'.F90')
+    # Note exportedRoutineNames may be empty but still makes a bunch of declarations.
+    [m1.addDeclaration(d) for d in constructSupportModuleDeclarations(exportedRoutineNames)]
+    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
+    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
+    # Generate internals for all ranks.
+    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=range(maxRank+1)))
+    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(maxRank+1)))
+    
+    # The following will add "assert" to the shortname.
+#+    for assertionShortName in assertionShortNames:
+#+        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,foundRanks=foundRanks,expose=True),expose=True)
+#?        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,expose=True),expose=True)
+
+    return m1
+
+def constructInternalModule(baseName='AssertArraysInternal',assertionShortName="",exportedRoutineNames=[],maxRank=[]):
+# oops -- hardwired longname here
+    baseName_ = baseName+"assert"+str(assertionShortName)
+    m1 = module(baseName_+'_mod')
+    m1.setFileName(baseName_+'.F90')
+    
+    [m1.addDeclaration(d) for d in constructInternalModuleDeclarations(exportedRoutineNames)]
+
+    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
+    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
+    # Generate internals for all ranks.
+    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=range(maxRank+1)))
+    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=range(maxRank+1)))
+    
+    
+    # The following will add "assert" to the shortname.
+    m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionShortName,expose=True),expose=True)
+
+    return m1
+
+
+def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[]):
 #    assertionShortNames=['Equal']
 #    assertionShortNames=['GreaterThan']
     assertionNames=['assert'+Suffix for Suffix in assertionShortNames]
+    rankName = ''
+    for iRank in foundRanks : rankName = rankName + str(iRank)
     "A main test of how to construct the module."
-    m1 = module(baseName+'_mod')
-    m1.setFileName(baseName+'.F90')
-    [m1.addDeclaration(d) for d in constructDeclarations(assertionNames,basename=baseName)]
+    m1 = module(baseName+rankName+'_mod')
+    m1.setFileName(baseName+rankName+'.F90')
+    [m1.addDeclaration(d) for d in constructDeclarations(assertionNames,basename=baseName,foundRanks=foundRanks)]
     # add interface blocks (and the implementations)
-    m1.addInterfaceBlock(constructVectorNormInterfaceBlock())
-    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock())
+    foundRanks1=foundRanks
+    if (not 0 in foundRanks) : foundRanks1 = [0] + foundRanks
+#! Moved to support module.        
+#!    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=foundRanks1))
+#!    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=foundRanks1))
     for assertionName in assertionShortNames:
-        m1.addInterfaceBlock(constructAssertInterfaceBlock(assertionName,foundFTypes=foundFTypes))
-    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
-    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
+        m1.addInterfaceBlock(constructAssertInterfaceBlock(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks))
+        
+# The following lines have been moved to the support module.
+#    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
+#    m1.addInterfaceBlock(constructValuesReportInterfaceBlock())
+#
+
+# The following generates internal routines.  Moved to support module.
     # *in test*
     # This is where the "list of asserts" is generated.
-    for assertionName in assertionShortNames:
-        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionName))
+#???    for assertionName in assertionShortNames:
+#???        m1.addInterfaceBlock(constructAssertInternalInterfaceBlock(assertionName,foundRanks=foundRanks))
+
+# Old removal. 2014-0414
     # add individual routine units
     #    m1.addRoutineUnit(makeThrowDifferentValues()) # arg. provides a routine unit.
     return m1
@@ -1217,50 +1389,83 @@ def filePreamble(filename):
 
 """
 
-def makeModuleReal():
-#    mod = constructModule(assertionShortNames=['Equal'])
-    mod = constructModule( \
-                           assertionShortNames=["NotEqual",\
-                                                "Equal",\
-                                                "GreaterThan",\
-                                                "GreaterThanOrEqual",\
-                                                "LessThan",\
-                                                "LessThanOrEqual",\
-                                                "RelativelyEqual",\
-                                                ])
-    # print('\n'.join(mod.generate()))
-    # print(mod)
-    # print('makeModuleReal: opening    '+mod.getFileName())
-    with open(mod.getFileName(),'w') as f:
-        # print('makeModuleReal: writing to '+mod.getFileName())
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
+def addFileToMakefile(fileName,includeFile="generated.inc"):
+    with open(includeFile,'a') as f:
+        f.write('GENERATED_CODE += ' + fileName + '\n')
+    return
+
+def addModToF90Include(modName,includeFile="AssertArrays.fh",postFix=""):
+    with open(includeFile,'a') as f:
+        f.write('   use ' + modName + postFix + '\n')
+    return
+
+def makeGeneratedInclude(includeFile="generated.inc"):
+    with open(includeFile,'w') as f:
+        f.write('# This file automatically generated. Do not modify.\n')
+    return
+
+relationalOperatorShortNames=["NotEqual",\
+                            "Equal",\
+                            "GreaterThan",\
+                            "GreaterThanOrEqual",\
+                            "LessThan",\
+                            "LessThanOrEqual",\
+                            "RelativelyEqual"]
+def makeModuleReal(maxRank=5):
+    assertionShortNames=relationalOperatorShortNames
+#    assertionShortNames=["NotEqual",\
+#                        "Equal",\
+#                        "GreaterThan",\
+#                        "GreaterThanOrEqual",\
+#                        "LessThan",\
+#                        "LessThanOrEqual",\
+#                        "RelativelyEqual"]
+    for iRank in range(0,maxRank+1):
+        foundRanks = [iRank]
+        mod = constructModule( \
+                            assertionShortNames=assertionShortNames,\
+                            foundRanks=foundRanks)
+        with open(mod.getFileName(),'w') as f:
+            f.write(filePreamble(mod.getFileName()))
+            f.write('\n'.join(mod.generate()))
+        addFileToMakefile(mod.getFileName())
+        for iName in assertionShortNames : 
+            addModToF90Include(mod.getName(),postFix=", only : " + 'Assert'+iName)
     print('makeModuleReal: done')
     return
 
-def makeModuleComplex():
-    #
-    # mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
-    #
-    mod = constructModule(baseName='AssertComplex',\
-                          assertionShortNames=['NotEqual','Equal','RelativelyEqual'],\
-                          foundFTypes=['real','complex'])
-    # -- mod = constructModule(baseName='AssertComplex',foundFTypes=['complex'])
-    # print('makeModuleComplex: opening    '+mod.getFileName())
-    with open(mod.getFileName(),'w') as f:
-        # print('makeModuleComplex: writing to '+mod.getFileName())
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
+def makeModuleComplex(maxRank=5):
+    assertionShortNames=['NotEqual','Equal','RelativelyEqual']
+    for iRank in range(0,maxRank+1):
+        foundRanks = [iRank]
+        mod = constructModule(baseName='AssertComplex',\
+                          assertionShortNames=assertionShortNames,\
+                          foundFTypes=['real','complex'],\
+                          foundRanks=foundRanks)
+        with open(mod.getFileName(),'w') as f:
+            f.write(filePreamble(mod.getFileName()))
+            f.write('\n'.join(mod.generate()))
+        addFileToMakefile(mod.getFileName())
+        for iName in assertionShortNames : 
+           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)
     print('makeModuleComplex: done')
     return
 
-def makeModuleInteger():
-    mod = constructModule(baseName='AssertInteger1',\
-                          assertionShortNames=['Equal'],\
-                          foundFTypes=['integer'])
-    with open(mod.getFileName(),'w') as f:
-        f.write(filePreamble(mod.getFileName()))
-        f.write('\n'.join(mod.generate()))
+def makeModuleInteger(maxRank=5):
+    assertionShortNames=['Equal']
+    for iRank in range(0,maxRank+1):
+        foundRanks=[iRank]
+        mod = constructModule(baseName='AssertInteger1',\
+                          assertionShortNames=assertionShortNames,\
+                          foundFTypes=['integer'],\
+                          foundRanks=foundRanks)
+        with open(mod.getFileName(),'w') as f:
+            f.write(filePreamble(mod.getFileName()))
+            f.write('\n'.join(mod.generate()))
+        addFileToMakefile(mod.getFileName())
+# Not ready to add integers to AssertArrays...
+#        for iName in assertionShortNames : 
+#           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)       
     print('makeModuleInteger: done')
     return
 
@@ -1272,18 +1477,55 @@ def makeModuleInteger():
 #     print('makeModuleInteger: done')
 #     return
 
-def main():
+def makeSupportModule(assertionShortNames=[],maxRank=5):
+#        print ('1000: aSN: ',assertionShortNames)
+        mod = constructSupportModule(assertionShortNames=assertionShortNames,maxRank=maxRank)
+        with open(mod.getFileName(),'w') as f:
+            f.write(filePreamble(mod.getFileName()))
+            f.write('\n'.join(mod.generate()))
+        addFileToMakefile(mod.getFileName())
+#        for iName in assertionShortNames : 
+#           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)
+        print('makeSupportModule: done')
+        return
+
+def makeInternalModule(assertionShortNames=[],maxRank=5):
+        for iAssertion in assertionShortNames :
+                mod = constructInternalModule(assertionShortName=iAssertion,maxRank=maxRank)
+                with open(mod.getFileName(),'w') as f:
+                    f.write(filePreamble(mod.getFileName()))
+                    f.write('\n'.join(mod.generate()))
+                addFileToMakefile(mod.getFileName())
+#???                
+#                Do I need to addModToF90Include?
+
+#????
+#        for iName in assertionShortNames : 
+#           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)
+        print('makeInternalModule: done')
+        return
+
+    
+def main(maxRank=5):
     # Make the modules for the different types...
+    #
+    makeGeneratedInclude(includeFile="generated.inc")
     #++
-    makeModuleReal()
+    makeModuleReal(maxRank=maxRank)
     #++
-    makeModuleComplex()
+    makeModuleComplex(maxRank=maxRank)
     #? The following requires testing.
-    makeModuleInteger()
+    makeModuleInteger(maxRank=maxRank)
     #? Just started...
     #- makeModuleLogical()
+
+    # Make the routines that do the work.
+    makeInternalModule(assertionShortNames=relationalOperatorShortNames,maxRank=maxRank)
+    
+    # Make the intermediate routines.
+    makeSupportModule(assertionShortNames=relationalOperatorShortNames,maxRank=maxRank)
+    
     return
 
 if __name__ == "__main__":
-    main()
-
+    main(maxRank=int(args.maxRank or 5))

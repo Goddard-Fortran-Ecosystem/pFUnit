@@ -116,6 +116,7 @@ contains
       end select
 
       result = newTestResult()
+      call result%setName(aTest%getName())
       call result%addListener( this )
 
       ! This should be a named pipe

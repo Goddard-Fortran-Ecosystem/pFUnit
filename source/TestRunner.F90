@@ -72,6 +72,8 @@ contains
 
     function run(this, aTest, context) result(result)
       use Test_mod
+      use TestSuite_mod
+      use TestCase_mod
       use TestResult_mod
       use ParallelContext_mod
 
@@ -79,7 +81,7 @@ contains
       class (TestRunner), intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
-
+      
       integer :: clockStart
       integer :: clockStop
       integer :: clockRate
@@ -89,7 +91,9 @@ contains
       call system_clock(clockStart)
 
       result = this%createTestResult()
+      call result%setName(aTest%getName())
 ! Add the extListeners to the listeners list.
+
       do i=1,size(this%extListeners)
          call result%addListener(this%extListeners(i)%pListener)
       end do
@@ -109,7 +113,6 @@ contains
       end if
 !tc: 2+1 lists -- extListeners, listeners and in testresult too...
    end function run
-
 
 ! Recall, runner is also a listener and these will be called from
 ! TestResult, adding the ability to put in functionality here. In

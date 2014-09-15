@@ -22,7 +22,6 @@
 !-------------------------------------------------------------------------------
 
 module Params_mod
-
   implicit none
 
   integer, parameter :: R32 = selected_real_kind(p=6)

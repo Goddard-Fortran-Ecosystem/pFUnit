@@ -50,10 +50,7 @@ module BaseTestRunner_mod
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context
       end function run2
-      
+
    end interface
-
-contains
-
 
 end module BaseTestRunner_mod

@@ -1,0 +1,22 @@
+Note: Should add info for earlier releases.
+
+3.0.1	September 15, 2014
+	- Fixed parser bug that was not recognizing user-provided procedures
+ 	  annotated with @before/@after for MPI tests.
+	- Corrected end-of-run logic in include/driver.F90.
+	- Minor corrections & simplifications to build process.
+	- Improved compilation time by refactoring automatically generated code.
+	- Added compile-time configuration parameter to control maximum rank
+	  supported by assertions over arrays, e.g. AssertReal.
+	- Added "whitespace=IGNORE_DIFFERENCES" and similar options to AssertEqual.
+
+
+3.0.0	April 04, 2014
+	- Design improvement that unfortunately breaks GFortran prior to
+	  4.8.3 and 4.9.0 (main reason for major release)
+	- Default driver now produces useful return code in serial (and some MPI)
+	- New assertions for floating point:  <, <=, >, >=
+	- Various improvements to parser
+
+
+

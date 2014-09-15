@@ -166,7 +166,7 @@ contains
          call testCases(i)%test%run(aResult, newSerialContext())
       end do
 
-      call assertEqual('::a1::a2::a3::b1::b2', aResult%log)
+      call assertEqual('::childA.a1::childA.a2::childA.a3::childB.b1::childB.b2', aResult%log)
 
    end subroutine testGetTestCases
 

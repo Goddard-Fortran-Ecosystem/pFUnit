@@ -23,7 +23,8 @@ DEBUG_FLAGS =-g
 
 # Include the compiler-specific options.
 COMPILER ?= COMPILER_NOT_SET
-include $(INCLUDE_DIR)/$(COMPILER).mk
+COMPILER_ = $(shell echo $(COMPILER) | tr a-z A-Z )
+include $(INCLUDE_DIR)/$(COMPILER_).mk
 
 FFLAGS += $I$(INCLUDE_DIR)
 
@@ -54,7 +55,7 @@ endif
 clean: local-base0-clean
 
 local-base0-clean:
-	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp *.s
 	$(RM) -r *.dSYM
 
 distclean: local-base0-distclean

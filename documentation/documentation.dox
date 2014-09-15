@@ -141,6 +141,8 @@ tests - Source code for unit testing pFUnit itself.
 
 tools - Tools used to help develop, build, and install pFUnit.
 
+VERSION - Contains a string describing the current version of the framework.
+
 \section sec_Configuration Configuration
 Little needs to be done to configure pFUnit for the build, however
 there are several environment variables on which the package depends.
@@ -165,6 +167,11 @@ also set the following.
 
 `MPIRUN`\code
 $ export MPIRUN=/some.path/mpirun\endcode
+
+`PFUNIT_MAX_RANK` - controls the maximum size of the arrays asserts are
+defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
+assertions will be able to handle arrays up to rank 5.\code
+$ export PFUNIT_MAX_RANK=5\endcode 
 
 `DOXYGEN` - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
@@ -475,12 +482,14 @@ pFUnit supports the software development of several weather and climate simulati
    <li>\ref ZeroTestsRun</li>
    <li>\ref SomeOfMyTestsAreNotRunning</li>
    <li>\ref FAQIntel13</li>
+   <li>\ref FAQSegAndLinkFaults</li>
    </ul>
    <li>\ref sec_Tips</li>
    <ul>
    <li>\ref TipEnvironmentModules</li>
    <li>\ref TipCompileTimeErrors</li>
    <li>\ref TipIntermediateFiles</li>
+   <li>\ref TipWhitespace</li>
    </ul>
 </ul>
 
@@ -514,6 +523,20 @@ To make pFUnit work with Intel Fortran Version 13, please ensure that
 using pFUnit. In the build process for pFUnit, this is added to the
 make variables CPPFLAGS and FPPFLAGS.
 
+\subsection FAQSegAndLinkFaults Segmentation Faults and Odd Link Errors
+
+Q. pFUnit fails to build or now leads to segmentation faults.  Did something change?
+
+A. One cause for failure to build or odd runtime segmentation faults is when we change compiler configurations and some object or library files are left over from a previous environment.  This might be hard to spot, for example, during compiler upgrades.  Switching from one compiler to another, e.g. from Intel to GNU, is more likely to generate link-time errors if old code is still around.  A few items to check follow.
+
+<ul>
+<li>Execute <em>make distclean</em> or remove objects (or their directories if using CMAKE) associated with previous builds.</li>
+<li>Ensure pFUnit and user applications are compiled using compatible (or the same) compilers.</li>
+<li>Ensure the environment variable PFUNIT is set to the appropriate install directory.</li>
+</ul>
+
+Finally, it is quite possible that a bug has been uncovered.  Please contact the development team or open a <a href="https://sourceforge.net/p/pfunit/bugs/?source=navbar">bug ticket</a>.
+
 
 \section sec_Tips Tips
 
@@ -546,6 +569,25 @@ in the makefile to keep them from being deleted. For example:
 # In GNUmakefile
 .PRECIOUS: %_cpp.F90\endcode 
 
+\subsection TipWhitespace Ignoring whitespace differences in assertions on strings.
+Several options exist for how to compare strings with assertEqual.
+
+\code
+call assertEqual(expectedString, foundString, &
+               & whitespace=IGNORE_DIFFERENCES )\endcode
+
+<strong>WhitespaceOptions:</strong>
+<ul>
+<li><strong>IGNORE_DIFFERENCES</strong> ignores whitespace differences (number and value).</li>
+<li><strong>IGNORE_ALL</strong> strictly ignores all whitespace (spaces & tabs).</li>
+<li><strong>TRIM_ALL</strong> strictly ignores leading and trailing whitespace.  </li>
+<li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating
+           between tabs and spaces.</li>
+</ul>
+
+Example usages can be seen in tests/Test_AssertBasic.F90 or
+Examples/Simple/tests/helloWorld.pf.
+
 
 \page page_PlatformSpecific Platform Specific Notes
 
@@ -576,7 +618,7 @@ Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 Windows/CYGWIN contributions from E. Lezar.
 
-Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met).
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office)., J. Krishna (ANL).
 
 The design of pFUnit is strongly influenced by <a href="http://junit.org">JUnit</a>.
 
@@ -585,7 +627,9 @@ Initial pFUnit 2 documentation by Michael Rilee (Rilee Systems Technologies).
 
 \page page_KnownInstallationsAndVersions Known Installations & Versions
 
-master - The cutting edge of pFUnit development.
+master - The current release.
+
+development - The cutting edge of pFUnit development.
 
 pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
@@ -871,6 +915,9 @@ getParameterString.  For example:
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2014-0915 Minor updates for 3.0.1. MLR</li>
+<li>2014-0404 Updated for release of 3.0. TLC</li>
+<li>2014-0131, 2014-0205. Updated. MLR</li>
 <li>2013-1227. First note of OPENMP additions by T. Clune.  MLR.</li>
 <li>2013-1212. Initial draft of Doxygen version. MLR</li>
 <li>2013-1107. Minor edits. MLR</li>

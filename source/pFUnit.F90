@@ -24,6 +24,7 @@ module pFUnit_mod
    use SourceLocation_mod
    use Exception_mod
    use ParallelException_mod
+   use Expectation_mod
    use Test_mod
    use TestSuite_mod
    use TestCase_mod
@@ -44,7 +45,7 @@ module pFUnit_mod
    use RobustRunner_mod
 #endif
    use Assert_mod
-   use AssertReal_mod
+!  AssertReal mod
    use ParallelContext_mod
    use SerialContext_mod
 #ifdef USE_MPI
@@ -89,6 +90,7 @@ module pFUnit_mod
    public :: MpiTestMethod, newMpiTestMethod
 #endif
 
+   public :: assertFail
    public :: assertTrue, assertFalse
    public :: assertEqual
    public :: assertAny
@@ -104,6 +106,14 @@ module pFUnit_mod
    public :: assertIsFinite
 
    public :: throw, catchNext, catch, anyExceptions
+
+   public :: Expectation, Subject, Predicate
+   public :: wasCalled, wasNotCalled, wasCalledOnce
+
+   ! Optional arguments for assertEqual
+   public :: WhitespaceOptions
+   public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
+
 
 #ifdef USE_MPI
    logical :: useMpi_

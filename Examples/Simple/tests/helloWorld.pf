@@ -11,3 +11,11 @@ subroutine testBrokenHelloWorld()
    implicit none
    @assertEqual("Hello World!","Found something else!","Intentionally broken test!")
 end subroutine testBrokenHelloWorld
+
+@test
+subroutine testIgnoreWhitespaceHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello     World!","Hello World!  ",whitespace=IGNORE_DIFFERENCES)
+end subroutine testIgnoreWhitespaceHelloWorld
+

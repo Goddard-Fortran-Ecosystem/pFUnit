@@ -1,5 +1,7 @@
 #!/bin/bash
 
+UNAME=`uname`
+
 opDir=
 
 if [ "$#" -eq 0 ];then
@@ -8,12 +10,27 @@ else
    export opDir=$1
 fi
 
-if [ x`uname -o` == x"Cygwin" ];then
-  OAX_STRING="exe|obj|lib"
+echo pfunit/tools/clean:  Removing files ending in ".([oax]|mod|i90|dSYM)".
+
+pushd ${opDir}
+if [[ ${UNAME} =~ (Darwin) ]]; then
+   for i in `find -E . -regex '.*\.([oax]|mod|i90)$'`; do
+      rm $i
+   done
+   for i in `find -E . -regex '.*\.(dSYM)$'`; do
+      \rm -rf $i
+   done
+else if [[ ${UNAME} =~ (Linux) ]]; then
+   for i in `find . -regextype posix-extended -regex '.*\.([oax]|mod|i90)$'`; do
+      rm $i
+   done
+   for i in `find . -regextype posix-extended -regex '.*\.(dSYM)$'`; do
+      \rm -rf $i
+   done
 else
-  OAX_STRING="[oax]"
-fi
-echo pfunit/tools/clean:  Removing files ending in ".($OAX_STRING|mod|i90|dSYM)" from $opDir.
+   echo \"tools/clean\": Not sure how to clean on UNAME=\"${UNAME}\". Exiting...
+fi; fi
+
 
 pushd ${opDir}
 for i in `find . -regextype posix-extended -regex '.*\.($OAX_STRING|mod|i90)$'`; do

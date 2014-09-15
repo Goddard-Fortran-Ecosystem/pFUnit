@@ -35,13 +35,13 @@ class module:
     def addImplementation(self,implementation):
         self.implementations.append(implementation)
         return self
-    def addRoutineUnit(self, rUnit):
+    def addRoutineUnit(self, rUnit,expose=False):
         # Might need to add more than one decl.
-        self.addDeclaration(rUnit.getDeclarations())
+        self.addDeclaration(rUnit.getDeclarations(expose=expose))
         self.addImplementation(rUnit.getImplementation())
         return self
-    def addInterfaceBlock(self, interface):
-        self.addDeclaration(interface.getDeclaration())
+    def addInterfaceBlock(self, interface,expose=False):
+        self.addDeclaration(interface.getDeclaration(expose=expose))
         self.addImplementation(interface.getImplementation())
         return self
     def getName(self):
@@ -91,9 +91,9 @@ class routineUnit:
     def setImplementation(self,implementationSource):
         self.implementation = implementation(self.name, implementationSource)
         return
-    def getDeclaration(self):
+    def getDeclaration(self,expose=False):
         return self.declaration
-    def getDeclarations(self):
+    def getDeclarations(self,expose=False):
         return self.declarations
     def getImplementation(self):
         return self.implementation
@@ -119,6 +119,17 @@ class interfaceBlock:
                 '\n   module procedure '.join(self.moduleProcedureAlternatives)
         retStr += '\n\nend interface ' + self.name + '\n'
         return declaration(self.name,retStr)
+
+    def generateItemizedDeclarations(self):
+        retStr = '\n!interface ' + self.name + '\n'
+        if self.moduleProcedureAlternatives != [] :
+            # Note that we need to treat the first line as a special case.
+            retStr += \
+                '\n   public :: ' + \
+                '\n   public :: '.join(self.moduleProcedureAlternatives)
+        retStr += '\n\n!end interface ' + self.name + '\n'
+        return declaration(self.name,retStr)
+
     def generateImplementation(self):
         retStr = '! interface ' + self.name + ' implementations\n'
         if self.moduleProcedureImplementations != [] :
@@ -129,14 +140,17 @@ class interfaceBlock:
     def addModuleProcedureAlternative(self,newName):
         self.moduleProcedureAlternatives.append(newName)
         return self
-    def addRoutineUnit(self,routineUnit):
-        for d in routineUnit.getDeclarations():
+    def addRoutineUnit(self,routineUnit,expose=False):
+        for d in routineUnit.getDeclarations(expose=expose):
             self.addModuleProcedureAlternative(d.generate())
         # self.addModuleProcedureAlternative(routineUnit.getDeclaration().generate())
         self.moduleProcedureImplementations.append(routineUnit.getImplementation().generate())
         return self
-    def getDeclaration(self):
-        return self.generateDeclaration()
+    def getDeclaration(self,expose=False):
+        if expose :
+            return self.generateItemizedDeclarations()
+        else :
+            return self.generateDeclaration()
     def getImplementation(self):
         return self.generateImplementation()
     

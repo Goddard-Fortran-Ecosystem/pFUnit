@@ -11,7 +11,7 @@ class MyError(Exception):
     def __str__(self):
         return repr(self.value)
 
-assertVariants = 'Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
+assertVariants = 'Fail|Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
 assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
 
@@ -190,6 +190,7 @@ class AtAssert(Action):
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+
 
 class AtMpiAssert(Action):
     def __init__(self, parser):
@@ -455,7 +456,15 @@ class Parser():
         for npes in testMethod['npRequests']:
             args = "'" + testMethod['name'] + "', " + testMethod['name'] + ", " + str(npes)
             if 'setUp' in testMethod:
-                args += ', ' + testMethod['setup'] + ', ' + testMethod['tearDown']
+                args += ', ' + testMethod['setUp']
+            elif 'setUp' in self.userTestCase:
+                args += ', ' + self.userTestCase['setUp']
+
+            if 'tearDown' in testMethod:
+                args += ', ' + testMethod['tearDown']
+            elif 'tearDown' in self.userTestCase:
+                args += ', ' + self.userTestCase['tearDown']
+
             self.outputFile.write('   call suite%addTest(newMpiTestMethod(' + args + '))\n')
     
     def addUserTestMethod(self, testMethod):

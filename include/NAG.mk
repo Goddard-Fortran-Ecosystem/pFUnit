@@ -1,3 +1,6 @@
+
+# GNU makefile include for NAG compilers. Ver. 2014-0428-1 MLR
+
 F90 ?= nagfor
 
 I=-I

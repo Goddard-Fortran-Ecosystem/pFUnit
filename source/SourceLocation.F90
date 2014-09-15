@@ -36,12 +36,38 @@ module SourceLocation_mod
    character(len=MAXLEN_FILE_NAME), parameter :: UNKNOWN_FILE_NAME= '<unknown file>'
    integer, parameter :: UNKNOWN_LINE_NUMBER = -1
 
-   type SourceLocation
+   type :: SourceLocation
       character(len=MAXLEN_FILE_NAME) :: fileName = UNKNOWN_FILE_NAME
       integer :: lineNumber = UNKNOWN_LINE_NUMBER
+   contains
+      procedure :: toString
    end type SourceLocation
 
    type (SourceLocation), parameter :: UNKNOWN_SOURCE_LOCATION = &
         & SourceLocation()
+
+contains
+
+   function toString(this) result(string)
+      class (SourceLocation), intent(inout) :: this
+      character(len=80) :: string
+      
+      if (this%fileName == UNKNOWN_FILE_NAME) then
+         if (this%lineNumber == UNKNOWN_LINE_NUMBER) then
+            string = '<unknown location>'
+         else
+            write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), this%lineNumber
+         end if
+      else
+         if (this%lineNumber == UNKNOWN_LINE_NUMBER) then
+            string = trim(this%fileName)
+         else
+            write(string,'(a,":",i0)') trim(this%fileName), this%lineNumber
+         end if
+      end if
+
+      string = '[' // trim(string) // ']'
+
+   end function toString
 
 end module SourceLocation_mod
