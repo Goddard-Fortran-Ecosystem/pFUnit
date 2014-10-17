@@ -1,7 +1,7 @@
 
-PFUNIT VERSION 3.0.0 INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 3.0.1 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2014-0421 M. Rilee mike@rilee.net
+VERSION 2014-0915 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -463,11 +463,13 @@ Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 Windows/CYGWIN contributions from E. Lezar.
 
-Other acknowledgments:  S.P. Santos (NCAR), M. Hambley.
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office), J. Krishna (ANL).
 
 11. KNOWN INSTALLATIONS/VERSIONS (git cognizant from "sourceforge.net/projects/pfunit")
 
-master - The cutting edge of pFUnit development.
+master - The current release.
+
+development - The cutting edge of pFUnit development.
 
 pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
@@ -479,12 +481,14 @@ TBD
 
 13. --TODO--
 
-Make other directory.
-Make sample modulefile.
-Make "hello world" examples for section 7 above.
+- Make other directory.
+- Make Environment Modules example in other directory.
+- Other build systems, e.g. CMake.
+
 
 14. REVISIONS TO THIS DOCUMENT
 
+2014-0915 Minor updates for 3.0.1. MLR
 2014-0404 Updated for release of 3.0. TLC
 2014-0131, 2014-0205. Updated. MLR
 2013-1107. Minor edits. MLR
