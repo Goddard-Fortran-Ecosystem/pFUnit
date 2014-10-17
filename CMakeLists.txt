@@ -123,6 +123,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
 
     # Use XLF.
     add_definitions(-DIBM)
+    add_definitions(-DSTRINGIFY_SIMPLE)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
 else()
