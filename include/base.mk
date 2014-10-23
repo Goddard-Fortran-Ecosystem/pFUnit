@@ -38,3 +38,5 @@ clean:
 
 distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc
+
+export FC

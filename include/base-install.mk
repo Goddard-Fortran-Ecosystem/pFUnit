@@ -71,4 +71,5 @@ echo:
 	@echo FPPFLAGS: $(FPPFLAGS)
 	@echo CPPFLAGS: $(CPPFLAGS)
 
+export FC
 
