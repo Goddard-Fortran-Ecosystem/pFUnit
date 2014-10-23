@@ -8,7 +8,7 @@ all: dependencies.inc generated.inc libpfunit$(LIB_EXT)
 # GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 # 
 generated.inc:
-	python ./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
+	$(PYTHON) ./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
 
 # 	@echo "# This file automatically generated. Do not modify." > ./generated.inc
 
@@ -22,10 +22,10 @@ include ./generated.inc
 #	./GenerateAssertsOnArrays.py
 
 testCodeMacs:
-	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
+	$(PYTHON) $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
 
 # %.F90: %.cm
-#	python $(TOP)/bin/codeMacs.py $< $@
+#	$(PYTHON) $(TOP)/bin/codeMacs.py $< $@
 
 clean_generated_code:
 	rm -f generated.inc AssertArrays.fh
@@ -60,5 +60,8 @@ endif
 	$(AR)$@ $?
 	-@$(RANLIB) $@
 
+# Only include the dependencies file if we are not doing a clean.
+ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
+endif
 

@@ -66,5 +66,9 @@ $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS_SERIAL)
 
 endif
 
+# Only include the dependencies file if we are not doing a clean, otherwise the
+# Files are generated, only to be deleted again.
+ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
+endif
 

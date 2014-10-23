@@ -16,9 +16,24 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 # code that also do not respect the CamelCase convention.  The Fortran
 # standard specifies case insensitivity.
 #
-DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 # DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
 DOXYGEN ?= doxygen
+
+#
+# Set PYTHON executable if needed.  Python scripts all use
+# /usr/bin/env to call python. Explicit calls to python in the
+# makefiles now use $(PYTHON).  If python defaults to version 3 on a
+# system one can set PYTHON to python2 here. Or one can create a
+# symbolic link to python2 from python in the PATH. For example:
+#
+# ln -s /usr/bin/python2 ~/bin/python
+# ln -s /usr/bin/python2-config ~/bin/python-config
+# export PATH=~/bin:${PATH}
+#
+# Then build pFUnit.
+#
+PYTHON = python
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -261,6 +276,7 @@ export BUILDROBUST
 export MPIF90
 export LIBMPI
 export COMPILER
+export PYTHON
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
@@ -276,4 +292,3 @@ ifeq ($(DEBUG),YES)
   $(warning     LIB_EXT         $(LIB_EXT))
   $(warning     EXE_EXT         $(EXE_EXT))
 endif
-
