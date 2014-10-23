@@ -33,7 +33,8 @@ UNAME =Windows
 endif
 endif
 
-ARCH  ?=$(shell arch)
+# ARCH  ?=$(shell arch)
+ARCH  ?=$(shell uname -m)
 ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
