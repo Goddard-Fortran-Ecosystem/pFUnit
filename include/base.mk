@@ -25,15 +25,16 @@ ifeq ($(F90_HAS_CPP),YES)
 	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
 else
 %$(OBJ_EXT):%.F90
-	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
-	$(RM) $*_cpp.F90
+	$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.f90
+#	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
+	$(FC) -c $(FFLAGS)  $*_cpp.f90 -o $@
+	$(RM) $*_cpp.f90
 endif
 
 .PHONY: clean distclean
 
 clean:
-	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp *.s
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.f90 *.tmp *.s
 	-$(RM) -r *.dSYM
 
 distclean: clean

@@ -10,7 +10,9 @@
 # TODO:  Move this and its cousins to a single "$(TOP)/bin/MakeDependenciesInclude".
 
 # NAG_IgnoreCompilerFlags - A klugly edit of the flags passed to NAG to appease cpp.
-
+#   Fortran and CPP flags are kept in separate variables.  The following code will
+#   likely be deleted in the next clean-up.
+#
 NAG_IgnoreCompilerFlags () {
    echo $* | \
        sed s/-fpp//g | \
@@ -66,7 +68,12 @@ for i in *.F90; do
        # See include/nag.mk.                                                         
 #+       echo MakeDependenciesInclude: cpp
 #+       echo cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} \> tmp999.F90
-       cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} > tmp999.F90
+
+# Old kluge. 2014-1027-1951-29-UTC
+#?       cpp -traditional -C -DNAG `NAG_IgnoreCompilerFlags $* ` ${i} > tmp999.F90
+
+# Expect only CPPFLAGS to come in as arguments.
+       cpp -traditional -C -DNAG $* ${i} > tmp999.F90
    else
 #+       echo MakeDependenciesInclude: FC -E
        ${FC} $* -E ${i} > tmp999.F90

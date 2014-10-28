@@ -37,7 +37,7 @@ local-build1-distclean: clean_generated_code
 
 # dependencies.inc: $(GENERATED_CODE)
 dependencies.inc: generated.inc
-	./MakeDependenciesInclude $(FFLAGS) $(FPPFLAGS)
+	./MakeDependenciesInclude $(FPPFLAGS)
 
 ifneq ($(BUILDROBUST),YES)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90
