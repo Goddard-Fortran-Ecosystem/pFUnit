@@ -1,9 +1,9 @@
 #!/bin/bash
-#PBS -l select=1:mpiprocs=16
-#PBS -l walltime=01:00:00
-#PBS -W group_list=k3002
-#PBS -N pFUnit
-#PBS -j eo
+#SBATCH --account=k3002
+#SBATCH --job-name=pFUnit
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=16
 
 # This script manages the jobs in a batch environment.
 # It gets called from mainRegress.sh.
@@ -93,6 +93,7 @@ function setModule {
       fi
    fi
    echo " -- module list: "$moduleList
+   export PATH=/usr/local/other/SLES11/SIVO-PyD/1.9.0/bin:$PATH
 }
 
 function doMake {
