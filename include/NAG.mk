@@ -20,7 +20,6 @@ CPPFLAGS += -DSTRINGIFY_SIMPLE -DNAG
 
 # For OS X Mavericks (i.e. Apple LLVM version 6.0...), bring your own CPP.
 # CPP = /opt/local/bin/cpp-mp-4.9 -traditional -C
-# CPP = /opt/local/bin/cpp-mp-4.9 -traditional -C
 CPP =cpp -traditional -C
 
 ifeq ($(DSO),YES)

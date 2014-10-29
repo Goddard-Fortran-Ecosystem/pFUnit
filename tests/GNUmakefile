@@ -12,8 +12,37 @@ all: dependencies.inc $(EXE) $(REMOTE)
 VPATH = . ../source
 tests: dependencies.inc $(EXE)
 
-dependencies.inc:
-	./MakeDependenciesInclude
+#generated.inc:
+#	touch generated.inc
+
+# include ./generated.inc
+
+dependencies.inc: dependenciesTests.tmp
+	./MakeDependenciesInc dependenciesTests.tmp
+
+# Would prefer to have this in base.mk, but haven't figured out the rules to do so.
+# gmake looks at ../source/dependencies.tmp, instead of making a new one at ".".
+#
+ifeq ($(F90_HAS_CPP),YES)
+dependenciesTests.tmp: 
+	for i in *.F90; do \
+		$(FC) -E $(FFLAGS) $(CPPFLAGS) $$i > $${i}_cpp.f90; \
+		$(TOP)/tools/MakeDependenciesTmp $$i $${i}_cpp.f90 \
+			$@ "PrivateException|MockSUT|SUT"; \
+		$(RM) $$i_cpp.f90; done
+else
+dependenciesTests.tmp: 
+	for i in *.F90; do \
+		$(CPP) $(CPPFLAGS) $(CPPFLAGS) $$i > $${i}_cpp.f90; \
+		$(TOP)/tools/MakeDependenciesTmp $$i $${i}_cpp.f90 \
+			$@ "PrivateException|MockSUT|SUT"; \
+		$(RM) $${i}_cpp.f90; done
+endif
+
+
+
+#dependencies.inc:
+#	./MakeDependenciesInclude
 
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
