@@ -71,9 +71,6 @@ endif
 # Set the relevant file extensions
 include $(INCLUDE_DIR)/extensions.mk
 
-# Default compiler by architecture - always gfortran for now:
-F90 ?=gfortran
-F90_VENDOR ?=GNU
 
 # 32/64 ABI - almost all architectures are now 64 bit
 ifeq ($(ARCH),i386)
@@ -105,6 +102,10 @@ MOD=-I
 F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
 
+# Default compiler by architecture - always gfortran for now:
+F90 ?=gfortran
+F90_VENDOR ?=GNU
+
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
 
@@ -119,7 +120,11 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=PGI
   else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
+	else
+		COMPILER=UNKNOWN
   endif
+# Override F90_VENDOR with COMPILER
+	F90_VENDOR=$(COMPILER)
 else # use F90_VENDOR to specify
   ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
     COMPILER=Intel
@@ -133,6 +138,10 @@ else # use F90_VENDOR to specify
     COMPILER=IBM
   endif
 endif
+
+# F90_VENDOR is no longer needed after this point.  We keep it around
+# until we can verify that it's not needed in subdirectories or for
+# recursive calls. TODO:  Check F90_VENDOR usage.
 
 ifneq ($(findstring $(MPI),yes YES Yes),)
   USEMPI=YES
@@ -160,8 +169,11 @@ ifneq ($(findstring $(ROBUST),yes YES Yes),)
   CPPFLAGS += -DBUILD_ROBUST
 endif
 
-FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
-CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
+FPPFLAGS += $D$(COMPILER) $D$(UNAME)
+CPPFLAGS += -D$(COMPILER) -D$(UNAME) -I$(INCLUDE_DIR)
+
+# FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
+# CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
 
 ifeq ($(PFUNIT_ABI),64)
   FPPFLAGS += $DLONG_PTR
