@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC, Computational & Information Sciences & Technology, Code 606
 !-------------------------------------------------------------------------------
 !  MODULE: ParallelContext
 !

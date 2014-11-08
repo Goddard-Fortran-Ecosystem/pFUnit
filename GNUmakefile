@@ -99,7 +99,6 @@ FFLAGS ?=
 D=-D
 I=-I
 MOD=-I
-F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
 
 # Default compiler by architecture - always gfortran for now:
@@ -272,7 +271,6 @@ export F90
 export F90_VENDOR
 export FFLAGS
 export FPPFLAGS
-export F90_HAS_CPP
 export CPP
 export CFLAGS
 export CPPFLAGS
@@ -296,7 +294,6 @@ ifeq ($(DEBUG),YES)
   $(warning     ARCH:   $(ARCH))
   $(warning     F90 vendor:     $(COMPILER))
   $(warning     F90 command:    $(F90))
-  $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))
   $(warning     ABI:            $(PFUNIT_ABI))
   $(warning File extensions:)
