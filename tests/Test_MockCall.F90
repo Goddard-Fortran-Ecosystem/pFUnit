@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 
 module Test_MockCall_mod
    use TestSuite_mod
@@ -10,7 +10,7 @@ module Test_MockCall_mod
 
 contains
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
@@ -19,8 +19,12 @@ contains
 
       suite = newTestSuite('Test_MockCall')
 
-      ADD(testExpectOneIntegerArgument)
-      ADD(testFailExpectOneIntegerArgument)
+      call suite%addTest( &
+           &   newTestMethod('testExpectOneIntegerArgument', &
+           &                  testExpectOneIntegerArgument))
+      call suite%addTest( &
+           &   newTestMethod('testFailExpectOneIntegerArgument', &
+           &                  testFailExpectOneIntegerArgument))
 
    end function suite
 

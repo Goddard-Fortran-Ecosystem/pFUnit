@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 #define HERE print*,__LINE__,__FILE__
 module SUT_mod
    implicit none
@@ -82,7 +82,7 @@ module Test_MockRepository_mod
 
 contains
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
       use TestSuite_mod, only: newTestSuite, TestSuite
@@ -91,10 +91,18 @@ contains
 
       suite = newTestSuite('Test_MockRepository')
 
-      ADD(testNoAction)
-      ADD(testExpectMethod_NotCalled)
-      ADD(testExpectMethod_IsCalled)
-      ADD(testExpectMethod_CalledDifferentMethod)
+      call suite%addTest( &
+           &   newTestMethod('testNoAction', &
+           &                  testNoAction))
+      call suite%addTest( &
+           &   newTestMethod('testExpectMethod_NotCalled', &
+           &                  testExpectMethod_NotCalled))
+      call suite%addTest( &
+           &   newTestMethod('testExpectMethod_IsCalled', &
+           &                  testExpectMethod_IsCalled))
+      call suite%addTest( &
+           &   newTestMethod('testExpectMethod_CalledDifferentMethod', &
+           &                  testExpectMethod_CalledDifferentMethod))
 
    end function suite
 

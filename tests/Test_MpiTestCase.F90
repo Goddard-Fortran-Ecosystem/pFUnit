@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_MpiTestCase_mod
    use Test_mod
    use TestCase_mod
@@ -32,11 +32,23 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_MpiTestCase')
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testWasRun), numProcesses=1))
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn1), numProcesses=3))
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn2), numProcesses=3))
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testTooFewProcs), numProcesses=4))
+
+      call suite%addTest(newTest_MpiTestCase('testWasRun', &
+           &                                  testWasRun, numProcesses=1))
+      call suite%addTest(newTest_MpiTestCase('testRunOn2Processors', &
+           &                                  testRunOn2Processors, numProcesses=2))
+      call suite%addTest(newTest_MpiTestCase('testFailOn1', &
+           &                                  testFailOn1, numProcesses=3))
+      call suite%addTest(newTest_MpiTestCase('testFailOn2', &
+           &                                  testFailOn2, numProcesses=3))
+      call suite%addTest(newTest_MpiTestCase('testTooFewProcs', &
+           &                                  testTooFewProcs, numProcesses=4))
+
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testWasRun), numProcesses=1))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn1), numProcesses=3))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn2), numProcesses=3))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testTooFewProcs), numProcesses=4))
       
    end function suite
 
@@ -111,7 +123,7 @@ contains
       type (TestFailure) :: failure
 
       reslt = newTestResult()
-      brokenTest = newTest_MpiTestCase(REFLECT(brokenProcess1), numProcesses = 3)
+      brokenTest = newTest_MpiTestCase('brokenProcess1', brokenProcess1, numProcesses = 3)
 
       call brokenTest%run(reslt, this%context)
 
@@ -151,7 +163,7 @@ contains
       type (TestFailure) :: failure
 
       reslt = newTestResult()
-      brokenTest = newTest_MpiTestCase(REFLECT(brokenOnProcess2), numProcesses = 3)
+      brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = 3)
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then
@@ -195,7 +207,7 @@ contains
       character(len=20) :: suffix
 
       reslt = newTestResult()
-      brokenTest = newTest_MpiTestCase(REFLECT(brokenOnProcess2), numProcesses = TOO_MANY_PES)
+      brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then

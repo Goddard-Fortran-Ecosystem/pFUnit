@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_MpiParameterizedTestCase_mod
    use Test_mod
    use TestCase_mod
@@ -44,10 +44,16 @@ contains
       call testParameter%setNumProcessesRequested(2)
 
       testParameter%i = 1
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2PEs), testParameter))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2PEs), testParameter))
+      call suite%addTest(newTest_MpiTestCase('testRunOn2PEs', &
+           &                                  testRunOn2PEs,  &
+           &                                  testParameter))
 
       testParameter%i = 2
-      call suite%addTest(newTest_MpiTestCase(REFLECT(testToString), testParameter))
+!      call suite%addTest(newTest_MpiTestCase(REFLECT(testToString), testParameter))
+      call suite%addTest(newTest_MpiTestCase('testToString', &
+           &                                  testToString,  &
+           &                                  testParameter))
       
    end function suite
 

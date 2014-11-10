@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_FixtureTestCase_mod
    use TestSuite_mod
    use TestResult_mod, only: TestResult, newTestResult
@@ -16,11 +16,17 @@ contains
 
       aSuite = newTestSuite('Test_TestCase')
 
-#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testRunWithFixture)
-      ADD(testBrokenTestCase)
-      ADD(testBrokenSetUpCase)
+      call aSuite%addTest( &
+           &   newTestMethod('testRunWithFixture', &
+           &                  testRunWithFixture))
+      call aSuite%addTest( &
+           &   newTestMethod('testBrokenTestCase', &
+           &                  testBrokenTestCase))
+      call aSuite%addTest( &
+           &   newTestMethod('testBrokenSetUpCase', &
+           &                  testBrokenSetUpCase))
 
    end function suite
 

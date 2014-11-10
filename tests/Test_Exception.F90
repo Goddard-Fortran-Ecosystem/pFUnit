@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_Exception_mod
    use TestSuite_mod
    use Exception_mod, only: newException
@@ -24,28 +24,64 @@ contains
 
       suite = newTestSuite('ExceptionTests')
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testGetNumExceptions)
-      ADD(testCatchNextEmpty)
-      ADD(testThrow1)
-      ADD(testCatchFail)
-      ADD(testCatchSucceed)
-      ADD(testCatchOnly)
-      ADD(testCatchAndRemove)
-      ADD(testCatchButPreserveA)
-      ADD(testCatchButPreserveB)
-      ADD(testCatchButPreserveC)
-      ADD(testCatchNextButPreserveA)
-      ADD(testCatchNextButPreserveB)
-      ADD(testCatchNextButPreserveC)
+      call suite%addTest( &
+           &   newTestMethod('testGetNumExceptions', &
+           &                  testGetNumExceptions))
+      call suite%addTest( &
+           &   newTestMethod('testCatchNextEmpty', &
+           &                  testCatchNextEmpty))
+      call suite%addTest( &
+           &   newTestMethod('testThrow1', &
+           &                  testThrow1))
+      call suite%addTest( &
+           &   newTestMethod('testCatchFail', &
+           &                  testCatchFail))
+      call suite%addTest( &
+           &   newTestMethod('testCatchSucceed', &
+           &                  testCatchSucceed))
+      call suite%addTest( &
+           &   newTestMethod('testCatchOnly', &
+           &                  testCatchOnly))
+      call suite%addTest( &
+           &   newTestMethod('testCatchAndRemove', &
+           &                  testCatchAndRemove))
+      call suite%addTest( &
+           &   newTestMethod('testCatchButPreserveA', &
+           &                  testCatchButPreserveA))
+      call suite%addTest( &
+           &   newTestMethod('testCatchButPreserveB', &
+           &                  testCatchButPreserveB))
+      call suite%addTest( &
+           &   newTestMethod('testCatchButPreserveC', &
+           &                  testCatchButPreserveC))
+      call suite%addTest( &
+           &   newTestMethod('testCatchNextButPreserveA', &
+           &                  testCatchNextButPreserveA))
+      call suite%addTest( &
+           &   newTestMethod('testCatchNextButPreserveB', &
+           &                  testCatchNextButPreserveB))
+      call suite%addTest( &
+           &   newTestMethod('testCatchNextButPreserveC', &
+           &                  testCatchNextButPreserveC))
 
-      ADD(testGetLineNumberNoInfo)
-      ADD(testGetLineNumber)
-      ADD(testGetFileNameNoInfo)
-      ADD(testGetFileName)
+      call suite%addTest( &
+           &   newTestMethod('testGetLineNumberNoInfo', &
+           &                  testGetLineNumberNoInfo))
+      call suite%addTest( &
+           &   newTestMethod('testGetLineNumber', &
+           &                  testGetLineNumber))
+      call suite%addTest( &
+           &   newTestMethod('testGetFileNameNoInfo', &
+           &                  testGetFileNameNoInfo))
+      call suite%addTest( &
+           &   newTestMethod('testGetFileName', &
+           &                  testGetFileName))
 
-      ADD(testThrowWithLineAndFile)
+      call suite%addTest( &
+           &   newTestMethod('testThrowWithLineAndFile', &
+           &                  testThrowWithLineAndFile))
 
    end function suite
 

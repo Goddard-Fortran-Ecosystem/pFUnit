@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_UnixProcess_mod
    use TestSuite_mod
    use Assert_mod
@@ -17,11 +17,17 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('StringConversionUtilities')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testIsActive)
-      ADD(testGetLine)
-      ADD(testGetLine2)
+      call suite%addTest( &
+           &   newTestMethod('testIsActive', &
+           &                  testIsActive))
+      call suite%addTest( &
+           &   newTestMethod('testGetLine', &
+           &                  testGetLine))
+      call suite%addTest( &
+           &   newTestMethod('testGetLine2', &
+           &                  testGetLine2))
 
    end function suite
 

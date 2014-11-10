@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_RobustRunner_mod
    use Test_mod
    use RobustRunner_mod
@@ -15,9 +15,11 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('StringConversionUtilities')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testRunVariety)
+      call suite%addTest( &
+           &   newTestMethod('testRunVariety', &
+           &                  testRunVariety))
 
    end function suite
 

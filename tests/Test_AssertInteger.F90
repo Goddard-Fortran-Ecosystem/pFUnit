@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_AssertInteger_mod
    use AssertBasic_mod
    use AssertInteger_mod
@@ -18,35 +18,81 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('AssertIntegerTests')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testAssertEqual_equal)
-      ADD(testAssertEqual_unequal)
-      ADD(testAssertEqual_unequalWithMessage)
-      ADD(testAssertEqual1D1D_equal)
-      ADD(testAssertEqual1D1D_nonconforming)
-      ADD(testAssertEqual1D1D_conforming)
-      ADD(testAssertEqual1D1D_unequalA)
-      ADD(testAssertEqual1D1D_unequalB)
-      ADD(testAssertEqual2D2D_equal)
-      ADD(testAssertEqual2D2D_nonconforming)
-      ADD(testAssertEqual2D2D_unequal)
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_equal', &
+           &                  testAssertEqual_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_unequal', &
+           &                  testAssertEqual_unequal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_unequalWithMessage', &
+           &                  testAssertEqual_unequalWithMessage))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_equal', &
+           &                  testAssertEqual1D1D_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_nonconforming', &
+           &                  testAssertEqual1D1D_nonconforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_conforming', &
+           &                  testAssertEqual1D1D_conforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_unequalA', &
+           &                  testAssertEqual1D1D_unequalA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_unequalB', &
+           &                  testAssertEqual1D1D_unequalB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_equal', &
+           &                  testAssertEqual2D2D_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_nonconforming', &
+           &                  testAssertEqual2D2D_nonconforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_unequal', &
+           &                  testAssertEqual2D2D_unequal))
 
-      ADD(testAssertLessThan_falseA)
-      ADD(testAssertLessThan_falseB)
-      ADD(testAssertLessThan_true)
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_falseA', &
+           &                  testAssertLessThan_falseA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_falseB', &
+           &                  testAssertLessThan_falseB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_true', &
+           &                  testAssertLessThan_true))
 
-      ADD(testAssertLessThanOrEqual_false)
-      ADD(testAssertLessThanOrEqual_trueA)
-      ADD(testAssertLessThanOrEqual_trueB)
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_false', &
+           &                  testAssertLessThanOrEqual_false))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_trueA', &
+           &                  testAssertLessThanOrEqual_trueA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_trueB', &
+           &                  testAssertLessThanOrEqual_trueB))
 
-      ADD(testAssertGreaterThan_falseA)
-      ADD(testAssertGreaterThan_falseB)
-      ADD(testAssertGreaterThan_true)
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_falseA', &
+           &                  testAssertGreaterThan_falseA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_falseB', &
+           &                  testAssertGreaterThan_falseB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_true', &
+           &                  testAssertGreaterThan_true))
 
-      ADD(testAssertGreaterThanOrEqual_false)
-      ADD(testAssertGreaterThanOrEqual_trueA)
-      ADD(testAssertGreaterThanOrEqual_trueB)
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_false', &
+           &                  testAssertGreaterThanOrEqual_false))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_trueA', &
+           &                  testAssertGreaterThanOrEqual_trueA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_trueB', &
+           &                  testAssertGreaterThanOrEqual_trueB))
 
    end function suite
 

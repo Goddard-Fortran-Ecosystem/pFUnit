@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_Assert_mod
    use TestSuite_mod
    use Assert_mod
@@ -20,9 +20,11 @@ contains
 
       aSuite = newTestSuite('Assert')
 
-#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testAssertWithLocation)
+      call aSuite%addTest( &
+           &   newTestMethod('testAssertWithLocation', &
+           &                  testAssertWithLocation))
    end function suite
 
 

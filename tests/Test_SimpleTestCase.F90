@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_SimpleTestCase_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
@@ -8,7 +8,7 @@ module Test_SimpleTestCase_mod
 
 contains
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
    function suite()
       use TestSuite_mod, only: TestSuite, newTestSuite
       use TestMethod_mod, only: newTestMethod
@@ -16,8 +16,12 @@ contains
 
       suite = newTestSuite('Test_TestCase')
 
-      ADD(testRunSuite)
-      ADD(testRunMethodShouldFail)
+      call suite%addTest( &
+           &   newTestMethod('testRunSuite', &
+           &                  testRunSuite))
+      call suite%addTest( &
+           &   newTestMethod('testRunMethodShouldFail', &
+           &                  testRunMethodShouldFail))
 
    end function suite
 
@@ -28,8 +32,8 @@ contains
 
       internalSuite = newTestSuite('Test_TestCase')
 
-      call internalSuite%addTest(newTestMethod(REFLECT(testWorks)))
-      call internalSuite%addTest(newTestMethod(REFLECT(testFails)))
+      call internalSuite%addTest(newTestMethod('testWorks',testWorks))
+      call internalSuite%addTest(newTestMethod('testFails',testFails))
 
    end function internalSuite
 

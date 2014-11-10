@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 
 !
 ! Test_AssertComplex_mod
@@ -44,37 +44,95 @@ contains
 
     suite = newTestSuite('AssertComplexSuite') 
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-    ADD(testEquals_C_complexScalar)
-    ADD(testEquals_C_0D1D)
-    ADD(testEquals_C_1D_nonConformable1)
-    ADD(testEquals_C_2D_SingleElementDifferent)
-    ADD(testEquals_C_MultiD_SingleElementDifferent)
-    ADD(testEquals_C_MultiD_SingleElementDifferent1)
-    ADD(testEquals_C_MultiD_SingleElementDifferent2)
-    ADD(testEquals_C_MultiD_SingleElementDifferent3)
-    ADD(testEquals_C_MultiD_SingleElementDifferent4)
-    ADD(testEquals_C_MultiD_SingleElementDifferent5)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff1)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff2)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff3)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff4)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff5)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff6)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff7)
-    ADD(testEquals_C_MultiDMultiPrec_SingleEltDiff8)
-    ADD(testEquals_C_MultiDWithTolerance)
-    ADD(testEquals_C_MultiDWithTolerance1)
-    ADD(testEquals_C_MultiDWithTolerance64)
-    ADD(testEquals_C_MultiDWithTolerance64_1)
-    ADD(testEquals_C_MultiDWithTolerance64_2)
-    ADD(testEquals_C_MultiDSourceLocation)
-    ADD(testEquals_4DPComplex_DifferenceReport)
-    ADD(testEquals_ComplexMultiD_SingleElementNE1)
-    ADD(testEquals_ComplexMultiD_SingleElementRE1)
-    ADD(testEquals_ComplexMultiD_SingleEltVarious1)
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_complexScalar', &
+           &                  testEquals_C_complexScalar))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_0D1D', &
+           &                  testEquals_C_0D1D))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_1D_nonConformable1', &
+           &                  testEquals_C_1D_nonConformable1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_2D_SingleElementDifferent', &
+           &                  testEquals_C_2D_SingleElementDifferent))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent', &
+           &                  testEquals_C_MultiD_SingleElementDifferent))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent1', &
+           &                  testEquals_C_MultiD_SingleElementDifferent1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent2', &
+           &                  testEquals_C_MultiD_SingleElementDifferent2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent3', &
+           &                  testEquals_C_MultiD_SingleElementDifferent3))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent4', &
+           &                  testEquals_C_MultiD_SingleElementDifferent4))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiD_SingleElementDifferent5', &
+           &                  testEquals_C_MultiD_SingleElementDifferent5))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff1', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff2', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff3', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff3))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff4', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff4))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff5', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff5))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff6', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff6))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff7', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff7))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDMultiPrec_SingleEltDiff8', &
+           &                  testEquals_C_MultiDMultiPrec_SingleEltDiff8))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDWithTolerance', &
+           &                  testEquals_C_MultiDWithTolerance))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDWithTolerance1', &
+           &                  testEquals_C_MultiDWithTolerance1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDWithTolerance64', &
+           &                  testEquals_C_MultiDWithTolerance64))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDWithTolerance64_1', &
+           &                  testEquals_C_MultiDWithTolerance64_1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDWithTolerance64_2', &
+           &                  testEquals_C_MultiDWithTolerance64_2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_C_MultiDSourceLocation', &
+           &                  testEquals_C_MultiDSourceLocation))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_4DPComplex_DifferenceReport', &
+           &                  testEquals_4DPComplex_DifferenceReport))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ComplexMultiD_SingleElementNE1', &
+           &                  testEquals_ComplexMultiD_SingleElementNE1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ComplexMultiD_SingleElementRE1', &
+           &                  testEquals_ComplexMultiD_SingleElementRE1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ComplexMultiD_SingleEltVarious1', &
+           &                  testEquals_ComplexMultiD_SingleEltVarious1))
 
   end function suite
 
