@@ -101,14 +101,12 @@ if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
         add_definitions(-DINTEL_13)
     endif()
     add_definitions(-DIntel)
-    add_definitions(-DSTRINGIFY_OPERATOR)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
 
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
     # Use Gfortran
-    add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
 
@@ -116,14 +114,12 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
     # use nagfor			     
     add_definitions(-DNAG)
-    add_definitions(-DSTRINGIFY_SIMPLE)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
 
     # Use XLF.
     add_definitions(-DIBM)
-    add_definitions(-DSTRINGIFY_SIMPLE)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
 else()

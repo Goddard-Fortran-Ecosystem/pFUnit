@@ -15,7 +15,7 @@ else
 FFLAGS += -gline
 endif
 
-CPPFLAGS += -DSTRINGIFY_SIMPLE -DNAG
+CPPFLAGS += -DNAG
 
 F90_PP_ONLY = -F
 F90_PP_OUTPUT = -o
