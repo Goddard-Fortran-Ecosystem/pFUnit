@@ -65,7 +65,7 @@ function handlePBS
    if [ $USEBATCH -eq 1 ];then
      jobID=`$QSUB $jobScript`
    else
-     $HOME/bin/jobManager.sh
+     $jobScript
      wait
      return 0
    fi
@@ -146,7 +146,7 @@ curDate=`date +"%Y_%m_%d_%m_%s"`
 
 # Regression scripts rely on computational environment determined by
 # by modules (modules.sourceforge.net). We support two machines:
-if [[ "$NODE" =~ discover ]]; then  # discover nodes
+if [[ "$NODE" =~ discover || "$NODE" =~ dali ]]; then  # discover nodes
   MODULEINIT=/usr/share/modules/init/bash
   SCRATCH=$NOBACKUP
 elif [[ "$NODE" =~ "ip-10" ]]; then # AWS nodes
