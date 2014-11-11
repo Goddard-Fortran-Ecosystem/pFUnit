@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Computational & Information Sciences & Technology, Code 606
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: AssertBasic
 !
@@ -8,7 +8,7 @@
 !! foundation for providing test services to end users.
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC 
+!! Tom Clune, NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013

@@ -1,6 +1,6 @@
 
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Computational & Information Sciences & Technology, Code 606
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: Mock
 !
@@ -8,7 +8,7 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC
+!! Tom Clune, NASA/GSFC
 !!
 !! @date
 !! 12 May 2014

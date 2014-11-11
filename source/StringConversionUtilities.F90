@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Computational & Information Sciences & Technology, Code 606
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: StringConversionUtilities
 !
@@ -7,7 +7,7 @@
 !! A collection of utilities used throughout the framework.
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC 
+!! Tom Clune, NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013

@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Computational & Information Sciences & Technology, Code 606.
+! NASA/GSFC Advanced Software Technology Group.
 !-------------------------------------------------------------------------------
 !  MODULE: Test_XmlPrinter
 !
