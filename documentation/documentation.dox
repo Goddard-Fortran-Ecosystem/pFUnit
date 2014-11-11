@@ -518,6 +518,11 @@ Time:         0.004 seconds
 </li></ul></p>
 
 \subsection FAQIntel13 Intel Fortran Version 13: -DINTEL_13
+
+Using version 13 is deprecated. We have encountered problems using
+version 13, which we believe may be due to subtle compiler bugs.  We
+strongly recommend upgrading to the latest version possible.
+
 To make pFUnit work with Intel Fortran Version 13, please ensure that
 <code>-DINTEL_13</code> is passed to the compiler when building or
 using pFUnit. In the build process for pFUnit, this is added to the
