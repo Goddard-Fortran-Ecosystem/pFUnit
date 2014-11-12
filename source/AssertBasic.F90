@@ -124,30 +124,43 @@ contains
    subroutine fail_(message, location)
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      call throw(message, location)
+
+      type (SourceLocation) :: location_
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call throw(message, location_)
     end subroutine fail_
 
    subroutine assertTrue_(condition, message, location)
       logical, intent(in) :: condition
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
+
       character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
 
-      if(present(message))then
-         message_ = message
-      else
-         message_ = NULL_MESSAGE
-      end if
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
-      if (.not. condition) call throw(trim(message), location)
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      if (.not. condition) call throw(trim(message_), location_)
     end subroutine assertTrue_
 
    subroutine assertExceptionRaisedBasic(location)
       use Exception_mod, only: throw, catch
       type (SourceLocation), optional, intent(in) :: location
 
+      type (SourceLocation) :: location_
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
       if (.not. catch()) then
-         call throw('Failed to throw exception.', location)
+         call throw('Failed to throw exception.', location_)
       end if
 
    end subroutine assertExceptionRaisedBasic
@@ -157,9 +170,14 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
+      type (SourceLocation) :: location_
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
       if (.not. catch(message)) then
          call throw('Failed to throw exception: <' // trim(message) // '>', &
-              & location)
+              & location_)
       end if
 
    end subroutine assertExceptionRaisedMessage
@@ -172,10 +190,13 @@ contains
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       character(len=MAXLEN_MESSAGE) :: message_
+      type (SourceLocation) :: location_
 
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
 
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
 
       if (nonConformable(shapeA, shapeB)) then
          throwMessage = 'nonconforming arrays - expected shape: ' // &
@@ -183,7 +204,7 @@ contains
               & trim(toString(shapeB))
 
          call throw(appendWithSpace(message_, throwMessage), &
-              & location)
+              & location_)
       end if
 
          
@@ -217,7 +238,16 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call assertTrue(.not. condition, message, location)
+      character(len=MAXLEN_MESSAGE) :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call assertTrue(.not. condition, message_, location_)
    end subroutine assertFalse_
 
    subroutine assertEqualString_(expected, found, message, location, &
@@ -246,17 +276,11 @@ contains
       logical :: whitespaceYes
       character(len=:), allocatable :: expected_, found_
 
-      if(present(message))then
-         message_ = message
-      else
-         message_ = NULL_MESSAGE
-      end if
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
-      if(present(location))then
-         location_ = location
-      else
-         location_ = UNKNOWN_SOURCE_LOCATION
-      end if
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
 
       if(present(whitespace))then
          whitespace_ = whitespace
@@ -311,7 +335,7 @@ contains
             write(throwMessage,'(a)')&
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
-            call throw(appendWithSpace(message,throwMessage), location_)
+            call throw(appendWithSpace(message_,throwMessage), location_)
       end select
 
 
@@ -459,7 +483,7 @@ contains
                  & '    expected: <"', expected_, '">', new_line('A'), &
                  & '   but found: <"', found_, '">', new_line('A'), &
                  & '  first diff:   ', repeat('-', numSameCharacters), '^'
-            call throw(appendWithSpace(message, throwMessage), location_)
+            call throw(appendWithSpace(message_, throwMessage), location_)
 
          end if
 
@@ -472,7 +496,16 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call assertTrue(any(conditions), message, location)
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call assertTrue(any(conditions), message_, location_)
    end subroutine assertAny
 
    subroutine assertAll(conditions, message, location)
@@ -480,7 +513,17 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call assertTrue(all(conditions), message, location)
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call assertTrue(all(conditions), message_, location_)
+
    end subroutine assertAll
 
    subroutine assertNone(conditions, message, location)
@@ -488,7 +531,16 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call assertTrue(.not. any(conditions), message, location)
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call assertTrue(.not. any(conditions), message_, location_)
    end subroutine assertNone
 
    subroutine assertNotAll(conditions, message, location)
@@ -496,7 +548,16 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call assertTrue(.not. all(conditions), message, location)
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
+      call assertTrue(.not. all(conditions), message_, location_)
    end subroutine assertNotAll
 
 
@@ -509,10 +570,19 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
 #ifdef __GFORTRAN__
-      call assertTrue(isNaN(x), message, location)
+      call assertTrue(isNaN(x), message_, location_)
 #else
-      call assertTrue(ieee_is_nan(x), message, location)
+      call assertTrue(ieee_is_nan(x), message_, location_)
 #endif
    end subroutine assertIsNaN_single
 
@@ -525,10 +595,19 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
 #ifdef __GFORTRAN__
-      call assertTrue(isNaN(x), message, location)
+      call assertTrue(isNaN(x), message_, location_)
 #else
-      call assertTrue(ieee_is_nan(x), message, location)
+      call assertTrue(ieee_is_nan(x), message_, location_)
 #endif
    end subroutine assertIsNaN_double
 
@@ -541,10 +620,19 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
 #ifdef __GFORTRAN__
-      call assertTrue(abs(x) <= huge(x), message, location)
+      call assertTrue(abs(x) <= huge(x), message_, location_)
 #else
-      call assertTrue(ieee_is_finite(x), message, location)
+      call assertTrue(ieee_is_finite(x), message_, location_)
 #endif
    end subroutine assertIsFinite_single
 
@@ -557,10 +645,19 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
+      character(len=:), allocatable :: message_
+      type (SourceLocation) :: location_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      location_ = UNKNOWN_SOURCE_LOCATION
+      if (present(location)) location_ = location
+
 #ifdef __GFORTRAN__
-      call assertTrue(abs(x) <= huge(x), message, location)
+      call assertTrue(abs(x) <= huge(x), message_, location_)
 #else
-      call assertTrue(ieee_is_finite(x), message, location)
+      call assertTrue(ieee_is_finite(x), message_, location_)
 #endif
    end subroutine assertIsFinite_double
 
