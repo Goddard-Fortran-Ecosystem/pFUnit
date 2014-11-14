@@ -71,14 +71,17 @@ contains
       integer, intent(in) :: found
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if (expected /= found) then
          write(throwMessage,'(a,i0,a,i0,a)') &
               & 'expected: <', expected, '> but found: <', found, '>'
-         call throw(appendWithSpace(message, throwMessage), &
+         call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
 
@@ -90,10 +93,13 @@ contains
       integer, intent(in) :: found(:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(1)
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       call AssertSameShape(shape(expected), shape(found), message, location)
       if (anyExceptions()) return
@@ -102,7 +108,7 @@ contains
          loc = locationOfFirstNonzero(expected - found)
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected(loc(1)),'> but found: <',found(loc(1)), &
               & '> at position: ',toString(loc)
-         call throw(appendWithSpace(message, throwMessage), &
+         call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
 
@@ -114,17 +120,19 @@ contains
       integer, intent(in) :: found(:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
-
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(1)
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if (any(found /= expected)) then
          loc = locationOfFirstNonzero(found - expected)
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected,'> but found: <',found(loc(1)), &
               & '> at position: ',toString(loc)
-         call throw(appendWithSpace(message, throwMessage), &
+         call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
 
@@ -136,10 +144,13 @@ contains
       integer, intent(in) :: found(:,:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       call AssertSameShape(shape(expected), shape(found), message, location)
       if (anyExceptions()) return
@@ -150,7 +161,7 @@ contains
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected(loc(1),loc(2)), &
               & '> but found: <',found(loc(1),loc(2)), &
               & '> at position: ', toString(loc)
-         call throw(appendWithSpace(message, throwMessage), &
+         call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
 
@@ -162,16 +173,19 @@ contains
       integer, intent(in) :: found(:,:)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
       integer :: loc(2)
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if (any(found /= expected)) then
          loc = locationOfFirstNonzero(found - expected)
          write(throwMessage,'(a,i0,a,i0,a,a)') 'expected: <',expected,'> but found: <',found(loc(1),loc(2)), &
               & '> at position: ',toString(loc)
-         call throw(appendWithSpace(message, throwMessage), location)
+         call throw(appendWithSpace(message_, throwMessage), location)
       end if
 
    end subroutine assertEqualInteger0D2D_
@@ -181,14 +195,17 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if ( .not. (a < b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), location)
+         call throw(appendWithSpace(message_,throwMessage), location)
 
       end if
 
@@ -199,16 +216,18 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if ( .not. (a <= b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be less than or equal to: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), &
+         call throw(appendWithSpace(message_,throwMessage), &
               & location)
-
       end if
 
    end subroutine assertLessThanOrEqual_
@@ -221,11 +240,15 @@ contains
 !      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if ( .not. (a > b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), location)
+         call throw(appendWithSpace(message_,throwMessage), location)
 
       end if
 
@@ -236,14 +259,17 @@ contains
       integer, intent(in) :: b
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-!      type (SourceLocation) :: location_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if ( .not. (a >= b) ) then
 
          write(throwMessage,'(a,i0,a,i0,a)') 'expected: <',a,'> to be greater than or equal to: <',b,'>'
-         call throw(appendWithSpace(message,throwMessage), location)
+         call throw(appendWithSpace(message_,throwMessage), location)
 
       end if
 
