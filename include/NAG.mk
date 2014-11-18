@@ -7,7 +7,7 @@ I=-I
 M=-I
 L=-L
 
-FFLAGS += -g -O0 -f2008 -w=uda -fpp -C=present
+FFLAGS += -g -O0 -f2008 -w=uda -mismatch_all -fpp -C=present
 
 ifeq ($(USEOPENMP),YES)
 FFLAGS += -openmp
