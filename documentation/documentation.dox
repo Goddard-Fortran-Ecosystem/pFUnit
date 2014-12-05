@@ -831,6 +831,8 @@ For more information about @assert directives, please refer to the following.
    <li>\ref ss_assertSameShape</li>
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
+   <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertAssociatedWith</li>
 </ul>
 
 
@@ -895,6 +897,8 @@ getParameterString.  For example:
    <li>\ref ss_assertSameShape</li>
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
+   <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertAssociatedWith</li>
 </ul>
 
 \section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
@@ -916,6 +920,21 @@ getParameterString.  For example:
 \subsection ss_assertSameShape @assertSameShape
 \subsection ss_assertIsNaN @assertIsNaN
 \subsection ss_assertIsFinite @assertIsFinite
+\subsection ss_assertAssociated @assertAssociated
+@assertAssociated maps to a call to the logical intrinsic function associated.
+\code
+@assertAssociated(a)\endcode
+becomes
+\code
+call assertTrue(associated(a))\endcode
+
+\subsection ss_assertAssociatedWith @assertAssociatedWith
+@assertAssociatedWith maps to a call to the logical intrinsic function associated.
+\code
+@assertAssociatedWith(pointer,target)\endcode
+becomes
+\code
+call assertTrue(associated(pointer,target))\endcode
 
 \page page_RevisionNotes Revision Notes
 

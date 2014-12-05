@@ -56,7 +56,61 @@ subroutine testAddComplexMultiDimBroken()
    z0(2,2) = cmplx(1.0,0.0); z1(3,1) = cmplx(0.0,-2.0)
    expected(2,2) = z0(2,2)+1.0 ; expected(3,1) = 1.0 + z1(3,1)
 
-   @assertEqual(expected,z0+z1,message='<<This test is intentionally broken.>>')
+   @assertEqual(expected,z0+z1,message='<<Intentionally broken.>>')
 
 end subroutine testAddComplexMultiDimBroken
 
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testAssociatedBroken
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+
+  @assertAssociated(ptr,message='<<Intentionally broken.>>')
+  
+end subroutine testAssociatedBroken
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testAssociatedWithBroken
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x,y
+
+  x = 0; y = 1; ptr => x
+
+  @assertAssociatedWith(ptr,y,message='<<Intentionally broken.>>')
+  
+end subroutine testAssociatedWithBroken
+
+
+@test
+subroutine testAssociated
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x
+  x = 0
+  ptr => x
+  
+  @assertAssociated(ptr)
+  @assertAssociatedWith(ptr,x)
+  
+end subroutine testAssociated
+
+! Demonstrate the polymorphism of the call.
+@test
+subroutine testAssociatedArrays
+  use pfunit_mod
+  implicit none
+  real, pointer :: xPtr => NULL()
+  real, target  :: x
+  integer, dimension(:), pointer :: iPtr => NULL()
+  integer, dimension(4), target  :: i
+  x = 0.0; xPtr => x
+  i = 0; iPtr => i
+  
+  @assertAssociated(xPtr)
+  @assertAssociated(iPtr)
+  
+end subroutine testAssociatedArrays

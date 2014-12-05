@@ -23,6 +23,10 @@ contains
 !#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
       call aSuite%addTest( &
+           &   newTestMethod('testAssertEqualStringDiffer1st', &
+           &                  testAssertEqualStringDiffer1st))
+
+      call aSuite%addTest( &
            &   newTestMethod('testAssertWithLocation', &
            &                  testAssertWithLocation))
    end function suite

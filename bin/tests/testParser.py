@@ -181,7 +181,6 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual('!@testCase\n', parser.outLines[0])
         self.assertEqual(nextLine, parser.outLines[1])
 
-
     def testMatchAtAssertEqual(self):
         """Check that a line starting with '@assertEqual' is detected
         as an annotation."""
@@ -205,6 +204,77 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual(" )\n", parser.outLines[5])
         self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
         self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+
+    def testParseArgsFirstRest(self):
+        """Test that the first-rest argument parsing is adequate."""
+        self.assertEqual(['a1','b1'],parseArgsFirstRest('','a1,b1'))
+        self.assertEqual(['a10','b10,c10'],parseArgsFirstRest('','a10,b10,c10'))
+        self.assertEqual(['a2'],parseArgsFirstRest("@assertassociated","@assertassociated(a2)"))
+        self.assertEqual(['a3',"b3,message='This is the message.'"], \
+            parseArgsFirstRest("@assertassociated","@assertassociated(a3,b3,message='This is the message.')"))
+        self.assertEqual(['a','b,c,d'],parseArgsFirstRest("@assertassociated","@assertassociated(a,b,c,d)"))
+
+    def testParseArgsFirstSecondRest(self):
+        """Test that the first-second-rest argument parsing is adequate."""
+        self.assertEqual(['a'],parseArgsFirstSecondRest("@assertassociated","@assertassociated(a)"))
+        self.assertEqual(['a','b'],parseArgsFirstSecondRest("@assertassociated","@assertassociated(a,b)"))
+        self.assertEqual(['a','b',"message='This is the message.'"], \
+            parseArgsFirstSecondRest("@assertassociated", \
+                                     "@assertassociated(a,b,message='This is the message.')"))
+        self.assertEqual(['a','b','c,d'],parseArgsFirstSecondRest("@assertassociated", \
+                                                                  "@assertassociated(a,b,c,d)"))
+        self.assertEqual(['a4','b4','c4'],parseArgsFirstSecondRest('','a4,b4,c4'))
+                                                                  
+
+    def testMatchAtAssertAssociated(self):
+        """Check that a line starting with '@assertAssociated' is detected
+        as an annotation."""
+        parser = MockParser([' \n'])
+        atAssertAssociated = AtAssertAssociated(parser)
+
+        self.assertFalse(atAssertAssociated.match('@assertAssociated'))
+        self.assertFalse(atAssertAssociated.match('@assertAssociated()'))
+        self.assertTrue(atAssertAssociated.match('@assertAssociated(a)'))
+        self.assertTrue(atAssertAssociated.match('@assertassociated(a)')) # case insensitive
+        self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertAssociated.apply('   @assertAssociated(a)\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertTrue(associated(a), &\n", parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+
+    def testMatchAtAssertAssociatedWith(self):
+        """Check that a line starting with '@assertAssociatedWith' is detected
+        as an annotation. atAssertAssociatedWith(a,b) implies a points to b."""
+        parser = MockParser([' \n'])
+        atAssertAssociatedWith = AtAssertAssociatedWith(parser)
+
+        self.assertFalse(atAssertAssociatedWith.match('@assertAssociatedWith'))
+        self.assertFalse(atAssertAssociatedWith.match('@assertAssociatedWith()'))
+        self.assertFalse(atAssertAssociatedWith.match('@assertAssociatedWith(a)'))
+        self.assertTrue(atAssertAssociatedWith.match('@assertassociatedwith(a,b)')) # case insensitive
+        self.assertTrue(atAssertAssociatedWith.match('@ASSERTASSOCIATEDWITH(a,b)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertAssociatedWith.apply('   @assertAssociatedWith(a,b)\n')
+        # print(1000,len(parser.outLines))
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertTrue(associated(a,b), &\n", parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+        
 
     def testMatchAtAssertOther(self):
         """Check that a line starting with '@assert*' is detected
