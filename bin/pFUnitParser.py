@@ -308,9 +308,6 @@ class AtAssertAssociatedWith(Action):
         self.parser = parser
 
     def match(self, line):
-        #m = re.match(\
-        #    '\s*@assertassociatedwith\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-
         m  = re.match( \
             '\s*@assertassociatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)

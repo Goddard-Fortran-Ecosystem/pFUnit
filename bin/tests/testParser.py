@@ -265,7 +265,6 @@ class TestParseLine(unittest.TestCase):
         parser.fileName = "foo.pfunit"
         parser.currentLineNumber = 8
         atAssertAssociatedWith.apply('   @assertAssociatedWith(a,b)\n')
-        # print(1000,len(parser.outLines))
         self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
         self.assertEqual("  call assertTrue(associated(a,b), &\n", parser.outLines[1])
         self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
