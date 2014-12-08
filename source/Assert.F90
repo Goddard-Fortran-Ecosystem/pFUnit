@@ -22,9 +22,6 @@
 !-------------------------------------------------------------------------------
 module Assert_mod
    use AssertBasic_mod
-   use AssertInteger_mod
-!   AssertReal mod
-!   AssertComplex mod, only : AssertEqual
 #include "AssertArrays.fh"
    implicit none
    private

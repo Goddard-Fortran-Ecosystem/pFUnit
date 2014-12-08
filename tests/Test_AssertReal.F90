@@ -105,9 +105,10 @@ contains
     
     call assertEqual(expected, found, msg)
 
+    ! Using expected below instead of good to get the type correct. Only affects printout.
     call assertCatch( &
          & appendWithSpace(msg, &
-         & trim(valuesReport(good, bad)) // &
+         & trim(valuesReport(expected, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
          & ';  first difference at element [1].') &
          & )
