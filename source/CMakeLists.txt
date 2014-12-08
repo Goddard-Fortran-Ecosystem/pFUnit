@@ -4,13 +4,6 @@ SET (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
 set(srcs Assert.F90)
 
-#--ADD_CUSTOM_COMMAND(
-#--   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/AssertArrays.fh ${CMAKE_CURRENT_BINARY_DIR}/generated.inc
-#--   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py
-#--   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py
-#--   )
-#   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/AssertReal.F90 ${CMAKE_CURRENT_BINARY_DIR}/AssertComplex.F90 ${CMAKE_CURRENT_BINARY_DIR}/AssertInteger1.F90 
-
 # Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
 execute_process(
    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_RANK}
@@ -33,7 +26,6 @@ include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 # 
 
 list(APPEND srcs AssertBasic.F90)
-list(APPEND srcs AssertInteger.F90)
 
 #
 
@@ -79,9 +71,6 @@ list(APPEND srcs TestSuite.F90)
 list(APPEND srcs ThrowFundamentalTypes.F90)
 list(APPEND srcs pFUnit.F90)
 list(APPEND srcs pFUnitPackage.F90)
-#-- list(APPEND srcs AssertComplex.F90)
-#-- list(APPEND srcs AssertInteger1.F90)
-#-- list(APPEND srcs AssertReal.F90)
 
 if (MPI) 
   list(APPEND srcs MpiContext.F90)

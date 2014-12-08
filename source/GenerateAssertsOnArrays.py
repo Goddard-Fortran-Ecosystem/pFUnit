@@ -20,6 +20,10 @@ from __future__ import print_function
 #                Added logical to makeExpectedFTypes - but not for prime time.
 # 
 
+##  Abbreviations
+#   WOTol =>  WithoutTolerance
+#   def   =>  default
+
 ##### system code #####
 
 import argparse
@@ -82,7 +86,7 @@ def allowedPrecisions(t,pFound='64') :
     if t == 'logical' :
         allowed = []
     elif t == 'integer' :
-        allowed = ['default']
+        allowed = ['def']
     elif t == 'real' or 'complex' :
         if pFound == '32' :
             allowed = ['32']
@@ -90,12 +94,14 @@ def allowedPrecisions(t,pFound='64') :
             allowed = ['32','64']
     return allowed
 
+# 2014-1208-1646-25-UTC MLR 
 def allowedExpected(tFound) :
     # allowed = []
     if tFound in 'integer' :
-        allowed = []
-    elif tFound in 'integer' :
         allowed = ['integer']
+    #    allowed = []
+    #elif tFound in 'integer' :
+    #    allowed = ['integer']
     elif tFound == 'real' :
         allowed = ['integer','real']
     elif tFound == 'complex' :
@@ -285,7 +291,7 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
     retString += \
         commentPreambleString + \
 """
-   subroutine """+subroutineName+'_WithoutTolerance'+"""( &
+   subroutine """+subroutineName+'_WOTol'+"""( &
    &  expected, found, message, location )
      implicit none\n""" + \
      declareExpected + \
@@ -398,7 +404,10 @@ ifElseString(tolerance == 0,\
     ! Return immediately if the two are precisely equal.
     ! This is necessary to deal with identical infinities, which cannot be
     ! subtracted.
-    if (""" + all_i + """(expected == found)) return
+    if (comparison .eq. EQP) then
+       if (""" + all_i + """(expected == found)) return
+    end if
+    ! Note:  The above begs the question about how to handle Inf for non-.eq. cases...
 
 ! MLR: The following just might work...
     tolerance_ = tolerance
@@ -667,7 +676,7 @@ class constraintASSERT(routineUnit):
         ## Add in the extra module procedures... If needed...
         self.setDeclaration(declaration(self.name,self.name))
         ## Kluge.  Need to make makeSubroutineNames and load the extra interface entries there.
-        self.name1 = self.name+'_WithoutTolerance'
+        self.name1 = self.name+'_WOTol'
         self.addDeclaration(declaration(self.name1,self.name1))
 
         ## If you need another kind of code generator, perhaps
@@ -886,8 +895,16 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
     foundKind =    reportKind(tf,pf)
     mxType = maxType(te,tf) 
     mxPrec = maxPrecision(pe,pf)
-    coercedExpected = coerceKind('expected',t=mxType)
-    coercedFound    = coerceKind('found',t=mxType)
+    
+    if te == 'integer':
+        coercedExpected = 'expected'
+    else:
+        coercedExpected = coerceKind('expected',t=mxType)
+    if tf == 'integer':
+        coercedFound    = 'found'
+    else:
+        coercedFound    = coerceKind('found',t=mxType)
+        
     runit = routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
       character(len=MAXLEN_MESSAGE) &
@@ -937,14 +954,20 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
 
 ### Currently Active ###
 def makeDifferenceReport_type(t='real',p='64',tol='64'):
+    """Report on the difference found between expected and found.  This should be
+    redesigned to support difference between real & integer, e.g. treatment of tolerances."""
+    # TODO:  Fix the papering-over of integer/real/tolerance treatment.
     if t == 'integer' :
         expectedDeclaration = " integer, intent(in) :: difference"
+        coercedDifference = 'difference'
     else :
         expectedDeclaration = t+"""(kind=r"""+p+"""), intent(in) :: difference"""
-    coercedDifference = coerceKind('difference',t=t)
+        coercedDifference = coerceKind('difference',t=t)
     #    coercedTolerance =  coerceKind('tolerance',t=t)
     
-    runit = routineUnit('differenceReport_'+t+p+tol,\
+    # runit = routineUnit(
+    
+    differenceReportSource=\
 """
     character(len=MAXLEN_MESSAGE) &
     & function differenceReport_"""+t+p+tol+"""(difference, tolerance) result(differenceReport)
@@ -956,11 +979,22 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
         rel = '> '
      else
         rel = '<='
-     end if
-      differenceReport = '    difference: |' // trim(toString("""+coercedDifference+""")) // &
+     end if"""
+    if t != 'integer':
+        differenceReportSource=differenceReportSource+\
+"""
+     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| '// trim(rel) //' tolerance:' // trim(toString("""+'tolerance'+"""))
     end function 
-""")
+"""
+    else:
+        differenceReportSource=differenceReportSource+\
+"""
+     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
+      & '| '
+    end function 
+"""
+    runit = routineUnit('differenceReport_'+t+p+tol,differenceReportSource)
 
 # Don't need the following because we'll add to an interface block.
 #    runit.setDeclaration(declaration(runit.getName(),'public '+runit.getName()))
@@ -1030,7 +1064,7 @@ def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
     if 'logical' in foundFTypes :
         if foundFType == 'logical' :
             retTypes=['logical']        
-    elif expectedPrecision == 'default':
+    elif expectedPrecision == 'def':
         if not 'complex' in foundFTypes :
             retTypes=['integer']
         else :
@@ -1070,9 +1104,9 @@ def makeTolerances(expectedP, foundP) :
     else:
         fp = [foundP]
     lp = []
-    if not 'default' in ep :
+    if not 'def' in ep :
         lp = lp + ep 
-    if not 'default' in fp :
+    if not 'def' in fp :
         lp = lp + fp
     if lp == [] :
         # 2013-1022 MLR Fix this!!!
@@ -1122,9 +1156,9 @@ def makeExpectedPrecisions(foundPrecision,foundFType='real'):
     if foundFType == 'logical' :
         expectedPrecisions = ['']
     elif foundFType == 'integer' :
-        expectedPrecisions = ['default']
+        expectedPrecisions = ['def']
     else :
-        expectedPrecisions = ['default',32]
+        expectedPrecisions = ['def',32]
         if foundPrecision > 32 :
             expectedPrecisions.append(foundPrecision)
     return expectedPrecisions
@@ -1133,7 +1167,7 @@ def ca_MakeAllowedPrecisions(foundFType) :
     precs = []
     ap = allowedPrecisions(foundFType,pFound='64')
     for i in ap :
-        if i == 'default' :
+        if i == 'def' :
             precs = precs + [i]
         else :
             precs = precs + [int(i)]
@@ -1147,10 +1181,10 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
     # Note:  Need to eliminate redundancy of real asserts that can arise in AssertComplex.
     #        I.e. remove real-real comparisons when complex is available.
  
-    # expectedFTypes -> 'integer' if expectedPrecision 'default' else 'real'
+    # expectedFTypes -> 'integer' if expectedPrecision 'def' else 'real'
     # was tolerances = [32,64], but replaced by the following:
     # tolerances = max expectedPrecisions & foundPrecisions
-    # expectedPrecisions = ['default',32,64] that are < foundPrecision
+    # expectedPrecisions = ['def',32,64] that are < foundPrecision
     # expectedRanks(foundRank) -> [0,foundRank]
     # + passed in foundFTypes = ['real','complex']
     # + passed in foundFTypes = ['real']
@@ -1198,7 +1232,7 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
                        )]
 
     ## To insert by hand, one might try the following (sketch...)...
-    ## a = AssertRealArrayArgument('integer','default','1','integer','default','1',0)
+    ## a = AssertRealArrayArgument('integer','def','1','integer','def','1',0)
     ## AssertList += [MyConstraintAssertEqual(a.getExpectedDescription(),a.getFoundDescription())]
     ## Any specialization of routineUnit should work here...
     ## The code is generated when the routineUnit is instantiated, so that support code would
@@ -1453,10 +1487,18 @@ def makeModuleComplex(maxRank=5):
     return
 
 def makeModuleInteger(maxRank=5):
-    assertionShortNames=['Equal']
+    # assertionShortNames=['Equal']
+    assertionShortNames=\
+        ["NotEqual",\
+        "Equal",\
+        "GreaterThan",\
+        "GreaterThanOrEqual",\
+        "LessThan",\
+        "LessThanOrEqual"]
+
     for iRank in range(0,maxRank+1):
         foundRanks=[iRank]
-        mod = constructModule(baseName='AssertInteger1',\
+        mod = constructModule(baseName='AssertInteger',\
                           assertionShortNames=assertionShortNames,\
                           foundFTypes=['integer'],\
                           foundRanks=foundRanks)
@@ -1465,8 +1507,8 @@ def makeModuleInteger(maxRank=5):
             f.write('\n'.join(mod.generate()))
         addFileToMakefile(mod.getFileName())
 # Not ready to add integers to AssertArrays...
-#        for iName in assertionShortNames : 
-#           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)       
+        for iName in assertionShortNames : 
+           addModToF90Include(mod.getName(),postFix=", only : " + 'assert'+iName)       
     print('makeModuleInteger: done')
     return
 
