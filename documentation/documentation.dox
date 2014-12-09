@@ -815,6 +815,7 @@ For more information about @assert directives, please refer to the following.
 <ul>
    <li>\ref ss_assertEqual</li>
    <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertEqualUserDefined</li>
    <li>\ref ss_assertFalse</li>
    <li>\ref ss_assertLessThan</li>
    <li>\ref ss_assertLessThanOrEqual</li>
@@ -881,6 +882,7 @@ getParameterString.  For example:
 <ul>
    <li>\ref ss_assertEqual</li>
    <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertEqualUserDefined</li>
    <li>\ref ss_assertFalse</li>
    <li>\ref ss_assertLessThan</li>
    <li>\ref ss_assertLessThanOrEqual</li>
@@ -904,6 +906,19 @@ getParameterString.  For example:
 \section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
 \subsection ss_assertEqual @assertEqual
 \subsection ss_assertTrue @assertTrue
+\subsection ss_assertEqualUserDefined @assertEqualUserDefined
+A convenience function that allows a user to write
+\code
+@assertEqualUserDefined(a,b)\endcode
+instead of 
+\code
+call assertTrue(a==b,...)\endcode
+while a more instructive error message about the arguments and
+source code position is added by the preprocessor.  The user may
+add an error message as follows.
+\code
+@assertEqualUserDefined(a,b,message='a and b should be equal here.')\endcode
+
 \subsection ss_assertFalse @assertFalse
 \subsection ss_assertLessThan @assertLessThan
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
@@ -935,6 +950,8 @@ call assertTrue(associated(a))\endcode
 becomes
 \code
 call assertTrue(associated(pointer,target))\endcode
+
+
 
 \page page_RevisionNotes Revision Notes
 

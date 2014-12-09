@@ -216,6 +216,8 @@ class TestParseLine(unittest.TestCase):
 
     def testParseArgsFirstSecondRest(self):
         """Test that the first-second-rest argument parsing is adequate."""
+        self.assertEqual(None,parseArgsFirstSecondRest("@assertassociated","@assertassociated"))
+        self.assertEqual(None,parseArgsFirstSecondRest("@assertassociated","@assertassociated()"))
         self.assertEqual(['a'],parseArgsFirstSecondRest("@assertassociated","@assertassociated(a)"))
         self.assertEqual(['a','b'],parseArgsFirstSecondRest("@assertassociated","@assertassociated(a,b)"))
         self.assertEqual(['a','b',"message='This is the message.'"], \
@@ -273,8 +275,51 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual(" )\n", parser.outLines[5])
         self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
         self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
-        
 
+    def testMatchAtAssertEqualUserDefined(self):
+        """Check that a line starting with '@assertEqualUserDefined' is detected
+        as an annotation. atAssertEqualUserDefined(a,b) implies a points to b."""
+        parser = MockParser([' \n'])
+        atAssertEqualUserDefined = AtAssertEqualUserDefined(parser)
+
+        self.assertFalse(atAssertEqualUserDefined.match('@assertEqualUserDefined'))
+        self.assertFalse(atAssertEqualUserDefined.match('@assertEqualUserDefined()'))
+        self.assertFalse(atAssertEqualUserDefined.match('@assertEqualUserDefined(a)'))
+        self.assertTrue(atAssertEqualUserDefined.match('@assertequaluserdefined(a,b)')) # case insensitive
+        self.assertTrue(atAssertEqualUserDefined.match('@ASSERTEQUALUSERDEFINED(a,b)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertEqualUserDefined.apply('   @assertEqualUserDefined(a,b)\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertTrue(a==b, &\n", parser.outLines[1])
+        self.assertEqual(" & message='<a> not equal to <b>', &\n", parser.outLines[2])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[3])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[4])
+        self.assertEqual(" & 8)", parser.outLines[5])
+        self.assertEqual(" )\n", parser.outLines[6])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[7])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[8])
+
+    def testMatchAtAssertEqualUserDefinedWithMessage(self):
+        """Check that a line starting with '@assertEqualUserDefined' is detected
+        as an annotation. atAssertEqualUserDefined(a,b) implies a points to b."""
+        parser = MockParser([' \n'])
+        atAssertEqualUserDefined = AtAssertEqualUserDefined(parser)
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertEqualUserDefined.apply('   @assertEqualUserDefined(a,b,message="c")\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual('  call assertTrue(a==b, message="c", &\n', parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+
+        
     def testMatchAtAssertOther(self):
         """Check that a line starting with '@assert*' is detected
         as an annotation."""

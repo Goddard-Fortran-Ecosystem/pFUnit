@@ -114,3 +114,34 @@ subroutine testAssociatedArrays
   @assertAssociated(iPtr)
   
 end subroutine testAssociatedArrays
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEqualityBroken
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1, two = 2
+
+  @assertEqualUserDefined(one,two)
+
+end subroutine testEqualityBroken
+
+subroutine testEquality
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1
+
+  ! Under the hood it's one == one.
+  @assertEqualUserDefined(one,one)
+
+end subroutine testEquality
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEqualityWithMessageBroken
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1, two = 2
+
+  @assertEqualUserDefined(one,two,message="<<Intentionally broken. 1==2.>>")
+
+end subroutine testEqualityWithMessageBroken
+
