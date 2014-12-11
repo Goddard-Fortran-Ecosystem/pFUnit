@@ -26,17 +26,29 @@ contains
            &   newTestMethod('testAssertTrueF', &
            &                  testAssertTrueF))
       call suite%addTest( &
+           &   newTestMethod('testAssertTrueF1', &
+           &                  testAssertTrueF1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueF2', &
+           &                  testAssertTrueF2))
+      call suite%addTest( &
            &   newTestMethod('testAssertTrueT', &
            &                  testAssertTrueT))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueT1', &
+           &                  testAssertTrueT1))
       call suite%addTest( &
            &   newTestMethod('testAssertFalseT', &
            &                  testAssertFalseT))
       call suite%addTest( &
-           &   newTestMethod('testAssertFalseF', &
-           &                  testAssertFalseF))
+           &   newTestMethod('testAssertFalseT1', &
+           &                  testAssertFalseT1))
       call suite%addTest( &
            &   newTestMethod('testAssertFalseF', &
            &                  testAssertFalseF))
+      call suite%addTest( &
+           &   newTestMethod('testAssertFalseF1', &
+           &                  testAssertFalseF1))
       call suite%addTest( &
            &   newTestMethod('testAssertEqualStringSame', &
            &                  testAssertEqualStringSame))
@@ -149,18 +161,41 @@ contains
       call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertTrueF
 
+   subroutine testAssertTrueF1()
+      call assertTrue([.false.].eqv.[.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertTrueF1
+
+   subroutine testAssertTrueF2()
+      call assertTrue([.true.,.false.].eqv.[.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertTrueF2
+
    subroutine testAssertTrueT()
       call assertTrue(.true.)
    end subroutine testAssertTrueT
+
+   subroutine testAssertTrueT1()
+      call assertTrue([.true.,.true.].eqv.[.true.,.true.])
+   end subroutine testAssertTrueT1
 
    subroutine testAssertFalseF()
       call assertFalse(.false.)
    end subroutine testAssertFalseF
 
+   subroutine testAssertFalseF1()
+      call assertFalse([.false.,.false.].eqv.[.true.,.true.])
+   end subroutine testAssertFalseF1
+
    subroutine testAssertFalseT()
       call assertFalse(.true.)
       call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertFalseT
+
+   subroutine testAssertFalseT1()
+      call assertFalse([.true.,.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertFalseT1
 
    subroutine testAssertEqualStringSame()
       call assertEqual(expected="string A", found="string A")

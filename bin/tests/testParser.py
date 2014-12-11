@@ -319,6 +319,31 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
         self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
+    def testMatchAtAssertEquivalent(self):
+        """Check that a line starting with '@assertEquivalent' is detected
+        as an annotation. atAssertEquivalent(a,b) implies a points to b."""
+        parser = MockParser([' \n'])
+        atAssertEquivalent = AtAssertEquivalent(parser)
+
+        self.assertFalse(atAssertEquivalent.match('@assertEquivalent'))
+        self.assertFalse(atAssertEquivalent.match('@assertEquivalent()'))
+        self.assertFalse(atAssertEquivalent.match('@assertEquivalent(a)'))
+        self.assertTrue(atAssertEquivalent.match('@assertequivalent(a,b)')) # case insensitive
+        self.assertTrue(atAssertEquivalent.match('@ASSERTEQUIVALENT(a,b)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertEquivalent.apply('   @assertEquivalent(a,b)\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertTrue(a.eqv.b, &\n", parser.outLines[1])
+        self.assertEqual(" & message='<a> not equal to <b>', &\n", parser.outLines[2])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[3])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[4])
+        self.assertEqual(" & 8)", parser.outLines[5])
+        self.assertEqual(" )\n", parser.outLines[6])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[7])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[8])
+
         
     def testMatchAtAssertOther(self):
         """Check that a line starting with '@assert*' is detected

@@ -834,6 +834,7 @@ For more information about @assert directives, please refer to the following.
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertEquivalent</li>
 </ul>
 
 
@@ -901,6 +902,7 @@ getParameterString.  For example:
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertEquivalent</li>
 </ul>
 
 \section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
@@ -944,14 +946,24 @@ becomes
 call assertTrue(associated(a))\endcode
 
 \subsection ss_assertAssociatedWith @assertAssociatedWith
-@assertAssociatedWith maps to a call to the logical intrinsic function associated.
+This directive maps to a call to the logical intrinsic function associated.
 \code
 @assertAssociatedWith(pointer,target)\endcode
 becomes
 \code
 call assertTrue(associated(pointer,target))\endcode
+neglecting message and source location information.
 
-
+\subsection ss_assertEquivalent @assertEquivalent
+This directive compares two logical values and throws an exception annotated with some useful information.
+We get a special directive for this one because comparing logicals uses the .eqv. infix operator in standard
+Fortran. The arguments a and b below may be 1d arrays.
+\code
+@assertEquivalent(a,b)\endcode
+becomes
+\code
+call assertTrue(a.eqv.b)\endcode
+neglecting the specification of message and source location information.
 
 \page page_RevisionNotes Revision Notes
 

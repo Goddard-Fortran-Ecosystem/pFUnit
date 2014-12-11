@@ -145,3 +145,36 @@ subroutine testEqualityWithMessageBroken
 
 end subroutine testEqualityWithMessageBroken
 
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEquivalenceBroken
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true., NO = .false.
+
+!  @assertEquivalent(YES,NO)
+
+  @assertEquivalent([YES,YES,YES],[YES,YES,NO])
+
+end subroutine testEquivalenceBroken
+
+subroutine testEquivalence
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true.
+
+  @assertEquivalent(YES,YES)
+
+  @assertEquivalent([YES,YES,YES],[YES,YES,YES])
+
+end subroutine testEquivalence
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEquivalenceWithMessageBroken
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true., NO = .false.
+
+  @assertEquivalent(YES,NO,message="<<Intentionally broken. YES.eqv.NO.>>")
+
+end subroutine testEquivalenceWithMessageBroken
+

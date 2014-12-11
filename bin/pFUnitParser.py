@@ -33,35 +33,59 @@ def parseArgsFirstRest(directiveName,line):
     Added for assertAssociated.
     """
 
+    argStr = ''; 
     if directiveName != '':
-        mMultiArg  = re.match('\s*'+directiveName+'\s*\\((\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
-            line, re.IGNORECASE)
+        m = re.match('\s*'+directiveName+'\s*\((.*)\)\s*$',line,re.IGNORECASE)
+        #print (1000,m)
+        if m:
+            argStr = m.groups()[0]
+        else:
+            return None
     else:
-        mMultiArg  = re.match('\s*\s*([^,]*\w),(.*\w*.*)\s*$', \
-            line, re.IGNORECASE)
+        argStr = line
 
-    returnArgs = None
+    args = parseBrackets(argStr)
 
-    if not mMultiArg:
-        if directiveName != '':
-            mSingleArg = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$', \
-                                line, re.IGNORECASE)
-        else:
-            mSingleArg = re.match('\s*(.*\w.*)\s*$', \
-                                line, re.IGNORECASE)
-
-        if mSingleArg:
-            firstArg  = mSingleArg.groups()[0]
-            returnArgs = [firstArg]
-        else:
-            returnArgs = None
+    if args == []:
+        returnArgs = None
+    elif len(args) == 1:
+        returnArgs = [args[0]]
+    else:
+        returnArgs = [args[0],','.join(args[1:])]
         
-    else:
+    # print(2000,line)
+    # print(2001,args)
+    # print(2002,returnArgs)
 
-        if directiveName != '':
-            returnArgs = list(mMultiArg.groups()[1:])
-        else:
-            returnArgs = list(mMultiArg.groups())
+    #if directiveName != '':
+    #    mMultiArg  = re.match('\s*'+directiveName+'\s*\\((\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+    #        line, re.IGNORECASE)
+    #else:
+    #    mMultiArg  = re.match('\s*\s*([^,]*\w),(.*\w*.*)\s*$', \
+    #        line, re.IGNORECASE)
+    #
+    #returnArgs = None
+    #
+    #if not mMultiArg:
+    #    if directiveName != '':
+    #        mSingleArg = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$', \
+    #                            line, re.IGNORECASE)
+    #    else:
+    #        mSingleArg = re.match('\s*(.*\w.*)\s*$', \
+    #                            line, re.IGNORECASE)
+    #
+    #    if mSingleArg:
+    #        firstArg  = mSingleArg.groups()[0]
+    #        returnArgs = [firstArg]
+    #    else:
+    #        returnArgs = None
+    #    
+    #else:
+    #
+    #    if directiveName != '':
+    #        returnArgs = list(mMultiArg.groups()[1:])
+    #    else:
+    #        returnArgs = list(mMultiArg.groups())
 
     return returnArgs
 

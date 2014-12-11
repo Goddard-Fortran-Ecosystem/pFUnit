@@ -9,6 +9,11 @@ from __future__ import print_function
 # 
 # Usage:  ./GenerateAssertsOnArrays.py
 #
+# Outputs:
+#    A large number of library files implementing assertRELATION routines.
+#    generated.inc
+#    AssertArrays.fh
+#
 # M. Rilee
 #    Initial: 2013-0304
 #

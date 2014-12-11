@@ -88,10 +88,12 @@ module AssertBasic_mod
 
    interface assertTrue
       module procedure assertTrue_
+      module procedure assertTrue_1d_
    end interface
 
    interface assertFalse
       module procedure assertFalse_
+      module procedure assertFalse_1d_
    end interface
 
    interface assertEqual
@@ -142,6 +144,20 @@ contains
 
       if (.not. condition) call throw(trim(message_), location)
     end subroutine assertTrue_
+
+   subroutine assertTrue_1d_(condition, message, location)
+      logical, intent(in) :: condition(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      if (.not. all(condition)) call throw(trim(message_), location)
+    end subroutine assertTrue_1d_
+
 
    subroutine assertExceptionRaisedBasic(location)
       use Exception_mod, only: throw, catch
@@ -219,6 +235,15 @@ contains
 
       call assertTrue(.not. condition, message, location)
    end subroutine assertFalse_
+
+   subroutine assertFalse_1d_(condition, message, location)
+      logical, intent(in) :: condition(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(.not. condition, message, location)
+   end subroutine assertFalse_1d_
+
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
