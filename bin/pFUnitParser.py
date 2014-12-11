@@ -4,6 +4,7 @@ from __future__ import print_function
 
 from os.path import *
 import re
+from parseBrackets import parseBrackets
 
 class MyError(Exception):
     def __init__(self, value):
@@ -362,7 +363,52 @@ class AtAssertEqualUserDefined(Action):
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+
+
+class AtAssertEquivalent(Action):
+    """Convenience directive replacing (a,b) with a call to assertTrue(a.eqv.b)
+    and an error message, if none is provided when invoked.
+    """
+    def __init__(self,parser):
+        self.parser = parser
+
+    def match(self, line):
+        m  = re.match( \
+            '\s*@assertequivalent\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            line, re.IGNORECASE)
+
+        # How to get both (a,b) and (a,b,c) to match?
+        if not m:
+            m  = re.match( \
+                '\s*@assertequivalent\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                line, re.IGNORECASE)
                     
+        return m
+
+    def appendSourceLocation(self, fileHandle, fileName, lineNumber):
+        fileHandle.write(" & location=SourceLocation( &\n")
+        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
+        fileHandle.write(" & " + str(lineNumber) + ")")
+
+    def action(self, m, line):
+        p = self.parser
+
+        args = parseArgsFirstSecondRest('@assertequivalent',line)
+        
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        if len(args) > 2:
+            p.outputFile.write("  call assertTrue(" \
+                               + args[0] + ".eqv." + args[1] + ", " + args[2] + ", &\n")
+        else:
+            p.outputFile.write("  call assertTrue(" \
+                               + args[0] + ".eqv." + args[1] + ", &\n")
+        if not re.match('.*message=.*',line,re.IGNORECASE):
+            p.outputFile.write(" & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n")
+        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
+        p.outputFile.write(" )\n")
+        p.outputFile.write("  if (anyExceptions()) return\n")
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+                            
 
 class AtMpiAssert(Action):
     def __init__(self, parser):
@@ -483,6 +529,7 @@ class Parser():
         self.actions.append(AtAssertAssociatedWith(self))
 
         self.actions.append(AtAssertEqualUserDefined(self))
+        self.actions.append(AtAssertEquivalent(self))
         
         self.actions.append(AtMpiAssert(self))
         self.actions.append(AtBefore(self))
