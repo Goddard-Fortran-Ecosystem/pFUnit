@@ -50,8 +50,8 @@ contains
       suite = remoteSuite()
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
-      call assertEqual(4, result%runCount(),'runCount()')
-      call assertEqual(1, result%failureCount(), 'failureCount()')
+      call assertEqual(5, result%runCount(),'runCount()')
+      call assertEqual(2, result%failureCount(), 'failureCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')
 
       close(unit)

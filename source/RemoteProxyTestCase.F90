@@ -154,13 +154,13 @@ contains
                   read(line,*) lineNumber
                   line = contentScan(this%process%getLine())
                   read(line,*) length
-                  allocate(character(len=length) :: message)
+!                  allocate(character(len=length) :: message)
                   line = this%process%getDelim(C_NULL_CHAR)
                   message = contentScan(line)
                   ! eat remaining linefeed
                   line= this%process%getLine()
                   call throw(trim(message), SourceLocation(fileName, lineNumber))
-                  deallocate(message)
+!                  deallocate(message)
                end do
                cycle ! still need to process the end message
 

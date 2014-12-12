@@ -20,6 +20,9 @@ contains
            &   newTestMethod('testRunSucceeds', &
            &                  testRunSucceeds))
       call suite%addTest( &
+           &   newTestMethod('testRunMultipleExceptions', &
+           &                  testRunMultipleExceptions))
+      call suite%addTest( &
            &   newTestMethod('testRunAssertFailure', &
            &                  testRunAssertFailure))
       call suite%addTest( &
@@ -34,6 +37,14 @@ contains
    subroutine testRunSucceeds()
       ! do nothing
    end subroutine testRunSucceeds
+
+   subroutine testRunMultipleExceptions()
+     use Assert_mod
+     ! do nothing
+     call assertTrue(1 == 2)
+     call assertTrue(1 == 3)
+     call assertTrue(1 == 4)
+   end subroutine testRunMultipleExceptions
 
    subroutine testRunAssertFailure()
       use Assert_mod
