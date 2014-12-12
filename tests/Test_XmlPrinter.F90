@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Computational & Information Sciences & Technology, Code 606.
+! NASA/GSFC Advanced Software Technology Group.
 !-------------------------------------------------------------------------------
 !  MODULE: Test_XmlPrinter
 !
@@ -24,7 +24,7 @@
 ! 2014 July. Initial commit.
 !
 !-------------------------------------------------------------------------------
-#include "reflection.h"
+!#include "reflection.h"
 module Test_XmlPrinter_mod
    implicit none
    private
@@ -40,9 +40,11 @@ contains
 
       suite = newTestSuite('TestXmlPrinterSuite')
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testValidXml)
+      call suite%addTest( &
+           &   newTestMethod('testValidXml', &
+           &                  testValidXml))
 
    end function suite
 

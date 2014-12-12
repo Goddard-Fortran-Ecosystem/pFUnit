@@ -16,7 +16,7 @@ INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
 project (pFUnit)
 enable_language (Fortran)
-# set (CMAKE_VERBOSE_MAKEFILE 1)
+ set (CMAKE_VERBOSE_MAKEFILE 1)
 
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}") 
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
@@ -54,7 +54,7 @@ ENDIF()
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
-OPTION(HAS_CPP "Compiler has useable C preprocessor" YES)
+
 # The following sets robust to "ON".
 OPTION(ROBUST "Build robust test runner" YES)
 
@@ -101,14 +101,12 @@ if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
         add_definitions(-DINTEL_13)
     endif()
     add_definitions(-DIntel)
-    add_definitions(-DSTRINGIFY_OPERATOR)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
 
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
     # Use Gfortran
-    add_definitions(-DSTRINGIFY_SIMPLE)
     add_definitions(-DGNU)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fbounds-check")
 
@@ -116,15 +114,12 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
     # use nagfor			     
     add_definitions(-DNAG)
-    add_definitions(-DSTRINGIFY_SIMPLE)
-    set(HAS_CPP NO)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp -C=present")
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
 
     # Use XLF.
     add_definitions(-DIBM)
-    add_definitions(-DSTRINGIFY_SIMPLE)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
 else()

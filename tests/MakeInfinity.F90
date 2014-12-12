@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: MakeInfinity
 !
@@ -7,7 +7,7 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC SIVO
+!! Tom Clune, NASA/GSFC SIVO
 !!
 !! @date
 !! 07 Nov 2013

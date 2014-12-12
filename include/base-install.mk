@@ -18,7 +18,6 @@ include $(INCLUDE_DIR)/extensions.mk
 D=-D
 I=-I
 MOD=-I
-F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
 
 # Include the compiler-specific options.
@@ -40,22 +39,15 @@ else
   FC=$(MPIF90)
 endif
 
-ifeq ($(F90_HAS_CPP),YES)
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
-else
-%$(OBJ_EXT):%.F90
-	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
-	$(RM) $*_cpp.F90
-endif
 
 .PHONY: clean distclean echo
 
 clean: local-base0-clean
 
 local-base0-clean:
-	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp *.s
+	$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *.tmp *.s
 	$(RM) -r *.dSYM
 
 distclean: local-base0-distclean
@@ -71,4 +63,5 @@ echo:
 	@echo FPPFLAGS: $(FPPFLAGS)
 	@echo CPPFLAGS: $(CPPFLAGS)
 
+export FC
 

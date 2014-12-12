@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_StringConversionUtilities_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
    use StringConversionUtilities_mod, only: toString
@@ -16,12 +16,20 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('StringConversionUtilities')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testToStringInteger1D)
-      ADD(testToString_realZero)
-      ADD(testToString_realPositive)
-      ADD(testToString_realNegative)
+      call suite%addTest( &
+           &   newTestMethod('testToStringInteger1D', &
+           &                  testToStringInteger1D))
+      call suite%addTest( &
+           &   newTestMethod('testToString_realZero', &
+           &                  testToString_realZero))
+      call suite%addTest( &
+           &   newTestMethod('testToString_realPositive', &
+           &                  testToString_realPositive))
+      call suite%addTest( &
+           &   newTestMethod('testToString_realNegative', &
+           &                  testToString_realNegative))
 
    end function suite
 

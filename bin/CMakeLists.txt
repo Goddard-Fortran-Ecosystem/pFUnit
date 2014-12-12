@@ -1,2 +1,2 @@
-install(PROGRAMS pFUnitParser.py DESTINATION bin)
+install(PROGRAMS pFUnitParser.py parseBrackets.py DESTINATION bin)
 

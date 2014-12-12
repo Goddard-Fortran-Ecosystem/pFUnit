@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: AssertBasic
 !
@@ -8,7 +8,7 @@
 !! foundation for providing test services to end users.
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC 
+!! Tom Clune, NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013
@@ -88,10 +88,12 @@ module AssertBasic_mod
 
    interface assertTrue
       module procedure assertTrue_
+      module procedure assertTrue_1d_
    end interface
 
    interface assertFalse
       module procedure assertFalse_
+      module procedure assertFalse_1d_
    end interface
 
    interface assertEqual
@@ -124,23 +126,38 @@ contains
    subroutine fail_(message, location)
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
+
       call throw(message, location)
-    end subroutine fail_
+
+   end subroutine fail_
+
 
    subroutine assertTrue_(condition, message, location)
       logical, intent(in) :: condition
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
+
       character(len=:), allocatable :: message_
 
-      if(present(message))then
-         message_ = message
-      else
-         message_ = NULL_MESSAGE
-      end if
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
-      if (.not. condition) call throw(trim(message), location)
+      if (.not. condition) call throw(trim(message_), location)
     end subroutine assertTrue_
+
+   subroutine assertTrue_1d_(condition, message, location)
+      logical, intent(in) :: condition(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=:), allocatable :: message_
+
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
+
+      if (.not. all(condition)) call throw(trim(message_), location)
+    end subroutine assertTrue_1d_
+
 
    subroutine assertExceptionRaisedBasic(location)
       use Exception_mod, only: throw, catch
@@ -175,7 +192,6 @@ contains
 
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
-
 
       if (nonConformable(shapeA, shapeB)) then
          throwMessage = 'nonconforming arrays - expected shape: ' // &
@@ -220,6 +236,15 @@ contains
       call assertTrue(.not. condition, message, location)
    end subroutine assertFalse_
 
+   subroutine assertFalse_1d_(condition, message, location)
+      logical, intent(in) :: condition(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(.not. condition, message, location)
+   end subroutine assertFalse_1d_
+
+
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
       use Exception_mod, only: throw, MAXLEN_MESSAGE
@@ -231,7 +256,6 @@ contains
            & whitespace
 
       character(len=:), allocatable :: message_
-      type (SourceLocation) :: location_
       type (WhitespaceOptions) :: whitespace_
 
       character(len=MAXLEN_MESSAGE) :: throwMessage
@@ -241,22 +265,13 @@ contains
 
       integer, parameter :: iachar_spc = 32, iachar_tab = 9
 
-      logical :: checkForDifference, charDifference
+      logical :: checkForDifference
       logical :: throwException
       logical :: whitespaceYes
       character(len=:), allocatable :: expected_, found_
 
-      if(present(message))then
-         message_ = message
-      else
-         message_ = NULL_MESSAGE
-      end if
-
-      if(present(location))then
-         location_ = location
-      else
-         location_ = UNKNOWN_SOURCE_LOCATION
-      end if
+      message_ = NULL_MESSAGE
+      if (present(message)) message_ = message
 
       if(present(whitespace))then
          whitespace_ = whitespace
@@ -311,7 +326,7 @@ contains
             write(throwMessage,'(a)')&
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
-            call throw(appendWithSpace(message,throwMessage), location_)
+            call throw(appendWithSpace(message_,throwMessage), location)
       end select
 
 
@@ -459,7 +474,7 @@ contains
                  & '    expected: <"', expected_, '">', new_line('A'), &
                  & '   but found: <"', found_, '">', new_line('A'), &
                  & '  first diff:   ', repeat('-', numSameCharacters), '^'
-            call throw(appendWithSpace(message, throwMessage), location_)
+            call throw(appendWithSpace(message_, throwMessage), location)
 
          end if
 
@@ -473,6 +488,7 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       call assertTrue(any(conditions), message, location)
+
    end subroutine assertAny
 
    subroutine assertAll(conditions, message, location)
@@ -481,6 +497,7 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       call assertTrue(all(conditions), message, location)
+
    end subroutine assertAll
 
    subroutine assertNone(conditions, message, location)
@@ -489,6 +506,7 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       call assertTrue(.not. any(conditions), message, location)
+
    end subroutine assertNone
 
    subroutine assertNotAll(conditions, message, location)
@@ -497,6 +515,7 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       call assertTrue(.not. all(conditions), message, location)
+
    end subroutine assertNotAll
 
 
@@ -508,7 +527,7 @@ contains
       real(kind=r32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      
+
 #ifdef __GFORTRAN__
       call assertTrue(isNaN(x), message, location)
 #else
@@ -531,6 +550,7 @@ contains
       call assertTrue(ieee_is_nan(x), message, location)
 #endif
    end subroutine assertIsNaN_double
+
 
    subroutine assertIsFinite_single(x, message, location)
       use Params_mod, only: r32

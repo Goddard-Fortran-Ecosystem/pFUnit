@@ -518,6 +518,11 @@ Time:         0.004 seconds
 </li></ul></p>
 
 \subsection FAQIntel13 Intel Fortran Version 13: -DINTEL_13
+
+Using version 13 is deprecated. We have encountered problems using
+version 13, which we believe may be due to subtle compiler bugs.  We
+strongly recommend upgrading to the latest version possible.
+
 To make pFUnit work with Intel Fortran Version 13, please ensure that
 <code>-DINTEL_13</code> is passed to the compiler when building or
 using pFUnit. In the build process for pFUnit, this is added to the
@@ -810,6 +815,7 @@ For more information about @assert directives, please refer to the following.
 <ul>
    <li>\ref ss_assertEqual</li>
    <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertEqualUserDefined</li>
    <li>\ref ss_assertFalse</li>
    <li>\ref ss_assertLessThan</li>
    <li>\ref ss_assertLessThanOrEqual</li>
@@ -826,6 +832,11 @@ For more information about @assert directives, please refer to the following.
    <li>\ref ss_assertSameShape</li>
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
+   <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertUnAssociated</li>
+   <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertUnAssociatedWith</li>
+   <li>\ref ss_assertEquivalent</li>
 </ul>
 
 
@@ -874,6 +885,7 @@ getParameterString.  For example:
 <ul>
    <li>\ref ss_assertEqual</li>
    <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertEqualUserDefined</li>
    <li>\ref ss_assertFalse</li>
    <li>\ref ss_assertLessThan</li>
    <li>\ref ss_assertLessThanOrEqual</li>
@@ -890,11 +902,29 @@ getParameterString.  For example:
    <li>\ref ss_assertSameShape</li>
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
+   <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertUnAssociated</li>
+   <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertUnAssociatedWith</li>
+   <li>\ref ss_assertEquivalent</li>
 </ul>
 
 \section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
 \subsection ss_assertEqual @assertEqual
 \subsection ss_assertTrue @assertTrue
+\subsection ss_assertEqualUserDefined @assertEqualUserDefined
+A convenience function that allows a user to write
+\code
+@assertEqualUserDefined(a,b)\endcode
+instead of 
+\code
+call assertTrue(a==b,...)\endcode
+while a more instructive error message about the arguments and
+source code position is added by the preprocessor.  The user may
+add an error message as follows.
+\code
+@assertEqualUserDefined(a,b,message='a and b should be equal here.')\endcode
+
 \subsection ss_assertFalse @assertFalse
 \subsection ss_assertLessThan @assertLessThan
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
@@ -911,10 +941,47 @@ getParameterString.  For example:
 \subsection ss_assertSameShape @assertSameShape
 \subsection ss_assertIsNaN @assertIsNaN
 \subsection ss_assertIsFinite @assertIsFinite
+\subsection ss_assertAssociated @assertAssociated
+@assertAssociated maps to a call to the logical intrinsic function associated.
+\code
+@assertAssociated(a)\endcode
+becomes
+\code
+call assertTrue(associated(a))\endcode
+
+\subsection ss_assertUnAssociated @assertUnAssociated
+
+This directive is the same as assertAssociated, except that it maps to assertFalse.
+
+\subsection ss_assertAssociatedWith @assertAssociatedWith
+This directive maps to a call to the logical intrinsic function associated.
+\code
+@assertAssociatedWith(pointer,target)\endcode
+becomes
+\code
+call assertTrue(associated(pointer,target))\endcode
+neglecting message and source location information.
+
+\subsection ss_assertUnAssociatedWith @assertUnAssociatedWith
+
+This directive is the same as assertAssociatedWith, except that it maps to assertFalse.
+
+\subsection ss_assertEquivalent @assertEquivalent
+This directive compares two logical values and throws an exception annotated with some useful information.
+We get a special directive for this one because comparing logicals uses the .eqv. infix operator in standard
+Fortran. The arguments a and b below may be 1d arrays.
+\code
+@assertEquivalent(a,b)\endcode
+becomes
+\code
+call assertTrue(a.eqv.b)\endcode
+neglecting the specification of message and source location information.
 
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2014-1211 Minor updates for 3.0.2. MLR</li>
+<li>2014-1110, 2014-1031 Minor edits. MLR</li>
 <li>2014-0915 Minor updates for 3.0.1. MLR</li>
 <li>2014-0404 Updated for release of 3.0. TLC</li>
 <li>2014-0131, 2014-0205. Updated. MLR</li>

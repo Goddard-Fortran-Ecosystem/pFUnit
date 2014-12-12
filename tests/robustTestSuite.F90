@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module robustTestSuite_mod
    use pFUnit_mod
    implicit none
@@ -14,12 +14,20 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('StringConversionUtilities')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testRunSucceeds)
-      ADD(testRunAssertFailure)
-      ADD(testRunStops)
-      ADD(testRunHangs)
+      call suite%addTest( &
+           &   newTestMethod('testRunSucceeds', &
+           &                  testRunSucceeds))
+      call suite%addTest( &
+           &   newTestMethod('testRunAssertFailure', &
+           &                  testRunAssertFailure))
+      call suite%addTest( &
+           &   newTestMethod('testRunStops', &
+           &                  testRunStops))
+      call suite%addTest( &
+           &   newTestMethod('testRunHangs', &
+           &                  testRunHangs))
 
    end function suite
 

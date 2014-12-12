@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 
 !
 ! Test_AssertReal_mod
@@ -44,44 +44,116 @@ contains
 
     suite = newTestSuite('AssertRealSuite') 
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-    ADD(testEquals_0D1D)
-    ADD(testEquals_1D_nonConformable1)
-    ADD(testEquals_2D_SingleElementDifferent)
-    ADD(testEquals_MultiD_SingleElementDifferent)
-    ADD(testEquals_MultiD_SingleElementDifferent1)
-    ADD(testEquals_MultiD_SingleElementDifferent2)
-    ADD(testEquals_MultiD_SingleElementDifferent3)
-    ADD(testEquals_MultiD_SingleElementDifferent4)
-    ADD(testEquals_MultiD_SingleElementDifferent5)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff1)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff2)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff3)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff4)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff5)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff6)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff7)
-    ADD(testEquals_MultiDMultiPrec_SingleEltDiff8)
-    ADD(testEquals_ScalarWithTolerance)
-    ADD(testEquals_ScalarWithToleranceNoMsg)
-    ADD(testEquals_VectorWithToleranceNoMsg)
-    ADD(testEquals_MultiDWithTolerance)
-    ADD(testEquals_MultiDWithTolerance1)
-    ADD(testEquals_MultiDWithTolerance64)
-    ADD(testEquals_MultiDWithTolerance64_1)
-    ADD(testEquals_MultiDWithTolerance64_2)
-    ADD(testEquals_MultiDSourceLocation)
-    ADD(testEquals_ScalarAndLocation)
-    ADD(testEquals_ScalarInfinity_equal)
-    ADD(testEquals_ScalarInfinity_unequal_A)
-    ADD(testEquals_ScalarInfinity_unequal_B)
-    ADD(testEquals_ScalarInfinity_unequal_C)
-    ADD(testEquals_MultiD_SingleElementGT1)
-    ADD(testEquals_MultiD_SingleElementGT2)
-    ADD(testEquals_MultiD_SingleEltVarious1)
-    ADD(testEquals_MultiD_SingleEltVarious2)
+    call suite%addTest( &
+           &   newTestMethod('testEquals_0D1D', &
+           &                  testEquals_0D1D))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_1D_nonConformable1', &
+           &                  testEquals_1D_nonConformable1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_2D_SingleElementDifferent', &
+           &                  testEquals_2D_SingleElementDifferent))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent', &
+           &                  testEquals_MultiD_SingleElementDifferent))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent1', &
+           &                  testEquals_MultiD_SingleElementDifferent1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent2', &
+           &                  testEquals_MultiD_SingleElementDifferent2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent3', &
+           &                  testEquals_MultiD_SingleElementDifferent3))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent4', &
+           &                  testEquals_MultiD_SingleElementDifferent4))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementDifferent5', &
+           &                  testEquals_MultiD_SingleElementDifferent5))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff1', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff2', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff3', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff3))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff4', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff4))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff5', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff5))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff6', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff6))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff7', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff7))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDMultiPrec_SingleEltDiff8', &
+           &                  testEquals_MultiDMultiPrec_SingleEltDiff8))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarWithTolerance', &
+           &                  testEquals_ScalarWithTolerance))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarWithToleranceNoMsg', &
+           &                  testEquals_ScalarWithToleranceNoMsg))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_VectorWithToleranceNoMsg', &
+           &                  testEquals_VectorWithToleranceNoMsg))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDWithTolerance', &
+           &                  testEquals_MultiDWithTolerance))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDWithTolerance1', &
+           &                  testEquals_MultiDWithTolerance1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDWithTolerance64', &
+           &                  testEquals_MultiDWithTolerance64))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDWithTolerance64_1', &
+           &                  testEquals_MultiDWithTolerance64_1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDWithTolerance64_2', &
+           &                  testEquals_MultiDWithTolerance64_2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiDSourceLocation', &
+           &                  testEquals_MultiDSourceLocation))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarAndLocation', &
+           &                  testEquals_ScalarAndLocation))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarInfinity_equal', &
+           &                  testEquals_ScalarInfinity_equal))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarInfinity_unequal_A', &
+           &                  testEquals_ScalarInfinity_unequal_A))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarInfinity_unequal_B', &
+           &                  testEquals_ScalarInfinity_unequal_B))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_ScalarInfinity_unequal_C', &
+           &                  testEquals_ScalarInfinity_unequal_C))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementGT1', &
+           &                  testEquals_MultiD_SingleElementGT1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleElementGT2', &
+           &                  testEquals_MultiD_SingleElementGT2))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleEltVarious1', &
+           &                  testEquals_MultiD_SingleEltVarious1))
+    call suite%addTest( &
+           &   newTestMethod('testEquals_MultiD_SingleEltVarious2', &
+           &                  testEquals_MultiD_SingleEltVarious2))
 
   end function suite
 
@@ -105,9 +177,10 @@ contains
     
     call assertEqual(expected, found, msg)
 
+    ! Using expected below instead of good to get the type correct. Only affects printout.
     call assertCatch( &
          & appendWithSpace(msg, &
-         & trim(valuesReport(good, bad)) // &
+         & trim(valuesReport(expected, bad)) // &
          & '; ' // trim(differenceReport(abs(bad - good), 0.)) // &
          & ';  first difference at element [1].') &
          & )

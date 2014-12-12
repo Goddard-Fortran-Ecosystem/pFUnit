@@ -6,11 +6,13 @@ L=-L
 
 FFLAGS += -g -O0 -fbacktrace
 FFLAGS += -fbounds-check -fcheck=mem
-FFLAGS += -DSTRINGIFY_SIMPLE
 FPPFLAGS += -DGNU
 
 # The ramifications across all GNUish configurations of eliding CPPFLAGS here are not known. MLR 2013-1104
 CPPFLAGS += -DGNU
+
+F90_PP_ONLY = -E
+F90_PP_OUTPUT = >
 
 ifeq ($(USEOPENMP),YES)
 FFLAGS += -fopenmp

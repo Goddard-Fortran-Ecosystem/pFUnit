@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module SimpleTestCase_mod
    use TestCase_mod, only: TestCase
    implicit none
@@ -33,11 +33,17 @@ contains
 
       suite = newTestSuite('SimpleTestCase')
 
-#define ADD(method) call suite%addTest(newSimpleTestCase(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newSimpleTestCase(REFLECT(method)))
 
-      ADD(method1)
-      ADD(method2)
-      ADD(methodWith2Exceptions)
+      call suite%addTest( &
+           &   newSimpleTestCase('method1', &
+           &                      method1))
+      call suite%addTest( &
+           &   newSimpleTestCase('method2', &
+           &                      method2))
+      call suite%addTest( &
+           &   newSimpleTestCase('methodWith2Exceptions', &
+           &                      methodWith2Exceptions))
       
    end function suite
 

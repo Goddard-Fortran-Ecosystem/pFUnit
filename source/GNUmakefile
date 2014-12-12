@@ -2,13 +2,28 @@ TOP = ..
 include ../include/base.mk
 .PHONY: all generate clean_generated_code testCodeMacs
 
-all: dependencies.inc generated.inc libpfunit$(LIB_EXT)
+all: generated.inc dependencies.inc libpfunit$(LIB_EXT)
 
 # "GENERATED_CODE" is defined in "generated.inc".
 # GENERATED_CODE = AssertReal.F90 AssertComplex.F90 AssertInteger1.F90
 # 
 generated.inc:
-	python ./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
+	$(PYTHON) ./GenerateAssertsOnArrays.py --maxRank $(MAX_RANK)
+
+dependencies.inc: generated.inc dependenciesSource.tmp
+	./MakeDependenciesInc dependenciesSource.tmp
+
+# Would prefer to have this in base.mk, but haven't figured out the rules to do so.
+# gmake looks at ../source/dependencies.tmp, instead of making a new one at ".".
+#
+
+#		$(FC) -E $(FFLAGS) $(CPPFLAGS) $$i > $${i}_cpp.f90;
+dependenciesSource.tmp: generated.inc
+	for i in *.F90; do \
+		$(F90) $(F90_PP_ONLY) $(FFLAGS) $(CPPFLAGS) $$i $(F90_PP_OUTPUT) $${i}_cpp.f90; \
+		$(TOP)/tools/MakeDependenciesTmp $$i $${i}_cpp.f90 \
+			$@ "PrivateException|MockSUT|SUT"; \
+		$(RM) $${i}_cpp.f90; done
 
 # 	@echo "# This file automatically generated. Do not modify." > ./generated.inc
 
@@ -22,10 +37,10 @@ include ./generated.inc
 #	./GenerateAssertsOnArrays.py
 
 testCodeMacs:
-	python $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
+	$(PYTHON) $(TOP)/bin/codeMacs.py --inFile testCM.cm --outFile testCM.F90
 
 # %.F90: %.cm
-#	python $(TOP)/bin/codeMacs.py $< $@
+#	$(PYTHON) $(TOP)/bin/codeMacs.py $< $@
 
 clean_generated_code:
 	rm -f generated.inc AssertArrays.fh
@@ -35,9 +50,6 @@ distclean: local-build1-distclean
 
 local-build1-distclean: clean_generated_code
 
-# dependencies.inc: $(GENERATED_CODE)
-dependencies.inc: generated.inc
-	./MakeDependenciesInclude $(FFLAGS) $(FPPFLAGS)
 
 ifneq ($(BUILDROBUST),YES)
 EXCLUDE += UnixProcess.F90 RobustRunner.F90
@@ -64,3 +76,4 @@ endif
 ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
 endif
+

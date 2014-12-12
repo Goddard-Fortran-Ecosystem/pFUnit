@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_TestSuite_mod
    use TestSuite_mod, only: newTestSuite, TestSuite
    use TestResult_mod
@@ -27,13 +27,23 @@ contains
 
       suite = newTestSuite('TestSuiteSuite')
 
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testCountTestCases)
-      ADD(testCountTestCasesNestedA)
-      ADD(testCountTestCasesNestedB)
-      ADD(testCountTestCasesNestedC)
-      ADD(testGetTestCases)
+      call suite%addTest( &
+           &   newTestMethod('testCountTestCases', &
+           &                  testCountTestCases))
+      call suite%addTest( &
+           &   newTestMethod('testCountTestCasesNestedA', &
+           &                  testCountTestCasesNestedA))
+      call suite%addTest( &
+           &   newTestMethod('testCountTestCasesNestedB', &
+           &                  testCountTestCasesNestedB))
+      call suite%addTest( &
+           &   newTestMethod('testCountTestCasesNestedC', &
+           &                  testCountTestCasesNestedC))
+      call suite%addTest( &
+           &   newTestMethod('testGetTestCases', &
+           &                  testGetTestCases))
 
    end function suite
 

@@ -1,6 +1,6 @@
 
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: Mock
 !
@@ -8,7 +8,7 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC
+!! Tom Clune, NASA/GSFC
 !!
 !! @date
 !! 12 May 2014

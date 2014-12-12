@@ -5,10 +5,11 @@ M=-I
 L=-L
 
 FFLAGS += -O0 -g -traceback -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mallocatable=03
-FFLAGS += -DSTRINGIFY_SIMPLE
 FPPFLAGS += -DPGI
-F90_HAS_CPP=YES
-CPPFLAGS += -DSTRINGIFY_SIMPLE -DPGI -Mpreprocess
+CPPFLAGS += -DPGI -Mpreprocess
+
+F90_PP_ONLY = -E
+F90_PP_OUTPUT = >
 
 ifeq ($(DSO),YES)
   FFLAGS +=-PIC

@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: Assert
 !
@@ -7,7 +7,7 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC 
+!! Tom Clune, NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013
@@ -22,9 +22,6 @@
 !-------------------------------------------------------------------------------
 module Assert_mod
    use AssertBasic_mod
-   use AssertInteger_mod
-!   AssertReal mod
-!   AssertComplex mod, only : AssertEqual
 #include "AssertArrays.fh"
    implicit none
    private

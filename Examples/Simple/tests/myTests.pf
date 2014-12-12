@@ -56,7 +56,142 @@ subroutine testAddComplexMultiDimBroken()
    z0(2,2) = cmplx(1.0,0.0); z1(3,1) = cmplx(0.0,-2.0)
    expected(2,2) = z0(2,2)+1.0 ; expected(3,1) = 1.0 + z1(3,1)
 
-   @assertEqual(expected,z0+z1,message='<<This test is intentionally broken.>>')
+   @assertEqual(expected,z0+z1,message='<<Intentionally broken.>>')
 
 end subroutine testAddComplexMultiDimBroken
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testAssociatedBroken
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+
+  @assertAssociated(ptr,message='<<Intentionally broken.>>')
+  
+end subroutine testAssociatedBroken
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testAssociatedWithBroken
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x,y
+
+  x = 0; y = 1; ptr => x
+
+  @assertAssociatedWith(ptr,y,message='<<Intentionally broken.>>')
+  
+end subroutine testAssociatedWithBroken
+
+
+@test
+subroutine testAssociated
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x
+  x = 0
+  ptr => x
+  
+  @assertAssociated(ptr)
+  @assertAssociatedWith(ptr,x)
+  
+end subroutine testAssociated
+
+@test
+subroutine testUnAssociated
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x, y
+  x = 0; y = 1
+  
+  @assertUnAssociated(ptr)
+
+  ptr => y
+
+  @assertUnAssociatedWith(ptr,x)
+  
+end subroutine testUnAssociated
+
+
+! Demonstrate the polymorphism of the call.
+@test
+subroutine testAssociatedArrays
+  use pfunit_mod
+  implicit none
+  real, pointer :: xPtr => NULL()
+  real, target  :: x
+  integer, dimension(:), pointer :: iPtr => NULL()
+  integer, dimension(4), target  :: i
+  x = 0.0; xPtr => x
+  i = 0; iPtr => i
+  
+  @assertAssociated(xPtr)
+  @assertAssociated(iPtr)
+  
+end subroutine testAssociatedArrays
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEqualityBroken
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1, two = 2
+
+  @assertEqualUserDefined(one,two)
+
+end subroutine testEqualityBroken
+
+subroutine testEquality
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1
+
+  ! Under the hood it's one == one.
+  @assertEqualUserDefined(one,one)
+
+end subroutine testEquality
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEqualityWithMessageBroken
+  use pfunit_mod
+  implicit none
+  integer, parameter :: one = 1, two = 2
+
+  @assertEqualUserDefined(one,two,message="<<Intentionally broken. 1==2.>>")
+
+end subroutine testEqualityWithMessageBroken
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEquivalenceBroken
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true., NO = .false.
+
+!  @assertEquivalent(YES,NO)
+
+  @assertEquivalent([YES,YES,YES],[YES,YES,NO])
+
+end subroutine testEquivalenceBroken
+
+subroutine testEquivalence
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true.
+
+  @assertEquivalent(YES,YES)
+
+  @assertEquivalent([YES,YES,YES],[YES,YES,YES])
+
+end subroutine testEquivalence
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testEquivalenceWithMessageBroken
+  use pfunit_mod
+  implicit none
+  logical, parameter :: YES = .true., NO = .false.
+
+  @assertEquivalent(YES,NO,message="<<Intentionally broken. YES.eqv.NO.>>")
+
+end subroutine testEquivalenceWithMessageBroken
 

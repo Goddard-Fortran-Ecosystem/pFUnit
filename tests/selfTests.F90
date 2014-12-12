@@ -1,17 +1,3 @@
-#ifdef USE_MPI
-subroutine debug(line, file)
-   integer, intent(in) :: line
-   character(len=*), intent(in) :: file
-   include 'mpif.h'
-
-   integer :: rank, ier
-   call mpi_comm_rank(MPI_COMM_WORLD, rank ,ier)
-   write(20+rank, *) 'here', line, trim(file), MPI_COMM_WORLD
-   flush(20+rank)
-end subroutine debug
-#endif
-
-#include "reflection.h"
 program main
    use pFUnit_mod, only: initialize
    use pFUnit_mod, only: finalize
@@ -49,6 +35,7 @@ contains
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
       use Test_AssertInteger_mod, only: assertIntegerSuite => suite        !
+
       use Test_AssertReal_mod, only: assertRealSuite => suite              ! (5)
       use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
 
@@ -109,6 +96,7 @@ contains
       ADD(assertBasicSuite)
       ADD(assertSuite)
       ADD(assertIntegerSuite)
+
       ADD(assertRealSuite)
       ADD(assertComplexSuite)
 
@@ -157,3 +145,5 @@ end program main
 !      printer = newResultPrinter(OUTPUT_UNIT)
 !      listeners1(1)%pListener=>printer
 !endif
+
+

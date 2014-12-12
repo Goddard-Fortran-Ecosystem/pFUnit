@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_MpiException_mod
    use Test_mod
    use TestCase_mod
@@ -22,10 +22,19 @@ contains
 
       suite = newTestSuite('ExceptionTests')
 
-#define ADD(method, npes) call suite%addTest(newMpiTestMethod(REFLECT(method), numProcesses=npes))
-      ADD(test_anyExceptions_none, 3)
-      ADD(test_getNumExceptions, 4)
-      ADD(test_gather, 3)
+!#define ADD(method, npes) call suite%addTest(newMpiTestMethod(REFLECT(method), numProcesses=npes))
+      call suite%addTest( &
+           &   newMpiTestMethod('test_anyExceptions_none', &
+           &                  test_anyExceptions_none,  &
+           &                  numProcesses=3))
+      call suite%addTest( &
+           &   newMpiTestMethod('test_getNumExceptions', &
+           &                  test_getNumExceptions,  &
+           &                  numProcesses=4))
+      call suite%addTest( &
+           &   newMpiTestMethod('test_gather', &
+           &                  test_gather,  &
+           &                  numProcesses=3))
 
    end function suite
 

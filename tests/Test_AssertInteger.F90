@@ -1,7 +1,12 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_AssertInteger_mod
    use AssertBasic_mod
-   use AssertInteger_mod
+   use Assert_mod, only: assertEqual
+   use Assert_mod, only: assertLessThan
+   use Assert_mod, only: assertGreaterThan
+   use Assert_mod, only: assertLessThanOrEqual
+   use Assert_mod, only: assertGreaterThanOrEqual
+!   use AssertInteger_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
    private
@@ -18,35 +23,81 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('AssertIntegerTests')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testAssertEqual_equal)
-      ADD(testAssertEqual_unequal)
-      ADD(testAssertEqual_unequalWithMessage)
-      ADD(testAssertEqual1D1D_equal)
-      ADD(testAssertEqual1D1D_nonconforming)
-      ADD(testAssertEqual1D1D_conforming)
-      ADD(testAssertEqual1D1D_unequalA)
-      ADD(testAssertEqual1D1D_unequalB)
-      ADD(testAssertEqual2D2D_equal)
-      ADD(testAssertEqual2D2D_nonconforming)
-      ADD(testAssertEqual2D2D_unequal)
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_equal', &
+           &                  testAssertEqual_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_unequal', &
+           &                  testAssertEqual_unequal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual_unequalWithMessage', &
+           &                  testAssertEqual_unequalWithMessage))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_equal', &
+           &                  testAssertEqual1D1D_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_nonconforming', &
+           &                  testAssertEqual1D1D_nonconforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_conforming', &
+           &                  testAssertEqual1D1D_conforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_unequalA', &
+           &                  testAssertEqual1D1D_unequalA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual1D1D_unequalB', &
+           &                  testAssertEqual1D1D_unequalB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_equal', &
+           &                  testAssertEqual2D2D_equal))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_nonconforming', &
+           &                  testAssertEqual2D2D_nonconforming))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqual2D2D_unequal', &
+           &                  testAssertEqual2D2D_unequal))
 
-      ADD(testAssertLessThan_falseA)
-      ADD(testAssertLessThan_falseB)
-      ADD(testAssertLessThan_true)
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_falseA', &
+           &                  testAssertLessThan_falseA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_falseB', &
+           &                  testAssertLessThan_falseB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThan_true', &
+           &                  testAssertLessThan_true))
 
-      ADD(testAssertLessThanOrEqual_false)
-      ADD(testAssertLessThanOrEqual_trueA)
-      ADD(testAssertLessThanOrEqual_trueB)
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_false', &
+           &                  testAssertLessThanOrEqual_false))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_trueA', &
+           &                  testAssertLessThanOrEqual_trueA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertLessThanOrEqual_trueB', &
+           &                  testAssertLessThanOrEqual_trueB))
 
-      ADD(testAssertGreaterThan_falseA)
-      ADD(testAssertGreaterThan_falseB)
-      ADD(testAssertGreaterThan_true)
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_falseA', &
+           &                  testAssertGreaterThan_falseA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_falseB', &
+           &                  testAssertGreaterThan_falseB))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThan_true', &
+           &                  testAssertGreaterThan_true))
 
-      ADD(testAssertGreaterThanOrEqual_false)
-      ADD(testAssertGreaterThanOrEqual_trueA)
-      ADD(testAssertGreaterThanOrEqual_trueB)
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_false', &
+           &                  testAssertGreaterThanOrEqual_false))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_trueA', &
+           &                  testAssertGreaterThanOrEqual_trueA))
+      call suite%addTest( &
+           &   newTestMethod('testAssertGreaterThanOrEqual_trueB', &
+           &                  testAssertGreaterThanOrEqual_trueB))
 
    end function suite
 
@@ -56,12 +107,12 @@ contains
 
    subroutine testAssertEqual_unequal()
       call assertEqual(2,3)
-      call assertExceptionRaised('expected: <2> but found: <3>')
+      call assertExceptionRaised('expected 2 but found: 3;  difference: |1|.')
    end subroutine testAssertEqual_unequal
 
    subroutine testAssertEqual_unequalWithMessage()
       call assertEqual(2,3,'what?')
-      call assertExceptionRaised('what? expected: <2> but found: <3>')
+      call assertExceptionRaised('what? expected 2 but found: 3;  difference: |1|.')
    end subroutine testAssertEqual_unequalWithMessage
 
    subroutine testAssertEqual1D1D_equal()
@@ -79,12 +130,12 @@ contains
 
    subroutine testAssertEqual1D1D_unequalA()
       call assertEqual([1,2,3],[1,3,3])
-      call assertExceptionRaised('expected: <2> but found: <3> at position: [2]')
+      call assertExceptionRaised('expected 2 but found: 3;  difference: |1|;  first difference at element [2].')
    end subroutine testAssertEqual1D1D_unequalA
 
    subroutine testAssertEqual1D1D_unequalB()
       call assertEqual(1, [1,2,1])
-      call assertExceptionRaised('expected: <1> but found: <2> at position: [2]')
+      call assertExceptionRaised('expected 1 but found: 2;  difference: |1|;  first difference at element [2].')
    end subroutine testAssertEqual1D1D_unequalB
 
    subroutine testAssertEqual2D2D_equal()
@@ -113,24 +164,24 @@ contains
       found(1,2) = -1
 
       call assertEqual(expected, found)
-      call assertExceptionRaised('expected: <1> but found: <-1> at position: [1,2]')
+      call assertExceptionRaised('expected 1 but found: -1;  difference: |2|;  first difference at element [1, 2].')
 
       found(1,2) = 1
       found(2,3) = -1
 
       call assertEqual(expected, found)
-      call assertExceptionRaised('expected: <1> but found: <-1> at position: [2,3]')
+      call assertExceptionRaised('expected 1 but found: -1;  difference: |2|;  first difference at element [2, 3].')
 
    end subroutine testAssertEqual2D2D_unequal
 
    subroutine testAssertLessThan_falseA()
       call assertLessThan(1, 1)
-      call assertExceptionRaised('expected: <1> to be less than: <1>')
+      call assertExceptionRaised('expected 1 to be less than: 1.')
    end subroutine testAssertLessThan_falseA
 
    subroutine testAssertLessThan_falseB()
       call assertLessThan(2, 1)
-      call assertExceptionRaised('expected: <2> to be less than: <1>')
+      call assertExceptionRaised('expected 2 to be less than: 1.')
    end subroutine testAssertLessThan_falseB
 
    subroutine testAssertLessThan_true()
@@ -139,7 +190,7 @@ contains
    
    subroutine testAssertLessThanOrEqual_false()
       call assertLessThanOrEqual(2, 1)
-      call assertExceptionRaised('expected: <2> to be less than or equal to: <1>')
+      call assertExceptionRaised('expected 2 to be less than or equal to: 1.')
    end subroutine testAssertLessThanOrEqual_false
 
    subroutine testAssertLessThanOrEqual_trueA()
@@ -147,17 +198,17 @@ contains
    end subroutine testAssertLessThanOrEqual_trueA
 
    subroutine testAssertLessThanOrEqual_trueB()
-      call assertLessThanOrEqual(1, 2)
+     call assertLessThanOrEqual(1, 2)
    end subroutine testAssertLessThanOrEqual_trueB
    
    subroutine testAssertGreaterThan_falseA()
       call assertGreaterThan(1, 1)
-      call assertExceptionRaised('expected: <1> to be greater than: <1>')
+      call assertExceptionRaised('expected 1 to be greater than: 1.')
    end subroutine testAssertGreaterThan_falseA
 
    subroutine testAssertGreaterThan_falseB()
       call assertGreaterThan(1, 2)
-      call assertExceptionRaised('expected: <1> to be greater than: <2>')
+      call assertExceptionRaised('expected 1 to be greater than: 2.')
    end subroutine testAssertGreaterThan_falseB
 
    subroutine testAssertGreaterThan_true()
@@ -166,7 +217,7 @@ contains
    
    subroutine testAssertGreaterThanOrEqual_false()
       call assertGreaterThanOrEqual(1, 2)
-      call assertExceptionRaised('expected: <1> to be greater than or equal to: <2>')
+      call assertExceptionRaised('expected 1 to be greater than or equal to: 2.')
    end subroutine testAssertGreaterThanOrEqual_false
 
    subroutine testAssertGreaterThanOrEqual_trueA()

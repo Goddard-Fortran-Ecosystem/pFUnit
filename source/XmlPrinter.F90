@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: XmlPrinter
 !

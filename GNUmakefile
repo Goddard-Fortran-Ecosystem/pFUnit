@@ -16,9 +16,24 @@ VPATH      += $(SOURCE_DIR) $(INCLUDE_DIR)
 # code that also do not respect the CamelCase convention.  The Fortran
 # standard specifies case insensitivity.
 #
-DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
+# DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
 # DOXYGEN = /opt/local/share/doxygen/doxygen-1.7.5.1/bin/doxygen
 DOXYGEN ?= doxygen
+
+#
+# Set PYTHON executable if needed.  Python scripts all use
+# /usr/bin/env to call python. Explicit calls to python in the
+# makefiles now use $(PYTHON).  If python defaults to version 3 on a
+# system one can set PYTHON to python2 here. Or one can create a
+# symbolic link to python2 from python in the PATH. For example:
+#
+# ln -s /usr/bin/python2 ~/bin/python
+# ln -s /usr/bin/python2-config ~/bin/python-config
+# export PATH=~/bin:${PATH}
+#
+# Then build pFUnit.
+#
+PYTHON = python
 
 # Determine operating system, architecture and compiler
 # automatically if possible
@@ -33,7 +48,8 @@ UNAME =Windows
 endif
 endif
 
-ARCH  ?=$(shell arch)
+# ARCH  ?=$(shell arch)
+ARCH  ?=$(shell uname -m)
 ifeq ($(ARCH),)
   ARCH =UNKNOWN
 endif
@@ -44,7 +60,7 @@ NULL :=
 SPACE := ${NULL} ${NULL}
 AR = ar -r$(SPACE)
 RANLIB ?= ranlib
-OUTPUT_FLAG ?= -o
+OUTPUT_FLAG ?= -o$(SPACE)
 else
 # Also set the archiver and RANLIB options.
 AR = lib /out:
@@ -55,9 +71,6 @@ endif
 # Set the relevant file extensions
 include $(INCLUDE_DIR)/extensions.mk
 
-# Default compiler by architecture - always gfortran for now:
-F90 ?=gfortran
-F90_VENDOR ?=GNU
 
 # 32/64 ABI - almost all architectures are now 64 bit
 ifeq ($(ARCH),i386)
@@ -86,8 +99,11 @@ FFLAGS ?=
 D=-D
 I=-I
 MOD=-I
-F90_HAS_CPP=YES
 DEBUG_FLAGS =-g
+
+# Default compiler by architecture - always gfortran for now:
+F90 ?=gfortran
+F90_VENDOR ?=GNU
 
 # F90 Vendor specifics
 # Possibly F90 defined - makes things simple:
@@ -103,7 +119,11 @@ ifneq (,$(findstring $(F90), ifort gfortran nag nagfor pgfortran xlf))
      COMPILER=PGI
   else ifneq (,$(findstring $(F90),xlf))
      COMPILER=IBM
+	else
+		COMPILER=UNKNOWN
   endif
+# Override F90_VENDOR with COMPILER
+	F90_VENDOR=$(COMPILER)
 else # use F90_VENDOR to specify
   ifneq (,$(findstring $(F90_VENDOR),INTEL Intel intel ifort))
     COMPILER=Intel
@@ -117,6 +137,10 @@ else # use F90_VENDOR to specify
     COMPILER=IBM
   endif
 endif
+
+# F90_VENDOR is no longer needed after this point.  We keep it around
+# until we can verify that it's not needed in subdirectories or for
+# recursive calls. TODO:  Check F90_VENDOR usage.
 
 ifneq ($(findstring $(MPI),yes YES Yes),)
   USEMPI=YES
@@ -144,8 +168,11 @@ ifneq ($(findstring $(ROBUST),yes YES Yes),)
   CPPFLAGS += -DBUILD_ROBUST
 endif
 
-FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
-CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
+FPPFLAGS += $D$(COMPILER) $D$(UNAME)
+CPPFLAGS += -D$(COMPILER) -D$(UNAME) -I$(INCLUDE_DIR)
+
+# FPPFLAGS += $D$(F90_VENDOR) $D$(UNAME)
+# CPPFLAGS += -D$(F90_VENDOR) -D$(UNAME) -I$(INCLUDE_DIR)
 
 ifeq ($(PFUNIT_ABI),64)
   FPPFLAGS += $DLONG_PTR
@@ -244,7 +271,6 @@ export F90
 export F90_VENDOR
 export FFLAGS
 export FPPFLAGS
-export F90_HAS_CPP
 export CPP
 export CFLAGS
 export CPPFLAGS
@@ -260,6 +286,7 @@ export BUILDROBUST
 export MPIF90
 export LIBMPI
 export COMPILER
+export PYTHON
 
 ifeq ($(DEBUG),YES)
   $(warning Compilation configuration is as follows:)
@@ -267,7 +294,6 @@ ifeq ($(DEBUG),YES)
   $(warning     ARCH:   $(ARCH))
   $(warning     F90 vendor:     $(COMPILER))
   $(warning     F90 command:    $(F90))
-  $(warning     F90 has cpp:    $(F90_HAS_CPP))
   $(warning     USE MPI:        $(MPI))
   $(warning     ABI:            $(PFUNIT_ABI))
   $(warning File extensions:)
@@ -275,4 +301,3 @@ ifeq ($(DEBUG),YES)
   $(warning     LIB_EXT         $(LIB_EXT))
   $(warning     EXE_EXT         $(EXE_EXT))
 endif
-

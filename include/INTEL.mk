@@ -33,11 +33,12 @@ endif
 
 
 # Common command line options.
-FFLAGS += -DSTRINGIFY_OPERATOR
 
+F90_PP_ONLY = -E
+F90_PP_OUTPUT = >
 
-CPPFLAGS +=-DSTRINGIFY_OPERATOR -DIntel
-FPPFLAGS +=-DSTRINGIFY_OPERATOR -DIntel
+CPPFLAGS +=-DIntel
+FPPFLAGS +=-DIntel
 
 # Check if the version of the compiler is 13
 ifneq ($(version),)

@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
+! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
 !  MODULE: TestResult
 !
@@ -8,7 +8,7 @@
 !! Note: A possible extension point for user-specialized TestResults.
 !!
 !! @author
-!! Tom Clune,  NASA/GSFC 
+!! Tom Clune, NASA/GSFC 
 !!
 !! @date
 !! 07 Nov 2013

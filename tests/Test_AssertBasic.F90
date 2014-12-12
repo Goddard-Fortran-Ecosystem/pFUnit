@@ -1,4 +1,4 @@
-#include "reflection.h"
+!#include "reflection.h"
 module Test_AssertBasic_mod
    use Exception_mod, only: NULL_MESSAGE
    use AssertBasic_mod
@@ -20,52 +20,140 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('AssertIntegerTests')
-#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
-      ADD(testAssertTrueF)
-      ADD(testAssertTrueT)
-      ADD(testAssertFalseT)
-      ADD(testAssertFalseF)
-      ADD(testAssertFalseF)
-      ADD(testAssertEqualStringSame)
-      ADD(testAssertEqualStringDifferent)
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueF', &
+           &                  testAssertTrueF))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueF1', &
+           &                  testAssertTrueF1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueF2', &
+           &                  testAssertTrueF2))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueT', &
+           &                  testAssertTrueT))
+      call suite%addTest( &
+           &   newTestMethod('testAssertTrueT1', &
+           &                  testAssertTrueT1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertFalseT', &
+           &                  testAssertFalseT))
+      call suite%addTest( &
+           &   newTestMethod('testAssertFalseT1', &
+           &                  testAssertFalseT1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertFalseF', &
+           &                  testAssertFalseF))
+      call suite%addTest( &
+           &   newTestMethod('testAssertFalseF1', &
+           &                  testAssertFalseF1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringSame', &
+           &                  testAssertEqualStringSame))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringDifferent', &
+           &                  testAssertEqualStringDifferent))
 
-      ADD(testAssertEqualStrIgnAllWhite1)
-      ADD(testAssertEqualStrIgnAllWhite2)
-      ADD(testAssertEqualStrIgnAllWhite3)
-      ADD(testAssertEqualStrIgnAllWhite4)
-      ADD(testAssertEqualStrIgnAllWhite5)
-      ADD(testAssertEqualStrIgnAllWhite6)
-      ADD(testAssertEqualStrIgnAllWhite7)
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite1', &
+           &                  testAssertEqualStrIgnAllWhite1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite2', &
+           &                  testAssertEqualStrIgnAllWhite2))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite3', &
+           &                  testAssertEqualStrIgnAllWhite3))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite4', &
+           &                  testAssertEqualStrIgnAllWhite4))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite5', &
+           &                  testAssertEqualStrIgnAllWhite5))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite6', &
+           &                  testAssertEqualStrIgnAllWhite6))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnAllWhite7', &
+           &                  testAssertEqualStrIgnAllWhite7))
 
-      ADD(testAssertEqualStrIgnWhiDif1)
-      ADD(testAssertEqualStrIgnWhiDif2)
-      ADD(testAssertEqualStrIgnWhiDif3)
-      ADD(testAssertEqualStrIgnWhiDif4)
-      ADD(testAssertEqualStrIgnWhiDif5)
-      ADD(testAssertEqualStrIgnWhiDif6)
-      ADD(testAssertEqualStrIgnWhiDif7)
-      ADD(testAssertEqualStrIgnWhiDif8)
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif1', &
+           &                  testAssertEqualStrIgnWhiDif1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif2', &
+           &                  testAssertEqualStrIgnWhiDif2))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif3', &
+           &                  testAssertEqualStrIgnWhiDif3))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif4', &
+           &                  testAssertEqualStrIgnWhiDif4))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif5', &
+           &                  testAssertEqualStrIgnWhiDif5))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif6', &
+           &                  testAssertEqualStrIgnWhiDif6))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif7', &
+           &                  testAssertEqualStrIgnWhiDif7))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif8', &
+           &                  testAssertEqualStrIgnWhiDif8))
 
-      ADD(testAssertEqualStringTrimWhitespace1)
-      ADD(testAssertEqualStringTrimWhitespace2)
-      ADD(testAssertEqualStringKeepWhitespace1)
-      ADD(testAssertEqualStringKeepWhitespace2)
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringTrimWhitespace1', &
+           &                  testAssertEqualStringTrimWhitespace1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringTrimWhitespace2', &
+           &                  testAssertEqualStringTrimWhitespace2))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringKeepWhitespace1', &
+           &                  testAssertEqualStringKeepWhitespace1))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringKeepWhitespace2', &
+           &                  testAssertEqualStringKeepWhitespace2))
 
-      ADD(testAssertAny)
-      ADD(testAssertAnyFail)
-      ADD(testAssertAll)
-      ADD(testAssertAllFail)
-      ADD(testAssertNone)
-      ADD(testAssertNoneFail)
-      ADD(testAssertNotAll)
-      ADD(testAssertNotAllFail)
+      call suite%addTest( &
+           &   newTestMethod('testAssertAny', &
+           &                  testAssertAny))
+      call suite%addTest( &
+           &   newTestMethod('testAssertAnyFail', &
+           &                  testAssertAnyFail))
+      call suite%addTest( &
+           &   newTestMethod('testAssertAll', &
+           &                  testAssertAll))
+      call suite%addTest( &
+           &   newTestMethod('testAssertAllFail', &
+           &                  testAssertAllFail))
+      call suite%addTest( &
+           &   newTestMethod('testAssertNone', &
+           &                  testAssertNone))
+      call suite%addTest( &
+           &   newTestMethod('testAssertNoneFail', &
+           &                  testAssertNoneFail))
+      call suite%addTest( &
+           &   newTestMethod('testAssertNotAll', &
+           &                  testAssertNotAll))
+      call suite%addTest( &
+           &   newTestMethod('testAssertNotAllFail', &
+           &                  testAssertNotAllFail))
 
-      ADD(testAssertIsNaN)
-      ADD(testAssertIsFinite)
+      call suite%addTest( &
+           &   newTestMethod('testAssertIsNaN', &
+           &                  testAssertIsNaN))
+      call suite%addTest( &
+           &   newTestMethod('testAssertIsFinite', &
+           &                  testAssertIsFinite))
 
-      ADD(testAssertFail)
-      ADD(testAssertExceptionRaised)
+      call suite%addTest( &
+           &   newTestMethod('testAssertFail', &
+           &                  testAssertFail))
+      call suite%addTest( &
+           &   newTestMethod('testAssertExceptionRaised', &
+           &                  testAssertExceptionRaised))
    end function suite
 
    subroutine testAssertTrueF()
@@ -73,18 +161,41 @@ contains
       call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertTrueF
 
+   subroutine testAssertTrueF1()
+      call assertTrue([.false.].eqv.[.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertTrueF1
+
+   subroutine testAssertTrueF2()
+      call assertTrue([.true.,.false.].eqv.[.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertTrueF2
+
    subroutine testAssertTrueT()
       call assertTrue(.true.)
    end subroutine testAssertTrueT
+
+   subroutine testAssertTrueT1()
+      call assertTrue([.true.,.true.].eqv.[.true.,.true.])
+   end subroutine testAssertTrueT1
 
    subroutine testAssertFalseF()
       call assertFalse(.false.)
    end subroutine testAssertFalseF
 
+   subroutine testAssertFalseF1()
+      call assertFalse([.false.,.false.].eqv.[.true.,.true.])
+   end subroutine testAssertFalseF1
+
    subroutine testAssertFalseT()
       call assertFalse(.true.)
       call assertTrue(catch(NULL_MESSAGE))
    end subroutine testAssertFalseT
+
+   subroutine testAssertFalseT1()
+      call assertFalse([.true.,.true.,.true.])
+      call assertTrue(catch(NULL_MESSAGE))
+   end subroutine testAssertFalseT1
 
    subroutine testAssertEqualStringSame()
       call assertEqual(expected="string A", found="string A")
@@ -95,7 +206,7 @@ contains
       call assertTrue(catch('String assertion failed:' // new_line('A') // &
            & '    expected: <"string A">' // new_line('A') // &
            & '   but found: <"string B">' // new_line('A') // &
-           & '  first diff:   -------^'))
+           & '  first diff:   -------^'),'Unexpected Equal String')
    end subroutine testAssertEqualStringDifferent
 
    subroutine testAssertEqualStrIgnAllWhite1()

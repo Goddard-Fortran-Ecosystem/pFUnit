@@ -1,5 +1,5 @@
 
-PFUNIT VERSION 3.0.1 INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 3.0.2 INSTALLATION AND BASIC USAGE GUIDE
 
 VERSION 2014-0915 M. Rilee mike@rilee.net
 
@@ -32,7 +32,7 @@ Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
 The Message Passing Interface (MPI)
 OPENMP
 GNU Make
-Python
+Python 2.7+
 
 A CMake build process is also available.
 
@@ -452,10 +452,14 @@ otherwise discuss this port.
 
 9.4.3 Intel Fortran Version 13:  -DINTEL_13
 
+Using version 13 is deprecated. We have encountered problems using
+version 13, which we believe may be due to subtle compiler bugs.  We
+strongly recommend upgrading to the latest version possible.
+
 To make pFUnit work with Intel Fortran Version 13, please ensure that
 "-DINTEL_13" is passed to the compiler when building or using
 pFUnit. In the build process for pFUnit, this is added to the make
-variables CPPFLAGS and FPPFLAGS.
+variables CPPFLAGS and FPPFLAGS.  
 
 10. ACKNOWLEDGMENTS
 
@@ -488,6 +492,8 @@ TBD
 
 14. REVISIONS TO THIS DOCUMENT
 
+2014-1211 Minor updates for 3.0.2. MLR
+2014-1110, 2014-1031 Minor edits. MLR
 2014-0915 Minor updates for 3.0.1. MLR
 2014-0404 Updated for release of 3.0. TLC
 2014-0131, 2014-0205. Updated. MLR

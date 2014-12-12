@@ -20,21 +20,16 @@ else
   override FC=$(MPIF90)
 endif
 
-ifeq ($(F90_HAS_CPP),YES)
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $(CPPFLAGS) -o $@ $<
-else
-%$(OBJ_EXT):%.F90
-	@$(CPP) $(CPPFLAGS) $(CPPFLAGS) $< > $*_cpp.F90
-	$(FC) -c $(FFLAGS)  $*_cpp.F90 -o $@
-	$(RM) $*_cpp.F90
-endif
 
 .PHONY: clean distclean
 
 clean:
-	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *_cpp.F90 *.tmp
+	-$(RM) *$(OBJ_EXT) *.mod *.i90 *~ *.tmp
 	-$(RM) -r *.dSYM
 
 distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc
+
+export FC

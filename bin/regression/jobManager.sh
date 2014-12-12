@@ -1,9 +1,9 @@
 #!/bin/bash
-#PBS -l select=1:mpiprocs=16
-#PBS -l walltime=01:00:00
-#PBS -W group_list=k3002
-#PBS -N pFUnit
-#PBS -j eo
+#SBATCH --account=k3002
+#SBATCH --job-name=pFUnit
+#SBATCH --time=01:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=16
 
 # This script manages the jobs in a batch environment.
 # It gets called from mainRegress.sh.
@@ -93,6 +93,7 @@ function setModule {
       fi
    fi
    echo " -- module list: "$moduleList
+   export PATH=/usr/local/other/SLES11/SIVO-PyD/1.9.0/bin:$PATH
 }
 
 function doMake {
@@ -144,48 +145,76 @@ function doMake {
      mkdir -p ${COM}_${VER}_PAR-${PAR}; cd ${COM}_${VER}_PAR-${PAR}
      echo " -- cmake -DMPI=$USEMPI -DOPENMP=$USEOPENMP ../"
      cmake -DMPI=$USEMPI -DOPENMP=$USEOPENMP ../ 1> $makeLog 2>&1
-     $MAKE -j 8 tests 1>> $makeLog 2>&1
-     buildErrorFile "$makeLog"
-     runError "$COM" "$VER" "$PAR" "$makeLog"
-   else
-     $MAKE --quiet distclean F90_VENDOR=$COM 1> $makeLog 2>&1
-     echo " -- $MAKE all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
-     $MAKE -j 8 all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+     echo " -- $MAKE all"
+     $MAKE -j 8 all 1>> $makeLog 2>&1
+     echo " - Parse for build errors..." 
      buildErrorFile "$makeLog"
      BUILDOK=$?
      echo " --- bld RC = $BUILDOK"
-     if [ $BUILDOK == "$OK" ]; then
-       echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
-       $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
-       runError "$COM" "$VER" "$PAR" "$makeLog"
+     if [ "$BUILDOK" == "$OK" ]; then
+       echo " -- $MAKE tests"
+       $MAKE -j 8 tests 1>> $makeLog 2>&1
+       echo " - Parse for runtime errors..." 
+       runError "$makeLog"
        RUNOK=$?
-       echo " --- run RC = $RUNOK"
-       if [ $RUNOK == "-1" ]; then
+       echo " --- runError RC = $RUNOK"
+       if [ "$RUNOK" == "-1" ]; then
          results[1]="Run_err"
-       elif [ $RUNOK == "-2" ]; then
+       elif [ "$RUNOK" == "-2" ]; then
          results[1]="Tst_err"
+       elif [ "$RUNOK" == "255" ]; then
+         results[1]="Run_err"
        fi
      else
        results[1]="Bld_err"
        results[2]="na"
      fi
-     if [ $BUILDOK == "$OK" ]; then
+   else
+     $MAKE --quiet distclean F90_VENDOR=$COM 1> $makeLog 2>&1
+     echo " -- $MAKE all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
+     $MAKE -j 8 all F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+     echo " - Parse for build errors..." 
+     buildErrorFile "$makeLog"
+     BUILDOK=$?
+     echo " --- bld RC = $BUILDOK"
+     if [ "$BUILDOK" == "$OK" ]; then
+       echo " -- $MAKE tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP"
+       $MAKE -j 8 tests F90_VENDOR=$COM MPI=$USEMPI OPENMP=$USEOPENMP 1> $makeLog 2>&1
+       echo " - Parse for runtime errors..." 
+       runError "$makeLog"
+       RUNOK=$?
+       echo " --- runError RC = $RUNOK"
+       if [ "$RUNOK" == "-1" ]; then
+         results[1]="Run_err"
+       elif [ "$RUNOK" == "-2" ]; then
+         results[1]="Tst_err"
+       elif [ "$RUNOK" == "255" ]; then
+         results[1]="Run_err"
+       fi
+     else
+       results[1]="Bld_err"
+       results[2]="na"
+     fi
+     if [ "$BUILDOK" == "$OK" ]; then
        # Test examples
+       echo " - Test examples..."
        export PFUNIT=$SCR_DIR/pFUnit_${COM}_${VER}_PAR-${PAR}
        make install INSTALL_DIR=$PFUNIT 1>> $makeLog 2>&1
        cd $SCR_DIR/$BRANCH/Examples
        $MAKE --quiet clean
        echo " -- $MAKE all MPI=$USEMPI SKIP_INTENTIONALLY_BROKEN=YES"
        $MAKE all MPI=$USEMPI OPENMP=$USEOPENMP SKIP_INTENTIONALLY_BROKEN=YES 1>> $makeExLog 2>&1
+       echo " - Parse for build errors..." 
        buildErrorFile "$makeExLog"
        BUILDOK=$?
        echo " --- bld RC = $BUILDOK"
        if [ $BUILDOK == "$ERR" ]; then
          results[2]="Bld_err"
        else
-         runError "$COM" "$VER" "$PAR" "$makeExLog"
+         echo " - Parse for runtime errors..." 
+         runError "$makeExLog"
          RUNOK=$?
-         echo " --- run RC = $RUNOK"
+         echo " --- runError RC = $RUNOK"
          if [ $RUNOK != "$OK" ]; then
            results[2]="Run_err"
          fi
@@ -212,26 +241,26 @@ buildErrorFile() {
    fi
 }
 runError() {
-   local COM=$1
-   local VER=$2
-   local PAR=$3
-   local makeLog=$4
+   local makeLog=$1
    local anyError=`grep 'make: ***' $makeLog`
    local failMsg=`grep Failures $makeLog`
+   local segMsg=`grep SIGSEG $makeLog`
    local errorMsg=`grep Errors $makeLog`
-   if [[ "$anyError" == "" && "$failMsg" == "" && "$errorMsg" == "" ]]; then
+   if [[ "$anyError" == "" && "$failMsg" == "" && "$errorMsg" == "" && "$segMsg" == "" ]]; then
      echo " --- Run phase OK" 
      return $OK
    else
      touch $SCR_DIR/.fail
      cd $SCR_DIR/$BRANCH
-     if [ "$anyError" != "" ]; then
-       echo " --- runtime error" 
+     if [[ "$anyError" != "" || "$segMsg" != "" ]]; then
+       echo " --- runError: runtime error"
        return -1
-     fi
-     if [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
-       echo " --- some tests failed" 
+     elif [[ "$failMsg" != "" || "$errorMsg" != "" ]]; then
+       echo " --- runError: some tests failed" 
        return -2
+     else
+       echo " --- runError: unrecognized error"
+       return 1
      fi
    fi
 }
@@ -273,7 +302,7 @@ declare -a INTEL_VERSIONS
 MAKE_TYPE=(cmake gmake)
 
 # Three compilers
-COMPILERS=(GNU INTEL NAG)
+COMPILERS=(INTEL GNU NAG)
 
 # Compiler versions are separated into those that work
 # with pfunit_2.1.0 and those that work with the master,

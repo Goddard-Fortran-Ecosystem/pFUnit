@@ -12,8 +12,25 @@ all: dependencies.inc $(EXE) $(REMOTE)
 VPATH = . ../source
 tests: dependencies.inc $(EXE)
 
-dependencies.inc:
-	./MakeDependenciesInclude
+#generated.inc:
+#	touch generated.inc
+
+# include ./generated.inc
+
+dependencies.inc: dependenciesTests.tmp
+	./MakeDependenciesInc dependenciesTests.tmp
+
+# Would prefer to have this in base.mk, but haven't figured out the rules to do so.
+# gmake looks at ../source/dependencies.tmp, instead of making a new one at ".".
+#
+
+#		$(FC) -E $(FFLAGS) $(CPPFLAGS) $$i > $${i}_cpp.f90;
+dependenciesTests.tmp: 
+	for i in *.F90; do \
+		$(F90) $(F90_PP_ONLY) $(FFLAGS) $(CPPFLAGS) $$i $(F90_PP_OUTPUT) $${i}_cpp.f90; \
+		$(TOP)/tools/MakeDependenciesTmp $$i $${i}_cpp.f90 \
+			$@ "PrivateException|MockSUT|SUT"; \
+		$(RM) $${i}_cpp.f90; done
 
 SRCS_BASE = $(wildcard *.F90)
 PROGRAMS = selfTests.F90 RemoteProgram.F90
@@ -49,13 +66,11 @@ endif
 
 $(EXE) $(REMOTE): libpfunit$(LIB_EXT)
 
+# Some platforms need a space between the OUTPUT_FLAG and $@.  Others don't.
+# So we put an optional space into OUTPUT_FLAG.  See GNUmakefile in the top 
+# directory.
 ifeq ($(USEMPI),YES)
 
-# Note that for Windows compilation, the command line should look as follows:
-# ifort /nologo /Fetests.exe *.obj
-# Here there is NO SPACE between the /Fe flag an the executable name.
-# The inclusion of a space results in the error:
-#    ifort: command line warning #10161: unrecognized source type 'tests.exe'; object file assumed
 $(EXE): selfTests$(OBJ_EXT) $(OBJS)
 	$(FC) $(OUTPUT_FLAG)$@ $^ $(FFLAGS) $(LIBS) -g
 $(REMOTE): RemoteProgram$(OBJ_EXT) $(OBJS)
@@ -75,3 +90,4 @@ endif
 ifeq (,$(findstring distclean,$(MAKECMDGOALS)))
 include ./dependencies.inc
 endif
+
