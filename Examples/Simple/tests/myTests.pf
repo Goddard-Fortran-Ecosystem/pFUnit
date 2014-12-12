@@ -98,6 +98,23 @@ subroutine testAssociated
   
 end subroutine testAssociated
 
+@test
+subroutine testUnAssociated
+  use pfunit_mod
+  implicit none
+  real, pointer :: ptr => NULL()
+  real, target  :: x, y
+  x = 0; y = 1
+  
+  @assertUnAssociated(ptr)
+
+  ptr => y
+
+  @assertUnAssociatedWith(ptr,x)
+  
+end subroutine testUnAssociated
+
+
 ! Demonstrate the polymorphism of the call.
 @test
 subroutine testAssociatedArrays

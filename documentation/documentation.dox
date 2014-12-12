@@ -833,7 +833,9 @@ For more information about @assert directives, please refer to the following.
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertUnAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertUnAssociatedWith</li>
    <li>\ref ss_assertEquivalent</li>
 </ul>
 
@@ -901,7 +903,9 @@ getParameterString.  For example:
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertUnAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
+   <li>\ref ss_assertUnAssociatedWith</li>
    <li>\ref ss_assertEquivalent</li>
 </ul>
 
@@ -945,6 +949,10 @@ becomes
 \code
 call assertTrue(associated(a))\endcode
 
+\subsection ss_assertUnAssociated @assertUnAssociated
+
+This directive is the same as assertAssociated, except that it maps to assertFalse.
+
 \subsection ss_assertAssociatedWith @assertAssociatedWith
 This directive maps to a call to the logical intrinsic function associated.
 \code
@@ -953,6 +961,10 @@ becomes
 \code
 call assertTrue(associated(pointer,target))\endcode
 neglecting message and source location information.
+
+\subsection ss_assertUnAssociatedWith @assertUnAssociatedWith
+
+This directive is the same as assertAssociatedWith, except that it maps to assertFalse.
 
 \subsection ss_assertEquivalent @assertEquivalent
 This directive compares two logical values and throws an exception annotated with some useful information.
@@ -968,6 +980,7 @@ neglecting the specification of message and source location information.
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2014-1211 Minor updates for 3.0.2. MLR</li>
 <li>2014-1110, 2014-1031 Minor edits. MLR</li>
 <li>2014-0915 Minor updates for 3.0.1. MLR</li>
 <li>2014-0404 Updated for release of 3.0. TLC</li>
