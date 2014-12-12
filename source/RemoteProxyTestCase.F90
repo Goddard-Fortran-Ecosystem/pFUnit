@@ -160,6 +160,7 @@ contains
                   ! eat remaining linefeed
                   line= this%process%getLine()
                   call throw(trim(message), SourceLocation(fileName, lineNumber))
+                  deallocate(message)
                end do
                cycle ! still need to process the end message
 
