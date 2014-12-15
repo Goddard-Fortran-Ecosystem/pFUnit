@@ -14,7 +14,8 @@ from __future__ import with_statement
 #    AssertArrays.fh
 #
 # M. Rilee
-#    Initial: 2013-0304
+#
+#    2014-1215:  Minor revisions. Updated integer arrays to handle same number of ranks as others.
 #
 #    2014-0418:  Moved effective assert routines to own file.  Segregated other routines into files by rank.
 #
@@ -22,6 +23,8 @@ from __future__ import with_statement
 #
 #    2013-0814:  Added default r64 to call from assertEqual_w/o_tol to internal proc.
 #                Added logical to makeExpectedFTypes - but not for prime time.
+#
+#    Initial: 2013-0304
 # 
 
 ##  Abbreviations
