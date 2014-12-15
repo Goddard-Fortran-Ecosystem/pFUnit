@@ -833,9 +833,9 @@ For more information about @assert directives, please refer to the following.
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
-   <li>\ref ss_assertUnAssociated</li>
+   <li>\ref ss_assertNotAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
-   <li>\ref ss_assertUnAssociatedWith</li>
+   <li>\ref ss_assertNotAssociatedWith</li>
    <li>\ref ss_assertEquivalent</li>
 </ul>
 
@@ -903,9 +903,9 @@ getParameterString.  For example:
    <li>\ref ss_assertIsNaN</li>
    <li>\ref ss_assertIsFinite</li>
    <li>\ref ss_assertAssociated</li>
-   <li>\ref ss_assertUnAssociated</li>
+   <li>\ref ss_assertNotAssociated</li>
    <li>\ref ss_assertAssociatedWith</li>
-   <li>\ref ss_assertUnAssociatedWith</li>
+   <li>\ref ss_assertNotAssociatedWith</li>
    <li>\ref ss_assertEquivalent</li>
 </ul>
 
@@ -949,9 +949,9 @@ becomes
 \code
 call assertTrue(associated(a))\endcode
 
-\subsection ss_assertUnAssociated @assertUnAssociated
+\subsection ss_assertNotAssociated @assertNotAssociated
 
-This directive is the same as assertAssociated, except that it maps to assertFalse.
+This directive is the same as assertAssociated, except that it maps to assertFalse.  This directive was originally released as assertUnAssociated.
 
 \subsection ss_assertAssociatedWith @assertAssociatedWith
 This directive maps to a call to the logical intrinsic function associated.
@@ -962,9 +962,9 @@ becomes
 call assertTrue(associated(pointer,target))\endcode
 neglecting message and source location information.
 
-\subsection ss_assertUnAssociatedWith @assertUnAssociatedWith
+\subsection ss_assertNotAssociatedWith @assertNotAssociatedWith
 
-This directive is the same as assertAssociatedWith, except that it maps to assertFalse.
+This directive is the same as assertAssociatedWith, except that it maps to assertFalse. This directive was originally released as assertUnAssociatedWith.
 
 \subsection ss_assertEquivalent @assertEquivalent
 This directive compares two logical values and throws an exception annotated with some useful information.

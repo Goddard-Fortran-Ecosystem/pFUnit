@@ -281,7 +281,7 @@ class TestParseLine(unittest.TestCase):
         """Check that a line starting with '@assertUnAssociated' is detected
         as an annotation."""
         parser = MockParser([' \n'])
-        atAssertUnAssociated = AtAssertUnAssociated(parser)
+        atAssertUnAssociated = AtAssertNotAssociated(parser)
 
         self.assertFalse(atAssertUnAssociated.match('@assertUnAssociated'))
         self.assertFalse(atAssertUnAssociated.match('@assertUnAssociated()'))
@@ -305,7 +305,7 @@ class TestParseLine(unittest.TestCase):
         """Check that a line starting with '@assertUnAssociatedWith' is detected
         as an annotation. atAssertUnAssociatedWith(a,b) implies a points to b."""
         parser = MockParser([' \n'])
-        atAssertUnAssociatedWith = AtAssertUnAssociatedWith(parser)
+        atAssertUnAssociatedWith = AtAssertNotAssociatedWith(parser)
 
         self.assertFalse(atAssertUnAssociatedWith.match('@assertUnAssociatedWith'))
         self.assertFalse(atAssertUnAssociatedWith.match('@assertUnAssociatedWith()'))
@@ -316,6 +316,54 @@ class TestParseLine(unittest.TestCase):
         parser.fileName = "foo.pfunit"
         parser.currentLineNumber = 8
         atAssertUnAssociatedWith.apply('   @assertUnAssociatedWith(a,b)\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertFalse(associated(a,b), &\n", parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+
+    def testMatchAtAssertNotassociated(self):
+        """Check that a line starting with '@assertNotAssociated' is detected
+        as an annotation."""
+        parser = MockParser([' \n'])
+        atAssertNotassociated = AtAssertNotAssociated(parser)
+
+        self.assertFalse(atAssertNotassociated.match('@assertNotassociated'))
+        self.assertFalse(atAssertNotassociated.match('@assertNotassociated()'))
+        self.assertTrue(atAssertNotassociated.match('@assertNotassociated(a)'))
+        self.assertTrue(atAssertNotassociated.match('@assertnotassociated(a)')) # case insensitive
+        self.assertTrue(atAssertNotassociated.match('@ASSERTNOTASSOCIATED(a)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertNotassociated.apply('   @assertNotassociated(a)\n')
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertFalse(associated(a), &\n", parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
+
+    def testMatchAtAssertNotassociatedWith(self):
+        """Check that a line starting with '@assertNotassociatedWith' is detected
+        as an annotation. atAssertNotassociatedWith(a,b) implies a points to b."""
+        parser = MockParser([' \n'])
+        atAssertNotassociatedWith = AtAssertNotAssociatedWith(parser)
+
+        self.assertFalse(atAssertNotassociatedWith.match('@assertNotassociatedWith'))
+        self.assertFalse(atAssertNotassociatedWith.match('@assertNotassociatedWith()'))
+        self.assertFalse(atAssertNotassociatedWith.match('@assertNotassociatedWith(a)'))
+        self.assertTrue(atAssertNotassociatedWith.match('@assertnotassociatedwith(a,b)')) # case insensitive
+        self.assertTrue(atAssertNotassociatedWith.match('@ASSERTNOTASSOCIATEDWITH(a,b)')) # case insensitive
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssertNotassociatedWith.apply('   @assertNotassociatedWith(a,b)\n')
         self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
         self.assertEqual("  call assertFalse(associated(a,b), &\n", parser.outLines[1])
         self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])

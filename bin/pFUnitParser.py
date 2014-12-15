@@ -16,8 +16,6 @@ assertVariants = 'Fail|Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|Gre
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
 assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
 
-# assertVariants += '|Associated'
-
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
 
@@ -33,6 +31,9 @@ def parseArgsFirstRest(directiveName,line):
     Added for assertAssociated.
     """
 
+    #print(9000,directiveName)
+    #print(9001,line)
+
     argStr = ''; 
     if directiveName != '':
         m = re.match('\s*'+directiveName+'\s*\((.*)\)\s*$',line,re.IGNORECASE)
@@ -44,6 +45,8 @@ def parseArgsFirstRest(directiveName,line):
     else:
         argStr = line
 
+    #print(10000,argStr)
+    
     args = parseBrackets(argStr)
 
     if args == []:
@@ -343,12 +346,20 @@ class AtAssertAssociatedWith(Action):
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
-class AtAssertUnAssociated(Action):
+class AtAssertNotAssociated(Action):
+    
     def __init__(self,parser):
         self.parser = parser
+        self.name='@assertnotassociated'
 
     def match(self, line):
-        m = re.match('\s*@assertunassociated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        m = re.match('\s*@assert(not|un)associated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        if m:
+            self.name='@assert'+m.groups()[0]+'associated'
+            #print(3000,m.groups())
+        else:
+            self.name='@assertnotassociated'
+        #print(2000,self.name)
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -359,7 +370,11 @@ class AtAssertUnAssociated(Action):
     def action(self, m, line):
         p = self.parser
 
-        args = parseArgsFirstRest('@assertunassociated',line)
+        # args = parseArgsFirstRest('@assertunassociated',line)
+        args = parseArgsFirstRest(self.name,line)
+        #print(1000,line)
+        #print(1001,self.name)
+        #print(1002,args)
         
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
@@ -371,20 +386,24 @@ class AtAssertUnAssociated(Action):
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
-class AtAssertUnAssociatedWith(Action):
+class AtAssertNotAssociatedWith(Action):
     def __init__(self,parser):
         self.parser = parser
+        self.name = ''
 
     def match(self, line):
         m  = re.match( \
-            '\s*@assertunassociatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)
-
+        if m:
+            self.name='@assert'+m.groups()[0]+'associatedwith'
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
             m  = re.match( \
-                '\s*@assertunassociatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
                 line, re.IGNORECASE)
+            if m:
+                self.name='@assert'+m.groups()[0]+'associatedwith'
                     
         return m
 
@@ -396,7 +415,8 @@ class AtAssertUnAssociatedWith(Action):
     def action(self, m, line):
         p = self.parser
 
-        args = parseArgsFirstSecondRest('@assertunassociatedwith',line)
+        # args = parseArgsFirstSecondRest('@assertunassociatedwith',line)
+        args = parseArgsFirstSecondRest(self.name,line)
         
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 2:
@@ -617,8 +637,8 @@ class Parser():
         self.actions.append(AtAssert(self))
         self.actions.append(AtAssertAssociated(self))
         self.actions.append(AtAssertAssociatedWith(self))
-        self.actions.append(AtAssertUnAssociated(self))
-        self.actions.append(AtAssertUnAssociatedWith(self))
+        self.actions.append(AtAssertNotAssociated(self))
+        self.actions.append(AtAssertNotAssociatedWith(self))
 
         self.actions.append(AtAssertEqualUserDefined(self))
         self.actions.append(AtAssertEquivalent(self))
