@@ -31,12 +31,16 @@ else
    echo \"tools/clean\": Not sure how to clean on UNAME=\"${UNAME}\". Exiting...
 fi; fi
 
-
-pushd ${opDir}
-for i in `find . -regextype posix-extended -regex '.*\.($OAX_STRING|mod|i90)$'`; do
-   rm $i
-done
-for i in `find . -regextype posix-extended -regex '.*\.(dSYM)$'`; do
-   \rm -rf $i
-done
+# I don't know what the following is for. 2014-1216-1513-24-UTC MLR
+# Looks like whoever put this here was working in Linux or Cygwin.
+# Maybe delete when revising code.
+# pushd ${opDir}
+if [[ x${OAX_STRING} != x ]]; then
+   for i in `find . -regextype posix-extended -regex '.*\.($OAX_STRING|mod|i90)$'`; do
+      rm $i
+   done
+   for i in `find . -regextype posix-extended -regex '.*\.(dSYM)$'`; do
+      \rm -rf $i
+   done
+fi
 popd
