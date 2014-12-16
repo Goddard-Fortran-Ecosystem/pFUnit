@@ -61,10 +61,10 @@ def parseArgsFirstRest(directiveName,line):
     # print(2002,returnArgs)
 
     #if directiveName != '':
-    #    mMultiArg  = re.match('\s*'+directiveName+'\s*\\((\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+    #    mMultiArg  = re.match('\s*'+directiveName+'\s*\\((\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
     #        line, re.IGNORECASE)
     #else:
-    #    mMultiArg  = re.match('\s*\s*([^,]*\w),(.*\w*.*)\s*$', \
+    #    mMultiArg  = re.match('\s*\s*([^,]*\w.*),(.*\w*.*)\s*$', \
     #        line, re.IGNORECASE)
     #
     #returnArgs = None
@@ -393,14 +393,14 @@ class AtAssertNotAssociatedWith(Action):
 
     def match(self, line):
         m  = re.match( \
-            '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)
         if m:
             self.name='@assert'+m.groups()[0]+'associatedwith'
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
             m  = re.match( \
-                '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
             if m:
                 self.name='@assert'+m.groups()[0]+'associatedwith'
@@ -439,13 +439,13 @@ class AtAssertEqualUserDefined(Action):
 
     def match(self, line):
         m  = re.match( \
-            '\s*@assertequaluserdefined\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            '\s*@assertequaluserdefined\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
             m  = re.match( \
-                '\s*@assertequaluserdefined\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                '\s*@assertequaluserdefined\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
                     
         return m
@@ -484,13 +484,13 @@ class AtAssertEquivalent(Action):
 
     def match(self, line):
         m  = re.match( \
-            '\s*@assertequivalent\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            '\s*@assertequivalent\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
             m  = re.match( \
-                '\s*@assertequivalent\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                '\s*@assertequivalent\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
                     
         return m
