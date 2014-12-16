@@ -208,6 +208,9 @@ class TestParseLine(unittest.TestCase):
     def testParseArgsFirstRest(self):
         """Test that the first-rest argument parsing is adequate."""
         self.assertEqual(['a1','b1'],parseArgsFirstRest('','a1,b1'))
+        self.assertEqual(['a4()','b4'],parseArgsFirstRest('','a4(),b4'))
+        self.assertEqual(['a4%z()','b4'],parseArgsFirstRest('','a4%z(),b4'))
+        self.assertEqual(['a4','b4%z()'],parseArgsFirstRest('','a4,b4%z()'))
         self.assertEqual(['a10','b10,c10'],parseArgsFirstRest('','a10,b10,c10'))
         self.assertEqual(['a2'],parseArgsFirstRest("@assertassociated","@assertassociated(a2)"))
         self.assertEqual(['a3',"b3,message='This is the message.'"], \
@@ -223,8 +226,8 @@ class TestParseLine(unittest.TestCase):
         self.assertEqual(['a','b',"message='This is the message.'"], \
             parseArgsFirstSecondRest("@assertassociated", \
                                      "@assertassociated(a,b,message='This is the message.')"))
-        self.assertEqual(['a','b','c,d'],parseArgsFirstSecondRest("@assertassociated", \
-                                                                  "@assertassociated(a,b,c,d)"))
+        self.assertEqual(['a','b%z()','c,d'],parseArgsFirstSecondRest("@assertassociated", \
+                                                                  "@assertassociated(a,b%z(),c,d)"))
         self.assertEqual(['a4','b4','c4'],parseArgsFirstSecondRest('','a4,b4,c4'))
                                                                   
 
@@ -263,6 +266,7 @@ class TestParseLine(unittest.TestCase):
         self.assertFalse(atAssertAssociatedWith.match('@assertAssociatedWith(a)'))
         self.assertTrue(atAssertAssociatedWith.match('@assertassociatedwith(a,b)')) # case insensitive
         self.assertTrue(atAssertAssociatedWith.match('@ASSERTASSOCIATEDWITH(a,b)')) # case insensitive
+        self.assertTrue(atAssertAssociatedWith.match('@ASSERTASSOCIATEDWITH(a_%z(),b)')) # case insensitive
 
         parser.fileName = "foo.pfunit"
         parser.currentLineNumber = 8

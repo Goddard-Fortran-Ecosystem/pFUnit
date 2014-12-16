@@ -87,15 +87,21 @@ end subroutine testAssociatedWithBroken
 @test
 subroutine testAssociated
   use pfunit_mod
+  use node_mod
   implicit none
   real, pointer :: ptr => NULL()
   real, target  :: x
+  type(node) :: node_
+
   x = 0
   ptr => x
+  node_ = node(ptr)
   
   @assertAssociated(ptr)
   @assertAssociatedWith(ptr,x)
-  
+
+  @assertAssociatedWith(node_%getPtr(),x)
+
 end subroutine testAssociated
 
 @test
@@ -194,4 +200,42 @@ subroutine testEquivalenceWithMessageBroken
   @assertEquivalent(YES,NO,message="<<Intentionally broken. YES.eqv.NO.>>")
 
 end subroutine testEquivalenceWithMessageBroken
+
+@test
+subroutine testWithParens()
+   use node_mod
+   use pfunit_mod
+   implicit none
+
+   type(node) :: node_
+   real, target :: x
+   real, pointer :: ptr 
+
+   x = 1
+   ptr => x
+   node_ = node(ptr)
+
+   @assertEqual(node_%getX(),x)
+
+end subroutine testWithParens
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testWithParensBroken()
+   use node_mod
+   use pfunit_mod
+   implicit none
+
+   type(node) :: node_
+   real, target :: x, y
+   real, pointer :: ptr 
+
+   x = 1; y = 2
+   ptr => x
+   node_ = node(ptr)
+
+   @assertEqual(node_%getX(),y,message="<<Intentionally broken.>>")
+
+end subroutine testWithParensBroken
+
+
 

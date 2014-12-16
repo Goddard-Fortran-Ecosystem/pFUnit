@@ -36,7 +36,7 @@ def parseArgsFirstRest(directiveName,line):
 
     argStr = ''; 
     if directiveName != '':
-        m = re.match('\s*'+directiveName+'\s*\((.*)\)\s*$',line,re.IGNORECASE)
+        m = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$',line,re.IGNORECASE)
         #print (1000,m)
         if m:
             argStr = m.groups()[0]
@@ -313,13 +313,13 @@ class AtAssertAssociatedWith(Action):
 
     def match(self, line):
         m  = re.match( \
-            '\s*@assertassociatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w),(.*\w*.*))\\)\s*$', \
+            '\s*@assertassociatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
             line, re.IGNORECASE)
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
             m  = re.match( \
-                '\s*@assertassociatedwith\s*\\((\s*([^,]*\w),\s*([^,]*\w))\\)\s*$', \
+                '\s*@assertassociatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
                     
         return m
