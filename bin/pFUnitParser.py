@@ -739,8 +739,8 @@ class Parser():
     def printMakeSuite(self):
         self.outputFile.write('function ' + self.suiteName + '() result(suite)\n')
         self.outputFile.write('   use pFUnit_mod\n')
-        self.outputFile.write('   use '+ self.wrapModuleName + '\n')
         if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
+        self.outputFile.write('   use '+ self.wrapModuleName + '\n')
         self.outputFile.write('   type (TestSuite) :: suite\n\n')
 
         if not self.userModuleName:
