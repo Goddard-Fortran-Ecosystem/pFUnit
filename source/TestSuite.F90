@@ -21,6 +21,8 @@
 !
 !-------------------------------------------------------------------------------
 module TestSuite_mod
+   use Exception_mod, only : throw
+   use Params_mod,    only : MAX_LENGTH_NAME
    use Test_mod
    implicit none
    private
@@ -34,7 +36,11 @@ module TestSuite_mod
 
    type, extends(Test) :: TestSuite
       private
+#ifdef DEFERRED_LENGTH_CHARACTER
+      character(:), allocatable  :: name
+#else
       character(MAX_LENGTH_NAME) :: name
+#endif
       type (TestReference), allocatable :: tests(:)
    contains
       procedure :: getName 
@@ -110,19 +116,47 @@ contains
       end do
       
    end subroutine run
-   
+
    recursive subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
+#ifdef DEFERRED_LENGTH_CHARACTER
+      character(:), alocatable   :: name
+#else
       character(MAX_LENGTH_NAME) :: name
-      
+      character(MAX_LENGTH_NAME) :: suiteName
+      character(MAX_LENGTH_NAME) :: testName
+
+      integer                    :: suiteNameLength
+      integer                    :: testNameLength
+#endif
       call extend(this%tests)
       allocate(this%tests(this%getNumTests())%pTest, source=aTest)
+#ifdef DEFERRED_LENGTH_CHARACTER
       name = this%getName() // '.' // this%tests(this%getNumTests())%pTest%getName()
+#else
+      suiteName       = this%getName()
+      suiteNameLength = len_trim( suiteName )
+      testName        = this%tests(this%getNumTests())%pTest%getName()
+      testNameLength  = len_trim( testName )
+
+      ! +/-1 below for full stop character to be added
+      if (suiteNameLength + 1 + testNameLength > MAX_LENGTH_NAME) then
+         call throw( 'TestSuite.addTest: Too long: ' &
+                     // suiteName(1:suiteNameLength) // '.' &
+                     // testName(1:testNameLength) )
+         testNameLength  = min( testNameLength, MAX_LENGTH_NAME - 1)
+         suiteNameLength = min( suiteNameLength, &
+                                MAX_LENGTH_NAME - 1 -testNameLength )
+      end if
+
+      write( name, '(A, ".", A)' ) suiteName(1:suiteNameLength), &
+                                   testName(1:testNameLength)
+#endif
       call this%tests(this%getNumTests())%pTest%setName(name)
-      
-   contains   
-      
+
+   contains
+
       recursive subroutine extend(list)
          type (TestReference), allocatable :: list(:)
          type (TestReference), allocatable :: temp(:)
@@ -161,8 +195,19 @@ contains
 
    subroutine setName(this, name)
       class (TestSuite), intent(inout) :: this
-      character(len=*),intent(in) :: name
+      character(len=*),  intent(in)    :: name
+#ifndef DEFERRED_LENGTH_CHARACTER
+      integer nameLength
+
+      nameLength = len_trim( name )
+      if (nameLength > MAX_LENGTH_NAME) then
+         call throw( 'TestSuite.setName: Too long: ' // name )
+         nameLength = MAX_LENGTH_NAME
+      end if
+      this%name = name(1:nameLength)
+#else
       this%name = trim(name)
+#endif
    end subroutine setName
 
 #if defined(__INTEL_COMPILER) && (INTEL_13)

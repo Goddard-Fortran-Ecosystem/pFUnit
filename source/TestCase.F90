@@ -22,6 +22,8 @@
 !-------------------------------------------------------------------------------
 ! Serial TestCase 
 module TestCase_mod
+   use Exception_mod,         only : throw
+   use Params_mod,            only : MAX_LENGTH_NAME
    use SurrogateTestCase_mod
    use TestResult_mod
    use Test_mod
@@ -84,7 +86,18 @@ contains
       class (TestCase), intent(inout) :: this
       character(len=*),intent(in) :: name
 
+#ifndef DEFERRED_LENGTH_CHARACTER
+      integer :: nameLength
+
+      nameLength = len_trim( name )
+      if (nameLength > MAX_LENGTH_NAME) then
+         call throw( 'TestCase.setName: Too long: ' // name )
+         nameLength = MAX_LENGTH_NAME
+      end if
+      this%name = name(1:nameLength)
+#else
       this%name = trim(name)
+#endif
 
    end subroutine setName
 

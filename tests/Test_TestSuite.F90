@@ -87,6 +87,7 @@ contains
 
       type (SimpleTestCase) :: aTest
 
+      call aTest%setName('aTest')
       innerSuite = newTestSuite('inner')
       outerSuite = newTestSuite('outer')
       call innerSuite%addTest(aTest)
@@ -95,7 +96,6 @@ contains
       call assertEqual(1, innerSuite%countTestCases())
 
    end subroutine testCountTestCasesNestedB
-
 
    !
    ! Complex Suite nested structure:
@@ -116,6 +116,7 @@ contains
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
+      call aTest%setName('aTest')
       topSuite = newTestSuite('top')
       suiteA = newTestSuite('A')
       suiteB = newTestSuite('B')
