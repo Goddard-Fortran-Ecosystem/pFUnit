@@ -159,6 +159,11 @@ class AtTest(Action):
                 ifdef = matchIfdef.groups()[0]
                 method['ifdef'] = ifdef
 
+            matchIfndef = re.match('.*ifndef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
+            if matchIfndef: 
+                ifndef = matchIfndef.groups()[0]
+                method['ifndef'] = ifndef
+
             paramOption = re.search('testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
             if paramOption:
                 paramExpr = paramOption.groups()[0]
@@ -742,8 +747,10 @@ class Parser():
             for testMethod in self.userTestMethods:
                 if ('ifdef' in testMethod):
                     self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
+                elif ('ifndef' in testMethod):
+                    self.outputFile.write('#ifndef ' + testMethod['ifndef'] + '\n')
                 self.outputFile.write('   external ' + testMethod['name'] + '\n')
-                if ('ifdef' in testMethod):
+                if ('ifdef' in testMethod or 'ifndef' in testMethod):
                     self.outputFile.write('#endif\n')
             self.outputFile.write('\n')
             if 'setUp' in self.userTestCase:
@@ -763,6 +770,8 @@ class Parser():
         for testMethod in self.userTestMethods:
             if ('ifdef' in testMethod):
                 self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
+            elif ('ifndef' in testMethod):
+                self.outputFile.write('#ifndef ' + testMethod['ifndef'] + '\n')
             if 'type' in self.userTestCase:
                 self.addUserTestMethod(testMethod)
             else:
@@ -771,7 +780,7 @@ class Parser():
                 else: # vanilla
                     self.addSimpleTestMethod(testMethod)
             self.outputFile.write('\n')
-            if ('ifdef' in testMethod):
+            if ('ifdef' in testMethod or 'ifndef' in testMethod):
                 self.outputFile.write('#endif\n')
 
         self.outputFile.write('\nend function ' + self.suiteName + '\n\n')

@@ -237,5 +237,20 @@ subroutine testWithParensBroken()
 
 end subroutine testWithParensBroken
 
+@test(ifndef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testIfNDef()
+  use pfunit_mod
+  implicit none
+  integer, parameter :: INCLUDE_BROKEN = 1
+  integer, parameter :: NOT_INCLUDE_BROKEN = 0
+  integer :: state
+#ifdef INCLUDE_INTENTIONALLY_BROKEN
+  state = INCLUDE_BROKEN
+#else
+  state = NOT_INCLUDE_BROKEN
+#endif
+  @assertEqual(state,NOT_INCLUDE_BROKEN)
+end subroutine testIfNDef
+
 
 
