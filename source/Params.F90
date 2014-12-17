@@ -24,8 +24,6 @@
 module Params_mod
   implicit none
 
-  integer, parameter, public :: MAX_LENGTH_NAME = 128
-
   integer, parameter :: R32 = selected_real_kind(p=6)
   integer, parameter :: R64 = selected_real_kind(p=14)
   integer, parameter :: C32 = selected_real_kind(p=6)

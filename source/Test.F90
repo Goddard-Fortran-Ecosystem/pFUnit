@@ -24,8 +24,12 @@ module Test_mod
    implicit none
    private
 
+   integer, parameter :: MAX_LENGTH_NAME = 64
+
+   public :: Test, MAX_LENGTH_NAME
+
    ! Abstract class from which other Test classes inherit
-   type, public, abstract :: Test
+   type, abstract :: Test
       integer :: placeholder
    contains
       procedure(countTestCases), deferred :: countTestCases
