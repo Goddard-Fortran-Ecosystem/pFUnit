@@ -293,6 +293,10 @@ $ make tests\endcode
 One may also set the environment variable PFUNIT instead of setting
 INSTALL_PATH on the cmake command line as given above.
 
+If your MPI installation does not provide mpirun, you may try to set
+-DMPI_USE_MPIEXEC=YES to tell CMake to use its FindMPI function to
+find out how to execute the tests.
+
 4. If the build is successful, then at this point make install should work.
 
 \section sec_Installation Installation
@@ -642,7 +646,6 @@ pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
 - Make other directory.
 - Make Environment Modules example in other directory.
-- Other build systems, e.g. CMake.
 
 \page page_pFUnitParser The Preprocessor - pFUnitParser
 

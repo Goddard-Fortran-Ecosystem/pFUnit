@@ -53,6 +53,7 @@ ENDIF()
 
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
+OPTION(MPI_USE_MPIEXEC "Use CMake's FindMPI to find mpiexec" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 
 # The following sets robust to "ON".

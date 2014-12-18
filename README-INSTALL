@@ -256,6 +256,10 @@ $ make tests
 One may also set the environment variable PFUNIT instead of setting
 INSTALL_PATH on the cmake command line as given above.
 
+If your MPI installation does not provide mpirun, you may try to set
+-DMPI_USE_MPIEXEC=YES to tell CMake to use its FindMPI function to
+find out how to execute the tests.
+
 4. If the build is successful, then at this point make install should work.
 
 6. INSTALLATION

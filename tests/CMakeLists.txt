@@ -57,10 +57,24 @@ add_dependencies(tests.x pfunit)
 target_link_libraries(${TEST_EXE} pfunit testpfunit)
 
 if (MPI)
-     target_link_libraries(${TEST_EXE} ${MPI_Fortran_LIBRARIES} )
-#     add_custom_target(tests COMMAND mpirun -np 4 tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-     add_custom_target(tests COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  target_link_libraries(${TEST_EXE} ${MPI_Fortran_LIBRARIES} )
+  if (MPI_USE_MPIEXEC)
+    #
+    # Add the target for executing the tests by calling on CMake's FindMPI to find the
+    # standard mpiexec.  Not the default because we've found the hardcoded mpirun more portable.
+    # There may be situations, however, where the FindMPI-based target will work better.
+    #
+    add_custom_target(tests COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  else()
+    #
+    # Add the target for executing the tests with a hardcoded call to mpirun.
+    # 
+    add_custom_target(tests COMMAND mpirun -np 4 tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    #
+  endif()
+#
 else()
+#
      add_custom_target(tests COMMAND ${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
 
