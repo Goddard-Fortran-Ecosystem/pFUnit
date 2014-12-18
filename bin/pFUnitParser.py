@@ -244,6 +244,7 @@ class AtSuite(Action):
 
     def action(self, m, line):
         self.parser.suiteName=m.groups()[0][1:-1]
+        self.parser.wrapModuleName = 'Wrap' + self.parser.suiteName
 
 
 class AtBegin(Action):
@@ -257,7 +258,8 @@ class AtBegin(Action):
     def action(self, m, line):
         self.parser.userModuleName = m.groups()[0]
         self.parser.wrapModuleName = 'Wrap' + self.parser.userModuleName
-        if (not self.parser.suiteName): self.parser.suiteName = self.parser.userModuleName + "_suite"
+        if not self.parser.suiteName:
+            self.parser.suiteName = self.parser.userModuleName + "_suite"
         self.parser.outputFile.write(line)
 
 
