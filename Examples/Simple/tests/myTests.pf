@@ -207,15 +207,17 @@ subroutine testWithParens()
    use pfunit_mod
    implicit none
 
-   type(node) :: node_
+   type(node) :: node1_, node2_
    real, target :: x
    real, pointer :: ptr 
 
    x = 1
    ptr => x
-   node_ = node(ptr)
+   node1_ = node(ptr)
+   node2_ = node(ptr)
 
-   @assertEqual(node_%getX(),x)
+   @assertEqual(node1_%getX(),x)
+   @assertAssociatedWith(node1_%getPtr(),x)
 
 end subroutine testWithParens
 
@@ -233,7 +235,7 @@ subroutine testWithParensBroken()
    ptr => x
    node_ = node(ptr)
 
-   @assertEqual(node_%getX(),y,message="<<Intentionally broken.>>")
+   @assertAssociatedWith(node_%getPtr(),y,message="<<Intentionally broken.>>")
 
 end subroutine testWithParensBroken
 
