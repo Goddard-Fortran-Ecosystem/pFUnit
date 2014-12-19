@@ -24,9 +24,9 @@ def parseDirectiveArguments(data):
     nice to throw an exception or emit warnings when we detect suspicious syntax.
     """
     pos = 0; npos = len(data); str=''; maskCommas=False
-    scopeCounts = {'[':0,'(':0} # Assume well formed scopes.
-    scopeTerminators = {'[':']','(':')'}
-    scopeNames = {'(':'parens','[':'brackets'}
+    scopeCounts = {'[':0,'(':0,'"':0,"'":0} # Assume well formed scopes.
+    scopeTerminators = {'[':']','(':')','"':'"',"'":"'"}
+    scopeNames = {'(':'parens','[':'brackets','"':'double quotes',"'":'single quotes'}
     while (pos < npos):
         if data[pos] == ',' and not maskCommas:
             return [i for i in flatten([str,parseDirectiveArguments(data[pos+1:])])]
@@ -61,6 +61,10 @@ class TestParseDirectiveArgs(unittest.TestCase):
 
     def test_args4(self):
         self.assertEqual(['a','b','c[d,e,f(x,y]'],parseDirectiveArguments('a,b,c[d,e,f(x,y]'))
+
+    def test_args5(self):
+        self.assertEqual(['a','b="This, is, a, test."'],parseDirectiveArguments('a,b="This, is, a, test."'))
+        self.assertEqual(["a","b='This, is, a, test.'"],parseDirectiveArguments("a,b='This, is, a, test.'"))
 
 if __name__ == '__main__':
     print('starting')

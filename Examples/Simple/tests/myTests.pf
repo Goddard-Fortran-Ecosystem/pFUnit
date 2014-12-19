@@ -235,7 +235,7 @@ subroutine testWithParensBroken()
    ptr => x
    node_ = node(ptr)
 
-   @assertAssociated(node_%getPtr(),y,message="<<Intentionally broken.>>")
+   @assertAssociated(node_%getPtr(),y,message="<<Intentionally broken, yes?>>")
 
 end subroutine testWithParensBroken
 

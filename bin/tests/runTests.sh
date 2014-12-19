@@ -1,7 +1,5 @@
 python testParser.py
 
-exit
-
 mkdir -p outputs
 for file in simple beforeAfter TestA TestCaseA MpiTestCaseB ParameterizedTestCaseB MpiParameterizedTestCaseC
 do
