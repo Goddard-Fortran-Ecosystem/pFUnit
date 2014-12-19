@@ -17,12 +17,17 @@ def flatten(l):
                 yield el
 
 def parseDirectiveArguments(data):
-    """Makes a list whose elements are delimited by commas in an input string. Commas inside
-    a scope started with brackets or parens are skipped.  Scopes delimited by brackets or
-    parentheses are assumed to be well formed.  I.e. we simply count opening and closing
-    brackets and parens without regards to any other syntax or ordering rules. It would be
-    nice to throw an exception or emit warnings when we detect suspicious syntax.
+    
+    """Makes a list whose elements are delimited by commas in an input
+
+    string. Commas inside a scope started with brackets, parens, single-
+    or double-quotes, are skipped.  Scopes delimited by brackets or
+    parentheses are assumed to be well formed.  I.e. we simply count
+    opening and closing brackets and parens without regards to any other
+    syntax or ordering rules. It would be nice to throw an exception or
+    emit warnings when we detect suspicious syntax.
     """
+    
     pos = 0; npos = len(data); str=''; maskCommas=False
     scopeCounts = {'[':0,'(':0,'"':0,"'":0} # Assume well formed scopes.
     scopeTerminators = {'[':']','(':')','"':'"',"'":"'"}
