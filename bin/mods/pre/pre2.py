@@ -85,12 +85,15 @@ class procDirective() :
     def addTokenRE(self,args,key,defaultToken,prefix=r'''(?i)[ \t]*''',postfix='') :
         """
         Add a token/create an RE with a prefix that by default ignores preceding whitespace.
-        Stores the RE in a dictionary for this directive.
+        Stores the RE in a dictionary for this directive.  Note this currently expects
+        complex tokens like <EndToken> not something as overloaded as a close paren.
         """
         retToken = defaultToken
+        # Delete the current token definition.
         if key in args.keys():
            retToken = args[key][:]
            del args[key]
+        # Construct the RE and add the definition.
         tokenREString = prefix + retToken + postfix
         tokenRE = re.compile(tokenREString)
         # self.tokens[key] = 
@@ -336,7 +339,10 @@ class TestPreprocessor(unittest.TestCase) :
 
     def test_getPCArgsWith1Args(self):
         self.assertEqual(getPCArgs('(1)'),(['1'],3))
-
+    
+    # Much work to do if we need nested parens.    
+    #def test_retainNestedPCArgs1(self):
+    #    self.assertEqual(getPCArgs('(1,2,(3,4,(5,6)))'),())
 
     def test_addTokenRE1(self):
         m = proc_include.addTokenRE({':EndToken':'<EndToken>'},\
@@ -396,6 +402,23 @@ class TestPreprocessor(unittest.TestCase) :
 
         self.assertEqual([s1,s2],[(40, 50),(9, 21)])
         #        self.assertEqual(str(s1)+''+str(s2),'(40, 50)(9, 21)')
+
+    #def test_addTokenRE5(self):
+    #    "Test for abilit to handle nested parens."
+    #    RE1 = proc_include.addTokenRE({':EndToken':'\)', \
+    #                                   ':BeginToken':'@assert\('},\
+    #                                   ':EndToken','\)')
+    #                                   #':BeginToken','@assert\(')
+    #    testString = '@assert(a,(b),c)'
+    #    m1 = RE1.search(testString)
+    #    if m1 :
+    #        s1 = m1.span()
+    #    else :
+    #        s1 = None
+    #    self.assertEqual(s1,(15,16))
+                
+                                       
+                                       
 
 
 

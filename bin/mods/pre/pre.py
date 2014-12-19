@@ -16,7 +16,7 @@ except ImportError:
 if found:    
     import argparse
 else:
-    print('GenerateAssertOnArrays.py::Error. pFUnit requires argparse module provided by python version >= 2.7.')
+    print('pre.py::Error. pFUnit requires argparse module provided by python version >= 2.7.')
     print('Quitting!'); quit()
 
 #####

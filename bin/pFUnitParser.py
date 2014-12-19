@@ -4,7 +4,8 @@ from __future__ import print_function
 
 from os.path import *
 import re
-from parseBrackets import parseBrackets
+# from parseBrackets import parseBrackets
+from parseDirectiveArgs import parseDirectiveArguments
 
 class MyError(Exception):
     def __init__(self, value):
@@ -31,13 +32,9 @@ def parseArgsFirstRest(directiveName,line):
     Added for assertAssociated.
     """
 
-    #print(9000,directiveName)
-    #print(9001,line)
-
     argStr = ''; 
     if directiveName != '':
         m = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$',line,re.IGNORECASE)
-        #print (1000,m)
         if m:
             argStr = m.groups()[0]
         else:
@@ -45,9 +42,7 @@ def parseArgsFirstRest(directiveName,line):
     else:
         argStr = line
 
-    #print(10000,argStr)
-    
-    args = parseBrackets(argStr)
+    args = parseDirectiveArguments(argStr)
 
     if args == []:
         returnArgs = None
@@ -56,40 +51,6 @@ def parseArgsFirstRest(directiveName,line):
     else:
         returnArgs = [args[0],','.join(args[1:])]
         
-    # print(2000,line)
-    # print(2001,args)
-    # print(2002,returnArgs)
-
-    #if directiveName != '':
-    #    mMultiArg  = re.match('\s*'+directiveName+'\s*\\((\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-    #        line, re.IGNORECASE)
-    #else:
-    #    mMultiArg  = re.match('\s*\s*([^,]*\w.*),(.*\w*.*)\s*$', \
-    #        line, re.IGNORECASE)
-    #
-    #returnArgs = None
-    #
-    #if not mMultiArg:
-    #    if directiveName != '':
-    #        mSingleArg = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$', \
-    #                            line, re.IGNORECASE)
-    #    else:
-    #        mSingleArg = re.match('\s*(.*\w.*)\s*$', \
-    #                            line, re.IGNORECASE)
-    #
-    #    if mSingleArg:
-    #        firstArg  = mSingleArg.groups()[0]
-    #        returnArgs = [firstArg]
-    #    else:
-    #        returnArgs = None
-    #    
-    #else:
-    #
-    #    if directiveName != '':
-    #        returnArgs = list(mMultiArg.groups()[1:])
-    #    else:
-    #        returnArgs = list(mMultiArg.groups())
-
     return returnArgs
 
 
@@ -292,6 +253,17 @@ class AtAssertAssociated(Action):
 
     def match(self, line):
         m = re.match('\s*@assertassociated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+
+        if not m:
+            m  = re.match( \
+                '\s*@assertassociated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
+                line, re.IGNORECASE)
+
+        # How to get both (a,b) and (a,b,c) to match?
+        if not m:
+            m  = re.match( \
+                '\s*@assertassociated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
+                line, re.IGNORECASE)
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -302,11 +274,20 @@ class AtAssertAssociated(Action):
     def action(self, m, line):
         p = self.parser
 
-        args = parseArgsFirstRest('@assertassociated',line)
+        # args = parseArgsFirstRest('@assertassociated',line)
+        args = parseArgsFirstSecondRest('@assertassociated',line)
+
+        # print(9000,line)
+        # print(9001,args)
         
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
-            p.outputFile.write("  call assertTrue(associated(" + args[0] + "), " + args[1] + ", &\n")
+            if re.match('.*message=.*',args[1],re.IGNORECASE):
+                p.outputFile.write("  call assertTrue(associated(" + args[0] + "), " + args[1] + ", &\n")
+            elif len(args) > 2:
+                p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
+            else:
+                p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), &\n")
         else:
             p.outputFile.write("  call assertTrue(associated(" + args[0] + "), &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
@@ -314,47 +295,8 @@ class AtAssertAssociated(Action):
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
-class AtAssertAssociatedWith(Action):
-    def __init__(self,parser):
-        self.parser = parser
-
-    def match(self, line):
-        m  = re.match( \
-            '\s*@assertassociatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-            line, re.IGNORECASE)
-
-        # How to get both (a,b) and (a,b,c) to match?
-        if not m:
-            m  = re.match( \
-                '\s*@assertassociatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
-                line, re.IGNORECASE)
-                    
-        return m
-
-    def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        fileHandle.write(" & location=SourceLocation( &\n")
-        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
-        fileHandle.write(" & " + str(lineNumber) + ")")
-
-    def action(self, m, line):
-        p = self.parser
-
-        args = parseArgsFirstSecondRest('@assertassociatedwith',line)
-        
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        if len(args) > 2:
-            p.outputFile.write("  call assertTrue(associated(" \
-                               + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
-        else:
-            p.outputFile.write("  call assertTrue(associated(" \
-                               + args[0] + "," + args[1] + "), &\n")
-        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        p.outputFile.write(" )\n")
-        p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 class AtAssertNotAssociated(Action):
-    
     def __init__(self,parser):
         self.parser = parser
         self.name='@assertnotassociated'
@@ -363,10 +305,26 @@ class AtAssertNotAssociated(Action):
         m = re.match('\s*@assert(not|un)associated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
         if m:
             self.name='@assert'+m.groups()[0]+'associated'
-            #print(3000,m.groups())
         else:
             self.name='@assertnotassociated'
-        #print(2000,self.name)
+
+        if not m:
+            m  = re.match( \
+                '\s*@assert(not|un)associated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
+                line, re.IGNORECASE)
+
+        # How to get both (a,b) and (a,b,c) to match?
+        if not m:
+            m  = re.match( \
+                '\s*@assert(not|un)associated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
+                line, re.IGNORECASE)
+
+        if m:
+            self.name='@assert'+m.groups()[0]+'associated'
+        else:
+            self.name='@assertnotassociated'
+
+                                
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -377,15 +335,21 @@ class AtAssertNotAssociated(Action):
     def action(self, m, line):
         p = self.parser
 
-        # args = parseArgsFirstRest('@assertunassociated',line)
-        args = parseArgsFirstRest(self.name,line)
-        #print(1000,line)
-        #print(1001,self.name)
-        #print(1002,args)
+        #-- args = parseArgsFirstRest('@assertassociated',line)
+        #ok args = parseArgsFirstSecondRest('@assertassociated',line)
+        args = parseArgsFirstSecondRest(self.name,line)
+
+        # print(9000,line)
+        # print(9001,args)
         
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
-            p.outputFile.write("  call assertFalse(associated(" + args[0] + "), " + args[1] + ", &\n")
+            if re.match('.*message=.*',args[1],re.IGNORECASE):
+                p.outputFile.write("  call assertFalse(associated(" + args[0] + "), " + args[1] + ", &\n")
+            elif len(args) > 2:
+                p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
+            else:
+                p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), &\n")
         else:
             p.outputFile.write("  call assertFalse(associated(" + args[0] + "), &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
@@ -393,49 +357,6 @@ class AtAssertNotAssociated(Action):
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
-class AtAssertNotAssociatedWith(Action):
-    def __init__(self,parser):
-        self.parser = parser
-        self.name = ''
-
-    def match(self, line):
-        m  = re.match( \
-            '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-            line, re.IGNORECASE)
-        if m:
-            self.name='@assert'+m.groups()[0]+'associatedwith'
-        # How to get both (a,b) and (a,b,c) to match?
-        if not m:
-            m  = re.match( \
-                '\s*@assert(not|un)associatedwith\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
-                line, re.IGNORECASE)
-            if m:
-                self.name='@assert'+m.groups()[0]+'associatedwith'
-                    
-        return m
-
-    def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        fileHandle.write(" & location=SourceLocation( &\n")
-        fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
-        fileHandle.write(" & " + str(lineNumber) + ")")
-
-    def action(self, m, line):
-        p = self.parser
-
-        # args = parseArgsFirstSecondRest('@assertunassociatedwith',line)
-        args = parseArgsFirstSecondRest(self.name,line)
-        
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        if len(args) > 2:
-            p.outputFile.write("  call assertFalse(associated(" \
-                               + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
-        else:
-            p.outputFile.write("  call assertFalse(associated(" \
-                               + args[0] + "," + args[1] + "), &\n")
-        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        p.outputFile.write(" )\n")
-        p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 class AtAssertEqualUserDefined(Action):
     """Convenience directive replacing (a,b) with a call to assertTrue(a==b)
@@ -643,9 +564,9 @@ class Parser():
 
         self.actions.append(AtAssert(self))
         self.actions.append(AtAssertAssociated(self))
-        self.actions.append(AtAssertAssociatedWith(self))
+#        self.actions.append(AtAssertAssociatedWith(self))
         self.actions.append(AtAssertNotAssociated(self))
-        self.actions.append(AtAssertNotAssociatedWith(self))
+#        self.actions.append(AtAssertNotAssociatedWith(self))
 
         self.actions.append(AtAssertEqualUserDefined(self))
         self.actions.append(AtAssertEquivalent(self))

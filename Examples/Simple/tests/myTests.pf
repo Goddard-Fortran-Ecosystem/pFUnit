@@ -79,7 +79,7 @@ subroutine testAssociatedWithBroken
 
   x = 0; y = 1; ptr => x
 
-  @assertAssociatedWith(ptr,y,message='<<Intentionally broken.>>')
+  @assertAssociated(ptr,y,message='<<Intentionally broken.>>')
   
 end subroutine testAssociatedWithBroken
 
@@ -98,9 +98,9 @@ subroutine testAssociated
   node_ = node(ptr)
   
   @assertAssociated(ptr)
-  @assertAssociatedWith(ptr,x)
+  @assertAssociated(ptr,x)
 
-  @assertAssociatedWith(node_%getPtr(),x)
+  @assertAssociated(node_%getPtr(),x)
 
 end subroutine testAssociated
 
@@ -116,7 +116,7 @@ subroutine testNotAssociated
 
   ptr => y
 
-  @assertNotAssociatedWith(ptr,x)
+  @assertNotAssociated(ptr,x)
   
 end subroutine testNotAssociated
 
@@ -217,7 +217,7 @@ subroutine testWithParens()
    node2_ = node(ptr)
 
    @assertEqual(node1_%getX(),x)
-   @assertAssociatedWith(node1_%getPtr(),x)
+   @assertAssociated(node1_%getPtr(),x)
 
 end subroutine testWithParens
 
@@ -235,7 +235,7 @@ subroutine testWithParensBroken()
    ptr => x
    node_ = node(ptr)
 
-   @assertAssociatedWith(node_%getPtr(),y,message="<<Intentionally broken.>>")
+   @assertAssociated(node_%getPtr(),y,message="<<Intentionally broken.>>")
 
 end subroutine testWithParensBroken
 
