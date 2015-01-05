@@ -1,9 +1,10 @@
+/*.patch
+/.DS_Store
 /.pFUnitLog
 /ex.F90
 /lib
 /mod
 /mpi_pFUnit.x
-/.DS_Store
-/*.patch
+/nag
 build/
 include/configuration.mk
