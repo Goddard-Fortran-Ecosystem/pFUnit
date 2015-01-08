@@ -67,11 +67,9 @@ module UnixProcess_mod
 contains
 
    function newProcess(command, runInBackground) result(process)
-!      uze UnixPipeInterfaces_mod, only: getLine
       use UnixPipeInterfaces_mod, only: popen
       use StringConversionUtilities_mod, only: nullTerminate
-!      uze, intrinsic :: iso_c_binding, only: C_PTR
-      use Assert_mod
+      use Exception_mod, only: throw
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
       logical, optional, intent(in) :: runInBackground
@@ -79,19 +77,16 @@ contains
       character(len=:), allocatable :: fullCommand
       character(len=:), allocatable :: mode
 
-!      type (C_PTR) :: fileHandle
-!      type (C_PTR) :: line
-!      integer :: pid
       integer, parameter :: MAX_LEN = 80
       character(len=:), allocatable :: string
-!      integer :: rc
-!      integer :: i
 
       fullCommand = makeCommand(command, runInBackground)
       mode = nullTerminate('r')
 
       process%file = popen(fullCommand, mode)
-      call assertTrue(c_associated(process%file))
+      if (.not. c_associated(process%file)) then
+         call throw('Unsuccessful call to popen.')
+      end if
 
       if (present(runInBackground)) then
          if (runInBackground) then
@@ -168,9 +163,6 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer (kind=C_SIZE_T) :: rc
-!      integer :: i
-
-!!$      line = this%getDelim(new_line('$'))
 
       pBuffer = C_NULL_PTR
       rc = c_getline(pBuffer, length, this%file)
@@ -198,7 +190,6 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer (kind=C_SIZE_T) :: rc
-!      integer :: i
 
       integer(kind=C_INT) :: useDelimeter
 
