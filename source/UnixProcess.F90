@@ -86,6 +86,7 @@ contains
       process%file = popen(fullCommand, mode)
       if (.not. c_associated(process%file)) then
          call throw('Unsuccessful call to popen.')
+         return
       end if
 
       if (present(runInBackground)) then

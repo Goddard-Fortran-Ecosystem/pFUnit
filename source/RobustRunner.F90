@@ -176,7 +176,6 @@ contains
    subroutine launchRemoteRunner(this, numSkip)
       use UnixProcess_mod
       use Exception_mod
-      use Assert_mod
       class (RobustRunner), intent(inout) :: this
       integer, intent(in) :: numSkip
 
@@ -212,10 +211,14 @@ contains
                cycle ! might just not be ready yet
             end if
          else
-            call assertEqual('*LAUNCHED*', line)
-            ! successfully launched
-            call timerProcess%terminate()
-            exit
+            if ('*LAUNCHED*' /= line) then
+               call throw('Failure to launch in RobustRunner.')
+               return
+            else
+               ! successfully launched
+               call timerProcess%terminate()
+               exit
+            end if
          end if
       end do
 

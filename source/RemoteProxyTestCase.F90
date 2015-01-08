@@ -23,7 +23,6 @@
 module RemoteProxyTestCase_mod
    use UnixProcess_mod
    use Exception_mod
-   use Assert_mod
    use TestCase_mod
    implicit none
    private
@@ -98,7 +97,10 @@ contains
                cycle ! might just not be ready yet
             end if
          else
-            call assertEqual('started: '//trim(this%getName()), line)
+            if ('started: '//trim(this%getName()) /= line) then
+               call throw('Incorrect start line in RemoteProxyTestCase.F90.')
+               return
+            end if
             exit
          end if
 
