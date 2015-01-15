@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 module MpiContext_mod
    use ParallelContext_mod
+   use Exception_mod, only: throw
    implicit none
    private
 
