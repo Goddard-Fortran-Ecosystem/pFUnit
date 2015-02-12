@@ -59,6 +59,13 @@ contains
 
 #ifdef Intel
       use ifport, only: system
+#elif PGI
+        interface
+        extrinsic (f77_local) integer function system(str)
+!pgi$   l3f system
+        character*(*), intent(in) :: str
+        end function
+        end interface
 #endif
 
       type (TestResult) :: aResult
@@ -138,7 +145,12 @@ contains
      character(len=100), dimension(9) :: expected 
 
      expected=(/ character(len=100) :: &
+#ifndef PGI
 '<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0" time=".0000">', &
+#else
+'<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0"&
+& time="0.0000">', &
+#endif
 '<testcase name="successtest[]''"/>', &
 '<testcase name="failtest[]''">', &
 '<failure message="Location: [[unknown location]], [invalid] "/>', &

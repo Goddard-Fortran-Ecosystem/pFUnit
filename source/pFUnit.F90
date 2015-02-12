@@ -168,7 +168,7 @@ contains
 #endif
 
    if (.not. allSuccessful) then
-#ifdef NAG
+#if defined(NAG) || defined(PGI)
       call exit(-1)
 #else
 

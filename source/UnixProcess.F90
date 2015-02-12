@@ -43,7 +43,7 @@ module UnixProcess_mod
    private
 
    public :: UnixProcess
-#ifdef Intel
+#if defined(Intel) || defined(PGI)
    public :: execute_command_line
 #endif
    
@@ -216,9 +216,13 @@ contains
    end function getPid
 
 
-#ifdef Intel
+#if defined(Intel) || defined(PGI)
    subroutine execute_command_line(command, exitStat, cmdStat)
+#if defined(Intel)
       use ifport
+#else
+      #include <lib3f.h>
+#endif
       character(len=*), intent(in) :: command
       integer, optional, intent(out) :: exitStat
       integer, optional, intent(out) :: cmdStat

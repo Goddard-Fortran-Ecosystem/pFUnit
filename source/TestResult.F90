@@ -158,7 +158,10 @@ contains
 !      integer :: i, n
       integer :: n
       type (TestFailure), allocatable :: tmp(:)
-      type (Exception) :: noExceptions(0)
+      type (Exception), allocatable :: noExceptions(:)
+!      type (Exception) :: noExceptions(0)
+      
+      allocate(noExceptions(0))
 
       n = this%numSuccesses
       allocate(tmp(n))
