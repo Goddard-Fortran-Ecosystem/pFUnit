@@ -210,7 +210,8 @@ contains
 #endif
    end subroutine setName
 
-#if defined(__INTEL_COMPILER) && (INTEL_13)
+!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
+#if ((__INTEL_COMPILER) && (INTEL_13))
    recursive function getTestCases(this) result(testList)
       use Exception_mod
       use Test_mod

@@ -51,8 +51,8 @@ contains
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
       call assertEqual(5, result%runCount(),'runCount()')
-      call assertEqual(2, result%failureCount(), 'failureCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')
+      call assertEqual(2, result%failureCount(), 'failureCount()')
 
       close(unit)
 

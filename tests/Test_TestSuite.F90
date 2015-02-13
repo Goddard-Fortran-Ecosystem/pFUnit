@@ -167,7 +167,8 @@ contains
       aResult%TestResult = newTestResult()
       aResult%log = ''
 
-#if defined(__INTEL_COMPILER) && (INTEL_13)
+!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
+#if (defined(__INTEL_COMPILER) && (INTEL_13))
       testCases = top%getTestCases()
 #else
       call top%getTestCases(testCases)

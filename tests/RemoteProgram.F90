@@ -32,11 +32,15 @@ contains
       skipArg = 2
 #endif
 
+      !print *,'d00000'
+      
       call get_command(command)
       call get_command_argument(skipArg, length = strLength)
       allocate(character(len=strLength) :: skipString)
       call get_command_argument(skipArg, value=skipString)
       read (skipString,*)numSkip
+
+      !print *,'d10000',numSkip
 
       runner = SubsetRunner(numSkip, OUTPUT_UNIT)
       allocate(context, source=newSerialContext())

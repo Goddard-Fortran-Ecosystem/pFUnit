@@ -13,6 +13,8 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
+      !print *,'10000'
+
       suite = newTestSuite('StringConversionUtilities')
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
@@ -35,12 +37,14 @@ contains
    end function suite
 
    subroutine testRunSucceeds()
-      ! do nothing
+     ! do nothing
+      !print *,'11000'     
    end subroutine testRunSucceeds
 
    subroutine testRunMultipleExceptions()
      use Assert_mod
      ! do nothing
+      !print *,'12000'     
      call assertTrue(1 == 2)
      call assertTrue(1 == 3)
      call assertTrue(1 == 4)
@@ -49,10 +53,12 @@ contains
    subroutine testRunAssertFailure()
       use Assert_mod
       ! do nothing
+      !print *,'13000'     
       call assertTrue(1 == 2)
    end subroutine testRunAssertFailure
 
    subroutine testRunStops()
+      !print *,'14000'     
       call runStops()
    end subroutine testRunStops
 
@@ -65,6 +71,7 @@ contains
    ! This test will hang.  The robust runner
    ! should detect this - reporting it as a hung process.
    subroutine testRunHangs()
+      !print *,'15000'     
       do
       end do
    end subroutine testRunHangs

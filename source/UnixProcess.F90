@@ -80,11 +80,14 @@ contains
       integer, parameter :: MAX_LEN = 80
       character(len=:), allocatable :: string
 
+      !print *,'z00000'
+
       fullCommand = makeCommand(command, runInBackground)
       mode = nullTerminate('r')
 
       process%file = popen(fullCommand, mode)
       if (.not. c_associated(process%file)) then
+         !print *,'z01000'
          call throw('Unsuccessful call to popen.')
          return
       end if
@@ -127,9 +130,12 @@ contains
       character(len=MAX_LEN) :: command
       integer :: stat, cstat
 
+      !print *,'z02000',this%pid
+      
       if (this%pid >=0) then
          write(command, '("kill -0 ",i0," > /dev/null 2>&1")') this%pid
          call execute_command_line(command, exitStat=stat, cmdStat=cstat)
+         !print *,'z03000',stat
          isActive = (stat == 0)
       else
          isActive = .false.
@@ -220,8 +226,10 @@ contains
    subroutine execute_command_line(command, exitStat, cmdStat)
 #if defined(Intel)
       use ifport
+      implicit none
 #else
-      #include <lib3f.h>
+      implicit none
+#include <lib3f.h>
 #endif
       character(len=*), intent(in) :: command
       integer, optional, intent(out) :: exitStat
@@ -229,6 +237,7 @@ contains
 
       integer :: exitStat_
 
+      !print *,'z04000<'//trim(command)//'>'
       exitStat_ = system(trim(command))
       if (present(exitStat)) exitStat = exitStat_
       if (present(cmdStat)) cmdStat = 0
