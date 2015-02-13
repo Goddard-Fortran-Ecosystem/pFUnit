@@ -5,7 +5,6 @@ M=-I
 L=-L
 
 FFLAGS += -O0 -g -traceback -Mallocatable=03 -Mbounds -Mchkfpstk -Mchkstk
-# Segmentation fault: 11
 
 # -O0 -g -traceback -Mchkfpstk -Mchkstk
 # -Mallocatable=03
