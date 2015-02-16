@@ -130,7 +130,6 @@ contains
       integer :: i
       integer :: clockStart, clockStop, clockRate
 
-      !print *,'b00000'
       call system_clock(clockStart)
 
       do i=1,size(this%extListeners)
@@ -142,7 +141,6 @@ contains
       class is (TestSuite)
 !!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
 #if (defined(__INTEL_COMPILER) && (INTEL_13))         
-         !print *,'b10000'
          testCases = aTest%getTestCases()
 #else
          call aTest%getTestCases(testCases)
@@ -155,13 +153,10 @@ contains
 
 ! mlr q: set up named pipes or units to handle comm between remote processes
       ! mlr q: and the root... being done at ukmet?
-      !print *,'b20000',size(testCases)
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
-            !print *,'b20001',i
             call this%launchRemoteRunner(numSkip=i-1)
          end if
-         !print *,'b20002',i
          proxy = RemoteProxyTestCase(testCases(i)%test,this%remoteProcess)
          call proxy%run(result, context)
       end do
@@ -198,7 +193,6 @@ contains
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' -skip ' // suffix
 
-      !print *,'c10000',command
 
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
 
@@ -210,10 +204,8 @@ contains
 
       do
          line = this%remoteProcess%getLine()
-         !print *,'c11000','<'//line//'>',this%remoteProcess%isActive(),len(line)
          if (len(line) == 0) then
             if (.not. this%remoteProcess%isActive()) then
-               !print *,'c12000','throwing!'
                call throw('RUNTIME-ERROR: terminated before starting')
                call timerProcess%terminate()
                return
@@ -233,7 +225,6 @@ contains
             end if
          end if
       end do
-      !print *,'c20000'
 
    end subroutine launchRemoteRunner
 

@@ -167,13 +167,11 @@ contains
       aResult%TestResult = newTestResult()
       aResult%log = ''
 
-!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
 #if (defined(__INTEL_COMPILER) && (INTEL_13))
       testCases = top%getTestCases()
 #else
       call top%getTestCases(testCases)
 #endif
-
       do i = 1, size(testCases)
          call testCases(i)%test%run(aResult, newSerialContext())
       end do

@@ -210,7 +210,6 @@ contains
 #endif
    end subroutine setName
 
-!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
 #if ((__INTEL_COMPILER) && (INTEL_13))
    recursive function getTestCases(this) result(testList)
       use Exception_mod
@@ -246,7 +245,7 @@ contains
 !!$              testList(n:n+m-1) = t%getTestCases()
               n = n + m
            class default
-              call throw('Unsupportes Test subclass in TestSuite::getTestCases()')
+              call throw('Unsupported Test subclass in TestSuite::getTestCases()')
            end select
          end associate
       end do
@@ -260,7 +259,6 @@ contains
       class (TestSuite), intent(in) :: this
       type (TestCaseReference), allocatable :: testList(:)
 
-! 2013-1202 MLR Is n used for anything?
       integer :: n
 
       allocate(testList(this%countTestCases()))
@@ -279,9 +277,7 @@ contains
 
          do i = 1, size(this%tests)
 
-            associate (t => this%tests(i)%pTest)
-
-               select type (t)
+                 select type (t => this%tests(i)%pTest)
                class is (TestCase)
                   n = n + 1
                   allocate(testList(n)%test, source=t)
@@ -290,7 +286,7 @@ contains
                class default
                   call throw('Unsupported Test subclass in TestSuite::getTestCases()')
                end select
-             end associate
+             
           end do
 
        end subroutine accumulateTestCases
