@@ -45,15 +45,16 @@ contains
    ! as the number that were thrown.   Of course actually crashing is a more
    ! likely failure mode than a mismatch in the count.
    subroutine testSerializeExceptions()
+      use Params_mod, only : i32
       use Exception_mod, only: throw, getNumExceptions, clearAll
       use Assert_mod, only: AssertEqual
 
       !$ integer :: omp_get_thread_num
       integer, parameter :: N = 8 ! threads
       integer, parameter :: M = 10 ! throws per thread
-      integer :: numThrown
+      integer(kind=i32) :: numThrown
+      integer(kind=i32), parameter :: NUM_EXPECTED = N*M
       integer :: i
-      integer, parameter :: NUM_EXPECTED = N*M
 
       !$ call omp_set_dynamic(.true.)
       !$ call omp_set_num_threads(N)

@@ -103,26 +103,39 @@ def dr_TolAllowedPrecisions_orig(t,pFound='64') :
     else:
         allowed = ['32','64']
     return allowed
-
-def allowedPrecisions(t,pFound='64') :
+# Sorry the following is confusing.
+# It's partially a risky mess because default might be overloaded with 32 and 64.
+def allowedPrecisions(t,tFound='',pFound='64') :
     "returns a list of strings corresponding to the precisions 'expected' may take on."
     allowed = []
-    if t == 'logical' :
-        allowed = []
-    elif t == 'integer' :
-        allowed = ['def']
-    elif t == 'real' or 'complex' :
-        if pFound == '32' :
-            allowed = ['32']
-        elif pFound == '64' : 
+    if tFound == 'integer' :
+        # The new case
+        if t == 'logical' :
+            allowed = []
+        else:
+            # If found is integer allow t=tExpected to be either 32 or 64
+            # without regard to pFound.
             allowed = ['32','64']
+    else :
+        # The old case, with 'def' below, which ladders the precisions appropriately.
+        if t == 'logical' :
+            allowed = []
+        elif t == 'integer' :
+            allowed =['32','64']
+            # allowed = ['def']
+        elif t == 'real' or 'complex' :
+            if pFound == '32' :
+                allowed = ['32']
+            elif pFound == '64' : 
+                allowed = ['32','64']
     return allowed
 
 # 2014-1208-1646-25-UTC MLR 
 def allowedExpected(tFound) :
     # allowed = []
     if tFound in 'integer' :
-        allowed = ['integer']
+        allowed = ['integer','real']
+    # mlr: old and good    allowed = ['integer']
     #    allowed = []
     #elif tFound in 'integer' :
     #    allowed = ['integer']
@@ -217,7 +230,21 @@ def generateASSERT(assertionName,expectedDescr, foundDescr, tolerance):
     declareTolerance_orig = \
 "     " + tolDECLARE(tolerance,foundDescr,opts=', optional, intent(in)')
 
-    toleranceKind = KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())
+# foundDescr.FTYPE() == integer breaks the tolerance cast near line 337.
+#    toleranceKind = KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())
+# If found is an integer, then recast the kind parameter i32 -> r64.
+# Note:  tolerances are set at r64 by default.
+
+# Okay -- we need to recall the logic in tolDECLARE, which accounts for when
+# tolerance=0, in which case we default to found->kind().
+    if tolerance != 0:
+        toleranceKind = KINDATTRIBUTE0('real',tolerance)
+    else:
+        fft0 = foundDescr.FTYPE()
+        if fft0.lower() == 'integer':
+            toleranceKind = KINDATTRIBUTE0('real',foundDescr.KIND())
+        else:
+            toleranceKind = KINDATTRIBUTE0(foundDescr.FTYPE(),foundDescr.KIND())
 
     declareExpectedScalar_expected = \
 "      " + expectedDescr.DECLARESCALAR('expected') + "\n"
@@ -717,11 +744,11 @@ class constraintASSERT(routineUnit):
         self.tolerance = tolerance
         return
 
-def constructAssertInterfaceBlock(assertionName,foundFTypes=['real'],foundRanks=[]):
+def constructAssertInterfaceBlock(assertionName,foundFTypes=['real'],foundRanks=[],patchIntXX=False):
     AssertInterfaceBlockName='assert'+assertionName
     AssertInterfaceBlock = interfaceBlock(AssertInterfaceBlockName)
     # Construct asserts generates the combinations based on what is passed in here.
-    [AssertInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks)]
+    [AssertInterfaceBlock.addRoutineUnit(r) for r in constructASSERTS(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks,patchIntXX=patchIntXX)]
     return AssertInterfaceBlock
 
 def VECTOR_NORM_NAME(rank,fType='real',precision=64):
@@ -816,7 +843,8 @@ def constructValuesReportInterfaceBlock():
     ValuesReportInterface = interfaceBlock('valuesReport')
     list(map(ValuesReportInterface.addRoutineUnit,
              flattened( [[[[makeValuesReport_type(te=te,tf=tf,pe=pe,pf=pf) \
-                            for pe in allowedPrecisions(te,pFound=pf) ] \
+                            for pe in allowedPrecisions(te,tFound=tf,pFound=pf) ] \
+                            #sigh for pe in allowedPrecisions(te,pFound=pf) ] \
                            for pf in allowedPrecisions(tf) ] \
                           for te in allowedExpected(tf) ] \
                          for tf in ['integer','real','complex'] \
@@ -843,7 +871,8 @@ def constructAssertInternalInterfaceBlock(assertionName,expose=False):
                           for re in [0,1] ]
                          for rf in [0,1] ]
                         for tol in makeTolerances(pe,pf) ]
-                       for pe in allowedPrecisions(te,pFound=pf) ]
+                       for pe in allowedPrecisions(te,tFound=tf,pFound=pf) ]
+                       #sigh for pe in allowedPrecisions(te,pFound=pf) ]
                       for pf in allowedPrecisions(tf) ]
                      for te in allowedExpected(tf) ]
                     for tf in ['integer','real','complex']
@@ -861,7 +890,8 @@ def generateIsWithinTolerance(rank,fType='real',precision=64):
 
     declareKind = ''
     if fType == 'integer' :
-        declareKind = ''
+        declareKind = '(kind=i'+str(precision)+')'
+        #declareKind = ''
     elif fType == 'real' :
         declareKind = '(kind=r'+str(precision)+')'
     elif fType == 'complex' :
@@ -980,9 +1010,11 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
 def makeDifferenceReport_type(t='real',p='64',tol='64'):
     """Report on the difference found between expected and found.  This should be
     redesigned to support difference between real & integer, e.g. treatment of tolerances."""
+    # TODO:  Fix integer for non-default values, e.g. INT64...
     # TODO:  Fix the papering-over of integer/real/tolerance treatment.
     if t == 'integer' :
-        expectedDeclaration = " integer, intent(in) :: difference"
+        # expectedDeclaration = " integer, intent(in) :: difference"
+        expectedDeclaration = t+"""(kind=i"""+p+"""), intent(in) :: difference"""
         coercedDifference = 'difference'
     else :
         expectedDeclaration = t+"""(kind=r"""+p+"""), intent(in) :: difference"""
@@ -1080,6 +1112,9 @@ def declareEXPORTS_PARAMETERS():
 
 #### Helper functions for constructASSERTS -- a main workhorse for generating the specific routines.
 
+#
+# In the following: expectedPrecision and foundFType are strings.
+# 
 def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
     """A very application-specific mapping to construct an fType list
     for expected.  Make sure that if we're looking at complex that we
@@ -1089,6 +1124,7 @@ def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
         if foundFType == 'logical' :
             retTypes=['logical']        
     elif expectedPrecision == 'def':
+        # 
         if not 'complex' in foundFTypes :
             retTypes=['integer']
         else :
@@ -1098,15 +1134,44 @@ def makeExpectedFTypes(expectedPrecision,foundFType,foundFTypes=['real']):
             else :
                 retTypes=['integer']
     elif expectedPrecision == 32 or expectedPrecision == 64:
-        if not 'complex' in foundFTypes :
-            retTypes=['real']
+        # This logic is probably not correct.
+        if foundFType == 'integer' :
+            # Processing integer-found.
+            # mlr - fingers crossed.
+            retTypes=['integer','real']
+        elif not 'complex' in foundFTypes :
+            # Processing case where we're not combining with complex.
+            # mlr 2 - ???
+            retTypes=['integer','real']
+            # retTypes=['real']
         else :
             if foundFType == 'real' :
                 # Tom asserts that finding a real when expecting complex should be an error.
                 # retTypes=['complex']
                 retTypes=[]
             else :
-                retTypes=['real','complex']
+                retTypes=['integer','real','complex']
+                #? retTypes=['real','complex']
+    return retTypes
+
+# Compare with allowedExpected
+def makeExpectedFTypesWithoutExpectedPrecision( \
+        foundFType,foundFTypes=['ERROR']):
+    if 'ERROR' in foundFTypes:
+        print('makeExpectedFTypesWithoutExpectedPrecision::ERROR')
+    retTypes = []
+    # if found is something, then expected is in...
+    if 'logical' == foundFType :
+        retTypes = ['logical']
+    elif 'integer' == foundFType :
+        # Is Finding an integer when expecting complex an error too?
+        retTypes = ['integer','real']
+    elif 'real' == foundFType :
+        # Finding a real when expecting complex is an error. TLC
+        retTypes = ['integer','real']
+    elif 'complex' :
+        # We're finding complexes.
+        retTypes = ['integer','real','complex']
     return retTypes
 
 def makeExpectedRanks(foundRank):
@@ -1176,15 +1241,34 @@ class AssertRealArrayArgument:
     def getTolerance(self):
         return self.tolerance
 
-def makeExpectedPrecisions(foundPrecision,foundFType='real'):
-    if foundFType == 'logical' :
-        expectedPrecisions = ['']
-    elif foundFType == 'integer' :
-        expectedPrecisions = ['def']
-    else :
-        expectedPrecisions = ['def',32]
+# See allowedPrecisions.
+def makeExpectedPrecisions(foundPrecision,foundFType='real',expectedFType=''):
+    if expectedFType == 'integer' :
+        # New style, eFT known.
+        expectedPrecisions = [32,64]
+    elif expectedFType == 'real' :
+        expectedPrecisions = [32]
         if foundPrecision > 32 :
             expectedPrecisions.append(foundPrecision)
+    elif expectedFType == 'complex' :
+        expectedPrecisions = [32]
+        if foundPrecision > 32 :
+            expectedPrecisions.append(foundPrecision)
+    elif expectedFType == 'logical' :
+        expectedPrecisions = ['']
+    else:
+        # Old style, eFT not known.
+       if foundFType == 'logical' :
+           expectedPrecisions = ['']
+       elif foundFType == 'integer' :
+           expectedPrecisions = [32,64]
+           # expectedPrecisions = ['def']
+       else :
+           expectedPrecisions = [32]
+           #expectedPrecisions = ['def',32]
+           #expectedPrecisions = ['defXXX',32]
+           if foundPrecision > 32 :
+              expectedPrecisions.append(foundPrecision)
     return expectedPrecisions
 
 def ca_MakeAllowedPrecisions(foundFType) :
@@ -1197,7 +1281,7 @@ def ca_MakeAllowedPrecisions(foundFType) :
             precs = precs + [int(i)]
     return precs
 
-def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5]):
+def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [0,1,2,3,4,5],patchIntXX=False):
 
     AssertList = []
 
@@ -1234,6 +1318,10 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
 #
 #    print ('1000: ',foundRanks)
 
+# The following provides basic functionality, originally thought through for
+# the default integer type.  Moving to multiple integer kinds has a gap in 
+# combinatorial type coverage. So we'll handle the gaps below.
+#
     AssertList = \
     [ \
       #test      a \
@@ -1246,8 +1334,8 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
     flattened( \
                [[[[[[[ \
                        AssertRealArrayArgument(assertionName,eft,ep,er,fft,fp,fr,tol) \
-                       for eft in makeExpectedFTypes(ep,fft,foundFTypes=foundFTypes) ]  \
                        for tol in makeTolerances(ep,fp) ] \
+                       for eft in makeExpectedFTypes(ep,fft,foundFTypes=foundFTypes) ]  \
                        for ep in makeExpectedPrecisions(fp,foundFType=fft)  ] \
                        for er in makeExpectedRanks(fr) ] \
                        for fp in ca_MakeAllowedPrecisions(fft) ] \
@@ -1261,6 +1349,40 @@ def constructASSERTS(assertionName,foundFTypes=['real','complex'],foundRanks = [
     ## Any specialization of routineUnit should work here...
     ## The code is generated when the routineUnit is instantiated, so that support code would
     ## need to be available.
+
+    #
+    # For real and complex r32/r64 and c32/c64 precisions are the same kind of thing,
+    # while i32/i64 for integers have completely different meanings. Therefore our
+    # default logic, which does not allow the combination [expected-x64, found-x32],
+    # is incorrect for integer.
+    #
+    # if len(foundFTypes) == 1 :
+    if patchIntXX:
+       if foundFTypes[0] != 'integer' :
+          nameList = [ assertionName ]
+          eftList  = [ 'integer' ]
+          epList   = [ 64 ]
+          fftList  = foundFTypes
+          fpList   = [ 32 ]
+          frList   = foundRanks
+          # erList   = []
+          # tolList  = [ 32 ]
+          
+          for name in nameList:
+              for eft in eftList:
+                  for ep in epList:
+                      for fft in fftList:
+                          for fp in fpList:
+                              for fr in frList:
+                                  for er in makeExpectedRanks(fr):
+                                      for tol in makeTolerances(ep,fp):
+                                          a = AssertRealArrayArgument( name, eft, ep, er, fft, fp, fr, tol )
+                                          AssertList.append(\
+                                              constraintASSERT(a.getAssertionName(),\
+                                                  a.getExpectedDescription(),\
+                                                  a.getFoundDescription(),\
+                                                  a.getTolerance()\
+                                                  ))
     
     return AssertList
 
@@ -1398,7 +1520,7 @@ def constructInternalModule(baseName='AssertArraysInternal',assertionShortName="
     return m1
 
 
-def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[]):
+def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[],patchIntXX=False):
 #    assertionShortNames=['Equal']
 #    assertionShortNames=['GreaterThan']
     assertionNames=['assert'+Suffix for Suffix in assertionShortNames]
@@ -1415,7 +1537,7 @@ def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFType
 #!    m1.addInterfaceBlock(constructVectorNormInterfaceBlock(foundRanks=foundRanks1))
 #!    m1.addInterfaceBlock(constructIsWithinToleranceInterfaceBlock(foundRanks=foundRanks1))
     for assertionName in assertionShortNames:
-        m1.addInterfaceBlock(constructAssertInterfaceBlock(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks))
+        m1.addInterfaceBlock(constructAssertInterfaceBlock(assertionName,foundFTypes=foundFTypes,foundRanks=foundRanks,patchIntXX=patchIntXX))
         
 # The following lines have been moved to the support module.
 #    m1.addInterfaceBlock(constructDifferenceReportInterfaceBlock())
@@ -1500,7 +1622,8 @@ def makeModuleComplex(maxRank=5):
         mod = constructModule(baseName='AssertComplex',\
                           assertionShortNames=assertionShortNames,\
                           foundFTypes=['real','complex'],\
-                          foundRanks=foundRanks)
+                          foundRanks=foundRanks,\
+                          patchIntXX=True)
         with open(mod.getFileName(),'w') as f:
             f.write(filePreamble(mod.getFileName()))
             f.write('\n'.join(mod.generate()))

@@ -8,6 +8,7 @@ module Test_AssertInteger_mod
    use Assert_mod, only: assertGreaterThanOrEqual
 !   use AssertInteger_mod
    use TestSuite_mod, only: TestSuite, newTestSuite
+   use Params_mod, only: i32, i64
    implicit none
    private
 
@@ -156,8 +157,8 @@ contains
    end subroutine testAssertEqual2D2D_nonconforming
 
    subroutine testAssertEqual2D2D_unequal()
-      integer :: expected(2,3)
-      integer :: found(2,3)
+      integer(kind=i32) :: expected(2,3)
+      integer(kind=i64) :: found(2,3)
 
       expected = 1
       found = 1

@@ -257,7 +257,8 @@ def KINDATTRIBUTE0(fType,precision):
     elif fType.lower() == 'complex' :
         ret = 'kind=r'+str(precision)+''
     elif fType.lower() == 'integer' :
-        ret = ''
+        ret = 'kind=i'+str(precision)+''
+        #ret = ''
     return ret
 
 def KINDATTRIBUTE(fType,precision):
@@ -267,7 +268,8 @@ def KINDATTRIBUTE(fType,precision):
     elif fType.lower() == 'complex' :
         ret = '(kind=r'+str(precision)+')'
     elif fType.lower() == 'integer' :
-        ret = ''
+        ret = '(kind=i'+str(precision)+')'
+        #ret = ''
     return ret
 
 def testKINDATTRIBUTE():
@@ -391,8 +393,9 @@ def reportKind(t,p):
     elif t == 'complex' :
         k = '(kind=c'+str(p)+')'
     elif t == 'integer' :
+        k = '(kind=i'+str(p)+')'
         # default integer
-        k = ''
+        # k = ''
     else :
         k = '<Generate...py-reportKind-error:  unsupported type>'
     return k
