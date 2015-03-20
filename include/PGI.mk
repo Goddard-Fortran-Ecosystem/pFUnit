@@ -4,7 +4,7 @@ I=-I
 M=-I
 L=-L
 
-FFLAGS += -O0 -g -traceback -Mallocatable=03 -Mbounds -Mchkfpstk -Mchkstk
+FFLAGS += -O0 -g -traceback -Mallocatable=03 -Mbounds -Mchkfpstk -Mchkstk -DPGI
 
 ifeq ($(USEOPENMP),YES)
 FFLAGS += -mp
