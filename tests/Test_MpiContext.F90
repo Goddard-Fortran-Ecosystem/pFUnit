@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_MpiContext_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 21 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module Test_MpiContext_mod
    use ParallelContext_mod
    use TestCase_mod

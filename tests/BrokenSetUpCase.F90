@@ -1,3 +1,25 @@
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: BrokenSetUpCase_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 20 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module BrokenSetUpCase_mod
    use TestCase_mod, only: TestCase
    use Exception_mod, only: throw

@@ -1,5 +1,30 @@
 !#include "reflection.h"
 #define HERE print*,__LINE__,__FILE__
+
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_MockRepository_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 21 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
+
+
 module SUT_mod
    implicit none
    private

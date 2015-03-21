@@ -1,7 +1,7 @@
 
-PFUNIT VERSION 3.0.2 INSTALLATION AND BASIC USAGE GUIDE
+PFUNIT VERSION 3.1 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2014-0915 M. Rilee mike@rilee.net
+VERSION 2015-0320 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -28,7 +28,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
+Fortran 2003+ (Tested with Intel 13.1+, NAG 6.0, GCC 4.8.3, 4.9.+, IBM's XLF, PGI 15.1)
 The Message Passing Interface (MPI)
 OPENMP
 GNU Make
@@ -117,12 +117,11 @@ VERSION - Contains a string describing the current version of the framework.
 Little needs to be done to configure pFUnit for the build, however
 there are several environment variables on which the package depends.
 
-F90_VENDOR - is set to include the correct makefile in $(TOP_DIR)/include,
-i.e. GNU, Intel, NAG, or PGI.  Case insensitive file systems may cause
-some confusion from time-to-time.
+F90_VENDOR - is set to include the correct makefile in
+$(TOP_DIR)/include, i.e. GNU, Intel, NAG, or PGI.  Case insensitive
+file systems may cause some confusion from time-to-time.
 
-F90 - is set to the Fortran compiler being used: e.g. ifort for Intel,
-gfortran for GNU.
+F90 - is set to the Fortran compiler being used: e.g. ifort for Intel, gfortran for GNU.
 
 COMPILER - is set according to F90_VENDOR and is automatically set in
 the top level makefile.
@@ -324,8 +323,8 @@ such as lib and mod in the top level of the build directory and will
 overwrite the include/base.mk with include/base-install.mk.  If this
 is not desired, then "make develop" will put back the original
 base.mk, which is the file to be used for development and building
-pFUnit.  In general, we recommend installing to a directory that is not also the
-build directory.
+pFUnit.  In general, we recommend installing to a directory that is
+not also the build directory.
 
 7.1 USAGE - CONFIGURATION
 
@@ -471,6 +470,8 @@ Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 Windows/CYGWIN contributions from E. Lezar.
 
+PGI port contributions from M. Leair (PG Group).
+
 Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office), J. Krishna (ANL).
 
 11. KNOWN INSTALLATIONS/VERSIONS (git cognizant from "sourceforge.net/projects/pfunit")
@@ -478,6 +479,8 @@ Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office), J. Krish
 master - The current release.
 
 development - The cutting edge of pFUnit development.
+
+mock_services - Experimental support for mocking.
 
 pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
@@ -496,6 +499,7 @@ TBD
 
 14. REVISIONS TO THIS DOCUMENT
 
+2015-0320 PGI port workarounds, including examples. 3.1. MLR
 2014-1211 Minor updates for 3.0.2. MLR
 2014-1110, 2014-1031 Minor edits. MLR
 2014-0915 Minor updates for 3.0.1. MLR

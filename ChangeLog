@@ -1,5 +1,14 @@
 Note: Should add info for earlier releases.
 
+3.1	March 20, 2015
+	- PGI 15.1 now supported.
+	- Asserts over integer arrays now supported. INT32 and INT64 support added.
+	- Consolidated assertAssociated directives to:
+	    @assertAssociated
+	    @assertNotAssociated
+	- Added ifndef option to preprocessor directives.
+	- Fixes: Name length checking, unbalanced allocate, python 3 basestring.
+
 3.0.2	December 12, 2014
 	- Corrected lack of PRESENT check on some optional arguments.
 	- Brought integer array version of assertEqual up to level of other numbers.

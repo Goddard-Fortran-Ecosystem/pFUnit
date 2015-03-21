@@ -61,7 +61,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-- Fortran 2003+ (Tested with Intel 13.1+, NAG 5.3, GCC 4.8.3, 4.9.0, IBM's XLF)
+- Fortran 2003+ (Tested with Intel 13.1+, NAG 6.0, GCC 4.8.3, 4.9.+, IBM's XLF, PGI 15.1)
 - The Message Passing Interface (MPI)
 - OpenMP
 - GNU Make
@@ -627,6 +627,8 @@ Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
 
 Windows/CYGWIN contributions from E. Lezar.
 
+PGI port contributions from M. Leair (PG Group).
+
 Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office)., J. Krishna (ANL).
 
 The design of pFUnit is strongly influenced by <a href="http://junit.org">JUnit</a>.
@@ -639,6 +641,8 @@ Initial pFUnit 2 documentation by Michael Rilee (Rilee Systems Technologies).
 master - The current release.
 
 development - The cutting edge of pFUnit development.
+
+mock_services - Experimental support for mocking.
 
 pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 
@@ -745,9 +749,9 @@ important directives follow.
 
 This directive is used to indicate a test routine to the preprocessor,
 which then includes it in the test suite.  There may be multiple
-tests in the .pf file, each annotated by the @Test directive.  
+tests in the .pf file, each annotated by the \@Test directive.  
 
-@Test also supports MPI-parallel tests (see \ref s3_atMPITest ).
+\@Test also supports MPI-parallel tests (see \ref s3_atMPITest ).
 
 An example, from Examples/Fixture:
 
@@ -767,7 +771,7 @@ An example, from Examples/Fixture:
 
 \subsubsection s3_atMPITest @MPITest
 
-@MPITest is deprecated as @Test now handles this case.
+\ref s3_atMPITest is deprecated as \@Test now handles this case.
 
 This directive indicates an MPI parallel test to the preprocessor,
 which then includes it in an MPI enabled test suite.  The directive
@@ -802,9 +806,9 @@ end subroutine testHaloInterior\endcode
 
 \subsubsection s3_atAssert @Assert
 
-The @Assert directives are expanded into calls to similarly named
+The \@Assert directives are expanded into calls to similarly named
 pFUnit library routines.  The syntax for the directives follows the
-pattern for @assertEqual below.
+pattern for \@assertEqual below.
 
 \code
 @assertEqual(expected,found,'An identifying or explanatory message.')\endcode
@@ -813,7 +817,7 @@ The preprocessor will automatically add information about source
 location (file & line number) to the call emitted to the test suite
 code.  It also adds the check for exceptions.
 
-For more information about @assert directives, please refer to the following.
+For more information about \@assert directives, please refer to the following.
 
 <ul>
    <li>\ref ss_assertEqual</li>
@@ -843,7 +847,7 @@ For more information about @assert directives, please refer to the following.
 
 \subsubsection s3_atParameters @Parameters
 
-The @Parameter directive indicates the declaration of the
+The \@Parameter directive indicates the declaration of the
 parameterized type used to generate the iteration over the multiple
 parameter values.  It also identifies the names of the parameters to
 be iterated over.  The preprocessor extracts type information from the
@@ -981,6 +985,7 @@ neglecting the specification of message and source location information.
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2015-0320 PGI port workarounds, including examples. 3.1. MLR</li>
 <li>2014-1211 Minor updates for 3.0.2. MLR</li>
 <li>2014-1110, 2014-1031 Minor edits. MLR</li>
 <li>2014-0915 Minor updates for 3.0.1. MLR</li>

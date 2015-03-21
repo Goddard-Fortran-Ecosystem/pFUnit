@@ -1,4 +1,26 @@
 !#include "reflection.h"
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_AssertInteger_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 20 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module Test_AssertInteger_mod
    use AssertBasic_mod
    use Assert_mod, only: assertEqual
