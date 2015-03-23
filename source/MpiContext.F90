@@ -21,8 +21,8 @@
 !
 !-------------------------------------------------------------------------------
 module MpiContext_mod
-   use Assert_mod
    use ParallelContext_mod
+   use Exception_mod, only: throw
    implicit none
    private
 
@@ -90,8 +90,7 @@ contains
 
       integer :: ier
       call MPI_Comm_size(this%mpiCommunicator, getNumProcesses, ier)
-!TODO: add msg to asserts
-      call assertEqual(MPI_SUCCESS, ier)! 'failure in MpiContext::numProcesses')
+      if (ier /= MPI_SUCCESS) call throw('failure in MpiContext::numProcesses')
 
    end function getNumProcesses
 
@@ -100,8 +99,7 @@ contains
 
       integer :: ier
       call MPI_Comm_rank(this%mpiCommunicator, processRank, ier)
-!TODO: add msg to asserts
-      call assertEqual(MPI_SUCCESS, ier)!, 'failure in MpiContext::processRank')
+      if (ier /= MPI_SUCCESS) call throw('failure in MpiContext::processRank')
 
    end function processRank
 
@@ -148,11 +146,10 @@ contains
    end function makeSubcontext
 
    subroutine barrier(this)
-      use Assert_mod
       class (MpiContext), intent(in) :: this
       integer :: ier
       call Mpi_barrier(this%mpiCommunicator, ier)
-      call assertEqual(ier, MPI_SUCCESS)
+      if (ier /= MPI_SUCCESS) call throw('failure in MpiContext::barrier')
    end subroutine barrier
 
    integer function getMpiCommunicator(this) result(mpiCommunicator)

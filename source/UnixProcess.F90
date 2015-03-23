@@ -43,7 +43,7 @@ module UnixProcess_mod
    private
 
    public :: UnixProcess
-#ifdef Intel
+#if defined(Intel) || defined(PGI)
    public :: execute_command_line
 #endif
    
@@ -67,11 +67,9 @@ module UnixProcess_mod
 contains
 
    function newProcess(command, runInBackground) result(process)
-!      uze UnixPipeInterfaces_mod, only: getLine
       use UnixPipeInterfaces_mod, only: popen
       use StringConversionUtilities_mod, only: nullTerminate
-!      uze, intrinsic :: iso_c_binding, only: C_PTR
-      use Assert_mod
+      use Exception_mod, only: throw
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
       logical, optional, intent(in) :: runInBackground
@@ -79,19 +77,20 @@ contains
       character(len=:), allocatable :: fullCommand
       character(len=:), allocatable :: mode
 
-!      type (C_PTR) :: fileHandle
-!      type (C_PTR) :: line
-!      integer :: pid
       integer, parameter :: MAX_LEN = 80
       character(len=:), allocatable :: string
-!      integer :: rc
-!      integer :: i
+
+      !print *,'z00000'
 
       fullCommand = makeCommand(command, runInBackground)
       mode = nullTerminate('r')
 
       process%file = popen(fullCommand, mode)
-      call assertTrue(c_associated(process%file))
+      if (.not. c_associated(process%file)) then
+         !print *,'z01000'
+         call throw('Unsuccessful call to popen.')
+         return
+      end if
 
       if (present(runInBackground)) then
          if (runInBackground) then
@@ -131,9 +130,12 @@ contains
       character(len=MAX_LEN) :: command
       integer :: stat, cstat
 
+      !print *,'z02000',this%pid
+      
       if (this%pid >=0) then
          write(command, '("kill -0 ",i0," > /dev/null 2>&1")') this%pid
          call execute_command_line(command, exitStat=stat, cmdStat=cstat)
+         !print *,'z03000',stat
          isActive = (stat == 0)
       else
          isActive = .false.
@@ -168,9 +170,6 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer (kind=C_SIZE_T) :: rc
-!      integer :: i
-
-!!$      line = this%getDelim(new_line('$'))
 
       pBuffer = C_NULL_PTR
       rc = c_getline(pBuffer, length, this%file)
@@ -198,7 +197,6 @@ contains
       character(len=MAX_BUFFER_SIZE), pointer :: buffer
       integer (kind=C_SIZE_T) :: length
       integer (kind=C_SIZE_T) :: rc
-!      integer :: i
 
       integer(kind=C_INT) :: useDelimeter
 
@@ -224,15 +222,22 @@ contains
    end function getPid
 
 
-#ifdef Intel
+#if defined(Intel) || defined(PGI)
    subroutine execute_command_line(command, exitStat, cmdStat)
+#if defined(Intel)
       use ifport
+      implicit none
+#else
+      implicit none
+#include <lib3f.h>
+#endif
       character(len=*), intent(in) :: command
       integer, optional, intent(out) :: exitStat
       integer, optional, intent(out) :: cmdStat
 
       integer :: exitStat_
 
+      !print *,'z04000<'//trim(command)//'>'
       exitStat_ = system(trim(command))
       if (present(exitStat)) exitStat = exitStat_
       if (present(cmdStat)) cmdStat = 0

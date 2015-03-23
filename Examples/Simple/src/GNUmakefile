@@ -13,7 +13,7 @@ ifeq ($(UNAME),Windows)
 	endif
 endif
 
-SUT: add$(OBJ_EXT) addComplex$(OBJ_EXT)
+SUT: add$(OBJ_EXT) addComplex$(OBJ_EXT) node$(OBJ_EXT)
 
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<

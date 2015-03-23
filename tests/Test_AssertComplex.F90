@@ -1,5 +1,28 @@
 !#include "reflection.h"
 
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_AssertComplex_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 20 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
+
 !
 ! Test_AssertComplex_mod
 !    Were tests for AssertReal using TestAssertReal.F90 as a model.
@@ -13,7 +36,7 @@
 module Test_AssertComplex_mod ! note name
 !  use Exception_mod, only: getNumExceptions, anyExceptions
   use TestSuite_mod
-  use Params_mod, only : r32
+  use Params_mod, only : r32, i64, i32
   use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
   use Assert_mod
@@ -171,7 +194,7 @@ contains
     use Params_mod
 !    use Assert_mod, only: assertEqual
 
-    integer :: expected
+    integer(kind=i64) :: expected
     integer, parameter :: good = 42
     complex(kind=r32), parameter :: z_good = good
     complex(kind=r32), dimension(1) :: found
@@ -205,7 +228,7 @@ contains
 !    use Assert_mod, only: assertEqual
 
 
-    integer, dimension(2) :: expected
+    integer(kind=i32), dimension(2) :: expected
     complex(kind=r32), dimension(1) :: found
 
     character(len=:), allocatable :: msg

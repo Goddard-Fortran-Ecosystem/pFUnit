@@ -79,7 +79,7 @@ subroutine testAssociatedWithBroken
 
   x = 0; y = 1; ptr => x
 
-  @assertAssociatedWith(ptr,y,message='<<Intentionally broken.>>')
+  @assertAssociated(ptr,y,message='<<Intentionally broken.>>')
   
 end subroutine testAssociatedWithBroken
 
@@ -87,32 +87,38 @@ end subroutine testAssociatedWithBroken
 @test
 subroutine testAssociated
   use pfunit_mod
+  use node_mod
   implicit none
   real, pointer :: ptr => NULL()
   real, target  :: x
+  type(node) :: node_
+
   x = 0
   ptr => x
+  node_ = node(ptr)
   
   @assertAssociated(ptr)
-  @assertAssociatedWith(ptr,x)
-  
+  @assertAssociated(ptr,x)
+
+  @assertAssociated(node_%getPtr(),x)
+
 end subroutine testAssociated
 
 @test
-subroutine testUnAssociated
+subroutine testNotAssociated
   use pfunit_mod
   implicit none
   real, pointer :: ptr => NULL()
   real, target  :: x, y
   x = 0; y = 1
   
-  @assertUnAssociated(ptr)
+  @assertNotAssociated(ptr)
 
   ptr => y
 
-  @assertUnAssociatedWith(ptr,x)
+  @assertNotAssociated(ptr,x)
   
-end subroutine testUnAssociated
+end subroutine testNotAssociated
 
 
 ! Demonstrate the polymorphism of the call.
@@ -194,4 +200,59 @@ subroutine testEquivalenceWithMessageBroken
   @assertEquivalent(YES,NO,message="<<Intentionally broken. YES.eqv.NO.>>")
 
 end subroutine testEquivalenceWithMessageBroken
+
+@test
+subroutine testWithParens()
+   use node_mod
+   use pfunit_mod
+   implicit none
+
+   type(node) :: node1_, node2_
+   real, target :: x
+   real, pointer :: ptr 
+
+   x = 1
+   ptr => x
+   node1_ = node(ptr)
+   node2_ = node(ptr)
+
+   @assertEqual(node1_%getX(),x)
+   @assertAssociated(node1_%getPtr(),x)
+
+end subroutine testWithParens
+
+@test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testWithParensBroken()
+   use node_mod
+   use pfunit_mod
+   implicit none
+
+   type(node) :: node_
+   real, target :: x, y
+   real, pointer :: ptr 
+
+   x = 1; y = 2
+   ptr => x
+   node_ = node(ptr)
+
+   @assertAssociated(node_%getPtr(),y,message="<<Intentionally broken, yes?>>")
+
+end subroutine testWithParensBroken
+
+@test(ifndef=INCLUDE_INTENTIONALLY_BROKEN)
+subroutine testIfNDef()
+  use pfunit_mod
+  implicit none
+  integer, parameter :: INCLUDE_BROKEN = 1
+  integer, parameter :: NOT_INCLUDE_BROKEN = 0
+  integer :: state
+#ifdef INCLUDE_INTENTIONALLY_BROKEN
+  state = INCLUDE_BROKEN
+#else
+  state = NOT_INCLUDE_BROKEN
+#endif
+  @assertEqual(state,NOT_INCLUDE_BROKEN)
+end subroutine testIfNDef
+
+
 

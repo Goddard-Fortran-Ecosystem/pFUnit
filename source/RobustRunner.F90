@@ -139,7 +139,8 @@ contains
 
       select type (aTest)
       class is (TestSuite)
-#if defined(__INTEL_COMPILER) && (INTEL_13)
+!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
+#if (defined(__INTEL_COMPILER) && (INTEL_13))         
          testCases = aTest%getTestCases()
 #else
          call aTest%getTestCases(testCases)
@@ -151,7 +152,7 @@ contains
       end select
 
 ! mlr q: set up named pipes or units to handle comm between remote processes
-! mlr q: and the root... being done at ukmet?
+      ! mlr q: and the root... being done at ukmet?
       do i = 1, size(testCases)
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
@@ -176,7 +177,6 @@ contains
    subroutine launchRemoteRunner(this, numSkip)
       use UnixProcess_mod
       use Exception_mod
-      use Assert_mod
       class (RobustRunner), intent(inout) :: this
       integer, intent(in) :: numSkip
 
@@ -189,8 +189,11 @@ contains
       type (UnixProcess) :: timerProcess
       character(len=:), allocatable :: line
 
+      
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' -skip ' // suffix
+
+
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
 
       ! Check for successful launch - prevents MPI launch time from counting against
@@ -212,10 +215,14 @@ contains
                cycle ! might just not be ready yet
             end if
          else
-            call assertEqual('*LAUNCHED*', line)
-            ! successfully launched
-            call timerProcess%terminate()
-            exit
+            if ('*LAUNCHED*' /= line) then
+               call throw('Failure to launch in RobustRunner.')
+               return
+            else
+               ! successfully launched
+               call timerProcess%terminate()
+               exit
+            end if
          end if
       end do
 

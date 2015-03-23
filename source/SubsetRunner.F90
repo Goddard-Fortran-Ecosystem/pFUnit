@@ -101,9 +101,13 @@ contains
 
       integer :: i
 
+      !print *,'a00000'
+      
       select type (aTest)
       class is (TestSuite)
-#if defined(__INTEL_COMPILER) && (INTEL_13)
+!!!if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
+#if (defined(__INTEL_COMPILER) && (INTEL_13))
+         !print *,'a10000'
          testCaseList = aTest%getTestCases()
 #else
          call aTest%getTestCases(testCaseList)

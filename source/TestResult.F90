@@ -158,7 +158,10 @@ contains
 !      integer :: i, n
       integer :: n
       type (TestFailure), allocatable :: tmp(:)
-      type (Exception) :: noExceptions(0)
+      type (Exception), allocatable :: noExceptions(:)
+!      type (Exception) :: noExceptions(0)
+      
+      allocate(noExceptions(0))
 
       n = this%numSuccesses
       allocate(tmp(n))
@@ -184,12 +187,17 @@ contains
    end function errorCount
 
    subroutine startTest(this, aTest)
+     use StringConversionUtilities_mod, only : toString
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
       integer :: i
 
+
       this%numRun = this%numRun + 1
+
+      !print *,'1000 starting: '//toString(this%numRun)//' '//trim(aTest%getName())
+
       do i = 1, size(this%listeners)
          call this%listeners(i)%pListener%startTest(aTest%getName())
       end do

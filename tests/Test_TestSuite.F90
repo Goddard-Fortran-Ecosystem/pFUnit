@@ -1,4 +1,26 @@
 !#include "reflection.h"
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_TestSuite_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 21 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module Test_TestSuite_mod
    use TestSuite_mod, only: newTestSuite, TestSuite
    use TestResult_mod
@@ -87,6 +109,7 @@ contains
 
       type (SimpleTestCase) :: aTest
 
+      call aTest%setName('aTest')
       innerSuite = newTestSuite('inner')
       outerSuite = newTestSuite('outer')
       call innerSuite%addTest(aTest)
@@ -95,7 +118,6 @@ contains
       call assertEqual(1, innerSuite%countTestCases())
 
    end subroutine testCountTestCasesNestedB
-
 
    !
    ! Complex Suite nested structure:
@@ -116,6 +138,7 @@ contains
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
+      call aTest%setName('aTest')
       topSuite = newTestSuite('top')
       suiteA = newTestSuite('A')
       suiteB = newTestSuite('B')
@@ -166,12 +189,11 @@ contains
       aResult%TestResult = newTestResult()
       aResult%log = ''
 
-#if defined(__INTEL_COMPILER) && (INTEL_13)
+#if (defined(__INTEL_COMPILER) && (INTEL_13))
       testCases = top%getTestCases()
 #else
       call top%getTestCases(testCases)
 #endif
-
       do i = 1, size(testCases)
          call testCases(i)%test%run(aResult, newSerialContext())
       end do

@@ -1,4 +1,26 @@
 !#include "reflection.h"
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_RobustRunner_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 21 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module Test_RobustRunner_mod
    use Test_mod
    use RobustRunner_mod
@@ -51,8 +73,8 @@ contains
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
       call assertEqual(5, result%runCount(),'runCount()')
-      call assertEqual(2, result%failureCount(), 'failureCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')
+      call assertEqual(2, result%failureCount(), 'failureCount()')
 
       close(unit)
 

@@ -1,4 +1,27 @@
 !#include "reflection.h"
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: Test_AssertReal_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 20 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
+
 
 !
 ! Test_AssertReal_mod
@@ -13,7 +36,7 @@
 
 module Test_AssertReal_mod ! note name
   use TestSuite_mod
-  use Params_mod, only : r32
+  use Params_mod, only : r32, i64
   use StringConversionUtilities_mod, only: toString, appendWithSpace
   use AssertBasic_mod
   use Assert_mod, only: assertEqual
@@ -162,7 +185,8 @@ contains
     use Params_mod
 !    use Assert_mod, only: assertEqual
 
-    integer :: expected
+!    integer :: expected
+    integer(kind=i64) :: expected
     real(kind=r32), dimension(1) :: found
 
     character(len=:), allocatable :: msg

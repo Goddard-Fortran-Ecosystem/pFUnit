@@ -1,4 +1,26 @@
 !#include "reflection.h"
+!-------------------------------------------------------------------------------
+! NASA/GSFC, Advanced Software Technology Group
+!-------------------------------------------------------------------------------
+!  MODULE: robustTestSuite_mod
+!
+!> @brief
+!! <BriefDescription>
+!!
+!! @author
+!! Tom Clune,  NASA/GSFC
+!!
+!! @date
+!! 21 Mar 2015
+!! 
+!! @note <A note here.>
+!! <Or starting here...>
+!
+! REVISION HISTORY:
+!
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+!
+!-------------------------------------------------------------------------------
 module robustTestSuite_mod
    use pFUnit_mod
    implicit none
@@ -35,7 +57,7 @@ contains
    end function suite
 
    subroutine testRunSucceeds()
-      ! do nothing
+     ! do nothing
    end subroutine testRunSucceeds
 
    subroutine testRunMultipleExceptions()

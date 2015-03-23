@@ -53,6 +53,7 @@ ENDIF()
 
 OPTION(MPI "Use MPI for parallel runs" NO)
 OPTION(FIND_MPI "Attempt to automatically find MPI information" YES)
+OPTION(MPI_USE_MPIEXEC "Use CMake's FindMPI to find mpiexec" NO)
 OPTION(OPENMP "Use OPENMP for parallel runs" NO)
 
 # The following sets robust to "ON".
@@ -122,9 +123,15 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
     add_definitions(-DIBM)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -WF,-qfpp -C")
 
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI)
+
+    # Use PGI.
+    add_definitions(-DPGI)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -traceback -Mallocatable=03 -Mbounds -Mchkfpstk -Mchkstk")
+
 else()
 
-    message( FATAL_ERROR "Unrecognized compiler. Please use ifort, gfortran, gfortran-mp-4.8 or nagfor" )
+    message( FATAL_ERROR "Unrecognized compiler. Please use ifort, gfortran, gfortran-mp-4.8, PGI, or nagfor" )
 
 endif()
 

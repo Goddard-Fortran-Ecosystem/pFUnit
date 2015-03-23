@@ -29,14 +29,16 @@
 INCLUDE (${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 
 SET (OpenMP_Fortran_FLAG_CANDIDATES
-     #Microsoft Visual Studio
-     "/openmp"
-     #Intel windows
-     "/Qopenmp" 
+     #Portland Group
+     "-mp"
      #Intel
      "-openmp" 
      #Gnu
      "-fopenmp"
+     #Microsoft Visual Studio
+     "/openmp"
+     #Intel windows
+     "/Qopenmp" 
      #Empty, if compiler automatically accepts openmp
      " "
      #Sun
@@ -45,8 +47,6 @@ SET (OpenMP_Fortran_FLAG_CANDIDATES
      "+Oopenmp"
      #IBM XL C/c++
      "-qsmp=omp"
-     #Portland Group
-     "-mp"
 )
 
 IF (DEFINED OpenMP_Fortran_FLAGS)

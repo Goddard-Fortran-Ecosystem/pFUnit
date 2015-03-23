@@ -21,7 +21,6 @@
 !
 !-------------------------------------------------------------------------------
 module MockCall_mod
-   use Assert_mod
    use Exception_mod
    implicit none
    private
