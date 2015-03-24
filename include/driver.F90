@@ -143,6 +143,17 @@ program main
       call initialize(useMPI=.true.)
    end if
 
+!-------------------------------------------------------------------------
+! Some users may have 1-time only non-reentrant libraries that must
+! be initialized prior to executing their tests.  The motivating example
+! here is the Earth System Modeling Framework.  Rather than customize
+! this driver to each case as it arises, we are leaving it to users
+! to write a single init routine that is invoked here.
+!-------------------------------------------------------------------------
+#ifdef PFUNIT_EXTRA_INITIALIZE
+   call PFUNIT_EXTRA_INITIALIZE()
+#endif
+
 #ifdef USE_MPI
       useMpi = .true.
 #else
@@ -185,6 +196,10 @@ program main
          close(xmlFileUnit)
       end if
    end if
+
+#ifdef PFUNIT_EXTRA_FINALIZE
+   call PFUNIT_EXTRA_FINALIZE()
+#endif
 
    call finalize(result%wasSuccessful())
 
