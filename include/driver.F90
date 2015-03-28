@@ -221,11 +221,19 @@ contains
    end subroutine getContext
 
    function getTestSuites() result(suite)
+#define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
+#define ADD_TEST_SUITE(s) ! do nothing
+#include "testSuites.inc"
+#undef ADD_MODULE_TEST_SUITE
+#undef ADD_TEST_SUITE
+
       type (TestSuite) :: suite
 
+#define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
 #define ADD_TEST_SUITE(s) type (TestSuite), external :: s
 #include "testSuites.inc"
 #undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
 
       suite = newTestSuite()
 
@@ -233,11 +241,14 @@ contains
 #ifdef PGI
 ! Work around PGI compiler internal compiler error
 #define ADD_TEST_SUITE(s) suite2=s();call suite%addTest(suite2)
+#define ADD_MODULE_TEST_SUITE(s) suite2=s();call suite%addTest(suite2)
 #else
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
+#define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
 #endif
 #include "testSuites.inc"
 #undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
 
    end function getTestSuites
 
