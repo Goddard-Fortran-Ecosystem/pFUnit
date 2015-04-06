@@ -102,7 +102,7 @@ contains
       ! Validate the file against the de facto JUnit xsd.
       ! If xmlint not found, just move on quietly.
       command = 'xmllint --version > /dev/null 2>&1'
-#ifdef NAG
+#if defined(NAG) || defined(IBM)
       ! Fortran 2008 compliant version.
       call execute_command_line(command,exitstat=stat)
 #else
@@ -111,7 +111,7 @@ contains
       if (stat == 0) then
          command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
               // ' ' // trim(fileName) // ' 2> ' // outFile
-#ifdef NAG
+#if defined(NAG) || defined(IBM)
          ! Fortran 2008 compliant version.
          call execute_command_line(command,exitstat=stat)
 #else
