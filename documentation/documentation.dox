@@ -168,9 +168,14 @@ also set the following.
 `MPIRUN`\code
 $ export MPIRUN=/some.path/mpirun\endcode
 
-`PFUNIT_MAX_RANK` - controls the maximum size of the arrays asserts are
-defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's assertions will be able to handle arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_RANK and MAX_RANK do not refer to MPI ranks (process id within a group). Example:\code
-$ export PFUNIT_MAX_RANK=5\endcode 
+PFUNIT_MAX_ARRAY_RANK
+
+`PFUNIT_MAX_ARRAY_RANK` - controls the maximum size of the arrays asserts are
+defined over.  If PFUNIT_MAX_ARRAY_RANK is not set, the default is 5 and pFUnit's assertions will be able to handle arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_ARRAY_RANK and MAX_RANK do not refer to MPI ranks (process id within a group). Example:\code
+$ export PFUNIT_MAX_ARRAY_RANK=5\endcode
+
+`PFUNIT_MAX_RANK` is a deprecated way to set maximum rank and is to be removed in version 4.
+
 
 `DOXYGEN` - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase

@@ -139,13 +139,16 @@ MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
 
-PFUNIT_MAX_RANK - controls the maximum number of (Fortran) dimensions
-of the arrays asserts are defined over.  If PFUNIT_MAX_RANK is not
+PFUNIT_MAX_ARRAY_RANK - controls the maximum number of (Fortran) dimensions
+of the arrays asserts are defined over.  If PFUNIT_MAX_ARRAY_RANK is not
 set, the default is 5 and pFUnit's assertions will be able to handle
-arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_RANK and MAX_RANK
+arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_ARRAY_RANK and MAX_RANK
 do not refer to MPI ranks (process id within a group). Example:
 
-$ export PFUNIT_MAX_RANK=8
+$ export PFUNIT_MAX_ARRAY_RANK=8
+
+PFUNIT_MAX_RANK is a deprecated way to set maximum rank and is to be removed
+in version 4.
 
 DOXYGEN - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
@@ -503,7 +506,7 @@ TBD
 
 14. REVISIONS TO THIS DOCUMENT
 
-2015-0420 Clarified PFUNIT_MAX_RANK note. MLR
+2015-0420 Clarified PFUNIT_MAX_ARRAY_RANK note. MLR
 2015-0320 PGI port workarounds, including examples. 3.1. MLR
 2014-1211 Minor updates for 3.0.2. MLR
 2014-1110, 2014-1031 Minor edits. MLR
