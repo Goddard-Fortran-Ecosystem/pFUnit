@@ -1,7 +1,7 @@
 
 PFUNIT VERSION 3.1 INSTALLATION AND BASIC USAGE GUIDE
 
-VERSION 2015-0320 M. Rilee mike@rilee.net
+VERSION 2015-0420 M. Rilee mike@rilee.net
 
 TABLE OF CONTENTS
 
@@ -139,9 +139,11 @@ MPIRUN
 $ # e.g.
 $ export MPIRUN=/some.path/mpirun
 
-PFUNIT_MAX_RANK - controls the maximum size of the arrays asserts are
-defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
-assertions will be able to handle arrays up to rank 5.
+PFUNIT_MAX_RANK - controls the maximum number of (Fortran) dimensions
+of the arrays asserts are defined over.  If PFUNIT_MAX_RANK is not
+set, the default is 5 and pFUnit's assertions will be able to handle
+arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_RANK and MAX_RANK
+do not refer to MPI ranks (process id within a group). Example:
 
 $ export PFUNIT_MAX_RANK=8
 
@@ -394,6 +396,8 @@ the PFUNIT preprocessor.
 -h                              Print help message.
 -o <outputfile>                 Direct pFUnit messages to a file.
 -robust                         Use the robust runner. Runs tests as processes so failures do not halt testing.
+-max-timeout-duration <duration> Limit detection time for robust runner.
+-max-launch-duration  <duration> Limit detection time for robust runner.
 -skip <number of tests to skip> Use the subset runner, which runs a subset of the tests in a suite.
 
 An example from Examples/Robust:
@@ -499,6 +503,7 @@ TBD
 
 14. REVISIONS TO THIS DOCUMENT
 
+2015-0420 Clarified PFUNIT_MAX_RANK note. MLR
 2015-0320 PGI port workarounds, including examples. 3.1. MLR
 2014-1211 Minor updates for 3.0.2. MLR
 2014-1110, 2014-1031 Minor edits. MLR

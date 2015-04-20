@@ -20,6 +20,11 @@ end subroutine testStops
 ! as a runtime error.
 ! Currently time limit is 100 ms, but that is expected to be configurable
 ! in the near future.
+!
+! Once can now set time limits on startup and execution via command line
+! arguments to the executable.
+!  -max-timeout-duration <real>
+!  -max-launch-duration  <real>
 !---------
 @test(ifdef=INCLUDE_INTENTIONALLY_BROKEN)
 subroutine testAddHangs()

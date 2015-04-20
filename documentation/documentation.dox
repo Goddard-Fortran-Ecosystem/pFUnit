@@ -169,8 +169,7 @@ also set the following.
 $ export MPIRUN=/some.path/mpirun\endcode
 
 `PFUNIT_MAX_RANK` - controls the maximum size of the arrays asserts are
-defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
-assertions will be able to handle arrays up to rank 5.\code
+defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's assertions will be able to handle arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_RANK and MAX_RANK do not refer to MPI ranks (process id within a group). Example:\code
 $ export PFUNIT_MAX_RANK=5\endcode 
 
 `DOXYGEN` - To generate documentation, set DOXYGEN to the desired
@@ -438,6 +437,8 @@ the PFUNIT preprocessor.
 <tr><td>-h            </td><td>Print help message.</td></tr>
 <tr><td>-o \<outputfile\> </td><td>Direct pFUnit messages to a file.
 <tr><td>-robust       </td><td>Use the robust runner. Runs tests as processes so failures do not halt testing.</td></tr>
+<tr><td>-max-timeout-duration <duration> Limit detection time for robust runner.</td></tr>
+<tr><td>-max-launch-duration  <duration> Limit detection time for robust runner.</td></tr>
 <tr><td>-skip \<number of tests to skip\></td><td>Use the subset runner, which runs a subset of the tests in a suite.</td></tr>
 </table>
 
