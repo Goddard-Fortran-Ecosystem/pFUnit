@@ -61,7 +61,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-- Fortran 2003+ (Tested with Intel 13.1+, NAG 6.0, GCC 4.8.3, 4.9.+, IBM's XLF, PGI 15.1)
+- Fortran 2003+ (Tested with Intel 14+, NAG 6.0, GCC 4.9.+, IBM's XLF, PGI 15.4)
 - The Message Passing Interface (MPI)
 - OpenMP
 - GNU Make
@@ -991,6 +991,7 @@ neglecting the specification of message and source location information.
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2015-0508 Some PGI workarounds removed for PGI 15.4. MLR</li>
 <li>2015-0320 PGI port workarounds, including examples. 3.1. MLR</li>
 <li>2014-1211 Minor updates for 3.0.2. MLR</li>
 <li>2014-1110, 2014-1031 Minor edits. MLR</li>

@@ -76,12 +76,12 @@ contains
    end function newTestSuite_named
 
    recursive subroutine copy(this, b)
-#ifndef PGI
+!xxx #ifndef PGI
       class (TestSuite), intent(out) :: this
-#else
-      ! Needed for PGI work around in include/driver.f90.
-      class (TestSuite), intent(inout) :: this
-#endif
+!xxx #else
+!xxx       ! Needed for PGI work around in include/driver.f90.
+!xxx       class (TestSuite), intent(inout) :: this
+!xxx #endif
       type (TestSuite), intent(in) :: b
 
       integer :: i, n
