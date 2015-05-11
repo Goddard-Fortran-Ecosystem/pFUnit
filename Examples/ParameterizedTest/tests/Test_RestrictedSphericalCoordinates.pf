@@ -63,7 +63,6 @@ contains
       type (LatLonCase), allocatable :: params(:)
 
 !                              lat    lon     lat'   lon'
-!xxx #ifndef PGI
       params = [ &
            & LatLonCase(    0.,    0.,     0.,     0.), &
            & LatLonCase(   89.,    0.,    89.,     0.), &
@@ -74,43 +73,6 @@ contains
            & LatLonCase(  269.,    5.,   -89.,   185.), &
            & LatLonCase(  271.,    5.,   -89.,     5.) &
            & ]
-!xxx #else
-!xxx !Work around PGI struct constructor bug w/ parent containing no data components 
-!xxx         allocate(params(8))
-!xxx         params(1)%lat = 0.
-!xxx         params(2)%lat = 89.
-!xxx         params(3)%lat = -89.
-!xxx         params(4)%lat = 0.
-!xxx         params(5)%lat = 91.
-!xxx         params(6)%lat = -91.
-!xxx         params(7)%lat = 269.
-!xxx         params(8)%lat = 271.
-!xxx         params(1)%lon = 0.
-!xxx         params(2)%lon = 0.
-!xxx         params(3)%lon = 0.
-!xxx         params(4)%lon = 360.
-!xxx         params(5)%lon = 0.
-!xxx         params(6)%lon = 0.
-!xxx         params(7)%lon = 5.
-!xxx         params(8)%lon = 5.
-!xxx         params(1)%restrictedLat = 0
-!xxx         params(2)%restrictedLat = 89.
-!xxx         params(3)%restrictedLat = -89.
-!xxx         params(4)%restrictedLat = 0.
-!xxx         params(5)%restrictedLat = 89.
-!xxx         params(6)%restrictedLat = -89.
-!xxx         params(7)%restrictedLat = -89.
-!xxx         params(8)%restrictedLat = -89.
-!xxx         params(1)%restrictedLon = 0.
-!xxx         params(2)%restrictedLon = 0.
-!xxx         params(3)%restrictedLon = 0.
-!xxx         params(4)%restrictedLon = 0.
-!xxx         params(5)%restrictedLon = 180.
-!xxx         params(6)%restrictedLon = 180.
-!xxx         params(7)%restrictedLon = 185.
-!xxx         params(8)%restrictedLon = 5.
-!xxx #endif
-
 
    end function getParameters
 !-------------------

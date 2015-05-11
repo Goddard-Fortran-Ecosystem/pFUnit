@@ -5,9 +5,6 @@ program main
 #ifdef USE_MPI
    include 'mpif.h'
 #endif
-!xxx #ifdef PGI
-!xxx    type(TestSuite) :: suite2
-!xxx #endif
    type (TestSuite) :: all
    class(BaseTestRunner), allocatable :: runner
 
@@ -278,14 +275,8 @@ contains
       suite = newTestSuite()
 
    ! accumulate tests in top suite
-!xxx #ifdef PGI
-!xxx ! Work around PGI compiler internal compiler error
-!xxx #define ADD_TEST_SUITE(s) suite2=s();call suite%addTest(suite2)
-!xxx #define ADD_MODULE_TEST_SUITE(s) suite2=s();call suite%addTest(suite2)
-!xxx #else
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
 #define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
-!xxx #endif
 #include "testSuites.inc"
 #undef ADD_TEST_SUITE
 #undef ADD_MODULE_TEST_SUITE
