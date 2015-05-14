@@ -42,9 +42,10 @@ module ResultPrinter_mod
       procedure :: printHeader
       procedure :: printFailures
       procedure :: printFooter
+      procedure :: incrementColumn
    end type ResultPrinter
 
-   integer, parameter :: MAX_COLUMN = 40
+   integer, parameter :: MAX_COLUMN = 80
    logical, parameter :: DEBUG = .false.
 !!$   logical, parameter :: DEBUG = .true.
 
@@ -66,11 +67,7 @@ contains
      type (Exception), intent(in) :: exceptions(:)
 
      write(this%unit,'("F")', advance='no')
-     this%column = this%column + 1
-     if (this%column >= MAX_COLUMN) then
-        write(this%unit,*) ! newline
-        this%column = 0
-     end if
+     call this%incrementColumn()
 
   end subroutine addFailure
 
@@ -81,11 +78,7 @@ contains
      type (Exception), intent(in) :: exceptions(:)
 
      write(this%unit,'("E")', advance='no')
-     this%column = this%column + 1
-     if (this%column >= MAX_COLUMN) then
-        write(this%unit,*) ! newline
-        this%column = 0
-     end if
+     call this%incrementColumn()
 
   end subroutine addError
 
@@ -94,6 +87,7 @@ contains
      character(len=*), intent(in) :: testName
 
      write(this%unit,'(".")', advance='no')
+     call this%incrementColumn()
 
      if (DEBUG) then
         write(this%unit,*)trim(testName)
@@ -193,5 +187,17 @@ contains
       end if
 
    end subroutine printFooter
+
+     subroutine incrementColumn(this)
+        class (ResultPrinter), intent(inout) :: this
+
+        this%column = this%column + 1
+
+        if (this%column >= MAX_COLUMN) then
+           write(this%unit,*) ! newline
+           this%column = 0
+        end if
+
+     end subroutine incrementColumn
 
 end module ResultPrinter_mod
