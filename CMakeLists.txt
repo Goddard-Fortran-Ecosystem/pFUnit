@@ -5,8 +5,9 @@
 # Command line options:
 #     MPI=YES                                 ! defaults to NO
 #     INSTALL_PATH=<path>                     ! defaults to ${PFUNIT}
-#     MAX_RANK=<max rank for generated code>  ! defaults to 5 or
-#                                             !   ${PFUNIT_MAX_RANK}
+#     MAX_RANK=<max array rank for generated code>
+#                                             ! defaults to 5 or
+#                                             !   ${PFUNIT_MAX_ARRAY_RANK}
 # 
 # Usage:
 #   cmake -DMPI=YES -DINSTALL_PATH=<A path> <path to source>
@@ -41,10 +42,14 @@ IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
 ENDIF()
 MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
 
-OPTION(MAX_RANK "Maximum rank for generated code." NO)
+OPTION(MAX_RANK "Maximum array rank for generated code." NO)
 IF(NOT MAX_RANK)
+   # Remove PFUNIT_MAX_RANK in version 4.
    IF(DEFINED ENV{PFUNIT_MAX_RANK})
       SET (MAX_RANK "$ENV{PFUNIT_MAX_RANK}")
+   # Promote following to primary in version 4.
+   ELSEIF(DEFINED ENV{PFUNIT_MAX_ARRAY_RANK})
+      SET (MAX_RANK "$ENV{PFUNIT_MAX_ARRAY_RANK}")
    ELSE()
       SET (MAX_RANK 5)
    ENDIF()

@@ -61,7 +61,7 @@ linux-based systems.  A preliminary Windows/CYGWIN port has been
 contributed by a user. Full use of the system depends on the following
 being available.
 
-- Fortran 2003+ (Tested with Intel 13.1+, NAG 6.0, GCC 4.8.3, 4.9.+, IBM's XLF, PGI 15.1)
+- Fortran 2003+ (Tested with Intel 14+, NAG 6.0, GCC 4.9.+, IBM's XLF, PGI 15.4)
 - The Message Passing Interface (MPI)
 - OpenMP
 - GNU Make
@@ -168,10 +168,14 @@ also set the following.
 `MPIRUN`\code
 $ export MPIRUN=/some.path/mpirun\endcode
 
-`PFUNIT_MAX_RANK` - controls the maximum size of the arrays asserts are
-defined over.  If PFUNIT_MAX_RANK is not set, the default is 5 and pFUnit's
-assertions will be able to handle arrays up to rank 5.\code
-$ export PFUNIT_MAX_RANK=5\endcode 
+PFUNIT_MAX_ARRAY_RANK
+
+`PFUNIT_MAX_ARRAY_RANK` - controls the maximum size of the arrays asserts are
+defined over.  If PFUNIT_MAX_ARRAY_RANK is not set, the default is 5 and pFUnit's assertions will be able to handle arrays up to rank 5, i.e. A(:,:,:,:,:).  PFUNIT_MAX_ARRAY_RANK and MAX_RANK do not refer to MPI ranks (process id within a group). Example:\code
+$ export PFUNIT_MAX_ARRAY_RANK=5\endcode
+
+`PFUNIT_MAX_RANK` is a deprecated way to set maximum rank and is to be removed in version 4.
+
 
 `DOXYGEN` - To generate documentation, set DOXYGEN to the desired
 executable.  NOTE: Doxygen Version 1.8.5 does not respect CamelCase
@@ -438,6 +442,8 @@ the PFUNIT preprocessor.
 <tr><td>-h            </td><td>Print help message.</td></tr>
 <tr><td>-o \<outputfile\> </td><td>Direct pFUnit messages to a file.
 <tr><td>-robust       </td><td>Use the robust runner. Runs tests as processes so failures do not halt testing.</td></tr>
+<tr><td>-max-timeout-duration <duration> Limit detection time for robust runner.</td></tr>
+<tr><td>-max-launch-duration  <duration> Limit detection time for robust runner.</td></tr>
 <tr><td>-skip \<number of tests to skip\></td><td>Use the subset runner, which runs a subset of the tests in a suite.</td></tr>
 </table>
 
@@ -985,6 +991,7 @@ neglecting the specification of message and source location information.
 \page page_RevisionNotes Revision Notes
 
 <ul>
+<li>2015-0508 Some PGI workarounds removed for PGI 15.4. MLR</li>
 <li>2015-0320 PGI port workarounds, including examples. 3.1. MLR</li>
 <li>2014-1211 Minor updates for 3.0.2. MLR</li>
 <li>2014-1110, 2014-1031 Minor edits. MLR</li>

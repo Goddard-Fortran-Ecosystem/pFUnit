@@ -1,5 +1,8 @@
 Note: Should add info for earlier releases.
 
+	May 8, 2015
+	- PGI 15.4 enabled some workarounds to be removed.
+
 3.1	March 20, 2015
 	- PGI 15.1 now supported.
 	- Asserts over integer arrays now supported. INT32 and INT64 support added.
