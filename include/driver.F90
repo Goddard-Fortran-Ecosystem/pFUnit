@@ -16,8 +16,8 @@ program main
    character(len=:), allocatable :: maxLaunchDuration_
    integer :: length
 
-   real, allocatable :: maxTimeoutDuration
-   real, allocatable :: maxLaunchDuration
+   real :: maxTimeoutDuration
+   real :: maxLaunchDuration
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
