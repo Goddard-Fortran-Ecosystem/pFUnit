@@ -98,6 +98,7 @@ module AssertBasic_mod
 
    interface assertEqual
       module procedure assertEqualString_
+      module procedure assertEqualLogical_
    end interface
 
    interface assertExceptionRaised
@@ -244,6 +245,29 @@ contains
       call assertTrue(.not. condition, message, location)
    end subroutine assertFalse_1d_
 
+   subroutine assertEqualLogical_(expected, found, message, location)
+      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      logical, intent(in) :: expected
+      logical, intent(in) :: found
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      if (expected .neqv. found) then
+         write(throwMessage,'((a,a),2(a,a,a,a))') &
+              & 'Logical assertion failed:', new_line('A'), &
+              & '    expected: <"', expected, '">', new_line('A'), &
+              & '   but found: <"', found, '">', new_line('A')
+
+         message_ = NULL_MESSAGE
+         if (present(message)) message_ = message
+
+         call throw(appendWithSpace(message_,throwMessage), location)
+      end if
+      
+   end subroutine assertEqualLogical_
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
