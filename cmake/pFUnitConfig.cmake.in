@@ -1,0 +1,141 @@
+# Config file for the pFUnit package
+# It defines the following variables
+#    PFUNIT_INCLUDE_DIRS - Include directories for pFUnit
+#    PFUNIT_TARGETS      - libraries to link against
+#    PFUNIT_PARSER       - Command for executing the pFUnit parsers for parsing .pf-files
+#    PFUNIT_DRIVER       - The pFUnit driver needed for running tests
+#    add_pfuint_test     - Helper function for defining test suites with .pf-files
+get_filename_component(PFUNIT_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+find_package (PythonInterp
+    REQUIRED
+    )
+
+set (PFUNIT_INCLUDE_DIRS ${PFUNIT_CMAKE_DIR}/mod)
+set (PFUNIT_LINK_DIRS ${PFUNIT_CMAKE_DIR}/lib)
+set (PFUNIT_TARGETS "${PFUNIT_CMAKE_DIR}/lib/pfunit.lib")
+set (PFUNIT_PARSER "${PYTHON_EXECUTABLE}" "${PFUNIT_CMAKE_DIR}/bin/pFUnitParser.py")
+set (PFUNIT_DRIVER "${PFUNIT_CMAKE_DIR}/include/driver.F90")
+
+
+# Function     : add_pfunit_test 
+#
+# Description  : Helper function for compiling and adding pFUnit tests to the CTest testing framework. Any libraries needed
+#                in testing should be linked to manually.
+#                IMPORTANT! This function will only work if the test source filename is the same as the module inside it!
+#                For example, the file testSomething.pf should contain the module testSomething.
+#
+# Arguments    : - test_suite_name: Name of the test suite
+#                - test_sources   : List of pf-files to be compiled
+#                - extra_sources  : List of extra Fortran source code used for testing (if none, input empty string "")
+#                - extra_sources  : List of extra C/C++ source code used for testing (if none, input empty string "")
+#
+# Example usage: enable_testing()
+#                set (TEST_SOURCES
+#                   testMyLib.pf
+#                    )
+#                add_pfunit_test (myTestSuite "${TEST_SOURCES} "" "")
+#                target_link_libraries (myTestSuite myLibrary) #Assuming "myLibrary" is already defined
+#                
+#                Compile the test suite:   make myTestSuite
+#                Run the tests with CTest: ctest -R myTestSuite --verbose
+function (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
+
+    set (SRCGEN_DIR "src_gen")
+    set (TEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/${test_suite_name})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR}/${SRCGEN_DIR})
+
+    set (TEST_SUITES_INC "")
+    foreach (file ${test_sources})
+        get_filename_component (basename ${file} NAME_WE)
+        set (fsrc "${TEST_DIR}/${SRCGEN_DIR}/${basename}.F90")
+        list (APPEND test_sources_f90 ${fsrc})
+        set (TEST_SUITES_INC "${TEST_SUITES_INC}ADD_TEST_SUITE(${basename}_suite)\n")
+    endforeach()
+
+    file (WRITE ${TEST_DIR}/testSuites.inc ${TEST_SUITES_INC})
+
+    list (LENGTH test_sources len)
+    math(EXPR n "${len} - 1")
+    foreach (i RANGE ${n})
+        list (GET test_sources ${i} pf_file)
+        list (GET test_sources_f90 ${i} f90_file)
+        add_custom_command(
+            OUTPUT ${f90_file}
+            COMMAND ${PFUNIT_PARSER} ${CMAKE_CURRENT_SOURCE_DIR}/${pf_file} ${f90_file}
+            MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${pf_file}
+            #COMMENT "Generating '${f90_file}' from '${CMAKE_CURRENT_SOURCE_DIR}/${pf_file}'"
+            )
+    endforeach()
+
+    add_executable (${test_suite_name} ${test_sources_f90} ${extra_sources} ${PFUNIT_DRIVER})
+
+    if (NOT extra_sources_c STREQUAL "")
+        add_library (${test_suite_name}_c STATIC ${extra_sources_c})
+        target_link_libraries (${test_suite_name} ${test_suite_name}_c)
+    endif ()
+
+    target_link_libraries (${test_suite_name} ${PFUNIT_TARGETS})
+    target_include_directories (${test_suite_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
+    target_include_directories (${test_suite_name} PRIVATE ${TEST_DIR})
+
+    if(WIN32)
+        set_property(TARGET ${test_suite_name}
+            PROPERTY LINK_FLAGS " /INCREMENTAL:NO ")
+    endif (WIN32)
+
+
+    add_test (NAME ${test_suite_name}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${test_suite_name} --verbose
+        )
+
+endfunction (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
+
+macro (set_default_pfunit_test_compile_flags)
+    # Fortran compiler
+    if (${CMAKE_Fortran_COMPILER_ID} MATCHES "PGI")
+        set (CMAKE_Fortran_FLAGS " -tp k8-32 -Msave -Mpreprocess -Mlfs -pgcpplibs ")
+        set (CMAKE_Fortran_FLAGS_RELEASE " ")
+        set (CMAKE_Fortran_FLAGS_DEBUG " -g -Ktrap=fp ")
+    elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "GNU")
+        # TODO!
+        set (CMAKE_Fortran_FLAGS " -Wall -Wextra -pedantic -std=f2008")
+        set (CMAKE_Fortran_FLAGS_RELEASE " -O2 ")
+        set (CMAKE_Fortran_FLAGS_DEBUG " -Og -g -pg -fcheck=all ")
+    elseif (${CMAKE_Fortran_COMPILER_ID} MATCHES "Intel")
+        if (WIN32)
+            set (CMAKE_Fortran_FLAGS
+                " -nologo -threads -libs=dll -fpp -fp:source -traceback -warn:interface -warn:declarations -warn:unused ")
+            set (CMAKE_Fortran_FLAGS_RELEASE " -O2 ")
+            set (CMAKE_Fortran_FLAGS_DEBUG
+                " -debug:full -Od -check:bounds ")
+        else (WIN32)
+            set (CMAKE_Fortran_FLAGS
+                " -nologo -threads -save -zero -fpp -fp-model source -warn interface -warn declarations -warn unused ")
+            set (CMAKE_Fortran_FLAGS_RELEASE
+                " -O2 -ipo -W1 ")
+            set (CMAKE_Fortran_FLAGS_DEBUG
+                " -g -debug full -O0 -traceback -check bounds ")
+        endif (WIN32)
+    endif ()
+
+    # C/C++ compiler. Here, these are assumed to be from the same vendor.
+    if (${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
+        set (CMAKE_C_FLAGS " -nologo ")
+        set (CMAKE_C_FLAGS_RELEASE " -MT -O1 ")
+        set (CMAKE_C_FLAGS_DEBUG " -MTd -O0 -debug ")
+        set (CMAKE_CXX_FLAGS " ")
+    elseif (${CMAKE_C_COMPILER_ID} MATCHES "PGI")
+        set (CMAKE_C_FLAGS " -tp k8-32 -g -Minform=warn ")
+        set (CMAKE_CXX_FLAGS " -tp k8-32 -g -Minform=warn ")
+    elseif (${CMAKE_C_COMPILER_ID} MATCHES "Intel")
+        set (CMAKE_C_FLAGS_RELEASE " -O0 ")
+        set (CMAKE_CXX_FLAGS_RELEASE " -O0 ")
+        set (CMAKE_C_FLAGS_DEBUG " -g -pg -O0 ")
+        set (CMAKE_CXX_FLAGS_DEBUG " -g -pg -O0 ")
+    elseif (${CMAKE_C_COMPILER_ID} MATCHES "GNU")
+        set (CMAKE_C_FLAGS_DEBUG " -g -pg -Og ")
+        set (CMAKE_CXX_FLAGS_DEBUG " -g -pg -Og ")
+    endif (${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
+endmacro (set_default_pfunit_test_compile_flags)
