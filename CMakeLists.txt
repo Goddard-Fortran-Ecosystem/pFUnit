@@ -99,15 +99,26 @@ endif()
 if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 
     # Use ifort
-    execute_process(COMMAND ifort --version 
-                    OUTPUT_VARIABLE INTEL_COMPILER_VERSION)
-    string (REGEX MATCH "([0-9]+)" 
-            NUM_VERSION ${INTEL_COMPILER_VERSION})
-    if("${NUM_VERSION}" STREQUAL "13")
-        add_definitions(-DINTEL_13)
+    #There seems to be no easy way to determine the compiler version on Windows
+    #since it isn't necessary defined in the PATH. As a workaround, assume version
+    #different to 13 if exectuing ifort doesn't give any results
+    if(NOT "${INTEL_COMPILER_VERSION}" STREQUAL "")
+      string (REGEX MATCH "([0-9]+)"
+              NUM_VERSION ${INTEL_COMPILER_VERSION})
+      if("${NUM_VERSION}" STREQUAL "13")
+          add_definitions(-DINTEL_13)
+      endif()
     endif()
     add_definitions(-DIntel)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
+    if (WIN32)
+        set(CMAKE_Fortran_FLAGS
+            "${CMAKE_Fortran_FLAGS_DEBUG} -Od -check:uninit -check:bounds -traceback -assume:realloc_lhs ${CMAKE_Fortran_FLAGS}"
+            )
+    else (WIN32)
+        set(CMAKE_Fortran_FLAGS
+            "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}"
+            )
+    endif (WIN32)
 
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
@@ -118,7 +129,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
-    # use nagfor			     
+    # use nagfor
     add_definitions(-DNAG)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp -C=present")
 
@@ -143,7 +154,7 @@ endif()
 # Fortran OpenMP support is not yet integrated into the CMake distribution.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/include/cmake/Modules/")
 if (OPENMP)
-#    find_package(OpenMP_Fortran REQUIRED) 
+#    find_package(OpenMP_Fortran REQUIRED)
 #    if(OPENMP_FORTRAN_FOUND)
 #      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
 #      set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
