@@ -1,4 +1,5 @@
 .PHONY: clean tests
+include $(PFUNIT)/include/base.mk
 
 # Note: unused references to SRC_DIR removed.
 

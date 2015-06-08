@@ -1,4 +1,5 @@
 .PHONY: clean
+include $(PFUNIT)/include/base.mk
 
 SUT: Halo$(OBJ_EXT)
 

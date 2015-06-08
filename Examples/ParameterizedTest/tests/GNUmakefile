@@ -1,4 +1,5 @@
 .PHONY: clean tests
+include $(PFUNIT)/include/base.mk
 
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))
