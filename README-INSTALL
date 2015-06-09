@@ -285,13 +285,13 @@ e.g. via sudo.
 
 To test the installation set PFUNIT to INSTALL_DIR, then change the
 working directory to Examples in pFUnit distribution and execute
-"buildIt," which will run a number of examples.  These include some
-expected failures.  
+"make," which will run a number of examples.  These include some
+expected (intentional) failures.  
 
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
 $ cd Examples
-$ ./buildIt
+$ make
 
 6.2 INSTALLATION - MPI
 
@@ -312,7 +312,8 @@ $ cd Examples/MPI_Halo/
 $ make
 
 This will compile and run a set of parallel examples that includes
-intentional failures.
+intentional failures.  To run all of the examples try executing
+"make MPI=YES" in the Examples directory.
 
 6.3 INSTALLATION - OPENMP
 
