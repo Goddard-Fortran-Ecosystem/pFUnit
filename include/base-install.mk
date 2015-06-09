@@ -1,4 +1,6 @@
 
+BASEMK_INCLUDED=YES
+
 INCLUDE_DIR =$(PFUNIT)/include
 LIB_DIR     =$(PFUNIT)/lib
 MOD_DIR     =$(PFUNIT)/mod
@@ -64,4 +66,4 @@ echo:
 	@echo CPPFLAGS: $(CPPFLAGS)
 
 export FC
-
+export BASEMK_INCLUDED
