@@ -1,3 +1,8 @@
+# Subdirectories depend PFUNIT being set.  Fail early if it is not.
+ifneq ($(BASEMK_INCLUDED),YES)
+include $(PFUNIT)/include/base.mk
+endif
+
 ALLDIRS = $(shell find . -maxdepth 1 -mindepth 1 -type d -exec basename {} \;)
 MPIDIRS = $(wildcard MPI*)
 EXDIRS := $(filter-out $(MPIDIRS),$(ALLDIRS))

@@ -422,6 +422,13 @@ tests.x: testSuites.inc myTests.pf
 
 To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
 
+In some cases, since include/driver.F90 is "implicit none," it may be
+necessary to insert a "use" clause to identify external suite-wide
+fixture code to the compiler.  As a convenience, the CPP macro
+PFUNIT_EXTRA_USAGE can be set to a module of fixture code via a
+compiler command line argument turning on a "use PFUNIT_EXTRA_USAGE"
+line at the beginning of include/driver.F90.
+
 \subsection ss_UsageExecutingTheTestParallel - Compiling and Executing the Tests (MPI PARALLEL)
 
 One invokes MPI-based parallel tests according to the MPI framework being used.  For example:

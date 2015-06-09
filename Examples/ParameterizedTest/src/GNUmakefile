@@ -1,4 +1,5 @@
 .PHONY: clean
+include $(PFUNIT)/include/base.mk
 
 SUT: SphericalCoordinates$(OBJ_EXT)
 

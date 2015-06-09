@@ -1,4 +1,5 @@
 .PHONY: clean
+include $(PFUNIT)/include/base.mk
 
 # Support for Windows/CYGWIN
 ifeq ($(UNAME),Windows)

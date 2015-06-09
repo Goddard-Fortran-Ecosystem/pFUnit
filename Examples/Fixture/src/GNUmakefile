@@ -1,4 +1,5 @@
 .PHONY: clean
+include $(PFUNIT)/include/base.mk
 
 SUT: LinearInterpolator$(OBJ_EXT)
 

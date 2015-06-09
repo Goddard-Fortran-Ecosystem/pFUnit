@@ -1,4 +1,5 @@
 .PHONY: clean
+include $(PFUNIT)/include/base.mk
 
 SUT: add$(OBJ_EXT)
 

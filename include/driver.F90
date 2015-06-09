@@ -1,6 +1,10 @@
 program main
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
+#ifdef PFUNIT_EXTRA_USAGE
+   ! Use external code for whatever suite-wide fixture is in use.
+   use PFUNIT_EXTRA_USAGE
+#endif
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
