@@ -259,7 +259,9 @@ contains
             end if
          else
             if ('*LAUNCHED*' /= line) then
-               call throw('Failure to launch in RobustRunner.')
+               call throw(&
+	       &    'Failure to launch in RobustRunner. ' &
+	       &    //"Expected: '*LAUNCHED*' Found: '"//line//"'" )
                return
             else
                ! successfully launched
