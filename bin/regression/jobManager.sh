@@ -41,6 +41,7 @@ function setModule {
    moduleList=''
    moduleMPI=''
    
+   export PATH=/usr/local/other/SLES11/SIVO-PyD/1.9.0/bin:$PATH
    if [ "$fortranCompiler" == "INTEL" ]; then
       if [ "$version" == "13.1" ]; then
          moduleFortran='comp/intel-13.1.3.192'
@@ -95,7 +96,6 @@ function setModule {
       fi
    fi
    echo " -- module list: "$moduleList
-   export PATH=/usr/local/other/SSSO_Ana-PyD/2.1.0/bin:$PATH
 }
 
 function doMake {
