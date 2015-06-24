@@ -1,5 +1,11 @@
 Note: Should add info for earlier releases.
 
+	June 11, 2015
+	- Fixed the make clean bug in Example code.
+	- Added time out command line arguments.
+	- Added PFUNIT_EXTRA_USAGE in include/driver.F90 for suite-wide fixture use.
+	- Cray workarounds on a separate branch.
+	
 	May 8, 2015
 	- PGI 15.4 enabled some workarounds to be removed.
 

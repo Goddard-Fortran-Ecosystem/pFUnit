@@ -1,4 +1,7 @@
 .PHONY: clean tests
+ifneq ($(BASEMK_INCLUDED),YES)
+include $(PFUNIT)/include/base.mk
+endif
 
 # Note: unused references to SRC_DIR removed.
 

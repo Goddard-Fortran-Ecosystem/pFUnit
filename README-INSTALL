@@ -285,13 +285,13 @@ e.g. via sudo.
 
 To test the installation set PFUNIT to INSTALL_DIR, then change the
 working directory to Examples in pFUnit distribution and execute
-"buildIt," which will run a number of examples.  These include some
-expected failures.  
+"make," which will run a number of examples.  These include some
+expected (intentional) failures.  
 
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
 $ cd Examples
-$ ./buildIt
+$ make
 
 6.2 INSTALLATION - MPI
 
@@ -312,7 +312,8 @@ $ cd Examples/MPI_Halo/
 $ make
 
 This will compile and run a set of parallel examples that includes
-intentional failures.
+intentional failures.  To run all of the examples try executing
+"make MPI=YES" in the Examples directory.
 
 6.3 INSTALLATION - OPENMP
 
@@ -380,6 +381,13 @@ tests.x: testSuites.inc myTests.pf
                 ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
 
 To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+In some cases, since include/driver.F90 is "implicit none," it may be
+necessary to insert a "use" clause to identify external suite-wide
+fixture code to the compiler.  As a convenience, the CPP macro
+PFUNIT_EXTRA_USAGE can be set to a module of fixture code via a
+compiler command line argument turning on a "use PFUNIT_EXTRA_USAGE"
+line at the beginning of include/driver.F90.
 
 7.3.1 USAGE - Compiling and Executing the Tests (MPI PARALLEL)
 
@@ -479,7 +487,8 @@ Windows/CYGWIN contributions from E. Lezar.
 
 PGI port contributions from M. Leair (PG Group).
 
-Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office), J. Krishna (ANL).
+Other acknowledgments: S.P. Santos (NCAR), M. Hambley (UK Met Office),
+      J. Krishna (ANL), J. Ebo David.
 
 11. KNOWN INSTALLATIONS/VERSIONS (git cognizant from "sourceforge.net/projects/pfunit")
 
@@ -490,6 +499,8 @@ development - The cutting edge of pFUnit development.
 mock_services - Experimental support for mocking.
 
 pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
+
+cray - An intermediate port to Cray CCE.
 
 12. NOTES
 
@@ -506,6 +517,7 @@ TBD
 
 14. REVISIONS TO THIS DOCUMENT
 
+2015-0608 Added note about PFUNIT_EXTRA_USAGE (from MH). MLR
 2015-0508 Some PGI workarounds removed for PGI 15.4. MLR
 2015-0420 Clarified PFUNIT_MAX_ARRAY_RANK note. MLR
 2015-0320 PGI port workarounds, including examples. 3.1. MLR

@@ -58,12 +58,11 @@ function handlePBS
 # -------------------------------------------------------------------
 {
    echo "Submit job..."
-   QSUB=/usr/slurm/bin/qsub
-   QSTAT=/usr/slurm/bin/qstat
+   QSUB=sbatch
 
    jobScript=$HOME/bin/jobManager.sh
    if [ $USEBATCH -eq 1 ];then
-     jobID=`$QSUB $jobScript`
+     jobID=`$QSUB $jobScript | awk '{print $4}'`
    else
      $jobScript
      wait
@@ -75,12 +74,14 @@ function handlePBS
       notify 1
    fi
 
-   MAX_SECONDS=21600
+   # Max 12hr wait
+   MAX_SECONDS=43200
    INCREMENT_SEC=30
    seconds=0
    done=0
+   echo "Monitoring $jobID"
    while [ $seconds -lt $MAX_SECONDS ]; do
-       qStatus=`$QSTAT | grep $jobID | awk '{print $5}'`
+       qStatus=`qstat -a | grep $jobID | awk '{print $10}'`
        echo " - status = ($qStatus), time elapsed (seconds) = $seconds"
        if [ -z "$qStatus" ]; then
           done=1
@@ -146,10 +147,11 @@ curDate=`date +"%Y_%m_%d_%m_%s"`
 
 # Regression scripts rely on computational environment determined by
 # by modules (modules.sourceforge.net). We support two machines:
-if [[ "$NODE" =~ discover || "$NODE" =~ dali ]]; then  # discover nodes
-  MODULEINIT=/usr/share/modules/init/bash
-  SCRATCH=$NOBACKUP
-elif [[ "$NODE" =~ "ip-10" ]]; then # AWS nodes
+#if [[ "$NODE" =~ discover || "$NODE" =~ dali ]]; then  # discover nodes
+echo $NODE
+MODULEINIT=/usr/share/modules/init/bash
+SCRATCH=$NOBACKUP
+if [[ "$NODE" =~ "ip-10" ]]; then # AWS nodes
   MODULEINIT=/usr/local/Modules/default/init/bash
   SCRATCH=/data
 fi

@@ -319,13 +319,13 @@ e.g. via sudo.
 
 To test the installation set PFUNIT to INSTALL_DIR, then change the
 working directory to Examples in pFUnit distribution and execute
-"buildIt," which will run a number of examples.  These include some
-expected failures.  
+"make," which will run a number of examples.  These include some
+expected (intentional) failures.  
 \code
 $ # In the top pFUnit build directory...
 $ export PFUNIT=/opt/pfunit/pfunit-serial
 $ cd Examples
-$ ./buildIt\endcode
+$ make\endcode
 
 \subsection sec_InstallationMPI Installation - MPI
 
@@ -346,7 +346,8 @@ $ cd Examples/MPI_Halo
 $ make\endcode
 
 This will compile and run a set of parallel examples that includes
-intentional failures.
+intentional failures.  To run all of the examples try executing
+"make MPI=YES" in the Examples directory.
 
 \subsection sec_InstallationOPENMP Installation - OPENMP
 
@@ -421,6 +422,13 @@ tests.x: testSuites.inc myTests.pf
                 ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)\endcode
 
 To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+In some cases, since include/driver.F90 is "implicit none," it may be
+necessary to insert a "use" clause to identify external suite-wide
+fixture code to the compiler.  As a convenience, the CPP macro
+PFUNIT_EXTRA_USAGE can be set to a module of fixture code via a
+compiler command line argument turning on a "use PFUNIT_EXTRA_USAGE"
+line at the beginning of include/driver.F90.
 
 \subsection ss_UsageExecutingTheTestParallel - Compiling and Executing the Tests (MPI PARALLEL)
 
