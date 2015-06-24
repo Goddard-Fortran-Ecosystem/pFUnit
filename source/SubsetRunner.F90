@@ -98,7 +98,6 @@ contains
       class (ParallelContext), intent(in) :: context
 
       type (TestCaseReference), allocatable :: testCaseList(:)
-
       integer :: i
 
       !print *,'a00000'
@@ -114,7 +113,8 @@ contains
 #endif
 
       class is (TestCase)
-         testCaseList = [TestCaseReference(aTest)]
+         allocate(testCaseList(1))
+         allocate(testCaseList(1)%test, source= aTest)
       class default
          stop
       end select

@@ -180,7 +180,8 @@ contains
          call aTest%getTestCases(testCases)
 #endif
       class is (TestCase)
-         testCases = [TestCaseReference(aTest)]
+         allocate(testCases(1))
+         allocate(testCases(1)%test, source= aTest)
       class default
          stop
       end select
