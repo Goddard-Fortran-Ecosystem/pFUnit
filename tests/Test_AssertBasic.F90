@@ -137,6 +137,9 @@ contains
            &   newTestMethod('testAssertEqualStringTrimWhitespace3', &
            &                  testAssertEqualStringTrimWhitespace3))
       call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringTrimWhitespace4', &
+           &                  testAssertEqualStringTrimWhitespace4))
+      call suite%addTest( &
            &   newTestMethod('testAssertEqualStringKeepWhitespace1', &
            &                  testAssertEqualStringKeepWhitespace1))
       call suite%addTest( &
@@ -379,6 +382,21 @@ contains
      call assertEqual(expected="", found=" ", &
           & whitespace=TRIM_ALL )
    end subroutine testAssertEqualStringTrimWhitespace3
+
+   subroutine testAssertEqualStringTrimWhitespace4()
+     call assertEqual( &
+          & expected = "i= 1 f= F s=word x=  1.23", &
+          & found    = "i= 1  f= F s=word x=  1.23", &
+!          & expected = "i= 1 f= F s=word x=  1.23", &
+!          & found    = “i= 1  f= F s=word x=  1.23", &
+          & whitespace=TRIM_ALL )
+!          & whitespace=IGNORE_DIFFERENCES )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"i= 1 f= F s=word x=  1.23">' // new_line('A') // &
+          & '   but found: <"i= 1  f= F s=word x=  1.23">' // new_line('A') // &
+          & '  first diff:   -----^'))
+   end subroutine
 
    subroutine testAssertEqualStringKeepWhitespace1()
      character tab; tab = char(9)
