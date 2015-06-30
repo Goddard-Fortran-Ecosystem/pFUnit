@@ -362,6 +362,12 @@ contains
          if ((numI .eq. 0) .or. (numJ .eq. 0)) then
             checkCharacterByCharacter = .true.
          end if
+
+         ! Fortran implicitly pads strings of different lengths with spaces
+         ! when comparing using /= or ==.  Detect them and compare carefully.
+         if (numI .ne. numJ) then
+            checkCharacterByCharacter = .true.
+         end if
          
          !if (numI .eq. 0) then
          !   print *,'e: "'//expected_//'"'

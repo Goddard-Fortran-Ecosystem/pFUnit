@@ -152,6 +152,18 @@ contains
            &   newTestMethod('testAssertEqualStringKeepWhitespace4', &
            &                  testAssertEqualStringKeepWhitespace4))
       call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks1', &
+           &                  testAssertEqualNonzeroBlanks1 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks2', &
+           &                  testAssertEqualNonzeroBlanks2 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks3', &
+           &                  testAssertEqualNonzeroBlanks3 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks4', &
+           &                  testAssertEqualNonzeroBlanks4 ))
+      call suite%addTest( &
            &   newTestMethod('testAssertAny', &
            &                  testAssertAny))
       call suite%addTest( &
@@ -439,6 +451,31 @@ contains
           & '   but found: <"">'  // new_line('A') // &
           & '  first diff:   ^'))
    end subroutine testAssertEqualStringKeepWhitespace4
+
+   subroutine testAssertEqualNonzeroBlanks1
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <" ">' // new_line('A') // &
+          & '   but found: <"      ">'  // new_line('A') // &
+          & '  first diff:   -^'))
+   end subroutine testAssertEqualNonzeroBlanks1
+
+   subroutine testAssertEqualNonzeroBlanks2
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualNonzeroBlanks2
+
+   subroutine testAssertEqualNonzeroBlanks3
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_DIFFERENCES )
+   end subroutine testAssertEqualNonzeroBlanks3
+
+   subroutine testAssertEqualNonzeroBlanks4
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualNonzeroBlanks4
    
    ! Fail only if all .false.
    subroutine testAssertAny()
