@@ -80,7 +80,7 @@ contains
       ! If the appropriate messages are received in time, then this timer process is 
       ! safely stopped.
 
-      write(timeCommand,'(a, f10.3,a,i0,a)') "(sleep ",MAX_TIME_TEST,"; kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
+      write(timeCommand,'(a, f10.3,a,i0,a)') "(sleep ",MAX_TIME_TEST," && kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
 
       do
