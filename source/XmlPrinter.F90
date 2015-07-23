@@ -85,21 +85,11 @@ contains
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
-      write(this%unit,'(a,a,a)') &
-           & '<testStatus name="', cleanXml(trim(testName)), '">'
-
-      flush(this%unit)
-
    end subroutine startTest
 
    subroutine endTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
-
-      write(this%unit,'(a,a,a)') &
-           & '</testStatus name="', cleanXml(trim(testName)), '">'
-
-      flush(this%unit)
 
    end subroutine endTest
 
