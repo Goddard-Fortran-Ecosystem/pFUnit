@@ -67,8 +67,6 @@ contains
       character(len=*), intent(in) :: testName
       type (Exception), intent(in) :: exceptions(:)
 
-      call this%printExceptions("failure",testName,exceptions)
-
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
