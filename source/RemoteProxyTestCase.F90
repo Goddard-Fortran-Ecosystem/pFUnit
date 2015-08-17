@@ -89,7 +89,7 @@ contains
       ! safely stopped.
 
       write(timeCommand,'(a, f10.3,a,i0,a)') &
-           & "(sleep ",this%maxTimeoutDuration,"; kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
+           & "(sleep ",this%maxTimeoutDuration," && kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
 
       do
