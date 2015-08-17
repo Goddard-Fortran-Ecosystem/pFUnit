@@ -42,21 +42,18 @@ set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/include/driver.F90")
 #                Run the tests with CTest: ctest -R myTestSuite --verbose
 function (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
 
-    set (testsuite_exe_name run_${test_suite_name})
-
-    set (SRCGEN_DIR "src_gen")
-    set (TEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/${test_suite_name})
-    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${TEST_DIR}/${SRCGEN_DIR})
+    set (SRC_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_gen/${test_suite_name})
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_GEN_DIR}/)
 
     set (TEST_SUITES_INC "")
     foreach (file ${test_sources})
         get_filename_component (basename ${file} NAME_WE)
-        set (fsrc "${TEST_DIR}/${SRCGEN_DIR}/${basename}.F90")
+        set (fsrc "${SRC_GEN_DIR}/${basename}.F90")
         list (APPEND test_sources_f90 ${fsrc})
         set (TEST_SUITES_INC "${TEST_SUITES_INC}ADD_TEST_SUITE(${basename}_suite)\n")
     endforeach()
 
-    file (WRITE ${TEST_DIR}/testSuites.inc ${TEST_SUITES_INC})
+    file (WRITE ${SRC_GEN_DIR}/testSuites.inc ${TEST_SUITES_INC})
 
     list (LENGTH test_sources len)
     math(EXPR n "${len} - 1")
@@ -71,26 +68,30 @@ function (add_pfunit_test test_suite_name test_sources extra_sources extra_sourc
             )
     endforeach()
 
-    add_executable (${testsuite_exe_name} ${test_sources_f90} ${extra_sources} ${PFUNIT_DRIVER})
+    add_executable (${test_suite_name} 
+        ${test_sources_f90} 
+        ${extra_sources} 
+        ${PFUNIT_DRIVER}
+        )
 
     if (NOT extra_sources_c STREQUAL "")
         add_library (${test_suite_name}_c STATIC ${extra_sources_c})
-        target_link_libraries (${testsuite_exe_name} ${test_suite_name}_c)
+        target_link_libraries (${testsuite_name} ${test_suite_name}_c)
     endif ()
 
-    target_link_libraries (${testsuite_exe_name} ${PFUNIT_LIBRARIES})
-    target_include_directories (${testsuite_exe_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
-    target_include_directories (${testsuite_exe_name} PRIVATE ${TEST_DIR})
+    target_link_libraries (${test_suite_name} ${PFUNIT_LIBRARIES})
+    target_include_directories (${test_suite_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
+    target_include_directories (${test_suite_name} PRIVATE ${SRC_GEN_DIR})
 
     if(WIN32)
-        set_property(TARGET ${test_suite_name}
+        set_property (TARGET ${test_suite_name}
             PROPERTY LINK_FLAGS " /INCREMENTAL:NO ")
     endif (WIN32)
 
 
     add_test (NAME ${test_suite_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND ${testsuite_exe_name} --verbose
+        COMMAND ${test_suite_name} --verbose
         )
 
 endfunction (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
