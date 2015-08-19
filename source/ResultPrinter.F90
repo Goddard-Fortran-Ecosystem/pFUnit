@@ -7,17 +7,17 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune, NASA/GSFC 
+!! Tom Clune, NASA/GSFC
 !!
 !! @date
 !! 07 Nov 2013
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
 ! REVISION HISTORY:
 !
-! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 module ResultPrinter_mod
@@ -148,7 +148,7 @@ contains
 
       type (TestFailure) :: aFailedTest
       integer :: i, j
-      character(len=80) :: locationString
+      character(len=300) :: locationString
 
       do i = 1, size(failures)
          aFailedTest = failures(i)
@@ -156,8 +156,8 @@ contains
          do j= 1, size(aFailedTest%exceptions)
             locationString = aFailedTest%exceptions(j)%location%toString()
 
-            write(this%unit,*) label,' in: ', trim(aFailedTest%testName)
-            write(this%unit,*) '  Location: ', trim(locationString)
+            write(this%unit,'(a)') label,' in: ', trim(aFailedTest%testName)
+            write(this%unit,'(a)') '  Location: ', trim(locationString)
             write(this%unit,'(a,1x,a)') aFailedTest%exceptions(j)%getMessage()
             write(this%unit,*)' '
          end do

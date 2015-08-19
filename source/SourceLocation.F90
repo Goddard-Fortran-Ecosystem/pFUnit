@@ -7,17 +7,17 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune, NASA/GSFC 
+!! Tom Clune, NASA/GSFC
 !!
 !! @date
 !! 07 Nov 2013
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
 ! REVISION HISTORY:
 !
-! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 ! This module just provides a data type - not a class.
@@ -50,19 +50,20 @@ contains
 
    function toString(this) result(string)
       class (SourceLocation), intent(inout) :: this
-      character(len=80) :: string
-      
+      character(len=300) :: string
+      integer :: status
+
       if (this%fileName == UNKNOWN_FILE_NAME) then
          if (this%lineNumber == UNKNOWN_LINE_NUMBER) then
             string = '<unknown location>'
          else
-            write(string,'(a,":",i0)') trim(UNKNOWN_FILE_NAME), this%lineNumber
+            write(string,'(a,":",i0)', iostat=status) trim(UNKNOWN_FILE_NAME), this%lineNumber
          end if
       else
          if (this%lineNumber == UNKNOWN_LINE_NUMBER) then
             string = trim(this%fileName)
          else
-            write(string,'(a,":",i0)') trim(this%fileName), this%lineNumber
+            write(string,'(a,":",i0)', iostat=status) trim(this%fileName), this%lineNumber
          end if
       end if
 
