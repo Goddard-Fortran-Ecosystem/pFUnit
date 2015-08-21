@@ -325,6 +325,9 @@ contains
       write(OUTPUT_UNIT,*)"   '-max-launch-duration  <duration>' : Limit detection time for robust"
       write(OUTPUT_UNIT,*)"   '-skip n'         : used by remote start with 'robust' internally"
       write(OUTPUT_UNIT,*)"                       This flag should NOT be used directly by users."
+      write(OUTPUT_UNIT,*)"   '-xml <file>'     : output JUnit XML to specified file"
+      write(OUTPUT_UNIT,*)"                       XML can be used with e.g. Jenkins."
+      write(OUTPUT_UNIT,*)"   '-name <name>'    : give tests an identifying name in XML output"
       write(OUTPUT_UNIT,*)" "
 
    end subroutine printHelpMessage
