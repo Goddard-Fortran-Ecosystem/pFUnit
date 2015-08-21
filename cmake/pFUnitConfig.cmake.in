@@ -10,6 +10,7 @@ find_package (PythonInterp
     REQUIRED
     )
 
+set (PFUNIT_FOUND TRUE)
 set (PFUNIT_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/mod)
 set (PFUNIT_LINK_DIRS ${CMAKE_CURRENT_LIST_DIR}/lib)
 find_library (PFUNIT_LIBRARIES pfunit
