@@ -99,7 +99,7 @@ function (add_pfunit_test test_suite_name test_sources extra_sources extra_sourc
 
     add_test (NAME ${test_suite_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND ${test_suite_name} --verbose
+        COMMAND ${test_suite_name}
         )
 
 endfunction (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
