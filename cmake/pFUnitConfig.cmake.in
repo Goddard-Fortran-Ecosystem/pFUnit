@@ -28,23 +28,23 @@ set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/include/TestUtil.F90")
 #                IMPORTANT! This function will only work if the test source filename is the same as the module inside it!
 #                For example, the file testSomething.pf should contain the module testSomething.
 #
-# Arguments    : - test_suite_name: Name of the test suite
-#                - test_sources   : List of pf-files to be compiled
-#                - extra_sources  : List of extra Fortran source code used for testing (if none, input empty string "")
-#                - extra_sources  : List of extra C/C++ source code used for testing (if none, input empty string "")
+# Arguments    : - test_package_name: Name of the test package
+#                - test_sources     : List of pf-files to be compiled
+#                - extra_sources    : List of extra Fortran source code used for testing (if none, input empty string "")
+#                - extra_sources    : List of extra C/C++ source code used for testing (if none, input empty string "")
 #
 # Example usage: enable_testing()
 #                set (TEST_SOURCES
 #                   testMyLib.pf
 #                    )
-#                add_pfunit_test (myTestSuite "${TEST_SOURCES} "" "")
-#                target_link_libraries (myTestSuite myLibrary) #Assuming "myLibrary" is already defined
+#                add_pfunit_test (myTests "${TEST_SOURCES} "" "")
+#                target_link_libraries (myTests myLibrary) #Assuming "myLibrary" is already defined
 #                
-#                Compile the test suite:   make myTestSuite
-#                Run the tests with CTest: ctest -R myTestSuite --verbose
-function (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
+#                Compile the tests:   make myTests
+#                Run the tests with CTest: ctest -R myTests --verbose
+function (add_pfunit_test test_package_name test_sources extra_sources extra_sources_c)
 
-    set (SRC_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_gen/${test_suite_name})
+    set (SRC_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_gen/${test_package_name})
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_GEN_DIR}/)
 
     set (TEST_SUITES_INC "")
@@ -70,7 +70,7 @@ function (add_pfunit_test test_suite_name test_sources extra_sources extra_sourc
             )
     endforeach()
 
-    add_executable (${test_suite_name} 
+    add_executable (${test_package_name} 
         ${test_sources_f90} 
         ${extra_sources} 
         ${PFUNIT_DRIVER}
@@ -83,23 +83,23 @@ function (add_pfunit_test test_suite_name test_sources extra_sources extra_sourc
         )
 
     if (NOT extra_sources_c STREQUAL "")
-        add_library (${test_suite_name}_c STATIC ${extra_sources_c})
-        target_link_libraries (${testsuite_name} ${test_suite_name}_c)
+        add_library (${test_package_name}_c STATIC ${extra_sources_c})
+        target_link_libraries (${test_package_name} ${test_package_name}_c)
     endif ()
 
-    target_link_libraries (${test_suite_name} ${PFUNIT_LIBRARIES})
-    target_include_directories (${test_suite_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
-    target_include_directories (${test_suite_name} PRIVATE ${SRC_GEN_DIR})
+    target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
+    target_include_directories (${test_package_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
+    target_include_directories (${test_package_name} PRIVATE ${SRC_GEN_DIR})
 
     if(WIN32)
-        set_property (TARGET ${test_suite_name}
+        set_property (TARGET ${test_package_name}
             PROPERTY LINK_FLAGS " /INCREMENTAL:NO ")
     endif (WIN32)
 
 
-    add_test (NAME ${test_suite_name}
+    add_test (NAME ${test_package_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND ${test_suite_name}
+        COMMAND ${test_package_name}
         )
 
-endfunction (add_pfunit_test test_suite_name test_sources extra_sources extra_sources_c)
+endfunction (add_pfunit_test test_package_name test_sources extra_sources extra_sources_c)
