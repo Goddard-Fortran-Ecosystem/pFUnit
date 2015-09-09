@@ -44,6 +44,11 @@ set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/include/TestUtil.F90")
 #                Run the tests with CTest: ctest -R myTests --verbose
 function (add_pfunit_test test_package_name test_sources extra_sources extra_sources_c)
 
+    if (NOT test_sources)
+        message (WARNING "No test sources defined for '${test_package_name}', ignoring...")
+        return ()
+    endif (NOT test_sources)
+
     set (SRC_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_gen/${test_package_name})
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_GEN_DIR}/)
 
