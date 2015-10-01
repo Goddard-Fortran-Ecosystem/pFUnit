@@ -58,6 +58,13 @@ target_link_libraries(${TEST_EXE} pfunit testpfunit)
 
 if (MPI)
   target_link_libraries(${TEST_EXE} ${MPI_Fortran_LIBRARIES} )
+
+# Fix for openmpi 1.8.8 which complains about forking due to selftests of
+# robust runner.
+  if (MPIEXEC MATCHES ".*openmpi/1.8.8/.*")
+    set (MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS} --mca mpi_warn_on_fork 0)
+  endif ()
+
   if (MPI_USE_MPIEXEC)
     #
     # Add the target for executing the tests by calling on CMake's FindMPI to find the
@@ -69,7 +76,7 @@ if (MPI)
     #
     # Add the target for executing the tests with a hardcoded call to mpirun.
     # 
-    add_custom_target(tests COMMAND mpirun -np 4 tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_custom_target(tests COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     #
   endif()
 #
