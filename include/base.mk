@@ -1,3 +1,6 @@
+
+BASEMK_INCLUDED=YES
+
 SRC_DIR     =$(TOP)/source
 TESTS_DIR   =$(TOP)/tests
 INCLUDE_DIR =$(TOP)/include
@@ -33,3 +36,4 @@ distclean: clean
 	-$(RM) *$(LIB_EXT) *$(EXE_EXT) dependencies.inc
 
 export FC
+export BASEMK_INCLUDED

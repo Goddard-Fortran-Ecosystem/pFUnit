@@ -1,4 +1,7 @@
 .PHONY: clean tests
+ifneq ($(BASEMK_INCLUDED),YES)
+include $(PFUNIT)/include/base.mk
+endif
 
 SRCS = $(wildcard *.pf)
 OBJS = $(SRCS:.pf=$(OBJ_EXT))

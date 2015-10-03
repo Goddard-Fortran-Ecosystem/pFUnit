@@ -67,8 +67,6 @@ contains
       character(len=*), intent(in) :: testName
       type (Exception), intent(in) :: exceptions(:)
 
-      call this%printExceptions("failure",testName,exceptions)
-
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
@@ -77,29 +75,17 @@ contains
       character(len=*), intent(in) :: testName
       type (Exception), intent(in) :: exceptions(:)
 
-      call this%printExceptions("error",testName,exceptions)
-
    end subroutine addError
 
    subroutine startTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
-      write(this%unit,'(a,a,a)') &
-           & '<testStatus name="', cleanXml(trim(testName)), '">'
-
-      flush(this%unit)
-
    end subroutine startTest
 
    subroutine endTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
-
-      write(this%unit,'(a,a,a)') &
-           & '</testStatus name="', cleanXml(trim(testName)), '">'
-
-      flush(this%unit)
 
    end subroutine endTest
 

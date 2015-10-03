@@ -33,6 +33,7 @@ module RemoteProxyTestCase_mod
       private
       type (UnixProcess), pointer :: process
       integer :: clockStart
+      real    :: maxTimeoutDuration
    contains
       procedure :: runMethod
       procedure :: setStartTime
@@ -46,10 +47,17 @@ module RemoteProxyTestCase_mod
 
 contains
 
-   function newRemoteProxyTestCase(test, process) result(proxy)
+   function newRemoteProxyTestCase(test, process, maxTimeoutDuration) result(proxy)
       type (RemoteProxyTestCase) :: proxy
       class (TestCase), intent(in) :: test
       type (UnixProcess), target :: process
+      real, optional, intent(in) :: maxTimeoutDuration
+
+      if(.not.present(maxTimeoutDuration))then
+         proxy%maxTimeoutDuration = MAX_TIME_TEST
+      else
+         proxy%maxTimeoutDuration = maxTimeoutDuration
+      end if
 
       call proxy%setName(test%getName())
       proxy%process => process
@@ -80,7 +88,8 @@ contains
       ! If the appropriate messages are received in time, then this timer process is 
       ! safely stopped.
 
-      write(timeCommand,'(a, f10.3,a,i0,a)') "(sleep ",MAX_TIME_TEST,"; kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
+      write(timeCommand,'(a, f10.3,a,i0,a)') &
+           & "(sleep ",this%maxTimeoutDuration," && kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
 
       do
@@ -126,7 +135,7 @@ contains
                else ! child has completed - implies test was hung and processing terminated
                   write(timeText, '(a,f0.3,a)') &
                        'RUNTIME-ERROR: hung (used more than ',&
-                       MAX_TIME_TEST, ' s)'
+                       this%maxTimeoutDuration, ' s)'
                   call throw(timeText)
                   return
                end if
@@ -143,7 +152,7 @@ contains
 
 ! 2014-0211-1843-18-UTC MLR Huh?  Hard coding? Getting two errors here... Both Intel & GNU.
 ! It turns out that printing from processes can screw up the communications that go on here.
-            elseif (line(1:22) == 'failed: numExceptions=') then
+            elseif (index(line, 'failed: numExceptions=') /= 0) then
 
                read(line(23:),*) numExceptions
 

@@ -18,9 +18,13 @@ EXE = tests$(EXE_EXT)
 # NOTE: use the -robust flag
 all: $(EXE)
 ifeq ($(USEMPI),YES)
-	mpirun -np 1 ./$(EXE) -robust
-else
+	echo  Warning:  Testing -robust flag with MPI, robust will override.
+	echo            driver.F90 will call mpirun on itself with robust set.
+	echo            "Top" level mpirun not needed, may be problemmatic.
 	./$(EXE) -robust
+	# mpirun -np 1 ./$(EXE) -robust
+else
+	./$(EXE) -robust -max-timeout-duration 0.16 -max-launch-duration 4.72
 endif
 
 SUT:

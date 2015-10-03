@@ -1,5 +1,19 @@
 Note: Should add info for earlier releases.
 
+	June 30, 2015
+	- Fixed KEEP_ALL option in AssertEqual for zero-length strings.
+	  Because "" == " " in Fortran, AssertEqual(""," ",whitespace=KEEP_ALL),
+	  which should throw an exception, failed silently for zero-length arrays.
+
+	June 11, 2015
+	- Fixed the make clean bug in Example code.
+	- Added time out command line arguments.
+	- Added PFUNIT_EXTRA_USAGE in include/driver.F90 for suite-wide fixture use.
+	- Cray workarounds on a separate branch.
+
+	May 8, 2015
+	- PGI 15.4 enabled some workarounds to be removed.
+
 3.1	March 20, 2015
 	- PGI 15.1 now supported.
 	- Asserts over integer arrays now supported. INT32 and INT64 support added.

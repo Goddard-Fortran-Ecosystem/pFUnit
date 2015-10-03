@@ -1,8 +1,9 @@
+
 ALLDIRS = $(shell find . -maxdepth 1 -mindepth 1 -type d -exec basename {} \;)
 MPIDIRS = $(wildcard MPI*)
 EXDIRS := $(filter-out $(MPIDIRS),$(ALLDIRS))
 
-MPI=NO
+MPI ?= NO
 ifeq ($(MPI),YES)
   EXDIRS := $(ALLDIRS)
 endif

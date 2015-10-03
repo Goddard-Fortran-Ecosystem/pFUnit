@@ -98,6 +98,7 @@ module AssertBasic_mod
 
    interface assertEqual
       module procedure assertEqualString_
+      module procedure assertEqualLogical_
    end interface
 
    interface assertExceptionRaised
@@ -244,6 +245,29 @@ contains
       call assertTrue(.not. condition, message, location)
    end subroutine assertFalse_1d_
 
+   subroutine assertEqualLogical_(expected, found, message, location)
+      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      logical, intent(in) :: expected
+      logical, intent(in) :: found
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: message_
+
+      if (expected .neqv. found) then
+         write(throwMessage,'((a,a),2(a,a,a,a))') &
+              & 'Logical assertion failed:', new_line('A'), &
+              & '    expected: <"', expected, '">', new_line('A'), &
+              & '   but found: <"', found, '">', new_line('A')
+
+         message_ = NULL_MESSAGE
+         if (present(message)) message_ = message
+
+         call throw(appendWithSpace(message_,throwMessage), location)
+      end if
+      
+   end subroutine assertEqualLogical_
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
@@ -265,10 +289,12 @@ contains
 
       integer, parameter :: iachar_spc = 32, iachar_tab = 9
 
-      logical :: checkForDifference
+      logical :: checkCharacterByCharacter
       logical :: throwException
       logical :: whitespaceYes
       character(len=:), allocatable :: expected_, found_
+
+      throwException = .false.
 
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
@@ -276,6 +302,8 @@ contains
       if(present(whitespace))then
          whitespace_ = whitespace
       else
+         ! This is the default whitespace option.  TRIM_ALL is the legacy behavior.
+         ! TODO:  Change default behavior to IGNORE_DIFFERENCES.
          whitespace_ = TRIM_ALL
       end if
 
@@ -301,25 +329,26 @@ contains
       ! Worry:  Original code written to !print out trimmed strings.  Not sure what effect
       ! Keep will have.
       !print *,1000
-      checkForDifference = .true.
+      checkCharacterByCharacter = .true.
       select case (whitespace_%value)
-         case (TRIM_ALL%value)
-            checkForDifference = expected_ /= found_
+      case (TRIM_ALL%value)
+         ! Check to see if we have to do more work.
+            checkCharacterByCharacter = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
 
          case (IGNORE_ALL%value)
-            checkForDifference = expected_ /= found_
+            checkCharacterByCharacter = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
 
          case (IGNORE_DIFFERENCES%value)
-            checkForDifference = expected_ /= found_
+            checkCharacterByCharacter = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
             !print *,1001,whitespace_%value
             !print *,1002,'e="',expected_,'"'
             !print *,1003,'f="',found_,'"'
 
          case (KEEP_ALL%value)
-            checkForDifference = expected_ /= found_
+            checkCharacterByCharacter = expected_ /= found_
             numI = len(expected_); numJ = len(found_)
 
          case default
@@ -327,14 +356,31 @@ contains
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
             call throw(appendWithSpace(message_,throwMessage), location)
-      end select
+         end select
 
+         ! Flag a check if zero-length arrays are involved.
+         if ((numI .eq. 0) .or. (numJ .eq. 0)) then
+            checkCharacterByCharacter = .true.
+         end if
+
+         ! Fortran implicitly pads strings of different lengths with spaces
+         ! when comparing using /= or ==.  Detect them and compare carefully.
+         if (numI .ne. numJ) then
+            checkCharacterByCharacter = .true.
+         end if
+         
+         !if (numI .eq. 0) then
+         !   print *,'e: "'//expected_//'"'
+         !   print *,'f: "'//found_//'"'
+         !   print *,'?: ',checkCharacterByCharacter
+         !   print *,'!: ',expected_ /= found_
+         !   print *,'z: ',expected_ == found_
+         !end if
 
       !print *,2000,whitespace_%value
 
-      throwException = .false.
 !      if (trim(expected) /= trim(found)) then
-      if (checkForDifference) then
+      if (checkCharacterByCharacter) then
          numSameCharacters = 0
 
          ! Cycle over both strings, compare each element, skipping if needed.
@@ -477,6 +523,8 @@ contains
             call throw(appendWithSpace(message_, throwMessage), location)
 
          end if
+
+      ! else ! if checkCharacterByCharacter == .false. and we don't have to compare character-by-character
 
       end if
 

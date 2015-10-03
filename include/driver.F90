@@ -1,12 +1,13 @@
 program main
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
+#ifdef PFUNIT_EXTRA_USAGE
+   ! Use external code for whatever suite-wide fixture is in use.
+   use PFUNIT_EXTRA_USAGE
+#endif
    implicit none
 #ifdef USE_MPI
    include 'mpif.h'
-#endif
-#ifdef PGI
-   type(TestSuite) :: suite2
 #endif
    type (TestSuite) :: all
    class(BaseTestRunner), allocatable :: runner
@@ -15,7 +16,12 @@ program main
    character(len=:), allocatable :: executable
    character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
+   character(len=:), allocatable :: maxTimeoutDuration_
+   character(len=:), allocatable :: maxLaunchDuration_
    integer :: length
+
+   real :: maxTimeoutDuration
+   real :: maxLaunchDuration
 
    logical :: useRobustRunner
    logical :: useSubsetRunner
@@ -40,6 +46,11 @@ program main
 ! Support for the runs
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
+
+   ! Initialize variables...
+
+   maxTimeoutDuration = 5.00 ! seconds
+   maxLaunchDuration  = 5.00 ! seconds
 
    useRobustRunner = .false.
    useSubsetRunner = .false.
@@ -88,6 +99,27 @@ program main
          write (*,*) 'Robust runner not built.'
          useRobustRunner = .false.
 #endif
+
+      case ('-max-timeout-duration')
+#ifdef BUILD_ROBUST
+         i = i+1; if (i>numArguments) call commandLineArgumentError()
+         maxTimeoutDuration_ = getCommandLineArgument(i)
+         read(maxTimeoutDuration_,*)maxTimeoutDuration
+#else
+         ! TODO: This should be a failing test.
+         write (*,*) 'Robust runner not built.'
+#endif
+
+      case ('-max-launch-duration')
+#ifdef BUILD_ROBUST
+         i = i+1; if (i>numArguments) call commandLineArgumentError()         
+         maxLaunchDuration_ = getCommandLineArgument(i)
+         read(maxLaunchDuration_,*)maxLaunchDuration
+#else
+         ! TODO: This should be a failing test.
+         write (*,*) 'Robust runner not built.'
+#endif
+         
       case ('-skip')
          useSubsetRunner = .true.
          i = i + 1
@@ -137,11 +169,25 @@ program main
       allocate(listeners(iListener)%pListener, source=debugger)
    end if
 
+   ! Initialize should be called on the second timethrough.
+   
+   ! useMPI optional argument has no effect if not USE_MPI.
    if (useRobustRunner) then
       call initialize(useMPI=.false.)
    else
       call initialize(useMPI=.true.)
    end if
+
+!-------------------------------------------------------------------------
+! Some users may have 1-time only non-reentrant libraries that must
+! be initialized prior to executing their tests.  The motivating example
+! here is the Earth System Modeling Framework.  Rather than customize
+! this driver to each case as it arises, we are leaving it to users
+! to write a single init routine that is invoked here.
+!-------------------------------------------------------------------------
+#ifdef PFUNIT_EXTRA_INITIALIZE
+   call PFUNIT_EXTRA_INITIALIZE()
+#endif
 
 #ifdef USE_MPI
       useMpi = .true.
@@ -157,7 +203,13 @@ program main
 #else
       fullExecutable = executable
 #endif
-      allocate(runner, source=RobustRunner(fullExecutable, listeners))
+!      allocate(runner, source=RobustRunner(fullExecutable, listeners))
+      allocate(runner, &
+           & source=RobustRunner( &
+           &    fullExecutable, &
+           &    listeners, &
+           &    maxLaunchDuration=maxLaunchDuration, &
+           &    maxTimeoutDuration=maxTimeoutDuration ))
 #else
       ! TODO: This should be a failing test.
       write (*,*) 'Robust runner not built.'
@@ -186,6 +238,10 @@ program main
       end if
    end if
 
+#ifdef PFUNIT_EXTRA_FINALIZE
+   call PFUNIT_EXTRA_FINALIZE()
+#endif
+
    call finalize(result%wasSuccessful())
 
 contains
@@ -206,23 +262,28 @@ contains
    end subroutine getContext
 
    function getTestSuites() result(suite)
+#define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
+#define ADD_TEST_SUITE(s) ! do nothing
+#include "testSuites.inc"
+#undef ADD_MODULE_TEST_SUITE
+#undef ADD_TEST_SUITE
+
       type (TestSuite) :: suite
 
+#define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
 #define ADD_TEST_SUITE(s) type (TestSuite), external :: s
 #include "testSuites.inc"
 #undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
 
       suite = newTestSuite()
 
    ! accumulate tests in top suite
-#ifdef PGI
-! Work around PGI compiler internal compiler error
-#define ADD_TEST_SUITE(s) suite2=s();call suite%addTest(suite2)
-#else
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
-#endif
+#define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
 #include "testSuites.inc"
 #undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
 
    end function getTestSuites
 
@@ -260,8 +321,13 @@ contains
       write(OUTPUT_UNIT,*)"   '-o <file>'       : Diverts output to specified file"
       write(OUTPUT_UNIT,*)"   '-robust'         : (experimental) runs tests in a separate shell"
       write(OUTPUT_UNIT,*)"                       Attempts to detect/handle hangs and crashes"
+      write(OUTPUT_UNIT,*)"   '-max-timeout-duration <duration>' : Limit detection time for robust"
+      write(OUTPUT_UNIT,*)"   '-max-launch-duration  <duration>' : Limit detection time for robust"
       write(OUTPUT_UNIT,*)"   '-skip n'         : used by remote start with 'robust' internally"
       write(OUTPUT_UNIT,*)"                       This flag should NOT be used directly by users."
+      write(OUTPUT_UNIT,*)"   '-xml <file>'     : output JUnit XML to specified file"
+      write(OUTPUT_UNIT,*)"                       XML can be used with e.g. Jenkins."
+      write(OUTPUT_UNIT,*)"   '-name <name>'    : give tests an identifying name in XML output"
       write(OUTPUT_UNIT,*)" "
 
    end subroutine printHelpMessage

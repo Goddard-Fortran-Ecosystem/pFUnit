@@ -84,8 +84,13 @@ MPI ?=NO # do not include MPI capabilities
 OPENMP ?=NO # do not include OpenMP threading
 # MAX_RANK ?=$(PFUNIT_MAX_RANK) # Maximum rank of arrays in assertions
 MAX_RANK ?=5
+# Remove the following at version 4.
 ifneq ($(origin PFUNIT_MAX_RANK), undefined)
    MAX_RANK=$(PFUNIT_MAX_RANK)
+endif
+# The following supersedes the previous.
+ifneq ($(origin PFUNIT_MAX_ARRAY_RANK), undefined)
+   MAX_RANK=$(PFUNIT_MAX_ARRAY_RANK)
 endif
 
 ifneq ($(UNAME),Windows)

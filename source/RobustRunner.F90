@@ -45,6 +45,8 @@ module RobustRunner_mod
       integer :: numSkip
       type (ListenerPointer), allocatable :: extListeners(:)
       type (UnixProcess) :: remoteProcess
+      real :: maxLaunchDuration
+      real :: maxTimeoutDuration
    contains
       procedure :: run
       procedure :: runWithResult
@@ -58,7 +60,7 @@ module RobustRunner_mod
    end type RobustRunner
 
    interface RobustRunner
-      module procedure newRobustRunner
+!      module procedure newRobustRunner
       module procedure newRobustRunner_extListeners
    end interface RobustRunner
 
@@ -69,27 +71,59 @@ module RobustRunner_mod
       procedure :: runMethod
    end type TestCaseMonitor
 
+!!! Inject dependency through constructor...
    real, parameter :: MAX_TIME_LAUNCH = 5.00 ! in seconds
+   real, parameter :: MAX_TIME_TEST   = 0.11 ! in seconds
 
 contains
 
-   function newRobustRunner(remoteRunCommand) result(runner)
+!   function newRobustRunner(remoteRunCommand,maxLaunchDuration) result(runner)
+!      type (RobustRunner) :: runner
+!      character(len=*), intent(in) :: remoteRunCommand
+!      real, optional, intent(in) :: maxLaunchDuration
+!
+!      if(.not.present(maxLaunchDuration))then
+!         runner%maxLaunchDuration = MAX_TIME_LAUNCH
+!      else
+!         runner%maxLaunchDuration = maxLaunchDuration
+!      end if
+!      
+!      runner%remoteRunCommand = trim(remoteRunCommand)
+!      allocate(runner%extListeners(0))
+!   end function newRobustRunner
+
+   function newRobustRunner_extListeners( &
+        & remoteRunCommand   &
+        & ,extListeners      &
+        & ,maxLaunchDuration &
+        & ,maxTimeoutDuration &
+        & ) result(runner)
       type (RobustRunner) :: runner
       character(len=*), intent(in) :: remoteRunCommand
+      type(ListenerPointer), optional, intent(in) :: extListeners(:)
+      
+      real, optional, intent(in) :: maxLaunchDuration
+      real, optional, intent(in) :: maxTimeoutDuration
+
+      if(.not.present(maxLaunchDuration))then
+         runner%maxLaunchDuration = MAX_TIME_LAUNCH
+      else
+         runner%maxLaunchDuration = maxLaunchDuration
+      end if
+
+      if(.not.present(maxTimeoutDuration))then
+         runner%maxTimeoutDuration = MAX_TIME_TEST
+      else
+         runner%maxTimeoutDuration = maxTimeoutDuration
+      end if
+
+      if(present(extListeners))then
+         allocate(runner%extListeners(size(extListeners)), source=extListeners)
+      end if
       
       runner%remoteRunCommand = trim(remoteRunCommand)
-      allocate(runner%extListeners(0))
-   end function newRobustRunner
-
-   function newRobustRunner_extListeners(remoteRunCommand, extListeners) result(runner)
-!mlr- unit was a dummy e.g. from iso_fortran_env OUTPUT_UNIT
-      type (RobustRunner) :: runner
-      character(len=*), intent(in) :: remoteRunCommand
-      type(ListenerPointer), intent(in) :: extListeners(:)
-
-      allocate(runner%extListeners(size(extListeners)), source=extListeners)
-      runner%remoteRunCommand = trim(remoteRunCommand)
       runner%numSkip = 0
+      
    end function newRobustRunner_extListeners
 
    subroutine runMethod(this)
@@ -146,7 +180,8 @@ contains
          call aTest%getTestCases(testCases)
 #endif
       class is (TestCase)
-         testCases = [TestCaseReference(aTest)]
+         allocate(testCases(1))
+         allocate(testCases(1)%test, source= aTest)
       class default
          stop
       end select
@@ -157,7 +192,11 @@ contains
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
          end if
-         proxy = RemoteProxyTestCase(testCases(i)%test,this%remoteProcess)
+         proxy = RemoteProxyTestCase( &
+              &     testCases(i)%test &
+              &     ,this%remoteProcess &
+              &     ,maxTimeoutDuration=this%maxTimeoutDuration &
+              &  )
          call proxy%run(result, context)
       end do
 
@@ -188,6 +227,7 @@ contains
       character(len=80) :: timeCommand
       type (UnixProcess) :: timerProcess
       character(len=:), allocatable :: line
+      character(len=100) :: throwMessage
 
       
       write(suffix,'(i0)') numSkip
@@ -199,14 +239,18 @@ contains
       ! Check for successful launch - prevents MPI launch time from counting against
       ! first test's time limit.
       write(timeCommand,'(a, f10.3,a,i0,a)') &
-           & "(sleep ",MAX_TIME_LAUNCH," && kill -9 ", this%remoteProcess%getPid(),") > /dev/null 2>&1"
+           & "(sleep ",this%maxLaunchDuration," && kill -9 ", &
+           & this%remoteProcess%getPid(), &
+           & ") > /dev/null 2>&1"
       timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
 
       do
          line = this%remoteProcess%getLine()
          if (len(line) == 0) then
             if (.not. this%remoteProcess%isActive()) then
-               call throw('RUNTIME-ERROR: terminated before starting')
+               write(throwMessage,'(a,f0.3,a)') &
+                    & ' (max launch duration = ',this%maxLaunchDuration,')'
+               call throw('RUNTIME-ERROR: terminated before starting'//trim(throwMessage))
                call timerProcess%terminate()
                return
             else
@@ -216,7 +260,9 @@ contains
             end if
          else
             if ('*LAUNCHED*' /= line) then
-               call throw('Failure to launch in RobustRunner.')
+               call throw(&
+	       &    'Failure to launch in RobustRunner. ' &
+	       &    //"Expected: '*LAUNCHED*' Found: '"//line//"'" )
                return
             else
                ! successfully launched

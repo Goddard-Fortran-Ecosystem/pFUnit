@@ -124,7 +124,9 @@ contains
       call suite%addTest( &
            &   newTestMethod('testAssertEqualStrIgnWhiDif8', &
            &                  testAssertEqualStrIgnWhiDif8))
-
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStrIgnWhiDif9', &
+           &                  testAssertEqualStrIgnWhiDif9))
       call suite%addTest( &
            &   newTestMethod('testAssertEqualStringTrimWhitespace1', &
            &                  testAssertEqualStringTrimWhitespace1))
@@ -132,12 +134,35 @@ contains
            &   newTestMethod('testAssertEqualStringTrimWhitespace2', &
            &                  testAssertEqualStringTrimWhitespace2))
       call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringTrimWhitespace3', &
+           &                  testAssertEqualStringTrimWhitespace3))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringTrimWhitespace4', &
+           &                  testAssertEqualStringTrimWhitespace4))
+      call suite%addTest( &
            &   newTestMethod('testAssertEqualStringKeepWhitespace1', &
            &                  testAssertEqualStringKeepWhitespace1))
       call suite%addTest( &
            &   newTestMethod('testAssertEqualStringKeepWhitespace2', &
            &                  testAssertEqualStringKeepWhitespace2))
-
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringKeepWhitespace3', &
+           &                  testAssertEqualStringKeepWhitespace3))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualStringKeepWhitespace4', &
+           &                  testAssertEqualStringKeepWhitespace4))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks1', &
+           &                  testAssertEqualNonzeroBlanks1 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks2', &
+           &                  testAssertEqualNonzeroBlanks2 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks3', &
+           &                  testAssertEqualNonzeroBlanks3 ))
+      call suite%addTest( &
+           &   newTestMethod('testAssertEqualNonzeroBlanks4', &
+           &                  testAssertEqualNonzeroBlanks4 ))
       call suite%addTest( &
            &   newTestMethod('testAssertAny', &
            &                  testAssertAny))
@@ -317,11 +342,11 @@ contains
           & '   but found: <"string7">'  // new_line('A') // &
           & '  first diff:   ------^'))
 
-   end subroutine 
+   end subroutine
 
    subroutine testAssertEqualStrIgnWhiDif8()
      character, parameter :: tab = char(9), spc = char(32)
-     call assertEqual(expected="string8A ", found="string8B", &
+     call assertEqual(expected="string8A", found="string8B", &
           & whitespace=IGNORE_DIFFERENCES)
 
      call assertTrue(catch( &
@@ -330,7 +355,20 @@ contains
           & '   but found: <"string8B">'  // new_line('A') // &
           & '  first diff:   -------^'))
 
-   end subroutine 
+   end subroutine
+
+   subroutine testAssertEqualStrIgnWhiDif9()
+!     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected="", found=" ", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+!     call assertTrue(catch( &
+!          & 'String assertion failed:' // new_line('A') // &
+!          & '    expected: <"string8A">' // new_line('A') // &
+!          & '   but found: <"string8B">'  // new_line('A') // &
+!          & '  first diff:   -------^'))
+
+   end subroutine
 
    subroutine testAssertEqualStringTrimWhitespace1()
      character tab; tab = char(9)
@@ -349,6 +387,28 @@ contains
           & '   but found: <"stringA">'  // new_line('A') // &
           & '  first diff:   ------^'))
    end subroutine testAssertEqualStringTrimWhitespace2
+   
+   subroutine testAssertEqualStringTrimWhitespace3()
+     character tab; tab = char(9)
+     ! Should fail !
+     call assertEqual(expected="", found=" ", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualStringTrimWhitespace3
+
+   subroutine testAssertEqualStringTrimWhitespace4()
+     call assertEqual( &
+          & expected = "i= 1 f= F s=word x=  1.23", &
+          & found    = "i= 1  f= F s=word x=  1.23", &
+!          & expected = "i= 1 f= F s=word x=  1.23", &
+!          & found    = “i= 1  f= F s=word x=  1.23", &
+          & whitespace=TRIM_ALL )
+!          & whitespace=IGNORE_DIFFERENCES )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"i= 1 f= F s=word x=  1.23">' // new_line('A') // &
+          & '   but found: <"i= 1  f= F s=word x=  1.23">' // new_line('A') // &
+          & '  first diff:   -----^'))
+   end subroutine
 
    subroutine testAssertEqualStringKeepWhitespace1()
      character tab; tab = char(9)
@@ -368,6 +428,55 @@ contains
           & '  first diff:   ^'))
    end subroutine testAssertEqualStringKeepWhitespace2
 
+   subroutine testAssertEqualStringKeepWhitespace3()
+     character tab; tab = char(9)
+     ! Should fail !
+     call assertEqual(expected="", found=" ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"">' // new_line('A') // &
+          & '   but found: <" ">'  // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace3
+
+   subroutine testAssertEqualStringKeepWhitespace4()
+     character tab; tab = char(9)
+     ! Should fail !
+     call assertEqual(expected=" ", found="", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <" ">' // new_line('A') // &
+          & '   but found: <"">'  // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace4
+
+   subroutine testAssertEqualNonzeroBlanks1
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <" ">' // new_line('A') // &
+          & '   but found: <"      ">'  // new_line('A') // &
+          & '  first diff:   -^'))
+   end subroutine testAssertEqualNonzeroBlanks1
+
+   subroutine testAssertEqualNonzeroBlanks2
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualNonzeroBlanks2
+
+   subroutine testAssertEqualNonzeroBlanks3
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_DIFFERENCES )
+   end subroutine testAssertEqualNonzeroBlanks3
+
+   subroutine testAssertEqualNonzeroBlanks4
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualNonzeroBlanks4
+   
    ! Fail only if all .false.
    subroutine testAssertAny()
       call assertAny([.true.])
