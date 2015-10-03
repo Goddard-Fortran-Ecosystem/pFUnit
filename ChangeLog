@@ -1,18 +1,18 @@
-Note: Should add info for earlier releases.
-
-	June 30, 2015
+3.1.1
+	- PGI 15.7 appears to be working robustly
+	  . some previously necessary workarounds have been removed
+	- Additional documentation for XML printer
+	- Improved compliance with JUnit for XML printer
+	- Bug fix for RemoteProxyTestCase
+	- CMake workaround for OpenMPI 1.8.8 which otherwise complains about nested
+	  MPI programs in self tests.
 	- Fixed KEEP_ALL option in AssertEqual for zero-length strings.
 	  Because "" == " " in Fortran, AssertEqual(""," ",whitespace=KEEP_ALL),
 	  which should throw an exception, failed silently for zero-length arrays.
-
-	June 11, 2015
 	- Fixed the make clean bug in Example code.
 	- Added time out command line arguments.
 	- Added PFUNIT_EXTRA_USAGE in include/driver.F90 for suite-wide fixture use.
-	- Cray workarounds on a separate branch.
-
-	May 8, 2015
-	- PGI 15.4 enabled some workarounds to be removed.
+	- Cray workarounds on a separate branch (hope for a release in November).
 
 3.1	March 20, 2015
 	- PGI 15.1 now supported.
