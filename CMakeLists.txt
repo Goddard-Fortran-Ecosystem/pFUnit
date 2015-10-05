@@ -8,22 +8,18 @@
 #     MAX_RANK=<max array rank for generated code>
 #                                             ! defaults to 5 or
 #                                             !   ${PFUNIT_MAX_ARRAY_RANK}
-# 
+#
 # Usage:
 #   cmake -DMPI=YES -DINSTALL_PATH=<A path> <path to source>
 #
 # ------------------------------------------------------------------------ #
 INCLUDE(CMakeForceCompiler)
-cmake_minimum_required(VERSION 2.8)
-project (pFUnit)
+cmake_minimum_required(VERSION 3.0)
+project (pFUnit
+    VERSION 3.1.1
+    )
 enable_language (Fortran)
  set (CMAKE_VERBOSE_MAKEFILE 1)
-
-set(PFUNIT_MAJOR_VERSION 3)
-set(PFUNIT_MINOR_VERSION 0)
-set(PFUNIT_PATCH_VERSION 3)
-set(PFUNIT_VERSION
-  ${PFUNIT_MAJOR_VERSION}.${PFUNIT_MINOR_VERSION}.${PFUNIT_PATCH_VERSION})
 
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}")
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
@@ -192,3 +188,16 @@ endif()
 # Packaging
 set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")
 include(CPack)
+
+
+# Create the pFUnitConfig.cmake and pFUnitConfigVersion files
+configure_file(cmake/pFUnitConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake" @ONLY)
+configure_file(cmake/pFUnitConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake" @ONLY)
+
+# Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
+install(FILES
+  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake"
+  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake"
+  DESTINATION . )
