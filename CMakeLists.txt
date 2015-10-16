@@ -21,6 +21,8 @@ project (pFUnit
 enable_language (Fortran)
  set (CMAKE_VERBOSE_MAKEFILE 1)
 
+ enable_testing ()
+
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}")
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
 # MESSAGE(OK:"${ENV_PFUNIT}")

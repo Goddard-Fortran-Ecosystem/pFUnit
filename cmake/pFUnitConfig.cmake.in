@@ -97,10 +97,10 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     target_include_directories (${test_package_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
     target_include_directories (${test_package_name} PRIVATE ${SRC_GEN_DIR})
 
-    if(WIN32 AND ${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
+    if(MSVC)
         set_property (TARGET ${test_package_name}
             PROPERTY LINK_FLAGS " /INCREMENTAL:NO ")
-    endif(WIN32 AND ${CMAKE_C_COMPILER_ID} MATCHES "MSVC")
+    endif(MSVC)
 
     if (${CMAKE_Fortran_COMPILER_ID} MATCHES "PGI")
         set_property (TARGET ${test_package_name}
