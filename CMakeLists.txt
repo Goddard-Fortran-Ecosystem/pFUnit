@@ -21,6 +21,8 @@ project (pFUnit
 enable_language (Fortran)
  set (CMAKE_VERBOSE_MAKEFILE 1)
 
+ enable_testing ()
+
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}")
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
 # MESSAGE(OK:"${ENV_PFUNIT}")
@@ -186,9 +188,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 # Packaging
-set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")
-include(CPack)
-
+include (cmake/packaging.cmake)
 
 # Create the pFUnitConfig.cmake and pFUnitConfigVersion files
 configure_file(cmake/pFUnitConfig.cmake.in
