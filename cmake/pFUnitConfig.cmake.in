@@ -112,5 +112,8 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${test_package_name}
         )
+    set_property (TEST ${test_package_name}
+        PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+        )
 
 endfunction (add_pfunit_test test_package_name test_sources extra_sources extra_sources_c)

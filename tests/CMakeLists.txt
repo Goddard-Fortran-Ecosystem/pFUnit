@@ -53,6 +53,9 @@ set(TEST_EXE tests.x)
 add_executable (${TEST_EXE} selfTests.F90)
 add_test (NAME pfunit_tests COMMAND ${TEST_EXE}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set_property (TEST pfunit_tests
+    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+    )
 
 add_dependencies(tests.x pfunit)
 
