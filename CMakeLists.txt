@@ -4,42 +4,18 @@
 #
 # Command line options:
 #     MPI=YES                                 ! defaults to NO
-#     INSTALL_PATH=<path>                     ! defaults to ${PFUNIT}
 #     MAX_RANK=<max array rank for generated code>
 #                                             ! defaults to 5 or
 #                                             !   ${PFUNIT_MAX_ARRAY_RANK}
 # 
 # Usage:
-#   cmake -DMPI=YES -DINSTALL_PATH=<A path> <path to source>
+#   cmake -DMPI=YES <path to source>
 #
 # ------------------------------------------------------------------------ #
 INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
 project (pFUnit, Fortran)
 set (CMAKE_VERBOSE_MAKEFILE 1)
-
-# MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}") 
-# set (ENV_PFUNIT "$ENV{PFUNIT}")
-# MESSAGE(OK:"${ENV_PFUNIT}") 
-# OPTION(INSTALL_PATH "Use PFUNIT for development" "$ENV{PFUNIT}")  
-# OPTION(INSTALL_PATH "Use PFUNIT for development" "${ENV_PFUNIT}")  
-OPTION(INSTALL_PATH "Use PFUNIT for development" OFF) 
-IF(NOT INSTALL_PATH)
-   IF(DEFINED ENV{PFUNIT})
-      set (INSTALL_PATH "$ENV{PFUNIT}")
-   ELSE()
-      MESSAGE("** WARNING: Install path not found! Please set PFUNIT or use -DINSTALL_PATH=...")
-   ENDIF()
-ENDIF()
-IF(NOT DEFINED ENV{PFUNIT})
-   MESSAGE("++ Remember to set the environment variable PFUNIT to the install directory!")
-   MESSAGE("++ Example: export PFUNIT=${INSTALL_PATH}")
-ENDIF()
-IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
-   MESSAGE("** WARNING:  Environment variable PFUNIT not equal to INSTALL_PATH.")
-   MESSAGE("**           Found: PFUNIT=$ENV{PFUNIT}")
-ENDIF()
-MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
 
 OPTION(MAX_RANK "Maximum array rank for generated code." NO)
 IF(NOT MAX_RANK)
@@ -69,12 +45,6 @@ OPTION(ROBUST "Build robust test runner" YES)
 set(OPENMP_FLAGS "OPENMP_FLAGS-NOTFOUND"
   CACHE STRING "OpenMP flags for the Fortran compiler.")
 
-
-# OPTION doesn't seem to work as expected.
-OPTION(INSTALL_PATH "Use PFUNIT for development" ENV{PFUNIT})
-if ( NOT INSTALL_PATH )
-   set (INSTALL_PATH "$ENV{PFUNIT}" )
-endif()
 
 if (MPI)
     add_definitions(-DUSE_MPI)
@@ -165,11 +135,6 @@ add_subdirectory (source)
 add_subdirectory (tests)
 add_subdirectory (include)
 add_subdirectory (bin)
-
-# Override on command line with -DCMAKE_INSTALL_PREFIX=... or -DINSTALL_PATH=...
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set (CMAKE_INSTALL_PREFIX "${INSTALL_PATH}" CACHE PATH "default install path" FORCE )
-endif()
 
 # Packaging
 set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")

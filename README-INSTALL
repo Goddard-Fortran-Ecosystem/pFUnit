@@ -259,12 +259,12 @@ the source) to generate the required makefiles.
 
 $ mkdir build
 $ cd build
-$ # e.g. cmake -DMPI=YES -DOPENMP=NO -DINSTALL_PATH=<A path> <path to source>
+$ # e.g. cmake -DMPI=YES -DOPENMP=NO <path to source>
 $ cmake -DMPI=NO ..
 $ make tests
 
-One may also set the environment variable PFUNIT instead of setting
-INSTALL_PATH on the cmake command line as given above.
+Don't forget you can use the standard -DCMAKE_INSTALL_PREFIX to define where
+the resulting tool will be installed.
 
 If your MPI installation does not provide mpirun, you may try to set
 -DMPI_USE_MPIEXEC=YES to tell CMake to use its FindMPI function to
@@ -274,7 +274,10 @@ find out how to execute the tests.
 
 6. INSTALLATION
 
-Installations 6.1-6.5 are based on GNU make and the project makefiles.
+Installations 6.1-6.5 are based on GNU make and the project makefiles. If you
+use CMake then "make install" will install to the expected place. That is, to
+/usr/local if you specify nothing, otherwise to wherever CMAKE_INSTALL_PREFIX
+points.
 
 6.1 INSTALLATION - SERIAL
 
