@@ -86,8 +86,6 @@ list(APPEND pysrcs Utilities.py)
 
 set(SOURCES ${srcs})
 
-message("SOURCES: '${SOURCES}'")
-
 add_library(pfunit STATIC ${SOURCES})
 
 include_directories(${CMAKE_BINARY_DIR}/mod)
