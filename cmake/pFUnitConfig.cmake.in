@@ -61,7 +61,19 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
         set (TEST_SUITES_INC "${TEST_SUITES_INC}ADD_TEST_SUITE(${basename}_suite)\n")
     endforeach()
 
-    file (WRITE ${SRC_GEN_DIR}/testSuites.inc ${TEST_SUITES_INC})
+    set (TEST_SUITE_INC_FILE ${SRC_GEN_DIR}/testSuites.inc)
+    set (SHOULD_WRITE_INC_FILE True)
+
+    if (EXISTS ${TEST_SUITE_INC_FILE})
+        file (READ ${TEST_SUITE_INC_FILE} existing_file)
+        if (${existing_file} STREQUAL ${TEST_SUITES_INC})
+            set (SHOULD_WRITE_INC_FILE False)
+        endif (${existing_file} STREQUAL ${TEST_SUITES_INC})
+    endif (EXISTS ${TEST_SUITE_INC_FILE})
+
+    if (${SHOULD_WRITE_INC_FILE})
+        file (WRITE ${TEST_SUITE_INC_FILE} ${TEST_SUITES_INC})
+    endif (${SHOULD_WRITE_INC_FILE})
 
     list (LENGTH test_sources len)
     math(EXPR n "${len} - 1")
