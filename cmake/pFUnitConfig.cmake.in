@@ -49,10 +49,13 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
         message (WARNING "No test sources defined for '${test_package_name}', ignoring...")
         return ()
     endif (NOT test_sources)
-
+    
+    #################################################
+    # Preprocessing                                 #
+    #################################################
     set (SRC_GEN_DIR ${CMAKE_CURRENT_BINARY_DIR}/src_gen/${test_package_name})
     execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${SRC_GEN_DIR}/)
-
+    
     set (TEST_SUITES_INC "")
     foreach (file ${test_sources})
         get_filename_component (basename ${file} NAME_WE)
@@ -63,7 +66,9 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
 
     set (TEST_SUITE_INC_FILE ${SRC_GEN_DIR}/testSuites.inc)
     set (SHOULD_WRITE_INC_FILE True)
-
+    
+    # Check if .inc file already has been generated. If so, only write new
+    # file if contents has changed. This avoid tests recompiling after reconfiguring cmake.
     if (EXISTS ${TEST_SUITE_INC_FILE})
         file (READ ${TEST_SUITE_INC_FILE} existing_file)
         if (${existing_file} STREQUAL ${TEST_SUITES_INC})
@@ -88,27 +93,41 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
             )
     endforeach()
 
+    #################################################
+    # Define executable and any auxiliary library   #
+    #################################################
+
+    # Main executable
     add_executable (${test_package_name} 
         ${test_sources_f90} 
         ${extra_sources} 
         ${PFUNIT_DRIVER}
         ${PFUNIT_TESTUTILS}
         )
-    
-    set_property ( SOURCE ${PFUNIT_TESTUTILS}
-        APPEND
-        PROPERTY COMPILE_DEFINITIONS "__PROJECT_DIR__='${CMAKE_CURRENT_SOURCE_DIR}'"
-        )
 
+    # Define directory of Fortran mod-files for main executable
+    execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/include/${test_package_name})
+    set_property (TARGET ${test_package_name}
+        PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/${test_package_name})
+    
+    # C files library, if relevant
     if (NOT extra_sources_c STREQUAL "")
         add_library (${test_package_name}_c STATIC ${extra_sources_c})
         target_link_libraries (${test_package_name} ${test_package_name}_c)
     endif ()
-
+    
+    # Define dependencies
     target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
-    target_include_directories (${test_package_name} PRIVATE $<TARGET_PROPERTY:Fortran_MODULE_DIRECTORY>)
     target_include_directories (${test_package_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
     target_include_directories (${test_package_name} PRIVATE ${SRC_GEN_DIR})
+    target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include/${test_package_name})
+
+    
+    # Test utility preprocessing
+    set_property ( SOURCE ${PFUNIT_TESTUTILS}
+        APPEND
+        PROPERTY COMPILE_DEFINITIONS "__PROJECT_DIR__='${CMAKE_CURRENT_SOURCE_DIR}'"
+        )
 
     if(MSVC)
         set_property (TARGET ${test_package_name}
@@ -120,7 +139,9 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
             PROPERTY LINKER_LANGUAGE Fortran)
     endif (UNIX)
 
-
+    #################################################
+    # Define test in CTets system                   #
+    #################################################
     add_test (NAME ${test_package_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${test_package_name}
