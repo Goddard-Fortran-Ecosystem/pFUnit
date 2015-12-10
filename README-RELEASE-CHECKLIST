@@ -1,0 +1,71 @@
+
+README-RELEASE-CHECKLIST MLR 2015-1210
+
+********************************************************
+**** THIS CHECKLIST NEEDS TO BE REVIEWED BEFORE USE ****
+********************************************************
+
+This file contains the sequence of steps to be followed to publish a
+new release of pFUnit.
+
+0. Coordinate with development team members to minimize changes to the
+repository during the release process.
+
+1. Complete work on the development branch, synchronize with the
+SourceForge repository.  This requires pulling develop from
+SourceForge, merging, testing, and then pushing back to SourceForge.
+Then review the regression testing produced on Discover.  If the
+regression tests are acceptable, then continue to update documentation
+and version information as follows.
+
+2. Update the version and documentation. Edit README-INSTALL and
+VERSION to match the release's tag number. Update ChangeLog to reflect
+changes to pFUnit, ordered by release number, but listing the most
+important changes first within releases. Update the doxygen files in
+the documentation directory.  Review the top level GNUmakefile and set
+the location of the appropriate version of doxygen.  Make the pdf
+version of the documentation, the html version will be produced as a
+side effect.  Publish the html files to SourceForge using ftp.  Also
+upload README-INSTALL as README and update the PDF file on
+SourceForge.  We generally name the PDF file to reflect the current
+version of the code.
+
+bash-3.2$ sftp <login>@frs.sourceforge.net
+Password: 
+Connected to frs.sourceforge.net.
+sftp> cd /home/project-web/pfunit/htdocs
+sftp> !pwd
+<pfunit>/documentation/html
+sftp> mput *
+sftp> lcd <pfunit>/documentation
+sftp> cd /home/frs/project/pfunit
+sftp> put README-INSTALL
+sftp> cd Documentation
+sftp> put README-INSTALL
+sftp> put pFUnit3-ReferenceManual.pdf
+sftp> put pFUnit3-ReferenceManual.pdf pFUnit3-ReferenceManual-<version>-<date>-1.pdf
+
+Similarly, one can put a tar'd version of the pFUnit release into
+"/home/pfs/project/pfunit/Source" at frs.sourceforge.net.
+
+3. Clean pFUnit, especially the documentation directory, but retain
+the PDF file.  At this point the documentation files (README-INSTALL,
+VERSION, ChangeLog, documentation/pFUnit3-ReferenceManual.pdf, etc)
+will need to be committed and pushed to the repository. Commit these
+and synchronize the development branch with SourceForge.
+
+4. Ensure the local code is tagged with the appropriate version
+number.  E.g. using "git tag 3.1.2".  To check the tag of the current
+branch use "git describe --tag".  Then share the tags via "git push
+<origin> --tags" where <origin> is the SourceForge location.
+
+5. At this point, it is time to merge in master. On development, "git
+merge master" and resolve any conflicts. Push development to
+SourceForge be sure to review the regression tests. Then "git checkout
+master; git merge development" and then push to SourceForge. This
+constitutes the release.
+
+6. Notify the development team that the release is complete, then
+prepare and announce the release via the pFUnit mailing list hosted at
+SourceForge.
+
