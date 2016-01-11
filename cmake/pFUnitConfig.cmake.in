@@ -140,7 +140,7 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     endif (UNIX)
 
     #################################################
-    # Define test in CTets system                   #
+    # Define test in CTest system                   #
     #################################################
     add_test (NAME ${test_package_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

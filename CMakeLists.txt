@@ -14,10 +14,11 @@
 # ------------------------------------------------------------------------ #
 INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
+cmake_policy(SET CMP0048 NEW)
 project (pFUnit
     VERSION 3.1.1
-    )
-enable_language (Fortran)
+    LANGUAGES Fortran)
+#enable_language (Fortran)
 
 # MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}") 
 # set (ENV_PFUNIT "$ENV{PFUNIT}")
