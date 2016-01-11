@@ -7,15 +7,40 @@
 #     MAX_RANK=<max array rank for generated code>
 #                                             ! defaults to 5 or
 #                                             !   ${PFUNIT_MAX_ARRAY_RANK}
-# 
+#
 # Usage:
 #   cmake -DMPI=YES <path to source>
 #
 # ------------------------------------------------------------------------ #
 INCLUDE(CMakeForceCompiler)
 cmake_minimum_required(VERSION 2.8)
-project (pFUnit, Fortran)
-set (CMAKE_VERBOSE_MAKEFILE 1)
+project (pFUnit
+    VERSION 3.1.1
+    )
+enable_language (Fortran)
+
+# MESSAGE(ENV{PFUNIT}:"$ENV{PFUNIT}") 
+# set (ENV_PFUNIT "$ENV{PFUNIT}")
+# MESSAGE(OK:"${ENV_PFUNIT}") 
+# OPTION(INSTALL_PATH "Use PFUNIT for development" "$ENV{PFUNIT}")  
+# OPTION(INSTALL_PATH "Use PFUNIT for development" "${ENV_PFUNIT}")  
+OPTION(INSTALL_PATH "Use PFUNIT for development" OFF) 
+IF(NOT INSTALL_PATH)
+   IF(DEFINED ENV{PFUNIT})
+      set (INSTALL_PATH "$ENV{PFUNIT}")
+   ELSE()
+      MESSAGE("** WARNING: Install path not found! Please set PFUNIT or use -DINSTALL_PATH=...")
+   ENDIF()
+ENDIF()
+IF(NOT DEFINED ENV{PFUNIT})
+   MESSAGE("++ Remember to set the environment variable PFUNIT to the install directory!")
+   MESSAGE("++ Example: export PFUNIT=${INSTALL_PATH}")
+ENDIF()
+IF( NOT $ENV{PFUNIT} STREQUAL INSTALL_PATH )
+   MESSAGE("** WARNING:  Environment variable PFUNIT not equal to INSTALL_PATH.")
+   MESSAGE("**           Found: PFUNIT=$ENV{PFUNIT}")
+ENDIF()
+MESSAGE("-- Installing to INSTALL_PATH: ${INSTALL_PATH}")
 
 OPTION(MAX_RANK "Maximum array rank for generated code." NO)
 IF(NOT MAX_RANK)
@@ -69,15 +94,26 @@ endif()
 if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 
     # Use ifort
-    execute_process(COMMAND ifort --version 
-                    OUTPUT_VARIABLE INTEL_COMPILER_VERSION)
-    string (REGEX MATCH "([0-9]+)" 
-            NUM_VERSION ${INTEL_COMPILER_VERSION})
-    if("${NUM_VERSION}" STREQUAL "13")
-        add_definitions(-DINTEL_13)
+    #There seems to be no easy way to determine the compiler version on Windows
+    #since it isn't necessary defined in the PATH. As a workaround, assume version
+    #different to 13 if exectuing ifort doesn't give any results
+    if(NOT "${INTEL_COMPILER_VERSION}" STREQUAL "")
+      string (REGEX MATCH "([0-9]+)"
+              NUM_VERSION ${INTEL_COMPILER_VERSION})
+      if("${NUM_VERSION}" STREQUAL "13")
+          add_definitions(-DINTEL_13)
+      endif()
     endif()
     add_definitions(-DIntel)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}")
+    if (WIN32)
+        set(CMAKE_Fortran_FLAGS
+            "${CMAKE_Fortran_FLAGS_DEBUG} -Od -check:uninit -check:bounds -traceback -assume:realloc_lhs ${CMAKE_Fortran_FLAGS}"
+            )
+    else (WIN32)
+        set(CMAKE_Fortran_FLAGS
+            "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}"
+            )
+    endif (WIN32)
 
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
@@ -88,7 +124,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL GNU)
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
-    # use nagfor			     
+    # use nagfor
     add_definitions(-DNAG)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp -C=present")
 
@@ -113,7 +149,7 @@ endif()
 # Fortran OpenMP support is not yet integrated into the CMake distribution.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/include/cmake/Modules/")
 if (OPENMP)
-#    find_package(OpenMP_Fortran REQUIRED) 
+#    find_package(OpenMP_Fortran REQUIRED)
 #    if(OPENMP_FORTRAN_FOUND)
 #      set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
 #      set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
@@ -138,5 +174,16 @@ add_subdirectory (include)
 add_subdirectory (bin)
 
 # Packaging
-set(CPACK_PACKAGE_CONTACT "pFUnit developers <pfunit-developers@list.sourceforge.net>")
-include(CPack)
+include (cmake/packaging.cmake)
+
+# Create the pFUnitConfig.cmake and pFUnitConfigVersion files
+configure_file(cmake/pFUnitConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake" @ONLY)
+configure_file(cmake/pFUnitConfigVersion.cmake.in
+  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake" @ONLY)
+
+# Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
+install(FILES
+  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake"
+  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake"
+  DESTINATION . )
