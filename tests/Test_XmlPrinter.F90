@@ -34,8 +34,11 @@ module Test_XmlPrinter_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
+      use TestCase_mod
       use TestMethod_mod, only: newTestMethod
+      use Test_mod
+      use TestResult_mod
+      use TestSuite_mod, only: TestSuite, newTestSuite
       type (TestSuite) :: suite
 
       suite = newTestSuite('TestXmlPrinterSuite')
@@ -51,11 +54,11 @@ contains
    subroutine testValidXml()
       use Assert_mod, only: assertEqual
       use Exception_mod, only: newException
+      use TestCase_mod
       use SimpleTestCase_mod, only: SimpleTestCase
       use SurrogateTestCase_mod
-      use TestCase_mod
-      use XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
       use TestResult_mod, only: TestResult, newTestResult
+      use XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
 
 #ifdef Intel
       use ifport, only: system
