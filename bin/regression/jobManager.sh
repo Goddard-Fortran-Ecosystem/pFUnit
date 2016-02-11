@@ -41,14 +41,14 @@ function setModule {
    moduleList=''
    moduleMPI=''
    
-   export PATH=/usr/local/other/SLES11/SIVO-PyD/1.9.0/bin:$PATH
+   export PATH=/usr/local/other/SSSO_Ana-PyD/2.1.0/bin/python:$PATH
    if [ "$fortranCompiler" == "INTEL" ]; then
       if [ "$version" == "13.1" ]; then
          moduleFortran='comp/intel-13.1.3.192'
       elif [ "$version" == "13.0" ]; then
          moduleFortran='comp/intel-13.0.1.117'
       elif [ "$version" == "14.0" ]; then
-         moduleFortran='comp/intel-14.0.2.144'
+         moduleFortran='comp/intel-14.0.3.174'
       elif [ "$version" == "15.0" ]; then
          moduleFortran='comp/intel-15.0.3.187'
       else
@@ -59,9 +59,9 @@ function setModule {
          moduleMPI=' mpi/impi-5.0.3.048'
       fi
    elif [ "$fortranCompiler" == "PGI" ]; then
-      moduleFortran='comp/pgi-15.1.0'
+      moduleFortran='comp/pgi-15.9.0'
       if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
-         moduleMPI=' other/mpi/openmpi/1.8.1-pgi-15.1.0'
+         moduleMPI=' other/mpi/openmpi/1.10.0-pgi-15.9.0'
       fi
    elif [ "$fortranCompiler" == "NAG" ]; then
       moduleFortran='comp/nag-6.0'
@@ -79,6 +79,11 @@ function setModule {
          if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
            moduleMPI=' other/mpi/openmpi/1.7.2-gcc-4.8.1-shared'
          fi
+      elif [ "$version" == "5.2" ]; then
+         moduleFortran='other/comp/gcc-5.2-sp3'
+         if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
+           moduleMPI=' other/mpi/openmpi/1.8.7-gcc-5.2-sp3'
+         fi
       else
          msg="$fortranCompiler version $version is not supported yet"
          echo -e "$msg\n\n" >> $DebugLog
@@ -86,7 +91,7 @@ function setModule {
    else
       abortNotify "$fortranCompiler is not supported yet"
    fi
-   moduleList="other/cmake-2.8.11.2 $moduleFortran $moduleMPI"
+   moduleList="other/cmake-3.2.3 $moduleFortran $moduleMPI"
 
    module purge
    if [ -n "$moduleList" ]; then  
@@ -311,10 +316,10 @@ COMPILERS=(INTEL GNU NAG PGI)
 # development and release-3.0 branches.
 INTEL_VERSIONS_master=(13.1 14.0 15.0)
 INTEL_VERSIONS_2_1_0=(13.0 13.1 14.0)
-GNU_VERSIONS_master=(4.9.1)
+GNU_VERSIONS_master=(4.9.1 5.2)
 GNU_VERSIONS_2_1_0=(4.8.1 4.9.1)
 NAG_VERSIONS=(6.0)
-PGI_VERSIONS=(15.1.0)
+PGI_VERSIONS=(15.9.0)
 
 # serial, mpi, omp, omp+mpi
 PARALLEL=(off mpi omp hybrid)

@@ -60,7 +60,7 @@ function handlePBS
    echo "Submit job..."
    QSUB=sbatch
 
-   jobScript=$HOME/bin/jobManager.sh
+   jobScript=$HOME/bin/jobQuick.sh
    if [ $USEBATCH -eq 1 ];then
      jobID=`$QSUB $jobScript | awk '{print $4}'`
    else

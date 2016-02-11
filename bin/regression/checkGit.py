@@ -14,10 +14,11 @@ def syscmd(cmd, stdout=subprocess.PIPE):
      return out
 
 def main():
-   branches = {'master'      : 'NO', \
-               'release-3.0' : 'NO', \
-               'development' : 'NO', \
-               'pfunit_2.1.0': 'NO'};
+   branches = {'master'        : 'NO', \
+               'release-3.0'   : 'NO', \
+               'development'   : 'NO', \
+               'mock_services' : 'NO', \
+               'pfunit_2.1.0'  : 'NO'};
 
    print "Check for repository updates...";
    # We compare the SHA keys between reference repository, assumed
@@ -37,6 +38,9 @@ def main():
    for branch, dotest in branches.iteritems():
      if (dotest == 'YES'):
         print " -- Running tests for branch " + branch;
+        with open(home + '/bin/' + branch + 'Q.log', 'w') as log:
+           rc = syscmd(home + '/bin/mainQuick.sh ' + branch, \
+                       stdout=log)
         with open(home + '/bin/' + branch + '.log', 'w') as log:
            rc = syscmd(home + '/bin/mainRegress.sh ' + branch, \
                        stdout=log)
