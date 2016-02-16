@@ -12,17 +12,17 @@
 #   @echo VERSION ?= `cat VERSION` >> include/configuration.mk
 
 function(file_compile_configuration)
-   file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION BUILD_VERSION)
-   file(WRITE  ${CMAKE_BINARY_DIR}/include/configuration.mk "# include/configuration.mk generated automatically during build\n")
-   file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "COMPILER  ?= ${CMAKE_Fortran_COMPILER_ID}\n")
-   file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "USEOPENMP ?= ${OPENMP}\n")
-   file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "USEMPI    ?= ${MPI}\n")
+   file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../VERSION" BUILD_VERSION)
+   file(WRITE  ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "# include/configuration.mk generated automatically during build\n")
+   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "COMPILER  ?= ${CMAKE_Fortran_COMPILER_ID}\n")
+   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "USEOPENMP ?= ${OPENMP}\n")
+   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "USEMPI    ?= ${MPI}\n")
    IF(ROBUST)
-      file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= YES\n") 
+      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= YES\n")
    ELSE()
-      file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= \n") 
+      file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= \n")
    ENDIF()
-   file(APPEND ${CMAKE_BINARY_DIR}/include/configuration.mk "VERSION = \"${BUILD_VERSION}\"\n")
+   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "VERSION = \"${BUILD_VERSION}\"\n")
 endfunction()
 
 # message("***--- COMPILER:   ${COMPILER}")
@@ -40,5 +40,6 @@ file_compile_configuration()
 #
 install(FILES GNU.mk IBM.mk INTEL.mk NAG.mk PGI.mk extensions.mk driver.F90 DESTINATION include)
 install(FILES base-install.mk DESTINATION include RENAME base.mk)
-install(FILES ${CMAKE_BINARY_DIR}/include/configuration.mk DESTINATION include)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk DESTINATION include)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/TestUtil.F90 DESTINATION include)
 

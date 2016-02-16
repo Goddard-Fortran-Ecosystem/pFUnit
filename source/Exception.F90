@@ -1,5 +1,5 @@
 !-------------------------------------------------------------------------------
-! NASA/GSFC Advanced Software Technology Group
+! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
 !-------------------------------------------------------------------------------
 !  MODULE: PrivateException
 !
@@ -7,17 +7,17 @@
 !! <BriefDescription>
 !!
 !! @author
-!! Tom Clune, NASA/GSFC 
+!! Tom Clune,  NASA/GSFC
 !!
 !! @date
 !! 07 Nov 2013
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
 ! REVISION HISTORY:
 !
-! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
+! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 module PrivateException_mod
@@ -37,7 +37,7 @@ module PrivateException_mod
    public :: UNKNOWN_FILE_NAME
 
    integer, parameter :: MAXLEN_MESSAGE = 80*15
-   integer, parameter :: MAXLEN_FILE_NAME = 80
+   integer, parameter :: MAXLEN_FILE_NAME = 255
    character(len=*), parameter :: NULL_MESSAGE = ''
 
    type Exception
@@ -56,7 +56,7 @@ module PrivateException_mod
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
    contains
-      
+
       procedure :: getNumExceptions
 
       procedure :: catch_any
@@ -112,17 +112,17 @@ contains
       message = trim(this%message)
    end function getMessage
 
-   integer function getLineNumber(this) 
+   integer function getLineNumber(this)
       class (Exception), intent(in) :: this
       getLineNumber = this%location%lineNumber
    end function getLineNumber
 
-   character(len=MAXLEN_FILE_NAME) function getFileName(this) 
+   character(len=MAXLEN_FILE_NAME) function getFileName(this)
       class (Exception), intent(in) :: this
       getFileName = trim(this%location%fileName)
    end function getFileName
 
-   logical function isNull(this) 
+   logical function isNull(this)
       class (Exception), intent(in) :: this
       isNull = this%nullFlag
    end function isNull
@@ -192,7 +192,7 @@ contains
       if (globalExceptionCount > 0) then
 
          allocate(list%exceptions(globalExceptionCount))
-         
+
          do i = 1, this%getNumExceptions()
             call context%labelProcess(this%exceptions(i)%message)
          end do
@@ -203,7 +203,7 @@ contains
          call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
 
          call clearAll(this)
-      
+
          if (context%isRootProcess()) then
             deallocate(this%exceptions)
             allocate(this%exceptions(globalExceptionCount))
@@ -230,7 +230,7 @@ contains
 
    end function anyExceptions
 
-   ! Fortran does not require "short-circuit" so be careful with 
+   ! Fortran does not require "short-circuit" so be careful with
    ! evaluation of optional arguments.
    logical function preserveMessage(preserve)
       logical, optional, intent(in) :: preserve
@@ -262,7 +262,7 @@ contains
 
    end subroutine deleteIthException
 
-   logical function catch_any(this, preserve) 
+   logical function catch_any(this, preserve)
       class (ExceptionList), intent(inOut) :: this
       logical, optional, intent(in) :: preserve
 
@@ -283,7 +283,7 @@ contains
 
    end function catch_any
 
-   logical function catch_message(this, message, preserve) 
+   logical function catch_message(this, message, preserve)
       class (ExceptionList), intent(inOut) :: this
       character(len=*), intent(in) :: message
       logical, optional, intent(in) :: preserve
@@ -312,7 +312,7 @@ contains
 
       call move_alloc(from=this%exceptions, to=exceptions)
       allocate(this%exceptions(0))
-      
+
    end function getExceptions
 
    subroutine clearAll(this)
