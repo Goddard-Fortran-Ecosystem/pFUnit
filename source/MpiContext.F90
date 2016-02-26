@@ -123,18 +123,31 @@ contains
       integer :: ranges(3,NUM_SUBGROUPS)
       integer :: newCommunicator
       integer :: ier
+      integer npes
 
       if (numSubprocesses > this%getNumProcesses()) then
          call throw('Insufficient processes to run this test.')
          return
       end if
+      if (numSubprocesses < 0) then
+         call throw('Must specify a nonnegative number of processes for MPI test.')
+         return
+      end if
+
       call Mpi_Comm_group(this%mpiCommunicator, originalGroup, ier)
-      ranges(:,1) = [0, numSubprocesses-1, 1]
+
+      if (numSubprocesses == 0) then
+         npes = this%getNumProcesses()
+      else
+         npes = numSubprocesses
+      end if
+
+      ranges(:,1) = [0, npes-1, 1]
 
       call MPI_Group_range_incl (originalGroup, NUM_SUBGROUPS, ranges, newGroups, ier)
       call MPI_Comm_create(this%mpiCommunicator, newGroups(1), newCommunicator, ier)
 
-      if (this%processRank() < numSubprocesses) then
+      if (this%processRank() < npes) then
          subContext%mpiCommunicator = newCommunicator
          subContext%root = 0
       else
