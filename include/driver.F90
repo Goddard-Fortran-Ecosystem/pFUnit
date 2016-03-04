@@ -14,11 +14,7 @@ program main
 
    integer :: i
    character(len=:), allocatable :: executable
-   character(len=:), allocatable :: fullExecutable
    character(len=:), allocatable :: argument
-   character(len=:), allocatable :: maxTimeoutDuration_
-   character(len=:), allocatable :: maxLaunchDuration_
-   integer :: length
 
    real :: maxTimeoutDuration
    real :: maxLaunchDuration
@@ -59,7 +55,6 @@ program main
    numListeners = 1; iListener = 0
 
    executable = getCommandLineArgument(0)
-!   allocate(character(len=length+30) :: fullExecutable)
 
    outputUnit = OUTPUT_UNIT ! stdout unless modified below
 

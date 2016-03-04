@@ -686,8 +686,6 @@ class Parser():
                 self.outputFile.write('   external ' + self.userTestCase['tearDown'] + '\n')
             self.outputFile.write('\n')
 
-        self.outputFile.write('   integer, allocatable :: npes(:)\n\n')
-
         if 'testParameterType' in self.userTestCase:
             type = self.userTestCase['testParameterType']
             self.printParameterHeader(type)
