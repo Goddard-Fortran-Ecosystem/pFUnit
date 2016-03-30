@@ -42,7 +42,7 @@ module TestResult_mod
       integer :: numFailed = 0
       integer :: numErrors = 0
       integer :: numRun = 0
-      integer :: numSuccesses
+      integer :: numSuccesses = 0
       real    :: runTime
       type (ListenerPointer), allocatable :: listeners(:)
       type (TestFailure), allocatable :: failures(:)

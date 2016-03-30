@@ -72,7 +72,7 @@ contains
 #endif
 
       type (TestResult) :: aResult
-      type (SimpleTestCase) :: aTest, aTest2
+      type (SimpleTestCase), target :: aTest, aTest2
       type (XmlPrinter) :: printer
       integer :: iostat, stat, cstat, xmlUnit, outUnit
       character(len=200) :: fileName, suiteName, command, &
