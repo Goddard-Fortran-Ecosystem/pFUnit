@@ -38,6 +38,9 @@ program main
    class (ListenerPointer), allocatable :: listeners(:)
    type (DebugListener) :: debugger
    character(len=128) :: suiteName
+   character(len=128) :: maxTimeoutDuration_
+   character(len=128) :: maxLaunchDuration_
+   character(len=128) :: fullExecutable
 
 ! Support for the runs
    class (ParallelContext), allocatable :: context
@@ -99,7 +102,7 @@ program main
 #ifdef BUILD_ROBUST
          i = i+1; if (i>numArguments) call commandLineArgumentError()
          maxTimeoutDuration_ = getCommandLineArgument(i)
-         read(maxTimeoutDuration_,*)maxTimeoutDuration
+         read(maxTimeoutDuration_,*) maxTimeoutDuration
 #else
          ! TODO: This should be a failing test.
          write (*,*) 'Robust runner not built.'
