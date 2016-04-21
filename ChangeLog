@@ -1,3 +1,6 @@
+3.2.1	April 21, 2016
+	- Trivial bug fix in include/driver.F90.   Missed in rush to do release 3.2.1.
+	
 3.2.0	April 21, 2016
 	- Extension: support test to run on "all available" pes.
 	  . This is primarily aimed to enable testing coarray Fortran procedures
