@@ -1,3 +1,24 @@
+3.2.0	April 21, 2016
+	- Extension: support test to run on "all available" pes.
+	  . This is primarily aimed to enable testing coarray Fortran procedures
+	    CAF does not yet have "teams", so tests must use all images.  But
+	    MPI users may find it useful as well.   Just use "*" instead of a number
+	    when specifying NPES.   True CAF support should be expected in release 4.0.0.
+	- Extension: support test case with custom constructor.   With this extension was
+	  able to create external extensions to the framework that allow testing ESMF grideded
+          components.  Contact Tom Clune if you want to have those extensions - did not want to
+	  induce an ESMF requirement for pFUnit.
+	- Improved support for CMake (contributed by Pal Levold)
+	  . packaging
+	  . add_pfunit_test() macro
+	  . Ctests (CMake testing package)
+	  . NOTE: now requires a more recent CMake version.
+	- Increased max filename length to avoid truncation
+	- Disabled --verbose command line option (breaks under gcc)
+	- Cleanup to reduce/eliminate compiler warnings when building.
+	- There is a regression in NAG 6.1, so NAG users should continue to use 6.0 until a
+	  fix or a workaround are found
+	
 3.1.1
 	- PGI 15.7 appears to be working robustly
 	  . some previously necessary workarounds have been removed
