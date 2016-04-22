@@ -45,6 +45,7 @@ contains
       use TestMethod_mod, only: TestMethod, newTestMethod
       use Assert_mod, only: assertEqual
       use SerialContext_mod
+      use Exception_mod
       type (TestMethod) :: method
       type (TestResult) :: aResult
 
@@ -58,6 +59,7 @@ contains
 
    subroutine testWasRun()
       use Exception_mod, only: throw
+      use Exception_mod, only: getNumExceptions
       call throw('wasRun')
    end subroutine testWasRun
 

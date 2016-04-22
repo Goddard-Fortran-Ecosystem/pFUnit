@@ -5,6 +5,7 @@ program main
    use pFUnit_mod, only: ListenerPointer
    use pFUnit_mod, only: newResultPrinter
    use pFUnit_mod, only: ResultPrinter
+!$$   use pFUnit_mod, only: DebugListener
    implicit none
 
    logical :: success
@@ -40,11 +41,11 @@ contains
       use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
 
       use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
-      use Test_TestSuite_mod, only: testSuiteSuite => suite                ! (7)
+      use Test_TestSuite_mod, only: testTestSuiteSuite => suite                ! (7)
 
-      use Test_TestMethod_mod, only: testSimpleMethodSuite => suite  ! (8)
-      use Test_SimpleTestCase_mod, only: testSimpleSuite => suite          ! (9)
-      use Test_FixtureTestCase_mod, only: testFixtureSuite => suite        ! (10)
+      use Test_TestMethod_mod, only: testTestMethodSuite => suite  ! (8)
+      use Test_SimpleTestCase_mod, only: testSimpleTestCaseSuite => suite          ! (9)
+      use Test_FixtureTestCase_mod, only: testFixtureTestCaseSuite => suite        ! (10)
 
       use Test_BasicOpenMP_mod, only: testBasicOpenMpSuite => suite  ! (8)
 
@@ -71,19 +72,23 @@ contains
 #ifdef INTEL_13
       type (ResultPrinter), target :: printer
 #endif
+      type (ListenerPointer), allocatable :: ll(:)
 
-!- MLR 2014-0224-1209 Why would intel 13 not like "listeners"?
-      type (ListenerPointer), allocatable :: l1(:)
-      allocate(l1(1))
 #ifndef INTEL_13
-      allocate(l1(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+      allocate(ll(1))
+      allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+      ! TODO: We'll make this a feature in 4.0
+!!$      allocate(ll(2))
+!!$      allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+!!$      allocate(ll(2)%pListener, source=DebugListener())
 #else
+      allocate(ll(1))
       printer = newResultPrinter(OUTPUT_UNIT)
-      l1(1)%pListener => printer
+      ll(1)%pListener => printer
 #endif
 
       allTests = newTestSuite('allTests')
-      runner = newTestRunner(l1)
+      runner = newTestRunner(ll)
 
 #define ADD(suite) call allTests%addTest(suite())
 
@@ -101,11 +106,11 @@ contains
       ADD(assertComplexSuite)
 
       ADD(testResultSuite)
-      ADD(testSuiteSuite)
+      ADD(testTestSuiteSuite)
 
-      ADD(testSimpleMethodSuite)
-      ADD(testSimpleSuite)
-      ADD(testFixtureSuite)
+      ADD(testTestMethodSuite)
+      ADD(testSimpleTestCaseSuite)
+      ADD(testFixtureTestCaseSuite)
 
       ADD(testBasicOpenMpSuite)
 
@@ -135,15 +140,5 @@ contains
   end function runTests
 
 end program main
-
-!if ! defined INTEL_13 
-!...
-!else
-!      class (ListenerPointer), allocatable :: l1(:)
-!      type (ResultPrinter), target :: printer
-!      allocate(listeners1(1))
-!      printer = newResultPrinter(OUTPUT_UNIT)
-!      listeners1(1)%pListener=>printer
-!endif
 
 

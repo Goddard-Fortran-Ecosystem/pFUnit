@@ -36,7 +36,7 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: aSuite
 
-      aSuite = newTestSuite('Test_TestCase')
+      aSuite = newTestSuite('Test_FixtureTestCase')
 
 !#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
