@@ -80,7 +80,8 @@ contains
 
    end function TestMethod_setUpTearDown
 
-   subroutine runMethod(this)
+   recursive subroutine runMethod(this)
+      use Exception_mod, only: getNumExceptions
       class (TestMethod), intent(inOut) :: this
 
       call this%userMethod()

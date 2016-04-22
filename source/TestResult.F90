@@ -228,8 +228,6 @@ contains
       class (SurrogateTestCase) :: test 
       class (ParallelContext), intent(in) :: context
 
-!      type (Exception) :: anException
-
       if (context%isRootProcess()) call this%startTest(test)
 
       call test%runBare()

@@ -32,6 +32,7 @@ SET (OpenMP_Fortran_FLAG_CANDIDATES
      #Portland Group
      "-mp"
      #Intel
+     "-qopenmp" 
      "-openmp" 
      #Gnu
      "-fopenmp"

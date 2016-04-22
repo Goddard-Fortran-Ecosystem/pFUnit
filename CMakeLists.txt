@@ -103,7 +103,11 @@ if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
       if("${NUM_VERSION}" STREQUAL "13")
           add_definitions(-DINTEL_13)
       endif()
+      if("${NUM_VERSION}" STREQUAL "16")
+          add_definitions(-DINTEL_16)
+      endif()
     endif()
+
     add_definitions(-DIntel)
     if (WIN32)
         set(CMAKE_Fortran_FLAGS
@@ -111,7 +115,7 @@ if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
             )
     else (WIN32)
         set(CMAKE_Fortran_FLAGS
-            "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -check uninit -check bounds -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}"
+            "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -check uninit -check bounds -check pointers -check stack -traceback -assume realloc_lhs ${CMAKE_Fortran_FLAGS}"
             )
     endif (WIN32)
 

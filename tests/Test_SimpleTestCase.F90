@@ -36,7 +36,7 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_TestCase')
+      suite = newTestSuite('Test_SimpleTestCase')
 
       call suite%addTest( &
            &   newTestMethod('testRunSuite', &

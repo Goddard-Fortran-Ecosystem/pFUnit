@@ -34,7 +34,7 @@ contains
       use TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_TestMethod')
+      suite = newTestSuite('Test_TestBasicOpenMP')
 !$    call suite%addTest(newTestMethod('testRunWithOpenMP', testRunWithOpenMP))
 !$    call suite%addTest(newTestMethod('testSerializeExceptions', testSerializeExceptions))
 

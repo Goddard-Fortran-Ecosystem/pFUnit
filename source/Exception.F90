@@ -129,6 +129,9 @@ contains
 
    function newExceptionList() result(list)
       type (ExceptionList) :: list
+      if (allocated(list%exceptions)) then
+         deallocate(list%exceptions)
+      end if
       allocate(list%exceptions(0))
    end function newExceptionList
 
@@ -186,6 +189,7 @@ contains
       integer :: globalExceptionCount
 !      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
+
 
       globalExceptionCount = context%sum(size(this%exceptions))
 
@@ -357,7 +361,9 @@ module Exception_mod
 
    public :: initializeGlobalExceptionList
 
-   type (ExceptionList) :: globalExceptionList ! private
+   type (ExceptionList), save :: globalExceptionList ! private
+   logical, save :: init = .false. ! private
+
 
   interface throw
     module procedure throw_message
@@ -385,8 +391,9 @@ contains
 
    integer function getNumExceptions_local() result(numExceptions)
 
-      if (.not. allocated(globalExceptionList%exceptions)) then
+      if (.not. init) then
          call initializeGlobalExceptionList()
+         init = .true.
       end if
 
       numExceptions = globalExceptionList%getNumExceptions()
@@ -397,8 +404,10 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       !$omp critical
-      if (.not. allocated(globalExceptionList%exceptions)) then
+      if (.not. init) then
+         init = .true.
          call initializeGlobalExceptionList()
+         !$ flush init
       end if
 
       call globalExceptionList%throw(message, location)
@@ -444,8 +453,12 @@ contains
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
-
-      exceptions = globalExceptionList%getExceptions()
+#ifdef INTEL_16
+      call move_alloc(from=globalExceptionList%exceptions, to=exceptions)
+#else
+      allocate(exceptions, source=globalExceptionList%getExceptions())
+#endif
+         
    end function getExceptions
 
    logical function noExceptions()

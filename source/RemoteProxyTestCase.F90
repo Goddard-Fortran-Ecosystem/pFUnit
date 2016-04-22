@@ -143,7 +143,12 @@ contains
 
          else ! have some output to process
 
-! MLR Need to check on length of line.
+            ! MLR Need to check on length of line.
+
+            if (line(1:6) == 'DEBUG:' .or. line(1:7) == ' DEBUG:') then
+               print*,line ! re-emit
+               cycle
+            end if
 
             if (line == ('ended: ' // trim(this%getName()))) then
 
@@ -176,7 +181,7 @@ contains
                cycle ! still need to process the end message
 
             else
-
+               print*,'Unexpected output in remote runner: <',line,'>'
                call timerProcess%terminate()
                call this%process%terminate()
                call throw('ERROR: unexpected message: '//trim(line))
