@@ -456,7 +456,7 @@ contains
 #ifdef INTEL_16
       call move_alloc(from=globalExceptionList%exceptions, to=exceptions)
 #else
-      allocate(exceptions, source=globalExceptionList%getExceptions())
+      exceptions = globalExceptionList%getExceptions()
 #endif
          
    end function getExceptions
