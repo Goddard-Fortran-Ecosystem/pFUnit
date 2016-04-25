@@ -407,7 +407,7 @@ contains
       if (.not. init) then
          init = .true.
          call initializeGlobalExceptionList()
-         !$ flush init
+         !$omp flush(init)
       end if
 
       call globalExceptionList%throw(message, location)
