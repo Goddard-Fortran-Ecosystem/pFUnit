@@ -6,7 +6,8 @@ L=-L
 
 ifneq ($(UNAME),Windows)
 # Non-Windows (Linux) command line options for the intel compiler
-version = $(shell $(F90) --version | grep -E '\(IFORT\) 13')
+version13 = $(shell $(F90) --version | grep -E '\(IFORT\) 13')
+version16 = $(shell $(F90) --version | grep -E '\(IFORT\) 16')
 
 FFLAGS += -assume realloc_lhs
 FFLAGS += -g -O0 -traceback -check uninit -check bounds -check stack -check uninit
@@ -18,8 +19,8 @@ endif
 
 else
 # Windows command line options for the intel compiler
-version13 = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
-version16 = $(shell $(F90)  2>&1 | head -1 | grep 'Version 16')
+version13 = $(shell $(F90) --version  2>&1 | head -1 | grep 'Version 13')
+version16 = $(shell $(F90) --version  2>&1 | head -1 | grep 'Version 16')
 
 # Suppress version information with each compile.
 FFLAGS += /nologo
@@ -42,6 +43,7 @@ CPPFLAGS +=-DIntel
 FPPFLAGS +=-DIntel
 
 # Check if the version of the compiler is 13
+
 ifneq ($(version13),)
   CPPFLAGS+=-DINTEL_13
   FPPFLAGS+=-DINTEL_13
@@ -53,6 +55,10 @@ ifneq ($(version16),)
 endif
 
 ifeq ($(USEOPENMP),YES)
-FFLAGS += -openmp
+  ifeq ($(version16),)
+   FFLAGS += -openmp
+  else
+   FFLAGS += -qopenmp
+  endif
 LIBS += -openmp
 endif
