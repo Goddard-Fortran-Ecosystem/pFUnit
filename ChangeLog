@@ -1,3 +1,7 @@
+3.2.3   April 27, 2016
+	- Bug fix - earlier merge broke unix test for Intel compiler
+          version.  This prevent fix in 3.2.2 from being used.
+	
 3.2.2   April 24, 2016
 	- Workaround for ifort 16.0.2 bug with openmp
 	- Various minor improvements to code:

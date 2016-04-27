@@ -18,7 +18,8 @@ endif
 
 else
 # Windows command line options for the intel compiler
-version = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
+version13 = $(shell $(F90)  2>&1 | head -1 | grep 'Version 13')
+version16 = $(shell $(F90)  2>&1 | head -1 | grep 'Version 16')
 
 # Suppress version information with each compile.
 FFLAGS += /nologo
@@ -41,9 +42,14 @@ CPPFLAGS +=-DIntel
 FPPFLAGS +=-DIntel
 
 # Check if the version of the compiler is 13
-ifneq ($(version),)
+ifneq ($(version13),)
   CPPFLAGS+=-DINTEL_13
   FPPFLAGS+=-DINTEL_13
+endif
+
+ifneq ($(version16),)
+  CPPFLAGS+=-DINTEL_16
+  FPPFLAGS+=-DINTEL_16
 endif
 
 ifeq ($(USEOPENMP),YES)

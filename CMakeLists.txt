@@ -93,7 +93,20 @@ endif()
 
 if (${CMAKE_Fortran_COMPILER_ID} STREQUAL "Intel")
 
-    # Use ifort
+if (UNIX)
+   execute_process (COMMAND ifort --version 
+		    OUTPUT_VARIABLE INTEL_COMPILER_VERSION)
+			   string (REGEX MATCH "([0-9]+)" 
+                    NUM_VERSION ${INTEL_COMPILER_VERSION})
+  if ("${NUM_VERSION}" STREQUAL "13")
+        add_definitions(-DINTEL_13)
+  endif ()
+  if ("${NUM_VERSION}" STREQUAL "16")
+        add_definitions(-DINTEL_16)
+  endif ()
+endif ()
+
+    #Use ifort
     #There seems to be no easy way to determine the compiler version on Windows
     #since it isn't necessary defined in the PATH. As a workaround, assume version
     #different to 13 if exectuing ifort doesn't give any results
