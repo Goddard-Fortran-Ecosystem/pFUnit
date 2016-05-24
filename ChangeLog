@@ -1,3 +1,7 @@
+3.2.7   May 24, 2016
+	- Fix 3.2.7 broke the NAG 6.0 compiler (internal compiler error).
+	  Workaround is to simply not use -C=all during the build for now.
+	
 3.2.6   May 24, 2016
 	- Bug fix for several issues identified by the latest NAG compiler
 	(6.1).  These are mostly related to nostandard usage of TARGET
