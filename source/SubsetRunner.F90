@@ -93,7 +93,7 @@ contains
       use TestSuite_mod
 
       type (TestResult) :: result
-      class (SubsetRunner), intent(inout) :: this
+      class (SubsetRunner), target, intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 

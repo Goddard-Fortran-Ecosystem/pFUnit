@@ -118,7 +118,7 @@ contains
       use TestCase_mod
 
       type (TestResult) :: result
-      type (MockListener) :: listener
+      type (MockListener), target :: listener
       type (SimpleTestCase) :: tstCase
       
       result = newTestResult()
@@ -131,11 +131,12 @@ contains
 
    subroutine testAddListenerStart()
       use TestListener_mod
+      use SurrogateTestCase_mod
       use MockListener_mod
       use Assert_mod
       use SimpleTestCase_mod
       type (TestResult) :: result
-      type (MockListener) :: listener
+      type (MockListener), target :: listener
       
       type (SimpleTestCase) :: tstCase
 
@@ -157,7 +158,7 @@ contains
       use TestCase_mod
       
       type (TestResult) :: result
-      type (MockListener) :: listener
+      type (MockListener), target :: listener
       type (Exception) :: anException
       
       class(TestCase), allocatable :: tstCase

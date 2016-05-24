@@ -54,7 +54,6 @@ contains
    function getExpectedValue(this) result(p)
       class(MockCall), intent(in) :: this
       class(*), pointer :: p
-
       p => this%argument
    end function getExpectedValue
 

@@ -72,7 +72,7 @@ contains
 #ifdef INTEL_13
       type (ResultPrinter), target :: printer
 #endif
-      type (ListenerPointer), allocatable :: ll(:)
+      type (ListenerPointer), target, allocatable :: ll(:)
 
 #ifndef INTEL_13
       allocate(ll(1))
@@ -122,7 +122,7 @@ contains
 #ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
 #endif
-
+!!$
 #ifdef USE_MPI
       ADD(MpiContextSuite)
       ADD(ParallelExceptionSuite)

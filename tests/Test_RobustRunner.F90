@@ -59,7 +59,7 @@ contains
       type (TestSuite) :: suite
       type (TestResult) :: result
       !mlr -problem on intel 13- type (ListenerPointer) :: listeners1(1)
-      type (ListenerPointer), allocatable :: listeners1(:)
+      type (ListenerPointer), target, allocatable :: listeners1(:)
       ! class (ListenerPointer), allocatable :: listeners1(:)
 
       integer :: unit

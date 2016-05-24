@@ -1,3 +1,10 @@
+3.2.6   May 24, 2016
+	- Bug fix for several issues identified by the latest NAG compiler
+	(6.1).  These are mostly related to nostandard usage of TARGET
+	attributes that are unsafe for copyin/copyout.  Many thanks to NAG
+	for helping to identify the problems.  Note: these bugs are
+	innocuous under most circumstances/compilers.
+	
 3.2.5   April 27, 2016
 	- Another bug that prevented the compiler version workaround from
           being handled correctly.

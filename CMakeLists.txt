@@ -143,7 +143,7 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL NAG)
 
     # use nagfor
     add_definitions(-DNAG)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -mismatch_all -fpp -C=present")
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -f2003 -w=uda -gline -fpp -C=all -fpp") #-mismatch_all -fpp -C=present")
 
 elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL XL)
 

@@ -78,7 +78,7 @@ contains
       use ParallelContext_mod
 
       type (TestResult) :: result
-      class (TestRunner), intent(inout) :: this
+      class (TestRunner), target, intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
       

@@ -115,12 +115,28 @@ contains
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
-      ! Always run serial tests in a serial context.
-      if (context%isRootProcess()) then
-         call tstResult%run(this%getSurrogate(), THE_SERIAL_CONTEXT)
-      end if
+      ! NAG 6.1 revealed that one cannot rely on surrogate
+      ! due to the non-TARGET for argument "this".
+      ! NAG provided the workaround with this inner procedure.
+      call inner_run(this, tstresult, context)
 
-      call context%barrier()
+   contains
+
+      recursive subroutine inner_run(this,tstresult,context)
+        class (TestCase), intent(inout), target :: this
+        class (TestResult), intent(inout) :: tstresult
+        class (ParallelContext), intent(in) :: context
+        class (SurrogateTestCase), allocatable :: surrogate
+
+        ! Always run serial tests in a serial context.
+        if (context%isRootProcess()) then
+           allocate(surrogate,source=this%getSurrogate())
+           call tstResult%run(surrogate, THE_SERIAL_CONTEXT)
+        end if
+
+        call context%barrier()
+
+     end subroutine inner_run
 
    end subroutine run
 
