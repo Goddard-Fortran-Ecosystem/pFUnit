@@ -90,8 +90,17 @@ set(SOURCES ${srcs})
 
 add_library(pfunit STATIC ${SOURCES})
 
+if (BUILD_SHARED)
+    add_library(pfunit_shared SHARED ${SOURCES})
+    set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)
+endif()
+
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_BINARY_DIR}/source)
 
 INSTALL(TARGETS pfunit DESTINATION lib)
+if (BUILD_SHARED)
+    INSTALL(TARGETS pfunit_shared DESTINATION lib)
+endif()
+
 INSTALL(DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
