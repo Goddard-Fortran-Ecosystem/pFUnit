@@ -282,7 +282,7 @@ contains
       character(len=:), allocatable :: message_
       type (WhitespaceOptions) :: whitespace_
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: throwMessage
       integer :: i, j
       integer :: numI, numJ
       integer :: numSameCharacters
@@ -352,7 +352,7 @@ contains
             numI = len(expected_); numJ = len(found_)
 
          case default
-            write(throwMessage,'(a)')&
+           throwMessage = &
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
             call throw(appendWithSpace(message_,throwMessage), location)
@@ -515,11 +515,11 @@ contains
                found_    = found
             end select
 
-            write(throwMessage,'((a,a),2(a,a,a,a),(a,a,a))') &
-                 & 'String assertion failed:', new_line('A'), &
-                 & '    expected: <"', expected_, '">', new_line('A'), &
-                 & '   but found: <"', found_, '">', new_line('A'), &
-                 & '  first diff:   ', repeat('-', numSameCharacters), '^'
+            throwMessage = &
+                 & 'String assertion failed:' // new_line('A')// &
+                 & '    expected: <"'// expected_// '">'// new_line('A')// &
+                 & '   but found: <"'// found_// '">'// new_line('A')// &
+                 & '  first diff:   '// repeat('-', numSameCharacters) // '^'
             call throw(appendWithSpace(message_, throwMessage), location)
 
          end if
