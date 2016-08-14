@@ -31,17 +31,10 @@ module RobustRunner_mod
    private
 
    public :: RobustRunner
-#ifndef DEFERRED_LENGTH_CHARACTER
-   integer, parameter :: MAX_LENGTH_COMMAND=80
-#endif
 
    type, extends(BaseTestRunner) :: RobustRunner
       private
-#ifdef DEFERRED_LENGTH_CHARACTER
       character(len=:), allocatable :: remoteRunCommand
-#else
-      character(len=MAX_LENGTH_COMMAND) :: remoteRunCommand
-#endif
       integer :: numSkip
       type (ListenerPointer), allocatable :: extListeners(:)
       type (UnixProcess) :: remoteProcess

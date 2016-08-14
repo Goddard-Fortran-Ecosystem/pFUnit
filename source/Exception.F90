@@ -30,18 +30,14 @@ module PrivateException_mod
    public :: ExceptionList
    public :: newExceptionList
 
-   public :: MAXLEN_MESSAGE
-   public :: MAXLEN_FILE_NAME
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
-   integer, parameter :: MAXLEN_MESSAGE = 80*15
-   integer, parameter :: MAXLEN_FILE_NAME = 255
    character(len=*), parameter :: NULL_MESSAGE = ''
 
    type Exception
-      character(len=MAXLEN_MESSAGE) :: message = NULL_MESSAGE
+      character(len=:), allocatable :: message
       type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
       logical :: nullFlag = .true.
    contains
@@ -51,7 +47,7 @@ module PrivateException_mod
       procedure :: isNull
    end type Exception
 
-   type (Exception), parameter :: NULL_EXCEPTION = Exception('NULL EXCEPTION', UNKNOWN_SOURCE_LOCATION, .true.)
+   type (Exception), parameter :: NULL_EXCEPTION = Exception(NULL(), UNKNOWN_SOURCE_LOCATION, .true.)
 
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
@@ -117,9 +113,10 @@ contains
       getLineNumber = this%location%lineNumber
    end function getLineNumber
 
-   character(len=MAXLEN_FILE_NAME) function getFileName(this)
+   function getFileName(this) result(name)
+      character(len=:), allocatable :: name
       class (Exception), intent(in) :: this
-      getFileName = trim(this%location%fileName)
+      name = trim(this%location%fileName)
    end function getFileName
 
    logical function isNull(this)
@@ -187,24 +184,47 @@ contains
 
       type (ExceptionList) :: list
       integer :: globalExceptionCount
-!      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
+      character(len=:), allocatable :: local_messages(:), global_messages(:)
+      integer :: num_local_exceptions
+      integer :: max_len
 
-      globalExceptionCount = context%sum(size(this%exceptions))
+      num_local_exceptions = size(this%exceptions)
+      globalExceptionCount = context%sum(num_local_exceptions)
 
       if (globalExceptionCount > 0) then
 
-         allocate(list%exceptions(globalExceptionCount))
+         if (context%isRootProcess()) then
+            allocate(list%exceptions(globalExceptionCount))
+         end if
 
-         do i = 1, this%getNumExceptions()
+         do i = 1, num_local_exceptions
             call context%labelProcess(this%exceptions(i)%message)
          end do
 
          call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
          call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
-         call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
+
+         max_len = context%maximum(maxval([(len(this%exceptions(i)%message),i=1,num_local_exceptions)]))
+         
+         allocate(character(len=max_len) :: local_messages(num_local_exceptions))
+         do i = 1, num_local_exceptions
+            local_messages(i) = this%exceptions(i)%message
+         end do
+
+         if (context%isRootProcess()) then
+            allocate(character(len=max_len) :: global_messages(globalExceptionCount))
+         end if
+
+         call context%gather(local_messages, global_messages)
+
+         if (context%isRootProcess()) then
+            do i= 1, globalExceptionCount
+               list%exceptions(i)%message = trim(global_messages(i))
+            end do
+         end if
 
          call clearAll(this)
 
@@ -343,7 +363,6 @@ module Exception_mod
    public :: ExceptionList
    public :: newExceptionList
 
-   public :: MAXLEN_MESSAGE
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME

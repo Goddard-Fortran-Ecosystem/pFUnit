@@ -67,36 +67,37 @@ contains
 !      character(len=MAXLEN_MESSAGE) :: msg
       integer :: i
 
-      integer :: totalExceptions, n
-
-      totalExceptions = getNumExceptions(context)
-      if (totalExceptions > 0) then
-
-         allocate(globalList%exceptions(totalExceptions))
-         allocate(localList%exceptions(getNumExceptions()))
-
-         n = getNumExceptions()
-         do i = 1, n
-            localList%exceptions(i) = catchNext() ! drains singleton exception list on all PEs
-            call context%labelProcess(localList%exceptions(i)%message)
-         end do
-
-         call context%gather(localList%exceptions(:)%nullFlag, globalList%exceptions(:)%nullFlag)
-         call context%gather(localList%exceptions(:)%location%fileName, globalList%exceptions(:)%location%fileName)
-         call context%gather(localList%exceptions(:)%location%lineNumber, globalList%exceptions(:)%location%lineNumber)
-         call context%gather(localList%exceptions(:)%message, globalList%exceptions(:)%message)
-      
-         if (context%isRootProcess()) then ! rethrow
-            do i = 1, totalExceptions
-               associate(e => globalList%exceptions(i))
-                 call throw(e%message, e%location)
-               end associate
-            end do
-         end if
-
-         deallocate(globalList%exceptions, localList%exceptions)
-
-      end if
+      call gatherExceptions(context)
+!!$      integer :: totalExceptions, n
+!!$
+!!$      totalExceptions = getNumExceptions(context)
+!!$      if (totalExceptions > 0) then
+!!$
+!!$         allocate(globalList%exceptions(totalExceptions))
+!!$         allocate(localList%exceptions(getNumExceptions()))
+!!$
+!!$         n = getNumExceptions()
+!!$         do i = 1, n
+!!$            localList%exceptions(i) = catchNext() ! drains singleton exception list on all PEs
+!!$            call context%labelProcess(localList%exceptions(i)%message)
+!!$         end do
+!!$
+!!$         call context%gather(localList%exceptions(:)%nullFlag, globalList%exceptions(:)%nullFlag)
+!!$         call context%gather(localList%exceptions(:)%location%fileName, globalList%exceptions(:)%location%fileName)
+!!$         call context%gather(localList%exceptions(:)%location%lineNumber, globalList%exceptions(:)%location%lineNumber)
+!!$         call context%gather(localList%exceptions(:)%message, globalList%exceptions(:)%message)
+!!$      
+!!$         if (context%isRootProcess()) then ! rethrow
+!!$            do i = 1, totalExceptions
+!!$               associate(e => globalList%exceptions(i))
+!!$                 call throw(e%message, e%location)
+!!$               end associate
+!!$            end do
+!!$         end if
+!!$
+!!$         deallocate(globalList%exceptions, localList%exceptions)
+!!$
+!!$      end if
 
    end subroutine gather
 

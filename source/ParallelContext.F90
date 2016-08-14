@@ -35,6 +35,7 @@ module ParallelContext_mod
       procedure(getNumProcesses), deferred :: getNumProcesses
       procedure(processRank), deferred :: processRank
       procedure(sum), deferred :: sum
+      procedure(sum), deferred :: maximum
       generic :: gather => gatherString
       generic :: gather => gatherInteger
       generic :: gather => gatherLogical

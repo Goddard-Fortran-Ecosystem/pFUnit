@@ -188,8 +188,8 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
-      character(len=MAXLEN_MESSAGE) :: message_
+      character(len=:), allocatable :: throwMessage
+      character(len=:), allocatable :: message_
 
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
@@ -246,20 +246,34 @@ contains
    end subroutine assertFalse_1d_
 
    subroutine assertEqualLogical_(expected, found, message, location)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      use Exception_mod, only: throw
       logical, intent(in) :: expected
       logical, intent(in) :: found
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: throwMessage
       character(len=:), allocatable :: message_
 
+      character(len=:), allocatable :: str_expected, str_found
+
+      if (expected) then
+         str_expected = 'TRUE'
+      else
+         str_expected = 'FALSE'
+      end if
+
+      if (found) then
+         str_found = 'TRUE'
+      else
+         str_found = 'FALSE'
+      end if
+      
       if (expected .neqv. found) then
-         write(throwMessage,'((a,a),2(a,a,a,a))') &
-              & 'Logical assertion failed:', new_line('A'), &
-              & '    expected: <"', expected, '">', new_line('A'), &
-              & '   but found: <"', found, '">', new_line('A')
+         throwMessage = &
+              & 'Logical assertion failed:' // new_line('A') // &
+              & '    expected: <"' // str_expected // '">' // new_line('A')// &
+              & '   but found: <"' // str_found // '">' // new_line('A')
 
          message_ = NULL_MESSAGE
          if (present(message)) message_ = message
@@ -271,7 +285,7 @@ contains
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      use Exception_mod, only: throw
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
       character(len=*), optional, intent(in) :: message
