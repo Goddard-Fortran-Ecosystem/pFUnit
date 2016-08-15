@@ -34,7 +34,7 @@ module Test_MpiTestCase_mod
    public :: Test_MpiTestCase
 
    type, extends(MpiTestCase) :: Test_MpiTestCase
-      character(len=20), public :: runLog
+      character(len=:), allocatable, public :: runLog
       procedure(method), pointer :: testMethod => null()
    contains
       procedure :: runMethod
@@ -135,7 +135,6 @@ contains
       use TestResult_mod
       use Exception_mod, only: throw
       use Exception_mod, only: catch
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -175,7 +174,6 @@ contains
       use Assert_mod, only: assertEqual
       use TestResult_mod
       use Exception_mod, only: catch
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -214,7 +212,6 @@ contains
       use TestResult_mod
       use Exception_mod, only: catch
       use Exception_mod, only: anyExceptions
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -226,7 +223,9 @@ contains
       integer, parameter :: AVAILABLE_PES = 4
 
       character(len=100) :: expectedMessage
-      character(len=20) :: suffix
+      character(len=:), allocatable :: suffix
+
+      print*,__FILE__,__LINE__
 
       reslt = newTestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
@@ -243,33 +242,38 @@ contains
          expectedMessage = "Insufficient processes to run this test."
          suffix=''
          call this%context%labelProcess(suffix)
-         write(suffix,'(" (PE=",i0,")")') 0
          call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(1)%getMessage())
          if (anyExceptions()) return
 
       end if
+      print*,__FILE__,__LINE__
 
    end subroutine testTooFewProcs
 
    recursive subroutine runMethod(this)
       class(Test_MpiTestCase), intent(inOut) :: this
+      print*,__FILE__,__LINE__
       call this%testMethod()
+      print*,__FILE__,__LINE__
    end subroutine runMethod
 
    subroutine wasRun(runLog, mpiCommunicator)
-      character(len=*), intent(inout) :: runLog
+      character(len=:), allocatable, intent(inout) :: runLog
       integer, intent(in) :: mpiCommunicator
       
       integer :: numProcesses, rank, ier
 
+      print*,__FILE__,__LINE__
       runLog = 'was run'
       call Mpi_Barrier(mpiCommunicator, ier)
+      print*,__FILE__,__LINE__
 
    end subroutine wasRun
 
    subroutine delete_(this)
       type (Test_MpiTestCase), intent(inOut) :: this
       nullify(this%testMethod)
+      print*,__FILE__,__LINE__
    end subroutine delete_
 
 end module Test_MpiTestCase_mod

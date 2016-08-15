@@ -104,7 +104,7 @@ contains
 
    function getMessage(this) result(message)
       class (Exception), intent(in) :: this
-      character(len=len_trim(this%message)) :: message
+      character(:), allocatable :: message
       message = trim(this%message)
    end function getMessage
 
@@ -190,38 +190,42 @@ contains
       integer :: num_local_exceptions
       integer :: max_len
 
+
       num_local_exceptions = size(this%exceptions)
       globalExceptionCount = context%sum(num_local_exceptions)
 
       if (globalExceptionCount > 0) then
 
-         if (context%isRootProcess()) then
-            allocate(list%exceptions(globalExceptionCount))
-         end if
+         allocate(list%exceptions(globalExceptionCount))
 
          do i = 1, num_local_exceptions
+            print*,__FILE__,__LINE__, i, 'before: ', trim(this%exceptions(i)%message)
             call context%labelProcess(this%exceptions(i)%message)
+            print*,__FILE__,__LINE__, i, 'after: ', trim(this%exceptions(i)%message)
          end do
-
          call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
          call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
 
          max_len = context%maximum(maxval([(len(this%exceptions(i)%message),i=1,num_local_exceptions)]))
-         
+
          allocate(character(len=max_len) :: local_messages(num_local_exceptions))
          do i = 1, num_local_exceptions
             local_messages(i) = this%exceptions(i)%message
+            print*,__FILE__,__LINE__, context%processRank(), i, trim(local_messages(i))
          end do
 
          if (context%isRootProcess()) then
             allocate(character(len=max_len) :: global_messages(globalExceptionCount))
+         else
+            allocate(character(len=max_len) :: global_messages(0))
          end if
 
          call context%gather(local_messages, global_messages)
 
          if (context%isRootProcess()) then
             do i= 1, globalExceptionCount
+               print*,__FILE__,__LINE__, i, trim(global_messages(i))
                list%exceptions(i)%message = trim(global_messages(i))
             end do
          end if
@@ -233,6 +237,7 @@ contains
             allocate(this%exceptions(globalExceptionCount))
             this%exceptions(:) = list%exceptions
          end if
+
 
          call clearAll(list)
 

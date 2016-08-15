@@ -42,7 +42,7 @@ contains
 
       type (TestSuite) :: suite
 
-      suite = newTestSuite('ExceptionTests')
+      suite = newTestSuite('MpiExceptionTests')
 
 !#define ADD(method, npes) call suite%addTest(newMpiTestMethod(REFLECT(method), numProcesses=npes))
       call suite%addTest( &
@@ -66,19 +66,24 @@ contains
       class (MpiTestMethod), intent(inout) :: this
       class (ParallelContext), allocatable :: context
 
+      print*,__FILE__,__LINE__
       allocate(context, source=this%getContext())
       call assertFalse(anyExceptions(context))
       
+      print*,__FILE__,__LINE__
       if (this%getProcessRank() == 1) then
          call throw('some message')
       end if
+      print*,__FILE__,__LINE__
 
       call assertTrue(anyExceptions(context))
 
+      print*,__FILE__,__LINE__
       ! clear thrown exception
       if (this%getProcessRank() == 1) then
          call assertTrue(catch('some message'))
       end if
+      print*,__FILE__,__LINE__
 
 
    end subroutine test_anyExceptions_none
@@ -88,6 +93,7 @@ contains
       use ParallelContext_mod
       class (MpiTestMethod), intent(inout) :: this
 
+      print*,__FILE__,__LINE__
       call assertEqual(0, getNumExceptions(this%getContext()))
 
       select case (this%getProcessRank()) 
@@ -95,6 +101,7 @@ contains
          call throw('some message')
       end select
 
+      print*,__FILE__,__LINE__
       call assertEqual(2, getNumExceptions(this%getContext()))
 
       ! clear thrown exception
@@ -102,6 +109,7 @@ contains
       case (0,2)
          call assertTrue(catch('some message'))
       end select
+      print*,__FILE__,__LINE__
 
    end subroutine test_getNumExceptions
 
@@ -110,29 +118,33 @@ contains
       use ParallelContext_mod
       class (MpiTestMethod), intent(inout) :: this
 
+      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
       select case (this%getProcessRank()) 
       case (0)
          call throw('exception 1')
       case (1)
          call throw('exception 2')
-         call throw('exception 3')
-      case (2)
-         call throw('exception 4')
+!!$         call throw('exception 3')
+!!$      case (2)
+!!$         call throw('exception 4')
       end select
 
+      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
       call gather(this%getContext())
+      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
 
       select case (this%getProcessRank())
       case (0)
          ! remote exceptions now local with added suffix
          call assertTrue(catch('exception 1 (PE=0)'))
          call assertTrue(catch('exception 2 (PE=1)'))
-         call assertTrue(catch('exception 3 (PE=1)'))
-         call assertTrue(catch('exception 4 (PE=2)'))
+!!$         call assertTrue(catch('exception 3 (PE=1)'))
+!!$         call assertTrue(catch('exception 4 (PE=2)'))
       case (1:)
          ! local exceptions gone
          call assertEqual(0, getNumExceptions())
       end select
+      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
 
    end subroutine test_gather
 

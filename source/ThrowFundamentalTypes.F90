@@ -124,7 +124,8 @@ contains
     integer, parameter :: MAXLEN_SHAPE = 80
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    character(len=:), allocatable :: locationInArray
+    character(len=32) :: locationInArray
+
     write(locationInArray,'("[",i0,", ",i0," ]")') i1, i2
 
     call throw( &

@@ -85,7 +85,7 @@ contains
       class (SerialContext), intent(in) :: this
       character(len=*), intent(in) :: values(:)
       character(len=*), intent(out) :: list(:)
-
+      print*,__FILE__,__LINE__
       list = values
    end subroutine gatherString
 

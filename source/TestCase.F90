@@ -118,6 +118,7 @@ contains
       ! NAG 6.1 revealed that one cannot rely on surrogate
       ! due to the non-TARGET for argument "this".
       ! NAG provided the workaround with this inner procedure.
+      print*,__FILE__,__LINE__,this%name
       call inner_run(this, tstresult, context)
 
    contains

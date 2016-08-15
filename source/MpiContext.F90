@@ -229,7 +229,6 @@ contains
 
       integer, allocatable :: counts(:), displacements(:)
 
-
       integer :: numBytes, numEntries
       integer :: ier
       integer :: i, j, jp
@@ -239,10 +238,12 @@ contains
 
       intrinsic :: sum
 
-      if (size(list) == 0) return
-
-      numBytes = len(list(1)) ! values may be size 0 on some processes, but not all
-      numEntries = size(values) * numBytes
+      if (size(list) > 0) then
+         numBytes = len(list(1)) ! values may be size 0 on some processes, but not all
+         numEntries = size(values) * numBytes
+      else
+         numEntries = 0
+      end if
 
       call this%makeMap(numEntries, counts, displacements)
 
@@ -320,7 +321,7 @@ contains
 
    subroutine labelProcess(this, message)
       class (MpiContext), intent(in) :: this
-      character(len=*), intent(inout) :: message
+      character(len=:), allocatable, intent(inout) :: message
 
       integer, parameter :: MAXLEN_SUFFIX = 80
       character(len=MAXLEN_SUFFIX) :: suffix

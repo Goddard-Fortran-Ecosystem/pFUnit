@@ -111,7 +111,7 @@ contains
 
    subroutine labelProcess(this, message)
       class (ParallelContext), intent(in) :: this
-      character(len=*), intent(inout) :: message
+      character(len=:), allocatable, intent(inout) :: message
    end subroutine labelProcess
 
 end module ParallelContext_mod
