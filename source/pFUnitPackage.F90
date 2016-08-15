@@ -46,7 +46,6 @@ module pFUnit
    use SourceLocation_mod, only: RENAME(SourceLocation)
    use Exception_mod, only:  RENAME(throw), RENAME(catch), RENAME(catchNext)
    use Exception_mod, only:  RENAME(anyExceptions)
-   use ParallelException_mod, only:  RENAME(anyExceptions)
    use Assert_mod, only: RENAME(assertFail)
    use Assert_mod, only: RENAME(assertTrue), RENAME(assertFalse)
    use Assert_mod, only: RENAME(assertSameShape)
@@ -83,7 +82,6 @@ module pFUnit
    use XmlPrinter_mod, only: RENAME(XmlPrinter)
    use DebugListener_mod, only: RENAME(DebugListener)
 
-   use ParallelContext_mod, only: RENAME(ParallelContext)
    use SerialContext_mod, only: RENAME(SerialContext)
    use SerialContext_mod, only: RENAME(newSerialContext)
 #ifdef USE_MPI

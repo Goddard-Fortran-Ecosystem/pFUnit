@@ -961,15 +961,15 @@ def makeValuesReport_type(te='real',tf='real',pe='64',pf='64'):
         
     runit = routineUnit('valuesReport_'+te+tf+pe+pf, \
 """
-      character(len=MAXLEN_MESSAGE) &
-      & function valuesReport_"""+te+tf+pe+pf+""" &
+      function valuesReport_"""+te+tf+pe+pf+""" &
       & (expected,found,ePrefix,ePostfix,fPrefix,fPostfix) &
       & result(valuesReport)
+        character(len=:), allocatable :: valuesReport
         """+te+expectedKind+""", intent(in) :: expected
         """+tf+foundKind+""", intent(in) :: found
         character(len=*), optional, intent(in) :: &
       &   ePrefix, ePostfix, fPrefix, fPostfix
-        character(len=MAXLEN_MESSAGE) :: &
+        character(len=:), allocatable :: &
       &   ePrefix_, ePostfix_, fPrefix_, fPostfix_
 
       if( .not.present(ePrefix) ) then
@@ -1025,28 +1025,29 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
     
     differenceReportSource=\
 """
-    character(len=MAXLEN_MESSAGE) &
-    & function differenceReport_"""+t+p+tol+"""(difference, tolerance) result(differenceReport)
+    function differenceReport_"""+t+p+tol+"""(difference, tolerance) result(differenceReport)
+    character(len=:), allocatable :: differenceReport
      """+expectedDeclaration+"""
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
-     character(len=2) rel
+      character(len=2) rel
+"""
+    if t != 'integer':
+        differenceReportSource=differenceReportSource+\
+"""
      if (abs("""+coercedDifference+""") .gt. tolerance) then
         rel = '> '
      else
         rel = '<='
-     end if"""
-    if t != 'integer':
-        differenceReportSource=differenceReportSource+\
-"""
-     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
+     end if
+    differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| '// trim(rel) //' tolerance:' // trim(toString("""+'tolerance'+"""))
     end function 
 """
     else:
         differenceReportSource=differenceReportSource+\
 """
-     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
+        differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| '
     end function 
 """

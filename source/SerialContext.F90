@@ -34,6 +34,7 @@ module SerialContext_mod
       procedure :: getNumProcesses
       procedure :: processRank
       procedure :: sum
+      procedure :: maximum
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
@@ -69,6 +70,16 @@ contains
       sum = value
 
    end function sum
+
+
+   integer function maximum(this, value)
+      class (SerialContext), intent(in) :: this
+      integer, intent(in) :: value
+
+      maximum = value
+
+   end function maximum
+
 
    subroutine gatherString(this, values, list)
       class (SerialContext), intent(in) :: this

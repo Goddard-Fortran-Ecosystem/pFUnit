@@ -135,7 +135,6 @@ contains
       use TestResult_mod
       use Exception_mod, only: throw
       use Exception_mod, only: catch
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -175,7 +174,6 @@ contains
       use Assert_mod, only: assertEqual
       use TestResult_mod
       use Exception_mod, only: catch
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -214,7 +212,6 @@ contains
       use TestResult_mod
       use Exception_mod, only: catch
       use Exception_mod, only: anyExceptions
-      use Exception_mod, only: MAXLEN_MESSAGE
       use TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -241,8 +238,6 @@ contains
          call assertEqual('brokenOnProcess2[npes=5]', failure%testName)
          if (anyExceptions()) return
          expectedMessage = "Insufficient processes to run this test."
-         suffix=''
-         call this%context%labelProcess(suffix)
          write(suffix,'(" (PE=",i0,")")') 0
          call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(1)%getMessage())
          if (anyExceptions()) return

@@ -22,7 +22,6 @@ contains
       use pFUnit_mod, only: TestRunner, newTestRunner
 #ifdef USE_MPI
       use MpiContext_mod
-      use ParallelException_mod
 #else
       use SerialContext_mod
 #endif
@@ -59,7 +58,7 @@ contains
 
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite
-      use Test_MpiException_mod, only: ParallelExceptionSuite => suite
+      use Test_MpiException_mod, only: MpiExceptionSuite => suite
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
       use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
 #endif
@@ -122,10 +121,10 @@ contains
 #ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
 #endif
-!!$
+
 #ifdef USE_MPI
       ADD(MpiContextSuite)
-      ADD(ParallelExceptionSuite)
+      ADD(MpiExceptionSuite)
       ADD(MpiTestCaseSuite)
       ADD(MpiParameterizedTestCaseSuite)
 #endif

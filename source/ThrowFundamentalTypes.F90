@@ -212,14 +212,16 @@ contains
 
   end subroutine throwDifferentValuesWithLocation_rr
 
-   character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
+   function valuesReport(expected, found)
+      character(len=:), allocatable :: valuesReport
       real, intent(in) :: expected
       real, intent(in) :: found
 
       valuesReport = 'expected: <' // trim(toString(expected)) // '> but found: <' // trim(toString(found)) // '>'
    end function valuesReport
 
-   character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
+   function differenceReport(difference, tolerance)
+      character(len=:), allocatable :: differenceReport
       real, intent(in) :: difference
       real, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))

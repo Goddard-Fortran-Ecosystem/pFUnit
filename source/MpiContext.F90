@@ -45,6 +45,7 @@ module MpiContext_mod
       procedure :: getMpiCommunicator
       procedure :: makeMap
       procedure :: sum
+      procedure :: maximum
       procedure :: gatherString
       procedure :: gatherInteger
       procedure :: gatherLogical
@@ -170,6 +171,7 @@ contains
       mpiCommunicator = this%mpiCommunicator
    end function getMpiCommunicator
 
+
    integer function sum(this, value)
       class (MpiContext), intent(in) :: this
       integer, intent(in) :: value
@@ -182,6 +184,21 @@ contains
       sum = tmp
       
    end function sum
+
+
+   integer function maximum(this, value)
+      class (MpiContext), intent(in) :: this
+      integer, intent(in) :: value
+
+      integer :: ier
+      integer :: tmp
+
+      call mpi_allreduce(value, tmp, 1, MPI_INTEGER, MPI_MAX, &
+           &     this%mpiCommunicator, ier)
+      maximum = tmp
+      
+   end function maximum
+
 
    subroutine makeMap(this, numEntries, counts, displacements)
       class (MpiContext), intent(in) :: this
@@ -305,7 +322,7 @@ contains
 
    subroutine labelProcess(this, message)
       class (MpiContext), intent(in) :: this
-      character(len=*), intent(inout) :: message
+      character(len=:), allocatable, intent(inout) :: message
 
       integer, parameter :: MAXLEN_SUFFIX = 80
       character(len=MAXLEN_SUFFIX) :: suffix

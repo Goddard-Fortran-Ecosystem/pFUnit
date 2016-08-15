@@ -25,7 +25,6 @@ module Test_MpiException_mod
    use Test_mod
    use TestCase_mod
    use Exception_mod
-   use ParallelException_mod
    use MpiTestMethod_mod
    implicit none
 
@@ -120,7 +119,7 @@ contains
          call throw('exception 4')
       end select
 
-      call gather(this%getContext())
+      call gatherExceptions(this%getContext())
 
       select case (this%getProcessRank())
       case (0)

@@ -23,7 +23,6 @@
 module pFUnit_mod
    use SourceLocation_mod
    use Exception_mod
-   use ParallelException_mod
    use Expectation_mod
    use Test_mod
    use TestSuite_mod

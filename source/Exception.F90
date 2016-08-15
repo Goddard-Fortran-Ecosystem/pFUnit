@@ -30,18 +30,15 @@ module PrivateException_mod
    public :: ExceptionList
    public :: newExceptionList
 
-   public :: MAXLEN_MESSAGE
-   public :: MAXLEN_FILE_NAME
    public :: NULL_MESSAGE
+   public :: NULL_EXCEPTION
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
-   integer, parameter :: MAXLEN_MESSAGE = 80*15
-   integer, parameter :: MAXLEN_FILE_NAME = 255
    character(len=*), parameter :: NULL_MESSAGE = ''
 
    type Exception
-      character(len=MAXLEN_MESSAGE) :: message = NULL_MESSAGE
+      character(len=:), allocatable :: message
       type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
       logical :: nullFlag = .true.
    contains
@@ -51,7 +48,7 @@ module PrivateException_mod
       procedure :: isNull
    end type Exception
 
-   type (Exception), parameter :: NULL_EXCEPTION = Exception('NULL EXCEPTION', UNKNOWN_SOURCE_LOCATION, .true.)
+   type (Exception), parameter :: NULL_EXCEPTION = Exception(null(), UNKNOWN_SOURCE_LOCATION, .true.)
 
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
@@ -117,9 +114,10 @@ contains
       getLineNumber = this%location%lineNumber
    end function getLineNumber
 
-   character(len=MAXLEN_FILE_NAME) function getFileName(this)
+   function getFileName(this) result(fileName)
+      character(len=:), allocatable :: fileName
       class (Exception), intent(in) :: this
-      getFileName = trim(this%location%fileName)
+      FileName = trim(this%location%fileName)
    end function getFileName
 
    logical function isNull(this)
@@ -137,7 +135,9 @@ contains
 
    integer function getNumExceptions(this)
       class (ExceptionList), intent(in) :: this
+
       getNumExceptions = size(this%exceptions)
+
    end function getNumExceptions
 
    subroutine throwMessage(this, message, location)
@@ -186,16 +186,19 @@ contains
       class (ParallelContext), intent(in) :: context
 
       type (ExceptionList) :: list
-      integer :: globalExceptionCount
-!      character(len=MAXLEN_MESSAGE) :: msg
+      integer :: n_global_exceptions, n_local_exceptions
       integer :: i
+      integer :: max_len
+      character(len=:), allocatable :: global_messages(:)
+      character(len=:), allocatable :: local_messages(:)
 
 
-      globalExceptionCount = context%sum(size(this%exceptions))
+      n_local_exceptions = this%getNumExceptions()
+      n_global_exceptions = context%sum(size(this%exceptions))
 
-      if (globalExceptionCount > 0) then
+      if (n_global_exceptions > 0) then
 
-         allocate(list%exceptions(globalExceptionCount))
+         allocate(list%exceptions(n_global_exceptions))
 
          do i = 1, this%getNumExceptions()
             call context%labelProcess(this%exceptions(i)%message)
@@ -204,13 +207,28 @@ contains
          call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
          call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
-         call context%gather(this%exceptions(:)%message, list%exceptions(:)%message)
+
+         ! variable length strings create some complexity
+         max_len = maxval([(len(this%exceptions(i)%message),i=1,n_local_exceptions)])
+         max_len = context%maximum(max_len)
+         
+         allocate(character(len=max_len) :: local_messages(n_local_exceptions))
+         do i = 1, n_local_exceptions
+            local_messages(i) = this%exceptions(i)%message
+         end do
 
          call clearAll(this)
 
+         allocate(character(len=max_len) :: global_messages(n_global_exceptions))
+         call context%gather(local_messages, global_messages)
+
          if (context%isRootProcess()) then
+            do i = 1, n_global_exceptions
+               list%exceptions(i)%message = trim(global_messages(i))
+            end do
+
             deallocate(this%exceptions)
-            allocate(this%exceptions(globalExceptionCount))
+            allocate(this%exceptions(n_global_exceptions))
             this%exceptions(:) = list%exceptions
          end if
 
@@ -343,7 +361,6 @@ module Exception_mod
    public :: ExceptionList
    public :: newExceptionList
 
-   public :: MAXLEN_MESSAGE
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
@@ -376,10 +393,12 @@ module Exception_mod
 
   interface anyExceptions
      module procedure anyExceptions_local
+     module procedure anyExceptions_context
   end interface anyExceptions
 
   interface getNumExceptions
      module procedure getNumExceptions_local
+     module procedure getNumExceptions_context
   end interface getNumExceptions
 
 contains
@@ -398,6 +417,15 @@ contains
 
       numExceptions = globalExceptionList%getNumExceptions()
    end function getNumExceptions_local
+
+   integer function getNumExceptions_context(context) result(numExceptions)
+      use ParallelContext_mod, only: ParallelContext
+      class (ParallelContext), intent(in) :: context
+
+      numExceptions = context%sum(getNumExceptions())
+      
+   end function getNumExceptions_context
+
 
    subroutine throw_message(message, location)
       character(len=*), intent(in) :: message
@@ -470,14 +498,25 @@ contains
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
-   logical function anyExceptions_local() result(anyExceptions)
+   logical function anyExceptions_local() result(any)
 
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
-      anyExceptions = globalExceptionList%anyExceptions()
+      any = globalExceptionList%anyExceptions()
+
    end function anyExceptions_local
+
+
+   logical function anyExceptions_context(context) result(any)
+      use ParallelContext_mod, only: ParallelContext
+      class (ParallelContext), intent(in) :: context
+
+      any = context%allReduce(anyExceptions())
+
+   end function anyExceptions_context
+
 
    logical function anyErrors()
       integer :: i
@@ -498,6 +537,7 @@ contains
       class (ParallelContext), intent(in) :: context
       call globalExceptionList%gather(context)
    end subroutine gatherExceptions
+
 
    subroutine clearAll()
       call globalExceptionList%clearAll()

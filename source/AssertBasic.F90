@@ -188,8 +188,8 @@ contains
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
-      character(len=MAXLEN_MESSAGE) :: message_
+      character(len=:), allocatable :: throwMessage
+      character(len=:), allocatable :: message_
 
       message_ = NULL_MESSAGE
       if (present(message)) message_ = message
@@ -202,7 +202,6 @@ contains
          call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
-
          
    end subroutine assertSameShape
 
@@ -246,32 +245,46 @@ contains
    end subroutine assertFalse_1d_
 
    subroutine assertEqualLogical_(expected, found, message, location)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      use Exception_mod, only: throw
       logical, intent(in) :: expected
       logical, intent(in) :: found
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: throwMessage
       character(len=:), allocatable :: message_
 
       if (expected .neqv. found) then
-         write(throwMessage,'((a,a),2(a,a,a,a))') &
-              & 'Logical assertion failed:', new_line('A'), &
-              & '    expected: <"', expected, '">', new_line('A'), &
-              & '   but found: <"', found, '">', new_line('A')
+         throwMessage = &
+              & 'Logical assertion failed:'// new_line('A') // &
+              & '    expected: <"' // to_string(expected) // '">' // new_line('A') // &
+              & '   but found: <"' // to_string(found) // '">' // new_line('A')
 
          message_ = NULL_MESSAGE
          if (present(message)) message_ = message
 
          call throw(appendWithSpace(message_,throwMessage), location)
       end if
+
+   contains
+
+      pure function to_string(flag) result(string)
+         character(len=:), allocatable :: string
+         logical, intent(in) :: flag
+
+         if (flag) then
+            string = 'TRUE'
+         else
+            string = 'FALSE'
+         end if
+      end function to_string
+         
       
    end subroutine assertEqualLogical_
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
-      use Exception_mod, only: throw, MAXLEN_MESSAGE
+      use Exception_mod, only: throw
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
       character(len=*), optional, intent(in) :: message
@@ -282,7 +295,7 @@ contains
       character(len=:), allocatable :: message_
       type (WhitespaceOptions) :: whitespace_
 
-      character(len=MAXLEN_MESSAGE) :: throwMessage
+      character(len=:), allocatable :: throwMessage
       integer :: i, j
       integer :: numI, numJ
       integer :: numSameCharacters
@@ -352,7 +365,7 @@ contains
             numI = len(expected_); numJ = len(found_)
 
          case default
-            write(throwMessage,'(a)')&
+            throwMessage = & 
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
             call throw(appendWithSpace(message_,throwMessage), location)
@@ -515,11 +528,11 @@ contains
                found_    = found
             end select
 
-            write(throwMessage,'((a,a),2(a,a,a,a),(a,a,a))') &
-                 & 'String assertion failed:', new_line('A'), &
-                 & '    expected: <"', expected_, '">', new_line('A'), &
-                 & '   but found: <"', found_, '">', new_line('A'), &
-                 & '  first diff:   ', repeat('-', numSameCharacters), '^'
+            throwMessage = &
+                 & 'String assertion failed:' // new_line('A') // &
+                 & '    expected: <"' // expected_ // '">' // new_line('A') // &
+                 & '   but found: <"' // found_ // '">' // new_line('A') // &
+                 & '  first diff:   ' // repeat('-', numSameCharacters) // '^'
             call throw(appendWithSpace(message_, throwMessage), location)
 
          end if
