@@ -46,7 +46,7 @@ module BaseTestRunner_mod
          import BaseTestRunner
 
          type (TestResult) :: result
-         class (BaseTestRunner), intent(inout) :: this
+         class (BaseTestRunner), target, intent(inout) :: this
          class (Test), intent(inout) :: aTest
          class (ParallelContext), intent(in) :: context
       end function run2

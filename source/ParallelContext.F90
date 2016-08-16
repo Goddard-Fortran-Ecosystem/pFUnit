@@ -35,6 +35,7 @@ module ParallelContext_mod
       procedure(getNumProcesses), deferred :: getNumProcesses
       procedure(processRank), deferred :: processRank
       procedure(sum), deferred :: sum
+      procedure(sum), deferred :: maximum
       generic :: gather => gatherString
       generic :: gather => gatherInteger
       generic :: gather => gatherLogical
@@ -110,7 +111,7 @@ contains
 
    subroutine labelProcess(this, message)
       class (ParallelContext), intent(in) :: this
-      character(len=*), intent(inout) :: message
+      character(len=:), allocatable, intent(inout) :: message
    end subroutine labelProcess
 
 end module ParallelContext_mod

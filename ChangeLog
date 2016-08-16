@@ -1,3 +1,25 @@
+3.2.7   May 24, 2016
+	- Fix 3.2.7 broke the NAG 6.0 compiler (internal compiler error).
+	  Workaround is to simply not use -C=all during the build for now.
+	
+3.2.6   May 24, 2016
+	- Bug fix for several issues identified by the latest NAG compiler
+	(6.1).  These are mostly related to nostandard usage of TARGET
+	attributes that are unsafe for copyin/copyout.  Many thanks to NAG
+	for helping to identify the problems.  Note: these bugs are
+	innocuous under most circumstances/compilers.
+	
+3.2.5   April 27, 2016
+	- Another bug that prevented the compiler version workaround from
+          being handled correctly.
+	
+3.2.4   April 27, 2016
+	- Bug fix - earlier merge broke unix test for Intel compiler
+          version.  This prevented fix in 3.2.2 from being used.
+	
+3.2.3   April 25, 2016
+	- Fixed mistake in OpenMP introduced during previous bug fix.
+	
 3.2.2   April 24, 2016
 	- Workaround for ifort 16.0.2 bug with openmp
 	- Various minor improvements to code:

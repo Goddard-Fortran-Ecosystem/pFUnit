@@ -54,9 +54,12 @@ contains
       use Assert_mod
       type (MockCall) :: mCall
       class (*), pointer :: q
+      integer, target :: one = 1
+
       mCall = newMockCall('methodName')
-      call mCall%expect(1)
+      call mCall%expect(one)
       q => mCall%getExpectedValue()
+
       select type (p => q)
       type is (integer)
          call assertEqual(p, 1)

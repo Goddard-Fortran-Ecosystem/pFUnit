@@ -124,7 +124,8 @@ contains
     integer, parameter :: MAXLEN_SHAPE = 80
 
     ! "locationInArray" is not used in the original AssertEqual code.
-    character(len=MAXLEN_SHAPE) :: locationInArray
+    character(len=32) :: locationInArray
+
     write(locationInArray,'("[",i0,", ",i0," ]")') i1, i2
 
     call throw( &
@@ -168,10 +169,8 @@ contains
   function locationFormat(iLocation) result (fmt)
     integer, intent(in) :: iLocation(:)
 
-    !mlr maybe move this to a larger scope...
-    integer, parameter :: MAXLEN_SHAPE = 80*2
-
-    character(len=MAXLEN_SHAPE) :: fmt
+    integer, parameter :: MAXLEN_FMT = 64
+    character(len=MAXLEN_FMT) :: fmt
     integer :: iLocationSize
 
     iLocationSize = size(iLocation)
@@ -212,14 +211,16 @@ contains
 
   end subroutine throwDifferentValuesWithLocation_rr
 
-   character(len=MAXLEN_MESSAGE) function valuesReport(expected, found)
+  function valuesReport(expected, found)
+      character(len=:), allocatable :: valuesReport
       real, intent(in) :: expected
       real, intent(in) :: found
 
       valuesReport = 'expected: <' // trim(toString(expected)) // '> but found: <' // trim(toString(found)) // '>'
    end function valuesReport
 
-   character(len=MAXLEN_MESSAGE) function differenceReport(difference, tolerance)
+   function differenceReport(difference, tolerance)
+      character(len=:), allocatable :: differenceReport
       real, intent(in) :: difference
       real, intent(in) :: tolerance
       differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))

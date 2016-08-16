@@ -148,7 +148,7 @@ contains
 
       type (TestFailure) :: aFailedTest
       integer :: i, j
-      character(len=300) :: locationString
+      character(len=:), allocatable :: locationString
 
       do i = 1, size(failures)
          aFailedTest = failures(i)

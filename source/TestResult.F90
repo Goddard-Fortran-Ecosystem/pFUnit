@@ -213,6 +213,7 @@ contains
       do i = 1, size(this%listeners)
          call this%listeners(i)%pListener%endTest(aTest%getName())
       end do
+
    end subroutine endTest
 
    integer function runCount(this)

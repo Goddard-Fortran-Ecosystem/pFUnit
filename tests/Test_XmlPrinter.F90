@@ -62,13 +62,6 @@ contains
 
 #ifdef Intel
       use ifport, only: system
-#elif PGI
-        interface
-        extrinsic (f77_local) integer function system(str)
-!pgi$   l3f system
-        character*(*), intent(in) :: str
-        end function
-        end interface
 #endif
 
       type (TestResult) :: aResult
@@ -77,6 +70,10 @@ contains
       integer :: iostat, stat, cstat, xmlUnit, outUnit
       character(len=200) :: fileName, suiteName, command, &
            xsdPath, outFile, errMsg
+
+#ifdef PGI
+      integer :: system
+#endif
 
       fileName = 'test.xml'
       suiteName = 'suitename<<>>""'

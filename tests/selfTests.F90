@@ -29,9 +29,9 @@ contains
       use ParallelContext_mod
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
-#ifdef BUILD_ROBUST
-      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
-#endif
+!!$#ifdef BUILD_ROBUST
+!!$      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
+!!$#endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
@@ -53,9 +53,9 @@ contains
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
       use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
 
-#ifdef BUILD_ROBUST
-      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
-#endif
+!!$#ifdef BUILD_ROBUST
+!!$      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
+!!$#endif
 
 #ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite
@@ -72,7 +72,7 @@ contains
 #ifdef INTEL_13
       type (ResultPrinter), target :: printer
 #endif
-      type (ListenerPointer), allocatable :: ll(:)
+      type (ListenerPointer), target, allocatable :: ll(:)
 
 #ifndef INTEL_13
       allocate(ll(1))
@@ -93,9 +93,9 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
-#ifdef BUILD_ROBUST
-      ADD(UnixProcessSuite)
-#endif
+!!$#ifdef BUILD_ROBUST
+!!$      ADD(UnixProcessSuite)
+!!$#endif
       ADD(exceptionSuite)
 
       ADD(assertBasicSuite)
@@ -119,15 +119,19 @@ contains
 
       ADD(testXmlPrinterSuite)
 
-#ifdef BUILD_ROBUST
-      ADD(testRobustRunnerSuite)
-#endif
-
+!!$#ifdef BUILD_ROBUST
+!!$      ADD(testRobustRunnerSuite)
+!!$#endif
+!!$
 #ifdef USE_MPI
       ADD(MpiContextSuite)
+      print*,__FILE__,__LINE__
       ADD(ParallelExceptionSuite)
-      ADD(MpiTestCaseSuite)
-      ADD(MpiParameterizedTestCaseSuite)
+!!$      print*,__FILE__,__LINE__
+!!$      ADD(MpiTestCaseSuite)
+!!$      print*,__FILE__,__LINE__
+!!$      ADD(MpiParameterizedTestCaseSuite)
+!!$      print*,__FILE__,__LINE__
 #endif
 
 #ifdef USE_MPI
@@ -135,6 +139,7 @@ contains
 #else
       tstResult = runner%run(allTests, newSerialContext())
 #endif
+      print*,__FILE__,__LINE__
       success = tstResult%wasSuccessful()
 
   end function runTests
