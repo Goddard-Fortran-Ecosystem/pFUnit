@@ -25,7 +25,6 @@ module Test_MpiException_mod
    use Test_mod
    use TestCase_mod
    use Exception_mod
-   use ParallelException_mod
    use MpiTestMethod_mod
    implicit none
 
@@ -124,22 +123,20 @@ contains
          call throw('exception 1')
       case (1)
          call throw('exception 2')
-!!$         call throw('exception 3')
-!!$      case (2)
-!!$         call throw('exception 4')
+         call throw('exception 3')
+      case (2)
+         call throw('exception 4')
       end select
 
-      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
-      call gather(this%getContext())
-      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
+      call gatherExceptions(this%getContext())
 
       select case (this%getProcessRank())
       case (0)
          ! remote exceptions now local with added suffix
          call assertTrue(catch('exception 1 (PE=0)'))
          call assertTrue(catch('exception 2 (PE=1)'))
-!!$         call assertTrue(catch('exception 3 (PE=1)'))
-!!$         call assertTrue(catch('exception 4 (PE=2)'))
+         call assertTrue(catch('exception 3 (PE=1)'))
+         call assertTrue(catch('exception 4 (PE=2)'))
       case (1:)
          ! local exceptions gone
          call assertEqual(0, getNumExceptions())

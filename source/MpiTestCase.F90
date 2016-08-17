@@ -78,7 +78,6 @@ contains
 
    recursive subroutine runBare(this)
       use Exception_mod
-      use ParallelException_mod
       class (MpiTestCase), intent(inout) :: this
 
       logical :: discard
@@ -102,7 +101,7 @@ contains
          end if
       end if
 
-      call gather(this%parentContext)
+      call gatherExceptions(this%parentContext)
 
    end subroutine runBare
 

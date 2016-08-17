@@ -1030,23 +1030,24 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
      """+expectedDeclaration+"""
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
-     character(len=2) rel
+      character(len=2) rel
+"""
+    if t != 'integer':
+        differenceReportSource=differenceReportSource+\
+"""
      if (abs("""+coercedDifference+""") .gt. tolerance) then
         rel = '> '
      else
         rel = '<='
-     end if"""
-    if t != 'integer':
-        differenceReportSource=differenceReportSource+\
-"""
-     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
+     end if
+    differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| '// trim(rel) //' tolerance:' // trim(toString("""+'tolerance'+"""))
     end function 
 """
     else:
         differenceReportSource=differenceReportSource+\
 """
-     differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
+        differenceReport = ' difference: |' // trim(toString("""+coercedDifference+""")) // &
       & '| '
     end function 
 """

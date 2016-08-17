@@ -34,8 +34,8 @@ module PF_ParallelContext_mod
       procedure :: isRootProcess
       procedure(getNumProcesses), deferred :: getNumProcesses
       procedure(processRank), deferred :: processRank
-      procedure(sum), deferred :: sum
-      procedure(sum), deferred :: maximum
+      procedure(reduce), deferred :: sum
+      procedure(reduce), deferred :: maximum
       generic :: gather => gatherString
       generic :: gather => gatherInteger
       generic :: gather => gatherLogical
@@ -58,11 +58,11 @@ module PF_ParallelContext_mod
          class(ParallelContext), intent(in) :: this
       end function processRank
 
-      integer function sum(this, value)
+      integer function reduce(this, value)
          import ParallelContext
          class (ParallelContext), intent(in) :: this
          integer, intent(in) :: value
-       end function sum
+       end function reduce
        
       subroutine gatherString(this, values, list)
          import ParallelContext

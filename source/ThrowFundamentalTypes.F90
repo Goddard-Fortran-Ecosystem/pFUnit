@@ -211,7 +211,7 @@ contains
 
   end subroutine throwDifferentValuesWithLocation_rr
 
-  function valuesReport(expected, found)
+   function valuesReport(expected, found)
       character(len=:), allocatable :: valuesReport
       real, intent(in) :: expected
       real, intent(in) :: found

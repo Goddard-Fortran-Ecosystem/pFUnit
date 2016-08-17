@@ -42,7 +42,6 @@ list(APPEND srcs MockCall.F90)
 list(APPEND srcs MockRepository.F90)
 
 list(APPEND srcs ParallelContext.F90)
-list(APPEND srcs ParallelException.F90)
 list(APPEND srcs AbstractTestParameter.F90)
 list(APPEND srcs ParameterizedTestCase.F90)
 list(APPEND srcs Params.F90)

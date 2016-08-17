@@ -171,6 +171,7 @@ contains
       mpiCommunicator = this%mpiCommunicator
    end function getMpiCommunicator
 
+
    integer function sum(this, value)
       class (MpiContext), intent(in) :: this
       integer, intent(in) :: value

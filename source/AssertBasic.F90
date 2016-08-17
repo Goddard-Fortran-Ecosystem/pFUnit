@@ -202,7 +202,6 @@ contains
          call throw(appendWithSpace(message_, throwMessage), &
               & location)
       end if
-
          
    end subroutine assertSameShape
 
@@ -280,12 +279,27 @@ contains
 
          call throw(appendWithSpace(message_,throwMessage), location)
       end if
+
+   contains
+
+      pure function to_string(flag) result(string)
+         character(len=:), allocatable :: string
+         logical, intent(in) :: flag
+
+         if (flag) then
+            string = 'TRUE'
+         else
+            string = 'FALSE'
+         end if
+      end function to_string
+         
       
    end subroutine assertEqualLogical_
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
       use PF_Exception_mod, only: throw
+
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
       character(len=*), optional, intent(in) :: message
@@ -366,7 +380,7 @@ contains
             numI = len(expected_); numJ = len(found_)
 
          case default
-           throwMessage = &
+            throwMessage = & 
                  & 'assertEqualString_InternalError: ' &
                  & // 'Unknown case for handling Whitespace'
             call throw(appendWithSpace(message_,throwMessage), location)
@@ -530,10 +544,11 @@ contains
             end select
 
             throwMessage = &
-                 & 'String assertion failed:' // new_line('A')// &
-                 & '    expected: <"'// expected_// '">'// new_line('A')// &
-                 & '   but found: <"'// found_// '">'// new_line('A')// &
-                 & '  first diff:   '// repeat('-', numSameCharacters) // '^'
+                 & 'String assertion failed:' // new_line('A') // &
+                 & '    expected: <"' // expected_ // '">' // new_line('A') // &
+                 & '   but found: <"' // found_ // '">' // new_line('A') // &
+                 & '  first diff:   ' // repeat('-', numSameCharacters) // '^'
+
             call throw(appendWithSpace(message_, throwMessage), location)
 
          end if

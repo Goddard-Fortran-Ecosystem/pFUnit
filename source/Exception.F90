@@ -31,6 +31,7 @@ module PF_PrivateException_mod
    public :: newExceptionList
 
    public :: NULL_MESSAGE
+   public :: NULL_EXCEPTION
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
@@ -47,7 +48,7 @@ module PF_PrivateException_mod
       procedure :: isNull
    end type Exception
 
-   type (Exception), parameter :: NULL_EXCEPTION = Exception(NULL(), UNKNOWN_SOURCE_LOCATION, .true.)
+   type (Exception), parameter :: NULL_EXCEPTION = Exception(null(), UNKNOWN_SOURCE_LOCATION, .true.)
 
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
@@ -134,7 +135,9 @@ contains
 
    integer function getNumExceptions(this)
       class (ExceptionList), intent(in) :: this
+
       getNumExceptions = size(this%exceptions)
+
    end function getNumExceptions
 
    subroutine throwMessage(this, message, location)
@@ -183,22 +186,20 @@ contains
       class (ParallelContext), intent(in) :: context
 
       type (ExceptionList) :: list
-      integer :: globalExceptionCount
+      integer :: n_global_exceptions, n_local_exceptions
       integer :: i
-
-      character(len=:), allocatable :: local_messages(:), global_messages(:)
-      integer :: num_local_exceptions
       integer :: max_len
+      character(len=:), allocatable :: global_messages(:)
+      character(len=:), allocatable :: local_messages(:)
 
+      n_local_exceptions = this%getNumExceptions()
+      n_global_exceptions = context%sum(size(this%exceptions))
 
-      num_local_exceptions = size(this%exceptions)
-      globalExceptionCount = context%sum(num_local_exceptions)
+      if (n_global_exceptions > 0) then
 
-      if (globalExceptionCount > 0) then
+         allocate(list%exceptions(n_global_exceptions))
 
-         allocate(list%exceptions(globalExceptionCount))
-
-         do i = 1, num_local_exceptions
+         do i = 1, n_local_exceptions
             print*,__FILE__,__LINE__, i, 'before: ', trim(this%exceptions(i)%message)
             call context%labelProcess(this%exceptions(i)%message)
             print*,__FILE__,__LINE__, i, 'after: ', trim(this%exceptions(i)%message)
@@ -207,34 +208,27 @@ contains
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
          call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
 
-         max_len = context%maximum(maxval([(len(this%exceptions(i)%message),i=1,num_local_exceptions)]))
-
-         allocate(character(len=max_len) :: local_messages(num_local_exceptions))
-         do i = 1, num_local_exceptions
+         ! variable length strings create some complexity
+         max_len = maxval([(len(this%exceptions(i)%message),i=1,n_local_exceptions)])
+         max_len = context%maximum(max_len)
+         
+         allocate(character(len=max_len) :: local_messages(n_local_exceptions))
+         do i = 1, n_local_exceptions
             local_messages(i) = this%exceptions(i)%message
-            print*,__FILE__,__LINE__, context%processRank(), i, trim(local_messages(i))
          end do
-
-         if (context%isRootProcess()) then
-            allocate(character(len=max_len) :: global_messages(globalExceptionCount))
-         else
-            allocate(character(len=max_len) :: global_messages(0))
-         end if
-
-         call context%gather(local_messages, global_messages)
-
-         if (context%isRootProcess()) then
-            do i= 1, globalExceptionCount
-               print*,__FILE__,__LINE__, i, trim(global_messages(i))
-               list%exceptions(i)%message = trim(global_messages(i))
-            end do
-         end if
 
          call clearAll(this)
 
+         allocate(character(len=max_len) :: global_messages(n_global_exceptions))
+         call context%gather(local_messages, global_messages)
+
          if (context%isRootProcess()) then
+            do i = 1, n_global_exceptions
+               list%exceptions(i)%message = trim(global_messages(i))
+            end do
+
             deallocate(this%exceptions)
-            allocate(this%exceptions(globalExceptionCount))
+            allocate(this%exceptions(n_global_exceptions))
             this%exceptions(:) = list%exceptions
          end if
 
@@ -400,10 +394,12 @@ module PF_Exception_mod
 
   interface anyExceptions
      module procedure anyExceptions_local
+     module procedure anyExceptions_context
   end interface anyExceptions
 
   interface getNumExceptions
      module procedure getNumExceptions_local
+     module procedure getNumExceptions_context
   end interface getNumExceptions
 
 contains
@@ -422,6 +418,15 @@ contains
 
       numExceptions = globalExceptionList%getNumExceptions()
    end function getNumExceptions_local
+
+   integer function getNumExceptions_context(context) result(numExceptions)
+      use PF_ParallelContext_mod, only: ParallelContext
+      class (ParallelContext), intent(in) :: context
+
+      numExceptions = context%sum(getNumExceptions())
+      
+   end function getNumExceptions_context
+
 
    subroutine throw_message(message, location)
       character(len=*), intent(in) :: message
@@ -494,14 +499,25 @@ contains
       noExceptions = globalExceptionList%noExceptions()
    end function noExceptions
 
-   logical function anyExceptions_local() result(anyExceptions)
+   logical function anyExceptions_local() result(any)
 
       if (.not. allocated(globalExceptionList%exceptions)) then
          call initializeGlobalExceptionList()
       end if
 
-      anyExceptions = globalExceptionList%anyExceptions()
+      any = globalExceptionList%anyExceptions()
+
    end function anyExceptions_local
+
+
+   logical function anyExceptions_context(context) result(any)
+      use PF_ParallelContext_mod, only: ParallelContext
+      class (ParallelContext), intent(in) :: context
+
+      any = context%allReduce(anyExceptions())
+
+   end function anyExceptions_context
+
 
    logical function anyErrors()
       integer :: i
@@ -522,6 +538,7 @@ contains
       class (ParallelContext), intent(in) :: context
       call globalExceptionList%gather(context)
    end subroutine gatherExceptions
+
 
    subroutine clearAll()
       call globalExceptionList%clearAll()
