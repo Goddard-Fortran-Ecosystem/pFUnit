@@ -23,7 +23,7 @@
 ! This module just provides a data type - not a class.
 ! Meant to be shared for easy access.
 
-module SourceLocation_mod
+module PF_SourceLocation_mod
    implicit none
    private
 
@@ -71,4 +71,4 @@ contains
 
    end function toString
 
-end module SourceLocation_mod
+end module PF_SourceLocation_mod

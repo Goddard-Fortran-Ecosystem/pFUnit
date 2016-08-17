@@ -21,9 +21,9 @@
 ! 01 Jan 2014 - Added "hidden" method toStringActual()
 !
 !-------------------------------------------------------------------------------
-module ParameterizedTestCase_mod
-   use TestCase_mod
-   use AbstractTestParameter_mod
+module PF_ParameterizedTestCase_mod
+   use PF_TestCase_mod
+   use PF_AbstractTestParameter_mod
    implicit none
    private
    
@@ -55,4 +55,4 @@ contains
       allocate(this%testParameter, source=testParameter)
    end subroutine setTestParameter
 
-end module ParameterizedTestCase_mod
+end module PF_ParameterizedTestCase_mod

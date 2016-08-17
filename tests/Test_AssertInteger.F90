@@ -22,15 +22,15 @@
 !
 !-------------------------------------------------------------------------------
 module Test_AssertInteger_mod
-   use AssertBasic_mod
-   use Assert_mod, only: assertEqual
-   use Assert_mod, only: assertLessThan
-   use Assert_mod, only: assertGreaterThan
-   use Assert_mod, only: assertLessThanOrEqual
-   use Assert_mod, only: assertGreaterThanOrEqual
-!   use AssertInteger_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
-   use Params_mod, only: i32, i64
+   use PF_AssertBasic_mod
+   use PF_Assert_mod, only: assertEqual
+   use PF_Assert_mod, only: assertLessThan
+   use PF_Assert_mod, only: assertGreaterThan
+   use PF_Assert_mod, only: assertLessThanOrEqual
+   use PF_Assert_mod, only: assertGreaterThanOrEqual
+!   use PF_AssertInteger_mod
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_Params_mod, only: i32, i64
    implicit none
    private
 
@@ -39,9 +39,9 @@ module Test_AssertInteger_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
-      use Test_mod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
+      use PF_Test_mod
 
       type (TestSuite) :: suite
 

@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module SerialContext_mod
-   use ParallelContext_mod
+module PF_SerialContext_mod
+   use PF_ParallelContext_mod
    implicit none
    private
 
@@ -116,4 +116,4 @@ contains
       type (SerialContext), intent(inout) :: this
    end subroutine clean
 
-end module SerialContext_mod
+end module PF_SerialContext_mod

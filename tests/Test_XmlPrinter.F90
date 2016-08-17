@@ -34,11 +34,11 @@ module Test_XmlPrinter_mod
 contains
 
    function suite()
-      use TestCase_mod
-      use TestMethod_mod, only: newTestMethod
-      use Test_mod
-      use TestResult_mod
-      use TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestCase_mod
+      use PF_TestMethod_mod, only: newTestMethod
+      use PF_Test_mod
+      use PF_TestResult_mod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
       type (TestSuite) :: suite
 
       suite = newTestSuite('TestXmlPrinterSuite')
@@ -52,16 +52,16 @@ contains
    end function suite
 
    subroutine testValidXml()
-      use Assert_mod, only: assertEqual
-      use Exception_mod, only: newException
-      use TestCase_mod
+      use PF_Assert_mod, only: assertEqual
+      use PF_Exception_mod, only: newException
+      use PF_TestCase_mod
       use SimpleTestCase_mod, only: SimpleTestCase
-      use SurrogateTestCase_mod
-      use TestResult_mod, only: TestResult, newTestResult
-      use XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
+      use PF_SurrogateTestCase_mod
+      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
 
 #ifdef Intel
-      use ifport, only: system
+      use PF_ifport, only: system
 #endif
 
       type (TestResult) :: aResult
@@ -134,8 +134,8 @@ contains
    end subroutine testValidXml
 
    subroutine compareXMLFileToExpectation(xmlFile)
-     use Assert_mod, only: assertEqual
-     use Assert_mod, only: assertTrue
+     use PF_Assert_mod, only: assertEqual
+     use PF_Assert_mod, only: assertTrue
      use iso_fortran_env, only: iostat_end
 
      character(len=200), intent(in) :: xmlFile

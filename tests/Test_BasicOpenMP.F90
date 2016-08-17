@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_BasicOpenMP_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
    private
 
@@ -30,8 +30,8 @@ module Test_BasicOpenMP_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_TestBasicOpenMP')
@@ -42,7 +42,7 @@ contains
 
    ! run on 4 threads.
    subroutine testRunWithOpenMP()
-      use Assert_mod, only: assertAll
+      use PF_Assert_mod, only: assertAll
 
       !$ integer :: omp_get_thread_num
       integer, parameter :: N = 4
@@ -67,9 +67,9 @@ contains
    ! as the number that were thrown.   Of course actually crashing is a more
    ! likely failure mode than a mismatch in the count.
    subroutine testSerializeExceptions()
-      use Params_mod, only : i32
-      use Exception_mod, only: throw, getNumExceptions, clearAll
-      use Assert_mod, only: AssertEqual
+      use PF_Params_mod, only : i32
+      use PF_Exception_mod, only: throw, getNumExceptions, clearAll
+      use PF_Assert_mod, only: AssertEqual
 
       !$ integer :: omp_get_thread_num
       integer, parameter :: N = 8 ! threads

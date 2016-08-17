@@ -37,7 +37,7 @@
 ! portable on any Unix system, and easily adapted to Windows by
 ! someone with relevant expertise.
 
-module UnixProcess_mod
+module PF_UnixProcess_mod
    use, intrinsic :: iso_c_binding
    implicit none
    private
@@ -67,9 +67,9 @@ module UnixProcess_mod
 contains
 
    function newProcess(command, runInBackground) result(process)
-      use UnixPipeInterfaces_mod, only: popen
-      use StringConversionUtilities_mod, only: nullTerminate
-      use Exception_mod, only: throw
+      use PF_UnixPipeInterfaces_mod, only: popen
+      use PF_StringConversionUtilities_mod, only: nullTerminate
+      use PF_Exception_mod, only: throw
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
       logical, optional, intent(in) :: runInBackground
@@ -106,7 +106,7 @@ contains
    ! Background commands must return a PID for further interactions.
    ! Also commands need to be null-terminated to send to C procedures.
    function makeCommand(baseCommand, runInBackground) result(command)
-      use StringConversionUtilities_mod, only: nullTerminate
+      use PF_StringConversionUtilities_mod, only: nullTerminate
       character(len=:), allocatable :: command
       character(len=*), intent(in) :: baseCommand
       logical, optional, intent(in) :: runInBackground
@@ -160,8 +160,8 @@ contains
    end subroutine terminate
 
    function getLine(this) result(line)
-      use UnixPipeInterfaces_mod, only: c_getLine => getLine
-      use UnixPipeInterfaces_mod, only: free
+      use PF_UnixPipeInterfaces_mod, only: c_getLine => getLine
+      use PF_UnixPipeInterfaces_mod, only: free
       class (UnixProcess) :: this
       character(len=:), allocatable :: line
 
@@ -186,8 +186,8 @@ contains
    end function getLine
 
    function getDelim(this, delimeter) result(line)
-      use UnixPipeInterfaces_mod, only: c_getDelim => getDelim
-      use UnixPipeInterfaces_mod, only: free
+      use PF_UnixPipeInterfaces_mod, only: c_getDelim => getDelim
+      use PF_UnixPipeInterfaces_mod, only: free
       character(len=:), allocatable :: line
       class (UnixProcess) :: this
       character(len=C_CHAR), intent(in) :: delimeter
@@ -245,4 +245,4 @@ contains
    end subroutine execute_command_line
 #endif
    
-end module UnixProcess_mod
+end module PF_UnixProcess_mod

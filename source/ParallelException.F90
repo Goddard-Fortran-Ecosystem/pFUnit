@@ -20,9 +20,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module ParallelException_mod
-   use ParallelContext_mod
-   use Exception_mod
+module PF_ParallelException_mod
+   use PF_ParallelContext_mod
+   use PF_Exception_mod
    implicit none
    private
 
@@ -94,4 +94,4 @@ contains
 
    end subroutine gather
 
-end module ParallelException_mod
+end module PF_ParallelException_mod

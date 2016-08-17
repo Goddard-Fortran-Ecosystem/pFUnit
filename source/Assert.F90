@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Assert_mod
-   use AssertBasic_mod
+module PF_Assert_mod
+   use PF_AssertBasic_mod
 #include "AssertArrays.fh"
    implicit none
    private
@@ -51,4 +51,4 @@ module Assert_mod
 
 contains
 
-end module Assert_mod
+end module PF_Assert_mod

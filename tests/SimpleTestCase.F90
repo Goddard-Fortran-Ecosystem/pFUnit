@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module SimpleTestCase_mod
-   use TestCase_mod, only: TestCase
+   use PF_TestCase_mod, only: TestCase
    implicit none
    private
 
@@ -41,7 +41,7 @@ module SimpleTestCase_mod
 
    abstract interface
       subroutine method(this)
-        use Test_mod
+        use PF_Test_mod
         import SimpleTestCase
         class (SimpleTestCase), intent(inOut) :: this
       end subroutine method
@@ -50,7 +50,7 @@ module SimpleTestCase_mod
 contains
 
    function suite()
-     use TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite, newTestSuite
       type (TestSuite) :: suite
 
       suite = newTestSuite('SimpleTestCase')
@@ -95,7 +95,7 @@ contains
    end subroutine method2
 
    subroutine methodWith2Exceptions(this)
-      use Exception_mod, only: throw
+      use PF_Exception_mod, only: throw
       class (SimpleTestCase), intent(inOut) :: this
 
       call throw('failure A')
@@ -108,4 +108,3 @@ contains
    end subroutine delete_
 
 end module SimpleTestCase_mod
-

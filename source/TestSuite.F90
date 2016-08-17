@@ -20,10 +20,10 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module TestSuite_mod
-   use Exception_mod, only : throw
-   use Params_mod,    only : MAX_LENGTH_NAME
-   use Test_mod
+module PF_TestSuite_mod
+   use PF_Exception_mod, only : throw
+   use PF_Params_mod,    only : MAX_LENGTH_NAME
+   use PF_Test_mod
    implicit none
    private
 
@@ -102,8 +102,8 @@ contains
    end function countTestCases
 
    recursive subroutine run(this, tstResult, context)
-      use ParallelContext_mod
-      use TestResult_mod
+      use PF_ParallelContext_mod
+      use PF_TestResult_mod
       class (TestSuite), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
@@ -211,9 +211,9 @@ contains
 
 #if ((__INTEL_COMPILER) && (INTEL_13))
    recursive function getTestCases(this) result(testList)
-      use Exception_mod
-      use Test_mod
-      use TestCase_mod
+      use PF_Exception_mod
+      use PF_Test_mod
+      use PF_TestCase_mod
       class (TestSuite), intent(in) :: this
       type (TestCaseReference), allocatable :: testList(:)
       type (TestCaseReference), allocatable :: tmp(:)
@@ -252,9 +252,9 @@ contains
    end function getTestCases
 #else
    subroutine  getTestCases(this, testList)
-      use Exception_mod
-      use Test_mod
-      use TestCase_mod
+      use PF_Exception_mod
+      use PF_Test_mod
+      use PF_TestCase_mod
       class (TestSuite), intent(in) :: this
       type (TestCaseReference), allocatable :: testList(:)
 
@@ -293,4 +293,4 @@ contains
     end subroutine getTestCases
 #endif
 
-end module TestSuite_mod
+ end module PF_TestSuite_mod

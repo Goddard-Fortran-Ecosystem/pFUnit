@@ -20,39 +20,38 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module pFUnit_mod
-   use SourceLocation_mod
-   use Exception_mod
-   use ParallelException_mod
-   use Expectation_mod
-   use Test_mod
-   use TestSuite_mod
-   use TestCase_mod
-   use TestMethod_mod
-   use AbstractTestParameter_mod
-   use ParameterizedTestCase_mod
-   use TestResult_mod
-   use TestRunner_mod
-   use BaseTestRunner_mod
-   use SubsetRunner_mod
+module pFUnit
+   use PF_SourceLocation_mod
+   use PF_Exception_mod
+   use PF_ParallelException_mod
+   use PF_Expectation_mod
+   use PF_Test_mod
+   use PF_TestSuite_mod
+   use PF_TestCase_mod
+   use PF_TestMethod_mod
+   use PF_AbstractTestParameter_mod
+   use PF_ParameterizedTestCase_mod
+   use PF_TestResult_mod
+   use PF_TestRunner_mod
+   use PF_BaseTestRunner_mod
+   use PF_SubsetRunner_mod
 
-   use TestListener_mod
-   use XmlPrinter_mod
-   use ResultPrinter_mod
-   use DebugListener_mod
+   use PF_TestListener_mod
+   use PF_XmlPrinter_mod
+   use PF_ResultPrinter_mod
+   use PF_DebugListener_mod
 
 #ifdef BUILD_ROBUST
-   use RobustRunner_mod
+   use PF_RobustRunner_mod
 #endif
-   use Assert_mod
-!  AssertReal mod
-   use ParallelContext_mod
-   use SerialContext_mod
+   use PF_Assert_mod
+   use PF_ParallelContext_mod
+   use PF_SerialContext_mod
 #ifdef USE_MPI
-   use MpiContext_mod
-   use MpiTestCase_mod
-   use MpiTestParameter_mod
-   use MpiTestMethod_mod
+   use PF_MpiContext_mod
+   use PF_MpiTestCase_mod
+   use PF_MpiTestParameter_mod
+   use PF_MpiTestMethod_mod
 #endif
    implicit none
    private
@@ -182,4 +181,4 @@ contains
 
    end subroutine finalize
 
-end module pFUnit_mod
+end module pFUnit

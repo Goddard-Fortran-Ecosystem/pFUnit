@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MockCall_mod
-   use Exception_mod
+module PF_MockCall_mod
+   use PF_Exception_mod
    implicit none
    private
 
@@ -57,4 +57,4 @@ contains
       p => this%argument
    end function getExpectedValue
 
-end module MockCall_mod
+end module PF_MockCall_mod

@@ -21,10 +21,10 @@
 !
 !-------------------------------------------------------------------------------
 
-module TestRunner_mod
-   use Test_mod
-   use BaseTestRunner_mod
-   use TestListener_mod
+module PF_TestRunner_mod
+   use PF_Test_mod
+   use PF_BaseTestRunner_mod
+   use PF_TestListener_mod
    implicit none
    private
 
@@ -50,7 +50,6 @@ module TestRunner_mod
 contains
 
    function newTestRunner_default() result(runner)
-!mlr-      use iso_fortran_env, only: OUTPUT_UNIT
       type (TestRunner) :: runner
       allocate(runner%extListeners(0))
    end function newTestRunner_default
@@ -62,7 +61,7 @@ contains
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
-      use TestResult_mod
+      use PF_TestResult_mod
       class (TestRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
@@ -71,11 +70,11 @@ contains
     end function createTestResult
 
     function run(this, aTest, context) result(result)
-      use Test_mod
-      use TestSuite_mod
-      use TestCase_mod
-      use TestResult_mod
-      use ParallelContext_mod
+      use PF_Test_mod
+      use PF_TestSuite_mod
+      use PF_TestCase_mod
+      use PF_TestResult_mod
+      use PF_ParallelContext_mod
 
       type (TestResult) :: result
       class (TestRunner), target, intent(inout) :: this
@@ -129,16 +128,16 @@ contains
     end subroutine endTest
 
     subroutine endRun(this, result)
-      use AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult_mod, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
     end subroutine endRun
 
     subroutine addFailure(this, testName, exceptions)
-       use Exception_mod
+       use PF_Exception_mod
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
        type (Exception), intent(in) :: exceptions(:)
     end subroutine addFailure
 
-end module TestRunner_mod
+end module PF_TestRunner_mod

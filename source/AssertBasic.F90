@@ -43,10 +43,10 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module AssertBasic_mod
-   use Exception_mod
-   use SourceLocation_mod
-   use StringConversionUtilities_mod
+module PF_AssertBasic_mod
+   use PF_Exception_mod
+   use PF_SourceLocation_mod
+   use PF_StringConversionUtilities_mod
    implicit none
    private
    
@@ -161,7 +161,7 @@ contains
 
 
    subroutine assertExceptionRaisedBasic(location)
-      use Exception_mod, only: throw, catch
+      use PF_Exception_mod, only: throw, catch
       type (SourceLocation), optional, intent(in) :: location
 
       if (.not. catch()) then
@@ -171,7 +171,7 @@ contains
    end subroutine assertExceptionRaisedBasic
 
    subroutine assertExceptionRaisedMessage(message, location)
-      use Exception_mod, only: throw, catch
+      use PF_Exception_mod, only: throw, catch
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
@@ -246,7 +246,7 @@ contains
    end subroutine assertFalse_1d_
 
    subroutine assertEqualLogical_(expected, found, message, location)
-      use Exception_mod, only: throw
+      use PF_Exception_mod, only: throw
       logical, intent(in) :: expected
       logical, intent(in) :: found
       character(len=*), optional, intent(in) :: message
@@ -285,7 +285,7 @@ contains
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
-      use Exception_mod, only: throw
+      use PF_Exception_mod, only: throw
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
       character(len=*), optional, intent(in) :: message
@@ -582,7 +582,7 @@ contains
 
 
    subroutine assertIsNaN_single(x, message, location)
-      use Params_mod, only: r32
+      use PF_Params_mod, only: r32
 #ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 #endif
@@ -598,7 +598,7 @@ contains
    end subroutine assertIsNaN_single
 
    subroutine assertIsNaN_double(x, message, location)
-      use Params_mod, only: r64
+      use PF_Params_mod, only: r64
 #ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
 #endif
@@ -615,7 +615,7 @@ contains
 
 
    subroutine assertIsFinite_single(x, message, location)
-      use Params_mod, only: r32
+      use PF_Params_mod, only: r32
 #ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
 #endif
@@ -631,7 +631,7 @@ contains
    end subroutine assertIsFinite_single
 
    subroutine assertIsFinite_double(x, message, location)
-      use Params_mod, only: r64
+      use PF_Params_mod, only: r64
 #ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
 #endif
@@ -647,4 +647,4 @@ contains
    end subroutine assertIsFinite_double
 
 
-end module AssertBasic_mod
+end module PF_AssertBasic_mod

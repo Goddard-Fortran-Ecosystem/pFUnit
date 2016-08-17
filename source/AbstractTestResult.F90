@@ -1,5 +1,4 @@
-
-module AbstractTestResult_mod
+module PF_AbstractTestResult_mod
 
   implicit none
   private
@@ -30,19 +29,19 @@ module AbstractTestResult_mod
        real :: time
      end function getRunTime
      function getFailures(this) result(failures)
-       use TestFailure_mod, only : TestFailure
+       use PF_TestFailure_mod, only : TestFailure
        import AbstractTestResult
        class (AbstractTestResult), intent(in) :: this
        type (TestFailure), allocatable :: failures(:)
      end function getFailures
      function getErrors(this) result(errors)
-       use TestFailure_mod, only : TestFailure
+       use PF_TestFailure_mod, only : TestFailure
        import AbstractTestResult
        class (AbstractTestResult), intent(in) :: this
        type (TestFailure), allocatable :: errors(:)
      end function getErrors
      function getSuccesses(this) result(successes)
-       use TestFailure_mod, only : TestFailure
+       use PF_TestFailure_mod, only : TestFailure
        import AbstractTestResult
        class (AbstractTestResult), intent(in) :: this
        type (TestFailure), allocatable :: successes(:)
@@ -83,4 +82,4 @@ module AbstractTestResult_mod
 
   end interface
 
-end module AbstractTestResult_mod
+end module PF_AbstractTestResult_mod

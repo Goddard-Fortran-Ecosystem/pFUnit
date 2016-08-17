@@ -22,8 +22,8 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestSuite_mod
-   use TestSuite_mod, only: newTestSuite, TestSuite
-   use TestResult_mod
+   use PF_TestSuite_mod, only: newTestSuite, TestSuite
+   use PF_TestResult_mod
    implicit none
    private
 
@@ -42,9 +42,9 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-      use TestCase_mod, only: TestCase
-      use TestMethod_mod, only: newTestMethod
-      use TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestCase_mod, only: TestCase
+      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
       type (TestSuite) :: suite
 
       suite = newTestSuite('TestSuiteSuite')
@@ -70,11 +70,11 @@ contains
    end function suite
 
    subroutine testCountTestCases()
-      use TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
       use SimpleTestCase_mod, only: newSimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use Assert_mod, only: assertEqual
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suite
 
       suite = newTestSuite('aSuite')
@@ -87,8 +87,8 @@ contains
    end subroutine testCountTestCases
 
    subroutine testCountTestCasesNestedA()
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use Assert_mod, only: assertEqual
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_Assert_mod, only: assertEqual
 
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
@@ -101,9 +101,9 @@ contains
    end subroutine testCountTestCasesNestedA
 
    subroutine testCountTestCasesNestedB()
-      use TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
 
@@ -132,9 +132,9 @@ contains
    !          -> Test2
    !
    subroutine testCountTestCasesNestedC()
-      use TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
@@ -161,11 +161,11 @@ contains
    end subroutine testCountTestCasesNestedC
 
    subroutine testGetTestCases()
-      use Test_mod
-      use TestCase_mod
-      use TestMethod_mod
-      use SerialContext_mod
-      use Assert_mod
+      use PF_Test_mod
+      use PF_TestCase_mod
+      use PF_TestMethod_mod
+      use PF_SerialContext_mod
+      use PF_Assert_mod
 
       type (TestSuite) :: top
       type (TestSuite) :: childA, childB
@@ -206,9 +206,9 @@ contains
    end subroutine myTestMethod
 
    recursive subroutine run(this, test, context)
-      use TestCase_mod
-      use SurrogateTestCase_mod
-      use ParallelContext_mod
+      use PF_TestCase_mod
+      use PF_SurrogateTestCase_mod
+      use PF_ParallelContext_mod
       class (Verbose), intent(inout) :: this
       class (SurrogateTestCase) :: test
       class (ParallelContext), intent(in) :: context

@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module BrokenTestCase_mod
-   use TestCase_mod, only: TestCase
+   use PF_TestCase_mod, only: TestCase
    implicit none
    private
    
@@ -46,7 +46,7 @@ contains
    end subroutine setUp
 
    subroutine runMethod(this)
-      use Exception_mod, only: throw
+      use PF_Exception_mod, only: throw
       class(BrokenTestCase), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' broken run'

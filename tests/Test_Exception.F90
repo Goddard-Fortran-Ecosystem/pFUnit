@@ -23,14 +23,14 @@
 !-------------------------------------------------------------------------------
 
 module Test_Exception_mod
-   use TestSuite_mod
-   use Exception_mod, only: newException
-   use Exception_mod, only: newExceptionList
-   use Assert_mod, only: assertEqual
-   use Assert_mod, only: assertTrue
-   use Assert_mod, only: assertFalse
-   use Exception_mod, only: ExceptionList, Exception
-   use SourceLocation_mod
+   use PF_TestSuite_mod
+   use PF_Exception_mod, only: newException
+   use PF_Exception_mod, only: newExceptionList
+   use PF_Assert_mod, only: assertEqual
+   use PF_Assert_mod, only: assertTrue
+   use PF_Assert_mod, only: assertFalse
+   use PF_Exception_mod, only: ExceptionList, Exception
+   use PF_SourceLocation_mod
    implicit none
    private
 
@@ -39,9 +39,9 @@ module Test_Exception_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite
-      use TestSuite_mod, only: newTestSuite
-      use TestMethod_mod, only: newTestMethod!, TestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestSuite_mod, only: newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod!, TestMethod
 
       type (TestSuite) :: suite
 
@@ -192,7 +192,7 @@ contains
 
    ! !INTERFACE:
    subroutine testCatchFail()
-      use Exception_mod, only: ExceptionList, Exception
+      use PF_Exception_mod, only: ExceptionList, Exception
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -471,7 +471,7 @@ contains
    end subroutine testCatchNextButPreserveC
 
    subroutine testGetLineNumberNoInfo()
-      use Exception_mod, only: UNKNOWN_LINE_NUMBER
+      use PF_Exception_mod, only: UNKNOWN_LINE_NUMBER
       type (Exception) :: anException
 
       anException = newException()
@@ -490,7 +490,7 @@ contains
    end subroutine testGetLineNumber
 
    subroutine testGetFileNameNoInfo()
-      use Exception_mod, only: UNKNOWN_FILE_NAME
+      use PF_Exception_mod, only: UNKNOWN_FILE_NAME
       type (Exception) :: anException
 
       anException = newException()

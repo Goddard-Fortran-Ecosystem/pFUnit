@@ -22,8 +22,8 @@
 !
 !-------------------------------------------------------------------------------
 module Test_RobustRunner_mod
-   use Test_mod
-   use RobustRunner_mod
+   use PF_Test_mod
+   use PF_RobustRunner_mod
    implicit none
    private
 
@@ -32,8 +32,8 @@ module Test_RobustRunner_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('RobustRunner')
@@ -46,14 +46,14 @@ contains
    end function suite
 
    subroutine testRunVariety()
-      use iso_fortran_env
+      use, intrinsic :: iso_fortran_env
       use robustTestSuite_mod, only: remoteSuite => suite
-      use SerialContext_mod, only: THE_SERIAL_CONTEXT
-      use TestSuite_mod
-      use TestResult_mod
-      use Assert_mod
-      use TestListener_mod
-      use ResultPrinter_mod
+      use PF_SerialContext_mod, only: THE_SERIAL_CONTEXT
+      use PF_TestSuite_mod
+      use PF_TestResult_mod
+      use PF_Assert_mod
+      use PF_TestListener_mod
+      use PF_ResultPrinter_mod
 
       type (RobustRunner) :: runner
       type (TestSuite) :: suite

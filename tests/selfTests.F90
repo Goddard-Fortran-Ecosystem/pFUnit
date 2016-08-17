@@ -1,11 +1,11 @@
 program main
-   use pFUnit_mod, only: initialize
-   use pFUnit_mod, only: finalize
-   use pFUnit_mod, only: TestResult
-   use pFUnit_mod, only: ListenerPointer
-   use pFUnit_mod, only: newResultPrinter
-   use pFUnit_mod, only: ResultPrinter
-!$$   use pFUnit_mod, only: DebugListener
+   use pFUnit, only: initialize
+   use pFUnit, only: finalize
+   use pFUnit, only: TestResult
+   use pFUnit, only: ListenerPointer
+   use pFUnit, only: newResultPrinter
+   use pFUnit, only: ResultPrinter
+!$$   use pfunit, only: DebugListener
    implicit none
 
    logical :: success
@@ -17,16 +17,16 @@ program main
 contains
 
    logical function runTests() result(success)
-      use pFUnit_mod, only: newTestSuite
-      use pFUnit_mod, only: TestSuite
-      use pFUnit_mod, only: TestRunner, newTestRunner
+      use pfunit, only: newTestSuite
+      use pfunit, only: TestSuite
+      use pfunit, only: TestRunner, newTestRunner
 #ifdef USE_MPI
-      use MpiContext_mod
-      use ParallelException_mod
+      use pfunit, only: MpiContext
+      use pfunit, only: ParallelException
 #else
-      use SerialContext_mod
+      use pfunit, only: SerialContext, newSerialContext
 #endif
-      use ParallelContext_mod
+      use pfunit, only: ParallelContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
 !!$#ifdef BUILD_ROBUST

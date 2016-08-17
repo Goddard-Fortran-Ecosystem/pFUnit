@@ -20,7 +20,7 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module TestListener_mod
+module PF_TestListener_mod
    implicit none
    private
 
@@ -47,7 +47,7 @@ module TestListener_mod
 
    abstract interface
       subroutine addFailure(this, testName, exceptions)
-         use Exception_mod
+         use PF_Exception_mod
          import TestListener
          class (TestListener), intent(inout) :: this
          character(len=*), intent(in) :: testName
@@ -74,7 +74,7 @@ module TestListener_mod
 !
       ! Stub for future implementation.
       subroutine endRun(this, result)
-         use AbstractTestResult_mod, only : AbstractTestResult
+         use PF_AbstractTestResult_mod, only : AbstractTestResult
          import TestListener
          class (TestListener), intent(inout) :: this
          class (AbstractTestResult), intent(in) :: result
@@ -87,7 +87,7 @@ contains
    ! Most scenarios in Fortran cannot diagnose true errors, so
    ! an empty stub is provided here for convenience.
    subroutine addError(this, testName, exceptions)
-      use Exception_mod, only: Exception
+      use PF_Exception_mod, only: Exception
       class (TestListener), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (Exception), intent(in) :: exceptions(:)
@@ -105,4 +105,4 @@ contains
        debug = this%useDebug
     end function debug
 
- end module TestListener_mod
+ end module PF_TestListener_mod

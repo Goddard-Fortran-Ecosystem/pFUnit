@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module MockListener_mod
-   use TestListener_mod
+   use PF_TestListener_mod
    implicit none
    private
 
@@ -38,7 +38,7 @@ module MockListener_mod
 contains
 
   subroutine addFailure(this, testName, exceptions)
-     use Exception_mod
+     use PF_Exception_mod
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (Exception), intent(in) :: exceptions(:)
@@ -64,7 +64,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult_mod, only : AbstractTestResult
      class (MockListener), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun

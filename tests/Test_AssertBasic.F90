@@ -22,11 +22,11 @@
 !
 !-------------------------------------------------------------------------------
 module Test_AssertBasic_mod
-   use Exception_mod, only: NULL_MESSAGE
-   use AssertBasic_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
-   use Exception_mod, only: catch
-   use Exception_mod, only: getNumExceptions
+   use PF_Exception_mod, only: NULL_MESSAGE
+   use PF_AssertBasic_mod
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_Exception_mod, only: catch
+   use PF_Exception_mod, only: getNumExceptions
    implicit none
    private
 
@@ -35,9 +35,9 @@ module Test_AssertBasic_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
-      use Test_mod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
+      use PF_Test_mod
 
       type (TestSuite) :: suite
 
@@ -569,8 +569,8 @@ contains
    end subroutine testAssertIsFinite
 
    subroutine testAssertExceptionRaised()
-      use Exception_mod, only: throw
-      use SourceLocation_mod
+      use PF_Exception_mod, only: throw
+      use PF_SourceLocation_mod
 
       character(len=*), parameter :: message = 'a message'
 
@@ -583,7 +583,7 @@ contains
    end subroutine testAssertExceptionRaised
 
    subroutine testAssertFail()
-      use SourceLocation_mod
+      use PF_SourceLocation_mod
 
       character(len=*), parameter :: message = 'a message'
 

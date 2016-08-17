@@ -46,7 +46,7 @@ contains
 end module SUT_mod
 
 module MockSUT_mod
-   use MockRepository_mod
+   use PF_MockRepository_mod
    use SUT_mod
    implicit none
    private
@@ -74,7 +74,7 @@ contains
 
 !TODO - make FINAL routine once gfortran supports it
    subroutine verifyMocking(this)
-      use Exception_mod
+      use PF_Exception_mod
       class (MockSUT), intent(inout) :: this
 
       if (associated(this%mocker)) then
@@ -91,10 +91,10 @@ contains
 end module MockSUT_mod
 
 module Test_MockRepository_mod
-   use TestSuite_mod
-   use MockRepository_mod
-   use Exception_mod
-   use Assert_mod
+   use PF_TestSuite_mod
+   use PF_MockRepository_mod
+   use PF_Exception_mod
+   use PF_Assert_mod
 
    use SUT_mod
    use MockSUT_mod
@@ -110,8 +110,8 @@ contains
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_MockRepository')

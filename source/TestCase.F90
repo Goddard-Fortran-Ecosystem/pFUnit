@@ -21,12 +21,12 @@
 !
 !-------------------------------------------------------------------------------
 ! Serial TestCase 
-module TestCase_mod
-   use Exception_mod,         only : throw
-   use Params_mod,            only : MAX_LENGTH_NAME
-   use SurrogateTestCase_mod
-   use TestResult_mod
-   use Test_mod
+module PF_TestCase_mod
+   use PF_Exception_mod,         only : throw
+   use PF_Params_mod,            only : MAX_LENGTH_NAME
+   use PF_SurrogateTestCase_mod
+   use PF_TestResult_mod
+   use PF_Test_mod
 
    private
 
@@ -108,9 +108,9 @@ contains
 
 ! Implement deferred method from class Test
    recursive subroutine run(this, tstResult, context)
-      use SerialContext_mod
-      use TestResult_mod
-      use ParallelContext_mod
+      use PF_SerialContext_mod
+      use PF_TestResult_mod
+      use PF_ParallelContext_mod
       class (TestCase), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
@@ -141,7 +141,7 @@ contains
    end subroutine run
 
    recursive subroutine runBare(this)
-      use Exception_mod, only: noExceptions
+      use PF_Exception_mod, only: noExceptions
       class (TestCase), intent(inout) :: this
 
       call this%setUp()
@@ -192,9 +192,9 @@ contains
    end subroutine setSurrogate
 
    recursive subroutine runMethod(this)
-      use Exception_mod, only: throw
+      use PF_Exception_mod, only: throw
       class (TestCase), intent(inout) :: this
       call throw('TestCase::runMethod() must be overridden.')
    end subroutine runMethod
 
-end module TestCase_mod
+end module PF_TestCase_mod

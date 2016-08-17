@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module DynamicTestCase_mod
-   use TestCase_mod
+module PF_DynamicTestCase_mod
+   use PF_TestCase_mod
    implicit none
    private
 
@@ -74,4 +74,4 @@ contains
       call this%testMethod
    end subroutine runMethod
 
-end module DynamicTestCase_mod
+end module PF_DynamicTestCase_mod

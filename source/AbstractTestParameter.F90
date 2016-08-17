@@ -1,4 +1,4 @@
-module AbstractTestParameter_mod
+module PF_AbstractTestParameter_mod
    implicit none
    private
 
@@ -26,4 +26,4 @@ contains
       string = this%toString()
    end function toStringActual
 
-end module AbstractTestParameter_mod
+end module PF_AbstractTestParameter_mod

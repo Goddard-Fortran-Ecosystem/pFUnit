@@ -72,7 +72,6 @@ list(APPEND srcs TestRunner.F90)
 list(APPEND srcs TestSuite.F90)
 list(APPEND srcs ThrowFundamentalTypes.F90)
 list(APPEND srcs pFUnit.F90)
-list(APPEND srcs pFUnitPackage.F90)
 
 if (MPI)
   list(APPEND srcs MpiContext.F90)

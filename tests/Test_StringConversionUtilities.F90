@@ -22,9 +22,9 @@
 !
 !-------------------------------------------------------------------------------
 module Test_StringConversionUtilities_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
-   use StringConversionUtilities_mod, only: toString
-   use Assert_mod
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_StringConversionUtilities_mod, only: toString
+   use PF_Assert_mod
    implicit none
    private
 
@@ -33,8 +33,8 @@ module Test_StringConversionUtilities_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('StringConversionUtilities')

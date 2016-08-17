@@ -22,8 +22,8 @@
 !
 !-------------------------------------------------------------------------------
 module Test_FixtureTestCase_mod
-   use TestSuite_mod
-   use TestResult_mod, only: TestResult, newTestResult
+   use PF_TestSuite_mod
+   use PF_TestResult_mod, only: TestResult, newTestResult
    implicit none
    private
 
@@ -32,8 +32,8 @@ module Test_FixtureTestCase_mod
 contains
 
    function suite() result(aSuite)
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: aSuite
 
       aSuite = newTestSuite('Test_FixtureTestCase')
@@ -53,11 +53,11 @@ contains
    end function suite
 
    subroutine testRunWithFixture()
-      use TestCase_mod
+      use PF_TestCase_mod
       use FixtureTestCase_mod, only: FixtureTestCase, newFixtureTestCase
       use FixtureTestCase_mod, only: delete
-      use SerialContext_mod
-      use Assert_mod, only: assertEqual
+      use PF_SerialContext_mod
+      use PF_Assert_mod, only: assertEqual
       type (FixtureTestCase) :: aTest
       type (TestResult) :: aTestResult
 
@@ -71,10 +71,10 @@ contains
    end subroutine testRunWithFixture
 
    subroutine testBrokenTestCase()
-      use TestCase_mod
+      use PF_TestCase_mod
       use BrokenTestCase_mod, only: BrokenTestCase
-      use Assert_mod, only: assertEqual
-      use SerialContext_mod
+      use PF_Assert_mod, only: assertEqual
+      use PF_SerialContext_mod
       type (BrokenTestCase) :: test
       type (TestResult) :: aTestResult
 
@@ -89,10 +89,10 @@ contains
    end subroutine testBrokenTestCase
 
    subroutine testBrokenSetUpCase()
-      use TestCase_mod
+      use PF_TestCase_mod
       use BrokenSetUpCase_mod, only: BrokenSetUpCase
-      use Assert_mod, only: assertEqual
-      use SerialContext_mod
+      use PF_Assert_mod, only: assertEqual
+      use PF_SerialContext_mod
       type (BrokenSetUpCase) :: test
       type (TestResult) :: aTestResult
 

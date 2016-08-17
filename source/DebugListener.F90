@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module DebugListener_mod
-   use TestListener_mod
+module PF_DebugListener_mod
+   use PF_TestListener_mod
    implicit none
    private
 
@@ -51,14 +51,14 @@ contains
    end function newDebugListener_unit
 
    function newDebugListener_default() result(listener)
-      use iso_fortran_env, only: OUTPUT_UNIT
+      use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       type (DebugListener) :: listener
       call listener%setDebug()
       listener = DebugListener(OUTPUT_UNIT)
    end function newDebugListener_default
 
    subroutine addFailure(this, testName, exceptions)
-     use Exception_mod
+     use PF_Exception_mod
      class (DebugListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (Exception), intent(in) :: exceptions(:)
@@ -87,9 +87,9 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult_mod, only : AbstractTestResult
      class (DebugListener), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 
-end module DebugListener_mod
+end module PF_DebugListener_mod

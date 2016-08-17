@@ -3,8 +3,8 @@
 ! Note: maybe have multiple expectation types for subroutines, classes, etc.
 ! 
 
-module Expectation_mod
-  use StringConversionUtilities_mod, only : MAXLEN_STRING
+module PF_Expectation_mod
+  use PF_StringConversionUtilities_mod, only : MAXLEN_STRING
   implicit none
   private
 
@@ -83,4 +83,4 @@ contains
     exp_%pred = pred
   end function newExpectation
 
-end module Expectation_mod
+end module PF_Expectation_mod

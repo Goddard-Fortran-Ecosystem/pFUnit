@@ -22,11 +22,11 @@
 !
 !-------------------------------------------------------------------------------
 module Test_Assert_mod
-   use TestSuite_mod
-   use Assert_mod
-   use Exception_mod, only: NULL_MESSAGE
-   use Exception_mod, only: catch
-   use Exception_mod, only: getNumExceptions
+   use PF_TestSuite_mod
+   use PF_Assert_mod
+   use PF_Exception_mod, only: NULL_MESSAGE
+   use PF_Exception_mod, only: catch
+   use PF_Exception_mod, only: getNumExceptions
    implicit none
    private
 
@@ -35,9 +35,9 @@ module Test_Assert_mod
 contains
 
    function suite() result(aSuite)
-      use Test_mod
-      use TestMethod_mod
-      use TestSuite_mod
+      use PF_Test_mod
+      use PF_TestMethod_mod
+      use PF_TestSuite_mod
       type (TestSuite) :: aSuite
 
       aSuite = newTestSuite('Assert')
@@ -63,7 +63,7 @@ contains
    end subroutine testAssertEqualStringDiffer1st
 
    subroutine testAssertWithLocation
-      use SourceLocation_mod
+      use PF_SourceLocation_mod
       call assertTrue(.false., 'intentional fail', &
            & SourceLocation(fileName='nowhere', lineNumber=5))
       call assertTrue(catch('intentional fail'))

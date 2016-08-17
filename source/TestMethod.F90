@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module TestMethod_mod
-   use TestCase_mod, only: TestCase
+module PF_TestMethod_mod
+   use PF_TestCase_mod, only: TestCase
    implicit none
    private
 
@@ -81,7 +81,7 @@ contains
    end function TestMethod_setUpTearDown
 
    recursive subroutine runMethod(this)
-      use Exception_mod, only: getNumExceptions
+      use PF_Exception_mod, only: getNumExceptions
       class (TestMethod), intent(inOut) :: this
 
       call this%userMethod()
@@ -98,4 +98,4 @@ contains
       if (associated(this%userTearDown)) call this%userTearDown()
    end subroutine tearDown
 
-end module TestMethod_mod
+end module PF_TestMethod_mod

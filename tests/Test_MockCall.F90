@@ -23,8 +23,8 @@
 !-------------------------------------------------------------------------------
 
 module Test_MockCall_mod
-   use TestSuite_mod
-   use MockCall_mod
+   use PF_TestSuite_mod
+   use PF_MockCall_mod
    implicit none
    private
 
@@ -35,8 +35,8 @@ contains
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
-      use TestSuite_mod, only: newTestSuite, TestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_MockCall')
@@ -51,7 +51,7 @@ contains
    end function suite
 
    subroutine testExpectOneIntegerArgument
-      use Assert_mod
+      use PF_Assert_mod
       type (MockCall) :: mCall
       class (*), pointer :: q
       integer, target :: one = 1
@@ -68,7 +68,7 @@ contains
    end subroutine testExpectOneIntegerArgument
 
    subroutine testFailExpectOneIntegerArgument
-      use Assert_mod
+      use PF_Assert_mod
       type (MockCall) :: mCall
       class (*), pointer :: q
 

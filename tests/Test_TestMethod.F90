@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestMethod_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
    implicit none
    private
 
@@ -30,8 +30,8 @@ module Test_TestMethod_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_TestMethod')
@@ -40,12 +40,12 @@ contains
    end function suite
 
    subroutine testMethodWasRun()
-      use TestCase_mod
-      use TestResult_mod, only: TestResult, newTestResult
-      use TestMethod_mod, only: TestMethod, newTestMethod
-      use Assert_mod, only: assertEqual
-      use SerialContext_mod
-      use Exception_mod
+      use PF_TestCase_mod
+      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestMethod_mod, only: TestMethod, newTestMethod
+      use PF_Assert_mod, only: assertEqual
+      use PF_SerialContext_mod
+      use PF_Exception_mod
       type (TestMethod) :: method
       type (TestResult) :: aResult
 
@@ -58,8 +58,8 @@ contains
    end subroutine testMethodWasRun
 
    subroutine testWasRun()
-      use Exception_mod, only: throw
-      use Exception_mod, only: getNumExceptions
+      use PF_Exception_mod, only: throw
+      use PF_Exception_mod, only: getNumExceptions
       call throw('wasRun')
    end subroutine testWasRun
 

@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module BaseTestRunner_mod
-   use TestListener_mod
+module PF_BaseTestRunner_mod
+   use PF_TestListener_mod
    implicit none
    private
 
@@ -40,9 +40,9 @@ module BaseTestRunner_mod
       ! RubustRunner fails to compile with message about conflicting types
 
       function run2(this, aTest, context) result(result)
-         use Test_mod
-         use ParallelContext_mod
-         use TestResult_mod
+         use PF_Test_mod
+         use PF_ParallelContext_mod
+         use PF_TestResult_mod
          import BaseTestRunner
 
          type (TestResult) :: result
@@ -53,4 +53,4 @@ module BaseTestRunner_mod
 
    end interface
 
-end module BaseTestRunner_mod
+end module PF_BaseTestRunner_mod

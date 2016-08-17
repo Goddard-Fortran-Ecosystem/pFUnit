@@ -21,8 +21,8 @@
 !
 !-------------------------------------------------------------------------------
 
-module Params_mod
-  use ISO_FORTRAN_ENV
+module PF_Params_mod
+  use, intrinsic :: iso_fortran_env
   implicit none
 
   integer, parameter, public :: MAX_LENGTH_NAME = 128
@@ -41,7 +41,5 @@ module Params_mod
   integer, parameter :: NEQP=0, EQP=1, GTP=2, GEP=3, LTP=4, LEP=5, &
   &  RELEQP=6
 
-contains
-
-end module Params_mod
+end module PF_Params_mod
 

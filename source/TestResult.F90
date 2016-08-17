@@ -21,11 +21,11 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module TestResult_mod
-   use AbstractTestResult_mod
-   use SurrogateTestCase_mod
-   use TestListener_mod
-   use TestFailure_mod
+module PF_TestResult_mod
+   use PF_AbstractTestResult_mod
+   use PF_SurrogateTestCase_mod
+   use PF_TestListener_mod
+   use PF_TestFailure_mod
 
    implicit none
    private
@@ -98,8 +98,8 @@ contains
    end function newTestResult
 
    subroutine addFailure(this, aTest, exceptions)
-      use Exception_mod, only: Exception
-      use TestFailure_mod
+      use PF_Exception_mod, only: Exception
+      use PF_TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (Exception), intent(in) :: exceptions(:)
@@ -124,8 +124,8 @@ contains
    end subroutine addFailure
 
    subroutine addError(this, aTest, exceptions)
-      use Exception_mod, only: Exception
-      use TestFailure_mod
+      use PF_Exception_mod, only: Exception
+      use PF_TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (Exception), intent(in) :: exceptions(:)
@@ -150,8 +150,8 @@ contains
    end subroutine addError
 
    subroutine addSuccess(this, aTest)
-      use Exception_mod, only: Exception
-      use TestFailure_mod
+      use PF_Exception_mod, only: Exception
+      use PF_TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
@@ -187,7 +187,7 @@ contains
    end function errorCount
 
    subroutine startTest(this, aTest)
-     use StringConversionUtilities_mod, only : toString
+     use PF_StringConversionUtilities_mod, only : toString
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
@@ -223,8 +223,8 @@ contains
 
 ! only invoked for a "real" test, not suites etc.
    recursive subroutine run(this, test, context)
-      use Exception_mod
-      use ParallelContext_mod
+      use PF_Exception_mod
+      use PF_ParallelContext_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase) :: test 
       class (ParallelContext), intent(in) :: context
@@ -248,7 +248,7 @@ contains
    end subroutine run
 
    subroutine addListener(this, listener)
-      use TestListener_mod, only: TestListener
+      use PF_TestListener_mod, only: TestListener
       class (TestResult), intent(inOut) :: this
       class (TestListener), target, intent(in) :: listener
 
@@ -339,4 +339,4 @@ contains
       this%name = trim(name)
    end subroutine setName
 
-end module TestResult_mod
+end module PF_TestResult_mod

@@ -20,9 +20,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
-module ResultPrinter_mod
-   use Exception_mod
-   use TestListener_mod, only : TestListener
+module PF_ResultPrinter_mod
+   use PF_Exception_mod
+   use PF_TestListener_mod, only : TestListener
    implicit none
    private
 
@@ -61,7 +61,7 @@ contains
   end function newResultPrinter
 
   subroutine addFailure(this, testName, exceptions)
-     use Exception_mod
+     use PF_Exception_mod
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (Exception), intent(in) :: exceptions(:)
@@ -72,7 +72,7 @@ contains
   end subroutine addFailure
 
   subroutine addError(this, testName, exceptions)
-     use Exception_mod
+     use PF_Exception_mod
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (Exception), intent(in) :: exceptions(:)
@@ -108,7 +108,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-      use AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult_mod, only : AbstractTestResult
       class (ResultPrinter), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -117,7 +117,7 @@ contains
     end subroutine endRun
 
    subroutine print(this, result)
-      use AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult_mod, only : AbstractTestResult
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -140,8 +140,8 @@ contains
 
    subroutine printFailures(this, label, failures)
 !?      u TestResult_mod
-      use TestFailure_mod
-      use SourceLocation_mod
+      use PF_TestFailure_mod
+      use PF_SourceLocation_mod
       class (ResultPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: failures(:)
@@ -166,7 +166,7 @@ contains
    end subroutine printFailures
 
    subroutine printFooter(this, result)
-      use AbstractTestResult_mod
+      use PF_AbstractTestResult_mod
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -200,4 +200,4 @@ contains
 
      end subroutine incrementColumn
 
-end module ResultPrinter_mod
+end module PF_ResultPrinter_mod

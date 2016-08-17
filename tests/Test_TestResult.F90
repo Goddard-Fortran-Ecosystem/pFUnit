@@ -22,10 +22,10 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestResult_mod
-   use TestSuite_mod, only: TestSuite, newTestSuite
-   use TestResult_mod, only: TestResult, newTestResult
-   use TestResult_mod, only: newTestResult, TestResult
-   use TestCase_mod
+   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestResult_mod, only: TestResult, newTestResult
+   use PF_TestResult_mod, only: newTestResult, TestResult
+   use PF_TestCase_mod
    use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
    implicit none
    private
@@ -35,10 +35,10 @@ module Test_TestResult_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestResult_mod, only: TestResult, newTestResult
-      use TestCase_mod
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestCase_mod
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('TestResultSuite')
@@ -66,8 +66,8 @@ contains
    end function suite
 
    subroutine testGetNumRun()
-      use Assert_mod, only: assertEqual
-      use TestResult_mod, only: newTestResult, TestResult
+      use PF_Assert_mod, only: assertEqual
+      use PF_TestResult_mod, only: newTestResult, TestResult
 !!$      use TestCase_mod
       type (TestResult) :: aResult
 !!$      class(TestCase), pointer :: tstCase
@@ -88,11 +88,11 @@ contains
    end subroutine testGetNumRun
 
    subroutine testGetNumFailed()
-      use Assert_mod, only: assertEqual
-      use Exception_mod, only: newException
+      use PF_Assert_mod, only: assertEqual
+      use PF_Exception_mod, only: newException
       use SimpleTestCase_mod, only: SimpleTestCase
-      use SurrogateTestCase_mod
-      use TestCase_mod
+      use PF_SurrogateTestCase_mod
+      use PF_TestCase_mod
 
       type (TestResult) :: aResult
       
@@ -110,12 +110,12 @@ contains
    end subroutine testGetNumFailed
 
    subroutine testAddListenerEnd()
-      use TestListener_mod
+      use PF_TestListener_mod
       use MockListener_mod
-      use Assert_mod
+      use PF_Assert_mod
       use SimpleTestCase_mod
-      use SurrogateTestCase_mod
-      use TestCase_mod
+      use PF_SurrogateTestCase_mod
+      use PF_TestCase_mod
 
       type (TestResult) :: result
       type (MockListener), target :: listener
@@ -130,10 +130,10 @@ contains
    end subroutine testAddListenerEnd
 
    subroutine testAddListenerStart()
-      use TestListener_mod
-      use SurrogateTestCase_mod
+      use PF_TestListener_mod
+      use PF_SurrogateTestCase_mod
       use MockListener_mod
-      use Assert_mod
+      use PF_Assert_mod
       use SimpleTestCase_mod
       type (TestResult) :: result
       type (MockListener), target :: listener
@@ -149,13 +149,13 @@ contains
    end subroutine testAddListenerStart
 
    subroutine testAddListenerFailure()
-      use TestListener_mod
+      use PF_TestListener_mod
       use MockListener_mod
-      use Assert_mod
-      use Exception_mod
+      use PF_Assert_mod
+      use PF_Exception_mod
       use SimpleTestCase_mod
-      use SurrogateTestCase_mod
-      use TestCase_mod
+      use PF_SurrogateTestCase_mod
+      use PF_TestCase_mod
       
       type (TestResult) :: result
       type (MockListener), target :: listener

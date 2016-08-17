@@ -31,7 +31,7 @@ module MakeInfinity_mod
 contains
 
    function makeInf_32() result(Inf_32)
-      use Params_mod, only: r32
+      use PF_Params_mod, only: r32
       real(r32) :: Inf_32
       integer, parameter :: i32 = selected_int_kind(8)
       integer(i32), parameter :: inf_bits_32 = int(Z'7F800000',i32)
@@ -41,7 +41,7 @@ contains
    end function makeInf_32
    
    function makeInf_64() result(Inf_64)
-      use Params_mod, only: r64
+      use PF_Params_mod, only: r64
       real(r64) :: Inf_64
       integer, parameter :: i64 = selected_int_kind(18)
       integer(i64), parameter :: inf_bits_64 = int(Z'7FF0000000000000',i64)
@@ -51,4 +51,3 @@ contains
    end function makeInf_64
 
 end module MakeInfinity_mod
-

@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module robustTestSuite_mod
-   use pFUnit_mod
+   use pFUnit
    implicit none
    private
 
@@ -31,8 +31,8 @@ module robustTestSuite_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('robustTestSuite')
@@ -61,7 +61,7 @@ contains
    end subroutine testRunSucceeds
 
    subroutine testRunMultipleExceptions()
-     use Assert_mod
+     use PF_Assert_mod
      ! do nothing
      call assertTrue(1 == 2)
      call assertTrue(1 == 3)
@@ -69,7 +69,7 @@ contains
    end subroutine testRunMultipleExceptions
 
    subroutine testRunAssertFailure()
-      use Assert_mod
+      use PF_Assert_mod
       ! do nothing
       call assertTrue(1 == 2)
    end subroutine testRunAssertFailure

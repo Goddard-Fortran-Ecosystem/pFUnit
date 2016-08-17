@@ -22,10 +22,10 @@
 !
 !-------------------------------------------------------------------------------
 module Test_UnixProcess_mod
-   use TestSuite_mod
-   use Assert_mod
-   use Exception_mod
-   use UnixProcess_mod
+   use PF_TestSuite_mod
+   use PF_Assert_mod
+   use PF_Exception_mod
+   use PF_UnixProcess_mod
    implicit none
    private
 
@@ -34,8 +34,8 @@ module Test_UnixProcess_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite, newTestSuite
-      use TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
       suite = newTestSuite('UnixProcess')

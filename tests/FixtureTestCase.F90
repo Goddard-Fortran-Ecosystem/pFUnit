@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module FixtureTestCase_mod
-   use TestCase_mod, only: TestCase
+   use PF_TestCase_mod, only: TestCase
    implicit none
    private
 

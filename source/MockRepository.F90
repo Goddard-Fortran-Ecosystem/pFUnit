@@ -20,11 +20,11 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MockRepository_mod
-   use Expectation_mod, only : Expectation, newExpectation
-   use Expectation_mod, only : Subject, newSubject, newSubjectNameOnly
-   use Expectation_mod, only : Predicate, newPredicate
-   use Expectation_mod, only : wasCalled, wasNotCalled, wasCalledOnce
+module PF_MockRepository_mod
+   use PF_Expectation_mod, only : Expectation, newExpectation
+   use PF_Expectation_mod, only : Subject, newSubject, newSubjectNameOnly
+   use PF_Expectation_mod, only : Predicate, newPredicate
+   use PF_Expectation_mod, only : wasCalled, wasNotCalled, wasCalledOnce
 
    implicit none
    private
@@ -114,7 +114,7 @@ contains
    end subroutine delete
 
    subroutine verifyMocking(this, object)
-      use Exception_mod
+      use PF_Exception_mod
       class (MockRepository), intent(inout) :: this
       class (*) :: object
       
@@ -196,7 +196,7 @@ contains
    end subroutine registerMockCallBy_subName_
 
    subroutine verify(this)
-      use Exception_mod
+      use PF_Exception_mod
       class (MockRepository), intent(inout), target :: this
       integer iExp, iReg
       class (Expectation), pointer :: exp, reg
@@ -285,4 +285,4 @@ contains
     end subroutine verify
 
    
-end module MockRepository_mod
+end module PF_MockRepository_mod

@@ -31,7 +31,7 @@
 ! should be safer for routine use.
 !-------------
 
-module UnixPipeInterfaces_mod
+module PF_UnixPipeInterfaces_mod
    use, intrinsic :: ISO_C_BINDING
    private
 
@@ -94,4 +94,4 @@ module UnixPipeInterfaces_mod
 
    end interface
 
-end module UnixPipeInterfaces_mod
+end module PF_UnixPipeInterfaces_mod

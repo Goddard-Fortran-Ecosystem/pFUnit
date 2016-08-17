@@ -22,7 +22,7 @@
 !-------------------------------------------------------------------------------
 ! Default implementation is for a serial process
 ! Subclass for MPI operations
-module ParallelContext_mod
+module PF_ParallelContext_mod
    implicit none
    private
 
@@ -114,4 +114,4 @@ contains
       character(len=:), allocatable, intent(inout) :: message
    end subroutine labelProcess
 
-end module ParallelContext_mod
+end module PF_ParallelContext_mod

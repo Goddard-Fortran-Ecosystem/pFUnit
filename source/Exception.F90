@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
-module PrivateException_mod
-   use SourceLocation_mod
+module PF_PrivateException_mod
+   use PF_SourceLocation_mod
    implicit none
    private
 
@@ -178,7 +178,7 @@ contains
    end function catchNext
 
    subroutine gather(this, context)
-      use ParallelContext_mod
+      use PF_ParallelContext_mod
       class (ExceptionList), intent(inOut) :: this
       class (ParallelContext), intent(in) :: context
 
@@ -355,11 +355,11 @@ contains
       if (allocated(this%exceptions)) deallocate(this%exceptions)
    end subroutine delete
 
-end module PrivateException_mod
+end module PF_PrivateException_mod
 
-module Exception_mod
-   use SourceLocation_mod
-   use PrivateException_mod
+module PF_Exception_mod
+   use PF_SourceLocation_mod
+   use PF_PrivateException_mod
    implicit none
    private
 
@@ -518,7 +518,7 @@ contains
    end function anyErrors
 
    subroutine gatherExceptions(context)
-      use ParallelContext_mod
+      use PF_ParallelContext_mod
       class (ParallelContext), intent(in) :: context
       call globalExceptionList%gather(context)
    end subroutine gatherExceptions
@@ -527,4 +527,4 @@ contains
       call globalExceptionList%clearAll()
    end subroutine clearAll
 
-end module Exception_mod
+end module PF_Exception_mod

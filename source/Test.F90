@@ -20,7 +20,7 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_mod
+module PF_Test_mod
    implicit none
    private
 
@@ -42,8 +42,8 @@ module Test_mod
       end function countTestCases
 
       recursive subroutine run(this, tstResult, context)
-         use TestResult_mod
-         use ParallelContext_mod
+         use PF_TestResult_mod
+         use PF_ParallelContext_mod
          import Test
          class (Test), intent(inout) :: this
          class (TestResult), intent(inout) :: tstResult
@@ -64,4 +64,4 @@ contains
       ! Default: Cannot change name
    end subroutine setName
 
-end module Test_mod
+end module PF_Test_mod

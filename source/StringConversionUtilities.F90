@@ -33,10 +33,10 @@
 ! Further control of field width could be added at a later time.
 !
 
-module StringConversionUtilities_mod
+module PF_StringConversionUtilities_mod
 
-  use Params_mod, only : r32, r64
-  use Params_mod, only : i32, i64
+  use PF_Params_mod, only : r32, r64
+  use PF_Params_mod, only : i32, i64
 
    implicit none
    private
@@ -226,7 +226,7 @@ contains
    end function appendWithSpace
 
    function nullTerminate(string) result(nullTerminatedString)
-      use iso_c_binding
+      use, intrinsic :: iso_c_binding
       character(len=*), intent(in) :: string
       character(len=:), allocatable :: nullTerminatedString
 
@@ -325,4 +325,4 @@ contains
 
 
 
-end module StringConversionUtilities_mod
+end module PF_StringConversionUtilities_mod
