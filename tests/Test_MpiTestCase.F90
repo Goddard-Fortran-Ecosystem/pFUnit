@@ -22,10 +22,10 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiTestCase_mod
-   use Test_mod
-   use TestCase_mod
-   use MpiTestCase_mod
-   use MpiTestParameter_mod
+   use PF_Test_mod
+   use PF_TestCase_mod
+   use PF_MpiTestCase_mod
+   use PF_MpiTestParameter_mod
    implicit none
    private
 
@@ -50,7 +50,7 @@ module Test_MpiTestCase_mod
 contains
 
    function suite()
-     use TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite, newTestSuite
       type (TestSuite) :: suite
 
       suite = newTestSuite('Test_MpiTestCase')
@@ -88,7 +88,7 @@ contains
     end function newTest_MpiTestCase
 
    subroutine testWasRun(this)
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       this%runLog = ' ' ! empty
@@ -98,7 +98,7 @@ contains
    end subroutine testWasRun
 
    subroutine testRunOn2Processors(this)
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
@@ -108,7 +108,7 @@ contains
    end subroutine testRunOn2Processors
 
    subroutine brokenProcess1(this)
-      use Exception_mod
+      use PF_Exception_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: unit
@@ -121,7 +121,7 @@ contains
    end subroutine brokenProcess1
 
    subroutine brokenOnProcess2(this)
-      use Exception_mod
+      use PF_Exception_mod
       class (Test_MpiTestCase), intent(inout) :: this
       if (this%context%processRank() == 1 .or. this%context%processRank() == 2) then
          call throw('Intentional fail')
@@ -131,11 +131,11 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn1(this)
-      use Assert_mod, only: assertEqual
-      use TestResult_mod
-      use Exception_mod, only: throw
-      use Exception_mod, only: catch
-      use TestFailure_mod
+      use PF_Assert_mod, only: assertEqual
+      use PF_TestResult_mod
+      use PF_Exception_mod, only: throw
+      use PF_Exception_mod, only: catch
+      use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
@@ -170,11 +170,11 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn2(this)
-      use Exception_mod, only: throw
-      use Assert_mod, only: assertEqual
-      use TestResult_mod
-      use Exception_mod, only: catch
-      use TestFailure_mod
+      use PF_Exception_mod, only: throw
+      use PF_Assert_mod, only: assertEqual
+      use PF_TestResult_mod
+      use PF_Exception_mod, only: catch
+      use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
@@ -207,12 +207,12 @@ contains
    ! Purposefully request more processes than are available. 
    ! detected on root process in the end.
    subroutine testTooFewProcs(this)
-      use Exception_mod, only: throw
-      use Assert_mod, only: assertEqual
-      use TestResult_mod
-      use Exception_mod, only: catch
-      use Exception_mod, only: anyExceptions
-      use TestFailure_mod
+      use PF_Exception_mod, only: throw
+      use PF_Assert_mod, only: assertEqual
+      use PF_TestResult_mod
+      use PF_Exception_mod, only: catch
+      use PF_Exception_mod, only: anyExceptions
+      use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
@@ -224,8 +224,6 @@ contains
 
       character(len=100) :: expectedMessage
       character(len=:), allocatable :: suffix
-
-      print*,__FILE__,__LINE__
 
       reslt = newTestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
@@ -246,15 +244,12 @@ contains
          if (anyExceptions()) return
 
       end if
-      print*,__FILE__,__LINE__
 
    end subroutine testTooFewProcs
 
    recursive subroutine runMethod(this)
       class(Test_MpiTestCase), intent(inOut) :: this
-      print*,__FILE__,__LINE__
       call this%testMethod()
-      print*,__FILE__,__LINE__
    end subroutine runMethod
 
    subroutine wasRun(runLog, mpiCommunicator)
@@ -263,17 +258,14 @@ contains
       
       integer :: numProcesses, rank, ier
 
-      print*,__FILE__,__LINE__
       runLog = 'was run'
       call Mpi_Barrier(mpiCommunicator, ier)
-      print*,__FILE__,__LINE__
 
    end subroutine wasRun
 
    subroutine delete_(this)
       type (Test_MpiTestCase), intent(inOut) :: this
       nullify(this%testMethod)
-      print*,__FILE__,__LINE__
    end subroutine delete_
 
 end module Test_MpiTestCase_mod

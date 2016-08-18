@@ -22,10 +22,10 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiParameterizedTestCase_mod
-   use Test_mod
-   use TestCase_mod
-   use MpiTestCase_mod
-   use MpiTestParameter_mod
+   use PF_Test_mod
+   use PF_TestCase_mod
+   use PF_MpiTestCase_mod
+   use PF_MpiTestParameter_mod
    implicit none
    private
 
@@ -56,7 +56,7 @@ module Test_MpiParameterizedTestCase_mod
 contains
 
    function suite()
-     use TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite, newTestSuite
       type (TestSuite) :: suite
 
       type (ExtendedTestParameter) :: testParameter
@@ -100,7 +100,7 @@ contains
     end function toString
 
    subroutine testRunOn2PEs(this)
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       call assertEqual(2, this%getNumProcesses())
@@ -110,7 +110,7 @@ contains
    ! ensure that the extra parameter is correctly captured in the 
    ! testParameter component of the base class.
    subroutine testToString(this)
-      use Assert_mod, only: assertEqual
+      use PF_Assert_mod, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       call assertEqual('2', this%testParameter%toString())

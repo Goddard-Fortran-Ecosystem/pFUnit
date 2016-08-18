@@ -6,63 +6,63 @@ include_directories(${CMAKE_BINARY_DIR}/mod)
 
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 
-set(OTHER_SOURCES MakeNaN.F90 MakeInfinity.F90 MockListener.F90)
-list(APPEND OTHER_SOURCES BrokenTestCase.F90 BrokenSetUpCase.F90)
-list(APPEND OTHER_SOURCES FixtureTestCase.F90)
+set(OTHER_SOURCES
+  MakeNaN.F90 MakeInfinity.F90 MockListener.F90
+  BrokenTestCase.F90 BrokenSetUpCase.F90
+  FixtureTestCase.F90)
 
-set(TEST_SRCS Test_Assert.F90)
-list(APPEND TEST_SRCS Test_AssertReal.F90)
-list(APPEND TEST_SRCS Test_AssertBasic.F90)
-list(APPEND TEST_SRCS SimpleTestCase.F90)
-list(APPEND TEST_SRCS Test_Assert.F90)
-list(APPEND TEST_SRCS Test_AssertComplex.F90)
-list(APPEND TEST_SRCS Test_AssertInteger.F90)
-list(APPEND TEST_SRCS Test_Exception.F90)
-list(APPEND TEST_SRCS Test_FixtureTestCase.F90)
-list(APPEND TEST_SRCS Test_MockCall.F90)
-list(APPEND TEST_SRCS Test_MockRepository.F90)
-list(APPEND TEST_SRCS Test_SimpleTestCase.F90)
-list(APPEND TEST_SRCS Test_StringConversionUtilities.F90)
-list(APPEND TEST_SRCS Test_TestMethod.F90)
-list(APPEND TEST_SRCS Test_TestResult.F90)
-list(APPEND TEST_SRCS Test_XmlPrinter.F90)
-list(APPEND TEST_SRCS Test_TestSuite.F90)
+set (SERIAL_TEST_SRCS
+  Test_Assert.F90
+  Test_AssertReal.F90
+  Test_AssertBasic.F90
+  SimpleTestCase.F90
+  Test_Assert.F90
+  Test_AssertComplex.F90
+  Test_AssertInteger.F90
+  Test_Exception.F90
+  Test_FixtureTestCase.F90
+  Test_MockCall.F90
+  Test_MockRepository.F90
+  Test_SimpleTestCase.F90
+  Test_StringConversionUtilities.F90
+  Test_TestMethod.F90
+  Test_TestResult.F90
+  Test_XmlPrinter.F90
+  Test_TestSuite.F90
+  )
 
 if (ROBUST)
-  list(APPEND TEST_SRCS Test_UnixProcess.F90)
-  list(APPEND TEST_SRCS Test_RobustRunner.F90)
-  list(APPEND TEST_SRCS robustTestSuite.F90)
-endif()
+  list (APPEND SERIAL_TEST_SRCS
+    Test_UnixProcess.F90
+    Test_RobustRunner.F90
+    robustTestSuite.F90
+    )
+endif ()
 
-list(APPEND TEST_SRCS Test_BasicOpenMP.F90)
+list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
-if (MPI)
-  list(APPEND TEST_SRCS Test_MpiContext.F90)
-  list(APPEND TEST_SRCS Test_MpiException.F90)
-  list(APPEND TEST_SRCS Test_MpiTestCase.F90)
-  list(APPEND TEST_SRCS Test_MpiParameterizedTestCase.F90)
-endif()
+add_library(sfunittests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
+target_link_libraries(sfunittests sfunit)
 
-set(SRCS ${TEST_SRCS})
-
-add_library(testpfunit STATIC ${SRCS} ${OTHER_SOURCES})
-target_link_libraries(testpfunit pfunit)
-
-set(TEST_EXE tests.x)
-
-add_executable (${TEST_EXE} selfTests.F90)
-add_test (NAME pfunit_tests COMMAND ${TEST_EXE}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-set_property (TEST pfunit_tests
+add_executable (serial_tests.x serial_tests.F90)
+add_test (NAME serial_tests COMMAND serial_tests.x
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+set_property (TEST serial_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
-
-add_dependencies(tests.x pfunit)
-
-target_link_libraries(${TEST_EXE} pfunit testpfunit)
+target_link_libraries(serial_tests.x sfunittests sfunit)
 
 if (MPI)
-  target_link_libraries(${TEST_EXE} ${MPI_Fortran_LIBRARIES} )
+  list(APPEND PARALLEL_TEST_SRCS Test_MpiContext.F90)
+  list(APPEND PARALLEL_TEST_SRCS Test_MpiException.F90)
+  list(APPEND PARALLEL_TEST_SRCS Test_MpiTestCase.F90)
+  list(APPEND PARALLEL_TEST_SRCS Test_MpiParameterizedTestCase.F90)
+
+  add_library(pfunittests STATIC ${SERIAL_TEST_SRCS} ${PARALLEL_TEST_SRCS} ${OTHER_SOURCES})
+  target_link_libraries(pfunittests pfunit)
+
+  add_executable (parallel_tests.x parallel_tests.F90)
+  target_link_libraries(parallel_tests.x ${MPI_Fortran_LIBRARIES} pfunittests pfunit)
 
 # Fix for openmpi 1.8.8 which complains about forking due to selftests of
 # robust runner.
@@ -76,24 +76,32 @@ if (MPI)
     # standard mpiexec.  Not the default because we've found the hardcoded mpirun more portable.
     # There may be situations, however, where the FindMPI-based target will work better.
     #
-    add_custom_target(tests COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_custom_target(tests COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/parallel_tests.x DEPENDS paralell_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   else()
     #
     # Add the target for executing the tests with a hardcoded call to mpirun.
     #
-    add_custom_target(tests COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 tests/${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    add_custom_target(tests
+      COMMAND serial_tests.x
+      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 tests/parallel_tests.x
+      DEPENDS serial_tests.x parallel_tests.x
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     #
   endif()
 #
 else()
 #
-     add_custom_target(tests COMMAND ${TEST_EXE} DEPENDS ${TEST_EXE} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+     add_custom_target(tests COMMAND serial_tests.x DEPENDS serial_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
 
 if (ROBUST)
   set(REMOTE_EXE remote.x)
-  add_executable (${REMOTE_EXE} RemoteProgram.F90)
-  target_link_libraries(${REMOTE_EXE} pfunit testpfunit)
+  if (MPI)
+     add_executable (${REMOTE_EXE} parallelRemoteProgram.F90)
+   else ()
+     add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
+   endif ()
+  target_link_libraries(${REMOTE_EXE} sfunit sfunittests)
   if (MPI)
     target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
   endif()

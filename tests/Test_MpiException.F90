@@ -22,10 +22,10 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiException_mod
-   use Test_mod
-   use TestCase_mod
-   use Exception_mod
-   use MpiTestMethod_mod
+   use PF_Test_mod
+   use PF_TestCase_mod
+   use PF_Exception_mod
+   use PF_MpiTestMethod_mod
    implicit none
 
    private
@@ -35,9 +35,9 @@ module Test_MpiException_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite
-      use TestSuite_mod, only: newTestSuite
-      use TestMethod_mod, only: newTestMethod!, TestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestSuite_mod, only: newTestSuite
+      use PF_TestMethod_mod, only: newTestMethod!, TestMethod
 
       type (TestSuite) :: suite
 
@@ -60,39 +60,33 @@ contains
    end function suite
 
    subroutine test_anyExceptions_none(this)
-      use Assert_mod
-      use ParallelContext_mod
+      use PF_Assert_mod
+      use PF_ParallelContext_mod
       class (MpiTestMethod), intent(inout) :: this
       class (ParallelContext), allocatable :: context
 
-      print*,__FILE__,__LINE__
       allocate(context, source=this%getContext())
       call assertFalse(anyExceptions(context))
       
-      print*,__FILE__,__LINE__
       if (this%getProcessRank() == 1) then
          call throw('some message')
       end if
-      print*,__FILE__,__LINE__
 
       call assertTrue(anyExceptions(context))
 
-      print*,__FILE__,__LINE__
       ! clear thrown exception
       if (this%getProcessRank() == 1) then
          call assertTrue(catch('some message'))
       end if
-      print*,__FILE__,__LINE__
 
 
    end subroutine test_anyExceptions_none
 
    subroutine test_getNumExceptions(this)
-      use Assert_mod
-      use ParallelContext_mod
+      use PF_Assert_mod
+      use PF_ParallelContext_mod
       class (MpiTestMethod), intent(inout) :: this
 
-      print*,__FILE__,__LINE__
       call assertEqual(0, getNumExceptions(this%getContext()))
 
       select case (this%getProcessRank()) 
@@ -100,7 +94,6 @@ contains
          call throw('some message')
       end select
 
-      print*,__FILE__,__LINE__
       call assertEqual(2, getNumExceptions(this%getContext()))
 
       ! clear thrown exception
@@ -108,16 +101,14 @@ contains
       case (0,2)
          call assertTrue(catch('some message'))
       end select
-      print*,__FILE__,__LINE__
 
    end subroutine test_getNumExceptions
 
    subroutine test_gather(this)
-      use Assert_mod
-      use ParallelContext_mod
+      use PF_Assert_mod
+      use PF_ParallelContext_mod
       class (MpiTestMethod), intent(inout) :: this
 
-      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
       select case (this%getProcessRank()) 
       case (0)
          call throw('exception 1')
@@ -141,7 +132,6 @@ contains
          ! local exceptions gone
          call assertEqual(0, getNumExceptions())
       end select
-      print*,__FILE__,__LINE__, this%getProcessRank(), this%getNumProcesses()
 
    end subroutine test_gather
 

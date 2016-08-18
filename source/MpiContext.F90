@@ -20,9 +20,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MpiContext_mod
-   use ParallelContext_mod
-   use Exception_mod, only: throw
+module PF_MpiContext_mod
+   use PF_ParallelContext_mod
+   use PF_Exception_mod, only: throw
    implicit none
    private
 
@@ -114,7 +114,7 @@ contains
    ! Returns a new context which represents just a subset of the
    ! processes in the current group.
    function makeSubcontext(this, numSubprocesses) result(subContext)
-      use Exception_mod
+      use PF_Exception_mod
       class (MpiContext), intent(in) :: this
       integer, intent(in) :: numSubprocesses
       type (MpiContext) :: subContext
@@ -353,4 +353,4 @@ contains
 !!$      call debug(__LINE__,__FILE__)
    end subroutine clean
 
-end module MpiContext_mod
+end module PF_MpiContext_mod

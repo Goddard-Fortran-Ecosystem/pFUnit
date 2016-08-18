@@ -4,8 +4,6 @@ SET (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
 
-set(srcs Assert.F90)
-
 # Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
 execute_process(
    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_RANK}
@@ -22,83 +20,91 @@ execute_process(
    OUTPUT_VARIABLE generated_sources_output
 )
 
+#
+
+set(srcs
+  AbstractTestParameter.F90
+  Assert.F90
+  AssertBasic.F90
+  AbstractTestResult.F90
+  BaseTestRunner.F90
+  DebugListener.F90
+  DynamicTestCase.F90
+  Exception.F90
+  Expectation.F90
+  MockCall.F90
+  MockRepository.F90
+  ParallelContext.F90
+  ParameterizedTestCase.F90
+  Params.F90
+  ResultPrinter.F90
+  SerialContext.F90
+  SourceLocation.F90
+  StringConversionUtilities.F90
+  SubsetRunner.F90
+  SurrogateTestCase.F90
+  Test.F90
+  TestCase.F90
+  TestFailure.F90
+  TestListener.F90
+  TestMethod.F90
+  TestResult.F90
+  TestRunner.F90
+  TestSuite.F90
+  ThrowFundamentalTypes.F90
+  XmlPrinter.F90
+
+  sFUnit.F90
+  )
+
+if ( ROBUST )
+  list (APPEND srcs
+    UnixPipeInterfaces.F90
+    UnixProcess.F90
+    RobustRunner.F90
+    RemoteProxyTestCase.F90
+    )
+endif ()
+
 message( "Including generated files '${generated_sources_output}'." )
 include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 
-#
 
-list(APPEND srcs AssertBasic.F90)
-
-#
-
-list(APPEND srcs AbstractTestResult.F90)
-list(APPEND srcs BaseTestRunner.F90)
-list(APPEND srcs DebugListener.F90)
-
-list(APPEND srcs DynamicTestCase.F90)
-list(APPEND srcs Exception.F90)
-list(APPEND srcs Expectation.F90)
-list(APPEND srcs MockCall.F90)
-list(APPEND srcs MockRepository.F90)
-
-list(APPEND srcs ParallelContext.F90)
-list(APPEND srcs AbstractTestParameter.F90)
-list(APPEND srcs ParameterizedTestCase.F90)
-list(APPEND srcs Params.F90)
-
-list(APPEND srcs XmlPrinter.F90)
-list(APPEND srcs ResultPrinter.F90)
-
-if ( ROBUST )
-  list(APPEND srcs UnixPipeInterfaces.F90)
-  list(APPEND srcs UnixProcess.F90)
-  list(APPEND srcs RobustRunner.F90)
-  list(APPEND srcs RemoteProxyTestCase.F90)
-endif()
-
-list(APPEND srcs SerialContext.F90)
-list(APPEND srcs SourceLocation.F90)
-list(APPEND srcs StringConversionUtilities.F90)
-list(APPEND srcs SubsetRunner.F90)
-list(APPEND srcs SurrogateTestCase.F90)
-list(APPEND srcs Test.F90)
-list(APPEND srcs TestCase.F90)
-list(APPEND srcs TestFailure.F90)
-list(APPEND srcs TestListener.F90)
-list(APPEND srcs TestMethod.F90)
-list(APPEND srcs TestResult.F90)
-list(APPEND srcs TestRunner.F90)
-list(APPEND srcs TestSuite.F90)
-list(APPEND srcs ThrowFundamentalTypes.F90)
-list(APPEND srcs pFUnit.F90)
-
-if (MPI)
-  list(APPEND srcs MpiContext.F90)
-  list(APPEND srcs MpiStubs.F90)
-  list(APPEND srcs MpiTestParameter.F90)
-  list(APPEND srcs MpiTestCase.F90)
-  list(APPEND srcs MpiTestMethod.F90)
-endif()
-
-list(APPEND pysrcs CodeUtilities.py)
-list(APPEND pysrcs GenerateAssertsOnArrays.py)
-list(APPEND pysrcs Utilities.py)
-
-set(SOURCES ${srcs})
-
-add_library(pfunit STATIC ${SOURCES})
+add_library(sfunit STATIC ${srcs})
 
 if (BUILD_SHARED)
-    add_library(pfunit_shared SHARED ${SOURCES})
-    set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)
-endif()
+    add_library(sfunit_shared SHARED ${srcs})
+    set_target_properties(sfunit_shared PROPERTIES OUTPUT_NAME funit)
+
+   if (MPI)
+     add_library(pfunit_shared SHARED ${srcs} ${mpi_srcs})
+     set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)
+   endif ()
+endif ()
 
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_BINARY_DIR}/source)
 
-INSTALL(TARGETS pfunit DESTINATION lib)
+install (TARGETS sfunit DESTINATION lib)
 if (BUILD_SHARED)
-    INSTALL(TARGETS pfunit_shared DESTINATION lib)
+    install (TARGETS sfunit_shared pfunit_shared DESTINATION lib)
 endif()
 
-INSTALL(DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
+if (MPI)
+    set (mpi_srcs
+      MpiContext.F90
+      MpiStubs.F90
+      MpiTestParameter.F90
+      MpiTestCase.F90
+      MpiTestMethod.F90
+      pFUnit.F90
+      )
+  add_library(pfunit STATIC ${srcs} ${mpi_srcs})
+
+  install (TARGETS pfunit DESTINATION lib)
+  if (BUILD_SHARED)
+    install (TARGETS pfunit_shared DESTINATION lib)
+  endif ()
+endif ()
+
+INSTALL (DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)

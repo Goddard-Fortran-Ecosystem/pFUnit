@@ -20,11 +20,11 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MpiTestMethod_mod
-   use Test_mod
-   use TestCase_mod
-   use MpiTestCase_mod
-   use MpiTestParameter_mod
+module PF_MpiTestMethod_mod
+   use PF_Test_mod
+   use PF_TestCase_mod
+   use PF_MpiTestCase_mod
+   use PF_MpiTestParameter_mod
    implicit none
    private
 
@@ -104,4 +104,4 @@ contains
       if (associated(this%userTearDown)) call this%userTearDown(this)
    end subroutine tearDown
 
-end module MpiTestMethod_mod
+end module PF_MpiTestMethod_mod

@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module robustTestSuite_mod
-   use pFUnit
+   use sFUnit
    implicit none
    private
 

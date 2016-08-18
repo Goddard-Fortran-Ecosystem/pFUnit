@@ -200,9 +200,7 @@ contains
          allocate(list%exceptions(n_global_exceptions))
 
          do i = 1, n_local_exceptions
-            print*,__FILE__,__LINE__, i, 'before: ', trim(this%exceptions(i)%message)
             call context%labelProcess(this%exceptions(i)%message)
-            print*,__FILE__,__LINE__, i, 'after: ', trim(this%exceptions(i)%message)
          end do
          call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)

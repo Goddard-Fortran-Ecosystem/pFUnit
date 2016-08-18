@@ -21,13 +21,12 @@
 !
 !-------------------------------------------------------------------------------
 
-module MpiTestCase_mod
-   use MpiContext_mod
-   use TestCase_mod
-   use AbstractTestParameter_mod
-   use MpiTestParameter_mod
-   use ParameterizedTestCase_mod, only: ParameterizedTestCase
-!!$   use ParameterizedTestCase_mod, only: MAX_LEN_LABEL
+module PF_MpiTestCase_mod
+   use PF_MpiContext_mod
+   use PF_TestCase_mod
+   use PF_AbstractTestParameter_mod
+   use PF_MpiTestParameter_mod
+   use PF_ParameterizedTestCase_mod, only: ParameterizedTestCase
    implicit none
    private
 
@@ -56,10 +55,10 @@ contains
    end function countTestCases_mpi
 
    recursive subroutine run(this, tstResult, context)
-      use TestResult_mod, only: TestResult
-      use ParallelContext_mod
-      use Exception_mod
-      use SurrogateTestCase_mod
+      use PF_TestResult_mod, only: TestResult
+      use PF_ParallelContext_mod
+      use PF_Exception_mod
+      use PF_SurrogateTestCase_mod
       class (MpiTestCase), intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
@@ -77,7 +76,7 @@ contains
    end subroutine run
 
    recursive subroutine runBare(this)
-      use Exception_mod
+      use PF_Exception_mod
       class (MpiTestCase), intent(inout) :: this
 
       logical :: discard
@@ -116,7 +115,7 @@ contains
    end function getNumProcesses
 
    integer function getNumProcessesRequested(this) result(numProcessesRequested)
-      use Exception_mod
+      use PF_Exception_mod
       class (MpiTestCase), intent(in) :: this
       select type (p => this%testParameter)
       class is (MpiTestParameter)
@@ -139,4 +138,4 @@ contains
 
    end function getContext
 
-end module MpiTestCase_mod
+end module PF_MpiTestCase_mod

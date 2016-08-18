@@ -21,11 +21,11 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiContext_mod
-   use ParallelContext_mod
-   use TestCase_mod
-   use MpiTestCase_mod
-   use MpiTestMethod_mod
-   use Assert_mod
+   use PF_ParallelContext_mod
+   use PF_TestCase_mod
+   use PF_MpiTestCase_mod
+   use PF_MpiTestMethod_mod
+   use PF_Assert_mod
    implicit none
    private
 
@@ -34,8 +34,8 @@ module Test_MpiContext_mod
 contains
 
    function suite()
-      use TestSuite_mod, only: TestSuite
-      use TestSuite_mod, only: newTestSuite
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestSuite_mod, only: newTestSuite
 
       type (TestSuite) :: suite
 

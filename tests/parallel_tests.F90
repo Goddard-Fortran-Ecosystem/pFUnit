@@ -1,10 +1,10 @@
 program main
-   use pFUnit, only: initialize
-   use pFUnit, only: finalize
-   use pFUnit, only: TestResult
-   use pFUnit, only: ListenerPointer
-   use pFUnit, only: newResultPrinter
-   use pFUnit, only: ResultPrinter
+   use pfunit, only: initialize
+   use pfunit, only: finalize
+   use pfunit, only: TestResult
+   use pfunit, only: ListenerPointer
+   use pfunit, only: newResultPrinter
+   use pfunit, only: ResultPrinter
 !$$   use pfunit, only: DebugListener
    implicit none
 
@@ -20,12 +20,7 @@ contains
       use pfunit, only: newTestSuite
       use pfunit, only: TestSuite
       use pfunit, only: TestRunner, newTestRunner
-#ifdef USE_MPI
-      use pfunit, only: MpiContext
-      use pfunit, only: ParallelException
-#else
-      use pfunit, only: SerialContext, newSerialContext
-#endif
+      use pfunit, only: MpiContext, newMpiContext
       use pfunit, only: ParallelContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
@@ -57,12 +52,10 @@ contains
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
 #endif
 
-#ifdef USE_MPI
       use Test_MpiContext_mod, only: MpiContextSuite => suite
       use Test_MpiException_mod, only: MpiExceptionSuite => suite
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
       use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
-#endif
       use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests
@@ -123,19 +116,13 @@ contains
       ADD(testRobustRunnerSuite)
 #endif
 
-#ifdef USE_MPI
       ADD(MpiContextSuite)
       ADD(MpiExceptionSuite)
       ADD(MpiTestCaseSuite)
       ADD(MpiParameterizedTestCaseSuite)
-#endif
 
-#ifdef USE_MPI
       tstResult = runner%run(allTests, newMpiContext())
-#else
-      tstResult = runner%run(allTests, newSerialContext())
-#endif
-      print*,__FILE__,__LINE__
+
       success = tstResult%wasSuccessful()
 
   end function runTests
