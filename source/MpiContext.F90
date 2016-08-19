@@ -23,17 +23,17 @@
 module PF_MpiContext_mod
    use PF_ParallelContext_mod
    use PF_Exception_mod, only: throw
+   use mpi_f08
    implicit none
    private
 
    public :: MpiContext
    public :: newMpiContext
 
-   include 'mpif.h'
-
    type, extends(ParallelContext) :: MpiContext
       private
-      integer :: mpiCommunicator = MPI_COMM_NULL
+!$$      type (MPI_Comm) :: mpiCommunicator = MPI_COMM_NULL
+      type (MPI_Comm) :: mpiCommunicator
       integer :: root = 0
    contains
       procedure :: isActive
@@ -71,7 +71,7 @@ contains
    ! Make a duplicate of the communicator for internal use
    function newMpiContext_comm(communicator) result(context)
       type (MpiContext) :: context
-      integer, intent(in) :: communicator
+      type (MPI_Comm), intent(in) :: communicator
       integer :: ier
 
       call MPI_Comm_dup(communicator, context%mpiCommunicator, ier)
@@ -120,9 +120,9 @@ contains
       type (MpiContext) :: subContext
 
       integer, parameter :: NUM_SUBGROUPS = 1
-      integer :: originalGroup, newGroups(NUM_SUBGROUPS)
-      integer :: ranges(3,NUM_SUBGROUPS)
-      integer :: newCommunicator
+      integer :: ranges(3,1)
+      type (MPI_Group) :: originalGroup, newGroup
+      type (MPI_Comm) :: newCommunicator
       integer :: ier
       integer npes
 
@@ -145,8 +145,8 @@ contains
 
       ranges(:,1) = [0, npes-1, 1]
 
-      call MPI_Group_range_incl (originalGroup, NUM_SUBGROUPS, ranges, newGroups, ier)
-      call MPI_Comm_create(this%mpiCommunicator, newGroups(1), newCommunicator, ier)
+      call MPI_Group_range_incl (originalGroup, 1, ranges, newGroup, ier)
+      call MPI_Comm_create(this%mpiCommunicator, newGroup, newCommunicator, ier)
 
       if (this%processRank() < npes) then
          subContext%mpiCommunicator = newCommunicator
@@ -166,7 +166,8 @@ contains
       if (ier /= MPI_SUCCESS) call throw('failure in MpiContext::barrier')
    end subroutine barrier
 
-   integer function getMpiCommunicator(this) result(mpiCommunicator)
+   function getMpiCommunicator(this) result(mpiCommunicator)
+     type (MPI_Comm) :: mpiCommunicator
       class (MpiContext), intent(in) :: this
       mpiCommunicator = this%mpiCommunicator
    end function getMpiCommunicator
@@ -239,20 +240,21 @@ contains
 
       intrinsic :: sum
 
-      if (size(list) > 0) then
-         numBytes = len(list(1)) ! values may be size 0 on some processes, but not all
+      if (size(values) > 0) then
+         numBytes = len(list(1))
          numEntries = size(values) * numBytes
       else
          numEntries = 0
       end if
 
       call this%makeMap(numEntries, counts, displacements)
+      print*,__FILE__,__LINE__, 'counts: ', counts
 
       allocate(sendBuffer(max(numEntries,1)))
       do i = 1, size(values)
-         do j = 1, numBytes
+         do j = 1, len(values(1))
             jp = j + (i-1)*numBytes
-            sendBuffer(jp:jp) = values(i)(j:j)
+            sendBuffer(jp) = values(i)(j:j)
          end do
       end do
 
@@ -269,7 +271,7 @@ contains
                jp = j+(i-1)*numBytes
                buf(j:j) = recvBuffer(jp)
             end do
-            list(i) = buf
+            list(i) = trim(buf)
          end do
       end if
 

@@ -102,9 +102,9 @@ if (ROBUST)
      add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
    endif ()
   target_link_libraries(${REMOTE_EXE} sfunit sfunittests)
-  if (MPI)
-    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
-  endif()
+#  if (MPI)
+#    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
+#  endif()
 # Note for pfunit_2.1.0:  following line has no counterpart in
 #  "master" branch, i.e. > pfunit_2.1.0...
   add_dependencies(tests ${REMOTE_EXE})

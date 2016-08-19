@@ -24,9 +24,9 @@ contains
       use pfunit, only: ParallelContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
-#ifdef BUILD_ROBUST
-      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
-#endif
+!$$#ifdef BUILD_ROBUST
+!$$      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
+!$$#endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
@@ -48,9 +48,9 @@ contains
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
       use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
 
-#ifdef BUILD_ROBUST
-      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
-#endif
+!$$#ifdef BUILD_ROBUST
+!$$      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
+!$$#endif
 
       use Test_MpiContext_mod, only: MpiContextSuite => suite
       use Test_MpiException_mod, only: MpiExceptionSuite => suite
@@ -86,9 +86,9 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
-#ifdef BUILD_ROBUST
-      ADD(UnixProcessSuite)
-#endif
+!$$#ifdef BUILD_ROBUST
+!$$      ADD(UnixProcessSuite)
+!$$#endif
       ADD(exceptionSuite)
 
       ADD(assertBasicSuite)
@@ -112,9 +112,9 @@ contains
 
       ADD(testXmlPrinterSuite)
 
-#ifdef BUILD_ROBUST
-      ADD(testRobustRunnerSuite)
-#endif
+!$$#ifdef BUILD_ROBUST
+!$$      ADD(testRobustRunnerSuite)
+!$$#endif
 
       ADD(MpiContextSuite)
       ADD(MpiExceptionSuite)

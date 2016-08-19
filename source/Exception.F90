@@ -221,13 +221,25 @@ contains
          call context%gather(local_messages, global_messages)
 
          if (context%isRootProcess()) then
+           print*,__FILE__,__LINE__, n_global_exceptions
+           print*,__FILE__,__LINE__, size(list%exceptions), size(global_messages)
+           do i = 1, n_global_exceptions
+              print*,__FILE__,__LINE__, i, global_messages(i)
+              print*,__FILE__,__LINE__, i, allocated(list%exceptions(i)%message)
+            end do
             do i = 1, n_global_exceptions
+              print*,__FILE__,__LINE__, i, global_messages(i)
+              print*,__FILE__,__LINE__, i
                list%exceptions(i)%message = trim(global_messages(i))
+              print*,__FILE__,__LINE__, i, global_messages(i)
             end do
 
             deallocate(this%exceptions)
             allocate(this%exceptions(n_global_exceptions))
-            this%exceptions(:) = list%exceptions
+            this%exceptions = list%exceptions
+          else
+            deallocate(this%exceptions)
+            allocate(this%exceptions(0))
          end if
 
 
@@ -486,6 +498,7 @@ contains
 #else
       exceptions = globalExceptionList%getExceptions()
 #endif
+      globalExceptionList = newExceptionList()
          
    end function getExceptions
 

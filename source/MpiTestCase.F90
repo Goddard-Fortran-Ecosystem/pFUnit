@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 
 module PF_MpiTestCase_mod
+  use mpi_f08
    use PF_MpiContext_mod
    use PF_TestCase_mod
    use PF_AbstractTestParameter_mod
@@ -104,7 +105,8 @@ contains
 
    end subroutine runBare
 
-   integer function getMpiCommunicator(this) result(mpiCommunicator)
+   function getMpiCommunicator(this) result(mpiCommunicator)
+     type (MPI_Comm) :: mpiCommunicator
       class (MpiTestCase), intent(in) :: this
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator

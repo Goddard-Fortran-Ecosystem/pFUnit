@@ -42,16 +42,8 @@ function setModule {
    
    export PATH=/usr/local/other/SSSO_Ana-PyD/2.1.0/bin:$PATH
    if [ "$fortranCompiler" == "INTEL" ]; then
-      if [ "$version" == "13.1" ]; then
-         moduleFortran='comp/intel-13.1.3.192'
-      elif [ "$version" == "13.0" ]; then
-         moduleFortran='comp/intel-13.0.1.117'
-      elif [ "$version" == "14.0" ]; then
-         moduleFortran='comp/intel-14.0.3.174'
-      elif [ "$version" == "15.0" ]; then
-         moduleFortran='comp/intel-15.0.3.187'
-      elif [ "$version" == "16.0" ]; then
-         moduleFortran='comp/intel-16.0.2.181'
+      if [ "$version" == "16.0" ]; then
+         moduleFortran='comp/intel-16.0.3.210'
       else
          msg="$fortranCompiler version $version is not supported yet"
          echo -e "$msg\n\n" >> $DebugLog

@@ -91,7 +91,7 @@ contains
 
    subroutine initialize(use_mpi)
       use PF_Exception_mod, only: initializeGlobalExceptionList
-      use mpi
+      use mpi_f08
       logical, optional, intent(in) :: use_mpi
       integer :: error
 
@@ -111,7 +111,7 @@ contains
    end subroutine initialize
 
    subroutine finalize(successful)
-      use mpi
+      use mpi_f08
 #ifdef NAG
       use f90_unix_proc, only: exit
 #endif

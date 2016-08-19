@@ -1,4 +1,7 @@
 program main
+#ifdef USE_MPI
+   use mpi_f08
+#endif
    use iso_fortran_env, only: OUTPUT_UNIT
    use pfunit_mod
 #ifdef PFUNIT_EXTRA_USAGE
@@ -6,9 +9,6 @@ program main
    use PFUNIT_EXTRA_USAGE
 #endif
    implicit none
-#ifdef USE_MPI
-   include 'mpif.h'
-#endif
    type (TestSuite) :: all
    class(BaseTestRunner), allocatable :: runner
 
