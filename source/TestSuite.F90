@@ -104,7 +104,7 @@ contains
    recursive subroutine run(this, tstResult, context)
       use PF_ParallelContext_mod
       use PF_TestResult_mod
-      class (TestSuite), intent(inout) :: this
+      class (TestSuite), target, intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 

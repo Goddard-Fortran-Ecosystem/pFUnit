@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiTestCase_mod
-   use mpi_f08
+   use mpi
    use PF_Test_mod
    use PF_TestCase_mod
    use PF_MpiTestCase_mod
@@ -255,7 +255,7 @@ contains
 
    subroutine wasRun(runLog, mpiCommunicator)
       character(len=:), allocatable, intent(inout) :: runLog
-      type (MPI_Comm), intent(in) :: mpiCommunicator
+      integer, intent(in) :: mpiCommunicator
       
       integer :: numProcesses, rank, ier
 

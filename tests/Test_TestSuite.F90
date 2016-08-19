@@ -209,7 +209,7 @@ contains
       use PF_SurrogateTestCase_mod
       use PF_ParallelContext_mod
       class (Verbose), intent(inout) :: this
-      class (SurrogateTestCase) :: test
+      class (SurrogateTestCase), intent(inout) :: test
       class (ParallelContext), intent(in) :: context
 
       this%log = trim(this%log)//'::'//trim(test%getName())

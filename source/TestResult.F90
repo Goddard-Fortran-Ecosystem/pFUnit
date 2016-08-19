@@ -223,7 +223,7 @@ contains
       use PF_Exception_mod
       use PF_ParallelContext_mod
       class (TestResult), intent(inout) :: this
-      class (SurrogateTestCase) :: test 
+      class (SurrogateTestCase), intent(inout) :: test 
       class (ParallelContext), intent(in) :: context
 
       if (context%isRootProcess()) call this%startTest(test)

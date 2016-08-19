@@ -133,7 +133,6 @@ contains
 
    subroutine testNoAction()
       class (MockRepository), pointer :: mocker
-      type (SUT) :: object
       type (MockSUT) :: mockObject
       
       mocker => newMockRepository()
@@ -151,7 +150,6 @@ contains
 
       subroutine internalProcedure()
          class (MockRepository), pointer :: mocker
-         type (SUT) :: object
          type (MockSUT) :: mockObject
 
          mocker => newMockRepository()
@@ -171,7 +169,6 @@ contains
 
       subroutine internalProcedure()
          class (MockRepository), pointer :: mocker
-         type (SUT) :: object
          type (MockSUT) :: mockObject
 
          mocker => newMockRepository()
@@ -194,7 +191,6 @@ contains
 
       subroutine internalProcedure()
          class (MockRepository), pointer :: mocker
-         type (SUT) :: object
          type (MockSUT) :: mockObject
 
          mocker => newMockRepository()

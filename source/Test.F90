@@ -45,7 +45,7 @@ module PF_Test_mod
          use PF_TestResult_mod
          use PF_ParallelContext_mod
          import Test
-         class (Test), intent(inout) :: this
+         class (Test), target, intent(inout) :: this
          class (TestResult), intent(inout) :: tstResult
          class (ParallelContext), intent(in) :: context
       end subroutine run

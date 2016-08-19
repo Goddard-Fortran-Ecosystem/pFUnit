@@ -23,7 +23,7 @@
 module PF_MpiContext_mod
    use PF_ParallelContext_mod
    use PF_Exception_mod, only: throw
-   use mpi_f08
+   use mpi
    implicit none
    private
 
@@ -32,8 +32,7 @@ module PF_MpiContext_mod
 
    type, extends(ParallelContext) :: MpiContext
       private
-!$$      type (MPI_Comm) :: mpiCommunicator = MPI_COMM_NULL
-      type (MPI_Comm) :: mpiCommunicator
+      integer :: mpiCommunicator = MPI_COMM_NULL
       integer :: root = 0
    contains
       procedure :: isActive
@@ -71,7 +70,7 @@ contains
    ! Make a duplicate of the communicator for internal use
    function newMpiContext_comm(communicator) result(context)
       type (MpiContext) :: context
-      type (MPI_Comm), intent(in) :: communicator
+      integer, intent(in) :: communicator
       integer :: ier
 
       call MPI_Comm_dup(communicator, context%mpiCommunicator, ier)
@@ -121,8 +120,8 @@ contains
 
       integer, parameter :: NUM_SUBGROUPS = 1
       integer :: ranges(3,1)
-      type (MPI_Group) :: originalGroup, newGroup
-      type (MPI_Comm) :: newCommunicator
+      integer :: originalGroup, newGroup
+      integer :: newCommunicator
       integer :: ier
       integer npes
 
@@ -167,7 +166,7 @@ contains
    end subroutine barrier
 
    function getMpiCommunicator(this) result(mpiCommunicator)
-     type (MPI_Comm) :: mpiCommunicator
+      integer :: mpiCommunicator
       class (MpiContext), intent(in) :: this
       mpiCommunicator = this%mpiCommunicator
    end function getMpiCommunicator
@@ -240,15 +239,14 @@ contains
 
       intrinsic :: sum
 
+      numBytes = len(list)
       if (size(values) > 0) then
-         numBytes = len(list(1))
          numEntries = size(values) * numBytes
       else
          numEntries = 0
       end if
 
       call this%makeMap(numEntries, counts, displacements)
-      print*,__FILE__,__LINE__, 'counts: ', counts
 
       allocate(sendBuffer(max(numEntries,1)))
       do i = 1, size(values)

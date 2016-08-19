@@ -111,7 +111,7 @@ contains
       use PF_SerialContext_mod
       use PF_TestResult_mod
       use PF_ParallelContext_mod
-      class (TestCase), intent(inout) :: this
+      class (TestCase), target, intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 

@@ -22,7 +22,7 @@
 !-------------------------------------------------------------------------------
 
 module PF_MpiTestCase_mod
-  use mpi_f08
+   use mpi
    use PF_MpiContext_mod
    use PF_TestCase_mod
    use PF_AbstractTestParameter_mod
@@ -60,9 +60,11 @@ contains
       use PF_ParallelContext_mod
       use PF_Exception_mod
       use PF_SurrogateTestCase_mod
-      class (MpiTestCase), intent(inout) :: this
+      class (MpiTestCase), target, intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
+
+      class (SurrogateTestCase), pointer :: s_ptr
 
       select type (context)
       type is (MpiContext)
@@ -72,7 +74,8 @@ contains
          return
       end select
 
-      call tstResult%run(this%getSurrogate(), context)
+      s_ptr => this%getSurrogate()
+      call tstResult%run(s_ptr, context)
 
    end subroutine run
 
@@ -106,7 +109,7 @@ contains
    end subroutine runBare
 
    function getMpiCommunicator(this) result(mpiCommunicator)
-     type (MPI_Comm) :: mpiCommunicator
+      integer :: mpiCommunicator
       class (MpiTestCase), intent(in) :: this
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator
