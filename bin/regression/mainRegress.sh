@@ -39,7 +39,7 @@ function gitClone
    echo "Clone sourceforge repository..."
    cd $SCR_DIR
    if [[ "$NODE" =~ discover ]]; then
-     GIT="/usr/local/other/SLES11.3/git/2.3.1/libexec/git-core/git"
+     GIT="/usr/local/other/SLES11.3/git/2.7.4/libexec/git-core/git"
    else
      GIT=git
    fi
