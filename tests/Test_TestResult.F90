@@ -68,22 +68,23 @@ contains
    subroutine testGetNumRun()
       use PF_Assert_mod, only: assertEqual
       use PF_TestResult_mod, only: newTestResult, TestResult
-!!$      use TestCase_mod
+      use PF_TestCase_mod
+      use SimpleTestCase_mod
       type (TestResult) :: aResult
-!!$      class(TestCase), pointer :: tstCase
+      type (SimpleTestCase) :: tstCase
 
       aResult = newTestResult()
-!!$      call assertEqual(0, aResult%runCount())
-!!$
-!!$      tstCase => newSimpleTestCase(method1,'method1')
-!!$
-!!$      call aResult%startTest(tstCase%getSurrogate())
-!!$      call aResult%endTest(tstCase%getSurrogate())
-!!$      call assertEqual(1, aResult%runCount())
-!!$
-!!$      call aResult%startTest(tstCase%getSurrogate())
-!!$      call aResult%endTest(tstCase%getSurrogate())
-!!$      call assertEqual(2, aResult%runCount())
+      call assertEqual(0, aResult%runCount())
+
+      tstCase = newSimpleTestCase('method1', method1)
+
+      call aResult%startTest(tstCase%getSurrogate())
+      call aResult%endTest(tstCase%getSurrogate())
+      call assertEqual(1, aResult%runCount())
+
+      call aResult%startTest(tstCase%getSurrogate())
+      call aResult%endTest(tstCase%getSurrogate())
+      call assertEqual(2, aResult%runCount())
 
    end subroutine testGetNumRun
 

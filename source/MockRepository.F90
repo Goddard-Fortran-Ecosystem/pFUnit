@@ -22,9 +22,9 @@
 !-------------------------------------------------------------------------------
 module PF_MockRepository_mod
    use PF_Expectation_mod, only : Expectation, newExpectation
-   use PF_Expectation_mod, only : Subject, newSubject, newSubjectNameOnly
-   use PF_Expectation_mod, only : Predicate, newPredicate
-   use PF_Expectation_mod, only : wasCalled, wasNotCalled, wasCalledOnce
+   use PF_Expectation_mod, only : newSubject, newSubjectNameOnly
+   use PF_Expectation_mod, only : Predicate
+   use PF_Expectation_mod, only : wasCalled! , wasNotCalled, wasCalledOnce
 
    implicit none
    private

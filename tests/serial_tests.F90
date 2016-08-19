@@ -4,7 +4,6 @@ program main
    use sFUnit, only: TestResult
    use sFUnit, only: ListenerPointer
    use sFUnit, only: newResultPrinter
-   use sFUnit, only: ResultPrinter
 !$$   use sFUnit, only: DebugListener
    implicit none
 
@@ -20,8 +19,7 @@ contains
       use sFUnit, only: newTestSuite
       use sFUnit, only: TestSuite
       use sFUnit, only: TestRunner, newTestRunner
-      use sFUnit, only: SerialContext, newSerialContext
-      use sFUnit, only: ParallelContext
+      use sFUnit, only: newSerialContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
 #ifdef BUILD_ROBUST
@@ -58,23 +56,14 @@ contains
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-#ifdef INTEL_13
-      type (ResultPrinter), target :: printer
-#endif
       type (ListenerPointer), target, allocatable :: ll(:)
 
-#ifndef INTEL_13
       allocate(ll(1))
       allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
       ! TODO: We'll make this a feature in 4.0
 !!$      allocate(ll(2))
 !!$      allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
 !!$      allocate(ll(2)%pListener, source=DebugListener())
-#else
-      allocate(ll(1))
-      printer = newResultPrinter(OUTPUT_UNIT)
-      ll(1)%pListener => printer
-#endif
 
       allTests = newTestSuite('allTests')
       runner = newTestRunner(ll)

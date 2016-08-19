@@ -218,7 +218,7 @@ contains
       type (TestCaseReference), allocatable :: testList(:)
       type (TestCaseReference), allocatable :: tmp(:)
 
-      integer :: i, j
+      integer :: i
       integer :: n, m
 
       allocate(testList(this%countTestCases()))
@@ -272,7 +272,7 @@ contains
          type (TestCaseReference), intent(inout) :: testList(:)
          integer, intent(inout) :: n
          
-         integer :: i, j
+         integer :: i
 
          do i = 1, size(this%tests)
 

@@ -148,13 +148,14 @@ contains
       write(this%unit,'(a,i0)')'failed: numExceptions=',size(exceptions)
       do i = 1, size(exceptions)
          associate(fileName => exceptions(i)%location%fileName, &
-              &    lineNumber => exceptions(i)%location%lineNumber, &
-              &    message => exceptions(i)%message)
+              &    lineNumber => exceptions(i)%location%lineNumber)
            write(this%unit,'(i0,a,i0,a)')i,' len(fileName)=< ',len_trim(fileName),' >'
            write(this%unit,'(i0,a,a,a)')i,' fileName=< ',trim(fileName),' >'
            write(this%unit,'(i0,a,i0,a)')i,' lineNumber=< ',lineNumber,' >'
-           write(this%unit,'(i0,a,i0,a)')i,' len(message)=< ',len_trim(message),' >'
-           write(this%unit,'(i0,a,a,a)')i,' message=< ',trim(message),' >'//C_NULL_CHAR
+           write(this%unit,'(i0,a,i0,a)')i,' len(message)=< ', &
+                & len_trim(exceptions(i)%message),' >'
+           write(this%unit,'(i0,a,a,a)')i,' message=< ', &
+                trim(exceptions(i)%message),' >'//C_NULL_CHAR
          end associate
       end do
 

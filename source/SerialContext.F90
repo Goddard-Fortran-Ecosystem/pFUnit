@@ -45,10 +45,13 @@ module PF_SerialContext_mod
 
    type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext()
 
+
 contains
 
    function newSerialContext() result(context)
       type (SerialContext) :: context
+      ! prevent NAG warning about unassigned return value.
+      context = THE_SERIAL_CONTEXT
    end function newSerialContext
 
    integer function getNumProcesses(this)

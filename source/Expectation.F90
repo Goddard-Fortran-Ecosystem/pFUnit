@@ -67,7 +67,6 @@ contains
 
   type(Subject) function newSubjectNameOnly(name) result(subj_)
     character(*) :: name
-    procedure(subVoid), pointer :: sub
     subj_%name = name
     ! subj_%ptr => sub ! Maybe nullify...
     nullify(subj_%ptr)

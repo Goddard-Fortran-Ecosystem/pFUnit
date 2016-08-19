@@ -13,7 +13,7 @@
 !! 2014 July
 !! 
 !! @note Set up a test failure and feed it to an XML-based printer so
-!! that we can test its output. Use command line call (via "system")
+!! that we can test its output. Use command line call 
 !! to try to find "xmllint," and if available, use it to validate the
 !! output against junit.xsd.  Either way, check the output against a
 !! hard-coded expected result (a regression test).
@@ -60,20 +60,12 @@ contains
       use PF_TestResult_mod, only: TestResult, newTestResult
       use PF_XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
 
-#ifdef Intel
-      use PF_ifport, only: system
-#endif
-
       type (TestResult) :: aResult
       type (SimpleTestCase), target :: aTest, aTest2
       type (XmlPrinter) :: printer
       integer :: iostat, stat, cstat, xmlUnit, outUnit
       character(len=200) :: fileName, suiteName, command, &
            xsdPath, outFile, errMsg
-
-#ifdef PGI
-      integer :: system
-#endif
 
       fileName = 'test.xml'
       suiteName = 'suitename<<>>""'
@@ -102,21 +94,12 @@ contains
       ! Validate the file against the de facto JUnit xsd.
       ! If xmlint not found, just move on quietly.
       command = 'xmllint --version > /dev/null 2>&1'
-#if defined(NAG) || defined(IBM)
-      ! Fortran 2008 compliant version.
       call execute_command_line(command,exitstat=stat)
-#else
-      stat = system(command)
-#endif
+
       if (stat == 0) then
          command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
               // ' ' // trim(fileName) // ' 2> ' // outFile
-#if defined(NAG) || defined(IBM)
-         ! Fortran 2008 compliant version.
          call execute_command_line(command,exitstat=stat)
-#else
-         stat = system(command)
-#endif
          if(stat /= 0) then
             open(newunit=outUnit, file=outFile, iostat=iostat, &
                  status='old', action='read')

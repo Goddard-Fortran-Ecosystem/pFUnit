@@ -49,6 +49,4 @@ module PF_Assert_mod
    public :: WhitespaceOptions
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
-contains
-
 end module PF_Assert_mod

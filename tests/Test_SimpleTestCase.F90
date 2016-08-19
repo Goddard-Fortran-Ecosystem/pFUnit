@@ -32,7 +32,6 @@ contains
 
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
       use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
@@ -48,7 +47,6 @@ contains
    end function suite
 
    function internalSuite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
       use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: internalSuite
 

@@ -247,7 +247,6 @@ contains
       class (XmlPrinter), intent(in) :: this
       type (TestFailure) :: aSuccessTest
 
-      integer :: i
 !      character(len=80) :: locationString
 
       write(this%unit,'(a,a,a)') '<testcase name="',&
@@ -284,7 +283,7 @@ contains
    function cleanXml(string_in) result(out)
       character(len=*), intent(in) :: string_in
       character(:), allocatable :: out
-      integer :: i
+
       out = string_in
       out = replaceAll(out, '<', '[')
       out = replaceAll(out, '>', ']')

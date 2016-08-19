@@ -430,6 +430,7 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
+      
       !$omp critical
       if (.not. init) then
          init = .true.

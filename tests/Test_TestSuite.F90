@@ -42,7 +42,6 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-      use PF_TestCase_mod, only: TestCase
       use PF_TestMethod_mod, only: newTestMethod
       use PF_TestSuite_mod, only: newTestSuite, TestSuite
       type (TestSuite) :: suite

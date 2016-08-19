@@ -1030,11 +1030,11 @@ def makeDifferenceReport_type(t='real',p='64',tol='64'):
      """+expectedDeclaration+"""
      real(kind=r"""+tol+"""), intent(in) :: tolerance
 !     real(kind=r"""+tol+"""), optional, intent(in) :: tolerance
-      character(len=2) rel
 """
     if t != 'integer':
         differenceReportSource=differenceReportSource+\
 """
+     character(len=2) rel
      if (abs("""+coercedDifference+""") .gt. tolerance) then
         rel = '> '
      else
@@ -1478,12 +1478,12 @@ def constructInternalModuleDeclarations(exportedRoutineNames=[]):
     return declarations
 
 
-def constructSupportModule(baseName='PF_AssertArraysSupport',assertionShortNames=[],foundRanks=[],maxRank=5):
+def constructSupportModule(baseName='AssertArraysSupport',assertionShortNames=[],foundRanks=[],maxRank=5):
     # Just a rename to capture an idea.  Will fix later. MLR
 #    exportedRoutineNames = ['assert'+i+'_internal' for i in assertionShortNames]
     exportedRoutineNames = []
 #    print ('1500: exportedRoutineNames: ',exportedRoutineNames)
-    m1 = module(baseName+'_mod')
+    m1 = module('PF_'+baseName+'_mod')
     m1.setFileName(baseName+'.F90')
     # Note exportedRoutineNames may be empty but still makes a bunch of declarations.
     [m1.addDeclaration(d) for d in constructSupportModuleDeclarations(exportedRoutineNames)]
@@ -1500,10 +1500,10 @@ def constructSupportModule(baseName='PF_AssertArraysSupport',assertionShortNames
 
     return m1
 
-def constructInternalModule(baseName='PF_AssertArraysInternal',assertionShortName="",exportedRoutineNames=[],maxRank=[]):
+def constructInternalModule(baseName='AssertArraysInternal',assertionShortName="",exportedRoutineNames=[],maxRank=[]):
 # oops -- hardwired longname here
     baseName_ = baseName+"assert"+str(assertionShortName)
-    m1 = module(baseName_+'_mod')
+    m1 = module('PF_'+baseName_+'_mod')
     m1.setFileName(baseName_+'.F90')
     
     [m1.addDeclaration(d) for d in constructInternalModuleDeclarations(exportedRoutineNames)]
@@ -1521,14 +1521,14 @@ def constructInternalModule(baseName='PF_AssertArraysInternal',assertionShortNam
     return m1
 
 
-def constructModule(baseName='PF_AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[],patchIntXX=False):
+def constructModule(baseName='AssertReal',assertionShortNames=['NOP'],foundFTypes=['real'],foundRanks=[],patchIntXX=False):
 #    assertionShortNames=['Equal']
 #    assertionShortNames=['GreaterThan']
     assertionNames=['assert'+Suffix for Suffix in assertionShortNames]
     rankName = ''
     for iRank in foundRanks : rankName = rankName + str(iRank)
     "A main test of how to construct the module."
-    m1 = module(baseName+rankName+'_mod')
+    m1 = module("PF_"+baseName+rankName+'_mod')
     m1.setFileName(baseName+rankName+'.F90')
     [m1.addDeclaration(d) for d in constructDeclarations(assertionNames,basename=baseName,foundRanks=foundRanks)]
     # add interface blocks (and the implementations)
@@ -1620,7 +1620,7 @@ def makeModuleComplex(maxRank=5):
     assertionShortNames=['NotEqual','Equal','RelativelyEqual']
     for iRank in range(0,maxRank+1):
         foundRanks = [iRank]
-        mod = constructModule(baseName='PF_AssertComplex',\
+        mod = constructModule(baseName='AssertComplex',\
                           assertionShortNames=assertionShortNames,\
                           foundFTypes=['real','complex'],\
                           foundRanks=foundRanks,\
@@ -1646,7 +1646,7 @@ def makeModuleInteger(maxRank=5):
 
     for iRank in range(0,maxRank+1):
         foundRanks=[iRank]
-        mod = constructModule(baseName='PF_AssertInteger',\
+        mod = constructModule(baseName='AssertInteger',\
                           assertionShortNames=assertionShortNames,\
                           foundFTypes=['integer'],\
                           foundRanks=foundRanks)
@@ -1661,7 +1661,7 @@ def makeModuleInteger(maxRank=5):
     return
 
 # def makeModuleLogical():
-#     mod = constructModule(baseName='PF_AssertLogical1',foundFTypes=['logical'])
+#     mod = constructModule(baseName='AssertLogical1',foundFTypes=['logical'])
 #     with open(mod.getFileName(),'w') as f:
 #         f.write(filePreamble(mod.getFileName()))
 #         f.write('\n'.join(mod.generate()))
