@@ -72,7 +72,11 @@ contains
            xsdPath, outFile, errMsg
 
 #ifdef PGI
-      integer :: system
+      interface
+         integer function system(str) bind(c)
+            character(len=*), intent(in) :: str
+         end function system
+      end interface
 #endif
 
       fileName = 'test.xml'

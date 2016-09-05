@@ -120,7 +120,7 @@ contains
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
 #ifdef DEFERRED_LENGTH_CHARACTER
-      character(:), alocatable   :: name
+      character(:), allocatable   :: name
 #else
       character(MAX_LENGTH_NAME) :: name
       character(MAX_LENGTH_NAME) :: suiteName

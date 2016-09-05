@@ -1,3 +1,9 @@
+3.2.8   September 5, 2016
+	- Patch for PGI system() call  (sf patch #9)
+	- Patch for deffered length strings (sf patch #10)
+	- Increased required version of cmake from 2.8 to 3.0
+	  It was alreaddy effectively required - just not noticed.
+	
 3.2.7   May 24, 2016
 	- Fix 3.2.7 broke the NAG 6.0 compiler (internal compiler error).
 	  Workaround is to simply not use -C=all during the build for now.

@@ -95,8 +95,9 @@ contains
       use TestCase_mod
 
       type (TestResult) :: aResult
-      
       type (SimpleTestCase) :: aTest
+
+      call aTest%setName ('foo')
       call aTest%setSurrogate()
       aResult = newTestResult()
       call assertEqual(0, aResult%failureCount())
