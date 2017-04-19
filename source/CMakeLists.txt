@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8)
-
-SET (CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+cmake_minimum_required(VERSION 3.7)
+add_subdirectory(FTL)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
 
@@ -31,6 +31,7 @@ set(srcs
   DebugListener.F90
   DynamicTestCase.F90
   Exception.F90
+  ExceptionVector.F90
   Expectation.F90
   MockCall.F90
   MockRepository.F90
@@ -69,8 +70,8 @@ endif ()
 message( "Including generated files '${generated_sources_output}'." )
 include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 
-
 add_library(sfunit STATIC ${srcs})
+add_dependencies(sfunit template_macros)
 
 if (BUILD_SHARED)
     add_library(sfunit_shared SHARED ${srcs})
@@ -82,6 +83,8 @@ if (BUILD_SHARED)
    endif ()
 endif ()
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/FTL/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/FTL/include)
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_BINARY_DIR}/source)
 
