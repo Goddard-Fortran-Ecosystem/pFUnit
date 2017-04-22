@@ -6,7 +6,7 @@ find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
 
 # Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
 execute_process(
-   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_RANK}
+   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_ASSERT_RANK}
    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
    RESULT_VARIABLE generated_result
    OUTPUT_VARIABLE generated_output
@@ -32,6 +32,7 @@ set(srcs
   DynamicTestCase.F90
   Exception.F90
   ExceptionVector.F90
+  ExceptionList.F90
   Expectation.F90
   MockCall.F90
   MockRepository.F90
@@ -67,7 +68,6 @@ if ( ROBUST )
     )
 endif ()
 
-message( "Including generated files '${generated_sources_output}'." )
 include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 
 add_library(sfunit STATIC ${srcs})

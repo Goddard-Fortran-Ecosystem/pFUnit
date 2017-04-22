@@ -26,6 +26,7 @@ with open(includeFile,'r') as f:
 with open(cmakeIncludeFile,'w') as f:
     for i in generatedFiles:
         f.write('list(APPEND srcs '+i+' )\n')
+       
 
 
 # print (cmakeIncludeFile)

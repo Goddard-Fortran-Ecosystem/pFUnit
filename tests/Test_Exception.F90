@@ -24,12 +24,11 @@
 
 module Test_Exception_mod
    use PF_TestSuite_mod
-   use PF_Exception_mod, only: newException
-   use PF_Exception_mod, only: newExceptionList
+   use PF_Exception_mod, only: Exception
+   use PF_Exception_mod, only: ExceptionList
    use PF_Assert_mod, only: assertEqual
    use PF_Assert_mod, only: assertTrue
    use PF_Assert_mod, only: assertFalse
-   use PF_Exception_mod, only: ExceptionList, Exception
    use PF_SourceLocation_mod
    implicit none
    private
@@ -111,7 +110,7 @@ contains
    subroutine testGetNumExceptions()
       type (ExceptionList) :: list
 
-      list = newExceptionList()
+      list = ExceptionList()
       call assertEqual(0, list%getNumExceptions())
       call list%throwMessage('anException')
       call assertEqual(1, list%getNumExceptions())
@@ -140,7 +139,7 @@ contains
 
       !EOP
       !BOC
-      list = newExceptionList()
+      list = ExceptionList()
       anException = list%catchNext()
       call assertTrue(anException%isNull())
       !EOC
@@ -168,7 +167,7 @@ contains
       type (Exception) :: anException
       character(len=*), parameter :: message = 'anException'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       anException = list%catchNext()
@@ -198,7 +197,7 @@ contains
       type (ExceptionList) :: list
       type (Exception) :: anException
       character(len=*), parameter :: message = 'anException'
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       anException = list%catchNext()
@@ -225,7 +224,7 @@ contains
       !BOC
       type (ExceptionList) :: list
       character(len=*), parameter :: message = 'anException'
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       call assertTrue(list%catch(message))
@@ -253,7 +252,7 @@ contains
       character(len=*), parameter :: message1 = 'first exception'
       character(len=*), parameter :: message2 = 'second exception'
 
-      list = newExceptionList()
+      list = ExceptionList()
       call list%throwMessage(message1)
       call assertFalse(list%catch(message2))!, 'message2 has not been thrown yet')
 
@@ -271,7 +270,7 @@ contains
       character(len=*), parameter :: message1 = 'first exception'
       character(len=*), parameter :: message2 = 'second exception'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message1)
       anException = list%catchNext()
@@ -312,7 +311,7 @@ contains
       type (ExceptionList) :: list
       character(len=*), parameter :: message = 'a message'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       call assertTrue(list%catch(message, preserve=.true.))
@@ -340,7 +339,7 @@ contains
       character(len=*), parameter :: message = 'a message'
       logical :: found
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       found = list%catch(message, preserve=.true.)
@@ -370,7 +369,7 @@ contains
       character(len=*), parameter :: message2 = 'another message'
       logical :: found
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message1)
       call list%throwMessage(message2)
@@ -401,7 +400,7 @@ contains
       type (Exception) :: anException
       character(len=*), parameter :: message = 'a message'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       anException = list%catchNext(preserve = .true.)
@@ -431,7 +430,7 @@ contains
       type (Exception) :: anException
       character(len=*), parameter :: message = 'a message'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message)
       anException = list%catchNext(preserve=.true.)
@@ -461,7 +460,7 @@ contains
       character(len=*), parameter :: message1 = 'a message'
       character(len=*), parameter :: message2 = 'another message'
 
-      list = newExceptionList()
+      list = ExceptionList()
 
       call list%throwMessage(message1)
       call list%throwMessage(message2)
@@ -474,7 +473,7 @@ contains
       use PF_Exception_mod, only: UNKNOWN_LINE_NUMBER
       type (Exception) :: anException
 
-      anException = newException()
+      anException = Exception()
       call assertEqual(UNKNOWN_LINE_NUMBER, anException%getLineNumber())
 
    end subroutine testGetLineNumberNoInfo
@@ -483,7 +482,7 @@ contains
       type (Exception) :: anException
       integer, parameter :: LINE_NUMBER = 2
 
-      anException = newException('message', &
+      anException = Exception('message', &
            & SourceLocation(fileName='foo', lineNumber=LINE_NUMBER))
       call assertEqual(LINE_NUMBER, anException%getLineNumber())
 
@@ -493,7 +492,7 @@ contains
       use PF_Exception_mod, only: UNKNOWN_FILE_NAME
       type (Exception) :: anException
 
-      anException = newException()
+      anException = Exception()
       call assertEqual(UNKNOWN_FILE_NAME, anException%getFileName())
 
    end subroutine testGetFileNameNoInfo
@@ -501,7 +500,7 @@ contains
    subroutine testGetFileName()
       type (Exception) :: anException
       character(len=*), parameter :: FILE_NAME = 'foo'
-      anException = newException('message', &
+      anException = Exception('message', &
            & SourceLocation(lineNumber=3, fileName=FILE_NAME))
       call assertEqual(FILE_NAME, anException%getFileName())
 
@@ -512,7 +511,7 @@ contains
       type (Exception) :: anException
       character(len=*), parameter :: FILE_NAME = 'foo'
 
-      list = newExceptionList()
+      list = ExceptionList()
       call list%throw('message', &
            & SourceLocation(fileName=FILE_NAME, lineNumber=2))
       anException = list%catchNext()

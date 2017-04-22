@@ -53,7 +53,7 @@ contains
 
    subroutine testValidXml()
       use PF_Assert_mod, only: assertEqual
-      use PF_Exception_mod, only: newException
+      use PF_Exception_mod, only: Exception
       use PF_TestCase_mod
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_SurrogateTestCase_mod
@@ -83,8 +83,8 @@ contains
       call aTest2%setName('successtest<>"')
 
       aResult = newTestResult()
-      call aResult%addFailure(aTest%getSurrogate(), [newException('<invalid>')])
-      call aResult%addFailure(aTest%getSurrogate(), [newException('"test"')])
+      call aResult%addFailure(aTest%getSurrogate(), [Exception('<invalid>')])
+      call aResult%addFailure(aTest%getSurrogate(), [Exception('"test"')])
       call aResult%addSuccess(aTest2%getSurrogate())
 
       call aResult%setName(suiteName)

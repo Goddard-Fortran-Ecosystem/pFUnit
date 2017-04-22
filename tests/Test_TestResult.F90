@@ -90,7 +90,7 @@ contains
 
    subroutine testGetNumFailed()
       use PF_Assert_mod, only: assertEqual
-      use PF_Exception_mod, only: newException
+      use PF_Exception_mod, only: Exception
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_SurrogateTestCase_mod
       use PF_TestCase_mod
@@ -102,10 +102,10 @@ contains
       aResult = newTestResult()
       call assertEqual(0, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), [newException('fail')])
+      call aResult%addFailure(aTest%getSurrogate(), [Exception('fail')])
       call assertEqual(1, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), [newException('fail again')])
+      call aResult%addFailure(aTest%getSurrogate(), [Exception('fail again')])
       call assertEqual(2, aResult%failureCount())
 
    end subroutine testGetNumFailed

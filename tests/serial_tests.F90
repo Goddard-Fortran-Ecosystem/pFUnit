@@ -75,7 +75,6 @@ contains
       ADD(UnixProcessSuite)
 #endif
       ADD(exceptionSuite)
-
       ADD(assertBasicSuite)
       ADD(assertSuite)
       ADD(assertIntegerSuite)

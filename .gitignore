@@ -8,6 +8,7 @@
 /nag
 build/
 include/configuration.mk
+*~
 
 # vim swap files
 .*.swp

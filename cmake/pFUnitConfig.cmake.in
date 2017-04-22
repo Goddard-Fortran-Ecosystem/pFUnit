@@ -43,6 +43,7 @@ set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/include/TestUtil.F90")
 #                
 #                Compile the tests:   make myTests
 #                Run the tests with CTest: ctest -R myTests --verbose
+
 function (add_pfunit_test test_package_name test_sources extra_sources extra_sources_c)
 
     if (NOT test_sources)

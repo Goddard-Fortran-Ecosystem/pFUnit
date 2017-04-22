@@ -26,9 +26,7 @@ module PF_PrivateException_mod
    private
 
    public :: Exception
-   public :: newException
    public :: ExceptionList
-   public :: newExceptionList
 
    public :: NULL_MESSAGE
    public :: NULL_EXCEPTION
@@ -77,31 +75,36 @@ module PF_PrivateException_mod
 !!$$      final :: delete
    end type ExceptionList
 
-   interface newException
-      module procedure Exception_
-   end interface
+   interface Exception
+      module procedure new_Exception
+   end interface Exception
+
+   interface ExceptionList
+      module procedure new_ExceptionList
+   end interface ExceptionList
+
 
 contains
 
-   type(Exception) function Exception_(message, location)
+   type(Exception) function new_Exception(message, location)
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
       if (present(message)) then
-         Exception_%message = trim(message)
+         new_Exception%message = trim(message)
       else
-         Exception_%message = NULL_MESSAGE
+         new_Exception%message = NULL_MESSAGE
       end if
 
       if (present(location)) then
-         Exception_%location = location
+         new_Exception%location = location
       else
-         Exception_%location = UNKNOWN_SOURCE_LOCATION
+         new_Exception%location = UNKNOWN_SOURCE_LOCATION
       end if
 
-      Exception_%nullFlag = .false.
+      new_Exception%nullFlag = .false.
 
-    end function Exception_
+   end function new_Exception
 
    function getMessage(this) result(message)
       class (Exception), intent(in) :: this
@@ -125,13 +128,13 @@ contains
       isNull = this%nullFlag
    end function isNull
 
-   function newExceptionList() result(list)
+   function new_ExceptionList() result(list)
       type (ExceptionList) :: list
       if (allocated(list%exceptions)) then
          deallocate(list%exceptions)
       end if
       allocate(list%exceptions(0))
-   end function newExceptionList
+   end function new_ExceptionList
 
    integer function getNumExceptions(this)
       class (ExceptionList), intent(in) :: this
@@ -145,7 +148,7 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      call this%throw(newException(message, location))
+      call this%throw(Exception(message, location))
 
    end subroutine throwMessage
 
@@ -359,9 +362,7 @@ module PF_Exception_mod
    private
 
    public :: Exception
-   public :: newException
    public :: ExceptionList
-   public :: newExceptionList
 
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
@@ -406,7 +407,7 @@ module PF_Exception_mod
 contains
 
    subroutine initializeGlobalExceptionList()
-      globalExceptionList = newExceptionList()
+      globalExceptionList = ExceptionList()
    end subroutine initializeGlobalExceptionList
 
 
@@ -489,7 +490,7 @@ contains
 #else
       exceptions = globalExceptionList%getExceptions()
 #endif
-      globalExceptionList = newExceptionList()
+      globalExceptionList = ExceptionList()
          
    end function getExceptions
 

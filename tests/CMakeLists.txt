@@ -3,15 +3,34 @@ cmake_minimum_required(VERSION 2.8)
 include_directories (${pFUnit_SOURCE_DIR}/include)
 #include_directories (${pFUnit_BINARY_DIR}/source)
 include_directories(${CMAKE_BINARY_DIR}/mod)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 
 set(OTHER_SOURCES
   MakeNaN.F90 MakeInfinity.F90 MockListener.F90
   BrokenTestCase.F90 BrokenSetUpCase.F90
+
   FixtureTestCase.F90)
 
-set (SERIAL_TEST_SRCS
+set(pf_tests Test_ExceptionList.pf)
+
+set(new_tests)
+foreach (file ${pf_tests})
+  get_filename_component(basename ${file} NAME_WE)
+  set(f90_src ${basename}.F90)
+  add_custom_command (
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
+    COMMAND python
+    ARGS ${CMAKE_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    DEPENDS ${file}
+    )
+  list(APPEND new_tests ${f90_src})
+endforeach()
+  
+
+set(SERIAL_TEST_SRCS
   Test_Assert.F90
   Test_AssertReal.F90
   Test_AssertBasic.F90
@@ -43,6 +62,13 @@ list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
 add_library(sfunittests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
 target_link_libraries(sfunittests sfunit)
+
+add_library(new_stests ${new_tests})
+target_link_libraries(new_stests sfunit)
+add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
+target_link_libraries(new_tests.x new_stests sfunit)
+
+
 
 add_executable (serial_tests.x serial_tests.F90)
 add_test (NAME serial_tests COMMAND serial_tests.x
@@ -91,7 +117,10 @@ if (MPI)
 #
 else()
 #
-     add_custom_target(tests COMMAND serial_tests.x DEPENDS serial_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+add_custom_target(tests
+  COMMAND serial_tests.x
+  COMMAND new_tests.x
+  DEPENDS serial_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
 
 if (ROBUST)

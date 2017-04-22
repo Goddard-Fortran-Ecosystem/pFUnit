@@ -3,7 +3,7 @@ program main
    use mpi_f08
 #endif
    use iso_fortran_env, only: OUTPUT_UNIT
-   use pfunit_mod
+   use sfunit
 #ifdef PFUNIT_EXTRA_USAGE
    ! Use external code for whatever suite-wide fixture is in use.
    use PFUNIT_EXTRA_USAGE
@@ -171,9 +171,10 @@ program main
    
    ! useMPI optional argument has no effect if not USE_MPI.
    if (useRobustRunner) then
-      call initialize(useMPI=.false.)
+!!$      call initialize(useMPI=.false.)
    else
-      call initialize(useMPI=.true.)
+!!$      call initialize(useMPI=.true.)
+      call initialize()
    end if
 
 !-------------------------------------------------------------------------

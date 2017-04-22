@@ -23,6 +23,8 @@
 module sFUnit_private
    use PF_SourceLocation_mod
    use PF_Exception_mod
+   use PF_ExceptionVector_mod
+   use PF_ExceptionList_mod
    use PF_Expectation_mod
    use PF_Test_mod
    use PF_TestSuite_mod
