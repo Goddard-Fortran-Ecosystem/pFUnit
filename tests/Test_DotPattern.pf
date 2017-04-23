@@ -1,0 +1,60 @@
+module Test_DotPattern_mod
+   use PF_Exception_mod
+   use PF_DotPattern_mod
+   use PF_MatchObject_mod
+   use PF_Assert_mod
+   use Pf_SourceLocation_mod
+
+
+   @suite(name='DotPattern_suite')
+   
+contains
+
+   @test
+   subroutine test_match_found()
+      type (DotPattern) :: p
+      type (MatchObject) :: m
+      
+      p = DotPattern()
+      m = p%match('a')
+
+      @assertTrue(m%found)
+      @assertEqual(1, m%num_characters)
+      @assertEqual('a', m%string)
+      
+   end subroutine test_match_found
+
+
+   @test
+   subroutine test_match_not_found()
+      type (DotPattern) :: p
+      type (MatchObject) :: m
+      
+      p = DotPattern()
+      m = p%match('')
+
+      @assertFalse(m%found)
+      @assertEqual(0, m%num_characters)
+      @assertEqual('', m%string)
+      
+   end subroutine test_match_not_found
+
+   subroutine test_match_various()
+      type (DotPattern) :: p
+      type (MatchObject) :: m
+      
+      p = DotPattern()
+      m = p%match('abc')
+      @assertTrue(m%found)
+      @assertEqual(1, m%num_characters)
+      @assertEqual('a', m%string)
+
+      p = DotPattern()
+      m = p%match('bcd')
+      @assertTrue(m%found)
+      @assertEqual(1, m%num_characters)
+      @assertEqual('b', m%string)
+      
+   end subroutine test_match_various
+   
+end module Test_DotPattern_mod

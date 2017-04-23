@@ -15,22 +15,10 @@ with open(includeFile,'r') as f:
    l0 = f.readline()
    lines = f.readlines()
    generatedFiles = [(re.match(r'(.*)\+\= (.*)',line)).group(2) for line in lines]
-#   for line in lines:
-#      obj = re.match(r'(.*)\+\= (.*)',line)
-#   print (' : "'+obj.group()+'"')
-#   print ('1: "'+obj.group(2)+'"')
-# print (generatedFiles)
-#+++ print (''+' '.join(generatedFiles))
-# print ('\n'+'\n'.join(generatedFiles))
 
-with open(cmakeIncludeFile,'w') as f:
-    for i in generatedFiles:
-        f.write('list(APPEND srcs '+i+' )\n')
+for i in generatedFiles:
+   sys.stdout.write(i + ';')
        
-
-
-# print (cmakeIncludeFile)
-sys.stdout.write(cmakeIncludeFile)
 
 
 

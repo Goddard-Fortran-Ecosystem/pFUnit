@@ -23,6 +23,12 @@ execute_process(
 #
 
 set(srcs
+  MatchObject.F90
+  AbstractPattern.F90
+  LiteralPattern.F90
+  DotPattern.F90
+  RepeatPattern.F90
+  RegularExpression.F90
   AbstractTestParameter.F90
   Assert.F90
   AssertBasic.F90
@@ -68,9 +74,10 @@ if ( ROBUST )
     )
 endif ()
 
-include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
+#include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 
-add_library(sfunit STATIC ${srcs})
+message("generated files: ${generated_sources_output}")
+add_library(sfunit STATIC ${srcs} "${generated_sources_output}")
 add_dependencies(sfunit template_macros)
 
 if (BUILD_SHARED)

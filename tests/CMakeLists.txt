@@ -13,7 +13,12 @@ set(OTHER_SOURCES
 
   FixtureTestCase.F90)
 
-set(pf_tests Test_ExceptionList.pf)
+set(pf_tests
+  Test_ExceptionList.pf
+  Test_LiteralPattern.pf
+  Test_DotPattern.pf
+  Test_RepeatPattern.pf
+  Test_RegularExpression.pf)
 
 set(new_tests)
 foreach (file ${pf_tests})
