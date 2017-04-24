@@ -60,6 +60,8 @@ contains
          if (n_s > 0) then
             m = m .or. match_(pattern,string(2:))
          end if
+      case ('?')
+         m = (n_s > 0) .and. match_(pattern(2:),string(2:))
       case default
          if (n_s > 0) then
             m = (pattern(1:1) == string(1:1)) .and. match_(pattern(2:),string(2:))
