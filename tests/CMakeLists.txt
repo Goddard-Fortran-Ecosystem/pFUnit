@@ -15,6 +15,7 @@ set(OTHER_SOURCES
 
 set(pf_tests
   Test_ExceptionList.pf
+  Test_GlobPattern.pf
   Test_LiteralPattern.pf
   Test_DotPattern.pf
   Test_RepeatPattern.pf

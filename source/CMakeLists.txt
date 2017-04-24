@@ -25,6 +25,7 @@ execute_process(
 set(srcs
   MatchObject.F90
   AbstractPattern.F90
+  GlobPattern.F90
   LiteralPattern.F90
   DotPattern.F90
   RepeatPattern.F90

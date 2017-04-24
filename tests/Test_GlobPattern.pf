@@ -1,0 +1,51 @@
+module Test_GlobPattern_mod
+   use sfunit
+   use PF_GlobPattern_mod
+   implicit none
+
+   @suite(name='GlobPattern_suite')
+
+contains
+
+   @test
+   subroutine test_patterns()
+
+      if (.not. check('a', 'a', .true.)) return
+      if (.not. check('a', 'b', .false.)) return
+
+      ! From Dr. Dobbs <http://www.drdobbs.com/architecture-and-design/matching-wildcards-an-empirical-way-to-t/240169123>
+      
+      if (.not. check('abcccd', '*ccd', .true.)) return
+      if (.not. check('mississipissippi', '*issip*ss*', .true.)) return
+      if (.not. check('mississipissippi', '*issip*ss*', .true.)) return
+      if (.not. check("xxxx*zzzzzzzzy*f", "xxxx*zzy*fffff", .false.)) return 
+      if (.not. check("xxxx*zzzzzzzzy*f", "xxx*zzy*f", .true.)) return
+      if (.not. check("xxxxzzzzzzzzyf", "xxxx*zzy*fffff", .false.)) return
+      if (.not. check("xxxxzzzzzzzzyf", "xxxx*zzy*f", .true.)) return
+      if (.not. check("xyxyxyzyxyz", "xy*z*xyz", .true.)) return
+      if (.not. check("mississippi", "*sip*", .true.)) return
+      if (.not. check("xyxyxyxyz", "xy*xyz", .true.)) return
+      if (.not. check("mississippi", "mi*sip*", .true.)) return
+      if (.not. check("ababac", "*abac*", .true.)) return
+      if (.not. check("ababac", "*abac*", .true.)) return
+      if (.not. check("aaazz", "a*zz*", .true.)) return
+      if (.not. check("a12b12", "*12*23", .false.)) return
+      if (.not. check("a12b12", "a12b", .false.)) return
+      if (.not. check("a12b12", "*12*12*", .true.)) return
+
+   end subroutine test_patterns
+
+   logical function check(string, pattern, expected)
+      character(len=*), intent(in) :: string
+      character(len=*), intent(in) :: pattern
+      logical, intent(in) :: expected
+
+      type (GlobPattern) :: g
+
+      g = GlobPattern(pattern)
+      check = expected .eqv. g%match(string)
+      @assertTrue(check, message='pattern <' // pattern // '>; string <' // string //'>')
+      
+   end function check
+
+end module Test_GlobPattern_mod
