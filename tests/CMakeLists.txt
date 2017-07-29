@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
 include_directories (${pFUnit_SOURCE_DIR}/include)
-#include_directories (${pFUnit_BINARY_DIR}/source)
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -66,23 +65,18 @@ endif ()
 
 list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
-add_library(sfunittests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
-target_link_libraries(sfunittests sfunit)
+add_library(funit_tests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
+target_link_libraries(funit_tests funit)
 
 add_library(new_stests ${new_tests})
-target_link_libraries(new_stests sfunit)
+target_link_libraries(new_stests funit)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
-target_link_libraries(new_tests.x new_stests sfunit)
+target_link_libraries(new_tests.x new_stests funit)
 
 
 
-add_executable (serial_tests.x serial_tests.F90)
-add_test (NAME serial_tests COMMAND serial_tests.x
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-set_property (TEST serial_tests
-    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-    )
-target_link_libraries(serial_tests.x sfunittests sfunit)
+add_executable (funit_tests.x serial_tests.F90)
+target_link_libraries(funit_tests.x funit_tests funit)
 
 if (MPI)
   list(APPEND PARALLEL_TEST_SRCS Test_MpiContext.F90)
@@ -114,9 +108,9 @@ if (MPI)
     # Add the target for executing the tests with a hardcoded call to mpirun.
     #
     add_custom_target(tests
-      COMMAND serial_tests.x
+      COMMAND funit_tests.x
       COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 tests/parallel_tests.x
-      DEPENDS serial_tests.x parallel_tests.x
+      DEPENDS funit_tests.x parallel_tests.x
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
     #
   endif()
@@ -124,9 +118,9 @@ if (MPI)
 else()
 #
 add_custom_target(tests
-  COMMAND serial_tests.x
+  COMMAND funit_tests.x
   COMMAND new_tests.x
-  DEPENDS serial_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  DEPENDS funit_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
 
 if (ROBUST)
@@ -136,7 +130,7 @@ if (ROBUST)
    else ()
      add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
    endif ()
-  target_link_libraries(${REMOTE_EXE} sfunit sfunittests)
+  target_link_libraries(${REMOTE_EXE} funit funit_tests)
 #  if (MPI)
 #    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
 #  endif()
@@ -144,3 +138,23 @@ if (ROBUST)
 #  "master" branch, i.e. > pfunit_2.1.0...
   add_dependencies(tests ${REMOTE_EXE})
 endif()
+
+
+add_test(NAME new_tests
+  COMMAND new_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+set_property (TEST new_tests
+    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+    )
+
+add_test(NAME old_tests
+  COMMAND tests/funit_tests.x
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
+set_property (TEST old_tests
+    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+    )
+
+
+

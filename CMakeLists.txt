@@ -19,6 +19,7 @@ project (pFUnit
   VERSION 3.1.1
   LANGUAGES Fortran)
 
+enable_testing()
 
 #---------------------------
 # Main configuration options
