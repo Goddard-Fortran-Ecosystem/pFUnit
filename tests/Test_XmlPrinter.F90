@@ -98,7 +98,7 @@ contains
 
       if (stat == 0) then
          command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
-              // ' ' // trim(fileName) // ' 2> ' // outFile
+              // ' ' // trim(fileName) // ' 2> ' // trim(outFile)
          call execute_command_line(command,exitstat=stat)
          if(stat /= 0) then
             open(newunit=outUnit, file=outFile, iostat=iostat, &
@@ -164,7 +164,7 @@ contains
                 & 'XML output file error.')
         end if
      end do
-     close(xmlUnit)
+     close(xmlUnit, status='delete')
 
    end subroutine compareXMLFileToExpectation
 
