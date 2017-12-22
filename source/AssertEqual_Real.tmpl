@@ -1,0 +1,113 @@
+! Minimum support is for expected and found arguments to have the same
+! kind.
+@tkr_parameters minimal
+! exact TKR matches
+[(real,  32, rank), (real,  32, rank), (real,  32, 0), defined(_REAL32)]
+[(real,  64, rank), (real,  64, rank), (real,  64, 0), defined(_REAL64)]
+[(real, 128, rank), (real, 128, rank), (real, 128, 0), defined(_REAL128)]
+!
+! expected is default real
+[(real, default, rank), (real,  32, rank), (real,  32, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT)]
+[(real, default, rank), (real,  64, rank), (real,  64, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT)]
+[(real, default, rank), (real, 128, rank), (real, 128, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT)]
+!
+! tolerance is default real
+[(real,  32, rank), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT)]
+[(real,  64, rank), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT)]
+[(real, 128, rank), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT)]
+!
+! expected and tolerance are default real
+[(real, default, rank), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT)]
+[(real, default, rank), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT)]
+[(real, default, rank), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT)]
+!
+! expected is default integer
+[(integer, default, rank), (real,  32, rank), (real,  32, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT)]
+[(integer, default, rank), (real,  64, rank), (real,  64, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT)]
+[(integer, default, rank), (real, 128, rank), (real, 128, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT)]
+!
+! expected is default integer and tolerance is default real
+[(integer, default, rank), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT)]
+[(integer, default, rank), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT)]
+[(integer, default, rank), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT)]
+!
+!
+! Allow expected to be conformable scalar
+! exact TKR matches
+[(real,  32, 0), (real,  32, rank), (real,  32, 0), defined(_REAL32) && (_RANK != 0)]
+[(real,  64, 0), (real,  64, rank), (real,  64, 0), defined(_REAL64) && (_RANK != 0)]
+[(real, 128, 0), (real, 128, rank), (real, 128, 0), defined(_REAL128) && (_RANK != 0)]
+!
+! expected is default real
+[(real, default, 0), (real,  32, rank), (real,  32, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real, default, 0), (real,  64, rank), (real,  64, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real, default, 0), (real, 128, rank), (real, 128, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT) && (_RANK != 0)]
+!
+! tolerance is default real
+[(real,  32, 0), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real,  64, 0), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real, 128, 0), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT) && (_RANK != 0)]
+!
+! expected and tolerance are default real
+[(real, default, 0), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real, default, 0), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT) && (_RANK != 0)]
+[(real, default, 0), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT) && (_RANK != 0)]
+!
+! expected is default integer
+[(integer, default, 0), (real,  32, rank), (real,  32, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (real,  64, rank), (real,  64, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (real, 128, rank), (real, 128, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT) && (_RANK != 0)]
+!
+! expected is default integer and tolerance is default real
+[(integer, default, 0), (real,  32, rank), (real, default, 0), defined(_REAL32)  && (_REAL32 != _REAL_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (real,  64, rank), (real, default, 0), defined(_REAL64)  && (_REAL64 != _REAL_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (real, 128, rank), (real, default, 0), defined(_REAL128) && (_REAL128 != _REAL_DEFAULT) && (_RANK != 0)]
+@end tkr_parameters
+
+
+module pf_AssertReal_{rank}d_mod
+   use, intrinsic :: iso_fortran_env, only: INT8
+   use, intrinsic :: iso_fortran_env, only: INT16
+   use, intrinsic :: iso_fortran_env, only: INT32
+   use, intrinsic :: iso_fortran_env, only: INT64
+
+   implicit none
+   private
+
+   public :: AssertEqual
+
+   @overload(AssertEqual, minimal)
+
+contains
+
+
+   @template AssertEqual
+   subroutine {name}(expected, found, tolerance, unused, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {found.type} (kind={found.kind}), intent(in) :: found {found.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: found {tolerance.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      location_ = get_location(location)
+      message_ = get_message(message)
+
+      call assertSameShape(shape(expected), shape(found), message=message_, location=location_)
+      if (anyExceptions()) return
+
+      if (all(expected == found)) then
+         call throw(...)
+      end if
+      
+   end subroutine {name}
+   @end template
+
+
+   @instantiate(AssertEqual, minimal)
+   
+end module pf_AssertReal_{rank}d_mod
+
+
+   

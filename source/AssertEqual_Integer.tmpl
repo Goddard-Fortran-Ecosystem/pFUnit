@@ -1,0 +1,77 @@
+! Minimum support is for expected and found arguments to have the same
+! kind.
+@tkr_parameters minimal
+[(integer,  8, rank), (integer,  8, rank), defined(_INT8)]
+[(integer, 16, rank), (integer, 16, rank), defined(_INT16)]
+[(integer, 32, rank), (integer, 32, rank), defined(_INT32)]
+[(integer, 64, rank), (integer, 64, rank), defined(_INT64)]
+[(integer, default, rank), (integer,  8, rank), defined(_INT8)  && (_INT8  != _INT_DEFAULT)]
+[(integer, default, rank), (integer, 16, rank), defined(_INT16) && (_INT16 != _INT_DEFAULT)]
+[(integer, default, rank), (integer, 32, rank), defined(_INT32) && (_INT32 != _INT_DEFAULT)]
+[(integer, default, rank), (integer, 64, rank), defined(_INT64) && (_INT64 != _INT_DEFAULT)]
+[(integer,  8, 0), (integer,  8, rank), defined(_INT8)  && (_RANK != 0)]
+[(integer, 16, 0), (integer, 16, rank), defined(_INT16) && (_RANK != 0)]
+[(integer, 32, 0), (integer, 32, rank), defined(_INT32) && (_RANK != 0)]
+[(integer, 64, 0), (integer, 64, rank), defined(_INT64) && (_RANK != 0)]
+[(integer, default, 0), (integer,  8, rank), defined(_INT8)  && (_INT8 != _INT_DEFAULT)  && (_RANK != 0)]
+[(integer, default, 0), (integer, 16, rank), defined(_INT16) && (_INT16 != _INT_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (integer, 32, rank), defined(_INT32) && (_INT32 != _INT_DEFAULT) && (_RANK != 0)]
+[(integer, default, 0), (integer, 64, rank), defined(_INT64) && (_INT64 != _INT_DEFAULT) && (_RANK != 0)]
+@end tkr_parameters
+
+
+module pf_AssertInteger_{rank}d_mod
+   use, intrinsic :: iso_fortran_env, only: INT8
+   use, intrinsic :: iso_fortran_env, only: INT16
+   use, intrinsic :: iso_fortran_env, only: INT32
+   use, intrinsic :: iso_fortran_env, only: INT64
+
+   implicit none
+   private
+
+   public :: AssertEqual
+   public :: AssertNotEqual
+   public :: AssertLessThan
+   public :: AssertGreaterThan
+   public :: AssertLessThanOrEqual
+   public :: AssertGreaterThanOrEqual
+
+   @overload(AssertEqual, minimal)
+   @overload(AssertNotEqual, minimal)
+   @overload(AssertLessThan, minimal)
+   @overload(AssertGreaterThan, minimal)
+   @overload(AssertLessThanOrEqual, minimal)
+   @overload(AssertGreaterThanOrEqual, minimal)
+
+contains
+
+
+   @template AssertEqual
+   subroutine {name}(expected, found, unused, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {found.type} (kind={found.kind}), intent(in) :: found {found.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      location_ = get_location(location)
+      message_ = get_message(message)
+
+      call assertSameShape(shape(expected), shape(found), message=message_, location=location_)
+      if (anyExceptions()) return
+
+      if (all(expected == found)) then
+         call throw(...)
+      end if
+      
+   end subroutine {name}
+   @end template
+
+
+   @instantiate(AssertEqual, minimal)
+   
+end module pf_AssertInteger_{rank}d_mod
+
+
+   

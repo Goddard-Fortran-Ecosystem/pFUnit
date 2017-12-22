@@ -30,9 +30,8 @@ OPTION(USE_ROBUST "Build robust test runner" NO)
 set(MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 
 
-
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/include/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+include(CheckCompilerCapabilities)
 
 #-----------------------------------
 # Set default Fortran compiler flags

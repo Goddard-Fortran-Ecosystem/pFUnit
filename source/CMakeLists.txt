@@ -20,7 +20,24 @@ foreach(type Integer Real Complex)
     list(APPEND generated_files Assert${type}${rank}.F90)
   endforeach()
 endforeach()
-  
+
+set(new_generated_sources)
+foreach(type Integer Real)
+  foreach(rank RANGE ${MAX_ASSERT_RANK})
+    set(ofile AssertEqual_${type}_${rank}d.F90)
+    set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/AssertEqual_${type}.tmpl)
+    list(APPEND new_generated_sources ${ofile})
+    message("Rank ${rank} ${MAX_ASSERT_RANK}")
+    add_custom_command(
+      OUTPUT ${ofile}
+      COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/overload_template.py --rank ${rank} -i ${ifile} -o ${ofile}
+      DEPENDS ${ifile} ${CMAKE_CURRENT_SOURCE_DIR}/overload_template.py
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT Generating ${ofile}
+      )
+  endforeach()
+endforeach()
+
 # Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
 add_custom_command(
   OUTPUT ${generated_files} AssertArrays.fh
@@ -33,6 +50,7 @@ add_custom_command(
 
 set(srcs
   ${generated_files}
+  ${new_generated_sources}
   MatchObject.F90
   AbstractPattern.F90
   GlobPattern.F90

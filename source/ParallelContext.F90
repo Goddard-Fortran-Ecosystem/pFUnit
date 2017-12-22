@@ -22,6 +22,8 @@
 !-------------------------------------------------------------------------------
 ! Default implementation is for a serial process
 ! Subclass for MPI operations
+
+#include "unused_dummy.fh"
 module PF_ParallelContext_mod
    implicit none
    private
@@ -97,21 +99,26 @@ contains
 
    logical function isActive(this)
       class (ParallelContext),  intent(in) :: this
+      _UNUSED_DUMMY(this)
       isActive = .true.
    end function isActive
 
    subroutine barrier(this)
       class (ParallelContext), intent(in) :: this
+      _UNUSED_DUMMY(this)
    end subroutine barrier
 
    logical function isRootProcess(this)
       class (ParallelContext), intent(in) :: this
+      _UNUSED_DUMMY(this)
       isRootProcess = .true.
    end function isRootProcess
 
    subroutine labelProcess(this, message)
       class (ParallelContext), intent(in) :: this
       character(len=:), allocatable, intent(inout) :: message
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(message)
    end subroutine labelProcess
 
 end module PF_ParallelContext_mod
