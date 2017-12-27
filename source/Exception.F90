@@ -29,7 +29,6 @@ module PF_PrivateException_mod
    public :: ExceptionList
 
    public :: NULL_MESSAGE
-   public :: NULL_EXCEPTION
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
@@ -38,15 +37,12 @@ module PF_PrivateException_mod
    type Exception
       character(len=:), allocatable :: message
       type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
-      logical :: nullFlag = .true.
    contains
       procedure :: getMessage
       procedure :: getLineNumber
       procedure :: getFileName
       procedure :: isNull
    end type Exception
-
-   type (Exception), parameter :: NULL_EXCEPTION = Exception(null(), UNKNOWN_SOURCE_LOCATION, .true.)
 
    type ExceptionList
       type (Exception), allocatable :: exceptions(:)
@@ -92,8 +88,6 @@ contains
 
       if (present(message)) then
          new_Exception%message = trim(message)
-      else
-         new_Exception%message = NULL_MESSAGE
       end if
 
       if (present(location)) then
@@ -101,8 +95,6 @@ contains
       else
          new_Exception%location = UNKNOWN_SOURCE_LOCATION
       end if
-
-      new_Exception%nullFlag = .false.
 
    end function new_Exception
 
@@ -123,10 +115,12 @@ contains
       name = trim(this%location%fileName)
    end function getFileName
 
+
    logical function isNull(this)
       class (Exception), intent(in) :: this
-      isNull = this%nullFlag
+      isNull = .not. allocated(this%message)
    end function isNull
+
 
    function new_ExceptionList() result(list)
       type (ExceptionList) :: list
@@ -174,11 +168,10 @@ contains
       class (ExceptionList), intent(inOut) :: this
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
+
       if (size(this%exceptions) > 0) then
          anException = this%exceptions(1)
          call this%deleteIthException(1, preserve)
-      else
-         anException = NULL_EXCEPTION
       end if
 
    end function catchNext
@@ -205,7 +198,6 @@ contains
          do i = 1, n_local_exceptions
             call context%labelProcess(this%exceptions(i)%message)
          end do
-         call context%gather(this%exceptions(:)%nullFlag, list%exceptions(:)%nullFlag)
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
          call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
 

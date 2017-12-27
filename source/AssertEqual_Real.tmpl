@@ -97,13 +97,20 @@ module pf_AssertReal_{rank}d_mod
    @overload(AssertGreaterThanOrEqual, useful)
 
    @overload(assert_equal, minimal)
+   @overload(assert_not_equal, minimal)
+   @overload(assert_less_than, minimal)
+   @overload(assert_less_than_or_equal, minimal)
+   @overload(assert_greater_than, minimal)
+   @overload(assert_greater_than_or_equal, minimal)
+
+
    integer, parameter :: MAX_LEN_REAL_AS_STRING = 40
 
 contains
 
 
    @template(AssertEqual,[expected,actual,tolerance])
-   subroutine {name}(expected, actual, tolerance, unused, message, location)
+   subroutine {name}(expected, actual, tolerance, message, location)
       {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -111,15 +118,12 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
-      class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
 
       real(kind=kind(actual)) :: t
       real(kind=kind(actual)), allocatable :: e {actual.dims}
-
-      _UNUSED_DUMMY(unused)
 
       if (.not. conformable(shape(expected), shape(actual))) then
          call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
@@ -198,8 +202,10 @@ contains
    end subroutine {name}
    @end template
 
+
+
    @template(AssertNotEqual,[expected,actual,tolerance])
-   recursive subroutine {name}(expected, actual, tolerance, unused, message, location)
+   recursive subroutine {name}(expected, actual, tolerance, message, location)
       {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -207,6 +213,39 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+      real(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      e = real(expected, kind(actual))
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = real(tolerance, kind(actual))
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_not_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+
+   @template(assert_not_equal,[actual])
+   recursive subroutine {name}(expected, actual, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: tolerance
       class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
@@ -219,19 +258,6 @@ contains
       character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
 
       _UNUSED_DUMMY(unused)
-
-#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
-      if (.not. present(tolerance)) then
-         call assertNotEqual(expected, actual, tolerance=real(0,kind={actual.kind}), message=message, location=location)
-         return
-      end if
-      
-#endif
-
-      if (.not. conformable(shape(expected), shape(actual))) then
-         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
-         return
-      end if
 
 #if {actual.rank} == 0
       ! scalar
@@ -246,7 +272,7 @@ contains
       if (.not. all(abs(actual - expected) > tolerance)) then
          ! index of first difference is
          i = maxloc(merge(1,0, .not. abs(actual-expected) > tolerance))
-#if {expected.rank} == 0
+#if {actual.rank} == 0
          e = expected
 #else
          e = expected({actual.multi_index})
@@ -275,7 +301,7 @@ contains
 
 
    @template(AssertLessThan,[lhs,rhs,tolerance])
-   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
       {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
       {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -283,6 +309,39 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      l = rhs
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = tolerance
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_less_than(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+   
+   @template(assert_less_than,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
       class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
@@ -295,13 +354,6 @@ contains
       character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
 
       _UNUSED_DUMMY(unused)
-
-#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
-      if (.not. present(tolerance)) then
-         call assertLessThan(lhs, rhs, tolerance=real(0,kind={rhs.kind}), message=message, location=location)
-         return
-      end if
-#endif
 
       if (.not. conformable(shape(lhs), shape(rhs))) then
          call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
@@ -321,7 +373,7 @@ contains
       if (.not. all(lhs < rhs + tolerance)) then
          ! index of first difference is
          i = maxloc(merge(1,0, .not. (lhs < rhs + tolerance)))
-#if {lhs.rank} == 0
+#if {rhs.rank} == 0
          l = lhs
 #else
          l = lhs({rhs.multi_index})
@@ -349,7 +401,7 @@ contains
 
 
    @template(AssertLessThanOrEqual,[lhs,rhs,tolerance])
-   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
       {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
       {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -357,6 +409,39 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      l = rhs
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = tolerance
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_less_than_or_equal(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+   
+   @template(assert_less_than_or_equal,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
       class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
@@ -369,13 +454,6 @@ contains
       character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
 
       _UNUSED_DUMMY(unused)
-
-#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
-      if (.not. present(tolerance)) then
-         call assertlessthanorequal(lhs, rhs, tolerance=real(0,kind={rhs.kind}), message=message, location=location)
-         return
-      end if
-#endif
 
       if (.not. conformable(shape(lhs), shape(rhs))) then
          call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
@@ -395,7 +473,7 @@ contains
       if (.not. all(lhs <= rhs + tolerance)) then
          ! index of first difference is
          i = maxloc(merge(1,0, .not. (lhs <= rhs + tolerance)))
-#if {lhs.rank} == 0
+#if {rhs.rank} == 0
          l = lhs
 #else
          l = lhs({rhs.multi_index})
@@ -422,8 +500,9 @@ contains
    @end template
 
 
+
    @template(AssertGreaterThan,[lhs,rhs,tolerance])
-   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
       {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
       {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -431,6 +510,39 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      l = rhs
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = tolerance
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_greater_than(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+   
+   @template(assert_greater_than,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
       class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
@@ -443,13 +555,6 @@ contains
       character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
 
       _UNUSED_DUMMY(unused)
-
-#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
-      if (.not. present(tolerance)) then
-         call assertGreaterThan(lhs, rhs, tolerance=real(0,kind={rhs.kind}), message=message, location=location)
-         return
-      end if
-#endif
 
       if (.not. conformable(shape(lhs), shape(rhs))) then
          call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
@@ -469,7 +574,7 @@ contains
       if (.not. all(lhs > rhs - tolerance)) then
          ! index of first difference is
          i = maxloc(merge(1,0, .not. (lhs > rhs - tolerance)))
-#if {lhs.rank} == 0
+#if {rhs.rank} == 0
          l = lhs
 #else
          l = lhs({rhs.multi_index})
@@ -485,10 +590,10 @@ contains
       write(rhs_str,'(g0)') r
       
 #if {rhs.rank} == 0
-      call fail_not_less_than(trim(lhs_str), trim(rhs_str), &
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), &
            & message=message, location=location)
 #else
-      call fail_not_less_than(trim(lhs_str), trim(rhs_str), index=i, &
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), index=i, &
            & message=message, location=location)
 #endif
       
@@ -496,8 +601,10 @@ contains
    @end template
 
 
+
+
    @template(AssertGreaterThanOrEqual,[lhs,rhs,tolerance])
-   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
       {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
       {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
@@ -505,6 +612,39 @@ contains
 #else
       {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
 #endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      l = rhs
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = tolerance
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_greater_than_or_equal(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+   
+   @template(assert_greater_than_or_equal,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
       class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
@@ -517,13 +657,6 @@ contains
       character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
 
       _UNUSED_DUMMY(unused)
-
-#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
-      if (.not. present(tolerance)) then
-         call assertlessthanorequal(lhs, rhs, tolerance=real(0,kind={rhs.kind}), message=message, location=location)
-         return
-      end if
-#endif
 
       if (.not. conformable(shape(lhs), shape(rhs))) then
          call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
@@ -542,8 +675,8 @@ contains
 #else
       if (.not. all(lhs >= rhs - tolerance)) then
          ! index of first difference is
-         i = maxloc(merge(1,0, .not. (lhs > rhs - tolerance)))
-#if {lhs.rank} == 0
+         i = maxloc(merge(1,0, .not. (lhs >= rhs - tolerance)))
+#if {rhs.rank} == 0
          l = lhs
 #else
          l = lhs({rhs.multi_index})
@@ -559,15 +692,16 @@ contains
       write(rhs_str,'(g0)') r
       
 #if {rhs.rank} == 0
-      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), &
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), &
            & message=message, location=location)
 #else
-      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), index=i, &
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), index=i, &
            & message=message, location=location)
 #endif
       
    end subroutine {name}
    @end template
+
 
 
    @instantiate(AssertEqual, useful)
@@ -578,6 +712,11 @@ contains
    @instantiate(AssertGreaterThanOrEqual, useful)
 
    @instantiate(assert_equal, minimal)
+   @instantiate(assert_not_equal, minimal)
+   @instantiate(assert_less_than, minimal)
+   @instantiate(assert_less_than_or_equal, minimal)
+   @instantiate(assert_greater_than, minimal)
+   @instantiate(assert_greater_than_or_equal, minimal)
    
 end module pf_AssertReal_{rank}d_mod
 
