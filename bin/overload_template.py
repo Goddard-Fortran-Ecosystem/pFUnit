@@ -7,8 +7,23 @@ import re
 parser = argparse.ArgumentParser(prog=os.path.basename(sys.argv[0]))
 parser.add_argument("-i","--infile",help="the input file containing template to be expanded")
 parser.add_argument("-o","--outfile",help="the output file containing generatef Fortran code")
-parser.add_argument("-r","--rank",help="rank of 'found' paremeter for template generation")
-args=parser.parse_args()
+parser.add_argument("-r","--rank",help="rank of 'actual' parameter for template generation")
+
+# Fortran supported kinds.  Note the value might be "-1" if a compiler does not support a given kind,
+# but the constant is required to exist in ISO_FORTRAN_ENV.
+parser.add_argument("-_INT8", help="value of INT8 in ISO_FORTRAN_ENV")
+parser.add_argument("-_INT16", help="value of INT16 in ISO_FORTRAN_ENV")
+parser.add_argument("-_INT32", help="value of INT32 in ISO_FORTRAN_ENV")
+parser.add_argument("-_INT64", help="value of INT64 in ISO_FORTRAN_ENV")
+parser.add_argument("-_REAL32", help="value of REAL32 in ISO_FORTRAN_ENV")
+parser.add_argument("-_REAL64", help="value of REAL64 in ISO_FORTRAN_ENV")
+parser.add_argument("-_REAL128", help="value of REAL128 in ISO_FORTRAN_ENV")
+# To avoid duplicate interfaces, we need to know the kind value for default integer and real as well.
+parser.add_argument("-_INT_DEFAULT_KIND", help="kind of default integer")
+parser.add_argument("-_REAL_DEFAULT_KIND", help="kind of default real")
+
+
+args, unknown = parser.parse_known_args()
 
 if args.infile:
     f = open(args.infile, 'r')
@@ -27,16 +42,6 @@ else:
     ofile = sys.stdout
 
 
-
-def tkr_found_list(tkr):
-    if tkr['type'] == 'integer':
-        types = ['integer']
-    elif tkr['type'] == 'real':
-        types = ['integer','real']
-    else: # complex
-        types = ['integer','real','complex']
-
-
 class TKR:
     """Type Kind and Rank"""
     type = None
@@ -46,21 +51,25 @@ class TKR:
 
     def __init__(self, type, kind_value, rank):
         self.type = type.strip().lower()
-        self.kind_value = kind_value.strip()
+        self.kind_label = kind_value.strip()
 
         if self.type == 'integer':
-            if self.kind_value == 'default':
-                self.kind = 'kind(1)'
-                self.type_kind = 'Int'
+            if self.kind_label == 'default':
+                self.kind_value = '{_INT_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(1)' # appears in the generated source
+                self.type_kind = 'Int' # for name mangling
             else:
-                self.kind = 'INT' + self.kind_value
+                self.kind_value = ('{_INT' + self.kind_label +'}').format(**vars(args))
+                self.kind = 'INT' + self.kind_label
                 self.type_kind = self.kind.capitalize()
         elif self.type == 'real':
-            if self.kind_value == 'default':
-                self.kind = 'kind(1.)'
-                self.type_kind = 'Real'
+            if self.kind_label == 'default':
+                self.kind_value = '{_REAL_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(1.)' # appears in the generated source
+                self.type_kind = 'Real' # for name mangling
             else:
-                self.kind = 'REAL' + self.kind_value
+                self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
+                self.kind = 'REAL' + self.kind_label
                 self.type_kind = self.kind.capitalize()
 
         if (rank.strip() == "rank"):
@@ -73,6 +82,14 @@ class TKR:
             self.dims = '(' + ','.join([':']*self.rank) + ')'
 
         self.mangle = self.type_kind + '_' + str(self.rank) + 'd'
+        if int(self.kind_value) == -1:  # unsupported kind
+            self.hash = ''
+        else:
+            self.hash = self.type + self.kind_value + str(self.rank)
+        # Need to be able access Fortran array with multidimensional index 'i'
+        # in a generic manner.
+        self.multi_index = ','.join(['i('+str(j)+')' for j in range(1,self.rank+1)])
+
 
 class State:
     def __init__(self):
@@ -107,17 +124,17 @@ class TKR_inside(Action):
         inside = re.compile("\s*\[(.*)\]\s*").match(line).groups(0)[0]
         params = re.split(r',\s*(?![^()]*\))', inside)
         tkrs = [x for x in params if re.compile("\s*\(.*\)\s*").match(x)]
-        condition = [x for x in params if not re.compile("\s*\(.*\)\s*").match(x)]
         elements = [(re.compile("\((.*)\)").match(x.strip()).groups(0)[0]).split(',') for x in tkrs]
 
+        hash = ''
         d = {}
-        d['expected'] = TKR(*elements[0])
-        d['found'] = TKR(*elements[1])
-        if len(elements) > 2:
-            d['tolerance'] = TKR(*elements[2])
-        if condition:
-            d['condition'] = condition[0]
-        state.tkr_dictionaries[state.current_tkr].append(d)
+        d['items'] = [TKR(*x) for x in elements]
+        for tkr in d['items']:
+            hash += tkr.hash
+        if hash:
+            if not any([(x['hash'] == hash) for x in state.tkr_dictionaries[state.current_tkr]]):
+                d['hash'] = hash
+                state.tkr_dictionaries[state.current_tkr].append(d)
 
     
 class TKR_end(Action):
@@ -125,10 +142,10 @@ class TKR_end(Action):
     def action(self, m, line, state):
         state.current_tkr = ''
 
-def name_mangle(base, d):
-    mangle = base + '_' + d['expected'].mangle + '_' + d['found'].mangle
-    if 'tolerance' in d:
-        mangle += d['tolerance'].mangle
+def name_mangle(base, items):
+    mangle = base
+    for item in items:
+        mangle +=  '_' + item.mangle
     return mangle
         
 class Overload(Action):
@@ -138,11 +155,7 @@ class Overload(Action):
         indent = m.group(1)
         state.ofile.write(indent + 'interface ' + generic_name + '\n')
         for instance in state.tkr_dictionaries[m.group(3)]:
-            if 'condition' in instance:
-                state.ofile.write("#  " + indent + "if " + instance['condition'] + '\n')
-            state.ofile.write(indent + '   module procedure ' + name_mangle(generic_name,instance) + '\n')
-            if 'condition' in instance:
-                state.ofile.write('#  ' + indent + 'endif\n')
+            state.ofile.write(indent + '   module procedure ' + name_mangle(generic_name,instance['items']) + '\n')
         state.ofile.write(indent + 'end interface \n')
 
 
@@ -152,16 +165,17 @@ class Module(Action):
         state.ofile.write(line.format(rank=args.rank))
 
 class Template_begin(Action):        
-    regexp = re.compile("\s*@template\s+(\w*)")
+    regexp = re.compile("\s*@template\s*\(\s*(\w+)\s*,\s*\[(.*)\]\s*")
     def action(self, m, line, state):
         state.current_template = m.group(1)
-        state.templates[state.current_template] = ''
+        parameters = [x.strip() for x in m.group(2).split(',')]
+        state.templates[state.current_template] = {'text':'', 'parameters':parameters}
         
 class Template_inside(Action):        
     def match(self, line, state):
         return state.current_template
     def action(self, m, line, state):
-        state.templates[state.current_template] += line
+        state.templates[state.current_template]['text'] += line
 
 class Template_end(Action):        
     regexp = re.compile("\s*@end template")
@@ -172,16 +186,16 @@ class Instantiate(Action):
     regexp = re.compile("\s*@instantiate\(\s*(\w*)\s*,\s*(\w*)\s*\)")
     def action(self, m, line, state):
         template_name = m.group(1)
-        template =  state.templates[template_name]
+        template =  state.templates[template_name]['text']
         instances = state.tkr_dictionaries[m.group(2)]
         for instance in instances:
-            if 'condition' in instance:
-                state.ofile.write('#     if ' + instance['condition'] + '\n')
-            d = dict(instance)
-            d['name'] = name_mangle(template_name, d)
+            d = {}
+            d['name'] = name_mangle(template_name, instance['items'])
+            d['rank'] = args.rank
+            parameters = state.templates[template_name]['parameters']
+            for item,p in zip(instance['items'],parameters):
+                d[p] = item
             state.ofile.write(template.format(**d))
-            if 'condition' in d:
-                state.ofile.write('#endif\n')
             state.ofile.write('\n\n')                              
         
 

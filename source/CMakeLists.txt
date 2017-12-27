@@ -22,6 +22,12 @@ foreach(type Integer Real Complex)
 endforeach()
 
 set(new_generated_sources)
+get_directory_property(dir_defs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMPILE_DEFINITIONS)
+set(python_defs)
+foreach (def ${dir_defs})
+  list(APPEND python_defs "-${def}")
+endforeach()
+
 foreach(type Integer Real)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
     set(ofile AssertEqual_${type}_${rank}d.F90)
@@ -30,8 +36,8 @@ foreach(type Integer Real)
     message("Rank ${rank} ${MAX_ASSERT_RANK}")
     add_custom_command(
       OUTPUT ${ofile}
-      COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/overload_template.py --rank ${rank} -i ${ifile} -o ${ofile}
-      DEPENDS ${ifile} ${CMAKE_CURRENT_SOURCE_DIR}/overload_template.py
+      COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
+      DEPENDS ${ifile} ${CMAKE_SOURCE_DIR}/bin/overload_template.py
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT Generating ${ofile}
       )
@@ -51,6 +57,7 @@ add_custom_command(
 set(srcs
   ${generated_files}
   ${new_generated_sources}
+  KeywordEnforcer.F90
   MatchObject.F90
   AbstractPattern.F90
   GlobPattern.F90
@@ -59,6 +66,7 @@ set(srcs
   RepeatPattern.F90
   RegularExpression.F90
   AbstractTestParameter.F90
+  AssertUtilities.F90
   Assert.F90
   AssertBasic.F90
   AbstractTestResult.F90
@@ -123,6 +131,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/FTL/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/FTL/include)
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 install (TARGETS funit DESTINATION lib)
 if (BUILD_SHARED)

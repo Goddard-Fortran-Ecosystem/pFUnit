@@ -4,28 +4,30 @@ macro (CHECK_FORTRAN_SOURCE_COMPILE file var)
     message (STATUS "Performing Test ${var}")
   endif ()
 
-if (${ARGN})
-  try_compile (
+  if (${ARGN})
+  try_run (
     ${var}
     ${CMAKE_BINARY_DIR}
     ${file}
     CMAKE_FLAGS "-DCOMPILE_DEFINITIONS=${CMAKE_REQUIRED_DEFINITIONS}"
     )
 else ()
-  try_compile (
-    ${var}
+  try_run (
+    run compile
     ${CMAKE_BINARY_DIR}
     ${file}
     CMAKE_FLAGS "-DCOMPILE_DEFINITIONS=${CMAKE_REQUIRED_DEFINITIONS}"
+    RUN_OUTPUT_VARIABLE ${var}
     )
 endif ()
 
-  if (${var})
+if (${var})
+  string(STRIP ${${var}} ${var})
     if (NOT CMAKE_REQUIRED_QUIET)
-      message(STATUS "Performing Test ${var}: SUCCESSS")
+      message(STATUS "Performing Test ${var}: SUCCESS ${${var}}")
     endif ()
 
-    add_definitions(-D${var})
+    add_definitions(-D${var}=${${var}})
 
   else ()
 
