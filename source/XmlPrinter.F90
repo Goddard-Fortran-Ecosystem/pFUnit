@@ -216,18 +216,16 @@ contains
 
    subroutine printFailures(this, label, failures)
       use PF_TestFailure_mod
+      use PF_TestFailureVector_mod
       use PF_SourceLocation_mod
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
-      type (TestFailure), intent(in) :: failures(:)
+      type (TestFailureVector), intent(in) :: failures
 
       integer :: i
-      character(len=80) :: locationString
 
-      do i = 1, size(failures)
-
-         call this%printFailure(label,failures(i))
-
+      do i = 1, failures%size()
+         call this%printFailure(label,failures%at(i))
       end do
 
    end subroutine printFailures
@@ -260,13 +258,14 @@ contains
 
    subroutine printSuccesses(this, successes)
       use PF_TestFailure_mod
+      use PF_TestFailurevector_mod
       class (XmlPrinter), intent(in) :: this
-      type (TestFailure), intent(in) :: successes(:)
+      type (TestFailureVector), intent(in) :: successes
 
       integer :: i
 
-      do i = 1, size(successes)
-         call this%printSuccess(successes(i))
+      do i = 1, successes%size()
+         call this%printSuccess(successes%at(i))
       end do
 
    end subroutine printSuccesses

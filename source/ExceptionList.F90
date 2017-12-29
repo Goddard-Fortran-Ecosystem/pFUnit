@@ -11,7 +11,6 @@ module PF_ExceptionList_mod
    public :: throw
    public :: catch
    public :: catchNext
-   public :: noExceptions
    public :: anyExceptions
    public :: anyErrors
    public :: gatherExceptions
@@ -225,13 +224,6 @@ contains
       call global_exception_list%clear()
 
    end subroutine clearAll
-
-
-   logical function noExceptions()
-
-      noExceptions = global_exception_list%empty()
-
-   end function noExceptions
 
 
    logical function anyExceptions_local() result(any)

@@ -25,7 +25,9 @@ module PF_TestResult_mod
    use PF_AbstractTestResult_mod
    use PF_SurrogateTestCase_mod
    use PF_TestListener_mod
+   use PF_TestListenerVector_mod
    use PF_TestFailure_mod
+   use PF_TestFailureVector_mod
 
    implicit none
    private
@@ -39,15 +41,12 @@ module PF_TestResult_mod
 
    type, extends(AbstractTestResult) :: TestResult
       private
-      integer :: numFailed = 0
-      integer :: numErrors = 0
       integer :: numRun = 0
-      integer :: numSuccesses = 0
       real    :: runTime
-      type (ListenerPointer), allocatable :: listeners(:)
-      type (TestFailure), allocatable :: failures(:)
-      type (TestFailure), allocatable :: errors(:)
-      type (TestFailure), allocatable :: successes(:)
+      type (TestListenerVector) :: listeners
+      type (TestFailureVector) :: failures
+      type (TestFailureVector) :: errors
+      type (TestFailureVector) :: successes
 #ifdef DEFERRED_LENGTH_CHARACTER
       character(:), allocatable :: name
 #else
@@ -81,14 +80,7 @@ contains
    function newTestResult(name)
       type (TestResult) :: newTestResult
       character(len=*), intent(in), optional :: name
-      allocate(newTestResult%listeners(0))
-      allocate(newTestResult%failures(0))
-      allocate(newTestResult%errors(0))
-      allocate(newTestResult%successes(0))
-      newTestResult%numFailed = 0
-      newTestResult%numErrors = 0
       newTestResult%numRun = 0
-      newTestResult%numSuccesses = 0
       newTestResult%runTime = 0
       if(present(name)) then
          newTestResult%name = name
@@ -98,92 +90,63 @@ contains
    end function newTestResult
 
    subroutine addFailure(this, aTest, exceptions)
-      use PF_Exception_mod, only: Exception
       use PF_ExceptionList_mod
       use PF_TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
 
-      integer :: i, n
-      type (TestFailure), allocatable :: tmp(:)
+      integer :: i
+      class (TestListener), pointer :: pListener
 
-      n = this%numFailed
-      allocate(tmp(n))
-      tmp(1:n) = this%failures(1:n)
-      deallocate(this%failures)
-      allocate(this%failures(n+1))
-      this%failures(1:n) = tmp
-      deallocate(tmp)
-      this%failures(n+1) = TestFailure(aTest%getName(), exceptions)
+      call this%failures%push_back(TestFailure(aTest%getName(), exceptions))
 
-      this%numFailed = n + 1
-      do i = 1, size(this%listeners)
-         call this%listeners(i)%pListener%addFailure(aTest%getName(), exceptions)
+      do i = 1, this%listeners%size()
+         pListener => this%listeners%at(i)
+         call pListener%addFailure(aTest%getName(), exceptions)
       end do
 
    end subroutine addFailure
 
    subroutine addError(this, aTest, exceptions)
-      use PF_Exception_mod, only: Exception
       use PF_TestFailure_mod
       use PF_ExceptionList_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
 
-      integer :: i, n
-      type (TestFailure), allocatable :: tmp(:)
+      integer :: i
+      class (TestListener), pointer :: pListener
 
-      n = this%numErrors
-      allocate(tmp(n))
-      tmp(1:n) = this%errors(1:n)
-      deallocate(this%errors)
-      allocate(this%errors(n+1))
-      this%errors(1:n) = tmp
-      deallocate(tmp)
-      this%errors(n+1) = TestFailure(aTest%getName(), exceptions)
+      call this%errors%push_back(TestFailure(aTest%getName(), exceptions))
 
-      this%numErrors = n + 1
-      do i = 1, size(this%listeners)
-         call this%listeners(i)%pListener%addError(aTest%getName(), exceptions)
+      do i = 1, this%listeners%size()
+         pListener => this%listeners%at(i)
+         call pListener%addError(aTest%getName(), exceptions)
       end do
 
    end subroutine addError
 
    subroutine addSuccess(this, aTest)
-      use PF_Exception_mod, only: Exception
       use PF_TestFailure_mod
       use PF_ExceptionList_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
-!      integer :: i, n
-      integer :: n
-      type (TestFailure), allocatable :: tmp(:)
-      type (ExceptionList) :: no_exceptions ! empty
-      
-      n = this%numSuccesses
-      allocate(tmp(n))
-      tmp(1:n) = this%successes(1:n)
-      deallocate(this%successes)
-      allocate(this%successes(n+1))
-      this%successes(1:n) = tmp
-      deallocate(tmp)
-      this%successes(n+1) = TestFailure(aTest%getName(), no_exceptions)
+      type (ExceptionList) :: noExceptions ! empty
 
-      this%numSuccesses = n + 1
+      call this%successes%push_back(TestFailure(aTest%getName(), noExceptions))
 
    end subroutine addSuccess
 
    integer function failureCount(this)
       class (TestResult), intent(in) :: this
-      failureCount = this%numFailed
+      failureCount = this%failures%size()
    end function failureCount
 
    integer function errorCount(this)
       class (TestResult), intent(in) :: this
-      errorCount = this%numErrors
+      errorCount = this%errors%size()
    end function errorCount
 
    subroutine startTest(this, aTest)
@@ -191,12 +154,13 @@ contains
       class (SurrogateTestCase), intent(in) :: aTest
 
       integer :: i
-
+      class (TestListener), pointer :: listener
 
       this%numRun = this%numRun + 1
 
-      do i = 1, size(this%listeners)
-         call this%listeners(i)%pListener%startTest(aTest%getName())
+      do i = 1, this%listeners%size()
+         listener => this%listeners%at(i)
+         call listener%startTest(aTest%getName())
       end do
 
    end subroutine startTest
@@ -206,9 +170,11 @@ contains
       class (SurrogateTestCase), intent(in) :: aTest
 
       integer :: i
+      class (TestListener), pointer :: listener
 
-      do i = 1, size(this%listeners)
-         call this%listeners(i)%pListener%endTest(aTest%getName())
+      do i = 1, this%listeners%size()
+         listener => this%listeners%at(i)
+         call listener%endTest(aTest%getName())
       end do
 
    end subroutine endTest
@@ -250,37 +216,17 @@ contains
       class (TestResult), intent(inOut) :: this
       class (TestListener), target, intent(in) :: listener
 
-      integer :: n
-
-      call extend(this%listeners)
-      n = size(this%listeners)
-      this%listeners(n)%pListener => listener
-
-   contains
-
-      subroutine extend(listeners)
-         type (ListenerPointer), allocatable, intent(inout) :: listeners(:)
-         type (ListenerPointer), allocatable :: temp(:)
-         integer :: n
-
-         n = size(listeners)
-         temp = listeners
-         deallocate(listeners)
-
-         allocate(listeners(n+1))
-         listeners(:n) = temp
-         deallocate(temp)
-
-      end subroutine extend
+      call this%listeners%push_back(listener)
 
    end subroutine addListener
 
+   ! Accessor - only needed for testing purposes
    function getIthFailure(this, i) result(failure)
       class (TestResult), intent(in) :: this
       integer, intent(in) :: i
-      type (TestFailure) :: failure
+      type (TestFailure), pointer :: failure
 
-      failure = this%failures(i)
+      failure => this%failures%at(i)
 
    end function getIthFailure
 
@@ -290,21 +236,21 @@ contains
    end function wasSuccessful
 
    function getSuccesses(this) result(successes)
-     class (TestResult), intent(in) :: this
-     type (TestFailure), allocatable :: successes(:)
-     successes = this%successes
+     class (TestResult), target, intent(in) :: this
+     type (TestFailureVector), pointer :: successes
+     successes => this%successes
    end function getSuccesses
 
    function getErrors(this) result(errors)
-      class (TestResult), intent(in) :: this
-      type (TestFailure), allocatable :: errors(:)
-      errors = this%errors
+      class (TestResult), target, intent(in) :: this
+      type (TestFailureVector), pointer :: errors
+      errors => this%errors
    end function getErrors
 
    function getFailures(this) result(failures)
-      class (TestResult), intent(in) :: this
-      type (TestFailure), allocatable :: failures(:)
-      failures = this%failures
+      class (TestResult), target, intent(in) :: this
+      type (TestFailureVector), pointer :: failures
+      failures => this%failures
    end function getFailures
 
    subroutine zeroRunTime(this)

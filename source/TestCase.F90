@@ -142,11 +142,11 @@ contains
    end subroutine run
 
    recursive subroutine runBare(this)
-      use PF_ExceptionList_mod, only: noExceptions
+      use PF_ExceptionList_mod, only: anyExceptions
       class (TestCase), intent(inout) :: this
 
       call this%setUp()
-      if (noExceptions()) then
+      if (.not. anyExceptions()) then
          call this%runMethod()
          call this%tearDown()
       end if

@@ -115,6 +115,29 @@ contains
 
    end subroutine testGetNumFailed
 
+   subroutine testAddListenerStart()
+      use PF_TestListener_mod
+      use PF_SurrogateTestCase_mod
+      use MockListener_mod
+      use PF_Assert_mod
+      use SimpleTestCase_mod
+      type (TestResult) :: result
+      type (MockListener), target :: listener
+      
+      type (SimpleTestCase) :: tstCase
+      character(40), target :: buffer
+
+      result = newTestResult()
+
+      listener%log => buffer
+      call result%addListener(listener)
+
+      tstCase = newSimpleTestCase('method1', method1)
+      call result%startTest(tstCase%getSurrogate())
+      call assertEqual('startTest() was called', trim(listener%log))
+
+   end subroutine testAddListenerStart
+
    subroutine testAddListenerEnd()
       use PF_TestListener_mod
       use MockListener_mod
@@ -126,33 +149,16 @@ contains
       type (TestResult) :: result
       type (MockListener), target :: listener
       type (SimpleTestCase) :: tstCase
+      character(40), target :: buffer
       
       result = newTestResult()
+      listener%log => buffer
       call result%addListener(listener)
       tstCase = newSimpleTestCase('method1', method1)
       call result%endTest(tstCase%getSurrogate())
       call assertEqual('endTest() was called', listener%log)
 
    end subroutine testAddListenerEnd
-
-   subroutine testAddListenerStart()
-      use PF_TestListener_mod
-      use PF_SurrogateTestCase_mod
-      use MockListener_mod
-      use PF_Assert_mod
-      use SimpleTestCase_mod
-      type (TestResult) :: result
-      type (MockListener), target :: listener
-      
-      type (SimpleTestCase) :: tstCase
-
-      result = newTestResult()
-      call result%addListener(listener)
-      tstCase = newSimpleTestCase('method1', method1)
-      call result%startTest(tstCase%getSurrogate())
-      call assertEqual('startTest() was called', trim(listener%log))
-
-   end subroutine testAddListenerStart
 
    subroutine testAddListenerFailure()
       use PF_TestListener_mod
@@ -170,13 +176,16 @@ contains
       
       class(TestCase), allocatable :: tstCase
       type (ExceptionList) :: list
-      
+      character(40), target :: buffer
+
       result = newTestResult()
+      listener%log => buffer
       call result%addListener(listener)
       allocate(tstCase, source = newSimpleTestCase('method1', method1))
       call list%push_back(anException)
       call result%addFailure(tstCase%getSurrogate(), list)
       call assertEqual('addFailure() was called', listener%log)
+
 
    end subroutine testAddListenerFailure
 

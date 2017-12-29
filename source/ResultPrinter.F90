@@ -118,6 +118,7 @@ contains
 
    subroutine print(this, result)
       use PF_AbstractTestResult_mod, only : AbstractTestResult
+      use PF_TestFailureVector_mod
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -139,21 +140,21 @@ contains
    end subroutine printHeader
 
    subroutine printFailures(this, label, failures)
-!?      u TestResult_mod
       use PF_TestFailure_mod
+      use PF_TestFailureVector_mod
       use PF_SourceLocation_mod
       class (ResultPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
-      type (TestFailure), intent(in) :: failures(:)
+      type (TestFailureVector), intent(in) :: failures
 
-      type (TestFailure) :: aFailedTest
+      type (TestFailure), pointer :: aFailedTest
       integer :: i, j
       character(len=:), allocatable :: locationString
 
       class (Exception), pointer :: e
 
-      do i = 1, size(failures)
-         aFailedTest = failures(i)
+      do i = 1, failures%size()
+         aFailedTest => failures%at(i)
 
          do j= 1, aFailedTest%exceptions%size()
             e => aFailedTest%exceptions%at(j)

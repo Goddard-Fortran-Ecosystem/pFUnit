@@ -91,7 +91,9 @@ set(srcs
   Test.F90
   TestCase.F90
   TestFailure.F90
+  TestFailureVector.F90
   TestListener.F90
+  TestListenerVector.F90
   TestMethod.F90
   TestResult.F90
   TestRunner.F90

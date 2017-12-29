@@ -22,29 +22,36 @@ module PF_AbstractTestResult_mod
   end type AbstractTestResult
 
   abstract interface
+
      function getRunTime(this) result(time)
 !        TestFailure_mod, only : TestFailure
        import AbstractTestResult
        class (AbstractTestResult), intent(in) :: this
        real :: time
      end function getRunTime
+
      function getFailures(this) result(failures)
        use PF_TestFailure_mod, only : TestFailure
+       use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
-       class (AbstractTestResult), intent(in) :: this
-       type (TestFailure), allocatable :: failures(:)
+       class (AbstractTestResult), target, intent(in) :: this
+       type (TestFailureVector), pointer :: failures
      end function getFailures
+
      function getErrors(this) result(errors)
        use PF_TestFailure_mod, only : TestFailure
+       use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
-       class (AbstractTestResult), intent(in) :: this
-       type (TestFailure), allocatable :: errors(:)
+       class (AbstractTestResult), target, intent(in) :: this
+       type (TestFailureVector), pointer :: errors
      end function getErrors
+
      function getSuccesses(this) result(successes)
        use PF_TestFailure_mod, only : TestFailure
+       use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
-       class (AbstractTestResult), intent(in) :: this
-       type (TestFailure), allocatable :: successes(:)
+       class (AbstractTestResult), target, intent(in) :: this
+       type (TestFailureVector), pointer :: successes
      end function getSuccesses
 
    logical function wasSuccessful(this)

@@ -26,8 +26,13 @@ module MockListener_mod
    private
 
    public :: MockListener
+
+   ! A pointer is used so that the TestListenerVector has a shallow
+   ! copy of the log component.   This allows the test to access the results
+   ! without adding otherwise unnecessary accessors.
+
    type, extends(TestListener) :: MockListener
-     character(len=40) :: log
+     character(len=:), pointer :: log
    contains
      procedure :: addFailure
      procedure :: startTest
