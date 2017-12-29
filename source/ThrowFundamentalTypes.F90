@@ -26,6 +26,7 @@ module PF_ThrowFundamentalTypes_mod
   use PF_Params_mod
   use PF_StringConversionUtilities_mod
   use PF_Exception_mod
+    use PF_ExceptionList_mod
   use PF_SourceLocation_mod
 
   implicit none

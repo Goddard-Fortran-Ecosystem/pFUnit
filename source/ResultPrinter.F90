@@ -61,10 +61,10 @@ contains
   end function newResultPrinter
 
   subroutine addFailure(this, testName, exceptions)
-     use PF_Exception_mod
+     use PF_ExceptionList_mod
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: exceptions(:)
+     type (ExceptionList), intent(in) :: exceptions
 
      write(this%unit,'("F")', advance='no')
      call this%incrementColumn()
@@ -72,10 +72,10 @@ contains
   end subroutine addFailure
 
   subroutine addError(this, testName, exceptions)
-     use PF_Exception_mod
+     use PF_ExceptionList_mod
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: exceptions(:)
+     type (ExceptionList), intent(in) :: exceptions
 
      write(this%unit,'("E")', advance='no')
      call this%incrementColumn()
@@ -150,15 +150,18 @@ contains
       integer :: i, j
       character(len=:), allocatable :: locationString
 
+      class (Exception), pointer :: e
+
       do i = 1, size(failures)
          aFailedTest = failures(i)
 
-         do j= 1, size(aFailedTest%exceptions)
-            locationString = aFailedTest%exceptions(j)%location%toString()
+         do j= 1, aFailedTest%exceptions%size()
+            e => aFailedTest%exceptions%at(j)
+            locationString = e%location%toString()
 
             write(this%unit,'(a)') label,' in: ', trim(aFailedTest%testName)
             write(this%unit,'(a)') '  Location: ', trim(locationString)
-            write(this%unit,'(a,1x,a)') aFailedTest%exceptions(j)%getMessage()
+            write(this%unit,'(a,1x,a)') e%getMessage()
             write(this%unit,*)' '
          end do
       end do

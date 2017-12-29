@@ -1,5 +1,6 @@
 module Test_LiteralPattern_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_LiteralPattern_mod
    use PF_MatchObject_mod
    use PF_Assert_mod

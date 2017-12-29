@@ -138,24 +138,26 @@ contains
 
    subroutine addFailure(this, testName, exceptions)
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       use, intrinsic :: iso_c_binding
       class (SubsetRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
       integer :: i
+      class (Exception), pointer :: e
 
-      write(this%unit,'(a,i0)')'failed: numExceptions=',size(exceptions)
-      do i = 1, size(exceptions)
-         associate(fileName => exceptions(i)%location%fileName, &
-              &    lineNumber => exceptions(i)%location%lineNumber)
+      write(this%unit,'(a,i0)')'failed: numExceptions=',exceptions%size()
+      do i = 1, exceptions%size()
+         e => exceptions%at(i)
+         associate(fileName => e%location%fileName, lineNumber => e%location%lineNumber)
            write(this%unit,'(i0,a,i0,a)')i,' len(fileName)=< ',len_trim(fileName),' >'
            write(this%unit,'(i0,a,a,a)')i,' fileName=< ',trim(fileName),' >'
            write(this%unit,'(i0,a,i0,a)')i,' lineNumber=< ',lineNumber,' >'
            write(this%unit,'(i0,a,i0,a)')i,' len(message)=< ', &
-                & len_trim(exceptions(i)%message),' >'
+                & len_trim(e%message),' >'
            write(this%unit,'(i0,a,a,a)')i,' message=< ', &
-                trim(exceptions(i)%message),' >'//C_NULL_CHAR
+                trim(e%message),' >'//C_NULL_CHAR
          end associate
       end do
 

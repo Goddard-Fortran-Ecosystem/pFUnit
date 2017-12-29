@@ -81,7 +81,7 @@ contains
    end function TestMethod_setUpTearDown
 
    recursive subroutine runMethod(this)
-      use PF_Exception_mod, only: getNumExceptions
+      use PF_ExceptionList_mod, only: getNumExceptions
       class (TestMethod), intent(inOut) :: this
 
       call this%userMethod()

@@ -22,7 +22,7 @@
 !-------------------------------------------------------------------------------
 ! Serial TestCase 
 module PF_TestCase_mod
-   use PF_Exception_mod,         only : throw
+   use PF_ExceptionList_mod,     only : throw
    use PF_Params_mod,            only : MAX_LENGTH_NAME
    use PF_SurrogateTestCase_mod
    use PF_TestResult_mod
@@ -142,7 +142,7 @@ contains
    end subroutine run
 
    recursive subroutine runBare(this)
-      use PF_Exception_mod, only: noExceptions
+      use PF_ExceptionList_mod, only: noExceptions
       class (TestCase), intent(inout) :: this
 
       call this%setUp()
@@ -193,7 +193,7 @@ contains
    end subroutine setSurrogate
 
    recursive subroutine runMethod(this)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       class (TestCase), intent(inout) :: this
       call throw('TestCase::runMethod() must be overridden.')
    end subroutine runMethod

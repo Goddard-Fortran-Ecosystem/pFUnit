@@ -40,6 +40,8 @@ module PF_SourceLocation_mod
       character(len=MAXLEN_FILE_NAME) :: fileName = UNKNOWN_FILE_NAME
       integer :: lineNumber = UNKNOWN_LINE_NUMBER
    contains
+      procedure :: serialize
+      procedure, nopass :: deserialize
       procedure :: toString
    end type SourceLocation
 
@@ -70,5 +72,30 @@ contains
       string = '[' // trim(string) // ']'
 
    end function toString
+
+
+   function serialize(this) result(buffer)
+      integer, allocatable :: buffer(:)
+      class (SourceLocation), intent(in) :: this
+
+      integer :: n
+
+      buffer = transfer(this%fileName,[1])
+      n = size(buffer)
+      buffer = [n, buffer, this%lineNumber]
+
+   end function serialize
+
+   function deserialize(buffer) result(loc)
+      type (SourceLocation) :: loc
+      integer, intent(in) :: buffer(:)
+
+      integer :: n
+      
+      n = buffer(1)
+      loc%fileName = transfer(buffer(2:n+1),'c')
+      loc%lineNumber = buffer(n+2)
+
+   end function deserialize
 
 end module PF_SourceLocation_mod

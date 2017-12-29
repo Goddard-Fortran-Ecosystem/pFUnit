@@ -104,19 +104,16 @@ end module sFUnit_private
 
 module sFUnit
    ! use these, but do not re-export
-   use PF_Exception_mod, only: initializeGlobalExceptionList
    ! export these
    use sFUnit_private
    ! add these
    public :: initialize
    public :: finalize
 
-   private :: initializeGlobalExceptionList
 
 contains
 
    subroutine initialize()
-      call initializeGlobalExceptionList()
    end subroutine initialize
 
    subroutine finalize(successful)

@@ -48,10 +48,11 @@ module PF_TestListener_mod
    abstract interface
       subroutine addFailure(this, testName, exceptions)
          use PF_Exception_mod
+         use PF_ExceptionList_mod
          import TestListener
          class (TestListener), intent(inout) :: this
          character(len=*), intent(in) :: testName
-         type (Exception), intent(in) :: exceptions(:)
+         type (ExceptionList), intent(in) :: exceptions
       end subroutine addFailure
 
       subroutine startTest(this, testName)
@@ -88,9 +89,10 @@ contains
    ! an empty stub is provided here for convenience.
    subroutine addError(this, testName, exceptions)
       use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod
       class (TestListener), intent(inout) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
    end subroutine addError
 
    ! Promoted from BaseTestRunner.F90. Every listener can have debug

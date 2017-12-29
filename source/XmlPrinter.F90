@@ -62,18 +62,18 @@ contains
    end function newXmlPrinter
 
    subroutine addFailure(this, testName, exceptions)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
    end subroutine addError
 
@@ -144,11 +144,13 @@ contains
    subroutine printExceptions(this, label, testName, exceptions)
       use PF_TestFailure_mod
       use PF_SourceLocation_mod
+      use PF_ExceptionList_mod
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       character(len=*), intent(in) :: testName
-      type(Exception), intent(in) :: exceptions(:)
-      type(Exception) :: anException
+      type(ExceptionList), intent(in) :: exceptions
+
+      class(Exception), pointer  :: pException
 
       integer :: j
       character(len=80) :: locationString
@@ -158,16 +160,16 @@ contains
 !mlr  Ask Halvor -- good for 3.0
       write(this%unit,'(a,a,a)') '<testcase name="', &
            cleanXml(trim(testName)), '">'
-      do j= 1, size(exceptions)
-         anException = exceptions(j)
-         locationString = anException%location%toString()
+      do j= 1, exceptions%size()
+         pException => exceptions%at(j)
+         locationString = pException%location%toString()
 
          write(this%unit,'(a,a,a)',advance='no') '<', cleanXml(label),&
               ' message="'
          write(this%unit,'(a,a,a)',advance='no') &
               'Location: ', cleanXml(trim(locationString)), ', '
          write(this%unit,'(a)',advance='no') &
-              cleanXml(trim(exceptions(j)%getMessage()))
+              cleanXml(trim(pException%getMessage()))
          write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
@@ -184,7 +186,7 @@ contains
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
-      type (Exception) :: anException
+      class (Exception), pointer :: pException
 
       integer :: i, j
       character(len=80) :: locationString
@@ -194,16 +196,16 @@ contains
 !mlr  Ask Halvor -- good for 3.0
       write(this%unit,'(a,a,a)') '<testcase name="', &
            cleanXml(trim(aFailedTest%testName)), '">'
-      do j= 1, size(aFailedTest%exceptions)
-        anException = aFailedTest%exceptions(j)
-        locationString = anException%location%toString()
+      do j= 1, aFailedTest%exceptions%size()
+        pException => aFailedTest%exceptions%at(j)
+        locationString = pException%location%toString()
 
         write(this%unit,'(a,a,a)',advance='no') &
              '<', cleanXml(label), ' message="'
         write(this%unit,'(a,a,a)',advance='no') &
              'Location: ', cleanXml(trim(locationString)), ', '
         write(this%unit,'(a)',advance='no') &
-             cleanXml(trim(aFailedTest%exceptions(j)%getMessage()))
+             cleanXml(trim(pException%getMessage()))
         write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'

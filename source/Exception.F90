@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Software Integration & Visualization Office, Code 610.3
 !-------------------------------------------------------------------------------
-!  MODULE: PrivateException
+!  MODULE: PF_PrivateException
 !
 !> @brief
 !! <BriefDescription>
@@ -26,7 +26,7 @@ module PF_PrivateException_mod
    private
 
    public :: Exception
-   public :: ExceptionList
+!!$   public :: ExceptionList
 
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
@@ -42,6 +42,8 @@ module PF_PrivateException_mod
       procedure :: getLineNumber
       procedure :: getFileName
       procedure :: isNull
+      procedure :: serialize
+      procedure, nopass :: deserialize
    end type Exception
 
    type ExceptionList
@@ -196,10 +198,10 @@ contains
          allocate(list%exceptions(n_global_exceptions))
 
          do i = 1, n_local_exceptions
-            call context%labelProcess(this%exceptions(i)%message)
+            this%exceptions(i)%message = context%labelProcess(this%exceptions(i)%message)
          end do
          call context%gather(this%exceptions(:)%location%fileName, list%exceptions(:)%location%fileName)
-         call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
+!!$         call context%gather(this%exceptions(:)%location%lineNumber, list%exceptions(:)%location%lineNumber)
 
          ! variable length strings create some complexity
          max_len = maxval([(len(this%exceptions(i)%message),i=1,n_local_exceptions)])
@@ -345,6 +347,29 @@ contains
       if (allocated(this%exceptions)) deallocate(this%exceptions)
    end subroutine delete
 
+   function serialize(this) result(buffer)
+      class (Exception), intent(in) :: this
+
+      integer, allocatable :: buffer(:)
+
+      buffer = [len(this%message)]
+      buffer = [buffer, transfer(this%message,[1])]
+      buffer = [buffer, this%location%serialize()]
+   end function serialize
+
+   function deserialize(buffer) result(e)
+      type (Exception) :: e
+      integer, intent(in) :: buffer(:)
+      integer :: n
+
+      type (SourceLocation) :: sloc
+
+      n = buffer(1)
+      e%message = transfer(buffer(2:n+1),'c')
+      e%location = sloc%deserialize(buffer(n+2:))
+      
+   end function deserialize
+
 end module PF_PrivateException_mod
 
 module PF_Exception_mod
@@ -354,190 +379,9 @@ module PF_Exception_mod
    private
 
    public :: Exception
-   public :: ExceptionList
 
    public :: NULL_MESSAGE
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
-
-   public :: getNumExceptions
-   public :: throw
-   public :: gatherExceptions
-   public :: catchNext
-   public :: catch
-   public :: getExceptions
-   public :: noExceptions
-   public :: anyExceptions
-   public :: anyErrors
-   public :: clearAll
-
-   public :: initializeGlobalExceptionList
-
-   type (ExceptionList), save :: globalExceptionList ! private
-   logical, save :: init = .false. ! private
-
-
-  interface throw
-    module procedure throw_message
-  end interface
-
-  interface catch
-     module procedure catch_any
-     module procedure catch_message
-  end interface catch
-
-  interface anyExceptions
-     module procedure anyExceptions_local
-     module procedure anyExceptions_context
-  end interface anyExceptions
-
-  interface getNumExceptions
-     module procedure getNumExceptions_local
-     module procedure getNumExceptions_context
-  end interface getNumExceptions
-
-contains
-
-   subroutine initializeGlobalExceptionList()
-      globalExceptionList = ExceptionList()
-   end subroutine initializeGlobalExceptionList
-
-
-   integer function getNumExceptions_local() result(numExceptions)
-
-      if (.not. init) then
-         call initializeGlobalExceptionList()
-         init = .true.
-      end if
-
-      numExceptions = globalExceptionList%getNumExceptions()
-   end function getNumExceptions_local
-
-   integer function getNumExceptions_context(context) result(numExceptions)
-      use PF_ParallelContext_mod, only: ParallelContext
-      class (ParallelContext), intent(in) :: context
-
-      numExceptions = context%sum(getNumExceptions())
-      
-   end function getNumExceptions_context
-
-
-   subroutine throw_message(message, location)
-      character(len=*), intent(in) :: message
-      type (SourceLocation), optional, intent(in) :: location
-
-      
-      !$omp critical
-      if (.not. init) then
-         init = .true.
-         call initializeGlobalExceptionList()
-         !$omp flush(init)
-      end if
-
-      call globalExceptionList%throw(message, location)
-      !$omp end critical
-
-   end subroutine throw_message
-
-   function catchNext(preserve) result(anException)
-      logical, optional, intent(in) :: preserve
-      type (Exception) :: anException
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      anException = globalExceptionList%catchNext(preserve)
-   end function catchNext
-
-   logical function catch_any(preserve)
-      logical, optional, intent(in) :: preserve
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      catch_any = globalExceptionList%catch(preserve)
-   end function catch_any
-
-   logical function catch_message(message, preserve)
-      character(len=*), intent(in) :: message
-      logical, optional, intent(in) :: preserve
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      catch_message = globalExceptionList%catch(message, preserve)
-   end function catch_message
-
-   function getExceptions() result(exceptions)
-      type (Exception), allocatable :: exceptions(:)
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-#ifdef INTEL_16
-      call move_alloc(from=globalExceptionList%exceptions, to=exceptions)
-#else
-      exceptions = globalExceptionList%getExceptions()
-#endif
-      globalExceptionList = ExceptionList()
-         
-   end function getExceptions
-
-   logical function noExceptions()
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      noExceptions = globalExceptionList%noExceptions()
-   end function noExceptions
-
-   logical function anyExceptions_local() result(any)
-
-      if (.not. allocated(globalExceptionList%exceptions)) then
-         call initializeGlobalExceptionList()
-      end if
-
-      any = globalExceptionList%anyExceptions()
-
-   end function anyExceptions_local
-
-
-   logical function anyExceptions_context(context) result(any)
-      use PF_ParallelContext_mod, only: ParallelContext
-      class (ParallelContext), intent(in) :: context
-
-      any = context%allReduce(anyExceptions())
-
-   end function anyExceptions_context
-
-
-   logical function anyErrors()
-      integer :: i
-      integer :: n
-
-      do i = 1, globalExceptionList%getNumExceptions()
-         n = min(14,len(globalExceptionList%exceptions(i)%message))
-         if (globalExceptionList%exceptions(i)%message(1:n) == 'RUNTIME-ERROR:') then
-            anyErrors = .true.
-            return
-         end if
-      end do
-      anyErrors = .false.
-   end function anyErrors
-
-   subroutine gatherExceptions(context)
-      use PF_ParallelContext_mod
-      class (ParallelContext), intent(in) :: context
-      call globalExceptionList%gather(context)
-   end subroutine gatherExceptions
-
-
-   subroutine clearAll()
-      call globalExceptionList%clearAll()
-   end subroutine clearAll
 
 end module PF_Exception_mod

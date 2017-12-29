@@ -24,9 +24,7 @@
 module Test_Assert_mod
    use PF_TestSuite_mod
    use PF_Assert_mod
-   use PF_Exception_mod, only: NULL_MESSAGE
-   use PF_Exception_mod, only: catch
-   use PF_Exception_mod, only: getNumExceptions
+   use PF_ExceptionList_mod, only: catch
    implicit none
    private
 

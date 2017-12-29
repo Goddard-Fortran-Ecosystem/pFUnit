@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 module PF_TestFailure_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    implicit none
    private
 
@@ -29,7 +30,7 @@ module PF_TestFailure_mod
 
    type TestFailure
       character(len=80) :: testName
-      type (Exception), allocatable :: exceptions(:)
+      type (ExceptionList) :: exceptions
    end type TestFailure
 
 !!$   interface TestFailure

@@ -95,7 +95,7 @@ contains
    end subroutine method2
 
    subroutine methodWith2Exceptions(this)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       class (SimpleTestCase), intent(inOut) :: this
 
       call throw('failure A')

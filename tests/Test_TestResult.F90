@@ -91,21 +91,26 @@ contains
    subroutine testGetNumFailed()
       use PF_Assert_mod, only: assertEqual
       use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod, only: ExceptionList
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_SurrogateTestCase_mod
       use PF_TestCase_mod
 
       type (TestResult) :: aResult
-      
+      type (ExceptionList) :: list
       type (SimpleTestCase) :: aTest
+
       call aTest%setSurrogate()
       aResult = newTestResult()
       call assertEqual(0, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), [Exception('fail')])
+      call list%push_back(Exception('fail'))
+      call aResult%addFailure(aTest%getSurrogate(), list)
       call assertEqual(1, aResult%failureCount())
 
-      call aResult%addFailure(aTest%getSurrogate(), [Exception('fail again')])
+      call list%clear()
+      call list%push_back(Exception('fail again'))
+      call aResult%addFailure(aTest%getSurrogate(), list)
       call assertEqual(2, aResult%failureCount())
 
    end subroutine testGetNumFailed
@@ -154,6 +159,7 @@ contains
       use MockListener_mod
       use PF_Assert_mod
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       use SimpleTestCase_mod
       use PF_SurrogateTestCase_mod
       use PF_TestCase_mod
@@ -163,11 +169,13 @@ contains
       type (Exception) :: anException
       
       class(TestCase), allocatable :: tstCase
+      type (ExceptionList) :: list
       
       result = newTestResult()
       call result%addListener(listener)
       allocate(tstCase, source = newSimpleTestCase('method1', method1))
-      call result%addFailure(tstCase%getSurrogate(), [anException])
+      call list%push_back(anException)
+      call result%addFailure(tstCase%getSurrogate(), list)
       call assertEqual('addFailure() was called', listener%log)
 
    end subroutine testAddListenerFailure

@@ -46,7 +46,7 @@ contains
    end subroutine setUp
 
    subroutine runMethod(this)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       class(BrokenTestCase), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' broken run'

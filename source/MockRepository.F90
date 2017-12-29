@@ -115,6 +115,7 @@ contains
 
    subroutine verifyMocking(this, object)
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (MockRepository), intent(inout) :: this
       class (*) :: object
       
@@ -197,6 +198,7 @@ contains
 
    subroutine verify(this)
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (MockRepository), intent(inout), target :: this
       integer iExp, iReg
       class (Expectation), pointer :: exp, reg

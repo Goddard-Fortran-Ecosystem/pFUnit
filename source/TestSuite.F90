@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module PF_TestSuite_mod
-   use PF_Exception_mod, only : throw
+   use PF_ExceptionList_mod, only : throw
    use PF_Params_mod,    only : MAX_LENGTH_NAME
    use PF_Test_mod
    implicit none

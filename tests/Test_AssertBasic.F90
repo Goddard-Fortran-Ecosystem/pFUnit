@@ -25,8 +25,8 @@ module Test_AssertBasic_mod
    use PF_Exception_mod, only: NULL_MESSAGE
    use PF_AssertBasic_mod
    use PF_TestSuite_mod, only: TestSuite, newTestSuite
-   use PF_Exception_mod, only: catch
-   use PF_Exception_mod, only: getNumExceptions
+   use PF_ExceptionList_mod, only: catch
+   use PF_ExceptionList_mod, only: getNumExceptions
    implicit none
    private
 
@@ -569,7 +569,7 @@ contains
    end subroutine testAssertIsFinite
 
    subroutine testAssertExceptionRaised()
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       use PF_SourceLocation_mod
 
       character(len=*), parameter :: message = 'a message'

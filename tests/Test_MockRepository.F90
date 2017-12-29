@@ -75,6 +75,7 @@ contains
 !TODO - make FINAL routine once gfortran supports it
    subroutine verifyMocking(this)
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (MockSUT), intent(inout) :: this
 
       if (associated(this%mocker)) then
@@ -94,6 +95,7 @@ module Test_MockRepository_mod
    use PF_TestSuite_mod
    use PF_MockRepository_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_Assert_mod
 
    use SUT_mod

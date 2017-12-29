@@ -1620,7 +1620,8 @@ end subroutine testEquals_MultiDWithTolerance64
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
     use PF_Params_mod
-    use PF_Exception_mod, only: getNumExceptions, Exception, catchNext
+    use PF_Exception_mod, only: Exception
+    use PF_ExceptionList_mod, only: getNumExceptions, catchNext
     use PF_Assert_mod, only: assertEqual
     character(len=*), intent(in) :: string
     type (SourceLocation), optional, intent(in) :: location

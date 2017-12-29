@@ -279,23 +279,25 @@ contains
 
    end subroutine gatherString
 
-   subroutine gatherInteger(this, values, list)
+   function gatherInteger(this, values) result(global_list)
+      integer, allocatable :: global_list(:)
       class (MpiContext), intent(in) :: this
       integer, intent(in) :: values(:)
-      integer, intent(out) :: list(:)
 
       integer, allocatable :: counts(:), displacements(:)
       integer :: ier
 
       call this%makeMap(size(values), counts, displacements)
+
+      allocate(global_list(sum(counts)))
       call Mpi_allGatherV( &
            & values, size(values), MPI_INTEGER, &
-           & list,   counts, displacements, MPI_INTEGER, &
+           & global_list,   counts, displacements, MPI_INTEGER, &
            & this%mpiCommunicator, ier)
 
       deallocate(counts, displacements)
 
-   end subroutine gatherInteger
+   end function gatherInteger
 
    subroutine gatherLogical(this, values, list)
       class (MpiContext), intent(in) :: this
@@ -320,18 +322,19 @@ contains
 
    end subroutine gatherLogical
 
-   subroutine labelProcess(this, message)
+   function labelProcess(this, message) result(labelled_message)
+      character(len=:), allocatable :: labelled_message
       class (MpiContext), intent(in) :: this
-      character(len=:), allocatable, intent(inout) :: message
+      character(*), intent(in) :: message
 
       integer, parameter :: MAXLEN_SUFFIX = 80
       character(len=MAXLEN_SUFFIX) :: suffix
 
       write(suffix,'(" (PE=",i0,")")') this%processRank()
 
-      message = trim(message) // trim(suffix)
+      labelled_message = message // trim(suffix)
 
-   end subroutine labelProcess
+   end function labelProcess
 
    logical function allReduce(this, q) result(anyQ)
       class (MpiContext), intent(in) :: this

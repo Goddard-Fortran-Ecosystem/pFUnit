@@ -99,10 +99,11 @@ contains
 
    subroutine addFailure(this, aTest, exceptions)
       use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod
       use PF_TestFailure_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
       integer :: i, n
       type (TestFailure), allocatable :: tmp(:)
@@ -126,9 +127,10 @@ contains
    subroutine addError(this, aTest, exceptions)
       use PF_Exception_mod, only: Exception
       use PF_TestFailure_mod
+      use PF_ExceptionList_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
       integer :: i, n
       type (TestFailure), allocatable :: tmp(:)
@@ -152,17 +154,15 @@ contains
    subroutine addSuccess(this, aTest)
       use PF_Exception_mod, only: Exception
       use PF_TestFailure_mod
+      use PF_ExceptionList_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
 !      integer :: i, n
       integer :: n
       type (TestFailure), allocatable :: tmp(:)
-      type (Exception), allocatable :: noExceptions(:)
-!      type (Exception) :: noExceptions(0)
+      type (ExceptionList) :: no_exceptions ! empty
       
-      allocate(noExceptions(0))
-
       n = this%numSuccesses
       allocate(tmp(n))
       tmp(1:n) = this%successes(1:n)
@@ -170,7 +170,7 @@ contains
       allocate(this%successes(n+1))
       this%successes(1:n) = tmp
       deallocate(tmp)
-      this%successes(n+1) = TestFailure(aTest%getName(), noExceptions)
+      this%successes(n+1) = TestFailure(aTest%getName(), no_exceptions)
 
       this%numSuccesses = n + 1
 
@@ -221,6 +221,7 @@ contains
 ! only invoked for a "real" test, not suites etc.
    recursive subroutine run(this, test, context)
       use PF_Exception_mod
+      use PF_ExceptionList_mod
       use PF_ParallelContext_mod
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(inout) :: test 

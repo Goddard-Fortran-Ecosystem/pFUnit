@@ -45,6 +45,7 @@
 !-------------------------------------------------------------------------------
 module PF_AssertBasic_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_SourceLocation_mod
    use PF_StringConversionUtilities_mod
    implicit none
@@ -161,7 +162,7 @@ contains
 
 
    subroutine assertExceptionRaisedBasic(location)
-      use PF_Exception_mod, only: throw, catch
+      use PF_ExceptionList_mod, only: throw, catch
       type (SourceLocation), optional, intent(in) :: location
 
       if (.not. catch()) then
@@ -170,8 +171,9 @@ contains
 
    end subroutine assertExceptionRaisedBasic
 
+
    subroutine assertExceptionRaisedMessage(message, location)
-      use PF_Exception_mod, only: throw, catch
+      use PF_ExceptionList_mod, only: throw, catch
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
@@ -181,6 +183,7 @@ contains
       end if
 
    end subroutine assertExceptionRaisedMessage
+
 
    subroutine assertSameShape(shapeA, shapeB, message, location)
       integer, intent(in) :: shapeA(:)
@@ -245,7 +248,7 @@ contains
    end subroutine assertFalse_1d_
 
    subroutine assertEqualLogical_(expected, found, message, location)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       logical, intent(in) :: expected
       logical, intent(in) :: found
       character(len=*), optional, intent(in) :: message
@@ -298,7 +301,7 @@ contains
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
 
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found

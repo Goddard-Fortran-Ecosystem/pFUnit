@@ -38,10 +38,10 @@ module MockListener_mod
 contains
 
   subroutine addFailure(this, testName, exceptions)
-     use PF_Exception_mod
+     use PF_ExceptionList_mod
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
-     type (Exception), intent(in) :: exceptions(:)
+     type (ExceptionList), intent(in) :: exceptions
 
      write(this%log,'(a)') 'addFailure() was called'
 

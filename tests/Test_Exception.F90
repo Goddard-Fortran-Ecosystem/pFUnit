@@ -24,8 +24,8 @@
 
 module Test_Exception_mod
    use PF_TestSuite_mod
+   use PF_ExceptionList_mod
    use PF_Exception_mod, only: Exception
-   use PF_Exception_mod, only: ExceptionList
    use PF_Assert_mod, only: assertEqual
    use PF_Assert_mod, only: assertTrue
    use PF_Assert_mod, only: assertFalse
@@ -111,13 +111,13 @@ contains
       type (ExceptionList) :: list
 
       list = ExceptionList()
-      call assertEqual(0, list%getNumExceptions())
-      call list%throwMessage('anException')
-      call assertEqual(1, list%getNumExceptions())
-      call list%throwMessage('anotherException')
-      call assertEqual(2, list%getNumExceptions())
-      call list%clearAll()
-      call assertEqual(0, list%getNumExceptions())
+      call assertEqual(0, list%get_num_exceptions())
+      call list%throw_message('anException')
+      call assertEqual(1, list%get_num_exceptions())
+      call list%throw_message('anotherException')
+      call assertEqual(2, list%get_num_exceptions())
+      call list%clear()
+      call assertEqual(0, list%get_num_exceptions())
 
    end subroutine testGetNumExceptions
    !---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ contains
       !EOP
       !BOC
       list = ExceptionList()
-      anException = list%catchNext()
+      anException = list%catch_next()
       call assertTrue(anException%isNull())
       !EOC
    end subroutine testCatchNextEmpty
@@ -169,8 +169,8 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message)
-      anException = list%catchNext()
+      call list%throw_message(message)
+      anException = list%catch_next()
       call assertEqual(message, anException%getMessage())
 
       !EOC
@@ -191,7 +191,8 @@ contains
 
    ! !INTERFACE:
    subroutine testCatchFail()
-      use PF_Exception_mod, only: ExceptionList, Exception
+      use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod, only: ExceptionList
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -199,8 +200,8 @@ contains
       character(len=*), parameter :: message = 'anException'
       list = ExceptionList()
 
-      call list%throwMessage(message)
-      anException = list%catchNext()
+      call list%throw_message(message)
+      anException = list%catch_next()
       call assertFalse(list%catch('different exception'))
       !EOC
    end subroutine testCatchFail
@@ -226,7 +227,7 @@ contains
       character(len=*), parameter :: message = 'anException'
       list = ExceptionList()
 
-      call list%throwMessage(message)
+      call list%throw_message(message)
       call assertTrue(list%catch(message))
       !EOC
    end subroutine testCatchSucceed
@@ -253,10 +254,10 @@ contains
       character(len=*), parameter :: message2 = 'second exception'
 
       list = ExceptionList()
-      call list%throwMessage(message1)
+      call list%throw_message(message1)
       call assertFalse(list%catch(message2))!, 'message2 has not been thrown yet')
 
-      call list%throwMessage(message2)
+      call list%throw_message(message2)
       call assertTrue(list%catch(message1))!, 'message2 is masking message1')
       call assertTrue(list%catch(message2))!, 'message2 was lost')
       !EOC
@@ -272,21 +273,21 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message1)
-      anException = list%catchNext()
-      call assertEqual(0, list%getNumExceptions())!, 'catchNext() did not remove only exception')
+      call list%throw_message(message1)
+      anException = list%catch_next()
+      call assertEqual(0, list%get_num_exceptions())!, 'catchNext() did not remove only exception')
       call assertFalse(list%catch(message1))
 
-      call list%throwMessage(message1)
-      call list%throwMessage(message2)
+      call list%throw_message(message1)
+      call list%throw_message(message2)
       call assertTrue(list%catch(message2))
-      call assertEqual(1, list%getNumExceptions())!, 'catch() did not reduce list by 1')
+      call assertEqual(1, list%get_num_exceptions())!, 'catch() did not reduce list by 1')
       call assertFalse(list%catch(message2))!, 'message2 should have been removed by previous catch')
-      call assertEqual(1, list%getNumExceptions())!, 'numExceptions should still be 1')
+      call assertEqual(1, list%get_num_exceptions())!, 'numExceptions should still be 1')
       call assertTrue(list%catch(message1))
-      call assertEqual(0, list%getNumExceptions())!, 'catch() did not reduce list by 1')
+      call assertEqual(0, list%get_num_exceptions())!, 'catch() did not reduce list by 1')
       call assertFalse(list%catch(message1))!, 'message1 should have been removed by previous catch')
-      call assertEqual(0, list%getNumExceptions())!, 'numExceptions should still be 0')
+      call assertEqual(0, list%get_num_exceptions())!, 'numExceptions should still be 0')
 
       !EOC
    end subroutine testCatchAndRemove
@@ -313,7 +314,7 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message)
+      call list%throw_message(message)
       call assertTrue(list%catch(message, preserve=.true.))
       !EOC
    end subroutine testCatchButPreserveA
@@ -341,7 +342,7 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message)
+      call list%throw_message(message)
       found = list%catch(message, preserve=.true.)
       call assertTrue(list%catch(message)) 
       !EOC
@@ -371,11 +372,11 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message1)
-      call list%throwMessage(message2)
+      call list%throw_message(message1)
+      call list%throw_message(message2)
       found = list%catch(message1, preserve=.true.)
       found = list%catch(message2, preserve=.true.)
-      call assertEqual(2, list%getNumExceptions())
+      call assertEqual(2, list%get_num_exceptions())
       !EOC
    end subroutine testCatchButPreserveC
 
@@ -402,8 +403,8 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message)
-      anException = list%catchNext(preserve = .true.)
+      call list%throw_message(message)
+      anException = list%catch_next(preserve = .true.)
       call assertFalse(anException%isNull())
       call assertEqual(message, anException%getMessage())
       !EOC
@@ -432,8 +433,8 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message)
-      anException = list%catchNext(preserve=.true.)
+      call list%throw_message(message)
+      anException = list%catch_next(preserve=.true.)
       call assertTrue(list%catch(message)) 
       !EOC
    end subroutine testCatchNextButPreserveB
@@ -462,10 +463,10 @@ contains
 
       list = ExceptionList()
 
-      call list%throwMessage(message1)
-      call list%throwMessage(message2)
-      anException = list%catchNext(preserve =.true.)
-      call assertEqual(2, list%getNumExceptions())
+      call list%throw_message(message1)
+      call list%throw_message(message2)
+      anException = list%catch_next(preserve =.true.)
+      call assertEqual(2, list%get_num_exceptions())
       !EOC
    end subroutine testCatchNextButPreserveC
 
@@ -514,7 +515,7 @@ contains
       list = ExceptionList()
       call list%throw('message', &
            & SourceLocation(fileName=FILE_NAME, lineNumber=2))
-      anException = list%catchNext()
+      anException = list%catch_next()
       call assertEqual(FILE_NAME, anException%getFileName())
 
    end subroutine testThrowWithLineAndFile

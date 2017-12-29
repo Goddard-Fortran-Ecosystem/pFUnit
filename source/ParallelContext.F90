@@ -39,7 +39,7 @@ module PF_ParallelContext_mod
       procedure(reduce), deferred :: sum
       procedure(reduce), deferred :: maximum
       generic :: gather => gatherString
-      generic :: gather => gatherInteger
+!      generic :: gather => gatherInteger
       generic :: gather => gatherLogical
       procedure(gatherString), deferred :: gatherString
       procedure(gatherInteger), deferred :: gatherInteger
@@ -73,12 +73,12 @@ module PF_ParallelContext_mod
          character(len=*), intent(out) :: list(:)
       end subroutine gatherString
 
-      subroutine gatherInteger(this, values, list)
+      function gatherInteger(this, values) result(global_list)
          import ParallelContext
+         integer, allocatable :: global_list(:)
          class (ParallelContext), intent(in) :: this
          integer, intent(in) :: values(:)
-         integer, intent(out) :: list(:)
-      end subroutine gatherInteger
+      end function gatherInteger
 
       subroutine gatherLogical(this, values, list)
          import ParallelContext
@@ -114,11 +114,15 @@ contains
       isRootProcess = .true.
    end function isRootProcess
 
-   subroutine labelProcess(this, message)
+   ! Default is to return a copy of the message.
+   function labelProcess(this, message) result(labelled_message)
+      character(len=:), allocatable :: labelled_message
       class (ParallelContext), intent(in) :: this
-      character(len=:), allocatable, intent(inout) :: message
+      character(*), intent(in) :: message
       _UNUSED_DUMMY(this)
-      _UNUSED_DUMMY(message)
-   end subroutine labelProcess
+
+      labelled_message = message
+
+   end function labelProcess
 
 end module PF_ParallelContext_mod

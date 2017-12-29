@@ -22,7 +22,7 @@
 !-------------------------------------------------------------------------------
 module BrokenSetUpCase_mod
    use PF_TestCase_mod, only: TestCase
-   use PF_Exception_mod, only: throw
+   use PF_ExceptionList_mod, only: throw
    implicit none
    private
    

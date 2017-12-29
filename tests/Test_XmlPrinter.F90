@@ -54,6 +54,7 @@ contains
    subroutine testValidXml()
       use PF_Assert_mod, only: assertEqual
       use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod
       use PF_TestCase_mod
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_SurrogateTestCase_mod
@@ -66,6 +67,7 @@ contains
       integer :: iostat, stat, cstat, xmlUnit, outUnit
       character(len=200) :: fileName, suiteName, command, &
            xsdPath, outFile, errMsg
+      type (ExceptionList) :: list
 
       fileName = 'test.xml'
       suiteName = 'suitename<<>>""'
@@ -83,8 +85,11 @@ contains
       call aTest2%setName('successtest<>"')
 
       aResult = newTestResult()
-      call aResult%addFailure(aTest%getSurrogate(), [Exception('<invalid>')])
-      call aResult%addFailure(aTest%getSurrogate(), [Exception('"test"')])
+      call list%throw(Exception('<invalid>'))
+      call aResult%addFailure(aTest%getSurrogate(), list)
+      call list%clear()
+      call list%throw(Exception('"test"'))
+      call aResult%addFailure(aTest%getSurrogate(), list)
       call aResult%addSuccess(aTest2%getSurrogate())
 
       call aResult%setName(suiteName)

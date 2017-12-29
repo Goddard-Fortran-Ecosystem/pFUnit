@@ -430,6 +430,7 @@ ifElseString(tolerance == 0,\
 """
     use PF_Params_mod
     use PF_Exception_mod
+    use PF_ExceptionList_mod
     use PF_StringConversionUtilities_mod
     use PF_ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
@@ -1063,6 +1064,7 @@ def declareUSES(internalRoutines=[]):
    use PF_Params_mod
    use PF_AssertBasic_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_SourceLocation_mod
    use PF_StringConversionUtilities_mod
    use PF_AssertArraysSupport_mod
@@ -1408,6 +1410,7 @@ def declareUSES_() :
    use PF_Params_mod
    use PF_AssertBasic_mod
    use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_SourceLocation_mod
    use PF_StringConversionUtilities_mod
 """

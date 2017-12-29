@@ -134,10 +134,10 @@ contains
     end subroutine endRun
 
     subroutine addFailure(this, testName, exceptions)
-       use PF_Exception_mod
+       use PF_ExceptionList_mod
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
-       type (Exception), intent(in) :: exceptions(:)
+       type (ExceptionList), intent(in) :: exceptions
     end subroutine addFailure
 
 end module PF_TestRunner_mod

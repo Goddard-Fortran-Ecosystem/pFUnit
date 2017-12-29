@@ -92,14 +92,17 @@ contains
       list = values
    end subroutine gatherString
 
-   subroutine gatherInteger(this, values, list)
+
+   function gatherInteger(this, values) result(global_list)
+      integer, allocatable :: global_list(:)
       class (SerialContext), intent(in) :: this
       integer, intent(in) :: values(:)
-      integer, intent(out) :: list(:)
 
-      list = values
+      global_list = values
 
-   end subroutine gatherInteger
+   end function gatherInteger
+
+
 
    subroutine gatherLogical(this, values, list)
       class (SerialContext), intent(in) :: this
@@ -108,6 +111,8 @@ contains
 
       list = values
    end subroutine gatherLogical
+
+
 
    logical function allReduce(this, q) result(anyQ)
       class (SerialContext), intent(in) :: this
