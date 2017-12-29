@@ -53,12 +53,8 @@ contains
       method = newTestMethod(name = 'testWasRun', method = testWasRun)
       aResult = newTestResult()
       call method%run(aResult, newSerialContext())
-      print*,__FILE__,__LINE__,getNumExceptions()
-      print*,__FILE__,__LINE__, aResult%runCount()
       call assertEqual(1, aResult%runCount())
-      print*,__FILE__,__LINE__, aResult%failureCount()
       call assertEqual(1, aResult%failureCount())
-      print*,__FILE__,__LINE__,getNumExceptions()
    end subroutine testMethodWasRun
 
    subroutine testWasRun()
