@@ -22,8 +22,8 @@
 !-------------------------------------------------------------------------------
 module PF_TestSuite_mod
    use PF_ExceptionList_mod, only : throw
-   use PF_Params_mod,    only : MAX_LENGTH_NAME
    use PF_Test_mod
+   use PF_TestVector_mod
    implicit none
    private
 
@@ -36,12 +36,8 @@ module PF_TestSuite_mod
 
    type, extends(Test) :: TestSuite
       private
-#ifdef DEFERRED_LENGTH_CHARACTER
       character(:), allocatable  :: name
-#else
-      character(MAX_LENGTH_NAME) :: name
-#endif
-      type (TestReference), allocatable :: tests(:)
+      type (TestVector) :: tests
    contains
       procedure :: getName 
       procedure :: setName
@@ -70,7 +66,6 @@ contains
       type (TestSuite) :: newSuite
       character(len=*), intent(in) :: name
 
-      allocate(newSuite%tests(0))
       call newSuite%setName(name)
 
    end function newTestSuite_named
@@ -80,23 +75,21 @@ contains
       type (TestSuite), intent(in) :: b
       integer :: i, n
 
-      call this%setName(b%getName())
-      n = b%getNumTests()
-
-      allocate(this%tests(n))
-      do i = 1, n
-         allocate(this%tests(i)%ptest, source=b%tests(i)%ptest)
-      end do
-
+      this%name = b%name
+      this%tests = b%tests
+      
    end subroutine copy
 
    recursive integer function countTestCases(this)
-      class (TestSuite), intent(in) :: this
+      class (TestSuite), target, intent(in) :: this
       integer :: i
-      
+
+      class (Test), pointer :: t
+
       countTestCases = 0
-      do i = 1, this%getNumTests()
-         countTestCases = countTestCases + this%tests(i)%pTest%countTestCases()
+      do i = 1, this%tests%size()
+         t => this%tests%at(i)
+         countTestCases = countTestCases + t%countTestCases()
       end do
   
    end function countTestCases
@@ -108,10 +101,12 @@ contains
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
 
+      class (Test), pointer :: t
       integer :: i
 
-      do i = 1, this%getNumTests()
-         call this%tests(i)%ptest%run(tstResult, context)
+      do i = 1, this%tests%size()
+         t => this%tests%at(i)
+         call t%run(tstResult, context)
       end do
       
    end subroutine run
@@ -119,40 +114,14 @@ contains
    recursive subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
-#ifdef DEFERRED_LENGTH_CHARACTER
-      character(:), alocatable   :: name
-#else
-      character(MAX_LENGTH_NAME) :: name
-      character(MAX_LENGTH_NAME) :: suiteName
-      character(MAX_LENGTH_NAME) :: testName
+      character(:), allocatable   :: name
 
-      integer                    :: suiteNameLength
-      integer                    :: testNameLength
-#endif
-      call extend(this%tests)
-      allocate(this%tests(this%getNumTests())%pTest, source=aTest)
-#ifdef DEFERRED_LENGTH_CHARACTER
-      name = this%getName() // '.' // this%tests(this%getNumTests())%pTest%getName()
-#else
-      suiteName       = this%getName()
-      suiteNameLength = len_trim( suiteName )
-      testName        = this%tests(this%getNumTests())%pTest%getName()
-      testNameLength  = len_trim( testName )
+      class (Test), pointer :: t
 
-      ! +/-1 below for full stop character to be added
-      if (suiteNameLength + 1 + testNameLength > MAX_LENGTH_NAME) then
-         call throw( 'TestSuite.addTest: Too long: ' &
-                     // suiteName(1:suiteNameLength) // '.' &
-                     // testName(1:testNameLength) )
-         testNameLength  = min( testNameLength, MAX_LENGTH_NAME - 1)
-         suiteNameLength = min( suiteNameLength, &
-                                MAX_LENGTH_NAME - 1 -testNameLength )
-      end if
-
-      write( name, '(A, ".", A)' ) suiteName(1:suiteNameLength), &
-                                   testName(1:testNameLength)
-#endif
-      call this%tests(this%getNumTests())%pTest%setName(name)
+      call this%tests%push_back(aTest)
+      ! prepend suite name
+      t => this%tests%back()
+      call t%setName(this%getName() // '.' // t%getName())
 
    contains
 
@@ -160,7 +129,7 @@ contains
          type (TestReference), allocatable :: list(:)
          type (TestReference), allocatable :: temp(:)
          integer :: i, n
-         
+
          n = size(list)
          call move_alloc(from=list, to=temp)
 
@@ -183,7 +152,7 @@ contains
    
    pure integer function getNumTests(this) 
       class (TestSuite), intent(in) :: this
-      getNumTests = size(this%tests)
+      getNumTests = this%tests%size()
    end function getNumTests
 
    function getName(this) result(name)
@@ -195,102 +164,42 @@ contains
    subroutine setName(this, name)
       class (TestSuite), intent(inout) :: this
       character(len=*),  intent(in)    :: name
-#ifndef DEFERRED_LENGTH_CHARACTER
-      integer nameLength
-
-      nameLength = len_trim( name )
-      if (nameLength > MAX_LENGTH_NAME) then
-         call throw( 'TestSuite.setName: Too long: ' // name )
-         nameLength = MAX_LENGTH_NAME
-      end if
-      this%name = name(1:nameLength)
-#else
       this%name = trim(name)
-#endif
    end subroutine setName
 
-#if ((__INTEL_COMPILER) && (INTEL_13))
-   recursive function getTestCases(this) result(testList)
-      use PF_Exception_mod
-      use PF_Test_mod
-      use PF_TestCase_mod
-      class (TestSuite), intent(in) :: this
-      type (TestCaseReference), allocatable :: testList(:)
-      type (TestCaseReference), allocatable :: tmp(:)
-
-      integer :: i
-      integer :: n, m
-
-      allocate(testList(this%countTestCases()))
-
-      n = 1
-      do i = 1, size(this%tests)
-         associate (t => this%tests(i)%pTest)
-           select type (t)
-           class is (TestCase)
-              ! ifort 13.1 cannot handle direct assignment of polymorphic here
-              allocate(testList(n)%test, source=t)
-!!$              testList(n) = TestCaseReference(t)
-              n = n + 1
-           class is (TestSuite)
-              m = t%countTestCases()
-              ! ifort 13.1 is incorrectly handling assignment into subrange of tmpList
-              ! It reallocates the array and gets the wrong size as a result.
-              ! Forced to do explict loop over a temporary.
-              tmp = t%getTestCases()
-              do j = 1, m
-                 allocate(testList(n+j-1)%test, source=tmp(j)%test)
-              end do
-!!$              testList(n:n+m-1) = t%getTestCases()
-              n = n + m
-           class default
-              call throw('Unsupported Test subclass in TestSuite::getTestCases()')
-           end select
-         end associate
-      end do
-
-   end function getTestCases
-#else
    subroutine  getTestCases(this, testList)
       use PF_Exception_mod
       use PF_Test_mod
       use PF_TestCase_mod
       class (TestSuite), intent(in) :: this
-      type (TestCaseReference), allocatable :: testList(:)
+      type (TestVector), intent(out) :: testList
 
-      integer :: n
-
-      allocate(testList(this%countTestCases()))
-      
-      n = 0
-      call accumulateTestCases(this, testList, n)
+      call accumulateTestCases(this, testList)
 
    contains
       
-      recursive subroutine accumulateTestCases(this, testList, n)
+      recursive subroutine accumulateTestCases(this, testList)
          class (TestSuite), intent(in) :: this
-         type (TestCaseReference), intent(inout) :: testList(:)
-         integer, intent(inout) :: n
+         class (TestVector), intent(inout) :: testList
          
          integer :: i
+         class (Test), pointer :: t
 
-         do i = 1, size(this%tests)
-
-                 select type (t => this%tests(i)%pTest)
-               class is (TestCase)
-                  n = n + 1
-                  allocate(testList(n)%test, source=t)
-               class is (TestSuite)
-                  call accumulateTestCases(t, testList, n)
-               class default
-                  call throw('Unsupported Test subclass in TestSuite::getTestCases()')
-               end select
+         do i = 1, this%tests%size()
+            t => this%tests%at(i)
+            select type (t)
+            class is (TestCase)
+               call testList%push_back(t)
+            class is (TestSuite)
+               call accumulateTestCases(t, testList)
+            class default
+               call throw('Unsupported Test subclass in TestSuite::getTestCases()')
+            end select
              
           end do
 
        end subroutine accumulateTestCases
 
     end subroutine getTestCases
-#endif
 
  end module PF_TestSuite_mod

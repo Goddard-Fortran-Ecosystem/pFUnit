@@ -77,11 +77,11 @@ contains
       type (TestSuite) :: suite
 
       suite = newTestSuite('aSuite')
-      call assertEqual(0, suite%countTestCases())
+      call assertEqual(0, suite%countTestCases(),'a')
       call suite%addTest(newSimpleTestCase('method1', method1))
-      call assertEqual(1, suite%countTestCases())
+      call assertEqual(1, suite%countTestCases(),'b')
       call suite%addTest(newSimpleTestCase('method2', method2))
-      call assertEqual(2, suite%countTestCases())
+      call assertEqual(2, suite%countTestCases(),'c')
 
    end subroutine testCountTestCases
 
@@ -161,6 +161,7 @@ contains
 
    subroutine testGetTestCases()
       use PF_Test_mod
+      use PF_TestVector_mod
       use PF_TestCase_mod
       use PF_TestMethod_mod
       use PF_SerialContext_mod
@@ -169,7 +170,8 @@ contains
       type (TestSuite) :: top
       type (TestSuite) :: childA, childB
       type (Verbose) :: aResult
-      type (TestCaseReference), allocatable :: testCases(:)
+      type (TestVector) :: testCases
+      class (Test), pointer :: t
       integer :: i
 
       childA = newTestSuite('childA')
@@ -188,13 +190,11 @@ contains
       aResult%TestResult = newTestResult()
       aResult%log = ''
 
-#if (defined(__INTEL_COMPILER) && (INTEL_13))
-      testCases = top%getTestCases()
-#else
       call top%getTestCases(testCases)
-#endif
-      do i = 1, size(testCases)
-         call testCases(i)%test%run(aResult, newSerialContext())
+
+      do i = 1, testCases%size()
+         t => testCases%at(i)
+         call t%run(aResult, newSerialContext())
       end do
 
       call assertEqual('::childA.a1::childA.a2::childA.a3::childB.b1::childB.b2', aResult%log)

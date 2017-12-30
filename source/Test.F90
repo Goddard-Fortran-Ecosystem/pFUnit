@@ -38,7 +38,7 @@ module PF_Test_mod
 
       integer function countTestCases(this)
          import Test
-         class (Test), intent(in) :: this
+         class (Test), target, intent(in) :: this
       end function countTestCases
 
       recursive subroutine run(this, tstResult, context)

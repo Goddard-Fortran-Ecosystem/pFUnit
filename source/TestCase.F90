@@ -102,7 +102,7 @@ contains
    end subroutine setName
 
    integer function countTestCases(this)
-      class (TestCase), intent(in) :: this
+      class (TestCase), target, intent(in) :: this
       countTestCases = 1
    end function countTestCases
 

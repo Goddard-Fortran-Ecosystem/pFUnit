@@ -87,6 +87,7 @@ contains
    function run(this, aTest, context) result(result)
       use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       use PF_Test_mod
+      use PF_TestVector_mod
       use PF_ParallelContext_mod
       use PF_TestCase_mod
       use PF_TestResult_mod
@@ -97,24 +98,17 @@ contains
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
 
-      type (TestCaseReference), allocatable :: testCaseList(:)
+      type (TestVector)  :: testCaseList
+      class (Test), pointer :: t
       integer :: i
 
       !print *,'a00000'
       
       select type (aTest)
       class is (TestSuite)
-!!!if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
-#if (defined(__INTEL_COMPILER) && (INTEL_13))
-         !print *,'a10000'
-         testCaseList = aTest%getTestCases()
-#else
          call aTest%getTestCases(testCaseList)
-#endif
-
       class is (TestCase)
-         allocate(testCaseList(1))
-         allocate(testCaseList(1)%test, source= aTest)
+         call testCaseList%push_back(aTest)
       class default
          stop
       end select
@@ -128,8 +122,9 @@ contains
       
       write(this%unit,'(a)') '*LAUNCHED*'
 
-      do i = this%numSkip + 1, size(testCaseList(:))
-         call testCaseList(i)%test%run(result, context)
+      do i = this%numSkip + 1, testCaseList%size()
+         t => testCaseList%at(i)
+         call t%run(result, context)
       end do
 
       if (this%unit /= OUTPUT_UNIT) close(this%unit)
