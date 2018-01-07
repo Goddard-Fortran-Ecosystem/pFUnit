@@ -43,7 +43,63 @@ contains
    end subroutine test_one_option_with_argument
 
    @test
-   subroutine test_option_type()
+   subroutine test_option_type_logical()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call arguments%push_back('--f1')
+      call arguments%push_back('--f2')
+
+      ! present
+      call p%add_option('--f1', action='store_false')
+      call p%add_option('--f2', action='store_true')
+      ! missing
+      call p%add_option('--f3', action='store_false')
+      call p%add_option('--f4', action='store_true')
+      options = p%parse(arguments)
+
+      ! Check all 4 cases
+      opt_value => options%at('f1')
+      select type (opt_value)
+      type is (logical)
+         @assertTrue(opt_value)
+      class default
+         @AssertFail('expected logical')
+      end select
+
+      opt_value => options%at('f2')
+      select type (opt_value)
+      type is (logical)
+         @assertTrue(opt_value)
+      class default
+         @AssertFail('expected logical')
+      end select
+
+      ! Not present - use default value
+      opt_value => options%at('f3') ! default false
+      select type (opt_value)
+      type is (logical)
+         @assertFalse(opt_value)
+      class default
+         @AssertFail('expected logical')
+      end select
+
+      ! Not present - use default value
+      opt_value => options%at('f4') ! default true
+      select type (opt_value)
+      type is (logical)
+         @assertTrue(opt_value)
+      class default
+         @AssertFail('expected logical')
+      end select
+
+   end subroutine test_option_type_logical
+
+   @test
+   subroutine test_option_type_integer()
       type (OptionParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
@@ -62,11 +118,39 @@ contains
 
       select type (opt_value)
       type is (integer)
+         @AssertEqual(1, opt_value)
       class default
          @AssertFail('expected integer')
       end select
 
-   end subroutine test_option_type
+   end subroutine test_option_type_integer
 
 
+   @test
+   subroutine test_option_type_real()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call arguments%push_back('-x')
+      call arguments%push_back('1.234')
+
+      call p%add_option('-n', type='real', action='store')
+      options = p%parse(arguments)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('n')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (real)
+         @AssertEqual(1.234, opt_value)
+      class default
+         @AssertFail('expected real')
+      end select
+
+   end subroutine test_option_type_real
+   
 end module Test_OptionParser_mod

@@ -25,11 +25,13 @@ module pf_Option_mod
       character(:), allocatable :: description
       type (StringVector) :: option_strings
       character(:), allocatable :: action
+      character(:), allocatable :: type
    contains
       procedure, nopass :: make_option
       procedure :: get_destination
       procedure :: get_description
       procedure :: get_action
+      procedure :: get_type
       procedure :: get_option_strings
 
       procedure :: matches
@@ -95,6 +97,9 @@ contains
          an_option%action = 'store'
       end if
 
+      if (present(type)) then
+         an_option%type = type
+      end if
 
    end function make_option
 
@@ -121,6 +126,14 @@ contains
 
       action = this%action
    end function get_action
+
+
+   function get_type(this) result(type)
+      character(:), allocatable :: type
+      class (Option), intent(in) :: this
+
+      type = this%type
+   end function get_type
 
 
 

@@ -100,7 +100,10 @@ contains
       character(:), pointer :: argument
 
       type (Option), pointer :: opt
-      integer :: arg_value
+      integer :: arg_value_int
+      real :: arg_value_real
+      type (OptionVectorIterator) :: opt_iter
+      character(:), allocatable :: dest
       
       iter = arguments%begin()
       do while (iter /= arguments%end())
@@ -111,18 +114,49 @@ contains
 
             select case (opt%get_action())
             case ('store')
+
                ! Get next argument as value
                call iter%next()
                argument => iter%get()
-               read(argument,*) arg_value
-               call option_values%insert(opt%get_destination(), arg_value)
+               select case (opt%get_type())
+               case ('integer')
+                  read(argument,*) arg_value_int
+                  call option_values%insert(opt%get_destination(), arg_value_int)
+               case ('real')
+                  read(argument,*) arg_value_real
+                  call option_values%insert(opt%get_destination(), arg_value_real)
+               end select
+
+            case ('store_true','store_false')
+               call option_values%insert(opt%get_destination(), .true.)
             case default
                call option_values%insert(opt%get_destination(), NULL_OBJECT)
             end select
-            
          end if
+
          call iter%next()
       end do
+
+      ! Some options may have default actions when arguments are missing
+      opt_iter = this%options%begin()
+      do while (opt_iter /= this%options%end())
+         opt => opt_iter%get()
+         dest = opt%get_destination()
+         if (associated(option_values%at(dest))) then
+            call opt_iter%next()
+            cycle
+         end if
+
+         select case (opt%get_action())
+         case ('store_true')
+            call option_values%insert(dest, .true.)
+         case ('store_false')
+            call option_values%insert(dest, .false.)
+         end select
+
+         call opt_iter%next()
+      end do
+
 
    end function parse
 
