@@ -82,7 +82,7 @@ set(srcs
   Arg.F90
   ArgVector.F90
   ArgParser.F90
-  Null.F90
+  None.F90
   GlobPattern.F90
   LiteralPattern.F90
   DotPattern.F90

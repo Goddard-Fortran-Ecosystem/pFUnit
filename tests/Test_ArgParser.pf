@@ -11,7 +11,7 @@ contains
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(0, options%size())
       
@@ -23,7 +23,7 @@ contains
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(0, options%size())
       
@@ -37,7 +37,7 @@ contains
 
       call arguments%push_back('--arg')
       call p%add_option('--arg', action='store_true')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
       @assertEqual(1, options%size())
       
    end subroutine test_one_option_with_argument
@@ -57,7 +57,7 @@ contains
       call p%add_option('--f1', action='store_true')
       call p%add_option('--f2', action='store_false')
 
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       opt_value => options%at('f1')
       select type (opt_value)
@@ -90,7 +90,7 @@ contains
       call arguments%push_back('1')
 
       call p%add_option('-n', type='integer', action='store')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
       opt_value => options%at('n')
@@ -114,7 +114,7 @@ contains
       class(*), pointer :: opt_value
      
       call p%add_option('-n', type='integer', action='store', default=5)
-      options = p%parse(absent)
+      options = p%parse_args(absent)
 
       @assertEqual(1, options%size())
       opt_value => options%at('n')
@@ -129,7 +129,7 @@ contains
 
       call arguments%push_back('-n')
       call arguments%push_back('3')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
       
       @assertEqual(1, options%size())
       opt_value => options%at('n')
@@ -158,7 +158,7 @@ contains
       call arguments%push_back('foo')
 
       call p%add_option('-f', type='string', action='store')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
       opt_value => options%at('f')
@@ -186,7 +186,7 @@ contains
       call arguments%push_back('1.234')
 
       call p%add_option('-x', type='real', action='store')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
       opt_value => options%at('x')
@@ -213,7 +213,7 @@ contains
      
       call p%add_option('-n', type='integer')
       call arguments%push_back('-n3')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
       opt_value => options%at('n')
@@ -240,7 +240,7 @@ contains
      
       call p%add_option('--foo', type='integer')
       call arguments%push_back('--foo=3')
-      options = p%parse(arguments)
+      options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
       opt_value => options%at('foo')

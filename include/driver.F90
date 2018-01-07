@@ -3,8 +3,8 @@ program main
    implicit none
    type (StringUnlimitedMap) :: option_values
    type (TestSuite) :: all_test_suites
-   option_values = parse()
 
+   option_values = parse()
    call load_all_possible(all_test_suites)
    call main_sub(all_test_suites, option_values)
 
@@ -16,6 +16,7 @@ contains
       ! For processing command line arguments
       type (ArgParser) :: parser
       
+      call parser%add_option('-h', '--help', help='provide more information about tests as they run')
       call parser%add_option('-v', '--verbose', dest='verbose', help='provide more information about tests as they run')
       call parser%add_option('-d', '--debug', dest='verbose', help='provide more information about tests as they run')
       call parser%add_option('-o', '--output', help='Send console output to separate file rather than OUTPUT_UNIT')
@@ -23,12 +24,15 @@ contains
       call parser%add_option('--max-timeout-duration', help='Used with robust runner to set a default max time _per_ test.')
       call parser%add_option('--max-launch-duration', help='Used with robust runner to set a default max time for launch of separate executable.')
       call parser%add_option('--xml', help='Use XML printer')
-      option_values = parser%parse(get_command_line_arguments())
+      option_values = parser%parse_args()
 
       if (associated(option_values%at('help'))) then
+         print*,'stopping'
          call parser%print_help()
+         print*,'stopping'
          stop
       end if
+
    end function parse
 
 end program main

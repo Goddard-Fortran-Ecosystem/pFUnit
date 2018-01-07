@@ -14,7 +14,7 @@ module pf_ArgParser_mod
    use pf_StringVector_mod
    use pf_StringUnlimitedMap_mod
    use pf_KeywordEnforcer_mod
-   use pf_Null_mod
+   use pf_None_mod
    implicit none
    private
 
@@ -24,12 +24,16 @@ module pf_ArgParser_mod
       private
       type (ArgVector) :: options
    contains
-      generic :: add_option => add_option_, add_option_as_attributes
-      procedure :: parse
+      generic :: add_option => add_option_as_option, add_option_as_attributes
+      generic :: parse_args => parse_args_command_line, parse_args_args
+
+      procedure :: parse_args_command_line
+      procedure :: parse_args_args
+
+      procedure :: add_option_as_option
+      procedure :: add_option_as_attributes
       procedure :: get_defaults
       procedure :: get_option_matching
-      procedure :: add_option_
-      procedure :: add_option_as_attributes
       procedure :: print_help
       procedure :: print_help_header
       procedure :: print_help_tail
@@ -42,33 +46,32 @@ module pf_ArgParser_mod
 
 contains
 
-
-   function new_ArgParser_list(option_array) result(parse)
-      type (ArgParser) :: parse
+   function new_ArgParser_list(option_array) result(parser)
+      type (ArgParser) :: parser
       type (Arg), intent(in) :: option_array(:)
 
       integer :: i
       
       do i = 1, size(option_array)
-         call parse%add_option(option_array(i))
+         call parser%add_option(option_array(i))
       end do
 
    end function new_ArgParser_list
 
 
-   function new_ArgParser_vector(option_list) result(parse)
-      type (ArgParser) :: parse
+   function new_ArgParser_vector(option_list) result(parser)
+      type (ArgParser) :: parser
       type (ArgVector), intent(in) :: option_list
-      parse%options = option_list
+      parser%options = option_list
    end function new_ArgParser_vector
 
 
-   subroutine add_option_(this, opt)
+   subroutine add_option_as_option(this, opt)
       class (ArgParser), intent(inout) :: this
       type (Arg), intent(in) :: opt
 
       call this%options%push_back(opt)
-   end subroutine add_option_
+   end subroutine add_option_as_option
 
 
    ! Allow up to 3 variants of option string.  Can extend if more are needed
@@ -101,10 +104,23 @@ contains
       
    end subroutine add_option_as_attributes
 
-   function parse(this, arguments, unused, unprocessed) result(option_values)
+
+   function parse_args_command_line(this, unused, unprocessed) result(option_values)
+      use pf_CommandLineArguments_mod
       type (StringUnlimitedMap) :: option_values
       class (ArgParser), intent(in) :: this
-      type (StringVector), target, optional, intent(in) :: arguments
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      type (StringVector), optional, intent(out) :: unprocessed
+
+      option_values = this%parse_args(get_command_line_arguments(), unprocessed=unprocessed)
+      
+   end function parse_args_command_line
+
+
+   function parse_args_args(this, arguments, unused, unprocessed) result(option_values)
+      type (StringUnlimitedMap) :: option_values
+      class (ArgParser), intent(in) :: this
+      type (StringVector), target, intent(in) :: arguments
       class (KeywordEnforcer), optional, intent(in) :: unused
       type (StringVector), optional, intent(out) :: unprocessed
 
@@ -154,7 +170,7 @@ contains
             case ('store_false')
                call option_values%insert(opt%get_destination(), .false.)
             case default
-               call option_values%insert(opt%get_destination(), NULL)
+               call option_values%insert(opt%get_destination(), NONE)
             end select
          end if
 
@@ -162,7 +178,7 @@ contains
       end do
 
 
-   end function parse
+   end function parse_args_args
 
    function get_defaults(this) result(option_values)
       type (StringUnlimitedMap) :: option_values
@@ -196,7 +212,6 @@ contains
       character(:), pointer :: opt_string
       type (StringVector), pointer :: opt_strings
 
-      intrinsic :: null
       integer :: n
 
       iter_opt = this%options%begin()
