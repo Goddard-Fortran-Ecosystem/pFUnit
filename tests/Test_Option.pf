@@ -51,9 +51,10 @@ contains
       opt = opt%make_option('-f','--g', '--h') ! first long name takes precedent
       @assertEqual('g', opt%get_destination())
 
-      opt = opt%make_option('--g','-f', '-h', '--i') ! random order test
+      opt = opt%make_option('--g','-f', '-h') ! random order test
       @assertEqual('g', opt%get_destination())
       
    end subroutine test_get_destination
+
 
 end module Test_Option_mod

@@ -105,6 +105,46 @@ contains
 
    end subroutine test_option_type_integer
 
+   @test
+   subroutine test_option_type_integer_default()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments, absent
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call p%add_option('-n', type='integer', action='store', default=5)
+      options = p%parse(absent)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('n')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (integer)
+         @AssertEqual(5, opt_value)
+      class default
+         @AssertFail('expected integer')
+      end select
+
+      call arguments%push_back('-n')
+      call arguments%push_back('3')
+      options = p%parse(arguments)
+      
+      @assertEqual(1, options%size())
+      opt_value => options%at('n')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (integer)
+         @AssertEqual(3, opt_value)
+      class default
+         @AssertFail('expected integer')
+      end select
+
+
+   end subroutine test_option_type_integer_default
+
 
    @test
    subroutine test_option_type_string()

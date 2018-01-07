@@ -82,6 +82,7 @@ set(srcs
   Option.F90
   OptionVector.F90
   OptionParser.F90
+  Null.F90
   GlobPattern.F90
   LiteralPattern.F90
   DotPattern.F90

@@ -7,32 +7,28 @@ module pf_OptionParser_mod
    use pf_StringVector_mod
    use pf_StringUnlimitedMap_mod
    use pf_KeywordEnforcer_mod
+   use pf_Null_mod
    implicit none
    private
 
    public :: OptionParser
-   public :: NULL_OBJECT
 
    type :: OptionParser
       private
       type (OptionVector) :: options
    contains
       generic :: add_option => add_option_, add_option_as_attributes
+      procedure :: parse
+      procedure :: get_defaults
+      procedure :: get_option_matching
       procedure :: add_option_
       procedure :: add_option_as_attributes
-      procedure :: parse
-      procedure :: get_option_matching
    end type OptionParser
 
    interface OptionParser
       module procedure new_OptionParser_list
       module procedure new_OptionParser_vector
    end interface OptionParser
-
-   type :: NULL_TYPE
-   end type NULL_TYPE
-
-   type (NULL_TYPE), parameter :: NULL_OBJECT = NULL_TYPE()
 
 contains
 
@@ -66,7 +62,11 @@ contains
 
 
    ! Allow up to 3 variants of option string.  Can extend if more are needed
-   subroutine add_option_as_attributes(this, opt_string_1, opt_string_2, opt_string_3, unused, action, type, dest, default, const)
+   subroutine add_option_as_attributes(this, &
+        & opt_string_1, opt_string_2, opt_string_3, &  ! Positional arguments
+        & unused, &                                    ! Keyword enforcer
+        & action, type, dest, default, const)          ! Keyword arguments
+
       class (OptionParser), intent(inout) :: this
       character(len=*), intent(in) :: opt_string_1
       character(len=*), optional, intent(in) :: opt_string_2
@@ -76,15 +76,15 @@ contains
       character(len=*), optional, intent(in) :: action
       character(len=*), optional, intent(in) :: type
       character(len=*), optional, intent(in) :: dest
-      character(len=*), optional, intent(in) :: default
       character(len=*), optional, intent(in) :: const
+      class(*), optional, intent(in) :: default
 
       type (Option) :: opt
 
       _UNUSED_DUMMY(unused)
 
-      opt = opt%make_option(opt_string_1, opt_string_2, opt_string_2, opt_string_2, &
-           & unused, action, type, dest, default, const)
+      opt = opt%make_option(opt_string_1, opt_string_2, opt_string_3, &
+           & action=action, type=type, dest=dest, default=default, const=const)
       call this%add_option(opt)
       
    end subroutine add_option_as_attributes
@@ -104,6 +104,8 @@ contains
       real :: arg_value_real
       type (OptionVectorIterator) :: opt_iter
       character(:), allocatable :: dest
+
+      option_values=this%get_defaults()
       
       iter = arguments%begin()
       do while (iter /= arguments%end())
@@ -134,7 +136,7 @@ contains
             case ('store_false')
                call option_values%insert(opt%get_destination(), .false.)
             case default
-               call option_values%insert(opt%get_destination(), NULL_OBJECT)
+               call option_values%insert(opt%get_destination(), NULL)
             end select
          end if
 
@@ -143,6 +145,26 @@ contains
 
 
    end function parse
+
+   function get_defaults(this) result(option_values)
+      type (StringUnlimitedMap) :: option_values
+      class (OptionParser), intent(in) :: this
+
+      type (Option), pointer :: opt
+      type (OptionVectorIterator) :: opt_iter
+      class(*), allocatable :: default
+      
+      opt_iter = this%options%begin()
+      do while (opt_iter /= this%options%end())
+         opt => opt_iter%get()
+         default = opt%get_default()
+         if (allocated(default)) then
+            call option_values%insert(opt%get_destination(), default)
+         end if
+         call opt_iter%next()
+      end do
+      
+   end function get_defaults
 
    function get_option_matching(this, argument) result(opt)
       type (Option), pointer :: opt
@@ -154,6 +176,8 @@ contains
 
       character(:), pointer :: opt_string
       type (StringVector), pointer :: opt_strings
+
+      intrinsic :: null
       
       opt => null() ! unless ...
       
