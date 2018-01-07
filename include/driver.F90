@@ -47,7 +47,7 @@ program main
    type (TestResult) :: result
 
    ! For processing command line arguments
-   type (StringVector) :: arguments
+   type (StringUnlimitedMap) :: option_values
    type (ArgParser) :: parser
 
    ! Initialize variables...
@@ -65,8 +65,13 @@ program main
 
    outputUnit = OUTPUT_UNIT ! stdout unless modified below
 
-   arguments = get_command_line_arguments()
-   
+   call parser%add_option('-v', '-d', '--verbose', '--debug', description='provide more information about tests as they run')
+   call parser%add_option('-o', '--output', description='Send console output to separate file rather than OUTPUT_UNIT')
+   call parser%add_option('--robust', action='store_true', description='Uses separate execution to support tests that hang or crash.')
+   call parser%add_option('--max-timeout-duration', description='Used with robust runner to set a default max time _per_ test.')
+   call parser%add_option('--max-launch-duration', description='Used with robust runner to set a default max time for launch of separate executable.')
+   call parser%add_option('--xml', description='Use XML printer')
+   option_values = parser%parse(get_command_line_arguments())
 
    numArguments = command_argument_count()
    

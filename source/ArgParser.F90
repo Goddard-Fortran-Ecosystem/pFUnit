@@ -70,28 +70,30 @@ contains
 
    ! Allow up to 3 variants of option string.  Can extend if more are needed
    subroutine add_option_as_attributes(this, &
-        & opt_string_1, opt_string_2, opt_string_3, &  ! Positional arguments
+        & opt_string_1, opt_string_2, opt_string_3, opt_string_4, &  ! Positional arguments
         & unused, &                                    ! Keyword enforcer
-        & action, type, dest, default, const)          ! Keyword arguments
+        & action, type, dest, default, const, description) ! Keyword arguments
 
       class (ArgParser), intent(inout) :: this
-      character(len=*), intent(in) :: opt_string_1
-      character(len=*), optional, intent(in) :: opt_string_2
-      character(len=*), optional, intent(in) :: opt_string_3
+      character(*), intent(in) :: opt_string_1
+      character(*), optional, intent(in) :: opt_string_2
+      character(*), optional, intent(in) :: opt_string_3
+      character(*), optional, intent(in) :: opt_string_4
       class (KeywordEnforcer), optional, intent(in) :: unused
 
-      character(len=*), optional, intent(in) :: action
-      character(len=*), optional, intent(in) :: type
-      character(len=*), optional, intent(in) :: dest
-      character(len=*), optional, intent(in) :: const
+      character(*), optional, intent(in) :: action
+      character(*), optional, intent(in) :: type
+      character(*), optional, intent(in) :: dest
+      character(*), optional, intent(in) :: const
+      character(*), optional, intent(in) :: description
       class(*), optional, intent(in) :: default
 
       type (Arg) :: opt
 
       _UNUSED_DUMMY(unused)
 
-      opt = opt%make_option(opt_string_1, opt_string_2, opt_string_3, &
-           & action=action, type=type, dest=dest, default=default, const=const)
+      opt = opt%make_option(opt_string_1, opt_string_2, opt_string_3, opt_string_4, &
+           & action=action, type=type, dest=dest, default=default, const=const, description=description)
       call this%add_option(opt)
       
    end subroutine add_option_as_attributes

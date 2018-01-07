@@ -23,19 +23,19 @@ module pf_Arg_mod
    type ::Arg
       private
       character(:), allocatable :: destination
-      character(:), allocatable :: description
       type (StringVector) :: option_strings
       character(:), allocatable :: action
       character(:), allocatable :: type
       class(*), allocatable :: default
+      character(:), allocatable :: description
    contains
       procedure, nopass :: make_option
       procedure :: get_destination
-      procedure :: get_description
       procedure :: get_action
       procedure :: get_type
       procedure :: get_option_strings
       procedure :: get_default
+      procedure :: get_description
 
       procedure :: matches
       procedure, nopass :: is_legal_option_string
@@ -47,16 +47,17 @@ contains
 
    function make_option( &
         ! Positional arguments
-        & opt_string_1, opt_string_2, opt_string_3, & ! enough is enough
+        & opt_string_1, opt_string_2, opt_string_3, opt_string_4, & ! enough is enough
         ! Keyword enforcer
         & unused, &
         ! Keyword arguments
-        & action, type, dest, default, const) result(an_option)
+        & action, type, dest, default, const, description) result(an_option)
       type (Arg), target :: an_option
 
       character(len=*), intent(in) :: opt_string_1
       character(len=*), optional, intent(in) :: opt_string_2
       character(len=*), optional, intent(in) :: opt_string_3
+      character(len=*), optional, intent(in) :: opt_string_4
       class (KeywordEnforcer), optional, intent(in) :: unused
 
       character(len=*), optional, intent(in) :: action
@@ -64,6 +65,7 @@ contains
       character(len=*), optional, intent(in) :: dest
       character(len=*), optional, intent(in) :: const
       class(*), optional, intent(in) :: default
+      character(len=*), optional, intent(in) :: description
 
       type (StringVectorIterator) :: iter
       character(:), pointer :: opt_string
@@ -71,6 +73,7 @@ contains
       call an_option%option_strings%push_back(opt_string_1)
       if (present(opt_string_2)) call an_option%option_strings%push_back(opt_string_2)
       if (present(opt_string_3)) call an_option%option_strings%push_back(opt_string_3)
+      if (present(opt_string_4)) call an_option%option_strings%push_back(opt_string_4)
 
       if (present(dest)) then
          an_option%destination = dest
@@ -157,6 +160,7 @@ contains
 
       if (allocated(this%default)) default = this%default
    end function get_default
+
 
 
    logical function matches(this, argument)
