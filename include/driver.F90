@@ -1,4 +1,39 @@
 program main
+   use sfunit
+   implicit none
+   type (StringUnlimitedMap) :: option_values
+   type (TestSuite) :: all_test_suites
+   option_values = parse()
+
+   call load_all_possible(all_test_suites)
+   call main_sub(all_test_suites, option_values)
+
+contains
+
+   function parse() result(option_values)
+      type (StringUnlimitedMap) :: option_values
+
+      ! For processing command line arguments
+      type (ArgParser) :: parser
+      
+      call parser%add_option('-v', '--verbose', dest='verbose', help='provide more information about tests as they run')
+      call parser%add_option('-d', '--debug', dest='verbose', help='provide more information about tests as they run')
+      call parser%add_option('-o', '--output', help='Send console output to separate file rather than OUTPUT_UNIT')
+      call parser%add_option('--robust', action='store_true', help='Uses separate execution to support tests that hang or crash.')
+      call parser%add_option('--max-timeout-duration', help='Used with robust runner to set a default max time _per_ test.')
+      call parser%add_option('--max-launch-duration', help='Used with robust runner to set a default max time for launch of separate executable.')
+      call parser%add_option('--xml', help='Use XML printer')
+      option_values = parser%parse(get_command_line_arguments())
+
+      if (associated(option_values%at('help'))) then
+         call parser%print_help()
+         stop
+      end if
+   end function parse
+
+end program main
+
+subroutine main_sub(suite, option_values)
 #ifdef USE_MPI
    use mpi_f08
 #endif
@@ -9,7 +44,9 @@ program main
    use PFUNIT_EXTRA_USAGE
 #endif
    implicit none
-   type (TestSuite) :: all
+   type (TestSuite), intent(inout) :: suite
+   type (StringUnlimitedMap), intent(in) :: option_values
+
    class(BaseTestRunner), allocatable :: runner
 
    integer :: i
@@ -46,10 +83,6 @@ program main
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
 
-   ! For processing command line arguments
-   type (StringUnlimitedMap) :: option_values
-   type (ArgParser) :: parser
-
    ! Initialize variables...
 
    maxTimeoutDuration = 5.00 ! seconds
@@ -64,14 +97,6 @@ program main
    executable = getCommandLineArgument(0)
 
    outputUnit = OUTPUT_UNIT ! stdout unless modified below
-
-   call parser%add_option('-v', '-d', '--verbose', '--debug', description='provide more information about tests as they run')
-   call parser%add_option('-o', '--output', description='Send console output to separate file rather than OUTPUT_UNIT')
-   call parser%add_option('--robust', action='store_true', description='Uses separate execution to support tests that hang or crash.')
-   call parser%add_option('--max-timeout-duration', description='Used with robust runner to set a default max time _per_ test.')
-   call parser%add_option('--max-launch-duration', description='Used with robust runner to set a default max time for launch of separate executable.')
-   call parser%add_option('--xml', description='Use XML printer')
-   option_values = parser%parse(get_command_line_arguments())
 
    numArguments = command_argument_count()
    
@@ -231,12 +256,11 @@ program main
       allocate(runner, source=newTestRunner(listeners))
    end if
 
-   all = getTestSuites()
-   call all%setName(suiteName)
+   call suite%setName(suiteName)
 
    call getContext(context, useMpi)
 
-   result = runner%run(all, context)
+   result = runner%run(suite, context)
 
    if (outputUnit /= OUTPUT_UNIT) then
       close(outputUnit)
@@ -272,31 +296,6 @@ contains
 
    end subroutine getContext
 
-   function getTestSuites() result(suite)
-#define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
-#define ADD_TEST_SUITE(s) ! do nothing
-#include "testSuites.inc"
-#undef ADD_MODULE_TEST_SUITE
-#undef ADD_TEST_SUITE
-
-      type (TestSuite) :: suite
-
-#define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
-#define ADD_TEST_SUITE(s) type (TestSuite), external :: s
-#include "testSuites.inc"
-#undef ADD_TEST_SUITE
-#undef ADD_MODULE_TEST_SUITE
-
-      suite = newTestSuite()
-
-   ! accumulate tests in top suite
-#define ADD_TEST_SUITE(s) call suite%addTest(s())
-#define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
-#include "testSuites.inc"
-#undef ADD_TEST_SUITE
-#undef ADD_MODULE_TEST_SUITE
-
-   end function getTestSuites
 
    function getCommandLineArgument(i) result(argument)
       integer, intent(in) :: i
@@ -343,7 +342,34 @@ contains
 
    end subroutine printHelpMessage
 
-end program main
+end subroutine main_sub
 
 
 
+
+subroutine load_all_possible(suite)
+   use sfunit
+#define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
+#define ADD_TEST_SUITE(s) ! do nothing
+#include "testSuites.inc"
+#undef ADD_MODULE_TEST_SUITE
+#undef ADD_TEST_SUITE
+
+   type (TestSuite), intent(out) :: suite
+
+#define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
+#define ADD_TEST_SUITE(s) type (TestSuite), external :: s
+#include "testSuites.inc"
+#undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
+
+   suite = newTestSuite()
+
+   ! accumulate tests in top suite
+#define ADD_TEST_SUITE(s) call suite%addTest(s())
+#define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
+#include "testSuites.inc"
+#undef ADD_TEST_SUITE
+#undef ADD_MODULE_TEST_SUITE
+
+end subroutine load_all_possible

@@ -30,6 +30,9 @@ module pf_ArgParser_mod
       procedure :: get_option_matching
       procedure :: add_option_
       procedure :: add_option_as_attributes
+      procedure :: print_help
+      procedure :: print_help_header
+      procedure :: print_help_tail
    end type ArgParser
 
    interface ArgParser
@@ -72,7 +75,7 @@ contains
    subroutine add_option_as_attributes(this, &
         & opt_string_1, opt_string_2, opt_string_3, opt_string_4, &  ! Positional arguments
         & unused, &                                    ! Keyword enforcer
-        & action, type, dest, default, const, description) ! Keyword arguments
+        & action, type, dest, default, const, help) ! Keyword arguments
 
       class (ArgParser), intent(inout) :: this
       character(*), intent(in) :: opt_string_1
@@ -85,7 +88,7 @@ contains
       character(*), optional, intent(in) :: type
       character(*), optional, intent(in) :: dest
       character(*), optional, intent(in) :: const
-      character(*), optional, intent(in) :: description
+      character(*), optional, intent(in) :: help
       class(*), optional, intent(in) :: default
 
       type (Arg) :: opt
@@ -93,7 +96,7 @@ contains
       _UNUSED_DUMMY(unused)
 
       opt = opt%make_option(opt_string_1, opt_string_2, opt_string_3, opt_string_4, &
-           & action=action, type=type, dest=dest, default=default, const=const, description=description)
+           & action=action, type=type, dest=dest, default=default, const=const, help=help)
       call this%add_option(opt)
       
    end subroutine add_option_as_attributes
@@ -237,4 +240,55 @@ contains
 
    end function get_option_matching
 
+
+   subroutine print_help(this)
+      class (ArgParser), target, intent(in) :: this
+
+      type (ArgVectorIterator) :: opt_iter
+      type (Arg), pointer :: opt
+
+      call this%print_help_header()
+      
+      opt_iter = this%options%begin()
+      do while (opt_iter /= this%options%end())
+         opt => opt_iter%get()
+         call opt%print_help()
+         call opt_iter%next()
+      end do
+
+      call this%print_help_tail()
+      
+   end subroutine print_help
+
+   subroutine print_help_header(this)
+      class (ArgParser), target, intent(in) :: this
+
+      character(:), allocatable :: header
+      character(:), pointer :: opt_string
+      type (StringVector), pointer :: opt_strings
+      type (ArgVectorIterator) :: opt_iter
+      type (Arg), pointer :: opt
+      
+      header = 'usage:  myprogram'
+
+      opt_iter = this%options%begin()
+      do while (opt_iter /= this%options%end())
+         opt => opt_iter%get()
+
+         opt_strings => opt%get_option_strings()
+         opt_string => opt_strings%front()
+         header = header // '[' // opt_string // ']'
+         call opt_iter%next()
+      end do
+
+      print*,header
+      print*,' '
+      print*,'optional arguments:'
+      
+   end subroutine print_help_header
+
+   subroutine print_help_tail(this)
+      class (ArgParser), target, intent(in) :: this
+   end subroutine print_help_tail
+   
 end module pf_ArgParser_mod

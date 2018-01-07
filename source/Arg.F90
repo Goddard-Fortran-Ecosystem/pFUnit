@@ -7,19 +7,6 @@ module pf_Arg_mod
 
    public :: Arg
 
-   ! Supported actions
-   enum, bind(c)
-      enumerator :: STORE ! default
-      enumerator :: STORE_CONST
-      enumerator :: STORE_TRUE
-      enumerator :: STORE_FALSE
-      enumerator :: APPEND
-      enumerator :: APPEND_CONST
-      enumerator :: COUNT
-      enumerator :: CALLBACK
-      enumerator :: HELP
-   end enum
-
    type ::Arg
       private
       character(:), allocatable :: destination
@@ -27,7 +14,7 @@ module pf_Arg_mod
       character(:), allocatable :: action
       character(:), allocatable :: type
       class(*), allocatable :: default
-      character(:), allocatable :: description
+      character(:), allocatable :: help
    contains
       procedure, nopass :: make_option
       procedure :: get_destination
@@ -35,7 +22,8 @@ module pf_Arg_mod
       procedure :: get_type
       procedure :: get_option_strings
       procedure :: get_default
-      procedure :: get_description
+      procedure :: get_help
+      procedure :: print_help
 
       procedure :: matches
       procedure, nopass :: is_legal_option_string
@@ -51,7 +39,7 @@ contains
         ! Keyword enforcer
         & unused, &
         ! Keyword arguments
-        & action, type, dest, default, const, description) result(an_option)
+        & action, type, dest, default, const, help) result(an_option)
       type (Arg), target :: an_option
 
       character(len=*), intent(in) :: opt_string_1
@@ -65,7 +53,7 @@ contains
       character(len=*), optional, intent(in) :: dest
       character(len=*), optional, intent(in) :: const
       class(*), optional, intent(in) :: default
-      character(len=*), optional, intent(in) :: description
+      character(len=*), optional, intent(in) :: help
 
       type (StringVectorIterator) :: iter
       character(:), pointer :: opt_string
@@ -105,6 +93,10 @@ contains
          an_option%type = type
       end if
 
+      if (present(help)) then
+         an_option%help = help
+      end if
+
       if (present(default)) then
          an_option%default = default
       else ! leave it deallocated (questionable?)
@@ -121,12 +113,12 @@ contains
    end function get_destination
 
 
-   function get_description(this) result(description)
-      character(:), allocatable :: description
+   function get_help(this) result(help)
+      character(:), allocatable :: help
       class (Arg), intent(in) :: this
 
-      description = this%description
-   end function get_description
+      help = this%help
+   end function get_help
 
 
    function get_action(this) result(action)
@@ -208,5 +200,30 @@ contains
       end if
 
    end function is_long_option_string
+
+
+   subroutine print_help(this)
+      class (Arg), target, intent(in) :: this
+
+      character(:), allocatable :: line
+      type (StringVectorIterator) :: iter
+
+      line = '  '
+      
+      iter = this%option_strings%begin()
+      line = line // iter%get()
+      call iter%next()
+      do while (iter /= this%option_strings%end())
+         line = line // ', ' //iter%get()
+         call iter%next()
+      end do
+
+      if (allocated(this%help)) then
+         write(*,'(a,T30,a)') line, this%help
+      else
+         print*, line
+      end if
+
+   end subroutine print_help
 
 end module pf_Arg_mod
