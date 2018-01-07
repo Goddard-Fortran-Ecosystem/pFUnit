@@ -1,5 +1,21 @@
-cmake_minimum_required(VERSION 3.7)
-add_subdirectory(FTL)
+include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+
+set(FTL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
+ExternalProject_Add(FTL
+  SOURCE_DIR ${FTL_DIR}
+  SOURCE_SUBDIR .
+  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+  INSTALL_DIR .
+  BUILD_COMMAND make
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+  INSTALL_COMMAND "")
+
+ExternalProject_Get_Property(FTL install_dir)
+
+include_directories(${FTL_DIR}/include)
+include_directories(${install_dir}/FTL/src/FTL-build/include)
+
+
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
@@ -60,6 +76,12 @@ set(srcs
   KeywordEnforcer.F90
   MatchObject.F90
   AbstractPattern.F90
+  StringVector.F90
+  StringUnlimitedMap.F90
+  CommandLineArguments.F90
+  Option.F90
+  OptionVector.F90
+  OptionParser.F90
   GlobPattern.F90
   LiteralPattern.F90
   DotPattern.F90
@@ -118,7 +140,6 @@ endif ()
 
 message("generated files: ${generated_sources_output}")
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
-add_dependencies(funit template_macros)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
@@ -130,8 +151,8 @@ if (BUILD_SHARED)
    endif ()
 endif ()
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/FTL/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/FTL/include)
+add_dependencies(funit FTL)
+
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

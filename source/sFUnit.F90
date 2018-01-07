@@ -42,6 +42,12 @@ module sFUnit_private
    use PF_ResultPrinter_mod
    use PF_DebugListener_mod
 
+   use pf_Option_mod
+   use pf_OptionParser_mod
+   use pf_OptionVector_mod
+   use pf_StringVector_mod
+   use pf_StringUnlimitedMap_mod
+
 #ifdef BUILD_ROBUST
    use PF_RobustRunner_mod
 #endif
@@ -98,6 +104,13 @@ module sFUnit_private
    ! Optional arguments for assertEqual
    public :: WhitespaceOptions
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
+
+
+   public :: Option
+   public :: OptionParser
+   public :: OptionVector
+   public :: StringVector
+   public :: StringUnlimitedMap
 
 
 end module sFUnit_private

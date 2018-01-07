@@ -1,0 +1,72 @@
+module Test_OptionParser_mod
+   use sfunit
+
+   @suite(name='OptionParser_suite')
+
+contains
+
+   @test
+   subroutine test_null()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      options = p%parse(arguments)
+
+      @assertEqual(0, options%size())
+      
+   end subroutine test_null
+
+   @test
+   subroutine test_one_option_missing_argument()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      options = p%parse(arguments)
+
+      @assertEqual(0, options%size())
+      
+   end subroutine test_one_option_missing_argument
+
+   @test
+   subroutine test_one_option_with_argument()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      call arguments%push_back('--arg')
+      call p%add_option('--arg', action='store_true')
+      options = p%parse(arguments)
+      @assertEqual(1, options%size())
+      
+   end subroutine test_one_option_with_argument
+
+   @test
+   subroutine test_option_type()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call arguments%push_back('-n')
+      call arguments%push_back('1')
+
+      call p%add_option('-n', type='integer', action='store')
+      options = p%parse(arguments)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('n')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (integer)
+      class default
+         @AssertFail('expected integer')
+      end select
+
+   end subroutine test_option_type
+
+
+end module Test_OptionParser_mod
