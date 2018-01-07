@@ -119,6 +119,8 @@ contains
                call iter%next()
                argument => iter%get()
                select case (opt%get_type())
+               case ('string')
+                  call option_values%insert(opt%get_destination(), argument)
                case ('integer')
                   read(argument,*) arg_value_int
                   call option_values%insert(opt%get_destination(), arg_value_int)
@@ -127,34 +129,16 @@ contains
                   call option_values%insert(opt%get_destination(), arg_value_real)
                end select
 
-            case ('store_true','store_false')
+            case ('store_true')
                call option_values%insert(opt%get_destination(), .true.)
+            case ('store_false')
+               call option_values%insert(opt%get_destination(), .false.)
             case default
                call option_values%insert(opt%get_destination(), NULL_OBJECT)
             end select
          end if
 
          call iter%next()
-      end do
-
-      ! Some options may have default actions when arguments are missing
-      opt_iter = this%options%begin()
-      do while (opt_iter /= this%options%end())
-         opt => opt_iter%get()
-         dest = opt%get_destination()
-         if (associated(option_values%at(dest))) then
-            call opt_iter%next()
-            cycle
-         end if
-
-         select case (opt%get_action())
-         case ('store_true')
-            call option_values%insert(dest, .true.)
-         case ('store_false')
-            call option_values%insert(dest, .false.)
-         end select
-
-         call opt_iter%next()
       end do
 
 

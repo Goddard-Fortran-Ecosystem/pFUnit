@@ -54,14 +54,11 @@ contains
       call arguments%push_back('--f2')
 
       ! present
-      call p%add_option('--f1', action='store_false')
-      call p%add_option('--f2', action='store_true')
-      ! missing
-      call p%add_option('--f3', action='store_false')
-      call p%add_option('--f4', action='store_true')
+      call p%add_option('--f1', action='store_true')
+      call p%add_option('--f2', action='store_false')
+
       options = p%parse(arguments)
 
-      ! Check all 4 cases
       opt_value => options%at('f1')
       select type (opt_value)
       type is (logical)
@@ -73,28 +70,11 @@ contains
       opt_value => options%at('f2')
       select type (opt_value)
       type is (logical)
-         @assertTrue(opt_value)
-      class default
-         @AssertFail('expected logical')
-      end select
-
-      ! Not present - use default value
-      opt_value => options%at('f3') ! default false
-      select type (opt_value)
-      type is (logical)
          @assertFalse(opt_value)
       class default
          @AssertFail('expected logical')
       end select
 
-      ! Not present - use default value
-      opt_value => options%at('f4') ! default true
-      select type (opt_value)
-      type is (logical)
-         @assertTrue(opt_value)
-      class default
-         @AssertFail('expected logical')
-      end select
 
    end subroutine test_option_type_logical
 
@@ -124,6 +104,34 @@ contains
       end select
 
    end subroutine test_option_type_integer
+
+
+   @test
+   subroutine test_option_type_string()
+      type (OptionParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call arguments%push_back('-f')
+      call arguments%push_back('foo')
+
+      call p%add_option('-f', type='string', action='store')
+      options = p%parse(arguments)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('f')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (character(*))
+         @AssertEqual('foo', opt_value)
+      class default
+         @AssertFail('expected string')
+      end select
+
+   end subroutine test_option_type_string
 
 
    @test
