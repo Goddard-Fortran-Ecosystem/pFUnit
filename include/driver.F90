@@ -46,6 +46,10 @@ program main
    class (ParallelContext), allocatable :: context
    type (TestResult) :: result
 
+   ! For processing command line arguments
+   type (StringVector) :: arguments
+   type (ArgParser) :: parser
+
    ! Initialize variables...
 
    maxTimeoutDuration = 5.00 ! seconds
@@ -61,8 +65,11 @@ program main
 
    outputUnit = OUTPUT_UNIT ! stdout unless modified below
 
-   ! Loop over optional arguments in the command line
+   arguments = get_command_line_arguments()
+   
+
    numArguments = command_argument_count()
+   
 
    suiteName = 'default_suite_name'
 

@@ -1,11 +1,11 @@
-module pf_Option_mod
+module pf_Arg_mod
    use pf_KeywordEnforcer_mod
    use pf_StringVector_mod
    use pf_Null_mod
    implicit none
    private
 
-   public :: Option
+   public :: Arg
 
    ! Supported actions
    enum, bind(c)
@@ -20,7 +20,7 @@ module pf_Option_mod
       enumerator :: HELP
    end enum
 
-   type ::Option
+   type ::Arg
       private
       character(:), allocatable :: destination
       character(:), allocatable :: description
@@ -41,7 +41,7 @@ module pf_Option_mod
       procedure, nopass :: is_legal_option_string
       procedure, nopass :: is_short_option_string
       procedure, nopass :: is_long_option_string
-   end type Option
+   end type Arg
 
 contains
 
@@ -52,7 +52,7 @@ contains
         & unused, &
         ! Keyword arguments
         & action, type, dest, default, const) result(an_option)
-      type (Option), target :: an_option
+      type (Arg), target :: an_option
 
       character(len=*), intent(in) :: opt_string_1
       character(len=*), optional, intent(in) :: opt_string_2
@@ -112,7 +112,7 @@ contains
 
    function get_destination(this) result(destination)
       character(:), allocatable :: destination
-      class (Option), intent(in) :: this
+      class (Arg), intent(in) :: this
 
       destination = this%destination
    end function get_destination
@@ -120,7 +120,7 @@ contains
 
    function get_description(this) result(description)
       character(:), allocatable :: description
-      class (Option), intent(in) :: this
+      class (Arg), intent(in) :: this
 
       description = this%description
    end function get_description
@@ -128,7 +128,7 @@ contains
 
    function get_action(this) result(action)
       character(:), allocatable :: action
-      class (Option), intent(in) :: this
+      class (Arg), intent(in) :: this
 
       action = this%action
    end function get_action
@@ -136,7 +136,7 @@ contains
 
    function get_type(this) result(type)
       character(:), allocatable :: type
-      class (Option), intent(in) :: this
+      class (Arg), intent(in) :: this
 
       type = this%type
    end function get_type
@@ -145,7 +145,7 @@ contains
 
    function get_option_strings(this) result(option_strings)
       type (StringVector), pointer :: option_strings
-      class (Option), target, intent(in) :: this
+      class (Arg), target, intent(in) :: this
 
       option_strings => this%option_strings
 
@@ -153,56 +153,56 @@ contains
 
    function get_default(this) result(default)
       class(*), allocatable :: default
-      class(Option), intent(in) :: this
+      class(Arg), intent(in) :: this
 
       if (allocated(this%default)) default = this%default
    end function get_default
 
 
    logical function matches(this, argument)
-      class (Option), intent(in) :: this
+      class (Arg), intent(in) :: this
       character(len=*), intent(in) :: argument
    end function matches
 
 
 
-   ! Option strings must either start with '-' or '--' and
+   ! Arg strings must either start with '-' or '--' and
    ! have at least one more word character
-   logical function is_legal_option_string(argument)
-      character(len=*), intent(in) :: argument
+   logical function is_legal_option_string(string)
+      character(len=*), intent(in) :: string
 
       character(*), parameter :: LETTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
       character(*), parameter :: ALLOWED_CHARACTERS = LETTERS // '0123456789_-'
 
-      select case (len(argument))
+      select case (len(string))
       case (0,1)
          is_legal_option_string = .false.
       case (2)
-         is_legal_option_string = (argument(1:1) == '-' .and. verify(argument(2:2), LETTERS) == 0)
+         is_legal_option_string = (string(1:1) == '-' .and. verify(string(2:2), LETTERS) == 0)
       case (3:)
-         is_legal_option_string = (argument(1:2) == '--' .and. verify(argument(3:), ALLOWED_CHARACTERS) == 0)
+         is_legal_option_string = (string(1:2) == '--' .and. verify(string(3:), ALLOWED_CHARACTERS) == 0)
       end select
 
    end function is_legal_option_string
 
-   logical function is_short_option_string(argument)
-      character(len=*), intent(in) :: argument
+   logical function is_short_option_string(string)
+      character(len=*), intent(in) :: string
 
       is_short_option_string = .false. ! unless
-      if (is_legal_option_string(argument)) then
-         is_short_option_string = (len(argument) == 2)
+      if (is_legal_option_string(string)) then
+         is_short_option_string = (len(string) == 2)
       end if
 
    end function is_short_option_string
 
-   logical function is_long_option_string(argument)
-      character(len=*), intent(in) :: argument
+   logical function is_long_option_string(string)
+      character(len=*), intent(in) :: string
 
       is_long_option_string = .false. ! unless
-      if (is_legal_option_string(argument)) then
-         is_long_option_string = (len(argument) > 2)
+      if (is_legal_option_string(string)) then
+         is_long_option_string = (len(string) > 2)
       end if
 
    end function is_long_option_string
 
-end module pf_Option_mod
+end module pf_Arg_mod

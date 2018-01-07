@@ -1,6 +1,6 @@
    ADD_TEST_SUITE(ExceptionList_suite)
-   ADD_TEST_SUITE(Option_suite)
-   ADD_TEST_SUITE(OptionParser_suite)
+   ADD_TEST_SUITE(Arg_suite)
+   ADD_TEST_SUITE(ArgParser_suite)
    ADD_TEST_SUITE(GlobPattern_suite)
    ADD_TEST_SUITE(LiteralPattern_suite)
    ADD_TEST_SUITE(DotPattern_suite)

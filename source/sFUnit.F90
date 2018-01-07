@@ -42,11 +42,12 @@ module sFUnit_private
    use PF_ResultPrinter_mod
    use PF_DebugListener_mod
 
-   use pf_Option_mod
-   use pf_OptionParser_mod
-   use pf_OptionVector_mod
+   use pf_Arg_mod
+   use pf_ArgParser_mod
+   use pf_ArgVector_mod
    use pf_StringVector_mod
    use pf_StringUnlimitedMap_mod
+   use pf_CommandLineArguments_mod
 
 #ifdef BUILD_ROBUST
    use PF_RobustRunner_mod
@@ -106,11 +107,12 @@ module sFUnit_private
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
 
-   public :: Option
-   public :: OptionParser
-   public :: OptionVector
+   public :: Arg
+   public :: ArgParser
+   public :: ArgVector
    public :: StringVector
    public :: StringUnlimitedMap
+   public :: get_command_line_arguments
 
 
 end module sFUnit_private

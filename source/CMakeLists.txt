@@ -79,9 +79,9 @@ set(srcs
   StringVector.F90
   StringUnlimitedMap.F90
   CommandLineArguments.F90
-  Option.F90
-  OptionVector.F90
-  OptionParser.F90
+  Arg.F90
+  ArgVector.F90
+  ArgParser.F90
   Null.F90
   GlobPattern.F90
   LiteralPattern.F90

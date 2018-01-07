@@ -1,13 +1,13 @@
-module Test_OptionParser_mod
+module Test_ArgParser_mod
    use sfunit
 
-   @suite(name='OptionParser_suite')
+   @suite(name='ArgParser_suite')
 
 contains
 
    @test
    subroutine test_null()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -19,7 +19,7 @@ contains
 
    @test
    subroutine test_one_option_missing_argument()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -31,7 +31,7 @@ contains
 
    @test
    subroutine test_one_option_with_argument()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -44,7 +44,7 @@ contains
 
    @test
    subroutine test_option_type_logical()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -80,7 +80,7 @@ contains
 
    @test
    subroutine test_option_type_integer()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -107,7 +107,7 @@ contains
 
    @test
    subroutine test_option_type_integer_default()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments, absent
       type (StringUnlimitedMap) :: options
 
@@ -148,7 +148,7 @@ contains
 
    @test
    subroutine test_option_type_string()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -176,7 +176,7 @@ contains
 
    @test
    subroutine test_option_type_real()
-      type (OptionParser) :: p
+      type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
@@ -185,11 +185,11 @@ contains
       call arguments%push_back('-x')
       call arguments%push_back('1.234')
 
-      call p%add_option('-n', type='real', action='store')
+      call p%add_option('-x', type='real', action='store')
       options = p%parse(arguments)
 
       @assertEqual(1, options%size())
-      opt_value => options%at('n')
+      opt_value => options%at('x')
       @assertAssociated(opt_value)
 
       select type (opt_value)
@@ -200,5 +200,59 @@ contains
       end select
 
    end subroutine test_option_type_real
-   
-end module Test_OptionParser_mod
+
+   ! Need to support cases where the option value is in the same argument as the
+   ! option specifier.   e.g.  "-n3" should be the equivalent of "-n 3".
+   @test
+   subroutine test_combo_short_option_string()
+      type (ArgParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call p%add_option('-n', type='integer')
+      call arguments%push_back('-n3')
+      options = p%parse(arguments)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('n')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (integer)
+         @AssertEqual(3, opt_value)
+      class default
+         @AssertFail('expected integer')
+      end select
+
+   end subroutine test_combo_short_option_string
+
+   ! Long options require an "=" for embedded values:
+   ! "--foo=3" is equivalent to "--foo 3"
+   @test
+   subroutine test_combo_long_option_string()
+      type (ArgParser) :: p
+      type (StringVector) :: arguments
+      type (StringUnlimitedMap) :: options
+
+      class(*), pointer :: opt_value
+     
+      call p%add_option('--foo', type='integer')
+      call arguments%push_back('--foo=3')
+      options = p%parse(arguments)
+
+      @assertEqual(1, options%size())
+      opt_value => options%at('foo')
+      @assertAssociated(opt_value)
+
+      select type (opt_value)
+      type is (integer)
+         @AssertEqual(3, opt_value)
+      class default
+         @AssertFail('expected integer')
+      end select
+
+   end subroutine test_combo_long_option_string
+
+end module Test_ArgParser_mod

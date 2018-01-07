@@ -1,14 +1,14 @@
-module Test_Option_mod
+module Test_Arg_mod
    use sfunit
    implicit none
 
-   @suite(name='Option_suite')
+   @suite(name='Arg_suite')
 
 contains
 
    @test
    subroutine test_is_legal()
-      type(Option) :: opt
+      type(Arg) :: opt
 
       @assertFalse(opt%is_legal_option_string(''))
       @assertFalse(opt%is_legal_option_string('-'))
@@ -31,7 +31,7 @@ contains
 
    @test
    subroutine test_get_destination()
-      type (Option) :: opt
+      type (Arg) :: opt
 
       opt = opt%make_option('-f') ! only name available
       @assertEqual('f', opt%get_destination())
@@ -57,4 +57,4 @@ contains
    end subroutine test_get_destination
 
 
-end module Test_Option_mod
+end module Test_Arg_mod

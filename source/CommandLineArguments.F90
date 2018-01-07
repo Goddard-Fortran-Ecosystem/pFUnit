@@ -16,13 +16,14 @@ contains
 
    end function get_command_line_arguments
 
+
    function get_argument(i) result(argument)
       character(:), allocatable :: argument
       integer, intent(in) :: i
 
       integer :: length_of_argument
       call get_command_argument(i, length=length_of_argument)
-      allocate(character(len=length_of_argument) :: argument)
+      allocate(character(length_of_argument) :: argument)
       call get_command_argument(i, value=argument)
 
    end function get_argument
