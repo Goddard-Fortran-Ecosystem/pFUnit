@@ -19,6 +19,9 @@ module pf_ArgParser_mod
    private
 
    public :: ArgParser
+   public :: to_string
+   public :: to_integer
+   public :: to_real
 
    type :: ArgParser
       private
@@ -284,7 +287,7 @@ contains
       type (ArgVectorIterator) :: opt_iter
       type (Arg), pointer :: opt
       
-      header = 'usage:  myprogram'
+      header = 'usage:  PROG'
 
       opt_iter = this%options%begin()
       do while (opt_iter /= this%options%end())
@@ -332,5 +335,42 @@ contains
    subroutine print_help_tail(this)
       class (ArgParser), target, intent(in) :: this
    end subroutine print_help_tail
-   
+
+
+   function to_string(unlimited) result(s)
+      character(:), allocatable :: s
+      class(*), intent(in) :: unlimited
+
+      select type(unlimited)
+      type is (character(*))
+         s = unlimited
+      class default
+      end select
+
+   end function to_string
+
+   function to_integer(unlimited) result(i)
+      integer :: i
+      class(*), intent(in) :: unlimited
+
+      select type(unlimited)
+      type is (integer)
+         i = unlimited
+      class default
+      end select
+
+   end function to_integer
+
+   function to_real(unlimited) result(x)
+      real :: x
+      class(*), intent(in) :: unlimited
+
+      select type(unlimited)
+      type is (real)
+         x = unlimited
+      class default
+      end select
+
+   end function to_real
+
 end module pf_ArgParser_mod

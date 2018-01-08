@@ -78,6 +78,7 @@ set(srcs
   AbstractPattern.F90
   StringVector.F90
   StringUnlimitedMap.F90
+  pfunit_main.F90
   CommandLineArguments.F90
   Arg.F90
   ArgVector.F90

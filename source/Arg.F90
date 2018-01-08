@@ -91,6 +91,8 @@ contains
 
       if (present(type)) then
          an_option%type = type
+      else
+         an_option%type = 'string' ! default
       end if
 
       if (present(help)) then

@@ -73,6 +73,7 @@ target_link_libraries(funit_tests funit)
 add_library(new_stests ${new_tests})
 target_link_libraries(new_stests funit)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
+set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_tests.x new_stests funit)
 
 

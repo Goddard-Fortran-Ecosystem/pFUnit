@@ -108,11 +108,10 @@ module sFUnit_private
 
 
    public :: Arg
-   public :: ArgParser
+   public :: ArgParser, to_string, to_integer, to_real
    public :: ArgVector
    public :: StringVector
    public :: StringUnlimitedMap
-   public :: get_command_line_arguments
 
 
 end module sFUnit_private
