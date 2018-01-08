@@ -16,14 +16,22 @@ contains
       ! For processing command line arguments
       type (ArgParser) :: parser
       
-      call parser%add_option('-h', '--help', help='provide more information about tests as they run')
-      call parser%add_option('-v', '--verbose', dest='verbose', help='provide more information about tests as they run')
-      call parser%add_option('-d', '--debug', dest='verbose', help='provide more information about tests as they run')
-      call parser%add_option('-o', '--output', help='Send console output to separate file rather than OUTPUT_UNIT')
-      call parser%add_option('--robust', action='store_true', help='Uses separate execution to support tests that hang or crash.')
-      call parser%add_option('--max-timeout-duration', help='Used with robust runner to set a default max time _per_ test.')
-      call parser%add_option('--max-launch-duration', help='Used with robust runner to set a default max time for launch of separate executable.')
-      call parser%add_option('--xml', help='Use XML printer')
+      call parser%add_option('-h', '--help', action='store_true', &
+           & help='provide more information about tests as they run')
+      call parser%add_option('-v', '--verbose', action='store_true', dest='verbose', &
+           & help='provide more information about tests as they run')
+      call parser%add_option('-d', '--debug', action='storet_true', dest='verbose', &
+           & help='provide more information about tests as they run')
+      call parser%add_option('-o', '--output', &
+           & help='Send console output to separate file rather than OUTPUT_UNIT')
+      call parser%add_option('--robust', action='store_true', &
+           & help='Uses separate execution to support tests that hang or crash.')
+      call parser%add_option('--max-timeout-duration', type='real', &
+           & help='Used with robust runner to set a default max time _per_ test.')
+      call parser%add_option('--max-launch-duration', type='real', &
+           & help='Used with robust runner to set a default max time for launch of separate executable.')
+      call parser%add_option('--xml', action='store_true', &
+           & help='use XML printer')
       option_values = parser%parse_args()
 
       if (associated(option_values%at('help'))) then

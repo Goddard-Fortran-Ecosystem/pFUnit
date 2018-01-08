@@ -292,14 +292,41 @@ contains
 
          opt_strings => opt%get_option_strings()
          opt_string => opt_strings%front()
-         header = header // '[' // opt_string // ']'
+         header = header // '[' // opt_string
+
+         if (opt%get_action() == 'store') then
+            header = header // ' ' // upper_case(opt%get_destination())
+         end if
+         header = header // ']'
          call opt_iter%next()
       end do
 
       print*,header
       print*,' '
       print*,'optional arguments:'
-      
+
+   contains
+
+      function upper_case(str)
+         character(:), allocatable :: upper_case
+         character(*), intent(in) :: str
+
+         integer :: delta
+         integer :: i
+         integer :: ia
+
+         delta = iachar('A') - iachar('a')
+         
+         upper_case = str
+         do i = 1, len(upper_case)
+            ia = iachar(upper_case(i:i))
+            if (iachar('a') <= ia .and. ia <= iachar('z')) then
+               ia = ia + delta
+               upper_case(i:i) = achar(ia)
+            end if
+         end do
+      end function upper_case
+         
    end subroutine print_help_header
 
    subroutine print_help_tail(this)
