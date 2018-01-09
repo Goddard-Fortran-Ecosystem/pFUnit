@@ -1,8 +1,25 @@
 program main
    use sfunit
+   use pf_main_mod
    implicit none
 
-   call pfunit_main(load_all_possible_tests)
+   procedure(), pointer :: extra_initialize
+   procedure(), pointer :: extra_finalize
+   
+#ifdef PFUNIT_EXTRA_INITIALIZE
+   extra_initialize => pfunit_extra_initialize
+#else
+   extra_initialize => null()
+#endif
+
+#ifdef PFUNIT_EXTRA_FINALIZE
+   extra_finalize => pfunit_extra_initialize
+#else
+   extra_finalize => null()
+#endif
+   
+   call pfunit_main(load_all_possible_tests, &
+        extra_initialize, extra_finalize)
 
 contains
 

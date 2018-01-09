@@ -1,210 +1,208 @@
-subroutine pfunit_main(load_tests)
-   use sfunit
+module pf_main_mod
    implicit none
-
-   interface
-      subroutine load_tests(suite)
-         use sfunit
-         type (TestSuite), intent(out) :: suite
-      end subroutine load_tests
-   end interface
-
-   type (StringUnlimitedMap) :: option_values
-   type (TestSuite) :: all_test_suites
-
-   option_values = parse()
-   call load_tests(all_test_suites)
-   call main_sub(all_test_suites, option_values)
 
 contains
-
-
-   function parse() result(option_values)
-      type (StringUnlimitedMap) :: option_values
-
-      ! For processing command line arguments
-      type (ArgParser) :: parser
+   
+   subroutine pfunit_main(load_tests, extra_initialize, extra_finalize)
+      use sfunit
+      implicit none
       
-      call parser%add_option('-h', '--help', action='store_true', &
-           & help='provide more information about tests as they run')
-      call parser%add_option('-v', '--verbose', action='store_true', dest='verbose', &
-           & help='provide more information about tests as they run')
-      call parser%add_option('-d', '--debug', action='storet_true', dest='verbose', &
-           & help='provide more information about tests as they run')
-      call parser%add_option('-o', '--output', &
-           & help='Send console output to separate file rather than OUTPUT_UNIT')
-      call parser%add_option('--robust', action='store_true', &
-           & help='Uses separate execution to support tests that hang or crash.')
-      call parser%add_option('--max-timeout-duration', type='real', &
-           & help='Used with robust runner to set a default max time _per_ test.')
-      call parser%add_option('--max-launch-duration', type='real', &
-           & help='Used with robust runner to set a default max time for launch of separate executable.')
-      call parser%add_option('--xml', action='store_true', &
-           & help='use XML printer')
-      option_values = parser%parse_args()
-
-      if (associated(option_values%at('help'))) then
-         call parser%print_help()
-         stop 'stopping'
-      end if
-
-   end function parse
-
-end subroutine pfunit_main
-
-subroutine main_sub(suite, option_values)
+      procedure(), pointer :: extra_initialize, extra_finalize
+      
+      interface
+         subroutine load_tests(suite)
+            use sfunit
+            type (TestSuite), intent(out) :: suite
+         end subroutine load_tests
+      end interface
+      
+      type (StringUnlimitedMap) :: option_values
+      type (TestSuite) :: all_test_suites
+      
+      option_values = parse()
+      call load_tests(all_test_suites)
+      call main_sub(all_test_suites, option_values, extra_finalize, extra_finalize)
+      
+   contains
+      
+      
+      function parse() result(option_values)
+         type (StringUnlimitedMap) :: option_values
+         
+         ! For processing command line arguments
+         type (ArgParser) :: parser
+         
+         call parser%add_option('-h', '--help', action='store_true', &
+              & help='provide more information about tests as they run')
+         call parser%add_option('-v', '--verbose', action='store_true', dest='verbose', &
+              & help='provide more information about tests as they run')
+         call parser%add_option('-d', '--debug', action='storet_true', dest='verbose', &
+              & help='provide more information about tests as they run')
+         call parser%add_option('-o', '--output', &
+              & help='Send console output to separate file rather than OUTPUT_UNIT')
+         call parser%add_option('--robust', action='store_true', &
+              & help='Uses separate execution to support tests that hang or crash.')
+         call parser%add_option('--max-timeout-duration', type='real', &
+              & help='Used with robust runner to set a default max time _per_ test.')
+         call parser%add_option('--max-launch-duration', type='real', &
+              & help='Used with robust runner to set a default max time for launch of separate executable.')
+         call parser%add_option('--xml', action='store_true', &
+              & help='use XML printer')
+         option_values = parser%parse_args()
+         
+         if (associated(option_values%at('help'))) then
+            call parser%print_help()
+            stop 'stopping'
+         end if
+         
+      end function parse
+      
+   end subroutine pfunit_main
+   
+   subroutine main_sub(suite, option_values, extra_initialize, extra_finalize)
 #ifdef USE_MPI
-   use mpi_f08
+      use mpi_f08
 #endif
-   use iso_fortran_env, only: OUTPUT_UNIT
-   use sfunit
+      use iso_fortran_env, only: OUTPUT_UNIT
+      use sfunit
 #ifdef PFUNIT_EXTRA_USAGE
-   ! Use external code for whatever suite-wide fixture is in use.
-   use PFUNIT_EXTRA_USAGE
+      ! Use external code for whatever suite-wide fixture is in use.
+      use PFUNIT_EXTRA_USAGE
 #endif
-   implicit none
-   type (TestSuite), intent(inout) :: suite
-   type (StringUnlimitedMap), intent(in) :: option_values
+      implicit none
+      type (TestSuite), intent(inout) :: suite
+      type (StringUnlimitedMap), intent(in) :: option_values
+      procedure(), pointer :: extra_initialize, extra_finalize
+      
+      class(BaseTestRunner), allocatable :: runner
+      
+      integer :: i
+      character(len=:), allocatable :: executable
+      character(len=:), allocatable :: argument
 
-   class(BaseTestRunner), allocatable :: runner
+      real :: maxTimeoutDuration
+      real :: maxLaunchDuration
 
-   integer :: i
-   character(len=:), allocatable :: executable
-   character(len=:), allocatable :: argument
+      logical :: useRobustRunner
+      logical :: useSubsetRunner
+      logical :: printXmlFile
+      integer :: numSkip
+      logical :: useMpi
+      ! Regular Output
+      logical :: debug = .false. ! override with -d
+      integer :: outputUnit ! override with -o <filename>
+      character(len=:), allocatable :: outputFile
+      ! XML Additions
+      character(len=:), allocatable :: xmlFileName
+      integer :: iostat
+      integer :: xmlFileUnit
+      logical :: xmlFileOpened
+      integer :: numListeners, iListener
+      class (ListenerPointer), allocatable :: listeners(:)
+      type (DebugListener) :: debugger
+      character(len=:), allocatable :: suiteName
+      character(len=:), allocatable :: fullExecutable
 
-   real :: maxTimeoutDuration
-   real :: maxLaunchDuration
+      ! Support for the runs
+      class (ParallelContext), allocatable :: context
+      type (TestResult) :: result
 
-   logical :: useRobustRunner
-   logical :: useSubsetRunner
-   logical :: printXmlFile
-   integer :: numSkip
-   logical :: useMpi
-! Regular Output
-   integer :: numArguments
-   logical :: debug = .false. ! override with -d
-   integer :: outputUnit ! override with -o <filename>
-   character(len=:), allocatable :: outputFile
-! XML Additions
-   character(len=:), allocatable :: xmlFileName
-   integer :: iostat
-   integer :: xmlFileUnit
-   logical :: xmlFileOpened
-   integer :: numListeners, iListener
-   class (ListenerPointer), allocatable :: listeners(:)
-   type (DebugListener) :: debugger
-   character(len=128) :: suiteName
-   character(len=128) :: fullExecutable
+      ! Initialize variables...
 
-! Support for the runs
-   class (ParallelContext), allocatable :: context
-   type (TestResult) :: result
+      maxTimeoutDuration = 5.00 ! seconds
+      maxLaunchDuration  = 5.00 ! seconds
 
-   ! Initialize variables...
+      useRobustRunner = .false.
+      useSubsetRunner = .false.
+      printXmlFile = .false.
+      numSkip = 0
+      numListeners = 1; iListener = 0
 
-   maxTimeoutDuration = 5.00 ! seconds
-   maxLaunchDuration  = 5.00 ! seconds
+      executable = getCommandLineArgument(0)
 
-   useRobustRunner = .false.
-   useSubsetRunner = .false.
-   printXmlFile = .false.
-   numSkip = 0
-   numListeners = 1; iListener = 0
+      outputUnit = OUTPUT_UNIT ! stdout unless modified below
 
-   executable = getCommandLineArgument(0)
+      suiteName = 'default_suite_name'
 
-   outputUnit = OUTPUT_UNIT ! stdout unless modified below
-
-   
-
-   numArguments = command_argument_count()
-   
-
-   suiteName = 'default_suite_name'
-
-   if (option_values%count('verbose') /= 0) then
-      debug = .true.
-      numListeners = numListeners + 1
-   end if
-
-   if (option_values%count('output') /= 0) then
-      outputFile = to_string(option_values%at('output'))
-      open(file=outputFile, newUnit=outputUnit, form='formatted', &
-           & status='unknown', access='sequential')
-   end if
-
-   if (option_values%count('robust') /= 0) then
-      useRobustRunner = .true.
-   end if
-
-   if (option_values%count('max-timeout-duration') /= 0) then
-      maxTimeoutDuration = to_real(option_values%at('max-timeout-duration'))
-   end if
-
-   if (option_values%count('max-launch-duration') /= 0) then
-      maxLaunchDuration = to_real(option_values%at('max-launch-duration'))
-   end if
-
-   if (option_values%count('skip') /= 0) then
-      useSubsetRunner = .true.
-      numSkip = to_integer(option_values%at('skip'))
-   end if
-   
-   if (option_values%count('xml') /= 0) then
-      xmlFileName = to_string(option_values%count('xml'))
-      open(newUnit=xmlFileUnit, file=xmlFileName,  form='formatted', &
-           & status='unknown', access='sequential', iostat=iostat)
-      if(iostat /= 0) then
-         write(*,*) 'Could not open XML file ', xmlFileName, &
-              ', error: ', iostat
-      else
-         printXmlFile = .true.
+      if (option_values%count('verbose') /= 0) then
+         debug = .true.
          numListeners = numListeners + 1
       end if
-   end if
 
-   if (option_values%count('name') /= 0) then
-      suiteName = to_string(option_values%at('name'))
-   end if
-   
+      if (option_values%count('output') /= 0) then
+         outputFile = to_string(option_values%at('output'))
+         open(file=outputFile, newUnit=outputUnit, form='formatted', &
+              & status='unknown', access='sequential')
+      end if
 
-! Allocate and fill listeners array.
-   allocate(listeners(numListeners))
-! Default listener
-   iListener = iListener + 1
-   allocate(listeners(iListener)%pListener, source=newResultPrinter(outputUnit))
-! XML listener
-   if(printXmlFile) then
+      if (option_values%count('robust') /= 0) then
+         useRobustRunner = .true.
+      end if
+
+      if (option_values%count('max-timeout-duration') /= 0) then
+         maxTimeoutDuration = to_real(option_values%at('max-timeout-duration'))
+      end if
+
+      if (option_values%count('max-launch-duration') /= 0) then
+         maxLaunchDuration = to_real(option_values%at('max-launch-duration'))
+      end if
+
+      if (option_values%count('skip') /= 0) then
+         useSubsetRunner = .true.
+         numSkip = to_integer(option_values%at('skip'))
+      end if
+
+      if (option_values%count('xml') /= 0) then
+         xmlFileName = to_string(option_values%count('xml'))
+         open(newUnit=xmlFileUnit, file=xmlFileName,  form='formatted', &
+              & status='unknown', access='sequential', iostat=iostat)
+         if(iostat /= 0) then
+            write(*,*) 'Could not open XML file ', xmlFileName, &
+                 ', error: ', iostat
+         else
+            printXmlFile = .true.
+            numListeners = numListeners + 1
+         end if
+      end if
+
+      if (option_values%count('name') /= 0) then
+         suiteName = to_string(option_values%at('name'))
+      end if
+
+
+      ! Allocate and fill listeners array.
+      allocate(listeners(numListeners))
+      ! Default listener
       iListener = iListener + 1
-      allocate(listeners(iListener)%pListener, source=newXmlPrinter(xmlFileUnit))
-   end if
-! Debugger
-   if(debug) then
-      iListener = iListener + 1
-      debugger=DebugListener(outputUnit)
-      allocate(listeners(iListener)%pListener, source=debugger)
-   end if
+      allocate(listeners(iListener)%pListener, source=newResultPrinter(outputUnit))
+      ! XML listener
+      if(printXmlFile) then
+         iListener = iListener + 1
+         allocate(listeners(iListener)%pListener, source=newXmlPrinter(xmlFileUnit))
+      end if
+      ! Debugger
+      if(debug) then
+         iListener = iListener + 1
+         debugger=DebugListener(outputUnit)
+         allocate(listeners(iListener)%pListener, source=debugger)
+      end if
 
-   ! Initialize should be called on the second timethrough.
-   
-   ! useMPI optional argument has no effect if not USE_MPI.
-   if (useRobustRunner) then
-!!$      call initialize(useMPI=.false.)
-   else
-!!$      call initialize(useMPI=.true.)
-      call initialize()
-   end if
+      ! Initialize should be called on the second timethrough.
 
-!-------------------------------------------------------------------------
-! Some users may have 1-time only non-reentrant libraries that must
-! be initialized prior to executing their tests.  The motivating example
-! here is the Earth System Modeling Framework.  Rather than customize
-! this driver to each case as it arises, we are leaving it to users
-! to write a single init routine that is invoked here.
-!-------------------------------------------------------------------------
-#ifdef PFUNIT_EXTRA_INITIALIZE
-   call PFUNIT_EXTRA_INITIALIZE()
-#endif
+      ! useMPI optional argument has no effect if not USE_MPI.
+      if (useRobustRunner) then
+      else
+         call initialize()
+      end if
+
+      !-------------------------------------------------------------------------
+      ! Some users may have 1-time only non-reentrant libraries that must
+      ! be initialized prior to executing their tests.  The motivating example
+      ! here is the Earth System Modeling Framework.  Rather than customize
+      ! this driver to each case as it arises, we are leaving it to users
+      ! to write a single init routine that is invoked here.
+      !-------------------------------------------------------------------------
+      if (associated(extra_initialize)) call extra_initialize()
 
 #ifdef USE_MPI
       useMpi = .true.
@@ -212,115 +210,80 @@ subroutine main_sub(suite, option_values)
       useMpi = .false.
 #endif
 
-   if (useRobustRunner) then
-      useMpi = .false. ! override build
+      if (useRobustRunner) then
+         useMpi = .false. ! override build
 #ifdef BUILD_ROBUST
 #ifdef USE_MPI
-      fullExecutable = 'mpirun -np 4 ' // executable
+         fullExecutable = 'mpirun -np 4 ' // executable
 #else
-      fullExecutable = executable
+         fullExecutable = executable
 #endif
-!      allocate(runner, source=RobustRunner(fullExecutable, listeners))
-      allocate(runner, &
-           & source=RobustRunner( &
-           &    fullExecutable, &
-           &    listeners, &
-           &    maxLaunchDuration=maxLaunchDuration, &
-           &    maxTimeoutDuration=maxTimeoutDuration ))
+         !      allocate(runner, source=RobustRunner(fullExecutable, listeners))
+         allocate(runner, &
+              & source=RobustRunner( &
+              &    fullExecutable, &
+              &    listeners, &
+              &    maxLaunchDuration=maxLaunchDuration, &
+              &    maxTimeoutDuration=maxTimeoutDuration ))
 #else
-      ! TODO: This should be a failing test.
-      write (*,*) 'Robust runner not built.'
+         ! TODO: This should be a failing test.
+         write (*,*) 'Robust runner not built.'
 #endif
-   else if (useSubsetRunner) then
-      allocate(runner, source=SubsetRunner(numSkip=numSkip))
-   else
-      allocate(runner, source=newTestRunner(listeners))
-   end if
-
-   call suite%setName(suiteName)
-
-   call getContext(context, useMpi)
-
-   result = runner%run(suite, context)
-
-   if (outputUnit /= OUTPUT_UNIT) then
-      close(outputUnit)
-   end if
-
-   if(printXmlFile) then
-      inquire(unit=xmlFileUnit, opened=xmlFileOpened)
-      if(xmlFileOpened) then
-         close(xmlFileUnit)
+      else if (useSubsetRunner) then
+         allocate(runner, source=SubsetRunner(numSkip=numSkip))
+      else
+         allocate(runner, source=newTestRunner(listeners))
       end if
-   end if
 
-#ifdef PFUNIT_EXTRA_FINALIZE
-   call PFUNIT_EXTRA_FINALIZE()
-#endif
+      call suite%setName(suiteName)
 
-   call finalize(result%wasSuccessful())
+      call getContext(context, useMpi)
 
-contains
+      result = runner%run(suite, context)
 
-   subroutine getContext(context, useMpi)
-      class (ParallelContext), allocatable :: context
-      logical, intent(in) :: useMpi
+      if (outputUnit /= OUTPUT_UNIT) then
+         close(outputUnit)
+      end if
+
+      if(printXmlFile) then
+         inquire(unit=xmlFileUnit, opened=xmlFileOpened)
+         if(xmlFileOpened) then
+            close(xmlFileUnit)
+         end if
+      end if
+
+      if (associated(extra_finalize)) call extra_finalize()
+      call finalize(result%wasSuccessful())
+
+   contains
+
+      subroutine getContext(context, useMpi)
+         class (ParallelContext), allocatable :: context
+         logical, intent(in) :: useMpi
 
 #ifdef USE_MPI
-      if (useMpi) then
-         allocate(context, source=newMpiContext())
-         return
-      end if
+         if (useMpi) then
+            allocate(context, source=newMpiContext())
+            return
+         end if
 #endif
 
-      allocate(context, source=newSerialContext())
+         allocate(context, source=newSerialContext())
 
-   end subroutine getContext
+      end subroutine getContext
+
+      function getCommandLineArgument(i) result(argument)
+         integer, intent(in) :: i
+         character(:), allocatable :: argument
+
+         integer :: length
+
+         call get_command_argument(i, length=length)
+         allocate(character(len=length) :: argument)
+         call get_command_argument(i, value=argument)
+
+      end function getCommandLineArgument
 
 
-   function getCommandLineArgument(i) result(argument)
-      integer, intent(in) :: i
-      character(:), allocatable :: argument
-
-      integer :: length
-
-      call get_command_argument(i, length=length)
-      allocate(character(len=length) :: argument)
-      call get_command_argument(i, value=argument)
-
-   end function getCommandLineArgument
-
-   subroutine commandLineArgumentError()
-      use iso_fortran_env, only: OUTPUT_UNIT
-
-      write(OUTPUT_UNIT,*)'Unsupported/mismatched command line arguments.'
-      write(OUTPUT_UNIT,*)' '
-      call printHelpMessage()
-      call finalize(successful=.false.)
-
-   end subroutine commandLineArgumentError
-
-   subroutine printHelpMessage()
-      use iso_fortran_env, only: OUTPUT_UNIT
-
-      write(OUTPUT_UNIT,*)'Command line arguments:'
-      write(OUTPUT_UNIT,*)' '
-      write(OUTPUT_UNIT,*)' Options: '
-      write(OUTPUT_UNIT,*)"   '-h', '--help'    : Prints this message"
-      write(OUTPUT_UNIT,*)"   '-v', '--verbose' : Logs start/stop of each test"
-      write(OUTPUT_UNIT,*)"   '-d', '--debug'   : Logs start/stop of each test (same as -v)"
-      write(OUTPUT_UNIT,*)"   '-o <file>'       : Diverts output to specified file"
-      write(OUTPUT_UNIT,*)"   '-robust'         : (experimental) runs tests in a separate shell"
-      write(OUTPUT_UNIT,*)"                       Attempts to detect/handle hangs and crashes"
-      write(OUTPUT_UNIT,*)"   '-max-timeout-duration <duration>' : Limit detection time for robust"
-      write(OUTPUT_UNIT,*)"   '-max-launch-duration  <duration>' : Limit detection time for robust"
-      write(OUTPUT_UNIT,*)"   '-skip n'         : used by remote start with 'robust' internally"
-      write(OUTPUT_UNIT,*)"                       This flag should NOT be used directly by users."
-      write(OUTPUT_UNIT,*)"   '-xml <file>'     : output JUnit XML to specified file"
-      write(OUTPUT_UNIT,*)"                       XML can be used with e.g. Jenkins."
-      write(OUTPUT_UNIT,*)"   '-name <name>'    : give tests an identifying name in XML output"
-      write(OUTPUT_UNIT,*)" "
-
-   end subroutine printHelpMessage
-
-end subroutine main_sub
+   end subroutine main_sub
+end module pf_main_mod
