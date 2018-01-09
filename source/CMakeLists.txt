@@ -129,14 +129,12 @@ set(srcs
   sFUnit.F90
   )
 
-if ( ROBUST )
   list (APPEND srcs
     UnixPipeInterfaces.F90
     UnixProcess.F90
     RobustRunner.F90
     RemoteProxyTestCase.F90
     )
-endif ()
 
 #include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
 

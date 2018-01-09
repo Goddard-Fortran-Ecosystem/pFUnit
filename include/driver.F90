@@ -1,25 +1,45 @@
+!---------------------------------------------------------------------------
+! This file is external to the pfunit library and is used to represent
+! information that cannot be determined at run-time.   In particular,
+! Fortran lacks reflection/introspection and therefore cannot automatically
+! collect user-defined test suites.
+!
+!
+! Typical usage is for the user to compile this file while leaving it in the
+! pFUnit installation directory.    Use "-D<_TEST_SUITES>" to specify a file
+! that contains the list of test_suites to be builtlinked and executed.
+!
+!
+! For serial runs, the user links with the sfunit library, while for parallel
+! runs the user links with sfunit _and_ pfunit.
+!---------------------------------------------------------------------------
+
+
 program main
    use sfunit
    use pf_main_mod
+#ifdef PFUNIT_EXTRA_USAGE
+      ! Use external code for whatever suite-wide fixture is in use.
+      use PFUNIT_EXTRA_USAGE
+#endif
    implicit none
 
    procedure(), pointer :: extra_initialize
    procedure(), pointer :: extra_finalize
    
 #ifdef PFUNIT_EXTRA_INITIALIZE
-   extra_initialize => pfunit_extra_initialize
+   extra_initialize => PFUNIT_EXTRA_INITIALIZE
 #else
    extra_initialize => null()
 #endif
 
 #ifdef PFUNIT_EXTRA_FINALIZE
-   extra_finalize => pfunit_extra_initialize
+   extra_finalize => PFUNIT_EXTRA_INITIALIZE
 #else
    extra_finalize => null()
 #endif
    
-   call pfunit_main(load_all_possible_tests, &
-        extra_initialize, extra_finalize)
+   call pfunit_main(load_all_possible_tests, extra_initialize, extra_finalize)
 
 contains
 

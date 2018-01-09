@@ -146,13 +146,14 @@ contains
       use PF_TestResult_mod
       use PF_RemoteProxyTestCase_mod
       use PF_TestSuite_mod
-      use PF_Exception_mod
+      use PF_TestVector_mod
+      use PF_ExceptionList_mod
       class (RobustRunner), target, intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
       type (TestResult), intent(inout) :: result
 
-      type (TestCaseReference), allocatable :: testCases(:)
+      type (TestVector) :: testCases
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
@@ -166,27 +167,21 @@ contains
 
       select type (aTest)
       class is (TestSuite)
-!!! if defined(PGI) || (defined(__INTEL_COMPILER) && (INTEL_13))
-#if (defined(__INTEL_COMPILER) && (INTEL_13))         
-         testCases = aTest%getTestCases()
-#else
          call aTest%getTestCases(testCases)
-#endif
       class is (TestCase)
-         allocate(testCases(1))
-         allocate(testCases(1)%test, source= aTest)
+         call testCases%push_back(aTest)
       class default
          stop
       end select
 
 ! mlr q: set up named pipes or units to handle comm between remote processes
       ! mlr q: and the root... being done at ukmet?
-      do i = 1, size(testCases)
+      do i = 1, testCases%size()
          if (.not. this%remoteProcess%isActive()) then
             call this%launchRemoteRunner(numSkip=i-1)
          end if
          proxy = RemoteProxyTestCase( &
-              &     testCases(i)%test &
+              &     testCases%at(i) &
               &     ,this%remoteProcess &
               &     ,maxTimeoutDuration=this%maxTimeoutDuration &
               &  )
@@ -208,7 +203,7 @@ contains
 
    subroutine launchRemoteRunner(this, numSkip)
       use PF_UnixProcess_mod
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (RobustRunner), intent(inout) :: this
       integer, intent(in) :: numSkip
 
@@ -289,18 +284,18 @@ contains
    end subroutine endRun
 
    subroutine addFailure(this, testName, exceptions)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
-      type (Exception), intent(in) :: exceptions(:)
+      type (ExceptionList), intent(in) :: exceptions
 
    end subroutine addError
 

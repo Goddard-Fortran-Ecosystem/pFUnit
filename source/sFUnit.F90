@@ -49,9 +49,7 @@ module sFUnit_private
    use pf_StringUnlimitedMap_mod
    use pf_CommandLineArguments_mod
 
-#ifdef BUILD_ROBUST
    use PF_RobustRunner_mod
-#endif
    use PF_Assert_mod
    use PF_ParallelContext_mod
    use PF_SerialContext_mod
@@ -73,9 +71,7 @@ module sFUnit_private
    public :: newXmlPrinter
    public :: DebugListener
 
-#ifdef BUILD_ROBUST
    public :: RobustRunner
-#endif
    public :: TestCase
    public :: AbstractTestParameter
    public :: ParameterizedTestCase

@@ -22,7 +22,8 @@
 !-------------------------------------------------------------------------------
 module PF_RemoteProxyTestCase_mod
    use PF_UnixProcess_mod
-   use PF_Exception_mod
+   use PF_ExceptionList_mod
+   use PF_Test_mod
    use PF_TestCase_mod
    implicit none
    private
@@ -47,9 +48,9 @@ module PF_RemoteProxyTestCase_mod
 
 contains
 
-   function newRemoteProxyTestCase(test, process, maxTimeoutDuration) result(proxy)
+   function newRemoteProxyTestCase(a_test, process, maxTimeoutDuration) result(proxy)
       type (RemoteProxyTestCase) :: proxy
-      class (TestCase), intent(in) :: test
+      class (Test), intent(in) :: a_test
       type (UnixProcess), target :: process
       real, optional, intent(in) :: maxTimeoutDuration
 
@@ -59,7 +60,7 @@ contains
          proxy%maxTimeoutDuration = maxTimeoutDuration
       end if
 
-      call proxy%setName(test%getName())
+      call proxy%setName(a_test%getName())
       proxy%process => process
       
    end function newRemoteProxyTestCase

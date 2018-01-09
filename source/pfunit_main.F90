@@ -60,15 +60,8 @@ contains
    end subroutine pfunit_main
    
    subroutine main_sub(suite, option_values, extra_initialize, extra_finalize)
-#ifdef USE_MPI
-      use mpi_f08
-#endif
       use iso_fortran_env, only: OUTPUT_UNIT
       use sfunit
-#ifdef PFUNIT_EXTRA_USAGE
-      ! Use external code for whatever suite-wide fixture is in use.
-      use PFUNIT_EXTRA_USAGE
-#endif
       implicit none
       type (TestSuite), intent(inout) :: suite
       type (StringUnlimitedMap), intent(in) :: option_values
@@ -204,20 +197,14 @@ contains
       !-------------------------------------------------------------------------
       if (associated(extra_initialize)) call extra_initialize()
 
-#ifdef USE_MPI
-      useMpi = .true.
-#else
-      useMpi = .false.
-#endif
-
       if (useRobustRunner) then
          useMpi = .false. ! override build
-#ifdef BUILD_ROBUST
-#ifdef USE_MPI
-         fullExecutable = 'mpirun -np 4 ' // executable
-#else
-         fullExecutable = executable
-#endif
+
+         if (useMpi) then
+            fullExecutable = 'mpirun -np 4 ' // executable
+         else
+            fullExecutable = executable
+         end if
          !      allocate(runner, source=RobustRunner(fullExecutable, listeners))
          allocate(runner, &
               & source=RobustRunner( &
@@ -225,10 +212,6 @@ contains
               &    listeners, &
               &    maxLaunchDuration=maxLaunchDuration, &
               &    maxTimeoutDuration=maxTimeoutDuration ))
-#else
-         ! TODO: This should be a failing test.
-         write (*,*) 'Robust runner not built.'
-#endif
       else if (useSubsetRunner) then
          allocate(runner, source=SubsetRunner(numSkip=numSkip))
       else

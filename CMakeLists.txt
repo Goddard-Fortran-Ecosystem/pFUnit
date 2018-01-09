@@ -26,7 +26,6 @@ enable_testing()
 #---------------------------
 OPTION(USE_MPI "Use MPI for parallel runs" NO)
 OPTION(USE_OPENMP "Use OPENMP for parallel runs" NO)
-OPTION(USE_ROBUST "Build robust test runner" NO)
 set(MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 
 

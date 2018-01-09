@@ -69,7 +69,7 @@ contains
    function newProcess(command, runInBackground) result(process)
       use PF_UnixPipeInterfaces_mod, only: popen
       use PF_StringConversionUtilities_mod, only: nullTerminate
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
       logical, optional, intent(in) :: runInBackground
