@@ -219,7 +219,7 @@ contains
 
       
       write(suffix,'(i0)') numSkip
-      command = trim(this%remoteRunCommand) // ' -skip ' // suffix
+      command = trim(this%remoteRunCommand) // ' --skip ' // suffix
 
 
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)

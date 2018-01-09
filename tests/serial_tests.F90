@@ -22,9 +22,7 @@ contains
       use sFUnit, only: newSerialContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
-#ifdef BUILD_ROBUST
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
-#endif
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
@@ -46,9 +44,7 @@ contains
       use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
       use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
 
-#ifdef BUILD_ROBUST
       use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
-#endif
 
       use iso_fortran_env, only: OUTPUT_UNIT
 
@@ -71,9 +67,7 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringConversionUtilitiesSuite)
-#ifdef BUILD_ROBUST
       ADD(UnixProcessSuite)
-#endif
       ADD(exceptionSuite)
       ADD(assertBasicSuite)
       ADD(assertSuite)
@@ -95,10 +89,7 @@ contains
       ADD(testMockRepositorySuite)
 
       ADD(testXmlPrinterSuite)
-
-#ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
-#endif
 
       tstResult = runner%run(allTests, newSerialContext())
 

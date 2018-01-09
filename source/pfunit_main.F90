@@ -21,7 +21,7 @@ contains
       
       option_values = parse()
       call load_tests(all_test_suites)
-      call main_sub(all_test_suites, option_values, extra_finalize, extra_finalize)
+      call main_sub(all_test_suites, option_values, extra_initialize, extra_finalize)
       
    contains
       
@@ -46,6 +46,8 @@ contains
               & help='Used with robust runner to set a default max time _per_ test.')
          call parser%add_option('--max-launch-duration', type='real', &
               & help='Used with robust runner to set a default max time for launch of separate executable.')
+         call parser%add_option('--skip', type='integer', &
+              & help='Used with robust runner to specify where to (re) start test sequence.')
          call parser%add_option('--xml', action='store_true', &
               & help='use XML printer')
          option_values = parser%parse_args()

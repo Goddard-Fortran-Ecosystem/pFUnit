@@ -24,7 +24,7 @@
 module Test_UnixProcess_mod
    use PF_TestSuite_mod
    use PF_Assert_mod
-   use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_UnixProcess_mod
    implicit none
    private

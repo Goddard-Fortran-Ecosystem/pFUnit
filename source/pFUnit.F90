@@ -48,9 +48,7 @@ module pFUnit
    public :: newXmlPrinter
    public :: DebugListener
 
-#ifdef BUILD_ROBUST
    public :: RobustRunner
-#endif
    public :: TestCase
    public :: AbstractTestParameter
    public :: ParameterizedTestCase

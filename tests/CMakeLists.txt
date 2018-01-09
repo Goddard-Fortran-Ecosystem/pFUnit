@@ -57,13 +57,11 @@ set(SERIAL_TEST_SRCS
   Test_TestSuite.F90
   )
 
-if (ROBUST)
   list (APPEND SERIAL_TEST_SRCS
     Test_UnixProcess.F90
     Test_RobustRunner.F90
     robustTestSuite.F90
     )
-endif ()
 
 list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
@@ -126,7 +124,6 @@ add_custom_target(tests
   DEPENDS funit_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif ()
 
-if (ROBUST)
   set(REMOTE_EXE remote.x)
   if (MPI)
      add_executable (${REMOTE_EXE} parallelRemoteProgram.F90)
@@ -140,7 +137,6 @@ if (ROBUST)
 # Note for pfunit_2.1.0:  following line has no counterpart in
 #  "master" branch, i.e. > pfunit_2.1.0...
   add_dependencies(tests ${REMOTE_EXE})
-endif()
 
 
 add_test(NAME new_tests
