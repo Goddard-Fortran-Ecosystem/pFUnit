@@ -65,12 +65,9 @@ contains
            &                                  testFailOn2, numProcesses=3))
       call suite%addTest(newTest_MpiTestCase('testTooFewProcs', &
            &                                  testTooFewProcs, numProcesses=4))
+      call suite%addTest(newTest_MpiTestCase('testAllProcs', &
+           &                                  testAllProcs, numProcesses=0))
 
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testWasRun), numProcesses=1))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn1), numProcesses=3))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn2), numProcesses=3))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testTooFewProcs), numProcesses=4))
       
    end function suite
 
@@ -250,6 +247,25 @@ contains
       end if
 
    end subroutine testTooFewProcs
+
+   ! Purposefully request 0 processes, but should run as many as are in COMM_WORLD.
+   subroutine testAllProcs(this)
+      use MPI
+      use Exception_mod, only: throw
+      use Assert_mod, only: assertEqual
+      class (Test_MpiTestCase), intent(inout) :: this
+
+      integer :: npes_world
+      integer :: npes_test
+      integer :: ierror
+
+      ! About the only legitimate excuse to use MPI_COMM_WORLD ...
+      call MPI_Comm_size(MPI_COMM_WORLD, npes_world, ierror)
+      npes_test = this%getNumProcesses()
+
+      call assertEqual(npes_world, npes_test, 'did not use all available processes')
+
+   end subroutine testAllProcs
 
    recursive subroutine runMethod(this)
       class(Test_MpiTestCase), intent(inOut) :: this

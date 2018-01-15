@@ -122,7 +122,7 @@ contains
 #ifdef BUILD_ROBUST
       ADD(testRobustRunnerSuite)
 #endif
-!!$
+
 #ifdef USE_MPI
       ADD(MpiContextSuite)
       ADD(ParallelExceptionSuite)
