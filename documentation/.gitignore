@@ -1,2 +1,4 @@
-/.DS_Store
 /*.el
+/.DS_Store
+/html
+/latex

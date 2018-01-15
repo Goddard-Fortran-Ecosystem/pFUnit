@@ -1,3 +1,6 @@
+3.2.9   October 29, 2017
+	- bug fix for #62 -- stalled test in some environments
+	
 3.2.8   September 5, 2016
 	- Patch for PGI system() call  (sf patch #9)
 	- Patch for deffered length strings (sf patch #10)

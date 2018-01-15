@@ -65,7 +65,27 @@ contains
       if (anyExceptions()) return
 
       call process%terminate()
+
+      ! Allow a second for process to die:
+      call idle(1.)
+
       call assertFalse(process%isActive(),'huh')
+
+   contains
+
+      subroutine idle(t)
+         real, intent(in) :: t
+         real :: t1, t2, tmp
+
+         call cpu_time(t1)
+         if (t1 >= 0) then ! processor has "meaningful" value for the time
+            do
+               call cpu_time(t2)
+               if (t2 >= (t1 + 1)) exit
+            end do
+         end if
+         
+      end subroutine idle
       
    end subroutine testIsActive
 
