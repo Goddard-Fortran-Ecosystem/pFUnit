@@ -3,6 +3,7 @@
 set(traceback "-gline")
 set(check_all "-C=all")
 set(cpp "-fpp")
+set(mismatch "-mismatch")
 
 set(CMAKE_Fortran_FLAGS_DEBUG  "-O0")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3")

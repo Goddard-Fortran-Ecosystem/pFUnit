@@ -33,7 +33,7 @@ module PF_SerialContext_mod
    contains
       procedure :: getNumProcesses
       procedure :: processRank
-      procedure :: sum
+      procedure :: sum_global
       procedure :: maximum
       procedure :: gatherString
       procedure :: gatherInteger
@@ -66,13 +66,13 @@ contains
       processRank = 0
    end function processRank
 
-   integer function sum(this, value)
+   integer function sum_global(this, value)
       class (SerialContext), intent(in) :: this
       integer, intent(in) :: value
 
-      sum = value
+      sum_global = value
 
-   end function sum
+   end function sum_global
 
 
    integer function maximum(this, value)

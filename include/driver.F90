@@ -17,7 +17,6 @@
 
 program main
    use sfunit
-   use pf_main_mod
 #ifdef PFUNIT_EXTRA_USAGE
       ! Use external code for whatever suite-wide fixture is in use.
       use PFUNIT_EXTRA_USAGE
@@ -30,20 +29,20 @@ program main
 #ifdef PFUNIT_EXTRA_INITIALIZE
    extra_initialize => PFUNIT_EXTRA_INITIALIZE
 #else
-   extra_initialize => null()
+   extra_initialize => stub
 #endif
 
 #ifdef PFUNIT_EXTRA_FINALIZE
    extra_finalize => PFUNIT_EXTRA_INITIALIZE
 #else
-   extra_finalize => null()
+   extra_finalize => stub
 #endif
-   
-   call pfunit_main(load_all_possible_tests, extra_initialize, extra_finalize)
+
+   call funit_main(load_tests, extra_initialize, extra_finalize)
 
 contains
 
-   subroutine load_all_possible_tests(suite)
+   function load_tests() result(suite)
 
 #define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
 #define ADD_TEST_SUITE(s) ! do nothing
@@ -51,7 +50,7 @@ contains
 #undef ADD_MODULE_TEST_SUITE
 #undef ADD_TEST_SUITE
 
-      type (TestSuite), intent(out) :: suite
+      type (TestSuite) :: suite
 
 #define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
 #define ADD_TEST_SUITE(s) type (TestSuite), external :: s
@@ -67,7 +66,7 @@ contains
 #undef ADD_TEST_SUITE
 #undef ADD_MODULE_TEST_SUITE
 
-   end subroutine load_all_possible_tests
+   end function load_tests
 
 end program main
 

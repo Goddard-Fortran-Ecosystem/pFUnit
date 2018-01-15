@@ -78,7 +78,8 @@ set(srcs
   AbstractPattern.F90
   StringVector.F90
   StringUnlimitedMap.F90
-  pfunit_main.F90
+  sfunit_main.F90
+#  pfunit_main.F90
   CommandLineArguments.F90
   Arg.F90
   ArgVector.F90
@@ -145,7 +146,7 @@ if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
 
-   if (MPI)
+   if (USE_MPI)
      add_library(pfunit_shared SHARED ${srcs} ${mpi_srcs})
      set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)
    endif ()
@@ -162,7 +163,7 @@ if (BUILD_SHARED)
     install (TARGETS funit_shared pfunit_shared DESTINATION lib)
 endif()
 
-if (MPI)
+if (USE_MPI)
     set (mpi_srcs
       MpiContext.F90
       MpiStubs.F90
@@ -171,8 +172,10 @@ if (MPI)
       MpiTestMethod.F90
       pFUnit.F90
       )
-  add_library(pfunit STATIC ${srcs} ${mpi_srcs})
-  set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${MISMATCH})
+    add_library(pfunit STATIC ${srcs} ${mpi_srcs})
+    if (mismatch)
+      set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
+    endif()
 
   install (TARGETS pfunit DESTINATION lib)
   if (BUILD_SHARED)

@@ -109,28 +109,71 @@ module sFUnit_private
    public :: StringVector
    public :: StringUnlimitedMap
 
+   public :: LoadTests_interface
+
+   abstract interface
+      function LoadTests_interface() result(suite)
+         import TestSuite
+         type (TestSuite) :: suite
+      end function LoadTests_interface
+   end interface
+
 
 end module sFUnit_private
 
 module sFUnit
-   ! use these, but do not re-export
-   ! export these
+   ! use these, but do not re-export:
    use sFUnit_private
+   use iso_fortran_env, only: OUTPUT_UNIT
+   implicit none
    ! add these
-   public :: initialize
-   public :: finalize
 
+   public :: initialize
+   public :: run
+   public :: finalize
+   public :: LoadTests_interface
+   public :: stub
+
+   logical, parameter :: SUCCEEDED = .true.
+   logical, parameter :: FAILED = .false.
 
 contains
 
-   subroutine initialize()
+   subroutine initialize(extra)
+      procedure() :: extra  ! user-specific extra initialization steps
+      call extra()
    end subroutine initialize
 
-   subroutine finalize(successful)
+
+   logical function run(load_tests) result(status)
+      procedure(LoadTests_interface) :: load_tests
+      
+      type (TestSuite) :: suite
+      class(BaseTestRunner), allocatable :: runner
+      type (TestResult) :: r
+      type (SerialContext) :: c
+      class (ListenerPointer), allocatable :: listeners(:)
+
+      allocate(listeners(1))
+      allocate(listeners(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+
+!!$      options = parse()
+      suite = load_tests()
+      allocate(runner, source=newTestRunner(listeners))
+      r = runner%run(suite, c)
+      status = r%wasSuccessful()
+
+   end function run
+
+
+   subroutine finalize(extra, successful)
 #ifdef NAG
       use f90_unix_proc, only: exit
 #endif
+      procedure() :: extra  ! user-specific extra initialization steps
       logical, intent(in) :: successful
+
+      call extra() ! user-specific finalize
 
       if (.not. successful) then
 #if defined(NAG) || defined(PGI)
@@ -142,5 +185,19 @@ contains
 
    end subroutine finalize
 
-   
+   function get_context(use_mpi) result(context)
+      class (ParallelContext), allocatable :: context
+      logical, intent(in) :: use_mpi
+
+      if (use_mpi) then
+         print*,'Cannot use MPI - need to link with pfunit not sfunit.'
+         stop
+      end if
+      context = SerialContext()
+   end function get_context
+
+
+   subroutine stub()
+   end subroutine stub
+
 end module sFUnit

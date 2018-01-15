@@ -22,7 +22,7 @@
 !-------------------------------------------------------------------------------
 module PF_MpiContext_mod
    use PF_ParallelContext_mod
-   use PF_Exception_mod, only: throw
+   use PF_ExceptionList_mod, only: throw
    use mpi
    implicit none
    private
@@ -43,7 +43,7 @@ module PF_MpiContext_mod
       procedure :: barrier
       procedure :: getMpiCommunicator
       procedure :: makeMap
-      procedure :: sum
+      procedure :: sum_global
       procedure :: maximum
       procedure :: gatherString
       procedure :: gatherInteger
@@ -172,7 +172,7 @@ contains
    end function getMpiCommunicator
 
 
-   integer function sum(this, value)
+   integer function sum_global(this, value)
       class (MpiContext), intent(in) :: this
       integer, intent(in) :: value
 
@@ -181,9 +181,9 @@ contains
 
       call mpi_allreduce(value, tmp, 1, MPI_INTEGER, MPI_SUM, &
            &     this%mpiCommunicator, ier)
-      sum = tmp
+      sum_global = tmp
       
-   end function sum
+   end function sum_global
 
    integer function maximum(this, value)
       class (MpiContext), intent(in) :: this

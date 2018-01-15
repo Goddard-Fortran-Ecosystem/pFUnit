@@ -36,7 +36,8 @@ module PF_ParallelContext_mod
       procedure :: isRootProcess
       procedure(getNumProcesses), deferred :: getNumProcesses
       procedure(processRank), deferred :: processRank
-      procedure(reduce), deferred :: sum
+      procedure(reduce), deferred :: sum_global
+      generic :: sum => sum_global
       procedure(reduce), deferred :: maximum
       generic :: gather => gatherString
 !      generic :: gather => gatherInteger

@@ -5,13 +5,14 @@ program main
    use sFUnit, only: TestSuite
    use sFUnit, only: ParallelContext
    use sFUnit, only: SerialContext, newSerialContext
+   use sFUnit, only: stub
    use robustTestSuite_mod
    implicit none
 
 !!$   call initialize(useMPI=.false.)
-   call initialize()
+   call initialize(stub)
    call runTests()
-   call finalize(.true.) ! let top level driver indicate success/failure
+   call finalize(stub, .true.) ! let top level driver indicate success/failure
 
 contains
 

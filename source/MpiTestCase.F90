@@ -51,14 +51,14 @@ module PF_MpiTestCase_mod
 contains
 
    integer function countTestCases_mpi(this) result(countTestCases)
-      class (MpiTestCase), intent(in) :: this
+      class (MpiTestCase), target, intent(in) :: this
       countTestCases = 1
    end function countTestCases_mpi
 
    recursive subroutine run(this, tstResult, context)
       use PF_TestResult_mod, only: TestResult
       use PF_ParallelContext_mod
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       use PF_SurrogateTestCase_mod
       class (MpiTestCase), target, intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
@@ -80,7 +80,7 @@ contains
    end subroutine run
 
    recursive subroutine runBare(this)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (MpiTestCase), intent(inout) :: this
 
       logical :: discard
@@ -120,7 +120,7 @@ contains
    end function getNumProcesses
 
    integer function getNumProcessesRequested(this) result(numProcessesRequested)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (MpiTestCase), intent(in) :: this
       select type (p => this%testParameter)
       class is (MpiTestParameter)

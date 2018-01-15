@@ -4,14 +4,15 @@ program main
    use sFUnit, only: TestResult
    use sFUnit, only: ListenerPointer
    use sFUnit, only: newResultPrinter
+   use sFUnit, only: stub
 !$$   use sFUnit, only: DebugListener
    implicit none
 
    logical :: success
 
-   call initialize()
+   call initialize(stub)
    success = runTests()
-   call finalize(success)
+   call finalize(stub, success)
 
 contains
 
