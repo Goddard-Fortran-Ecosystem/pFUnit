@@ -50,6 +50,7 @@ module PF_RobustRunner_mod
       procedure :: addError
       procedure :: launchRemoteRunner
       procedure :: createTestResult
+      procedure :: addSuccess
    end type RobustRunner
 
    interface RobustRunner
@@ -306,5 +307,11 @@ contains
 
       tstResult = newTestResult()
     end function createTestResult
+
+
+   subroutine addSuccess(this, testName)
+      class (RobustRunner), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
 
 end module PF_RobustRunner_mod

@@ -55,6 +55,7 @@ module PF_SubsetRunner_mod
       procedure :: startTest
       procedure :: endTest
       procedure :: endRun
+      procedure :: addSuccess
    end type SubsetRunner
 
    interface SubsetRunner
@@ -177,4 +178,9 @@ contains
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
 
+   subroutine addSuccess(this, testName)
+      class (SubsetRunner), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
+   
 end module PF_SubsetRunner_mod

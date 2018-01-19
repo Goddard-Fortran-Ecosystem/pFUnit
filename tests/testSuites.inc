@@ -1,3 +1,4 @@
+   ADD_TEST_SUITE(TapListener_suite)
    ADD_TEST_SUITE(ExceptionList_suite)
    ADD_TEST_SUITE(Arg_suite)
    ADD_TEST_SUITE(ArgParser_suite)

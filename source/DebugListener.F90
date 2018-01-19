@@ -34,6 +34,7 @@ module PF_DebugListener_mod
       procedure :: startTest
       procedure :: endTest
       procedure :: endRun
+      procedure :: addSuccess
    end type DebugListener
 
    interface DebugListener
@@ -91,5 +92,10 @@ contains
      class (DebugListener), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
+
+   subroutine addSuccess(this, testName)
+      class (DebugListener), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
 
 end module PF_DebugListener_mod

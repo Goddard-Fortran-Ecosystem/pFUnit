@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: XmlPrinter
+!  MODULE: TapListener
 !
 !> @brief
 !! <BriefDescription>
@@ -23,16 +23,16 @@
 !    May need to separate status reports from the end-of-run summary
 !
 !-------------------------------------------------------------------------------
-module PF_XmlPrinter_mod
+module PF_TapListener_mod
    use PF_Exception_mod
    use PF_TestListener_mod
    implicit none
    private
 
-   public :: XmlPrinter
-   public :: newXmlPrinter
+   public :: TapListener
+   public :: newTapListener
 
-   type, extends(TestListener) :: XmlPrinter
+   type, extends(TestListener) :: TapListener
       integer :: unit
       integer :: privateUnit
    contains
@@ -50,49 +50,58 @@ module PF_XmlPrinter_mod
       procedure :: printSuccesses
       procedure :: printFooter
       procedure :: addSuccess
-   end type XmlPrinter
+   end type TapListener
 
 contains
 
-   function newXmlPrinter(unit)
-      type (XmlPrinter) :: newXmlPrinter
+   function newTapListener(unit)
+      type (TapListener) :: newTapListener
       integer, intent(in) :: unit
 
-      newXmlPrinter%unit = unit
+      newTapListener%unit = unit
 
-   end function newXmlPrinter
+   end function newTapListener
 
    subroutine addFailure(this, testName, exceptions)
       use PF_ExceptionList_mod
-      class (XmlPrinter), intent(inOut) :: this
+      class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
+      type (Exception), pointer :: e
+      
+      write(this%unit,*)'not ok - ', testName
+      if (exceptions%size() > 0) then
+         write(this%unit,*)'  ---'
+         e => exceptions%at(1)
+         write(this%unit,*)'  message: ', e%message
+         write(this%unit,*)'  ...'
+      end if
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
       use PF_ExceptionList_mod
-      class (XmlPrinter), intent(inOut) :: this
+      class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
    end subroutine addError
 
    subroutine startTest(this, testName)
-      class (XmlPrinter), intent(inOut) :: this
+      class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
    end subroutine startTest
 
    subroutine endTest(this, testName)
-      class (XmlPrinter), intent(inOut) :: this
+      class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
    end subroutine endTest
 
    subroutine endRun(this, result)
      use PF_AbstractTestResult_mod, only : AbstractTestResult
-     class (XmlPrinter), intent(inOut) :: this
+     class (TapListener), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
 
      call this%print(result)
@@ -100,7 +109,7 @@ contains
 
    subroutine print(this, result)
       use PF_AbstractTestResult_mod, only : AbstractTestResult
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
       call this%printHeader(result)
@@ -113,11 +122,11 @@ contains
 
    subroutine printHeader(this, result)
       use PF_AbstractTestResult_mod, only : AbstractTestResult
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f0.4,a)') &
-           '<testsuite name="', cleanXml(trim(result%getName())), &
+           '<testsuite name="', cleanTap(trim(result%getName())), &
            '" errors="', result%errorCount(),&
            '" failures="', result%failureCount(),&
            '" tests="', result%runCount(),&
@@ -130,7 +139,7 @@ contains
    subroutine printFailure(this, label, aFailedTest)
       use PF_TestFailure_mod
       use PF_SourceLocation_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
 
@@ -146,7 +155,7 @@ contains
       use PF_TestFailure_mod
       use PF_SourceLocation_mod
       use PF_ExceptionList_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: label
       character(len=*), intent(in) :: testName
       type(ExceptionList), intent(in) :: exceptions
@@ -160,17 +169,17 @@ contains
 !mlr Q?  What does JUnit do?
 !mlr  Ask Halvor -- good for 3.0
       write(this%unit,'(a,a,a)') '<testcase name="', &
-           cleanXml(trim(testName)), '">'
+           cleanTap(trim(testName)), '">'
       do j= 1, exceptions%size()
          pException => exceptions%at(j)
          locationString = pException%location%toString()
 
-         write(this%unit,'(a,a,a)',advance='no') '<', cleanXml(label),&
+         write(this%unit,'(a,a,a)',advance='no') '<', cleanTap(label),&
               ' message="'
          write(this%unit,'(a,a,a)',advance='no') &
-              'Location: ', cleanXml(trim(locationString)), ', '
+              'Location: ', cleanTap(trim(locationString)), ', '
          write(this%unit,'(a)',advance='no') &
-              cleanXml(trim(pException%getMessage()))
+              cleanTap(trim(pException%getMessage()))
          write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
@@ -184,7 +193,7 @@ contains
    subroutine printFailure1(this, label, aFailedTest)
       use PF_TestFailure_mod
       use PF_SourceLocation_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
       class (Exception), pointer :: pException
@@ -196,17 +205,17 @@ contains
 !mlr Q?  What does JUnit do?
 !mlr  Ask Halvor -- good for 3.0
       write(this%unit,'(a,a,a)') '<testcase name="', &
-           cleanXml(trim(aFailedTest%testName)), '">'
+           cleanTap(trim(aFailedTest%testName)), '">'
       do j= 1, aFailedTest%exceptions%size()
         pException => aFailedTest%exceptions%at(j)
         locationString = pException%location%toString()
 
         write(this%unit,'(a,a,a)',advance='no') &
-             '<', cleanXml(label), ' message="'
+             '<', cleanTap(label), ' message="'
         write(this%unit,'(a,a,a)',advance='no') &
-             'Location: ', cleanXml(trim(locationString)), ', '
+             'Location: ', cleanTap(trim(locationString)), ', '
         write(this%unit,'(a)',advance='no') &
-             cleanXml(trim(pException%getMessage()))
+             cleanTap(trim(pException%getMessage()))
         write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
@@ -219,7 +228,7 @@ contains
       use PF_TestFailure_mod
       use PF_TestFailureVector_mod
       use PF_SourceLocation_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailureVector), intent(in) :: failures
 
@@ -233,11 +242,11 @@ contains
 
    subroutine printTestName(this, testName)
       use PF_TestFailure_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: testName
 
       write(this%unit,'(a,a,a)') '<testcase name="',&
-           cleanXml(trim(testName)), '"/>'
+           cleanTap(trim(testName)), '"/>'
 
       flush(this%unit)
 
@@ -245,13 +254,13 @@ contains
 
    subroutine printSuccess(this, aSuccessTest)
       use PF_TestFailure_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       type (TestFailure) :: aSuccessTest
 
 !      character(len=80) :: locationString
 
       write(this%unit,'(a,a,a)') '<testcase name="',&
-           cleanXml(trim(aSuccessTest%testName)), '"/>'
+           cleanTap(trim(aSuccessTest%testName)), '"/>'
 
       flush(this%unit)
 
@@ -260,7 +269,7 @@ contains
    subroutine printSuccesses(this, successes)
       use PF_TestFailure_mod
       use PF_TestFailurevector_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       type (TestFailureVector), intent(in) :: successes
 
       integer :: i
@@ -273,7 +282,7 @@ contains
 
    subroutine printFooter(this, result)
       use PF_AbstractTestResult_mod
-      class (XmlPrinter), intent(in) :: this
+      class (TapListener), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
       write(this%unit,'(a)') '</testsuite>'
@@ -282,7 +291,7 @@ contains
 
    end subroutine printFooter
 
-   function cleanXml(string_in) result(out)
+   function cleanTap(string_in) result(out)
       character(len=*), intent(in) :: string_in
       character(:), allocatable :: out
 
@@ -290,7 +299,7 @@ contains
       out = replaceAll(out, '<', '[')
       out = replaceAll(out, '>', ']')
       out = replaceAll(out, '"', "'")
-   end function cleanXml
+   end function cleanTap
 
    function replaceAll(string_in, search, replace) result(out)
       character(len=*), intent(in) :: string_in
@@ -306,8 +315,10 @@ contains
    end function replaceAll
 
    subroutine addSuccess(this, testName)
-      class (XmlPrinter), intent(inout) :: this
+      class (TapListener), intent(inout) :: this
       character(*), intent(in) :: testName
+
+      write(this%unit,*) 'ok - ',testName
    end subroutine addSuccess
 
-end module PF_XmlPrinter_mod
+end module PF_TapListener_mod

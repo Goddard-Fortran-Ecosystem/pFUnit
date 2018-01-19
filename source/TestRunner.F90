@@ -40,6 +40,7 @@ module PF_TestRunner_mod
       procedure :: startTest
       procedure :: endTest
       procedure :: endRun
+      procedure :: addSuccess
    end type TestRunner
 
    interface newTestRunner
@@ -139,5 +140,11 @@ contains
        character(len=*), intent(in) :: testName
        type (ExceptionList), intent(in) :: exceptions
     end subroutine addFailure
+
+
+   subroutine addSuccess(this, testName)
+      class (TestRunner), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
 
 end module PF_TestRunner_mod

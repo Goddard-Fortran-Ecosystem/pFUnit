@@ -38,6 +38,7 @@ module MockListener_mod
      procedure :: startTest
      procedure :: endTest
      procedure :: endRun
+     procedure :: addSuccess
    end type MockListener
 
 contains
@@ -73,6 +74,11 @@ contains
      class (MockListener), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
    end subroutine endRun
+
+   subroutine addSuccess(this, testName)
+      class (MockListener), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
 
 
 end module MockListener_mod

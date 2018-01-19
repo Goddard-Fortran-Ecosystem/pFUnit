@@ -97,6 +97,7 @@ set(srcs
   AbstractTestResult.F90
   BaseTestRunner.F90
   DebugListener.F90
+  TapListener.F90
   DynamicTestCase.F90
   Exception.F90
   ExceptionVector.F90

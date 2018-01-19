@@ -33,6 +33,7 @@ module PF_TestListener_mod
    contains
      procedure(addFailure), deferred :: addFailure
      procedure(startTest), deferred :: startTest
+     procedure(startTest), deferred :: addSuccess
      procedure(endTest), deferred :: endTest
 !     procedure(startRun), deferred :: startRun  ! make deferred when ready
      procedure(endRun), deferred :: endRun    ! make deferred when ready

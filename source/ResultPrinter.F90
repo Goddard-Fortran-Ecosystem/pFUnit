@@ -43,6 +43,7 @@ module PF_ResultPrinter_mod
       procedure :: printFailures
       procedure :: printFooter
       procedure :: incrementColumn
+      procedure :: addSuccess
    end type ResultPrinter
 
    integer, parameter :: MAX_COLUMN = 80
@@ -204,4 +205,9 @@ contains
 
      end subroutine incrementColumn
 
+   subroutine addSuccess(this, testName)
+      class (ResultPrinter), intent(inout) :: this
+      character(*), intent(in) :: testName
+   end subroutine addSuccess
+     
 end module PF_ResultPrinter_mod

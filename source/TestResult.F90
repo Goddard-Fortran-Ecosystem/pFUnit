@@ -134,8 +134,16 @@ contains
       class (SurrogateTestCase), intent(in) :: aTest
 
       type (ExceptionList) :: noExceptions ! empty
+      integer :: i
+      class (TestListener), pointer :: pListener
 
       call this%successes%push_back(TestFailure(aTest%getName(), noExceptions))
+
+!!$      do i = 1, this%listeners%size()
+!!$         pListener => this%listeners%at(i)
+!!$         call pListener%addSuccess(aTest%getName())
+!!$      end do
+
 
    end subroutine addSuccess
 
