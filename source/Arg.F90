@@ -22,6 +22,7 @@ module pf_Arg_mod
       procedure :: get_type
       procedure :: get_option_strings
       procedure :: get_default
+      procedure :: has_default
       procedure :: get_help
       procedure :: print_help
 
@@ -40,6 +41,9 @@ contains
         & unused, &
         ! Keyword arguments
         & action, type, dest, default, const, help) result(an_option)
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (Arg), target :: an_option
 
       character(len=*), intent(in) :: opt_string_1
@@ -56,21 +60,34 @@ contains
       character(len=*), optional, intent(in) :: help
 
       type (StringVectorIterator) :: iter
+#ifndef __GFORTRAN__
       character(:), pointer :: opt_string
-      
+#else
+      type (String), pointer :: opt_string
+#endif
+
+#ifndef __GFORTRAN__
       call an_option%option_strings%push_back(opt_string_1)
       if (present(opt_string_2)) call an_option%option_strings%push_back(opt_string_2)
       if (present(opt_string_3)) call an_option%option_strings%push_back(opt_string_3)
       if (present(opt_string_4)) call an_option%option_strings%push_back(opt_string_4)
+#else
+      call an_option%option_strings%push_back(String(opt_string_1))
+      if (present(opt_string_2)) call an_option%option_strings%push_back(String(opt_string_2))
+      if (present(opt_string_3)) call an_option%option_strings%push_back(String(opt_string_3))
+      if (present(opt_string_4)) call an_option%option_strings%push_back(String(opt_string_4))
+#endif
 
       if (present(dest)) then
          an_option%destination = dest
       else
          iter = an_option%option_strings%begin()
          do while (iter /= an_option%option_strings%end())
+            
             opt_string => iter%get()
+#ifndef __GFORTRAN__
             if (is_long_option_string(opt_string)) then
-               an_option%destination = opt_string(3:)
+               an_option%destination =  opt_string(3:)
                exit
             else if (is_short_option_string(opt_string)) then
                ! Is a short opt string - possibly default unless earlier short was found
@@ -79,6 +96,18 @@ contains
                end if
                ! Either way - keep trying for a long opt string
             end if
+#else
+            if (is_long_option_string(opt_string%s)) then
+               an_option%destination =  opt_string%s(3:)
+               exit
+            else if (is_short_option_string(opt_string%s)) then
+               ! Is a short opt string - possibly default unless earlier short was found
+               if (.not. allocated(an_option%destination)) then
+                  an_option%destination = opt_string%s(2:2)
+               end if
+               ! Either way - keep trying for a long opt string
+            end if
+#endif            
             call iter%next()
          end do
       end if
@@ -148,11 +177,19 @@ contains
 
    end function get_option_strings
 
+   logical function has_default(this)
+      class(Arg), intent(in) :: this
+
+      has_default = allocated(this%default)
+
+   end function has_default
+
    function get_default(this) result(default)
       class(*), allocatable :: default
       class(Arg), intent(in) :: this
 
-      if (allocated(this%default)) default = this%default
+
+      if (this%has_default()) default = this%default
    end function get_default
 
 
@@ -205,6 +242,9 @@ contains
 
 
    subroutine print_help(this)
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       class (Arg), target, intent(in) :: this
 
       character(:), allocatable :: line
@@ -213,10 +253,18 @@ contains
       line = '  '
       
       iter = this%option_strings%begin()
+#ifndef __GFORTRAN__
       line = line // iter%get()
+#else
+      line = line // to_string(iter%get())
+#endif
       call iter%next()
       do while (iter /= this%option_strings%end())
+#ifndef __GFORTRAN__
          line = line // ', ' //iter%get()
+#else
+         line = line // ', ' // to_string(iter%get())
+#endif
          call iter%next()
       end do
 

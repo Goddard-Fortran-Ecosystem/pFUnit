@@ -31,11 +31,18 @@ contains
 
    @test
    subroutine test_one_option_with_argument()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
+#ifndef __GFORTRAN__
       call arguments%push_back('--arg')
+#else
+      call arguments%push_back(String('--arg'))
+#endif
       call p%add_option('--arg', action='store_true')
       options = p%parse_args(arguments)
       @assertEqual(1, options%size())
@@ -44,14 +51,22 @@ contains
 
    @test
    subroutine test_option_type_logical()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
       class(*), pointer :: opt_value
-     
+
+#ifndef __GFORTRAN__
       call arguments%push_back('--f1')
       call arguments%push_back('--f2')
+#else
+      call arguments%push_back(String('--f1'))
+      call arguments%push_back(String('--f2'))
+#endif
 
       ! present
       call p%add_option('--f1', action='store_true')
@@ -80,14 +95,23 @@ contains
 
    @test
    subroutine test_option_type_integer()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
       class(*), pointer :: opt_value
-     
+
+#ifndef __GFORTRAN__
       call arguments%push_back('-n')
       call arguments%push_back('1')
+#else
+      call arguments%push_back(String('-n'))
+      call arguments%push_back(String('1'))
+#endif
+      
 
       call p%add_option('-n', type='integer', action='store')
       options = p%parse_args(arguments)
@@ -107,6 +131,9 @@ contains
 
    @test
    subroutine test_option_type_integer_default()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments, absent
       type (StringUnlimitedMap) :: options
@@ -127,8 +154,13 @@ contains
          @AssertFail('expected integer')
       end select
 
+#ifndef __GFORTRAN__     
       call arguments%push_back('-n')
       call arguments%push_back('3')
+#else
+      call arguments%push_back(String('-n'))
+      call arguments%push_back(String('3'))
+#endif
       options = p%parse_args(arguments)
       
       @assertEqual(1, options%size())
@@ -148,15 +180,22 @@ contains
 
    @test
    subroutine test_option_type_string()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
       class(*), pointer :: opt_value
-     
+
+#ifndef __GFORTRAN__     
       call arguments%push_back('-f')
       call arguments%push_back('foo')
-
+#else
+      call arguments%push_back(String('-f'))
+      call arguments%push_back(String('foo'))
+#endif
       call p%add_option('-f', type='string', action='store')
       options = p%parse_args(arguments)
 
@@ -167,6 +206,8 @@ contains
       select type (opt_value)
       type is (character(*))
          @AssertEqual('foo', opt_value)
+      type is (String)
+         @AssertEqual('foo', opt_value%s)
       class default
          @AssertFail('expected string')
       end select
@@ -176,15 +217,22 @@ contains
 
    @test
    subroutine test_option_type_real()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
 
       class(*), pointer :: opt_value
      
+#ifndef __GFORTRAN__
       call arguments%push_back('-x')
       call arguments%push_back('1.234')
-
+#else
+      call arguments%push_back(String('-x'))
+      call arguments%push_back(String('1.234'))
+#endif
       call p%add_option('-x', type='real', action='store')
       options = p%parse_args(arguments)
 
@@ -205,6 +253,9 @@ contains
    ! option specifier.   e.g.  "-n3" should be the equivalent of "-n 3".
    @test
    subroutine test_combo_short_option_string()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
@@ -212,7 +263,11 @@ contains
       class(*), pointer :: opt_value
      
       call p%add_option('-n', type='integer')
+#ifndef __GFORTRAN__
       call arguments%push_back('-n3')
+#else
+      call arguments%push_back(String('-n3'))
+#endif
       options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())
@@ -232,6 +287,9 @@ contains
    ! "--foo=3" is equivalent to "--foo 3"
    @test
    subroutine test_combo_long_option_string()
+#ifdef __GFORTRAN__
+     use pf_String_mod
+#endif
       type (ArgParser) :: p
       type (StringVector) :: arguments
       type (StringUnlimitedMap) :: options
@@ -239,7 +297,11 @@ contains
       class(*), pointer :: opt_value
      
       call p%add_option('--foo', type='integer')
+#ifndef __GFORTRAN__
       call arguments%push_back('--foo=3')
+#else
+      call arguments%push_back(String('--foo=3'))
+#endif
       options = p%parse_args(arguments)
 
       @assertEqual(1, options%size())

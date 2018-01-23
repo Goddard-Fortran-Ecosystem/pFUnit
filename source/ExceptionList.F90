@@ -57,6 +57,7 @@ module PF_ExceptionList_mod
      module procedure getNumExceptions_context
   end interface getNumExceptions
 
+
 contains
 
 
@@ -119,8 +120,18 @@ contains
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
 
+      
       if (.not. this%empty()) then
+         ! TLC: Compiler workaround for gfortran 7.2 OSX (1/22/17)
+#ifdef __GFORTRAN__
+         block
+           type (Exception), pointer :: tmp
+           tmp => this%front()
+           anException = tmp
+         end block
+#else
          anException = this%front()
+#endif
          if (preserveMessage(preserve)) return
          
          call this%erase(this%begin())
