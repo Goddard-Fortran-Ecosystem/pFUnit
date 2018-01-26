@@ -16,6 +16,6 @@ set(cpp "-cpp")
 
 set(CMAKE_Fortran_FLAGS_DEBUG  "${no_optimize}")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-set(CMAKE_Fortran_FLAGS "-g ${cpp} ${traceaback} ${check_all} ${disable_warning_for_long_names}")
+set(CMAKE_Fortran_FLAGS "-g ${cpp} ${traceback} ${check_all} ${disable_warning_for_long_names} -save-temps")
 
 add_definitions(-D_INTEL)

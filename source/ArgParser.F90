@@ -121,9 +121,6 @@ contains
 
 
    function parse_args_args(this, arguments, unused, unprocessed) result(option_values)
-#ifdef __GFORTRAN__
-     use pf_String_mod
-#endif
       type (StringUnlimitedMap) :: option_values
       class (ArgParser), intent(in) :: this
       type (StringVector), target, intent(in) :: arguments
@@ -131,11 +128,7 @@ contains
       type (StringVector), optional, intent(out) :: unprocessed
 
       type (StringVectorIterator) :: iter
-#ifndef __GFORTRAN__
       character(:), pointer :: argument
-#else
-      type (String), pointer :: argument
-#endif
 
       type (Arg), pointer :: opt
       integer :: arg_value_int
@@ -150,16 +143,11 @@ contains
       do while (iter /= arguments%end())
          argument => iter%get()
 
-#ifndef __GFORTRAN__
          opt => this%get_option_matching(argument, embedded_value)
-#else
-         opt => this%get_option_matching(argument%s, embedded_value)
-#endif
          if (associated(opt)) then
             select case (opt%get_action())
             case ('store')
 
-#ifndef __GFORTRAN__
                if (embedded_value /= '') then
                   argument => embedded_value
                else
@@ -178,30 +166,6 @@ contains
                   read(argument,*) arg_value_real
                   call option_values%insert(opt%get_destination(), arg_value_real)
                end select
-#else
-               if (embedded_value /= '') then
-                  allocate(argument)
-                  argument%s = embedded_value
-               else
-                  ! Get next argument as value
-                  call iter%next()
-                  argument => iter%get()
-               end if
-
-               select case (opt%get_type())
-               case ('string')
-                  call option_values%insert(opt%get_destination(), argument)
-               case ('integer')
-                  read(argument%s,*) arg_value_int
-                  call option_values%insert(opt%get_destination(), arg_value_int)
-               case ('real')
-                  read(argument%s,*) arg_value_real
-                  call option_values%insert(opt%get_destination(), arg_value_real)
-               end select
-               if (embedded_value /= '') then
-                  deallocate(argument)
-               end if
-#endif
                deallocate(embedded_value)
 
             case ('store_true')
@@ -238,9 +202,6 @@ contains
    end function get_defaults
 
    function get_option_matching(this, argument, embedded_value) result(opt)
-#ifdef __GFORTRAN__
-     use pf_String_mod
-#endif
       type (Arg), pointer :: opt
       class (ArgParser), target, intent(in) :: this
       character(*), intent(in) :: argument
@@ -249,11 +210,7 @@ contains
       type (ArgVectorIterator) :: iter_opt
       type (StringVectorIterator) :: iter_opt_string
 
-#ifndef __GFORTRAN__
       character(:), pointer :: opt_string
-#else
-      type (String), pointer :: opt_string
-#endif
       type (StringVector), pointer :: opt_strings
 
       integer :: n
@@ -266,7 +223,6 @@ contains
          do while (iter_opt_string /= opt_strings%end())
             opt_string => iter_opt_string%get()
 
-#ifndef __GFORTRAN__
             n = len(opt_string)
             if (len(argument) >= n) then ! cannot rely on short-circuit
                if (opt_string == argument(1:n)) then ! matches
@@ -287,28 +243,6 @@ contains
                      
                end if
             end if
-#else
-            n = len(opt_string%s)
-            if (len(argument) >= n) then ! cannot rely on short-circuit
-               if (opt_string%s == argument(1:n)) then ! matches
-
-                  if (opt%is_short_option_string(opt_string%s)) then
-                     embedded_value = argument(n+1:)
-                  else
-                     if (len(argument) >= n+1) then
-                        if (argument(n+1:n+1) == '=') then
-                           embedded_value = argument(n+2:)
-                        end if
-                     else
-                        embedded_value = ''
-                     end if
-                  end if
-
-                  return
-                     
-               end if
-            end if
-#endif
 
             call iter_opt_string%next()
          end do
@@ -342,17 +276,11 @@ contains
    end subroutine print_help
 
    subroutine print_help_header(this)
-#ifdef __GFORTRAN__
-     use pf_String_mod
-#endif
       class (ArgParser), target, intent(in) :: this
 
       character(:), allocatable :: header
-#ifndef __GFORTRAN__
       character(:), pointer :: opt_string
-#else
-      type (String), pointer :: opt_string
-#endif
+
       type (StringVector), pointer :: opt_strings
       type (ArgVectorIterator) :: opt_iter
       type (Arg), pointer :: opt
@@ -365,11 +293,7 @@ contains
 
          opt_strings => opt%get_option_strings()
          opt_string => opt_strings%front()
-#ifndef __GFORTRAN__
          header = header // '[' // opt_string
-#else
-         header = header // '[' // opt_string%s
-#endif
 
          if (opt%get_action() == 'store') then
             header = header // ' ' // upper_case(opt%get_destination())

@@ -76,7 +76,6 @@ set(srcs
   KeywordEnforcer.F90
   MatchObject.F90
   AbstractPattern.F90
-  String.F90
   StringVector.F90
   StringUnlimitedMap.F90
   sfunit_main.F90

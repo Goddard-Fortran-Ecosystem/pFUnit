@@ -11,18 +11,7 @@ contains
       
       n_arguments = command_argument_count()
       do i = 1, n_arguments
-#ifndef __GFORTRAN__
          call arguments%push_back(get_argument(i))
-#else
-         block
-           use pf_String_mod
-           type (String) :: s
-           character(len=:), allocatable :: str
-           str = get_argument(i)
-           s = String(str)
-           call arguments%push_back(s)
-         end block
-#endif         
       end do
 
    end function get_command_line_arguments
