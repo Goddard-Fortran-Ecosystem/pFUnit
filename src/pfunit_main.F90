@@ -5,13 +5,13 @@
 !-----------------------------------------------------------------------------
 
 subroutine funit_main(load_tests, extra_initialize, extra_finalize)
-   use sfunit
+   use FUnit
    implicit none
 
    procedure(), pointer :: extra_initialize, extra_finalize
    interface
       function load_tests()
-         use sfunit
+         use FUnit
          type (TestSuite) :: suite
       end subroutine load_tests
    end interface
@@ -29,14 +29,14 @@ end subroutine funit_main
 
 
 subroutine pfunit_main(load_tests, extra_initialize, extra_finalize)
-   use sfunit
+   use FUnit
    implicit none
 
    procedure(), pointer :: extra_initialize, extra_finalize
 
    interface
       subroutine load_tests(suite)
-         use sfunit
+         use FUnit
          type (TestSuite), intent(out) :: suite
       end subroutine load_tests
    end interface

@@ -10,13 +10,13 @@
 ! that contains the list of test_suites to be builtlinked and executed.
 !
 !
-! For serial runs, the user links with the sfunit library, while for parallel
-! runs the user links with sfunit _and_ pfunit.
+! For serial runs, the user links with the FUnit library, while for parallel
+! runs the user links with FUnit _and_ pFUnit.
 !---------------------------------------------------------------------------
 
 
 program main
-   use sfunit
+   use FUnit
 #ifdef PFUNIT_EXTRA_USAGE
       ! Use external code for whatever suite-wide fixture is in use.
       use PFUNIT_EXTRA_USAGE

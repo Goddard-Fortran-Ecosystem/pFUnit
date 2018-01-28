@@ -1,5 +1,5 @@
 module Test_GlobPattern_mod
-   use sfunit
+   use FUnit
    use PF_GlobPattern_mod
    implicit none
 

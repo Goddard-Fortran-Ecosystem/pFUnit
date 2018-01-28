@@ -1,11 +1,11 @@
 program main
-   use sFUnit, only: initialize
-   use sFUnit, only: finalize
-   use sFUnit, only: TestResult
-   use sFUnit, only: ListenerPointer
-   use sFUnit, only: newResultPrinter
-   use sFUnit, only: stub
-!$$   use sFUnit, only: DebugListener
+   use FUnit, only: initialize
+   use FUnit, only: finalize
+   use FUnit, only: TestResult
+   use FUnit, only: ListenerPointer
+   use FUnit, only: newResultPrinter
+   use FUnit, only: stub
+!$$   use FUnit, only: DebugListener
    implicit none
 
    logical :: success
@@ -17,10 +17,10 @@ program main
 contains
 
    logical function runTests() result(success)
-      use sFUnit, only: newTestSuite
-      use sFUnit, only: TestSuite
-      use sFUnit, only: TestRunner, newTestRunner
-      use sFUnit, only: newSerialContext
+      use FUnit, only: newTestSuite
+      use FUnit, only: TestSuite
+      use FUnit, only: TestRunner, newTestRunner
+      use FUnit, only: newSerialContext
 
       use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)

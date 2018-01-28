@@ -1,5 +1,5 @@
 module Test_Arg_mod
-   use sfunit
+   use FUnit
    implicit none
 
    @suite(name='Arg_suite')

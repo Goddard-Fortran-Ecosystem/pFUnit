@@ -5,7 +5,7 @@
 !-----------------------------------------------------------------------------
 
 subroutine funit_main(load_tests, extra_initialize, extra_finalize)
-   use sfunit
+   use funit
    implicit none
    procedure(LoadTests_interface) :: load_tests
    procedure() :: extra_initialize, extra_finalize

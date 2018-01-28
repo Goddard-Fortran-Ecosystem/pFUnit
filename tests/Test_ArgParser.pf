@@ -1,5 +1,5 @@
 module Test_ArgParser_mod
-   use sfunit
+   use FUnit
 
    @suite(name='ArgParser_suite')
 

@@ -78,7 +78,7 @@ set(srcs
   AbstractPattern.F90
   StringVector.F90
   StringUnlimitedMap.F90
-  sfunit_main.F90
+  funit_main.F90
 #  pfunit_main.F90
   CommandLineArguments.F90
   Arg.F90
@@ -128,7 +128,7 @@ set(srcs
   ThrowFundamentalTypes.F90
   XmlPrinter.F90
 
-  sFUnit.F90
+  FUnit.F90
   )
 
   list (APPEND srcs

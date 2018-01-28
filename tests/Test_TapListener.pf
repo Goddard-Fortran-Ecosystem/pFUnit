@@ -1,5 +1,5 @@
 module Test_TapListener_mod
-   use sfunit
+   use FUnit
    use pf_ExceptionList_mod
    use pf_Exception_mod
    use pf_TapListener_mod

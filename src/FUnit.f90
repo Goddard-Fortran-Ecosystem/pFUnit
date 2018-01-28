@@ -20,7 +20,7 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module sFUnit_private
+module funit_private
    use PF_SourceLocation_mod
    use PF_Exception_mod
    use PF_ExceptionVector_mod
@@ -119,11 +119,11 @@ module sFUnit_private
    end interface
 
 
-end module sFUnit_private
+end module funit_private
 
-module sFUnit
+module FUnit
    ! use these, but do not re-export:
-   use sFUnit_private
+   use funit_private
    use iso_fortran_env, only: OUTPUT_UNIT
    implicit none
    ! add these
@@ -190,7 +190,7 @@ contains
       logical, intent(in) :: use_mpi
 
       if (use_mpi) then
-         print*,'Cannot use MPI - need to link with pfunit not sfunit.'
+         print*,'Cannot use MPI - need to link with pfunit not funit.'
          stop
       end if
       context = SerialContext()
@@ -200,4 +200,4 @@ contains
    subroutine stub()
    end subroutine stub
 
-end module sFUnit
+end module FUnit

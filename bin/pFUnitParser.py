@@ -619,7 +619,7 @@ class Parser():
     def printHeader(self):
         self.outputFile.write('\n')
         self.outputFile.write('module ' + self.wrapModuleName + '\n')
-        self.outputFile.write('   use sFUnit\n')
+        self.outputFile.write('   use FUnit\n')
         if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
         self.outputFile.write('   implicit none\n')
         self.outputFile.write('   private\n\n')
@@ -665,7 +665,7 @@ class Parser():
 
     def printMakeSuite(self):
         self.outputFile.write('function ' + self.suiteName + '() result(suite)\n')
-        self.outputFile.write('   use sFUnit\n')
+        self.outputFile.write('   use FUnit\n')
         if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
         self.outputFile.write('   use '+ self.wrapModuleName + '\n')
         self.outputFile.write('   type (TestSuite) :: suite\n\n')
@@ -810,7 +810,7 @@ class Parser():
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
         declareArgs =  '#ifdef INTEL_13\n'
-        declareArgs +=  '      use sfunit, only: testCase\n'
+        declareArgs +=  '      use FUnit, only: testCase\n'
         declareArgs +=  '#endif\n'
         declareArgs +=  '      type (WrapUserTestCase) :: aTest\n'
         declareArgs +=  '#ifdef INTEL_13\n'

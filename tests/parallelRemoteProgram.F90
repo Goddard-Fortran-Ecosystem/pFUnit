@@ -1,10 +1,10 @@
 program main
    use, intrinsic :: iso_fortran_env
-   use sFUnit, only: initialize, finalize
-   use sFUnit, only: SubsetRunner
-   use sFUnit, only: TestSuite
-   use sFUnit, only: ParallelContext
-   use sFUnit, only: SerialContext, newSerialContext
+   use FUnit, only: initialize, finalize
+   use FUnit, only: SubsetRunner
+   use FUnit, only: TestSuite
+   use FUnit, only: ParallelContext
+   use FUnit, only: SerialContext, newSerialContext
    use robustTestSuite_mod
    implicit none
 
@@ -16,7 +16,7 @@ program main
 contains
 
    subroutine runTests()
-      use sFUnit, only: TestResult
+      use FUnit, only: TestResult
       type (SubsetRunner) :: runner
       type (TestSuite) :: s
       class (ParallelContext), allocatable :: context
