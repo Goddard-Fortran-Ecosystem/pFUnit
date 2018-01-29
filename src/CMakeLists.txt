@@ -47,7 +47,7 @@ endforeach()
 foreach(type Integer Real)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
     set(ofile AssertEqual_${type}_${rank}d.F90)
-    set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/AssertEqual_${type}.tmpl)
+    set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/AssertEqual_${type}.tmpl)
     list(APPEND new_generated_sources ${ofile})
     message("Rank ${rank} ${MAX_ASSERT_RANK}")
     add_custom_command(
@@ -91,9 +91,9 @@ set(srcs
   RepeatPattern.F90
   RegularExpression.F90
   AbstractTestParameter.F90
-  AssertUtilities.F90
-  Assert.F90
-  AssertBasic.F90
+  asserts/AssertUtilities.F90
+  asserts/Assert.F90
+  asserts/AssertBasic.F90
   AbstractTestResult.F90
   BaseTestRunner.F90
   DebugListener.F90

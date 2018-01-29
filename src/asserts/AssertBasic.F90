@@ -601,67 +601,48 @@ contains
 
    subroutine assertIsNaN_single(x, message, location)
       use PF_Params_mod, only: r32
-#ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-#endif
       real(kind=r32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-#ifdef __GFORTRAN__
-      call assertTrue(isNaN(x), message, location)
-#else
       call assertTrue(ieee_is_nan(x), message, location)
-#endif
+
    end subroutine assertIsNaN_single
 
    subroutine assertIsNaN_double(x, message, location)
       use PF_Params_mod, only: r64
-#ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-#endif
       real(kind=r64), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
-#ifdef __GFORTRAN__
-      call assertTrue(isNaN(x), message, location)
-#else
       call assertTrue(ieee_is_nan(x), message, location)
-#endif
+
    end subroutine assertIsNaN_double
 
 
    subroutine assertIsFinite_single(x, message, location)
       use PF_Params_mod, only: r32
-#ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-#endif
       real(kind=r32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
-#ifdef __GFORTRAN__
-      call assertTrue(abs(x) <= huge(x), message, location)
-#else
       call assertTrue(ieee_is_finite(x), message, location)
-#endif
+
    end subroutine assertIsFinite_single
 
    subroutine assertIsFinite_double(x, message, location)
       use PF_Params_mod, only: r64
-#ifndef __GFORTRAN__
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-#endif
+
       real(kind=r64), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      
-#ifdef __GFORTRAN__
-      call assertTrue(abs(x) <= huge(x), message, location)
-#else
+
       call assertTrue(ieee_is_finite(x), message, location)
-#endif
+
    end subroutine assertIsFinite_double
 
 
