@@ -88,15 +88,33 @@ endif()
 
 
 include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-set(FTL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
-ExternalProject_Add(FTL
-  SOURCE_DIR ${FTL_DIR}
-  GIT_REPOSITORY https://github.com/nasa/gFTL.git
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-  INSTALL_DIR .
-  BUILD_COMMAND make
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
-  INSTALL_COMMAND "")
+set(ftl_dir ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
+file(GLOB all_files ${ftl_dir})
+list(LENGTH all_files n_files)
+if(n_files EQUAL 1)
+  # Clone did not use --recurse-submodules
+  ExternalProject_Add(FTL
+    GIT_REPOSITORY https://github.com/nasa/gFTL.git
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+    SOURCE_DIR ${ftl_dir}
+    INSTALL_DIR .
+    DOWNLOAD_COMMAND git submodule init
+    UPDATE_COMMAND git submodule update
+    BUILD_COMMAND make
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+    INSTALL_COMMAND "")
+else()
+  # FTL submodule is already updated
+  ExternalProject_Add(FTL
+    DEPENDS ${ftl_dir}/CMakeLists.txt
+    SOURCE_DIR ${ftl_dir}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+    INSTALL_DIR .
+    UPDATE_COMMAND git submodule update
+    BUILD_COMMAND make
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
+    INSTALL_COMMAND "")
+endif()
   
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")

@@ -1,5 +1,5 @@
 ExternalProject_Get_Property(FTL install_dir)
-include_directories(${FTL_DIR}/include)
+include_directories(${ftl_dir}/include)
 include_directories(${install_dir}/FTL/src/FTL-build/include)
 
 
