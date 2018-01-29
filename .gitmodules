@@ -1,3 +1,3 @@
-[submodule "source/FTL"]
-	path = src/FTL
-	url = /Users/tclune/swdev/FTL
+[submodule "FTL"]
+	path = FTL
+	url = https://github.com/nasa/gFTL.git

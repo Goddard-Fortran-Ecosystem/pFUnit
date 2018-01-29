@@ -1,17 +1,4 @@
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-
-set(FTL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
-ExternalProject_Add(FTL
-  SOURCE_DIR ${FTL_DIR}
-  SOURCE_SUBDIR .
-  PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-  INSTALL_DIR .
-  BUILD_COMMAND make
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
-  INSTALL_COMMAND "")
-
 ExternalProject_Get_Property(FTL install_dir)
-
 include_directories(${FTL_DIR}/include)
 include_directories(${install_dir}/FTL/src/FTL-build/include)
 
