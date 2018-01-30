@@ -196,6 +196,12 @@ contains
            &                  testAssertIsFinite))
 
       call suite%addTest( &
+           &   newTestMethod('testAssertIsNotNaN', &
+           &                  testAssertIsNotNaN))
+      call suite%addTest( &
+           &   newTestMethod('testAssertIsInfinite', &
+           &                  testAssertIsInfinite))
+      call suite%addTest( &
            &   newTestMethod('testAssertFail', &
            &                  testAssertFail))
       call suite%addTest( &
@@ -555,6 +561,22 @@ contains
  
    end subroutine testAssertIsNaN
 
+
+   subroutine testAssertIsNotNaN()
+      use MakeNaN_mod, only: makeNaN_32, makeNaN_64
+
+      call assertIsNotNaN(1.e0,'not Nan')
+      call assertIsNotNaN(makeNan_32(),'is NaN')
+      call assertExceptionRaised('is NaN')
+
+      call assertIsNotNaN(1.d0,'not Nan')
+      call assertIsNotNaN(makeNan_64(),'is NaN')
+      call assertExceptionRaised('is NaN')
+
+ 
+   end subroutine testAssertIsNotNaN
+
+
    subroutine testAssertIsFinite()
       use MakeInfinity_mod, only: makeInf_32, makeInf_64
 
@@ -567,6 +589,19 @@ contains
       call assertExceptionRaised('not finite')
 
    end subroutine testAssertIsFinite
+
+   subroutine testAssertIsInfinite()
+      use MakeInfinity_mod, only: makeInf_32, makeInf_64
+
+      call assertIsInfinite(1.e0, 'finite')
+      call assertExceptionRaised('finite')
+      call assertIsInfinite(1.d0, 'finite')
+      call assertExceptionRaised('finite')
+
+      call assertIsInfinite(makeInf_32())
+      call assertIsInfinite(makeInf_64())
+
+   end subroutine testAssertIsInfinite
 
    subroutine testAssertExceptionRaised()
       use PF_ExceptionList_mod, only: throw

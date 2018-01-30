@@ -66,7 +66,9 @@ module PF_AssertBasic_mod
    public :: assertNotAll
 
    public :: assertIsNaN
+   public :: assertIsNotNaN
    public :: assertIsFinite
+   public :: assertIsInfinite
 
 
    ! Utility procedures
@@ -116,6 +118,16 @@ module PF_AssertBasic_mod
       module procedure assertIsFinite_single
       module procedure assertIsFinite_double
    end interface assertIsFinite
+
+   interface assertIsNotNaN
+      module procedure assertIsNotNan_single
+      module procedure assertIsNotNan_double
+   end interface assertIsNotNaN
+
+   interface assertIsInfinite
+      module procedure assertIsInfinite_single
+      module procedure assertIsInfinite_double
+   end interface assertIsInfinite
 
    ! Arguments of the type below are used to force keyword arguments
    ! for optional arguments. 
@@ -622,6 +634,29 @@ contains
    end subroutine assertIsNaN_double
 
 
+   subroutine assertIsNotNaN_single(x, message, location)
+      use PF_Params_mod, only: r32
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=r32), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_single
+
+   subroutine assertIsNotNaN_double(x, message, location)
+      use PF_Params_mod, only: r64
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=r64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_double
+
+
    subroutine assertIsFinite_single(x, message, location)
       use PF_Params_mod, only: r32
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
@@ -644,6 +679,29 @@ contains
       call assertTrue(ieee_is_finite(x), message, location)
 
    end subroutine assertIsFinite_double
+
+   subroutine assertIsInfinite_single(x, message, location)
+      use PF_Params_mod, only: r32
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=r32), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsInfinite_single
+
+   subroutine assertIsInfinite_double(x, message, location)
+      use PF_Params_mod, only: r64
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+
+      real(kind=r64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsInfinite_double
 
 
 end module PF_AssertBasic_mod

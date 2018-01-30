@@ -50,8 +50,8 @@ contains
 
    @test
    subroutine test_asterisk()
-      type (RegularExpression) :: r
-
+!!$      type (RegularExpression) :: r
+!!$
 !!$      r = RegularExpression('a*')
 !!$
 !!$      @assertFalse(r%match(''), '')
