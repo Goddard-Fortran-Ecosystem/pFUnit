@@ -21,8 +21,8 @@
 !
 !-------------------------------------------------------------------------------
 module PF_MockRepository_mod
-   use PF_Expectation_mod, only : Expectation, newExpectation
-   use PF_Expectation_mod, only : newSubject, newSubjectNameOnly
+   use PF_Expectation_mod, only : Expectation
+   use PF_Expectation_mod, only : Subject
    use PF_Expectation_mod, only : Predicate
    use PF_Expectation_mod, only : wasCalled! , wasNotCalled, wasCalledOnce
 
@@ -152,11 +152,11 @@ contains
      class (MockRepository), intent(inout) :: this
      procedure(subVoid), pointer, intent(in) :: sub
 !     procedure(subVoid), pointer, intent(in) :: subptr
-     type(Predicate), intent(in) :: pred
+     class(Predicate), intent(in) :: pred
      type(Expectation) exp
 
-     exp = newExpectation( &
-          & newSubject( 'dummy-sub-name', sub), &
+     exp = Expectation( &
+          & Subject( 'dummy-sub-name', sub), &
           & pred )
 
      ! <exp ok> & <enough space in list>
@@ -170,12 +170,10 @@ contains
      character(len=*), intent(in) :: subName
 !     procedure(subVoid), pointer, intent(in) :: sub
 !     procedure(subVoid), pointer, intent(in) :: subptr
-     type(Predicate), intent(in) :: pred
+     class (Predicate), intent(in) :: pred
      type(Expectation) exp
 
-     exp = newExpectation( &
-          & newSubjectNameOnly( subName ), &
-          & pred )
+     exp = Expectation( Subject(subName), pred )
 
      ! <exp ok> & <enough space in list>
      this%lastExpectation = this%lastExpectation + 1
@@ -191,9 +189,9 @@ contains
      ! <if space in registry>
      this%lastRegistration = this%lastRegistration + 1
      this%callRegistry(this%lastRegistration) &
-          & = newExpectation( & ! mlr todo Expectation --> foundAction -- "Result"
-          &                  newSubjectNameOnly(subName), &
-          &                  wasCalled )
+          & = Expectation( & ! mlr todo Expectation --> foundAction -- "Result"
+          &                  Subject(subName), &
+          &                  wasCalled() )
    end subroutine registerMockCallBy_subName_
 
    subroutine verify(this)
@@ -221,56 +219,27 @@ contains
          exp => this%Expectations(iExp)
          ok = .false.
 
-!         if(exp%pred%name .eq. 'wasCalled')then
-!            ok = .false.
-!            do iReg=1,this%lastRegistration
-!               reg = this%callRegistry(iReg)
-!!               print *,'verify1000: ', &
-!!                    & trim(exp%subj%name)//'='// &
-!!                    & trim(reg%subj%name)//', '// &
-!!                    & trim(exp%pred%name)//'='// &
-!!                    & trim(reg%pred%name)//'.'
-!               if(exp%subj%name .eq. reg%subj%name) then
-!                  if(exp%pred%name .eq. reg%pred%name) then
-!   !???               if(exp%pred .eq. reg%pred) then
-!                     ok=.true.
-!                  end if
-!               end if
-!            end do
-!         end if
-!
-!         if(exp%pred%name .eq. 'wasNotCalled')then
-!            ok = .true.
-!            do iReg=1,this%lastRegistration
-!               reg = this%callRegistry(iReg)
-!               if(exp%subj%name .eq. reg%subj%name) then
-!                  if(trim(reg%pred%name).eq.'wasCalled')then
-!                     ok = .false.
-!                  end if
-!               end if
-!            end do
-!         end if
-
+         
          if( &
-              & (exp%pred%name .eq. 'wasCalled') .or. &
-              & (exp%pred%name .eq. 'wasCalledOnce') .or. &
-              & (exp%pred%name .eq. 'wasNotCalled') &
+              & (exp%pred%get_name() == 'wasCalled') .or. &
+              & (exp%pred%get_name() == 'wasCalledOnce') .or. &
+              & (exp%pred%get_name() == 'wasNotCalled') &
               & )then
             ok = .true.
             nCalls = 0
             do iReg=1,this%lastRegistration
                reg => this%callRegistry(iReg)
                if(exp%subj%name .eq. reg%subj%name) then
-                  if(trim(reg%pred%name).eq.'wasCalled')then
+                  if(reg%pred%get_name() == 'wasCalled')then
                      nCalls=nCalls+1
                   end if
                end if
             end do
-            if(exp%pred%name .eq. 'wasCalled')then
+            if(exp%pred%get_name() == 'wasCalled')then
                ok = nCalls.ge.1
-            else if(exp%pred%name .eq. 'wasCalledOnce')then
+            else if(exp%pred%get_name() == 'wasCalledOnce')then
                ok = nCalls.eq.1
-            else if(exp%pred%name .eq. 'wasNotCalled')then
+            else if(exp%pred%get_name() == 'wasNotCalled')then
                ok = nCalls.eq.0
             end if
 
@@ -278,7 +247,7 @@ contains
 
          if(.not.ok)then
             call throw('Expectations not met:  "'// &
-                 & trim(exp%subj%name)//'" "'//trim(exp%pred%name)//'" does not hold.')
+                 & trim(exp%subj%name)//'" "'//exp%pred%get_name()//'" does not hold.')
          end if
       end do
 
