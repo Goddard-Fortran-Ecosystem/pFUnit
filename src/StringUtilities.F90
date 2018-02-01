@@ -43,14 +43,13 @@ module PF_StringUtilities_mod
    
    public :: toString
    public :: appendWithSpace
-   public :: MAXLEN_STRING
+   public :: MAXLEN_BUFFER
    public :: nullTerminate
    public :: unlessScalar
    public :: WhitespaceOptions, IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
    public :: whitespacep, trimAll, trimTrailingWhitespace
 
-   integer, parameter :: MAXLEN_STRING = 80
-!   integer, parameter :: MAXLEN_STRING = 80*5
+   integer, parameter :: MAXLEN_BUFFER = 80
 
    interface toString
       module Procedure toString_real64Scalar
@@ -86,90 +85,106 @@ module PF_StringUtilities_mod
 
 contains
 
-   character(len=MAXLEN_STRING) function toString_complex64Scalar(value) result(buffer)
+   function toString_complex64Scalar(value) result(string)
+      character(:), allocatable :: string
       complex(kind=r64), intent(in) :: value
+      character(len=MAXLEN_BUFFER) :: buffer
 
-!      write(buffer,'(2(SP,G14.7))') value
       write(buffer,c64fmt1) value
-      buffer = adjustL(buffer)
+      string = adjustL(trim(buffer))
 
     end function toString_complex64Scalar
 
-   character(len=MAXLEN_STRING) function toString_complexScalar(value) result(buffer)
+   function toString_complexScalar(value) result(string)
+      character(:), allocatable :: string
       complex, intent(in) :: value
+      character(len=MAXLEN_BUFFER) :: buffer
 
-!      write(buffer,'(2(SP,G14.7))') value
       write(buffer,c32fmt1) value
-      buffer = adjustL(buffer)
+      string = adjustL(trim(buffer))
 
    end function toString_complexScalar
 
-   character(len=MAXLEN_STRING) function toString_real64Scalar(value) result(buffer)
+   function toString_real64Scalar(value) result(string)
+      character(:), allocatable :: string
       real(kind=r64), intent(in) :: value
+      character(len=MAXLEN_BUFFER) :: buffer
 
       write(buffer,'(SP,G14.7)') value
-      buffer = adjustL(buffer)
+      string = adjustL(trim(buffer))
 
     end function toString_real64Scalar
 
-   character(len=MAXLEN_STRING) function toString_realScalar(value) result(buffer)
+   function toString_realScalar(value) result(string)
+      character(:), allocatable :: string
       real(kind=r32), intent(in) :: value
+      character(len=MAXLEN_BUFFER) :: buffer
 
       write(buffer,'(SP,G14.7)') value
-      buffer = adjustL(buffer)
+      string = adjustL(trim(buffer))
 
    end function toString_realScalar
 
-   character(len=MAXLEN_STRING) function toString_integerScalar_i32(value) result(buffer)
+   function toString_integerScalar_i32(value) result(string)
+      character(:), allocatable :: string
       integer(kind=i32), intent(in) :: value
       character(len=20) :: fmt
+      character(len=MAXLEN_BUFFER) :: buffer
 
       fmt = '(I0)'
       write(buffer,trim(fmt)) value
-      buffer = adjustL(buffer)
+      string = adjustL(trim(buffer))
 
     end function toString_integerScalar_i32
 
    function toString_integer1D_i32(arrayShape) result(string)
+      character(:), allocatable :: string
       integer(kind=i32), intent(in) :: arrayShape(:)
-      character(len=MAXLEN_STRING) :: string
+      character(len=MAXLEN_BUFFER) :: buffer
 
       select case (size(arrayShape)) ! rank
       case (0) ! scalar
          string = '0'
       case (1)
-         write(string,'(i0)') arrayShape(1)
+         write(buffer,'(i0)') arrayShape(1)
+         string = trim(buffer)
       case (2:)
-         write(string,'(i0,14(",",i0:))') arrayShape(1:)
+         write(buffer,'(i0,14(",",i0:))') arrayShape(1:)
+         string = trim(buffer)
       end select
 
-      string = '[' // trim(string) // ']'
+      string = '[' // string // ']'
     end function toString_integer1D_i32
 
-   character(len=MAXLEN_STRING) function toString_integerScalar_i64(value) result(buffer)
+   function toString_integerScalar_i64(value) result(string)
+      character(:), allocatable :: string
       integer(kind=i64), intent(in) :: value
       character(len=20) :: fmt
+      character(len=MAXLEN_BUFFER) :: buffer
 
       fmt = '(I0)'
       write(buffer,trim(fmt)) value
-      buffer = adjustL(buffer)
+      string = adjustl(trim(buffer))
 
     end function toString_integerScalar_i64
 
    function toString_integer1D_i64(arrayShape) result(string)
+      character(:), allocatable :: string
       integer(kind=i64), intent(in) :: arrayShape(:)
-      character(len=MAXLEN_STRING) :: string
+      character(len=MAXLEN_BUFFER) :: buffer
 
       select case (size(arrayShape)) ! rank
       case (0) ! scalar
          string = '0'
       case (1)
-         write(string,'(i0)') arrayShape(1)
+         write(buffer,'(i0)') arrayShape(1)
+         string = trim(buffer)
       case (2:)
-         write(string,'(i0,14(",",i0:))') arrayShape(1:)
+         write(buffer,'(i0,14(",",i0:))') arrayShape(1:)
+         string = trim(buffer)
       end select
 
-      string = '[' // trim(string) // ']'
+      string = '[' // string // ']'
     end function toString_integer1D_i64
 
    
@@ -191,7 +206,7 @@ contains
    function nullTerminate(string) result(nullTerminatedString)
       use, intrinsic :: iso_c_binding
       character(len=*), intent(in) :: string
-      character(len=:), allocatable :: nullTerminatedString
+      character(:), allocatable :: nullTerminatedString
 
       nullTerminatedString = trim(string) // C_NULL_CHAR
 
@@ -200,7 +215,7 @@ contains
    function unlessScalar(vShape,string) result(retString)
      integer, intent(in), dimension(:) :: vShape
      character(len=*), intent(in) :: string
-     character(len=:), allocatable :: retString
+     character(:), allocatable :: retString
      retString=""
      if(size(vShape).ne.0)then
         retString=string
@@ -217,7 +232,7 @@ contains
 
    function trimAll(s) result(trimmed)
      character(len=*), intent(in) :: s
-     character(len=:), allocatable :: trimmed
+     character(:), allocatable :: trimmed
      integer :: i,lenS,leadingWhite,trailingWhite,lenTrimmed
 
      lenS = len(s)
@@ -249,7 +264,7 @@ contains
 
    function trimTrailingWhitespace(s) result(trimmed)
      character(len=*), intent(in) :: s
-     character(len=:), allocatable :: trimmed
+     character(:), allocatable :: trimmed
      integer :: i,lenS
      integer :: trailingWhite,lenTrimmed
      integer :: leadingWhite
@@ -275,10 +290,7 @@ contains
      end do
 
      lenTrimmed = lenS-trailingWhite
-     allocate(character(lenTrimmed) :: trimmed)
-     do i = 1,lenTrimmed
-        trimmed(i:i) = s(i:i)
-     end do
+     trimmed = s(1:lenTrimmed)
 
    end function trimTrailingWhitespace
 
