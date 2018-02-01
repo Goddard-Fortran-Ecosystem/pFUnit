@@ -14,6 +14,7 @@ set(OTHER_SOURCES
 
 set(pf_tests
   Test_ExceptionList.pf
+  newTest_AssertReal.pf
   Test_Arg.pf
   Test_ArgParser.pf
   Test_GlobPattern.pf
@@ -51,7 +52,7 @@ set(SERIAL_TEST_SRCS
   Test_MockCall.F90
   Test_MockRepository.F90
   Test_SimpleTestCase.F90
-  Test_StringConversionUtilities.F90
+  Test_StringUtilities.F90
   Test_TestMethod.F90
   Test_TestResult.F90
   Test_XmlPrinter.F90

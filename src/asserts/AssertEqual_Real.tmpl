@@ -190,7 +190,7 @@ contains
       ! Wish: allocatable strings were useful as internal files ...
       write(expected_str,'(g0)') e
       write(actual_str,'(g0)') a
-      write(diff_str,'(g0," greater than tolerance of ",g0)') d, tolerance
+      write(diff_str,'("<",g0,"> (greater than tolerance of ",g0,")")') d, tolerance
       
 #if {actual.rank} == 0
       call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &

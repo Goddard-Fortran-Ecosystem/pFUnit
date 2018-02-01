@@ -431,7 +431,7 @@ ifElseString(tolerance == 0,\
     use PF_Params_mod
     use PF_Exception_mod
     use PF_ExceptionList_mod
-    use PF_StringConversionUtilities_mod
+    use PF_StringUtilities_mod
     use PF_ThrowFundamentalTypes_mod, only : locationFormat
     implicit none
     integer, intent(in), dimension(:) :: eShape, fShape
@@ -1066,7 +1066,7 @@ def declareUSES(internalRoutines=[]):
    use PF_Exception_mod
    use PF_ExceptionList_mod
    use PF_SourceLocation_mod
-   use PF_StringConversionUtilities_mod
+   use PF_StringUtilities_mod
    use PF_AssertArraysSupport_mod
 """
     for i in internalRoutines:
@@ -1412,7 +1412,7 @@ def declareUSES_() :
    use PF_Exception_mod
    use PF_ExceptionList_mod
    use PF_SourceLocation_mod
-   use PF_StringConversionUtilities_mod
+   use PF_StringUtilities_mod
 """
 
 

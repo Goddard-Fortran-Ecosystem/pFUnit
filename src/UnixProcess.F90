@@ -68,7 +68,7 @@ contains
 
    function newProcess(command, runInBackground) result(process)
       use PF_UnixPipeInterfaces_mod, only: popen
-      use PF_StringConversionUtilities_mod, only: nullTerminate
+      use PF_StringUtilities_mod, only: nullTerminate
       use PF_ExceptionList_mod, only: throw
       type (UnixProcess) :: process
       character(len=*), intent(in) :: command
@@ -106,7 +106,7 @@ contains
    ! Background commands must return a PID for further interactions.
    ! Also commands need to be null-terminated to send to C procedures.
    function makeCommand(baseCommand, runInBackground) result(command)
-      use PF_StringConversionUtilities_mod, only: nullTerminate
+      use PF_StringUtilities_mod, only: nullTerminate
       character(len=:), allocatable :: command
       character(len=*), intent(in) :: baseCommand
       logical, optional, intent(in) :: runInBackground

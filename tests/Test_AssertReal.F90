@@ -37,7 +37,7 @@
 module Test_AssertReal_mod ! note name
   use PF_TestSuite_mod
   use PF_Params_mod, only : r32, i64
-  use PF_StringConversionUtilities_mod, only: toString, appendWithSpace
+  use PF_StringUtilities_mod, only: toString, appendWithSpace
   use PF_AssertBasic_mod
   use PF_Assert_mod, only: assertEqual
   use PF_Assert_mod, only: assertGreaterThan

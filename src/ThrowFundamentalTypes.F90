@@ -24,9 +24,9 @@
 module PF_ThrowFundamentalTypes_mod
 
   use PF_Params_mod
-  use PF_StringConversionUtilities_mod
+  use PF_StringUtilities_mod
   use PF_Exception_mod
-    use PF_ExceptionList_mod
+  use PF_ExceptionList_mod
   use PF_SourceLocation_mod
 
   implicit none
@@ -36,19 +36,6 @@ module PF_ThrowFundamentalTypes_mod
   public :: throwNonConformable
   public :: throwDifferentValues
   public :: throwDifferentValuesWithLocation
-
-!mlr-!!! Can we put these in one place?
-!mlr-   integer, parameter :: MAX_LEN_MSG   = 1000
-!mlr-   integer, parameter :: MAX_LEN_FLOAT = 25
-!mlr-   integer, parameter :: MAX_LEN_INT   = 15
-!mlr-  
-!mlr-   integer, parameter :: L_INFINITY_NORM = 0
-!mlr-   integer, parameter :: L1_NORM         = 1
-!mlr-   integer, parameter :: L2_NORM         = 2
-
-!  interface locationFormat
-!     module procedure locationFormat
-!  end interface locationFormat
 
   interface throwDifferentValues
      module procedure throwDifferentValues_ii

@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: StringConversionUtilities
+!  MODULE: StringUtilities
 !
 !> @brief
 !! A collection of utilities used throughout the framework.
@@ -33,7 +33,7 @@
 ! Further control of field width could be added at a later time.
 !
 
-module PF_StringConversionUtilities_mod
+module PF_StringUtilities_mod
 
   use PF_Params_mod, only : r32, r64
   use PF_Params_mod, only : i32, i64
@@ -108,7 +108,6 @@ contains
       real(kind=r64), intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
-!      write(buffer,r64fmt1) value
       buffer = adjustL(buffer)
 
     end function toString_real64Scalar
@@ -117,41 +116,9 @@ contains
       real(kind=r32), intent(in) :: value
 
       write(buffer,'(SP,G14.7)') value
-!      print *,'r32fmt1: ',r32fmt1
-!      print *,'       : ','(SP,G14.7)'
-!      print *,'=?     : ','(SP,G14.7)'.EQ.r32fmt1
-!      write(buffer,r32fmt1)
       buffer = adjustL(buffer)
 
    end function toString_realScalar
-
-!-   character(len=MAXLEN_STRING) function toString_integerScalar(value) result(buffer)
-!-      integer, intent(in) :: value
-!-      character(len=20) :: fmt
-!-
-!-      fmt = '(I0)'
-!-      write(buffer,trim(fmt)) value
-!-      buffer = adjustL(buffer)
-!-
-!-   end function toString_integerScalar
-!-
-!-   function toString_integer1D(arrayShape) result(string)
-!-      integer, intent(in) :: arrayShape(:)
-!-      character(len=MAXLEN_STRING) :: string
-!-
-!-!      integer :: i
-!-      
-!-      select case (size(arrayShape)) ! rank
-!-      case (0) ! scalar
-!-         string = '0'
-!-      case (1)
-!-         write(string,'(i0)') arrayShape(1)
-!-      case (2:)
-!-         write(string,'(i0,14(",",i0:))') arrayShape(1:)
-!-      end select
-!-
-!-      string = '[' // trim(string) // ']'
-!-   end function toString_integer1D
 
    character(len=MAXLEN_STRING) function toString_integerScalar_i32(value) result(buffer)
       integer(kind=i32), intent(in) :: value
@@ -167,8 +134,6 @@ contains
       integer(kind=i32), intent(in) :: arrayShape(:)
       character(len=MAXLEN_STRING) :: string
 
-!      integer :: i
-      
       select case (size(arrayShape)) ! rank
       case (0) ! scalar
          string = '0'
@@ -195,8 +160,6 @@ contains
       integer(kind=i64), intent(in) :: arrayShape(:)
       character(len=MAXLEN_STRING) :: string
 
-!      integer :: i
-      
       select case (size(arrayShape)) ! rank
       case (0) ! scalar
          string = '0'
@@ -320,9 +283,4 @@ contains
    end function trimTrailingWhitespace
 
 
-
-     
-
-
-
-end module PF_StringConversionUtilities_mod
+end module PF_StringUtilities_mod

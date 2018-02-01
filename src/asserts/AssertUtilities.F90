@@ -3,7 +3,8 @@
 module pf_AssertUtilities_mod
    use pf_KeywordEnforcer_mod
    use pf_SourceLocation_mod
-   use pf_StringConversionUtilities_mod
+   use pf_StringUtilities_mod
+   use pf_ExceptionList_mod
    implicit none
    private
 
@@ -62,7 +63,8 @@ contains
       fail_message = fail_message // '   Expected shape: ' // toString(shape_expected) // new_line('A')
       fail_message = fail_message // '   Actual shape:   ' // toString(shape_actual) // new_line('A')
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_conformable
 
@@ -76,21 +78,22 @@ contains
       ! Keyword arguments
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = 'ArrayAssertEqual failure:' // new_line('A')
-      fail_message = fail_message // '    Expected: <' // expected // '>' // new_line('A')
-      fail_message = fail_message // '    Actual:   <' // actual // '>' // new_line('A')
-      fail_message = fail_message // '    Difference: <' // difference // '>' // new_line('A')
+      fail_message = 'ArrayAssertEqual failure:'
+      fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
+      fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
+      fail_message = fail_message // new_line('A') // '    Difference: ' // difference
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // new_line('A') // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_equal
    
@@ -109,17 +112,18 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = 'ArrayAssertNotEqual failure:' // new_line('A')
-      fail_message = fail_message // '    Same value: <' // actual // '>' // new_line('A')
+      fail_message = 'ArrayAssertNotEqual failure:'
+      fail_message = fail_message // new_line('A') // '    Same value: <' // actual // '>'
       if (present(difference)) then
-         fail_message = fail_message // '    Difference: <' // difference // '>' // new_line('A')
+         fail_message = fail_message // new_line('A') // '    Difference: <' // difference // '>'
       end if
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
-      call throw(fail_message, message, location)
-      
+      if (present(message))  fail_message = fail_message // new_line('A') // message
+      call throw(fail_message, location)
+
    end subroutine fail_equal
    
 
@@ -145,7 +149,8 @@ contains
          fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
       end if
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_less_than
    
@@ -171,7 +176,8 @@ contains
          fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
       end if
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_less_than_or_equal
    
@@ -196,7 +202,8 @@ contains
          fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
       end if
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_greater_than
    
@@ -222,7 +229,8 @@ contains
          fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
       end if
 
-      call throw(fail_message, message, location)
+      if (present(message))  fail_message = fail_message // message
+      call throw(fail_message, location)
       
    end subroutine fail_not_greater_than_or_equal
    

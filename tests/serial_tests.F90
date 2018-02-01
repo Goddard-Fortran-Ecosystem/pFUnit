@@ -22,7 +22,7 @@ contains
       use FUnit, only: TestRunner, newTestRunner
       use FUnit, only: newSerialContext
 
-      use Test_StringConversionUtilities_mod, only: StringConversionUtilitiesSuite => suite    ! (1)
+      use Test_StringUtilities_mod, only: StringUtilitiesSuite => suite    ! (1)
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
@@ -67,7 +67,7 @@ contains
 
 #define ADD(suite) call allTests%addTest(suite())
 
-      ADD(StringConversionUtilitiesSuite)
+      ADD(StringUtilitiesSuite)
       ADD(UnixProcessSuite)
       ADD(exceptionSuite)
       ADD(assertBasicSuite)

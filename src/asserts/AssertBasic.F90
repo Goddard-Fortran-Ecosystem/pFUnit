@@ -47,7 +47,7 @@ module PF_AssertBasic_mod
    use PF_Exception_mod
    use PF_ExceptionList_mod
    use PF_SourceLocation_mod
-   use PF_StringConversionUtilities_mod
+   use PF_StringUtilities_mod
    implicit none
    private
    
@@ -77,7 +77,7 @@ module PF_AssertBasic_mod
    
    public :: UnusableArgument
 
-   ! from StringConversionUtilities
+   ! from StringUtilities
    public :: WhitespaceOptions
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 

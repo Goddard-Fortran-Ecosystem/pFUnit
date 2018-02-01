@@ -81,6 +81,7 @@ set(srcs
   asserts/AssertUtilities.F90
   asserts/Assert.F90
   asserts/AssertBasic.F90
+  asserts/AssertString.F90
   AbstractTestResult.F90
   BaseTestRunner.F90
   DebugListener.F90
@@ -98,7 +99,7 @@ set(srcs
   ResultPrinter.F90
   SerialContext.F90
   SourceLocation.F90
-  StringConversionUtilities.F90
+  StringUtilities.F90
   SubsetRunner.F90
   SurrogateTestCase.F90
   Test.F90

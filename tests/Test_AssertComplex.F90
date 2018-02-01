@@ -37,16 +37,11 @@ module Test_AssertComplex_mod ! note name
 !  use PF_Exception_mod, only: getNumExceptions, anyExceptions
   use PF_TestSuite_mod
   use PF_Params_mod, only : r32, i64, i32
-  use PF_StringConversionUtilities_mod, only: toString, appendWithSpace
+  use PF_StringUtilities_mod, only: toString, appendWithSpace
   use PF_AssertBasic_mod
   use PF_Assert_mod
   use PF_AssertArraysSupport_mod, only: differenceReport, valuesReport
-!   AssertReal_mod, only: assertEqual, differenceReport, valuesReport
-!   AssertComplex_mod, only: assertEqual
-!   AssertComplex_mod, only: assertNotEqual
-!   AssertComplex_mod, only: assertRelativelyEqual
   use PF_ThrowFundamentalTypes_mod, only: locationFormat
-! , differenceReport, valuesReport
   use PF_SourceLocation_mod
 
   implicit none

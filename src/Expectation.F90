@@ -4,7 +4,7 @@
 ! 
 
 module PF_Expectation_mod
-  use PF_StringConversionUtilities_mod, only : MAXLEN_STRING
+  use PF_StringUtilities_mod, only : MAXLEN_STRING
   implicit none
   private
 

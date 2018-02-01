@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_StringConversionUtilities_mod
+!  MODULE: Test_StringUtilities_mod
 !
 !> @brief
 !! <BriefDescription>
@@ -21,9 +21,9 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_StringConversionUtilities_mod
+module Test_StringUtilities_mod
    use PF_TestSuite_mod, only: TestSuite, newTestSuite
-   use PF_StringConversionUtilities_mod, only: toString
+   use PF_StringUtilities_mod, only: toString
    use PF_Assert_mod
    implicit none
    private
@@ -37,7 +37,7 @@ contains
       use PF_TestMethod_mod, only: newTestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('StringConversionUtilities')
+      suite = newTestSuite('StringUtilities')
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
       call suite%addTest( &
@@ -98,4 +98,4 @@ contains
       call assertEqual('-1234567.',toString(-1234567.))
    end subroutine testToString_realNegative
 
-end module Test_StringConversionUtilities_mod
+end module Test_StringUtilities_mod
