@@ -14,7 +14,7 @@ module newTest_AssertReal_mod
 
 contains
 
-   ! Sanity check - verify that all combinatinos of optional arguments are allowed.
+   ! Sanity check - verify that all combinations of optional arguments are allowed.
    @test
    subroutine test_equal_real_0d_real_0d_real_0d()
       @assertEqual(1.0, 1.0)
@@ -22,17 +22,56 @@ contains
       @assertEqual(1.0, 1.0, message='placeholder')
    end subroutine test_equal_real_0d_real_0d_real_0d
 
+   ! Other shapes, dimensions
+   @test
+   subroutine test_equal_real_0d_real_1d_real_0d()
+
+      @assertEqual(1.0, [1.0])
+      @assertEqual(1.0, [1.0,1.0], tolerance=0.0)
+      @assertEqual([1.0,1.0], [1.0,1.0], tolerance=0.0)
+      @assertEqual(1.0, reshape([1.0],[1,1]))
+      @assertEqual(reshape([1.0,2.0,3.0,3.0],[2,2]), reshape([1.0,2.0,3.0,3.0],[2,2]))
+
+   end subroutine test_equal_real_0d_real_1d_real_0d
+   
+   ! Check that tolerance works
+   @test
+   subroutine test_equal_within_tolerance()
+      @assertEqual(1.0, 1.09, tolerance=0.1)
+      @assertEqual(1.0, 0.91, tolerance=0.1)
+   end subroutine test_equal_within_tolerance
+
+   ! Check that integer expected is acceptable
+   @test
+   subroutine test_integer_expected()
+      @assertEqual(1, 1.0)
+      @assertEqual(1, 1.0d0)
+   end subroutine test_integer_expected
+
+
+   ! Test conformability check
+   !@test
+   subroutine test_conformability()
+      call assertEqual([1.0], [1.0, 1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure: ' // new_line('a') // &
+           & '   Expected shape: [1]' // new_line('a') // &
+           & '   Actual shape:   [2]' &
+           & )
+   end subroutine test_conformability
+
+
    ! Test formatting of failure messages
    @test
    subroutine test_equal_fail()
-      call assertEqual(1.0,2.0)
+      call assertEqual(1.0, 2.0)
       call assertExceptionRaised(&
            & 'ArrayAssertEqual failure:' // new_line('a') // &
            & '    Expected: <1.000000>' // new_line('a') // &
            & '    Actual:   <2.000000>' // new_line('a') // &
            & '    Difference: <1.000000> (greater than tolerance of 0.)' &
-      & )
+           & )
    end subroutine test_equal_fail
-   
+
 end module newTest_AssertReal_mod
    

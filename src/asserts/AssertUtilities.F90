@@ -59,11 +59,11 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = 'AssertConformable failure:' // new_line('A')
-      fail_message = fail_message // '   Expected shape: ' // toString(shape_expected) // new_line('A')
-      fail_message = fail_message // '   Actual shape:   ' // toString(shape_actual) // new_line('A')
+      fail_message = 'Arrays not conformable failure:'
+      fail_message = fail_message // new_line('A') // '   Expected shape: ' // toString(shape_expected)
+      fail_message = fail_message // new_line('A') // '   Actual shape:   ' // toString(shape_actual)
 
-      if (present(message))  fail_message = fail_message // message
+      if (present(message))  fail_message = fail_message // new_line('A') // message
       call throw(fail_message, location)
       
    end subroutine fail_not_conformable

@@ -1,3 +1,4 @@
+! -*-f90-*-
 ! Minimum support is for expected and actual arguments to have the same
 ! kind.
 @tkr_parameters minimal
@@ -130,7 +131,9 @@ contains
          return
       end if
 
-      e = real(expected, kind(actual))
+      ! Trick to get e to have the right shape even if "expected" is a scalar.
+      e = 0*actual + expected
+
 #if {tolerance.kind_value} == _REAL_DEFAULT_KIND
       if (present(tolerance)) then
          t = real(tolerance, kind(actual))
@@ -722,3 +725,4 @@ end module pf_AssertReal_{rank}d_mod
 
 
    
+
