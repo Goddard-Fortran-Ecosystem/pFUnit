@@ -13,6 +13,7 @@ module pf_AssertUtilities_mod
    public :: fail_not_equal
    public :: fail_not_equivalent
    public :: fail_equal
+   public :: fail_equivalent
    public :: fail_not_associated
    public :: fail_not_less_than
    public :: fail_not_less_than_or_equal
@@ -99,6 +100,7 @@ contains
       
    end subroutine fail_not_equal
    
+   
    subroutine fail_not_equivalent(expected, actual, unused, index, message, location)
       character(*), intent(in) :: expected
       character(*), intent(in) :: actual
@@ -124,6 +126,33 @@ contains
       call throw(fail_message, location)
       
    end subroutine fail_not_equivalent
+   
+
+   subroutine fail_equivalent(expected, actual, unused, index, message, location)
+      character(*), intent(in) :: expected
+      character(*), intent(in) :: actual
+      ! Separator
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      ! Keyword arguments
+      integer, optional, intent(in) :: index(:)
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=:), allocatable :: fail_message
+
+      _UNUSED_DUMMY(unused)
+
+      fail_message = 'AssertNotEquivalent failure:'
+      fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
+      fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
+      if (present(index)) then
+         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
+      end if
+
+      if (present(message))  fail_message = fail_message // new_line('A') // message
+      call throw(fail_message, location)
+      
+   end subroutine fail_equivalent
    
 
    subroutine fail_equal(actual, unused, difference, index, message, location)
