@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 module PF_Assert_mod
    use PF_AssertBasic_mod
+   use pf_AssertString_mod
 #include "AssertArrays.fh"
    implicit none
    private

@@ -10,7 +10,7 @@ module newTest_AssertReal_mod
    use pf_AssertReal_2d_mod
    implicit none
    
-   @suite(name='AssertEqual_Real_suite')
+   @suite(name='AssertReal_suite')
 
 contains
 

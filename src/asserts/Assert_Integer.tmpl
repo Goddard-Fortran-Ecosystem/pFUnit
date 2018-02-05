@@ -48,12 +48,16 @@ module pf_AssertInteger_{rank}d_mod
    public :: AssertGreaterThan
    public :: AssertGreaterThanOrEqual
 
+   public :: AssertAssociated
+
    @overload(AssertEqual, useful)
    @overload(AssertNotEqual, useful)
    @overload(AssertLessThan, useful)
    @overload(AssertLessThanOrEqual, useful)
    @overload(AssertGreaterThan, useful)
    @overload(AssertGreaterThanOrEqual, useful)
+
+   @overload(AssertAssociated, minimal)
 
    @overload(assert_equal, minimal)
    @overload(assert_not_equal, minimal)
@@ -561,6 +565,22 @@ contains
    end subroutine {name}
    @end template
 
+   @template(AssertAssociated,[tkr])
+   subroutine {name}(p, t, unused, message, location)
+      {tkr.type} (kind={tkr.kind}), pointer, intent(in) :: p {tkr.dims}
+      {tkr.type} (kind={tkr.kind}), target, intent(in) :: t {tkr.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. associated(p, t)) then
+         call fail_not_associated(message=message, location=location)
+      end if
+
+   end subroutine {name}
+   @end template
 
 ! Heavily overloaded wrappers   
    @instantiate(AssertEqual, useful)
@@ -569,6 +589,8 @@ contains
    @instantiate(AssertLessThanOrEqual, useful)
    @instantiate(AssertGreaterThan, useful)
    @instantiate(AssertGreaterThanOrEqual, useful)
+
+   @instantiate(AssertAssociated, minimal)
 
 ! Internal procedures
    @instantiate(assert_equal, minimal)

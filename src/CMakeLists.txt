@@ -33,8 +33,8 @@ endforeach()
 
 foreach(type Integer Real)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
-    set(ofile AssertEqual_${type}_${rank}d.F90)
-    set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/AssertEqual_${type}.tmpl)
+    set(ofile Assert${type}_${rank}d.F90)
+    set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/Assert_${type}.tmpl)
     list(APPEND new_generated_sources ${ofile})
     message("Rank ${rank} ${MAX_ASSERT_RANK}")
     add_custom_command(

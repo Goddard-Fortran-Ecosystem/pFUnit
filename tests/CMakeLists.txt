@@ -14,6 +14,8 @@ set(OTHER_SOURCES
 
 set(pf_tests
   Test_ExceptionList.pf
+  Test_AssertString.pf
+  newTest_AssertInteger.pf
   newTest_AssertReal.pf
   Test_Arg.pf
   Test_ArgParser.pf

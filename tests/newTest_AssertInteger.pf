@@ -1,0 +1,31 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+
+module newTest_Assert_Integer_mod
+   use pf_SourceLocation_mod
+   use pf_Exceptionlist_mod
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_AssertInteger_0d_mod
+   implicit none
+   
+   @suite(name='AssertInteger_suite')
+
+contains
+
+   @test
+   subroutine test_AssertAssociated_0d()
+
+      integer, target :: t1, t2
+      integer, pointer :: p
+
+      p => t1
+      call assertAssociated(p, t1)
+
+      ! should fail
+      call assertAssociated(p, t2)
+      call assertExceptionRaised('AssertAssociated failure:')
+      
+   end subroutine test_AssertAssociated_0d
+
+
+end module newTest_Assert_Integer_mod

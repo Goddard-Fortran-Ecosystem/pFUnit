@@ -13,7 +13,7 @@ class MyError(Exception):
     def __str__(self):
         return repr(self.value)
 
-assertVariants = 'Fail|Equal|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
+assertVariants = 'Fail|Equal|NotEqual|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
 assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
 

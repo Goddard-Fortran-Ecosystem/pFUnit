@@ -12,6 +12,7 @@ module pf_AssertUtilities_mod
    public :: fail_not_conformable
    public :: fail_not_equal
    public :: fail_equal
+   public :: fail_not_associated
    public :: fail_not_less_than
    public :: fail_not_less_than_or_equal
    public :: fail_not_greater_than
@@ -53,7 +54,7 @@ contains
       class (KeywordEnforcer), optional, intent(in) :: unused
       ! Begin keyword arguments
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
@@ -106,7 +107,7 @@ contains
       character(*), optional, intent(in) :: difference
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
@@ -127,6 +128,23 @@ contains
    end subroutine fail_equal
    
 
+   subroutine fail_not_associated(unused, message, location)
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      ! Keyword arguments
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=:), allocatable :: fail_message
+
+      _UNUSED_DUMMY(unused)
+
+      fail_message = 'AssertAssociated failure:'
+      if (present(message))  fail_message = fail_message // new_line('A') // message
+      call throw(fail_message, location)
+
+   end subroutine fail_not_associated
+   
+
 
    subroutine fail_not_less_than(lhs, rhs, unused, index, message, location)
       character(*), intent(in) :: lhs
@@ -136,7 +154,7 @@ contains
       ! Keyword arguments
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
@@ -163,7 +181,7 @@ contains
       ! Keyword arguments
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
@@ -189,7 +207,7 @@ contains
       ! Keyword arguments
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
@@ -216,7 +234,7 @@ contains
       ! Keyword arguments
       integer, optional, intent(in) :: index(:)
       character(*), optional, intent(in) :: message
-      type (SourceLocation), intent(in) :: location
+      type (SourceLocation), optional, intent(in) :: location
 
       character(len=:), allocatable :: fail_message
 
