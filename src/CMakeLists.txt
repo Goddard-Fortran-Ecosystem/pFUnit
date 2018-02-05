@@ -31,7 +31,7 @@ foreach (def ${dir_defs})
   list(APPEND python_defs "-${def}")
 endforeach()
 
-foreach(type Integer Real)
+foreach(type Logical Integer Real)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
     set(ofile Assert${type}_${rank}d.F90)
     set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/Assert_${type}.tmpl)

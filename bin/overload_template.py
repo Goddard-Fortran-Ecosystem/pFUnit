@@ -19,6 +19,7 @@ parser.add_argument("-_REAL32", help="value of REAL32 in ISO_FORTRAN_ENV")
 parser.add_argument("-_REAL64", help="value of REAL64 in ISO_FORTRAN_ENV")
 parser.add_argument("-_REAL128", help="value of REAL128 in ISO_FORTRAN_ENV")
 # To avoid duplicate interfaces, we need to know the kind value for default integer and real as well.
+parser.add_argument("-_LOGICAL_DEFAULT_KIND", help="kind of default logical")
 parser.add_argument("-_INT_DEFAULT_KIND", help="kind of default integer")
 parser.add_argument("-_REAL_DEFAULT_KIND", help="kind of default real")
 
@@ -53,7 +54,12 @@ class TKR:
         self.type = type.strip().lower()
         self.kind_label = kind_value.strip()
 
-        if self.type == 'integer':
+        if self.type == 'logical':
+            if self.kind_label == 'default':
+                self.kind_value = '{_LOGICAL_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(.true.)' # appears in the generated source
+                self.type_kind = 'Logical' # for name mangling
+        elif self.type == 'integer':
             if self.kind_label == 'default':
                 self.kind_value = '{_INT_DEFAULT_KIND}'.format(**vars(args))
                 self.kind = 'kind(1)' # appears in the generated source
