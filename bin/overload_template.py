@@ -77,6 +77,15 @@ class TKR:
                 self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
                 self.type_kind = self.kind.capitalize()
+        elif self.type == 'complex':
+            if self.kind_label == 'default':
+                self.kind_value = '{_REAL_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(1.)' # appears in the generated source
+                self.type_kind = 'Complex' # for name mangling
+            else:
+                self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
+                self.kind = 'REAL' + self.kind_label
+                self.type_kind = self.kind.capitalize()
 
         if (rank.strip() == "rank"):
             self.rank = int(args.rank)
