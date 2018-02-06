@@ -74,14 +74,11 @@ module pf_AssertInteger_{rank}d_mod
 contains
 
    @template(AssertEqual,[expected,actual])
-   subroutine {name}(expected, actual, unused, message, location)
+   subroutine {name}(expected, actual, message, location)
       {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
-      class (KeywordEnforcer), optional, intent(in) :: unused
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-
-      _UNUSED_DUMMY(unused)
 
 #if {actual.rank} != 0 && {expected.rank} == 0
       ! Convert scalar 'expected' to array of same shape as 'actual'
@@ -141,7 +138,7 @@ contains
       ! Wish: allocatable strings were useful as internal files ...
       write(expected_str,'(i0)') e
       write(actual_str,'(i0)') a
-      write(diff_str,'(i0)') d
+      write(diff_str,'("<",i0,">")') d
       
 #if {rank} == 0
       call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &

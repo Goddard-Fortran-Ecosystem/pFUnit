@@ -66,9 +66,9 @@ contains
    subroutine test_equal_fail()
       call assertEqual(1.0, 2.0)
       call assertExceptionRaised(&
-           & 'ArrayAssertEqual failure:' // new_line('a') // &
-           & '    Expected: <1.000000>' // new_line('a') // &
-           & '    Actual:   <2.000000>' // new_line('a') // &
+           & 'AssertEqual failure:' // new_line('a') // &
+           & '      Expected: <1.000000>' // new_line('a') // &
+           & '        Actual: <2.000000>' // new_line('a') // &
            & '    Difference: <1.000000> (greater than tolerance of 0.)' &
            & )
    end subroutine test_equal_fail
