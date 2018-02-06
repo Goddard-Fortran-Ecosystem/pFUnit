@@ -51,8 +51,8 @@ contains
    subroutine testAssertEqual_unequalWithMessage()
       call assertEqual(2,3,'what?')
       call assertExceptionRaised( &
-           & 'AssertEqual failure:' // new_line('a') // &
            & 'what?' // new_line('a') // &
+           & 'AssertEqual failure:' // new_line('a') // &
            & '      Expected: <2>' // new_line('a') // &
            & '        Actual: <3>' // new_line('a') // &
            & '    Difference: <1>')
