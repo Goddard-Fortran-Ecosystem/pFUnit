@@ -62,9 +62,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message //  new_line('A')
-      fail_message = 'Arrays not conformable failure:'
+      fail_message = base_message('Arrays not conformable', message)
       fail_message = fail_message // new_line('A') // '    Expected shape: ' // toString(shape_expected)
       fail_message = fail_message // new_line('A') // '      Actual shape: ' // toString(shape_actual)
 
@@ -88,15 +86,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertEqual failure:'
-      else
-         fail_message = fail_message // 'AssertEqual failure:'
-      end if
-
+      fail_message = base_message('AssertEqual', message, index)
       fail_message = fail_message // new_line('A')    // '      Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A')    // '        Actual: <' // actual // '>'
       fail_message = fail_message // new_line('A')    // '    Difference: ' // difference
@@ -123,15 +113,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertEquivalent failure:'
-      else
-         fail_message = fail_message // 'AssertEquivalent failure:'
-      end if
-         
+      fail_message = base_message('AssertEquivalent', message, index)
       fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
       if (present(index)) then
@@ -157,15 +139,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertNotEquivalent failure:'
-      else
-         fail_message = fail_message // 'AssertNotEquivalent failure:'
-      end if
-
+      fail_message = base_message('AssertNotEquivalent', message, index)
       fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
       if (present(index)) then
@@ -191,15 +165,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertNotEqual failure:'
-      else
-         fail_message = fail_message // 'AssertNotEqual failure:'
-      end if
-
+      fail_message = base_message('AssertNotEqual', message, index)
       fail_message = fail_message // new_line('A') // '    Same value: <' // actual // '>'
       if (present(difference)) then
          fail_message = fail_message // new_line('A') // '    Difference: <' // difference // '>'
@@ -223,9 +189,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-      fail_message = fail_message // 'AssertAssociated failure:'
+      fail_message = base_message('AssertAssociated', message)
 
       call throw(fail_message, location)
 
@@ -247,15 +211,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertLessThan failure:'
-      else
-         fail_message = fail_message // 'AssertLessThan failure:'
-      end if
-
+      fail_message = base_message('AssertLessThan', message, index)
       fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
       fail_message = fail_message // '    not less than: <' // rhs // '>' // new_line('A')
       if (present(index)) then
@@ -281,15 +237,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertLessThanOrEqual failure:'
-      else
-         fail_message = fail_message // 'AssertLessThanOrEqual failure:'
-      end if
-
+      fail_message = base_message('AssertLessThanOrEqual', message, index)
       fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
       fail_message = fail_message // '    not less than or equal to : <' // rhs // '>' // new_line('A')
       if (present(index)) then
@@ -315,15 +263,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertGreaterThan failure:'
-      else
-         fail_message = fail_message // 'AssertGreaterThan failure:'
-      end if
-
+      fail_message = base_message('AssertGreaterThan', message, index)
       fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
       fail_message = fail_message // '    not greater than: <' // rhs // '>' // new_line('A')
       if (present(index)) then
@@ -350,15 +290,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = ''
-      if (present(message)) fail_message = message // new_line('A')
-
-      if (present(index)) then
-         fail_message = fail_message // 'ArrayAssertGreaterThanOrEqual failure:'
-      else
-         fail_message = fail_message // 'AssertGreaterThanOrEqual failure:'
-      end if
-
+      fail_message = base_message('AssertGreaterThanOrEqual', message, index)
       fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
       fail_message = fail_message // '    not greater than or equal to : <' // rhs // '>' // new_line('A')
       if (present(index)) then
@@ -369,6 +301,26 @@ contains
       call throw(fail_message, location)
       
    end subroutine fail_not_greater_than_or_equal
-   
+
+   function base_message(failure_type, user_message, index) result(message)
+      character(:), allocatable :: message
+      character(*), intent(in) :: failure_type
+      character(*), optional, intent(in) :: user_message
+      integer, optional, intent(in) :: index(:)
+
+      if (present(user_message)) then
+         message = user_message // new_line('A')
+      else
+         message = ''
+      end if
+
+      if (present(index)) then
+         message = message // 'Array'
+      end if
+
+      message = message // failure_type // ' failure:'
+      
+   end function base_message
+     
    
 end module pf_AssertUtilities_mod
