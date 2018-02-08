@@ -27,7 +27,6 @@ contains
       use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
-      use Test_AssertInteger_mod, only: assertIntegerSuite => suite        !
 
       use Test_AssertReal_mod, only: assertRealSuite => suite              ! (5)
       use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
@@ -72,7 +71,6 @@ contains
       ADD(exceptionSuite)
       ADD(assertBasicSuite)
       ADD(assertSuite)
-      ADD(assertIntegerSuite)
 
       ADD(assertRealSuite)
       ADD(assertComplexSuite)

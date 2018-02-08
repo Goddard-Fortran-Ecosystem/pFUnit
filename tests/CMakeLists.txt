@@ -15,7 +15,7 @@ set(OTHER_SOURCES
 set(pf_tests
   Test_ExceptionList.pf
   Test_AssertString.pf
-  newTest_AssertInteger.pf
+  Test_Assert_Integer.pf
   newTest_AssertReal.pf
   Test_Arg.pf
   Test_ArgParser.pf
@@ -48,7 +48,6 @@ set(SERIAL_TEST_SRCS
   SimpleTestCase.F90
   Test_Assert.F90
   Test_AssertComplex.F90
-  Test_AssertInteger.F90
   Test_Exception.F90
   Test_FixtureTestCase.F90
   Test_MockCall.F90
