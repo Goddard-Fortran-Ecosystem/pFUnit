@@ -212,10 +212,10 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertLessThan', message, index)
-      fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
-      fail_message = fail_message // '    not less than: <' // rhs // '>' // new_line('A')
+      fail_message = fail_message // new_line('A') // '              LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') // '    not less than: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
@@ -238,10 +238,10 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertLessThanOrEqual', message, index)
-      fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
-      fail_message = fail_message // '    not less than or equal to : <' // rhs // '>' // new_line('A')
+      fail_message = fail_message // new_line('A') // '                          LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') // '    not less than or equal to: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
       if (present(message))  fail_message = fail_message // message
@@ -264,13 +264,12 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertGreaterThan', message, index)
-      fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
-      fail_message = fail_message // '    not greater than: <' // rhs // '>' // new_line('A')
+      fail_message = fail_message // new_line('A') // '                 LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') // '    not greater than: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
-      if (present(message))  fail_message = fail_message // message
       call throw(fail_message, location)
       
    end subroutine fail_not_greater_than
@@ -291,13 +290,12 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertGreaterThanOrEqual', message, index)
-      fail_message = fail_message // '    <' // lhs // '>' // new_line('A')
-      fail_message = fail_message // '    not greater than or equal to : <' // rhs // '>' // new_line('A')
+      fail_message = fail_message // new_line('A') // '                             LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') // '    not greater than or equal to: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message // '    at index:    ' // toString(index) // '>' // new_line('A')
+         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
       end if
 
-      if (present(message))  fail_message = fail_message // message
       call throw(fail_message, location)
       
    end subroutine fail_not_greater_than_or_equal

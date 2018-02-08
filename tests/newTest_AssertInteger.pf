@@ -115,7 +115,10 @@ contains
       expected = 1
       found = 1
       call assertEqual(expected, found)
-      call assertExceptionRaised('nonconforming arrays - expected shape: [2,3] but found shape: [3,5]')
+      call assertExceptionRaised( &
+           'Arrays not conformable failure:' // new_line('a') // &
+           '    Expected shape: [2,3]' // new_line('a') // &
+           '      Actual shape: [3,5]')
 
    end subroutine testAssertEqual2D2D_nonconforming
 
@@ -129,26 +132,44 @@ contains
       found(1,2) = -1
 
       call assertEqual(expected, found)
-      call assertExceptionRaised('expected 1 but found: -1;  difference: |2|;  first difference at element [1, 2].')
+      call assertExceptionRaised( &
+           'ArrayAssertEqual failure:' // new_line('a') // &
+           '      Expected: <1>' // new_line('a') // &
+           '        Actual: <-1>' // new_line('a') // &
+           '    Difference: <-2>' // new_line('a') // &
+           '      at index: [1,2]')
 
       found(1,2) = 1
       found(2,3) = -1
 
       call assertEqual(expected, found)
-      call assertExceptionRaised('expected 1 but found: -1;  difference: |2|;  first difference at element [2, 3].')
+      call assertExceptionRaised( &
+           'ArrayAssertEqual failure:' // new_line('a') // &
+           '      Expected: <1>' // new_line('a') // &
+           '        Actual: <-1>' // new_line('a') // &
+           '    Difference: <-2>' // new_line('a') // &
+           '      at index: [2,3]')
 
    end subroutine testAssertEqual2D2D_unequal
 
    @test
    subroutine testAssertLessThan_falseA()
       call assertLessThan(1, 1)
-      call assertExceptionRaised('expected 1 to be less than: 1.')
+      call assertExceptionRaised( &
+           'AssertLessThan failure:' // new_line('a') // &
+           '              LHS: <1>' // new_line('a') // &
+           '    not less than: <1>' )
+
    end subroutine testAssertLessThan_falseA
 
    @test
    subroutine testAssertLessThan_falseB()
       call assertLessThan(2, 1)
-      call assertExceptionRaised('expected 2 to be less than: 1.')
+      call assertExceptionRaised( &
+           'AssertLessThan failure:' // new_line('a') // &
+           '              LHS: <2>' // new_line('a') // &
+           '    not less than: <1>' )
+
    end subroutine testAssertLessThan_falseB
 
    @test
@@ -159,7 +180,10 @@ contains
    @test
    subroutine testAssertLessThanOrEqual_false()
       call assertLessThanOrEqual(2, 1)
-      call assertExceptionRaised('expected 2 to be less than or equal to: 1.')
+      call assertExceptionRaised( &
+           'AssertLessThanOrEqual failure:' // new_line('a') // &
+           '                          LHS: <2>' // new_line('a') // &
+           '    not less than or equal to: <1>' )
    end subroutine testAssertLessThanOrEqual_false
 
    @test
@@ -175,13 +199,19 @@ contains
    @test
    subroutine testAssertGreaterThan_falseA()
       call assertGreaterThan(1, 1)
-      call assertExceptionRaised('expected 1 to be greater than: 1.')
+      call assertExceptionRaised( &
+           'AssertGreaterThan failure:' // new_line('a') // &
+           '                 LHS: <1>' // new_line('a') // &
+           '    not greater than: <1>' )
    end subroutine testAssertGreaterThan_falseA
 
    @test
    subroutine testAssertGreaterThan_falseB()
       call assertGreaterThan(1, 2)
-      call assertExceptionRaised('expected 1 to be greater than: 2.')
+      call assertExceptionRaised( &
+           'AssertGreaterThan failure:' // new_line('a') // &
+           '                 LHS: <1>' // new_line('a') // &
+           '    not greater than: <2>' )
    end subroutine testAssertGreaterThan_falseB
 
    @test
@@ -192,7 +222,10 @@ contains
    @test
    subroutine testAssertGreaterThanOrEqual_false()
       call assertGreaterThanOrEqual(1, 2)
-      call assertExceptionRaised('expected 1 to be greater than or equal to: 2.')
+      call assertExceptionRaised( &
+           'AssertGreaterThanOrEqual failure:' // new_line('a') // &
+           '                             LHS: <1>' // new_line('a') // &
+           '    not greater than or equal to: <2>' )
    end subroutine testAssertGreaterThanOrEqual_false
 
    @test
