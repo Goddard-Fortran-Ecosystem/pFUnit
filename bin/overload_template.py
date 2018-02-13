@@ -53,7 +53,6 @@ class TKR:
     def __init__(self, type, kind_value, rank):
         self.type = type.strip().lower()
         self.kind_label = kind_value.strip()
-
         if self.type == 'logical':
             if self.kind_label == 'default':
                 self.kind_value = '{_LOGICAL_DEFAULT_KIND}'.format(**vars(args))
@@ -86,6 +85,10 @@ class TKR:
                 self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
                 self.type_kind = self.kind.capitalize()
+        elif self.type == '-1':
+            self.kind_value = '0'
+            self.kind = '0'
+            self.type_kind = 'absent'
 
         if (rank.strip() == "rank"):
             self.rank = int(args.rank)

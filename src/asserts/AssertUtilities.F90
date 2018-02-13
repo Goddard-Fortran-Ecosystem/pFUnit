@@ -9,6 +9,7 @@ module pf_AssertUtilities_mod
    private
 
    public :: conformable
+   public :: fail_generic
    public :: fail_not_conformable
    public :: fail_not_equal
    public :: fail_not_equivalent
@@ -19,6 +20,7 @@ module pf_AssertUtilities_mod
    public :: fail_not_less_than_or_equal
    public :: fail_not_greater_than
    public :: fail_not_greater_than_or_equal
+   public :: fail_not_relatively_equal
 
 contains
 
@@ -48,6 +50,20 @@ contains
 
    end function conformable
 
+
+   subroutine fail_generic(fail_message, unused, message, location)
+      ! Positional arguments
+      character(*), intent(in) :: fail_message
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      ! Begin keyword arguments
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      call throw(base_message(fail_message, message), location=location)
+
+   end subroutine fail_generic
 
    subroutine fail_not_conformable(shape_expected, shape_actual, unused, message, location)
       ! Positional arguments
@@ -299,6 +315,35 @@ contains
       call throw(fail_message, location)
       
    end subroutine fail_not_greater_than_or_equal
+
+
+   subroutine fail_not_relatively_equal(expected, actual, difference, unused, index, message, location)
+      character(*), intent(in) :: expected
+      character(*), intent(in) :: actual
+      character(*), intent(in) :: difference
+      ! Separator
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      ! Keyword arguments
+      integer, optional, intent(in) :: index(:)
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      character(len=:), allocatable :: fail_message
+
+      _UNUSED_DUMMY(unused)
+
+      fail_message = base_message('AssertEqual', message, index)
+      fail_message = fail_message // new_line('A')    // '           Expected: <' // expected // '>' 
+      fail_message = fail_message // new_line('A')    // '             Actual: <' // actual // '>'
+      fail_message = fail_message // new_line('A')    // '    Rel. Difference: ' // difference
+      if (present(index)) then
+         fail_message = fail_message // new_line('A') // '      at index: ' // toString(index)
+      end if
+
+      call throw(fail_message, location)
+      
+   end subroutine fail_not_relatively_equal
+   
 
    function base_message(failure_type, user_message, index) result(message)
       character(:), allocatable :: message
