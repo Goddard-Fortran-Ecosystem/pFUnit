@@ -27,16 +27,13 @@ module PF_Params_mod
 
   integer, parameter, public :: MAX_LENGTH_NAME = 128
 
-  integer, parameter :: R32 = selected_real_kind(p=6)
-  integer, parameter :: R64 = selected_real_kind(p=14)
-  integer, parameter :: C32 = selected_real_kind(p=6)
-  integer, parameter :: C64 = selected_real_kind(p=14)
+  integer, parameter :: R32 = REAL32
+  integer, parameter :: R64 = REAL64
+  integer, parameter :: C32 = REAL32
+  integer, parameter :: C64 = REAL64
 
   integer, parameter :: I32 = INT32
   integer, parameter :: I64 = INT64
-
-!  integer, parameter :: I32 = selected_int_kind()
-!  integer, parameter :: I64 = selected_int_kind()
 
   integer, parameter :: NEQP=0, EQP=1, GTP=2, GEP=3, LTP=4, LEP=5, &
   &  RELEQP=6

@@ -254,7 +254,7 @@ contains
 
 
    subroutine testAssertIsFinite()
-      use MakeInfinity_mod, only: makeInf_32, makeInf_64
+      use MakeInf_mod, only: makeInf_32, makeInf_64
 
       call assertIsFinite(1.e0, 'finite')
       call assertIsFinite(1.d0, 'finite')
@@ -267,7 +267,7 @@ contains
    end subroutine testAssertIsFinite
 
    subroutine testAssertIsInfinite()
-      use MakeInfinity_mod, only: makeInf_32, makeInf_64
+      use MakeInf_mod, only: makeInf_32, makeInf_64
 
       call assertIsInfinite(1.e0, 'finite')
       call assertExceptionRaised('finite')

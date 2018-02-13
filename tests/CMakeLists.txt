@@ -7,7 +7,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 
 set(OTHER_SOURCES
-  MakeNaN.F90 MakeInfinity.F90 MockListener.F90
+  MakeNaN.F90 MakeInf.F90 MockListener.F90
   BrokenTestCase.F90 BrokenSetUpCase.F90
 
   FixtureTestCase.F90)
@@ -71,7 +71,7 @@ list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 add_library(funit_tests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
 target_link_libraries(funit_tests funit)
 
-add_library(new_stests ${new_tests})
+add_library(new_stests ${new_tests} ${OTHER_SOURCES})
 target_link_libraries(new_stests funit)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
 set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")

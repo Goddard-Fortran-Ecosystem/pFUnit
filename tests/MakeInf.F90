@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: MakeInfinity
+!  MODULE: MakeInf
 !
 !> @brief
 !! <BriefDescription>
@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 
-module MakeInfinity_mod
+module MakeInf_mod
    implicit none
    private
 
@@ -50,4 +50,4 @@ contains
       
    end function makeInf_64
 
-end module MakeInfinity_mod
+end module MakeInf_mod
