@@ -22,31 +22,50 @@
 !-------------------------------------------------------------------------------
 
 module MakeNaN_mod
-   use PF_Params_mod, only: r32, r64
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+   use, intrinsic :: ieee_arithmetic
    implicit none
    private
 
+#ifdef _REAL32_IEEE_SUPPORT
    public :: makeNaN_32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
    public :: makeNaN_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+   public :: makeNaN_128
+#endif
 
 contains
+   
+#ifdef _REAL32_IEEE_SUPPORT
+   function makeNaN_32() result(nan_32)
+      real(REAL32) :: nan_32
 
-   function makeNaN_32() result(NaN_32)
-      real(r32) :: NaN_32
-      integer, parameter :: i32 = selected_int_kind(8)
-      integer(i32), parameter :: nan_bits_32 = int(Z'7FA00000',i32)
-
-      NaN_32 = transfer(nan_bits_32, NaN_32)
-
+      nan_32 = ieee_value(nan_32,  ieee_quiet_nan)
+      
    end function makeNaN_32
+#endif
 
-   function makeNaN_64() result(NaN_64)
-      real(r64) :: NaN_64
-      integer, parameter :: i64 = selected_int_kind(18)
-      integer(i64), parameter :: nan_bits_64 = int(Z'7FF4000000000000',i64)
+#ifdef _REAL64_IEEE_SUPPORT
+   function makeNaN_64() result(nan_64)
+      real(REAL64) :: nan_64
 
-      NaN_64 = transfer(nan_bits_64, NaN_64)
-
+      nan_64 = ieee_value(nan_64,  ieee_quiet_nan)
+      
    end function makeNaN_64
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   function makeNaN_128() result(nan_128)
+      real(REAL128) :: nan_128
+
+      nan_128 = ieee_value(nan_128,  ieee_quiet_nan)
+      
+   end function makeNaN_128
+#endif
+
+
 
 end module MakeNaN_mod

@@ -1359,10 +1359,9 @@ end subroutine testEquals_MultiDWithTolerance64
 
   subroutine testEquals_ScalarInf_equal()
     use MakeInf_mod, only:  makeInf_64, makeInf_32
-    
+
     call assertEqual(makeInf_32(), makeInf_32(), 'equal inf 32')
     call assertEqual(makeInf_64(), makeInf_64(), 'equal inf 64')
-
     call assertEqual(makeInf_32(), [makeInf_32(), makeInf_32()], 'equal inf array')
 
   end subroutine testEquals_ScalarInf_equal

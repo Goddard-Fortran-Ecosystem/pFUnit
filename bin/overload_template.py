@@ -22,6 +22,7 @@ parser.add_argument("-_REAL128", help="value of REAL128 in ISO_FORTRAN_ENV")
 parser.add_argument("-_LOGICAL_DEFAULT_KIND", help="kind of default logical")
 parser.add_argument("-_INT_DEFAULT_KIND", help="kind of default integer")
 parser.add_argument("-_REAL_DEFAULT_KIND", help="kind of default real")
+parser.add_argument("-_DOUBLE_DEFAULT_KIND", help="kind of default double")
 
 
 args, unknown = parser.parse_known_args()
@@ -72,6 +73,10 @@ class TKR:
                 self.kind_value = '{_REAL_DEFAULT_KIND}'.format(**vars(args))
                 self.kind = 'kind(1.)' # appears in the generated source
                 self.type_kind = 'Real' # for name mangling
+            elif self.kind_label == 'double':
+                self.kind_value = '{_DOUBLE_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(1.d0)' # appears in the generated source
+                self.type_kind = 'DblReal' # for name mangling
             else:
                 self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
@@ -81,6 +86,10 @@ class TKR:
                 self.kind_value = '{_REAL_DEFAULT_KIND}'.format(**vars(args))
                 self.kind = 'kind(1.)' # appears in the generated source
                 self.type_kind = 'Complex' # for name mangling
+            elif self.kind_label == 'double':
+                self.kind_value = '{_DOUBLE_DEFAULT_KIND}'.format(**vars(args))
+                self.kind = 'kind(1.d0)' # appears in the generated source
+                self.type_kind = 'DblComplex' # for name mangling
             else:
                 self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label

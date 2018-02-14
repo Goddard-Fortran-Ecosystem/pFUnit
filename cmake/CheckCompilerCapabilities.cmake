@@ -25,7 +25,12 @@ CHECK_FORTRAN_SOURCE_RUN (
   _REAL_DEFAULT_KIND
   )
 
-foreach (kind 32 64 128)
+CHECK_FORTRAN_SOURCE_RUN (
+  ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/DOUBLE_DEFAULT_KIND.F90
+  _DOUBLE_DEFAULT_KIND
+  )
+
+foreach (kind 32 64 128 256)
   set(CMAKE_REQUIRED_FLAGS = -fpp)
   set(CMAKE_REQUIRED_DEFINITIONS -D_KIND=REAL${kind})
 
@@ -34,6 +39,11 @@ foreach (kind 32 64 128)
     _REAL${kind}
     )
   
+  CHECK_FORTRAN_SOURCE_RUN(
+    ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND_IEEE_SUPPORT.F90
+    _REAL${kind}_IEEE_SUPPORT
+    )
+
 endforeach()
 
 

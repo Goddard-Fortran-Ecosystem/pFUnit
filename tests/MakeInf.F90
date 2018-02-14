@@ -22,32 +22,49 @@
 !-------------------------------------------------------------------------------
 
 module MakeInf_mod
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+   use, intrinsic :: ieee_arithmetic
    implicit none
    private
 
+#ifdef _REAL32_IEEE_SUPPORT
    public :: makeInf_32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
    public :: makeInf_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+   public :: makeInf_128
+#endif
 
 contains
+   
+#ifdef _REAL32_IEEE_SUPPORT
+   function makeInf_32() result(inf_32)
+      real(REAL32) :: inf_32
 
-   function makeInf_32() result(Inf_32)
-      use PF_Params_mod, only: r32
-      real(r32) :: Inf_32
-      integer, parameter :: i32 = selected_int_kind(8)
-      integer(i32), parameter :: inf_bits_32 = int(Z'7F800000',i32)
-      
-      Inf_32 = transfer(inf_bits_32, Inf_32)
+      inf_32 = ieee_value(inf_32,  ieee_positive_inf)
       
    end function makeInf_32
-   
-   function makeInf_64() result(Inf_64)
-      use PF_Params_mod, only: r64
-      real(r64) :: Inf_64
-      integer, parameter :: i64 = selected_int_kind(18)
-      integer(i64), parameter :: inf_bits_64 = int(Z'7FF0000000000000',i64)
-      
-      Inf_64 = transfer(inf_bits_64, Inf_64)
+#endif
+
+#ifdef _REAL64_IEEE_SUPPORT
+   function makeInf_64() result(inf_64)
+      real(REAL64) :: inf_64
+
+      inf_64 = ieee_value(inf_64,  ieee_positive_inf)
       
    end function makeInf_64
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   function makeInf_128() result(inf_128)
+      real(REAL128) :: inf_128
+
+      inf_128 = ieee_value(inf_128,  ieee_positive_inf)
+      
+   end function makeInf_128
+#endif
+
 
 end module MakeInf_mod

@@ -8,84 +8,97 @@
 @end tkr_parameters
 
 @tkr_parameters no_tol
-[(real,  32, rank), (real,  32, rank), (-1,  0, 0)]
-[(real,  64, rank), (real,  64, rank), (-1,  , 0)]
-[(real, 128, rank), (real, 128, rank), (-1, 0, 0)]
-[(real, default, rank), (real,  32, rank), (-1,  0, 0)]
+[(integer,  default, rank), (real,  default, rank), (-1,  0, 0)]
+[(real,  default, rank), (real,  default, rank), (-1,  0, 0)]
+[(integer,  default, rank), (real,  double, rank), (-1,  0, 0)]
+[(real,  default, rank), (real,  double, rank), (-1,  0, 0)]
+[(real,  double, rank), (real,  double, rank), (-1,  0, 0)]
 [(integer, default, rank), (real,  32, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  32, rank), (-1,  0, 0)]
+[(real,  32, rank), (real,  32, rank), (-1,  0, 0)]
 [(integer, default, rank), (real,  64, rank), (-1,  0, 0)]
-[(integer, default, rank), (real, 128, rank), (-1, 0, 0)]
-[(real,  32, 0), (real,  32, rank), (-1,  32, 0)]
-[(real,  64, 0), (real,  64, rank), (-1,  0, 0)]
-[(real, 128, 0), (real, 128, rank), (-1, 0, 0)]
-[(real, default, 0), (real,  32, rank), (-1,  0, 0)]
-[(real, default, 0), (real,  64, rank), (-1, 0, 0)]
-[(real, default, 0), (real, 128, rank), (-1, 0, 0)]
+[(real, default, rank), (real,  64, rank), (-1,  0, 0)]
+[(real,  64, rank), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  128, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  128, rank), (-1,  0, 0)]
+[(real,  128, rank), (real,  128, rank), (-1,  0, 0)]
+! Rank 0 is also conformable
+[(integer,  default, 0), (real,  default, rank), (-1,  0, 0)]
+[(real,  default, 0), (real,  default, rank), (-1,  0, 0)]
+[(integer,  default, 0), (real,  double, rank), (-1,  0, 0)]
+[(real,  default, 0), (real,  double, rank), (-1,  0, 0)]
+[(real,  double, 0), (real,  double, rank), (-1,  0, 0)]
 [(integer, default, 0), (real,  32, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  32, rank), (-1,  0, 0)]
+[(real,  32, 0), (real,  32, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  64, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  64, rank), (-1,  0, 0)]
+[(real,  64, 0), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  128, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  128, rank), (-1,  0, 0)]
+[(real,  128, 0), (real,  128, rank), (-1,  0, 0)]
 @end tkr_parameters
 
 @tkr_parameters useful
-! exact TKR matches
-[(real,  32, rank), (real,  32, rank), (real,  32, 0)]
-[(real,  64, rank), (real,  64, rank), (real,  64, 0)]
-[(real, 128, rank), (real, 128, rank), (real, 128, 0)]
-!
-! expected is default real
-[(real, default, rank), (real,  32, rank), (real,  32, 0)]
-[(real, default, rank), (real,  64, rank), (real,  64, 0)]
-[(real, default, rank), (real, 128, rank), (real, 128, 0)]
-!
-! tolerance is default real
-[(real,  32, rank), (real,  32, rank), (real, default, 0)]
-[(real,  64, rank), (real,  64, rank), (real, default, 0)]
-[(real, 128, rank), (real, 128, rank), (real, default, 0)]
-!
-! expected and tolerance are default real
-[(real, default, rank), (real,  32, rank), (real, default, 0)]
-[(real, default, rank), (real,  64, rank), (real, default, 0)]
-[(real, default, rank), (real, 128, rank), (real, default, 0)]
-!
-! expected is default integer
-[(integer, default, rank), (real,  32, rank), (real,  32, 0)]
-[(integer, default, rank), (real,  64, rank), (real,  64, 0)]
-[(integer, default, rank), (real, 128, rank), (real, 128, 0)]
-!
-! expected is default integer and tolerance is default real
+! Tolerance is default real
+[(integer,  default, rank), (real,  default, rank), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, default, 0)]
+[(real,  default, rank), (real,  double, rank), (real, default, 0)]
+[(real,  double, rank), (real,  double, rank), (real, default, 0)]
 [(integer, default, rank), (real,  32, rank), (real, default, 0)]
+[(real, default, rank), (real,  32, rank), (real, default, 0)]
+[(real,  32, rank), (real,  32, rank), (real, default, 0)]
 [(integer, default, rank), (real,  64, rank), (real, default, 0)]
-[(integer, default, rank), (real, 128, rank), (real, default, 0)]
-!
-!
-! Allow expected to be conformable scalar
-! exact TKR matches
-[(real,  32, 0), (real,  32, rank), (real,  32, 0)]
-[(real,  64, 0), (real,  64, rank), (real,  64, 0)]
-[(real, 128, 0), (real, 128, rank), (real, 128, 0)]
-!
-! expected is default real
-[(real, default, 0), (real,  32, rank), (real,  32, 0)]
-[(real, default, 0), (real,  64, rank), (real,  64, 0)]
-[(real, default, 0), (real, 128, rank), (real, 128, 0)]
-!
-! tolerance is default real
-[(real,  32, 0), (real,  32, rank), (real, default, 0)]
-[(real,  64, 0), (real,  64, rank), (real, default, 0)]
-[(real, 128, 0), (real, 128, rank), (real, default, 0)]
-!
-! expected and tolerance are default real
-[(real, default, 0), (real,  32, rank), (real, default, 0)]
-[(real, default, 0), (real,  64, rank), (real, default, 0)]
-[(real, default, 0), (real, 128, rank), (real, default, 0)]
-!
-! expected is default integer
-[(integer, default, 0), (real,  32, rank), (real,  32, 0)]
-[(integer, default, 0), (real,  64, rank), (real,  64, 0)]
-[(integer, default, 0), (real, 128, rank), (real, 128, 0)]
-!
-! expected is default integer and tolerance is default real
+[(real, default, rank), (real,  64, rank), (real, default, 0)]
+[(real,  64, rank), (real,  64, rank), (real, default, 0)]
+[(integer, default, rank), (real,  128, rank), (real, default, 0)]
+[(real, default, rank), (real,  128, rank), (real, default, 0)]
+[(real,  128, rank), (real,  128, rank), (real, default, 0)]
+! Tolerance is same kind as actual
+[(integer,  default, rank), (real,  default, rank), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, double, 0)]
+[(real,  default, rank), (real,  double, rank), (real, double, 0)]
+[(real,  double, rank), (real,  double, rank), (real, double, 0)]
+[(integer, default, rank), (real,  32, rank), (real, 32, 0)]
+[(real, default, rank), (real,  32, rank), (real, 32, 0)]
+[(real,  32, rank), (real,  32, rank), (real, 32, 0)]
+[(integer, default, rank), (real,  64, rank), (real, 64, 0)]
+[(real, default, rank), (real,  64, rank), (real, 64, 0)]
+[(real,  64, rank), (real,  64, rank), (real, 64, 0)]
+[(integer, default, rank), (real,  128, rank), (real, 128, 0)]
+[(real, default, rank), (real,  128, rank), (real, 128, 0)]
+[(real,  128, rank), (real,  128, rank), (real, 128, 0)]
+! And again with conformable rank 0
+[(integer,  default, 0), (real,  default, rank), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, default, 0)]
+[(real,  default, 0), (real,  double, rank), (real, default, 0)]
+[(real,  double, 0), (real,  double, rank), (real, default, 0)]
 [(integer, default, 0), (real,  32, rank), (real, default, 0)]
+[(real, default, 0), (real,  32, rank), (real, default, 0)]
+[(real,  32, 0), (real,  32, rank), (real, default, 0)]
 [(integer, default, 0), (real,  64, rank), (real, default, 0)]
-[(integer, default, 0), (real, 128, rank), (real, default, 0)]
+[(real, default, 0), (real,  64, rank), (real, default, 0)]
+[(real,  64, 0), (real,  64, rank), (real, default, 0)]
+[(integer, default, 0), (real,  128, rank), (real, default, 0)]
+[(real, default, 0), (real,  128, rank), (real, default, 0)]
+[(real,  128, 0), (real,  128, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  default, rank), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, double, 0)]
+[(real,  default, 0), (real,  double, rank), (real, double, 0)]
+[(real,  double, 0), (real,  double, rank), (real, double, 0)]
+[(integer, default, 0), (real,  32, rank), (real, 32, 0)]
+[(real, default, 0), (real,  32, rank), (real, 32, 0)]
+[(real,  32, 0), (real,  32, rank), (real, 32, 0)]
+[(integer, default, 0), (real,  64, rank), (real, 64, 0)]
+[(real, default, 0), (real,  64, rank), (real, 64, 0)]
+[(real,  64, 0), (real,  64, rank), (real, 64, 0)]
+[(integer, default, 0), (real,  128, rank), (real, 128, 0)]
+[(real, default, 0), (real,  128, rank), (real, 128, 0)]
+[(real,  128, 0), (real,  128, rank), (real, 128, 0)]
 @end tkr_parameters
 
 
@@ -95,6 +108,7 @@ module pf_AssertReal_{rank}d_mod
    use, intrinsic :: iso_fortran_env, only: REAL32
    use, intrinsic :: iso_fortran_env, only: REAL64
    use, intrinsic :: iso_fortran_env, only: REAL128
+   use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
    use pf_KeywordEnforcer_mod
    use pf_SourceLocation_mod
    use pf_AssertUtilities_mod
@@ -156,8 +170,17 @@ contains
          return
       end if
 
+#if {expected.rank} == 0
+#  if {actual.rank} == 0
+      e = expected
+#  else
       ! Trick to get e to have the right shape even if "expected" is a scalar.
-      e = 0*actual + expected
+      allocate(e, mold=actual)
+      e = expected
+#  endif
+#else
+      e = expected
+#endif
       t = 0
 
       call assert_equal(e, actual, t, message=message, location=location)
@@ -204,6 +227,7 @@ contains
 
 #if {actual.rank} != 0
       integer, allocatable :: i(:)
+      logical, allocatable :: within_tolerance {actual.dims}
 #endif
       character(len=MAX_LEN_REAL_AS_STRING) :: expected_str
       character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
@@ -212,7 +236,12 @@ contains
       _UNUSED_DUMMY(unused)
 
 #if {actual.rank} == 0
-      ! scalar
+      ! Scalar
+      
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+      if (actual == expected) return
+
       if (.not. (abs(actual - expected) <= tolerance)) then
          e = expected
          a = actual
@@ -221,14 +250,24 @@ contains
       end if
          
 #else
-      if (.not. all(abs(actual - expected) <= tolerance)) then
-         ! index of first difference is
-         i = maxloc(merge(1,0, .not. abs(actual-expected) <= tolerance))
-         e = expected({actual.multi_index})
-         a = actual({actual.multi_index})
-      else
-         return
-      end if
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+
+      allocate(within_tolerance, mold=actual==actual)
+      where (actual == expected)
+         within_tolerance = .true.
+      elsewhere (abs(actual-expected) <= tolerance)
+         within_tolerance = .true.
+      elsewhere
+         within_tolerance = .false.
+      end where
+
+      if (all(within_tolerance)) return
+
+      ! index of first difference is
+      i = maxloc(merge(1,0, .not. within_tolerance))
+      e = expected({actual.multi_index})
+      a = actual({actual.multi_index})
 #endif
       d = a - e
 
