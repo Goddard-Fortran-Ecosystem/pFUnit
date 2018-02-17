@@ -24,6 +24,7 @@ module newTest_AssertReal_mod
    use pf_SourceLocation_mod
    use pf_Exceptionlist_mod
    use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_AssertBasic_mod
    use pf_AssertReal_0d_mod
    use pf_AssertReal_1d_mod
    use pf_AssertReal_2d_mod
@@ -44,6 +45,7 @@ module newTest_AssertReal_mod
    real(kind=REAL32), parameter :: good = 1
    real(kind=REAL32), parameter :: bad  = -999
 
+   character(len=1), parameter :: NL = new_line('a')
 contains
 
 
@@ -328,12 +330,18 @@ contains
    @test
    subroutine test_infinity()
 #ifdef _REAL32_IEEE_SUPPORT
+      call assertIsInfinite(makeInf_32())
+      call assertIsFinite(1._REAL32)
       call assertEqual(makeInf_32(), makeInf_32())
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
+      call assertIsInfinite(makeInf_64())
+      call assertIsFinite(1._REAL64)
       call assertEqual(makeInf_64(), makeInf_64())
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
+      call assertIsInfinite(makeInf_128())
+      call assertIsFinite(1._REAL128)
       call assertEqual(makeInf_128(), makeInf_128())
 #endif
 
@@ -354,60 +362,77 @@ contains
 
    end subroutine test_infinity_1d
 
-   
 
-   ! Test conformability check
+   ! OK - now a long series of tests that verify the expected
+   ! messages from failing asserts.   Each test has an assertion that is
+   ! intended to fail, followed by an assertExceptionRaised() that is expected
+   ! to succeed and "eat" the first exception.  
    @test
-   subroutine test_conformability()
+   subroutine test_conformability_a()
       call assertEqual([1.0], [1.0, 1.0])
       call assertExceptionRaised( &
-           & 'Arrays not conformable failure:' // new_line('a') // &
-           & '    Expected shape: [1]' // new_line('a') // &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [1]' // NL // &
            & '      Actual shape: [2]' &
            & )
-   end subroutine test_conformability
+   end subroutine test_conformability_a
 
-
-   ! Test formatting of failure messages
    @test
-   subroutine test_equal_fail()
+   subroutine test_conformability_b()
+      call assertEqual([1.0,2.0], [1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [2]' // NL // &
+           & '      Actual shape: [1]' &
+           & )
+   end subroutine test_conformability_b
+   
+
+   @test
+   subroutine test_equal_fail_scalar_no_tolerance()
       call assertEqual(1.0, 2.0)
       call assertExceptionRaised(&
-           & 'AssertEqual failure:' // new_line('a') // &
-           & '      Expected: <1.000000>' // new_line('a') // &
-           & '        Actual: <2.000000>' // new_line('a') // &
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <1.000000>' // NL // &
+           & '        Actual: <2.000000>' // NL // &
            & '    Difference: <1.000000> (greater than tolerance of 0.)' &
            & )
-   end subroutine test_equal_fail
+   end subroutine test_equal_fail_scalar_no_tolerance
 
+   @test
+   subroutine test_equal_fail_scalar_with_tolerance()
+      call assertEqual(1.0, 2.0, 0.1)
+      call assertExceptionRaised(&
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <1.000000>' // NL // &
+           & '        Actual: <2.000000>' // NL // &
+           & '    Difference: <1.000000> (greater than tolerance of 0.1000000)' &
+           & )
+   end subroutine test_equal_fail_scalar_with_tolerance
 
-  ! Same rank, different shape.
-  @test
-  subroutine testEquals_1D_nonConformable1()
+   @test
+   subroutine test_equal_fail_1d_no_tolerance()
+      call assertEqual(1, [1.0,2.0])
+      call assertExceptionRaised(&
+           & 'ArrayAssertEqual failure:' // NL // &
+           & '      Expected: <1.000000>' // NL // &
+           & '        Actual: <2.000000>' // NL // &
+           & '    Difference: <1.000000> (greater than tolerance of 0.)' // NL // &
+           & '      at index: [2]' &
+           & )
+   end subroutine test_equal_fail_1d_no_tolerance
 
-    integer, dimension(2) :: expected
-    real(kind=REAL32), dimension(1) :: found
-
-    character(len=:), allocatable :: msg
-
-    allocate(msg, source='testEquals_1D_nonConformable1')
-
-    ! The following should throw an exception...
-
-    expected = good; found = good
-    
-    call assertEqual(expected, found, msg)
-
-    call assertExceptionRaised( &
-         & msg // new_line('a') // &
-         & 'Arrays not conformable failure:' // new_line('a') // &
-         & '    Expected shape: [2]' // new_line('a') // &
-         & '      Actual shape: [1]' &
-         & )
-
-    deallocate(msg)
-    
-  end subroutine testEquals_1D_nonConformable1
+   @test
+   subroutine test_equal_fail_1d_with_tolerance()
+      call assertEqual(1, [2.0,1.0], 0.1)
+      call assertExceptionRaised(&
+           & 'ArrayAssertEqual failure:' // NL // &
+           & '      Expected: <1.000000>' // NL // &
+           & '        Actual: <2.000000>' // NL // &
+           & '    Difference: <1.000000> (greater than tolerance of 0.1000000)' // NL //  &
+           & '      at index: [1]' &
+           & )
+   end subroutine test_equal_fail_1d_with_tolerance
 
   @test
   subroutine testEquals_2D_SingleElementDifferent()
@@ -426,11 +451,11 @@ contains
     call assertEqual(expected,found, message=msg)
 
     call assertExceptionRaised( &
-         & msg // new_line('a') // &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000>' // new_line('a') // &
-         & '        Actual: <-999.0000>' // new_line('a') // &
-         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // new_line('a') // &
+         & msg // NL // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000>' // NL // &
+         & '        Actual: <-999.0000>' // NL // &
+         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // NL // &
          & '      at index: [1,2]' &
          )
 
@@ -460,11 +485,11 @@ contains
     call assertEqual(expected,found,message=msg)
 
     call assertExceptionRaised( &
-         & msg // new_line('a') // &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000>' // new_line('a') // &
-         & '        Actual: <-999.0000>' // new_line('a') // &
-         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // new_line('a') // &
+         & msg // NL // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000>' // NL // &
+         & '        Actual: <-999.0000>' // NL // &
+         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // NL // &
          & '      at index: [1,2]' &
          & )
 
@@ -498,11 +523,11 @@ contains
     call assertEqual(expected,found, message=msg)
 
     call assertExceptionRaised( &
-         & msg // new_line('a') // &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000000000000>' // new_line('a') // &
-         & '        Actual: <-999.0000000000000>' // new_line('a') // &
-         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // new_line('a') // &
+         & msg // NL // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000000000000>' // NL // &
+         & '        Actual: <-999.0000000000000>' // NL // &
+         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // NL // &
          & '      at index: [1,2]' &
          &)
 
@@ -536,11 +561,11 @@ contains
     call assertEqual(expected,found, message=msg)
 
     call assertExceptionRaised( &
-         & msg // new_line('a') // &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000000000000>' // new_line('a') // &
-         & '        Actual: <-999.0000000000000>' // new_line('a') // &
-         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // new_line('a') // &
+         & msg // NL // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000000000000>' // NL // &
+         & '        Actual: <-999.0000000000000>' // NL // &
+         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // NL // &
          & '      at index: [1,2,1]' &
          & )
 
@@ -564,9 +589,9 @@ contains
     call assertEqual(expected,found,tolerance32)
 
     call assertExceptionRaised( &
-         & 'AssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000>' // new_line('a') // &
-         & '        Actual: <1.020000>' // new_line('a') // &
+         & 'AssertEqual failure:' // NL // &
+         & '      Expected: <1.000000>' // NL // &
+         & '        Actual: <1.020000>' // NL // &
          & '    Difference: <0.1999998E-01> (greater than tolerance of 0.1000000E-01)' &
          & )
 
@@ -592,10 +617,10 @@ contains
     call assertEqual(expected,found,tolerance32)
 
     call assertExceptionRaised( &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000>' // new_line('a') // &
-         & '        Actual: <1.020000>' // new_line('a') // &
-         & '    Difference: <0.1999998E-01> (greater than tolerance of 0.1000000E-01)' // new_line('a') // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000>' // NL // &
+         & '        Actual: <1.020000>' // NL // &
+         & '    Difference: <0.1999998E-01> (greater than tolerance of 0.1000000E-01)' // NL // &
          & '      at index: [2]' &
          & )
 
@@ -627,10 +652,10 @@ contains
      call assertEqual(expected,found,tolerance = tolerance64, message=msg)
      
     call assertExceptionRaised( &
-         & 'ArrayAssertEqual failure:' // new_line('a') // &
-         & '      Expected: <1.000000000000000>' // new_line('a') // &
-         & '        Actual: <1.020000000000000>' // new_line('a') // &
-         & '    Difference: <0.2000000000000002E-01> (greater than tolerance of 0.1000000000000000E-01)' // new_line('a') // &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <1.000000000000000>' // NL // &
+         & '        Actual: <1.020000000000000>' // NL // &
+         & '    Difference: <0.2000000000000002E-01> (greater than tolerance of 0.1000000000000000E-01)' // NL // &
          & '      at index: [1,2]' &
          & )
 
