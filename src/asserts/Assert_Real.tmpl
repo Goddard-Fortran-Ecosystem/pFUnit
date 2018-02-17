@@ -203,7 +203,8 @@ contains
       end if
 
       ! Trick to get e to have the right shape even if "expected" is a scalar.
-      e = 0*actual + expected
+      allocate(e, mold=actual)
+      e = expected
 
       t = real(tolerance, kind(actual))
 
