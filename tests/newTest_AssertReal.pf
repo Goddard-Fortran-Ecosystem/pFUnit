@@ -333,16 +333,19 @@ contains
       call assertIsInfinite(makeInf_32())
       call assertIsFinite(1._REAL32)
       call assertEqual(makeInf_32(), makeInf_32())
+      call assertEqual(makeInf_32(), makeInf_32(), 0.5)
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       call assertIsInfinite(makeInf_64())
       call assertIsFinite(1._REAL64)
       call assertEqual(makeInf_64(), makeInf_64())
+      call assertEqual(makeInf_64(), makeInf_64(), 0.5_REAL64)
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
       call assertIsInfinite(makeInf_128())
       call assertIsFinite(1._REAL128)
       call assertEqual(makeInf_128(), makeInf_128())
+      call assertEqual(makeInf_128(), makeInf_128(), 0.5_REAL128)
 #endif
 
    end subroutine test_infinity
@@ -351,6 +354,7 @@ contains
    subroutine test_infinity_1d()
 
 #ifdef _REAL32_IEEE_SUPPORT
+      call assertIsFinite(1._REAL64)
       call assertEqual([1._REAL32,makeInf_32()], [1._REAL32,makeInf_32()])
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
