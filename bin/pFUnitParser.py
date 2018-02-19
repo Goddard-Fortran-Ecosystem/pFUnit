@@ -14,6 +14,7 @@ class MyError(Exception):
         return repr(self.value)
 
 assertVariants = 'Fail|Equal|NotEqual|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
+assertVariants += '|IsInfinite|IsFinite'
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
 assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
 

@@ -2,22 +2,8 @@
 ! one variant along each axis:
 ! Reference comparison:  default real scalar
 
-! Axes:
 
-! 0) true vs fail (both in each test with failure second and check on
-!    format of assert message)
-! 1) comparison: ==, <, <=,  >, >=
-! 2) rank expected
-! 3) rank actual
-! 4) kind_expected  (int, ...)
-! 5) kind_found
-! 6) tolerance:  absent, present, 
-! 7) Inf expected
-! 8) Inf found
-! 9) With user-message
-
-
-module newTest_AssertReal_mod
+module Test_AssertEqual_Real_mod
    use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
    use, intrinsic :: iso_fortran_env, only: REAL128
    use pf_StringUtilities_mod
@@ -40,7 +26,7 @@ module newTest_AssertReal_mod
 #endif
    implicit none
       
-   @suite(name='AssertReal_suite')
+   @suite(name='AssertEqual_Real_suite')
 
    real(kind=REAL32), parameter :: good = 1
    real(kind=REAL32), parameter :: bad  = -999
@@ -330,22 +316,22 @@ contains
    @test
    subroutine test_infinity()
 #ifdef _REAL32_IEEE_SUPPORT
-      call assertIsInfinite(makeInf_32())
-      call assertIsFinite(1._REAL32)
-      call assertEqual(makeInf_32(), makeInf_32())
-      call assertEqual(makeInf_32(), makeInf_32(), 0.5)
+      @assertIsInfinite(makeInf_32())
+      @assertIsFinite(1._REAL32)
+      @assertEqual(makeInf_32(), makeInf_32())
+      @assertEqual(makeInf_32(), makeInf_32(), 0.5)
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
-      call assertIsInfinite(makeInf_64())
-      call assertIsFinite(1._REAL64)
-      call assertEqual(makeInf_64(), makeInf_64())
-      call assertEqual(makeInf_64(), makeInf_64(), 0.5_REAL64)
+      @assertIsInfinite(makeInf_64())
+      @assertIsFinite(1._REAL64)
+      @assertEqual(makeInf_64(), makeInf_64())
+      @assertEqual(makeInf_64(), makeInf_64(), 0.5_REAL64)
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
-      call assertIsInfinite(makeInf_128())
-      call assertIsFinite(1._REAL128)
-      call assertEqual(makeInf_128(), makeInf_128())
-      call assertEqual(makeInf_128(), makeInf_128(), 0.5_REAL128)
+      @assertIsInfinite(makeInf_128())
+      @assertIsFinite(1._REAL128)
+      @assertEqual(makeInf_128(), makeInf_128())
+      @assertEqual(makeInf_128(), makeInf_128(), 0.5_REAL128)
 #endif
 
    end subroutine test_infinity
@@ -354,14 +340,14 @@ contains
    subroutine test_infinity_1d()
 
 #ifdef _REAL32_IEEE_SUPPORT
-      call assertIsFinite(1._REAL64)
-      call assertEqual([1._REAL32,makeInf_32()], [1._REAL32,makeInf_32()])
+      @assertIsFinite(1._REAL64)
+      @assertEqual([1._REAL32,makeInf_32()], [1._REAL32,makeInf_32()])
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
-      call assertEqual([1._REAL64,makeInf_64()], [1._REAL64,makeInf_64()])
+      @assertEqual([1._REAL64,makeInf_64()], [1._REAL64,makeInf_64()])
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
-      call assertEqual([1._REAL128,makeInf_128()], [1._REAL128,makeInf_128()])
+      @assertEqual([1._REAL128,makeInf_128()], [1._REAL128,makeInf_128()])
 #endif
 
    end subroutine test_infinity_1d
@@ -484,7 +470,6 @@ contains
 
   @test
   subroutine testEquals_ScalarInf_unequal_B()
-    use MakeInf_mod, only: makeInf_64
     
     call assertEqual(makeInf_32(), 1._REAL32, 2._REAL32)
 
@@ -494,7 +479,7 @@ contains
          & '        Actual: <1.000000>' // NL // &
          & '    Difference: <-Infinity> (greater than tolerance of 2.000000)' &
          )
-
+ end subroutine testEquals_ScalarInf_unequal_B
    
-end module newTest_AssertReal_mod
+end module Test_AssertEqual_Real_mod
    

@@ -417,7 +417,12 @@ contains
          return
       end if
 
-      l = rhs
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
       t = 0
 
       call assert_less_than(l, rhs, t, message=message, location=location)
@@ -441,7 +446,12 @@ contains
          return
       end if
 
-      l = rhs
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
       t = tolerance
       call assert_less_than(l, rhs, t, message=message, location=location)
 
@@ -532,7 +542,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = 0
 
       call assert_less_than_or_equal(l, rhs, t, message=message, location=location)
@@ -556,7 +566,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = tolerance
       call assert_less_than_or_equal(l, rhs, t, message=message, location=location)
 
@@ -647,7 +657,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = 0
 
       call assert_greater_than(l, rhs, t, message=message, location=location)
@@ -671,7 +681,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = tolerance
       call assert_greater_than(l, rhs, t, message=message, location=location)
 
@@ -762,7 +772,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = 0
       call assert_greater_than_or_equal(l, rhs, t, message=message, location=location)
 
@@ -785,7 +795,7 @@ contains
          return
       end if
 
-      l = rhs
+      l = lhs
       t = tolerance
       call assert_greater_than_or_equal(l, rhs, t, message=message, location=location)
 

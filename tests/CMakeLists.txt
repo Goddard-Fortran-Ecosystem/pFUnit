@@ -16,7 +16,8 @@ set(pf_tests
   Test_ExceptionList.pf
   Test_AssertString.pf
   Test_Assert_Integer.pf
-  newTest_AssertReal.pf
+  Test_AssertEqual_Real.pf
+  Test_AssertLessThan_Real.pf
   Test_Arg.pf
   Test_ArgParser.pf
   Test_GlobPattern.pf
@@ -43,7 +44,6 @@ endforeach()
 
 set(SERIAL_TEST_SRCS
   Test_Assert.F90
-  Test_AssertReal.F90
   Test_AssertBasic.F90
   SimpleTestCase.F90
   Test_Assert.F90

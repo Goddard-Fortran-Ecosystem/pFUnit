@@ -1,6 +1,7 @@
    ADD_TEST_SUITE(AssertString_suite)
    ADD_TEST_SUITE(AssertInteger_suite)
-   ADD_TEST_SUITE(AssertReal_suite)
+   ADD_TEST_SUITE(AssertEqual_Real_suite)
+   ADD_TEST_SUITE(AssertLessThan_Real_suite)
    ADD_TEST_SUITE(TapListener_suite)
    ADD_TEST_SUITE(ExceptionList_suite)
    ADD_TEST_SUITE(Arg_suite)

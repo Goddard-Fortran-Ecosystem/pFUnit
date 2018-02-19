@@ -133,7 +133,7 @@ contains
       fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
       if (present(index)) then
-         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
@@ -159,7 +159,7 @@ contains
       fail_message = fail_message // new_line('A') // '    Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A') // '    Actual:   <' // actual // '>'
       if (present(index)) then
-         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
@@ -187,7 +187,7 @@ contains
          fail_message = fail_message // new_line('A') // '    Difference: <' // difference // '>'
       end if
       if (present(index)) then
-         fail_message = fail_message // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
@@ -228,10 +228,10 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertLessThan', message, index)
-      fail_message = fail_message // new_line('A') // '              LHS: <' // lhs // '>'
-      fail_message = fail_message // new_line('A') // '    not less than: <' // rhs // '>'
+      fail_message = fail_message // new_line('A') //     '              LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') //     '    not less than: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message  // new_line('A') // '         at index: ' // toString(index)
       end if
 
       call throw(fail_message, location)
@@ -257,10 +257,9 @@ contains
       fail_message = fail_message // new_line('A') // '                          LHS: <' // lhs // '>'
       fail_message = fail_message // new_line('A') // '    not less than or equal to: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message  // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
-      if (present(message))  fail_message = fail_message // message
       call throw(fail_message, location)
       
    end subroutine fail_not_less_than_or_equal
@@ -283,7 +282,7 @@ contains
       fail_message = fail_message // new_line('A') // '                 LHS: <' // lhs // '>'
       fail_message = fail_message // new_line('A') // '    not greater than: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message  // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
@@ -309,7 +308,7 @@ contains
       fail_message = fail_message // new_line('A') // '                             LHS: <' // lhs // '>'
       fail_message = fail_message // new_line('A') // '    not greater than or equal to: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message  // new_line('A') // '    at index:    ' // toString(index) // '>'
+         fail_message = fail_message  // new_line('A') // '    at index: ' // toString(index) // '>'
       end if
 
       call throw(fail_message, location)
