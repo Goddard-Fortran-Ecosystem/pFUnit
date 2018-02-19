@@ -415,18 +415,6 @@ contains
    end subroutine test_equal_fail_scalar_with_tolerance
 
    @test
-   subroutine test_equal_fail_1d_no_tolerance()
-      call assertEqual(1, [1.0,2.0])
-      call assertExceptionRaised(&
-           & 'ArrayAssertEqual failure:' // NL // &
-           & '      Expected: <1.000000>' // NL // &
-           & '        Actual: <2.000000>' // NL // &
-           & '    Difference: <1.000000> (greater than tolerance of 0.)' // NL // &
-           & '      at index: [2]' &
-           & )
-   end subroutine test_equal_fail_1d_no_tolerance
-
-   @test
    subroutine test_equal_fail_1d_with_tolerance()
       call assertEqual(1, [2.0,1.0], 0.1)
       call assertExceptionRaised(&
@@ -443,19 +431,13 @@ contains
 
     real, dimension(2,2) :: expected, found
 
-    integer :: i1, i2
-
-    character(len=:), allocatable :: msg
-
-    i1 = 1; i2 = 2; expected=good; found=good; found(i1,i2) = bad
-
-    allocate(msg, source='testEquals_2D_SingleElementDifferent')
+    expected = good
+    found = good; found(1,2) = bad
 
     ! The following should throw an exception...
-    call assertEqual(expected,found, message=msg)
+    call assertEqual(expected, found)
 
     call assertExceptionRaised( &
-         & msg // NL // &
          & 'ArrayAssertEqual failure:' // NL // &
          & '      Expected: <1.000000>' // NL // &
          & '        Actual: <-999.0000>' // NL // &
@@ -466,261 +448,52 @@ contains
   end subroutine testEquals_2D_SingleElementDifferent
 
   @test
-  subroutine testEquals_MultiD_SingleElementDifferent()
+  subroutine testEquals_2d_MultipleDiffs
 
-    real(kind=REAL32) :: expected
-    real(kind=REAL32), dimension(:,:), allocatable :: found
+    real, dimension(2,3) :: expected, found
 
-    character(len=:), allocatable :: msg
-
-    !mlr maybe move this to a larger scope...
-    integer :: i1, i2
-    integer :: n1, n2
-
-    !dbg1 print *,'2000'
-
-    n1 = 1; n2 = 2; allocate(found(n1,n2))
-    expected=good; found=good
-    i1 = 1; i2 = 2; found(i1,i2) = bad
-
-    allocate(msg, source='testEquals_MultiD_SingleElementDifferent:Rank0')
+    expected = good
+    found = good; found(2,[1,3]) = bad;
 
     ! The following should throw an exception...
-    call assertEqual(expected,found,message=msg)
+    call assertEqual(expected, found)
 
     call assertExceptionRaised( &
-         & msg // NL // &
          & 'ArrayAssertEqual failure:' // NL // &
          & '      Expected: <1.000000>' // NL // &
          & '        Actual: <-999.0000>' // NL // &
          & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // NL // &
-         & '      at index: [1,2]' &
-         & )
+         & '      at index: [2,1]' &
+         )
 
-    deallocate(msg)
-
-  end subroutine testEquals_MultiD_SingleElementDifferent
+ end subroutine testEquals_2d_MultipleDiffs
 
   @test
-  subroutine testEquals_MultiDMultiPrec_SingleEltDiff()
+  subroutine testEquals_ScalarInf_unequal_A()
     
-    real, parameter :: good = 1
-    real, parameter :: bad  = -999
-
-    real(kind=REAL64), dimension(:,:), allocatable :: expected, found
-
-    character(len=:), allocatable :: msg
-
-    !mlr maybe move this to a larger scope...
-    integer :: i1, i2
-    integer :: n1, n2
-
-    !dbg3 print *,'11000'
-
-    n1 = 1; n2 = 2; allocate(expected(n1,n2),found(n1,n2))
-    expected = good; found = good
-    i1 = 1; i2 = 2; found(i1,i2) = bad
-
-    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank2')
-
-    ! The following should throw an exception...
-    call assertEqual(expected,found, message=msg)
-
-    call assertExceptionRaised( &
-         & msg // NL // &
-         & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000000000000>' // NL // &
-         & '        Actual: <-999.0000000000000>' // NL // &
-         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // NL // &
-         & '      at index: [1,2]' &
-         &)
-
-    deallocate(msg)
-
-  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff
-
-  @test
-  subroutine testEquals_MultiDMultiPrec_SingleEltDiff1()
-    
-    real, parameter :: good = 1
-    real, parameter :: bad  = -999
-
-    real(kind=REAL64), dimension(:,:,:), allocatable :: expected, found
-
-    character(len=:), allocatable :: msg
-
-    !mlr maybe move this to a larger scope...
-    integer :: i1, i2, i3
-    integer :: n1, n2, n3
-
-    !dbg3 print *,'12000'
-
-    n1 = 2; n2 = 3; n3 = 1; allocate(expected(n1,n2,n3),found(n1,n2,n3))
-    expected = good; found = good
-    i1 = 1; i2 = 2; i3 = 1; found(i1,i2,i3) = bad
-
-    allocate(msg,source='testEquals_MultiD_SingleElementDifferent:Rank3')
-
-    ! The following should throw an exception...
-    call assertEqual(expected,found, message=msg)
-
-    call assertExceptionRaised( &
-         & msg // NL // &
-         & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000000000000>' // NL // &
-         & '        Actual: <-999.0000000000000>' // NL // &
-         & '    Difference: <-1000.000000000000> (greater than tolerance of 0.)'  // NL // &
-         & '      at index: [1,2,1]' &
-         & )
-
-    deallocate(msg)
-
-  end subroutine testEquals_MultiDMultiPrec_SingleEltDiff1
-
-  @test
-  subroutine testEquals_ScalarWithTolerance()
-    
-    real(kind=REAL32) :: expected, found
-    real(kind=REAL32) :: tolerance32, bad32
-
-    expected = good; found = good;
-
-    tolerance32 = 0.01
-    bad32 = good + tolerance32*2.0
-
-    found = bad32
-
-    call assertEqual(expected,found,tolerance32)
+    call assertEqual(1._REAL32, makeInf_32())
 
     call assertExceptionRaised( &
          & 'AssertEqual failure:' // NL // &
          & '      Expected: <1.000000>' // NL // &
-         & '        Actual: <1.020000>' // NL // &
-         & '    Difference: <0.1999998E-01> (greater than tolerance of 0.1000000E-01)' &
-         & )
-
-  end subroutine testEquals_ScalarWithTolerance
-
-  @test
-  subroutine testEquals_VectorWithToleranceNoMsg()
-    
-    real(kind=REAL32), dimension(3) :: expected, found
-
-    real(kind=REAL32) :: tolerance32, bad32
-
-    expected = good; found = good;
-
-    tolerance32 = 0.01
-    bad32 = good + tolerance32*2.0
-
-    found(2) = bad32
-
-    ! The following should throw an exception...
-    ! call assertEqual(expected,found,tolerance = tolerance32, message=msg)
-    ! call assertEqual(expected,found,tolerance32, message=msg)
-    call assertEqual(expected,found,tolerance32)
-
-    call assertExceptionRaised( &
-         & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000>' // NL // &
-         & '        Actual: <1.020000>' // NL // &
-         & '    Difference: <0.1999998E-01> (greater than tolerance of 0.1000000E-01)' // NL // &
-         & '      at index: [2]' &
-         & )
-
-  end subroutine testEquals_VectorWithToleranceNoMsg
-
-  @test
-  subroutine testEquals_MultiDWithTolerance64()
-    
-     real(kind=REAL64), dimension(:,:), allocatable :: expected, found
-
-     character(len=:), allocatable :: msg
-     !mlr maybe move this to a larger scope...
-     integer :: i1, i2
-     integer :: n1, n2
-     real(kind=REAL64)    :: tolerance64, good64, bad64
-     
-     good64 = good
-     
-     n1 = 1; n2 = 2; allocate(expected(n1,n2),found(n1,n2))
-     expected = good; found = good;
-     
-     tolerance64 = 0.01d0
-     bad64 = good64 + tolerance64*2.0
-     
-     i1 = 1; i2 = 2; 
-     found(i1,i2) = bad64
-     
-     ! The following should throw an exception...
-     call assertEqual(expected,found,tolerance = tolerance64, message=msg)
-     
-    call assertExceptionRaised( &
-         & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000000000000>' // NL // &
-         & '        Actual: <1.020000000000000>' // NL // &
-         & '    Difference: <0.2000000000000002E-01> (greater than tolerance of 0.1000000000000000E-01)' // NL // &
-         & '      at index: [1,2]' &
-         & )
-
- end subroutine testEquals_MultiDWithTolerance64
-
-
-  @test
-  subroutine testEquals_ScalarInf_equal()
-
-    call assertEqual(makeInf_32(), makeInf_32(), 'equal inf 32')
-    call assertEqual(makeInf_64(), makeInf_64(), 'equal inf 64')
-    call assertEqual(makeInf_32(), [makeInf_32(), makeInf_32()], 'equal inf array')
-
-  end subroutine testEquals_ScalarInf_equal
-
-  !@test
-  subroutine testEquals_ScalarInf_unequal_A()
-    
-!!$    call assertEqual(1.d0, makeInf_64(), 'unequal')
-!!$    call assertCatch( &
-!!$         & appendWithSpace('unequal', &
-!!$         & trim(valuesReport(1., makeInf_64())) // &
-!!$         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
-!!$         &  '.' ) )
+         & '        Actual: <Infinity>' // NL // &
+         & '    Difference: <Infinity> (greater than tolerance of 0.)' &
+         )
 
   end subroutine testEquals_ScalarInf_unequal_A
 
-  !@test
+  @test
   subroutine testEquals_ScalarInf_unequal_B()
     use MakeInf_mod, only: makeInf_64
     
-!!$    call assertEqual(makeInf_64(), 1.0d0, 'unequal')
-!!$    call assertCatch( &
-!!$         & appendWithSpace('unequal', &
-!!$         & trim(valuesReport(makeInf_64(), 1.0d0)) // &
-!!$         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
-!!$         &  '.' ) )
+    call assertEqual(makeInf_32(), 1._REAL32, 2._REAL32)
 
-  end subroutine testEquals_ScalarInf_unequal_B
-
-  !@test
-  subroutine testEquals_ScalarInf_unequal_C()
-    use MakeInf_mod, only: makeInf_64
-    
-!!$    call assertEqual(1.d0, [makeInf_64(), 1.d0], 'unequal')
-!!$    call assertCatch( &
-!!$         & appendWithSpace('unequal', &
-!!$         & trim(valuesReport(1., makeInf_64())) // &
-!!$         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
-!!$         &  ';  first difference at element [1].' ) )
-
-
-!!$    call assertEqual(1.d0, [1.d0, makeInf_64()], 'unequal')
-!!$    call assertCatch( &
-!!$         & appendWithSpace('unequal', &
-!!$         & trim(valuesReport(1., makeInf_64())) // &
-!!$         & '; ' // trim(differenceReport(makeInf_64(), 0.)) // &
-!!$         &  ';  first difference at element [2].' ) )
-
-  end subroutine testEquals_ScalarInf_unequal_C
-
+    call assertExceptionRaised( &
+         & 'AssertEqual failure:' // NL // &
+         & '      Expected: <Infinity>' // NL // &
+         & '        Actual: <1.000000>' // NL // &
+         & '    Difference: <-Infinity> (greater than tolerance of 2.000000)' &
+         )
 
    
 end module newTest_AssertReal_mod

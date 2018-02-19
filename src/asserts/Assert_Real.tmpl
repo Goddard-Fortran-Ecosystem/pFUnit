@@ -39,7 +39,7 @@
 [(real,  128, 0), (real,  128, rank), (-1,  0, 0)]
 @end tkr_parameters
 
-@tkr_parameters useful
+@tkr_parameters with_tol
 ! Tolerance is default real
 [(integer,  default, rank), (real,  default, rank), (real, default, 0)]
 [(real,  default, rank), (real,  default, rank), (real, default, 0)]
@@ -124,12 +124,12 @@ module pf_AssertReal_{rank}d_mod
    
    public :: AssertAssociated
 
-   @overload(AssertEqual, useful)
-   @overload(AssertNotEqual, useful)
-   @overload(AssertLessThan, useful)
-   @overload(AssertLessThanOrEqual, useful)
-   @overload(AssertGreaterThan, useful)
-   @overload(AssertGreaterThanOrEqual, useful)
+   @overload(AssertEqual, with_tol)
+   @overload(AssertNotEqual, with_tol)
+   @overload(AssertLessThan, with_tol)
+   @overload(AssertLessThanOrEqual, with_tol)
+   @overload(AssertGreaterThan, with_tol)
+   @overload(AssertGreaterThanOrEqual, with_tol)
 
    @overload(AssertEqual, no_tol)
    @overload(AssertNotEqual, no_tol)
@@ -138,7 +138,7 @@ module pf_AssertReal_{rank}d_mod
    @overload(AssertGreaterThan, no_tol)
    @overload(AssertGreaterThanOrEqual, no_tol)
 
-   @overload(AssertRelativelyEqual, useful)
+   @overload(AssertRelativelyEqual, with_tol)
    @overload(AssertAssociated, minimal)
 
    @overload(assert_equal, minimal)
@@ -963,13 +963,13 @@ contains
 
    
 
-   @instantiate(AssertEqual, useful)
-   @instantiate(AssertNotEqual, useful)
-   @instantiate(AssertLessThan, useful)
-   @instantiate(AssertLessThanOrEqual, useful)
-   @instantiate(AssertGreaterThan, useful)
-   @instantiate(AssertGreaterThanOrEqual, useful)
-   @instantiate(AssertRelativelyEqual, useful)
+   @instantiate(AssertEqual, with_tol)
+   @instantiate(AssertNotEqual, with_tol)
+   @instantiate(AssertLessThan, with_tol)
+   @instantiate(AssertLessThanOrEqual, with_tol)
+   @instantiate(AssertGreaterThan, with_tol)
+   @instantiate(AssertGreaterThanOrEqual, with_tol)
+   @instantiate(AssertRelativelyEqual, with_tol)
 
    @instantiate(AssertEqual, no_tol)
    @instantiate(AssertNotEqual, no_tol)
