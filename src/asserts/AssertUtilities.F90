@@ -305,10 +305,10 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertGreaterThanOrEqual', message, index)
-      fail_message = fail_message // new_line('A') // '                             LHS: <' // lhs // '>'
-      fail_message = fail_message // new_line('A') // '    not greater than or equal to: <' // rhs // '>'
+      fail_message = fail_message // new_line('A') //     '                             LHS: <' // lhs // '>'
+      fail_message = fail_message // new_line('A') //     '    not greater than or equal to: <' // rhs // '>'
       if (present(index)) then
-         fail_message = fail_message  // new_line('A') // '    at index: ' // toString(index) // '>'
+         fail_message = fail_message  // new_line('A') // '                        at index: ' // toString(index)
       end if
 
       call throw(fail_message, location)

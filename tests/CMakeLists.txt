@@ -20,6 +20,7 @@ set(pf_tests
   Test_AssertLessThan_Real.pf
   Test_AssertLessThanOrEqual_Real.pf
   Test_AssertGreaterThan_Real.pf
+  Test_AssertGreaterThanOrEqual_Real.pf
   Test_Arg.pf
   Test_ArgParser.pf
   Test_GlobPattern.pf

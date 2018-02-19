@@ -346,14 +346,17 @@ contains
 #ifdef _REAL32_IEEE_SUPPORT
       @assertLessThanOrEqual(makeInf_32(), makeInf_32())
       @assertLessThanOrEqual(1., makeInf_32(), 0.5)
+      @assertLessThanOrEqual(-makeInf_32(), 1._REAL32, 0.5)
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       @assertLessThanOrEqual(makeInf_64(), makeInf_64())
       @assertLessThanOrEqual(1., makeInf_64(), 0.5)
+      @assertLessThanOrEqual(-makeInf_64(), 1._REAL64, 0.5)
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
       @assertLessThanOrEqual(makeInf_128(), makeInf_128())
       @assertLessThanOrEqual(1., makeInf_128(), 0.5)
+      @assertLessThanOrEqual(makeInf_128(), 1._REAL128, 0.5)
 #endif
 
    end subroutine test_infinity
