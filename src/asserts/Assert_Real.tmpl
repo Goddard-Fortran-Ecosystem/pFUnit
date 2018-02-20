@@ -2,7 +2,9 @@
 ! Minimum support is for expected and actual arguments to have the same
 ! kind.
 @tkr_parameters minimal
+[(real,  default, rank)]
 [(real,  32, rank)]
+[(real,  double, rank)]
 [(real,  64, rank)]
 [(real, 128, rank)]
 @end tkr_parameters
@@ -254,7 +256,7 @@ contains
       ! Handle exact equality separately to avoid subtracting Inf values.
       ! (Inf - Inf is undefined.)
 
-      allocate(within_tolerance, mold=actual==actual)
+      allocate(within_tolerance, mold=(actual==actual))
       where (actual == expected)
          within_tolerance = .true.
       elsewhere (abs(actual-expected) <= tolerance)
@@ -306,7 +308,8 @@ contains
          return
       end if
 
-      e = real(expected, kind(actual))
+      allocate(e, mold=actual)
+      e = expected
       t = 0
 
       call assert_not_equal(e, actual, t, message=message, location=location)
@@ -331,7 +334,8 @@ contains
          return
       end if
 
-      e = real(expected, kind(actual))
+      allocate(e, mold=actual)
+      e = expected
       t = real(tolerance, kind(actual))
 
       call assert_not_equal(e, actual, t, message=message, location=location)
@@ -343,6 +347,7 @@ contains
 
    @template(assert_not_equal,[actual])
    recursive subroutine {name}(expected, actual, tolerance, unused, message, location)
+      use, intrinsic :: ieee_arithmetic
       {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: tolerance
@@ -353,6 +358,7 @@ contains
       real(kind=kind(actual)) :: e, a, d
 #if {actual.rank} != 0
       integer, allocatable :: i(:)
+      logical, allocatable :: within_tolerance {actual.dims}
 #endif
       character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
       character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
@@ -360,33 +366,50 @@ contains
       _UNUSED_DUMMY(unused)
 
 #if {actual.rank} == 0
-      ! scalar
-      if (.not. (abs(actual - expected) > tolerance)) then
+      ! Handle exact equality to support comparing Inf values.
+      if (actual /= expected) then
+         if (.not. (abs(actual - expected) > tolerance)) then
+            e = expected
+            a = actual
+         else
+            return
+         end if
+      else
          e = expected
          a = actual
-      else
-         return
       end if
          
 #else
-      if (.not. all(abs(actual - expected) > tolerance)) then
-         ! index of first difference is
-         i = maxloc(merge(1,0, .not. abs(actual-expected) > tolerance))
-#if {actual.rank} == 0
-         e = expected
-#else
-         e = expected({actual.multi_index})
+      ! Handle exact equality to support comparing Inf values.
+      allocate(within_tolerance, mold=(actual==actual))
+      where (actual == expected)
+         within_tolerance = .true.
+      elsewhere (abs(actual-expected) <= tolerance)
+         within_tolerance = .true.
+      elsewhere
+         within_tolerance = .false.
+      end where
+
+      if (all(.not. within_tolerance)) return
+
+      ! index of first difference is
+      i = maxloc(merge(1,0, within_tolerance))
+#  if {actual.rank} == 0
+      e = expected
+#  else
+      e = expected({actual.multi_index})
+#  endif
+      a = actual({actual.multi_index})
 #endif
-         a = actual({actual.multi_index})
+      if (a == e) then
+         d = 0 ! cheat: inf-inf is actually NaN
       else
-         return
+         d = a - e
       end if
-#endif
-      d = a - e
       
       ! Wish: allocatable strings were useful as internal files ...
       write(actual_str,'(g0)') a
-      write(diff_str,'(g0," less than or equal to tolerance of ",g0)') d, tolerance
+      write(diff_str,'("<",g0,"> (less than or equal to tolerance of ",g0,")")') d, tolerance
       
 #if {actual.rank} == 0
       call fail_equal(trim(actual_str), difference=trim(diff_str), &

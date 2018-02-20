@@ -14,9 +14,10 @@ class MyError(Exception):
         return repr(self.value)
 
 assertVariants = 'Fail|Equal|NotEqual|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
-assertVariants += '|IsInfinite|IsFinite'
+assertVariants += '|NotEqual|RelativelyEqual'
+assertVariants += '|IsInfinite|IsFinite|IsNaN'
 assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
-assertVariants += '|ExceptionRaised|SameShape|IsNaN|IsFinite'
+assertVariants += '|ExceptionRaised|SameShape'
 
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'

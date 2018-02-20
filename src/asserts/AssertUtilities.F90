@@ -182,12 +182,12 @@ contains
       _UNUSED_DUMMY(unused)
 
       fail_message = base_message('AssertNotEqual', message, index)
-      fail_message = fail_message // new_line('A') // '    Same value: <' // actual // '>'
+      fail_message = fail_message // new_line('A') //    '    Same value: <' // actual // '>'
       if (present(difference)) then
-         fail_message = fail_message // new_line('A') // '    Difference: <' // difference // '>'
+         fail_message = fail_message // new_line('A') // '    Difference: ' // difference
       end if
       if (present(index)) then
-         fail_message = fail_message // new_line('A') // '    at index: ' // toString(index) // '>'
+         fail_message = fail_message // new_line('A') // '      at index: ' // toString(index)
       end if
 
       call throw(fail_message, location)
