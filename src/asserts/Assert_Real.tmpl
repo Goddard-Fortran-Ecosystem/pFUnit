@@ -165,27 +165,9 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       real(kind=kind(actual)) :: t
-      real(kind=kind(actual)), allocatable :: e {actual.dims}
 
-      if (.not. conformable(shape(expected), shape(actual))) then
-         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
-         return
-      end if
-
-#if {expected.rank} == 0
-#  if {actual.rank} == 0
-      e = expected
-#  else
-      ! Trick to get e to have the right shape even if "expected" is a scalar.
-      allocate(e, mold=actual)
-      e = expected
-#  endif
-#else
-      e = expected
-#endif
       t = 0
-
-      call assert_equal(e, actual, t, message=message, location=location)
+      call AssertEqual(expected, actual, t, message=message, location=location)
 
    end subroutine {name}
 #else
@@ -301,18 +283,9 @@ contains
       type (SourceLocation), optional, intent(in) :: location
 
       real(kind=kind(actual)) :: t
-      real(kind=kind(actual)), allocatable :: e {actual.dims}
 
-      if (.not. conformable(shape(expected), shape(actual))) then
-         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
-         return
-      end if
-
-      allocate(e, mold=actual)
-      e = expected
       t = 0
-
-      call assert_not_equal(e, actual, t, message=message, location=location)
+      call AssertNotEqual(expected, actual, t, message=message, location=location)
 
    end subroutine {name}
 
@@ -432,23 +405,10 @@ contains
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
       real(kind=kind(rhs)) :: t
 
-      if (.not. conformable(shape(lhs), shape(rhs))) then
-         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
-         return
-      end if
-
-#if {rhs.rank} == 0
-      l = lhs
-#else
-      allocate(l, mold=rhs)
-      l = lhs
-#endif
       t = 0
-
-      call assert_less_than(l, rhs, t, message=message, location=location)
+      call AssertLessThan(lhs, rhs, t, message=message, location=location)
 
    end subroutine {name}
 
@@ -557,23 +517,10 @@ contains
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
       real(kind=kind(rhs)) :: t
 
-      if (.not. conformable(shape(lhs), shape(rhs))) then
-         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
-         return
-      end if
-
-#if {rhs.rank} == 0
-      l = lhs
-#else
-      allocate(l, mold=rhs)
-      l = lhs
-#endif
       t = 0
-
-      call assert_less_than_or_equal(l, rhs, t, message=message, location=location)
+      call AssertLessThanOrEqual(lhs, rhs, t, message=message, location=location)
 
    end subroutine {name}
 
