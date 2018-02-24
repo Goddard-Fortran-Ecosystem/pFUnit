@@ -18,6 +18,7 @@ set(pf_tests
   Test_Assert_Integer.pf
   Test_AssertEqual_Real.pf
   Test_AssertNotEqual_Real.pf
+  Test_AssertRelativelyEqual_Real.pf
   Test_AssertLessThan_Real.pf
   Test_AssertLessThanOrEqual_Real.pf
   Test_AssertGreaterThan_Real.pf

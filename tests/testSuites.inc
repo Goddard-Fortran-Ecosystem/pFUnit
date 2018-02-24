@@ -2,6 +2,7 @@
    ADD_TEST_SUITE(AssertInteger_suite)
    ADD_TEST_SUITE(AssertEqual_Real_suite)
    ADD_TEST_SUITE(AssertNotEqual_Real_suite)
+   ADD_TEST_SUITE(AssertRelativelyEqual_Real_suite)
    ADD_TEST_SUITE(AssertLessThan_Real_suite)
    ADD_TEST_SUITE(AssertLessThanOrEqual_Real_suite)
    ADD_TEST_SUITE(AssertGreaterThan_Real_suite)

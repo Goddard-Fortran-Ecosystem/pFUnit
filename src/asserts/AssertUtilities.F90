@@ -331,10 +331,10 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = base_message('AssertEqual', message, index)
+      fail_message = base_message('AssertRelativelyEqual', message, index)
       fail_message = fail_message // new_line('A')    // '           Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A')    // '             Actual: <' // actual // '>'
-      fail_message = fail_message // new_line('A')    // '    Rel. Difference: ' // difference
+      fail_message = fail_message // new_line('A')    // '    Rel. difference: ' // difference
       if (present(index)) then
          fail_message = fail_message // new_line('A') // '      at index: ' // toString(index)
       end if
