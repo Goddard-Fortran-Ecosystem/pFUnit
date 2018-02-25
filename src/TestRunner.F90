@@ -70,7 +70,7 @@ contains
 
     end function createTestResult
 
-    function run(this, aTest, context) result(result)
+    recursive function run(this, aTest, context) result(result)
       use PF_Test_mod
       use PF_TestSuite_mod
       use PF_TestCase_mod

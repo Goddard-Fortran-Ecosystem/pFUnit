@@ -44,6 +44,7 @@ module PF_SurrogateTestCase_mod
       procedure(getName), deferred :: getName 
       procedure(setName), deferred :: setName
       procedure(runBare), deferred :: runBare
+      procedure(is_ignored), deferred :: is_ignored
    end type SurrogateTestCase
 
    abstract interface
@@ -67,7 +68,12 @@ module PF_SurrogateTestCase_mod
          class (SurrogateTestCase), intent(inout) :: this
          character(len=*),intent(in) :: name
       end subroutine setName
-      
+
+      logical function is_ignored(this)
+         import SurrogateTestCase
+         class (SurrogateTestCase), intent(in) :: this
+      end function is_ignored
+
    end interface
 
 end module PF_SurrogateTestCase_mod

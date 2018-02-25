@@ -53,6 +53,8 @@ module funit_private
    use PF_Assert_mod
    use PF_ParallelContext_mod
    use PF_SerialContext_mod
+
+   use Pf_TestAnnotation_Mod
    implicit none
    private
 
@@ -118,6 +120,8 @@ module funit_private
       end function LoadTests_interface
    end interface
 
+   public :: TestAnnotation
+   public :: Ignore
 
 end module funit_private
 

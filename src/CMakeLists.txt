@@ -117,6 +117,7 @@ set(srcs
   SubsetRunner.F90
   SurrogateTestCase.F90
   Test.F90
+  TestAnnotation.F90
   TestVector.F90
   TestCase.F90
   TestFailure.F90

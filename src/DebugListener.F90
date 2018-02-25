@@ -32,6 +32,7 @@ module PF_DebugListener_mod
    contains
       procedure :: addFailure
       procedure :: startTest
+      procedure :: ignoreTest
       procedure :: endTest
       procedure :: endRun
       procedure :: addSuccess
@@ -77,6 +78,15 @@ contains
      write(this%unit,*)'Start: <',trim(testName),'>'
      flush(this%unit)
    end subroutine startTest
+
+  subroutine ignoreTest(this, testName)
+     class (DebugListener), intent(inOut) :: this
+     character(len=*), intent(in) :: testName
+
+     write(this%unit,*)new_line('A')
+     write(this%unit,*)'Ignore: <',trim(testName),'>'
+     flush(this%unit)
+  end subroutine ignoreTest
 
   subroutine endTest(this, testName)
      class (DebugListener), intent(inOut) :: this

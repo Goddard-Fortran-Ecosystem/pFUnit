@@ -36,6 +36,7 @@ module PF_ResultPrinter_mod
       procedure :: addFailure
       procedure :: addError
       procedure :: startTest
+      procedure :: ignoreTest
       procedure :: endTest
       procedure :: endRun
       procedure :: print
@@ -96,6 +97,20 @@ contains
      end if
 
    end subroutine startTest
+
+  subroutine ignoreTest(this, testName)
+     class (ResultPrinter), intent(inOut) :: this
+     character(len=*), intent(in) :: testName
+
+     write(this%unit,'("I")', advance='no')
+     call this%incrementColumn()
+
+     if (DEBUG) then
+        write(this%unit,*)trim(testName)
+        call flush(this%unit)
+     end if
+
+  end subroutine ignoreTest
 
   subroutine endTest(this, testName)
      class (ResultPrinter), intent(inOut) :: this
@@ -179,15 +194,18 @@ contains
          write(this%unit,*)"OK"
          write(this%unit,'(a,i0,a)',advance='no')" (", result%runCount(), " test"
          if (result%runCount() > 1) then
-            write(this%unit,'(a)')"s)"
-         else
-            write(this%unit,'(a)')")"
+            write(this%unit,'(a)',advance='no')"s"
          end if
+         if (result%ignoreCount() > 0) then
+            write(this%unit,'(a,i0,a)',advance='no')", ", result%ignoreCount(), " ignored"
+         end if
+         write(this%unit,'(a)')")"
       else
          write(this%unit,*)"FAILURES!!!"
          write(this%unit,'(a,i0,a,i0,a,i0)')"Tests run: ", result%runCount(), &
               & ", Failures: ",result%failureCount(), &
-              & ", Errors: ",result%errorCount()
+              & ", Errors: ",result%errorCount(), &
+              & ", Ignored: ",result%ignoreCount()
 
       end if
 

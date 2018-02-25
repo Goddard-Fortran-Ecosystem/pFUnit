@@ -8,6 +8,7 @@
    ADD_TEST_SUITE(AssertGreaterThan_Real_suite)
    ADD_TEST_SUITE(AssertGreaterThanOrEqual_Real_suite)
    ADD_TEST_SUITE(Norm_suite)
+   ADD_TEST_SUITE(Ignore_suite)
    ADD_TEST_SUITE(TapListener_suite)
    ADD_TEST_SUITE(ExceptionList_suite)
    ADD_TEST_SUITE(Arg_suite)

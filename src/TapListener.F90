@@ -39,6 +39,7 @@ module PF_TapListener_mod
       procedure :: addFailure
       procedure :: addError
       procedure :: startTest
+      procedure :: ignoreTest
       procedure :: endTest
       procedure :: endRun
       procedure :: print
@@ -92,6 +93,12 @@ contains
       character(len=*), intent(in) :: testName
 
    end subroutine startTest
+
+   subroutine ignoreTest(this, testName)
+      class (TapListener), intent(inOut) :: this
+      character(len=*), intent(in) :: testName
+
+   end subroutine ignoreTest
 
    subroutine endTest(this, testName)
       class (TapListener), intent(inOut) :: this

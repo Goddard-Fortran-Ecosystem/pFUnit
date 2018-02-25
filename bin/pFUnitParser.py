@@ -95,6 +95,33 @@ class Action():
         return m
 
 #------------------
+
+# If parser is in the state of looking for a test method name, then
+# check the current line to see if it defines a subroutine.
+# First subroutine after @test wins.
+class IsTestMethod(Action):
+    def __init__(self, parser):
+        self.parser = parser
+
+    def match(self, line):
+        if (self.parser.looking_for_test_name):
+            m = re.match('\s*subroutine\s+(\w*)\s*(\\([\w\s,]*\\))?\s*(!.*)*$', line, re.IGNORECASE)
+            return m
+        else:
+            return False
+        
+    def action(self, m, line):
+        self.parser.current_method['name'] = m.groups()[0]
+        dummyArgument = getSelfObjectName(line)
+        if dummyArgument:
+            self.parser.current_method['selfObjectName'] = dummyArgument
+        self.parser.looking_for_test_name = False
+        self.parser.userTestMethods.append(self.parser.current_method)
+        self.parser.outputFile.write(line)
+        self.parser.current_method = {}
+
+
+# @test
 class AtTest(Action):
     def __init__(self, parser):
         self.parser = parser
@@ -106,7 +133,7 @@ class AtTest(Action):
 
     def action(self, m, line):
         options = re.match('\s*'+self.keyword+'\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
-        method = {}
+        self.parser.current_method = {}
 
         if options:
 
@@ -114,56 +141,59 @@ class AtTest(Action):
             if npesOption:
                 npesString = npesOption.groups()[0]
                 npes = map(int, npesString.split(','))
-                method['npRequests'] = npes
+                self.parser.current_method['npRequests'] = npes
 
             #ifdef is optional
             matchIfdef = re.match('.*ifdef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
             if matchIfdef: 
                 ifdef = matchIfdef.groups()[0]
-                method['ifdef'] = ifdef
+                self.parser.current_method['ifdef'] = ifdef
 
             matchIfndef = re.match('.*ifndef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
             if matchIfndef: 
                 ifndef = matchIfndef.groups()[0]
-                method['ifndef'] = ifndef
+                self.parser.current_method['ifndef'] = ifndef
 
             matchType = re.match('.*type\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
             if matchType:
                 print ('Type', matchType.groups()[0])
-                method['type'] = matchType.groups()[0]
+                self.parser.current_method['type'] = matchType.groups()[0]
 
             paramOption = re.search('testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
             if paramOption:
                 paramExpr = paramOption.groups()[0]
-                method['testParameters'] = paramExpr
+                self.parser.current_method['testParameters'] = paramExpr
 
             casesOption = re.search('cases\s*=\s*(\\[[0-9,\s]+\\])', options.groups()[0], re.IGNORECASE)
             if casesOption:
-                method['cases'] = casesOption.groups()[0]
+                self.parser.current_method['cases'] = casesOption.groups()[0]
 
 
-        nextLine = self.parser.nextLine()
-        method['name'] = getSubroutineName(nextLine)
+#        nextLine = self.parser.nextLine()
+        self.parser.looking_for_test_name = True
+#        method['name'] = getSubroutineName(nextLine)
         # save "self" name for use with @mpiAssert
-        self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
+#        self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
 
         # save "self" name for use with @mpiAssert
-        dummyArgument = getSelfObjectName(nextLine)
-        if dummyArgument:
-            method['selfObjectName'] = dummyArgument
+#        dummyArgument = getSelfObjectName(nextLine)
+#        if dummyArgument:
+#            self.parser.current_method['selfObjectName'] = dummyArgument
 
-        self.parser.userTestMethods.append(method)
+#        self.parser.userTestMethods.append(method)
+#        self.parser.current_method = method # for subsequent annotations
         self.parser.commentLine(line)
-        self.parser.outputFile.write(nextLine)
-
+#        self.parser.outputFile.write(nextLine)
 
 #------------------
 # deprecated - should now just use @test
+# @mpitest
 class AtMpiTest(AtTest):
     def __init__(self, parser):
         self.parser = parser
         self.keyword = '@mpitest'
 
+# @testcase        
 class AtTestCase(Action):
     def __init__(self, parser):
         self.parser = parser
@@ -533,6 +563,21 @@ class AtTestParameter(Action):
                 self.parser.userTestCase['testParameterConstructor'] = self.parser.userTestCase['testParameterType']
 
 
+class AtIgnore(Action):
+    def __init__(self, parser):
+        self.parser = parser
+        self.keyword = '@ignore'
+
+    def match(self, line):
+        nameRe = "'\w+'|" + """\w+"""
+        m = re.match("\s*@ignore\s*$", line, re.IGNORECASE)
+        return m
+
+    def action(self, m, line):
+        print("Processing ignore:")
+        self.parser.current_method['ignore'] = True
+        self.parser.commentLine(line)
+                
 class Parser():
     def __init__(self, inputFileName, outputFileName):
         def getBaseName(fileName):
@@ -563,7 +608,9 @@ class Parser():
 
         self.actions=[]
         self.actions.append(AtTest(self))
+        self.actions.append(IsTestMethod(self))
         self.actions.append(AtMpiTest(self))
+        self.actions.append(AtIgnore(self))
         self.actions.append(AtTestCase(self))
         self.actions.append(AtSuite(self))
         self.actions.append(AtBegin(self))
@@ -671,6 +718,7 @@ class Parser():
         if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
         self.outputFile.write('   use '+ self.wrapModuleName + '\n')
         self.outputFile.write('   type (TestSuite) :: suite\n\n')
+        self.outputFile.write('   class (Test), allocatable :: t\n\n')
 
         if not self.userModuleName:
             for testMethod in self.userTestMethods:
@@ -729,7 +777,10 @@ class Parser():
         else:
             type = 'newTestMethod'
 
-        self.outputFile.write('   call suite%addTest(' + type + '(' + args + '))\n')
+        self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+        if ('ignore' in testMethod):
+            self.outputFile.write('   call t%insert(Ignore%type_name(),Ignore)\n')
+        self.outputFile.write('   call suite%addTest(t)\n')
 
     def addMpiTestMethod(self, testMethod):
         for npes in testMethod['npRequests']:
@@ -749,7 +800,11 @@ class Parser():
             else:
                 type = 'newMpiTestMethod'
                     
-            self.outputFile.write('   call suite%addTest(' + type + '(' + args + '))\n')
+            self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+            if ('ignore' in testMethod):
+                self.outputFile.write('   call t%insert(Ignore%type_name(),Ignore)\n')
+            self.outputFile.write('   call suite%addTest(t)\n')
+
 
     
     def addUserTestMethod(self, testMethod):
@@ -883,6 +938,7 @@ if __name__ == "__main__":
     import sys
     print("Processing file", sys.argv[1])
     p = Parser(sys.argv[1], sys.argv[2])
+    p.looking_for_test_name = False
     p.run()
     p.final()
     print(" ... Done.  Results in", sys.argv[2])

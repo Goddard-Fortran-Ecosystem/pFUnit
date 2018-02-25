@@ -36,6 +36,7 @@ module MockListener_mod
    contains
      procedure :: addFailure
      procedure :: startTest
+     procedure :: ignoreTest
      procedure :: endTest
      procedure :: endRun
      procedure :: addSuccess
@@ -60,6 +61,14 @@ contains
      write(this%log,'(a)') 'startTest() was called'
 
    end subroutine startTest
+
+  subroutine ignoreTest(this, testName)
+     class (MockListener), intent(inOut) :: this
+     character(len=*), intent(in) :: testName
+
+     write(this%log,'(a)') 'ignoreTest() was called'
+
+  end subroutine ignoreTest
 
   subroutine endTest(this, testName)
      class (MockListener), intent(inOut) :: this

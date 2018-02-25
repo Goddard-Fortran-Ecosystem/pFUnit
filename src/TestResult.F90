@@ -42,6 +42,7 @@ module PF_TestResult_mod
    type, extends(AbstractTestResult) :: TestResult
       private
       integer :: numRun = 0
+      integer :: numIgnored = 0
       real    :: runTime
       type (TestListenerVector) :: listeners
       type (TestFailureVector) :: failures
@@ -61,7 +62,9 @@ module PF_TestResult_mod
       procedure :: getRunTime
       procedure :: failureCount
       procedure :: errorCount
+      procedure :: ignoreCount
       procedure :: startTest
+      procedure :: ignoreTest
       procedure :: endTest
       procedure :: runCount
       procedure :: run
@@ -157,6 +160,11 @@ contains
       errorCount = this%errors%size()
    end function errorCount
 
+   integer function ignoreCount(this)
+      class (TestResult), intent(in) :: this
+      ignoreCount = this%numIgnored
+   end function ignoreCount
+
    subroutine startTest(this, aTest)
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
@@ -172,6 +180,22 @@ contains
       end do
 
    end subroutine startTest
+
+   subroutine ignoreTest(this, aTest)
+      class (TestResult), intent(inout) :: this
+      class (SurrogateTestCase), intent(in) :: aTest
+
+      integer :: i
+      class (TestListener), pointer :: listener
+
+      this%numIgnored = this%numIgnored + 1
+
+      do i = 1, this%listeners%size()
+         listener => this%listeners%at(i)
+         call listener%ignoreTest(aTest%getName())
+      end do
+
+   end subroutine ignoreTest
 
    subroutine endTest(this, aTest)
       class (TestResult), intent(inout) :: this
@@ -200,6 +224,12 @@ contains
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(inout) :: test 
       class (ParallelContext), intent(in) :: context
+
+
+      if (test%is_ignored()) then
+         call this%ignoreTest(test)
+         return
+      end if
 
       if (context%isRootProcess()) call this%startTest(test)
 

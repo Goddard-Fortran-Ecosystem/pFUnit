@@ -40,6 +40,7 @@ module PF_TestCase_mod
       procedure :: runBare => runBare_surrogate
       procedure :: setName => setName_surrogate
       procedure :: getName => getName_surrogate
+      procedure :: is_ignored
    end type ConcreteSurrogate
    
    type, abstract, extends(Test) :: TestCase
@@ -197,5 +198,12 @@ contains
       class (TestCase), intent(inout) :: this
       call throw('TestCase::runMethod() must be overridden.')
    end subroutine runMethod
+
+   logical function is_ignored(this)
+      class (ConcreteSurrogate), intent(in) :: this
+
+      is_ignored = this%tCase%is_ignored()
+
+   end function is_ignored
 
 end module PF_TestCase_mod

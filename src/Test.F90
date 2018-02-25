@@ -21,17 +21,23 @@
 !
 !-------------------------------------------------------------------------------
 module PF_Test_mod
+   use pf_TestAnnotation_mod
+   use pf_StringTestAnnotationMap_mod
    implicit none
    private
 
+   public :: Test
+   
    ! Abstract class from which other Test classes inherit
-   type, public, abstract :: Test
+   type, abstract, extends(StringTestAnnotationMap) :: Test
       integer :: placeholder
    contains
       procedure(countTestCases), deferred :: countTestCases
       procedure(run), deferred :: run
       procedure(getName), deferred :: getName
       procedure :: setName
+
+      procedure :: is_ignored
    end type Test
 
    abstract interface
@@ -57,11 +63,22 @@ module PF_Test_mod
       end function getName
 
    end interface
+
 contains
+
+
    subroutine setName(this, name)
       class (Test), intent(inout) :: this
       character(len=*), intent(in) :: name
       ! Default: Cannot change name
    end subroutine setName
+
+
+   logical function is_ignored(this)
+      class (Test), intent(in) :: this
+
+      is_ignored = (this%count(Ignore%type_name()) == 1)
+
+   end function is_ignored
 
 end module PF_Test_mod
