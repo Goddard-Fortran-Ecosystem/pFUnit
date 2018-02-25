@@ -1,0 +1,38 @@
+module Test_IgnoreTest_mod
+   use FUnit
+   implicit none
+
+   @suite(name='Ignore_suite')
+
+contains
+
+   @test
+   subroutine test_ignore()
+      type (TestSuite) :: s
+      type (TestRunner) :: r
+      type (TestResult) :: rslt
+      class (Test), allocatable :: t
+      
+      s = newTestSuite()
+      t = newTestMethod('test_is_igored',test_is_ignored)
+      call t%insert(Ignore%type_name(), Ignore)
+      call s%addTest(t)
+
+      t = newTestMethod('test_is_not_igored',test_is_not_ignored)
+      call s%addTest(t)
+
+      r = newTestRunner()
+      rslt = r%run(s, SerialContext())
+      @assertEqual(1, rslt%runCount())
+      @assertEqual(1, rslt%ignoreCount())
+   end subroutine test_ignore
+
+
+   subroutine test_is_ignored()
+   end subroutine test_is_ignored
+
+   subroutine test_is_not_ignored()
+   end subroutine test_is_not_ignored
+   
+   
+end module Test_IgnoreTest_mod
