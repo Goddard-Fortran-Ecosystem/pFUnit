@@ -17,6 +17,7 @@ module Test_AssertEqual_Real_mod
    use pf_AssertReal_3d_mod
 #ifdef _REAL32_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_32
+      use MakeInf_mod, only:  strInf
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_64
@@ -462,8 +463,8 @@ contains
     call assertExceptionRaised( &
          & 'AssertEqual failure:' // NL // &
          & '      Expected: <1.000000>' // NL // &
-         & '        Actual: <Infinity>' // NL // &
-         & '    Difference: <Infinity> (greater than tolerance of 0.)' &
+         & '        Actual: <'//strInf()//'>' // NL // &
+         & '    Difference: <'//strInf()//'> (greater than tolerance of 0.)' &
          )
 
   end subroutine testEquals_ScalarInf_unequal_A
@@ -475,9 +476,9 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertEqual failure:' // NL // &
-         & '      Expected: <Infinity>' // NL // &
+         & '      Expected: <'//strInf()//'>' // NL // &
          & '        Actual: <1.000000>' // NL // &
-         & '    Difference: <-Infinity> (greater than tolerance of 2.000000)' &
+         & '    Difference: <-'//strInf()//'> (greater than tolerance of 2.000000)' &
          )
  end subroutine testEquals_ScalarInf_unequal_B
    

@@ -17,6 +17,7 @@ module Test_AssertNotEqual_Real_mod
    use pf_AssertReal_3d_mod
 #ifdef _REAL32_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_32
+      use MakeInf_mod, only:  strInf
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_64
@@ -451,7 +452,7 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertNotEqual failure:' // NL // &
-         & '    Same value: <Infinity>' // NL // &
+         & '    Same value: <'//strInf()//'>' // NL // &
          & '    Difference: <0.> (less than or equal to tolerance of 0.)' &
          )
 
@@ -464,7 +465,7 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertNotEqual failure:' // NL // &
-         & '    Same value: <Infinity>' // NL // &
+         & '    Same value: <'//strInf()//'>' // NL // &
          & '    Difference: <0.> (less than or equal to tolerance of 2.000000)' &
          )
  end subroutine testNotEqual_ScalarInf_unequal_B

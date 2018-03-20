@@ -17,6 +17,7 @@ module Test_AssertLessThanOrEqual_Real_mod
    use pf_AssertReal_3d_mod
 #ifdef _REAL32_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_32
+      use MakeInf_mod, only:  strInf
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_64
@@ -466,7 +467,7 @@ contains
      call assertExceptionRaised( &
           & 'AssertLessThanOrEqual failure:' // NL // &
           & '                          LHS: <1.000000>' // NL // &
-          & '    not less than or equal to: <-Infinity>' &
+          & '    not less than or equal to: <-'//strInf()//'>' &
           )
      
   end subroutine testLessThanOrEquals_ScalarInf_unlessThan_A
@@ -478,7 +479,7 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertLessThanOrEqual failure:' // NL // &
-         & '                          LHS: <Infinity>' // NL // &
+         & '                          LHS: <'//strInf()//'>' // NL // &
          & '    not less than or equal to: <1.000000>' &
          )
 

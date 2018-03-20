@@ -29,6 +29,7 @@ module MakeInf_mod
 
 #ifdef _REAL32_IEEE_SUPPORT
    public :: makeInf_32
+   public :: strInf
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
    public :: makeInf_64
@@ -38,7 +39,7 @@ module MakeInf_mod
 #endif
 
 contains
-   
+
 #ifdef _REAL32_IEEE_SUPPORT
    function makeInf_32() result(inf_32)
       real(REAL32) :: inf_32
@@ -46,6 +47,16 @@ contains
       inf_32 = ieee_value(inf_32,  ieee_positive_inf)
       
    end function makeInf_32
+
+   ! Formatted string for Infinity varies by compiler.  This function
+   ! is used by self tests to generate the appropriate string for
+   ! assertions.
+   function strInf() result(string)
+      character(:), allocatable :: string
+      character(40) :: buffer
+      write(buffer,'(g0)') makeInf_32()
+      string = trim(buffer)
+   end function strInf
 #endif
 
 #ifdef _REAL64_IEEE_SUPPORT

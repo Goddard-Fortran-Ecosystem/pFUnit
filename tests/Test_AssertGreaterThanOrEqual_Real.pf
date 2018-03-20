@@ -17,6 +17,7 @@ module Test_AssertGreaterThanOrEqual_Real_mod
    use pf_AssertReal_3d_mod
 #ifdef _REAL32_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_32
+      use MakeInf_mod, only:  strInf
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
       use MakeInf_mod, only:  makeInf_64
@@ -466,7 +467,7 @@ contains
      
      call assertExceptionRaised( &
           & 'AssertGreaterThanOrEqual failure:' // NL // &
-          & '                             LHS: <-Infinity>' // NL // &
+          & '                             LHS: <-'//strInf()//'>' // NL // &
           & '    not greater than or equal to: <1.000000>' &
           )
      
@@ -481,7 +482,7 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertGreaterThanOrEqual failure:' // NL // &
-         & '                             LHS: <-Infinity>' // NL // &
+         & '                             LHS: <-'//strInf()//'>' // NL // &
          & '    not greater than or equal to: <1.000000>' &
          )
 
