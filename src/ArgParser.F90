@@ -36,6 +36,7 @@ module pf_ArgParser_mod
       procedure :: add_option_as_option
       procedure :: add_option_as_attributes
       procedure :: get_defaults
+      procedure :: get_defaults2
       procedure :: get_option_matching
       procedure :: print_help
       procedure :: print_help_header
@@ -137,7 +138,9 @@ contains
       character(:), allocatable :: dest
       character(:), target, allocatable :: embedded_value
 
-      option_values=this%get_defaults()
+      ! TODO:  Hopefully this is a temporary workaround for ifort 19 beta
+      call this%get_defaults2(option_values)
+!!$      option_values = this%get_defaults()
       
       iter = arguments%begin()
       do while (iter /= arguments%end())
@@ -189,7 +192,7 @@ contains
 
       type (Arg), pointer :: opt
       type (ArgVectorIterator) :: opt_iter
-      
+
       opt_iter = this%options%begin()
       do while (opt_iter /= this%options%end())
          opt => opt_iter%get()
@@ -200,6 +203,24 @@ contains
       end do
       
    end function get_defaults
+
+   subroutine get_defaults2(this, option_values)
+      type (StringUnlimitedMap) :: option_values
+      class (ArgParser), intent(in) :: this
+
+      type (Arg), pointer :: opt
+      type (ArgVectorIterator) :: opt_iter
+
+      opt_iter = this%options%begin()
+      do while (opt_iter /= this%options%end())
+         opt => opt_iter%get()
+         if (opt%has_default()) then
+            call option_values%insert(opt%get_destination(), opt%get_default())
+         end if
+         call opt_iter%next()
+      end do
+      
+   end subroutine get_defaults2
 
    function get_option_matching(this, argument, embedded_value) result(opt)
       type (Arg), pointer :: opt

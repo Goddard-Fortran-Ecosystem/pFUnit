@@ -145,11 +145,21 @@ contains
       call assertRelativelyEqual(10.0, 12.0, 0.1)
       call assertExceptionRaised(&
            & 'AssertRelativelyEqual failure:' // NL // &
-           & '           Expected: <10.00000>' // NL // &
-           & '             Actual: <12.00000>' // NL // &
-           & '    Rel. difference: <0.2000000> (greater than tolerance of 0.1000000)' &
+           & '           Expected: <'//to_string(10.)//'>' // NL // &
+           & '             Actual: <'//to_string(12.)//'>' // NL // &
+           & '    Rel. difference: <'//to_string(0.2)//'> (greater than tolerance of '//to_string(0.1)//')' &
            & )
    end subroutine test_rel_equal_fail_scalar_with_tolerance
+
+ function to_string(x) result(str)
+    real, intent(in) :: x
+    character(len=:), allocatable :: str
+
+    character(255) :: buffer
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+
+ end function to_string
 
 end module Test_AssertRelativelyEqual_Real_mod
    

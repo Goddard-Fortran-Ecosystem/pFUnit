@@ -38,6 +38,8 @@ macro (CHECK_FORTRAN_SOURCE_COMPILE file var)
     )
 
   if (${code_compiles})
+
+    set(${var} SUCCESS)
     if (NOT CMAKE_REQUIRED_QUIET)
       message (STATUS "Performing Test ${var}: SUCCESS")
     endif ()

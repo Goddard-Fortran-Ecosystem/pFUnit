@@ -1,7 +1,8 @@
 # Compiler specific flags for NAG Fortran compiler
 
 set(traceback "-gline")
-set(check_all "-C=all")
+#set(check_all "-C=all")
+
 set(cpp "-fpp")
 set(mismatch "-mismatch")
 

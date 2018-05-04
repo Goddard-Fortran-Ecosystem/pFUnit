@@ -15,7 +15,7 @@ foreach (kind 8 16 32 64)
 
   CHECK_FORTRAN_SOURCE_RUN (
     ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/INT_KIND.F90
-    _INT${kind}
+    _ISO_INT${kind}
     )
 
 endforeach()
@@ -30,19 +30,35 @@ CHECK_FORTRAN_SOURCE_RUN (
   _DOUBLE_DEFAULT_KIND
   )
 
-foreach (kind 32 64 128 256)
+foreach (kind 32 64 80 128 256)
   set(CMAKE_REQUIRED_FLAGS = -fpp)
   set(CMAKE_REQUIRED_DEFINITIONS -D_KIND=REAL${kind})
 
-  CHECK_FORTRAN_SOURCE_RUN (
+  try_compile (
+    code_compiles
+    ${CMAKE_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND.F90
-    _REAL${kind}
-    )
+    CMAKE_FLAGS "-DCOMPILE_DEFINITIONS=${CMAKE_REQUIRED_DEFINITIONS}")
   
-  CHECK_FORTRAN_SOURCE_RUN(
-    ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND_IEEE_SUPPORT.F90
-    _REAL${kind}_IEEE_SUPPORT
-    )
+  if (code_compiles)
+    CHECK_FORTRAN_SOURCE_RUN (
+      ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND.F90
+      _ISO_REAL${kind}
+      )
+  endif ()
+  
+  try_compile (
+    code_compiles
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND.F90
+    CMAKE_FLAGS "-DCOMPILE_DEFINITIONS=${CMAKE_REQUIRED_DEFINITIONS}")
+  
+  if (code_compiles)
+    CHECK_FORTRAN_SOURCE_RUN(
+      ${CMAKE_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND_IEEE_SUPPORT.F90
+      _REAL${kind}_IEEE_SUPPORT
+      )
+  endif ()
 
 endforeach()
 

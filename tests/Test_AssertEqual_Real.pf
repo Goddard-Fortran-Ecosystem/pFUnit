@@ -139,7 +139,7 @@ contains
 #endif
       
    end subroutine test_equal_1D_actual
-
+   
    @test
    subroutine test_equal_1D_actual_with_tolerance
 
@@ -339,15 +339,18 @@ contains
 
    @test
    subroutine test_infinity_1d()
+      use iso_fortran_env, only: REAL64
 
 #ifdef _REAL32_IEEE_SUPPORT
-      @assertIsFinite(1._REAL64)
+      @assertIsFinite(1._REAL32)
       @assertEqual([1._REAL32,makeInf_32()], [1._REAL32,makeInf_32()])
 #endif
 #ifdef _REAL64_IEEE_SUPPORT
+      @assertIsFinite(1._REAL64)
       @assertEqual([1._REAL64,makeInf_64()], [1._REAL64,makeInf_64()])
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
+      @assertIsFinite(1._REAL128)
       @assertEqual([1._REAL128,makeInf_128()], [1._REAL128,makeInf_128()])
 #endif
 
@@ -381,23 +384,32 @@ contains
 
    @test
    subroutine test_equal_fail_scalar_no_tolerance()
+
+      character(:), allocatable :: str_zero
+      character(:), allocatable :: str_one
+      character(:), allocatable :: str_two
+      str_zero = to_string(0.0)
+      str_one = to_string(1.0)
+      str_two = to_string(2.0)
+
       call assertEqual(1.0, 2.0)
       call assertExceptionRaised(&
            & 'AssertEqual failure:' // NL // &
-           & '      Expected: <1.000000>' // NL // &
-           & '        Actual: <2.000000>' // NL // &
-           & '    Difference: <1.000000> (greater than tolerance of 0.)' &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.0)//')' &
            & )
    end subroutine test_equal_fail_scalar_no_tolerance
 
    @test
    subroutine test_equal_fail_scalar_with_tolerance()
+
       call assertEqual(1.0, 2.0, 0.1)
       call assertExceptionRaised(&
            & 'AssertEqual failure:' // NL // &
-           & '      Expected: <1.000000>' // NL // &
-           & '        Actual: <2.000000>' // NL // &
-           & '    Difference: <1.000000> (greater than tolerance of 0.1000000)' &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.1)//')' &
            & )
    end subroutine test_equal_fail_scalar_with_tolerance
 
@@ -406,9 +418,9 @@ contains
       call assertEqual(1, [2.0,1.0], 0.1)
       call assertExceptionRaised(&
            & 'ArrayAssertEqual failure:' // NL // &
-           & '      Expected: <1.000000>' // NL // &
-           & '        Actual: <2.000000>' // NL // &
-           & '    Difference: <1.000000> (greater than tolerance of 0.1000000)' // NL //  &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.1)//')' // NL //  &
            & '      at index: [1]' &
            & )
    end subroutine test_equal_fail_1d_with_tolerance
@@ -426,9 +438,9 @@ contains
 
     call assertExceptionRaised( &
          & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000>' // NL // &
-         & '        Actual: <-999.0000>' // NL // &
-         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
+         & '        Actual: <'//to_string(-999.)//'>' // NL // &
+         & '    Difference: <'//to_string(-1000.)//'> (greater than tolerance of '//to_string(0.)//')'  // NL // &
          & '      at index: [1,2]' &
          )
 
@@ -447,9 +459,9 @@ contains
 
     call assertExceptionRaised( &
          & 'ArrayAssertEqual failure:' // NL // &
-         & '      Expected: <1.000000>' // NL // &
-         & '        Actual: <-999.0000>' // NL // &
-         & '    Difference: <-1000.000> (greater than tolerance of 0.)'  // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
+         & '        Actual: <'//to_string(-999.)//'>' // NL // &
+         & '    Difference: <'//to_string(-1000.)//'> (greater than tolerance of '//to_string(0.)//')'  // NL // &
          & '      at index: [2,1]' &
          )
 
@@ -462,9 +474,9 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertEqual failure:' // NL // &
-         & '      Expected: <1.000000>' // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
          & '        Actual: <'//strInf()//'>' // NL // &
-         & '    Difference: <'//strInf()//'> (greater than tolerance of 0.)' &
+         & '    Difference: <'//strInf()//'> (greater than tolerance of '//to_string(0.)//')' &
          )
 
   end subroutine testEquals_ScalarInf_unequal_A
@@ -477,10 +489,20 @@ contains
     call assertExceptionRaised( &
          & 'AssertEqual failure:' // NL // &
          & '      Expected: <'//strInf()//'>' // NL // &
-         & '        Actual: <1.000000>' // NL // &
-         & '    Difference: <-'//strInf()//'> (greater than tolerance of 2.000000)' &
+         & '        Actual: <'//to_string(1.)//'>' // NL // &
+         & '    Difference: <-'//strInf()//'> (greater than tolerance of '//to_string(2.)//')' &
          )
  end subroutine testEquals_ScalarInf_unequal_B
-   
+
+   function to_string(x) result(str)
+      real, intent(in) :: x
+      character(len=:), allocatable :: str
+      
+      character(255) :: buffer
+      write(buffer,'(g0)') x
+      str = trim(buffer)
+      
+   end function to_string
+
 end module Test_AssertEqual_Real_mod
    

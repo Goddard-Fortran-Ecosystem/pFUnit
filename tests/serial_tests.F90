@@ -28,7 +28,7 @@ contains
       use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
       use Test_Assert_mod, only: assertSuite => suite                      ! (3)
 
-      use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
+!!$      use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
 
       use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
       use Test_TestSuite_mod, only: testTestSuiteSuite => suite                ! (7)
@@ -71,7 +71,7 @@ contains
       ADD(assertBasicSuite)
       ADD(assertSuite)
 
-      ADD(assertComplexSuite)
+!!$      ADD(assertComplexSuite)
 
       ADD(testResultSuite)
       ADD(testTestSuiteSuite)

@@ -351,7 +351,7 @@ contains
       @assertGreaterThan(makeInf_64(), nearest(makeInf_64(),-1.))
 #endif
 #ifdef _REAL128_IEEE_SUPPORT
-      @assertGreaterThan(nearest(makeInf_128(),-1.), makeInf_128())
+      @assertGreaterThan(makeInf_128(), nearest(makeInf_128(),-1.))
 #endif
 
    end subroutine test_infinity
@@ -387,8 +387,8 @@ contains
       call assertGreaterThan(-1.0, +1.0)
       call assertExceptionRaised(&
            & 'AssertGreaterThan failure:' // NL // &
-           & '                 LHS: <-1.000000>' // NL // &
-           & '    not greater than: <1.000000>' &
+           & '                 LHS: <'//to_string(-1.0)//'>' // NL // &
+           & '    not greater than: <'//to_string(1.0)//'>' &
            & )
    end subroutine test_lessThan_fail_scalar_no_tolerance
 
@@ -397,8 +397,8 @@ contains
       call assertGreaterThan(-1.0, 0.0, 0.1)
       call assertExceptionRaised(&
            & 'AssertGreaterThan failure:' // NL // &
-           & '                 LHS: <-1.000000>' // NL // &
-           & '    not greater than: <0.>' &
+           & '                 LHS: <'//to_string(-1.0)//'>' // NL // &
+           & '    not greater than: <'//to_string(0.0)//'>' &
            & )
    end subroutine test_lessThan_fail_scalar_with_tolerance
 
@@ -407,8 +407,8 @@ contains
       call assertGreaterThan(1, [0.0,2.0], 0.1)
       call assertExceptionRaised(&
            & 'ArrayAssertGreaterThan failure:' // NL // &
-           & '                 LHS: <1.000000>' // NL // &
-           & '    not greater than: <2.000000>' // NL // &
+           & '                 LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not greater than: <'//to_string(2.0)//'>' // NL // &
            & '            at index: [2]' &
            & )
    end subroutine test_lessThan_fail_1d_with_tolerance
@@ -426,8 +426,8 @@ contains
 
     call assertExceptionRaised( &
          & 'ArrayAssertGreaterThan failure:' // NL // &
-         & '                 LHS: <1.000000>' // NL // &
-         & '    not greater than: <2.000000>' // NL // &
+         & '                 LHS: <'//to_string(1.0)//'>' // NL // &
+         & '    not greater than: <'//to_string(2.0)//'>' // NL // &
          & '            at index: [1,2]' &
          )
 
@@ -446,8 +446,8 @@ contains
      
      call assertExceptionRaised( &
           & 'ArrayAssertGreaterThan failure:' // NL // &
-          & '                 LHS: <1.000000>' // NL // &
-          & '    not greater than: <2.000000>' // NL // &
+          & '                 LHS: <'//to_string(1.0)//'>' // NL // &
+          & '    not greater than: <'//to_string(2.0)//'>' // NL // &
           & '            at index: [2,1]' &
           )
      
@@ -473,11 +473,22 @@ contains
 
     call assertExceptionRaised( &
          & 'AssertGreaterThan failure:' // NL // &
-         & '                 LHS: <1.000000>' // NL // &
+         & '                 LHS: <'//to_string(1.0)//'>' // NL // &
          & '    not greater than: <'//strInf()//'>' &
          )
 
  end subroutine testGreaterThans_ScalarInf_unlessThan_B
+
+
+ function to_string(x) result(str)
+    real, intent(in) :: x
+    character(len=:), allocatable :: str
+
+    character(255) :: buffer
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+
+ end function to_string
 
 end module Test_AssertGreaterThan_Real_mod
 

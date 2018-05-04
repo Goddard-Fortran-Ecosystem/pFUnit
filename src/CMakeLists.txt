@@ -4,7 +4,6 @@ include_directories(${install_dir}/FTL/src/FTL-build/include)
 
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
-
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
 
 set(generated_files
@@ -72,7 +71,7 @@ add_custom_command(
   )
 
 set(srcs
-  ${generated_files}
+#  ${generated_files}
   ${new_generated_sources}
   KeywordEnforcer.F90
   MatchObject.F90

@@ -393,8 +393,8 @@ contains
       call assertGreaterThanOrEqual(0.5, 1.0)
       call assertExceptionRaised(&
            & 'AssertGreaterThanOrEqual failure:' // NL // &
-           & '                             LHS: <0.5000000>' // NL // &
-           & '    not greater than or equal to: <1.000000>' &
+           & '                             LHS: <'//to_string(0.5)//'>' // NL // &
+           & '    not greater than or equal to: <'//to_string(1.0)//'>' &
            & )
    end subroutine test_greaterThan_fail_scalar_no_tolerance
 
@@ -403,8 +403,8 @@ contains
       call assertGreaterThanOrEqual(0.0, 1.0, 0.1)
       call assertExceptionRaised(&
            & 'AssertGreaterThanOrEqual failure:' // NL // &
-           & '                             LHS: <0.>' // NL // &
-           & '    not greater than or equal to: <1.000000>' &
+           & '                             LHS: <'//to_string(0.0)//'>' // NL // &
+           & '    not greater than or equal to: <'//to_string(1.0)//'>' &
            & )
    end subroutine test_greaterThan_fail_scalar_with_tolerance
 
@@ -413,8 +413,8 @@ contains
       call assertGreaterThanOrEqual(1, [0.0,2.0], 0.1)
       call assertExceptionRaised(&
            & 'ArrayAssertGreaterThanOrEqual failure:' // NL // &
-           & '                             LHS: <1.000000>' // NL // &
-           & '    not greater than or equal to: <2.000000>' // NL // &
+           & '                             LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not greater than or equal to: <'//to_string(2.0)//'>' // NL // &
            & '                        at index: [2]' &
            & )
    end subroutine test_greaterThan_fail_1d_with_tolerance
@@ -432,8 +432,8 @@ contains
 
     call assertExceptionRaised( &
          & 'ArrayAssertGreaterThanOrEqual failure:' // NL // &
-         & '                             LHS: <1.000000>' // NL // &
-         & '    not greater than or equal to: <2.000000>' // NL // &
+         & '                             LHS: <'//to_string(1.0)//'>' // NL // &
+         & '    not greater than or equal to: <'//to_string(2.0)//'>' // NL // &
          & '                        at index: [1,2]' &
          )
 
@@ -452,8 +452,8 @@ contains
      
      call assertExceptionRaised( &
           & 'ArrayAssertGreaterThanOrEqual failure:' // NL // &
-          & '                             LHS: <1.000000>' // NL // &
-          & '    not greater than or equal to: <2.000000>' // NL // &
+          & '                             LHS: <'//to_string(1.0)//'>' // NL // &
+          & '    not greater than or equal to: <'//to_string(2.0)//'>' // NL // &
           & '                        at index: [2,1]' &
           )
      
@@ -468,7 +468,7 @@ contains
      call assertExceptionRaised( &
           & 'AssertGreaterThanOrEqual failure:' // NL // &
           & '                             LHS: <-'//strInf()//'>' // NL // &
-          & '    not greater than or equal to: <1.000000>' &
+          & '    not greater than or equal to: <'//to_string(1.0)//'>' &
           )
      
   end subroutine testGreaterThanOrEquals_ScalarInf_ungreaterThan_A
@@ -483,11 +483,22 @@ contains
     call assertExceptionRaised( &
          & 'AssertGreaterThanOrEqual failure:' // NL // &
          & '                             LHS: <-'//strInf()//'>' // NL // &
-         & '    not greater than or equal to: <1.000000>' &
+         & '    not greater than or equal to: <'//to_string(1.0)//'>' &
          )
 
  end subroutine testGreaterThanOrEquals_ScalarInf_ungreaterThan_B
 #endif
+
+ function to_string(x) result(str)
+    real, intent(in) :: x
+    character(len=:), allocatable :: str
+
+    character(255) :: buffer
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+
+ end function to_string
+
 
 end module Test_AssertGreaterThanOrEqual_Real_mod
 

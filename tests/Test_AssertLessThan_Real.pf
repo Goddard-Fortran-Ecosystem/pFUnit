@@ -33,6 +33,7 @@ module Test_AssertLessThan_Real_mod
    real(kind=REAL32), parameter :: bad  = -999
 
    character(len=1), parameter :: NL = new_line('a')
+
 contains
 
 
@@ -387,21 +388,24 @@ contains
 
    @test
    subroutine test_lessThan_fail_scalar_no_tolerance()
+
       call assertLessThan(1.0, -1.0)
+
       call assertExceptionRaised(&
            & 'AssertLessThan failure:' // NL // &
-           & '              LHS: <1.000000>' // NL // &
-           & '    not less than: <-1.000000>' &
+           & '              LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than: <'//to_string(-1.0)//'>' &
            & )
    end subroutine test_lessThan_fail_scalar_no_tolerance
 
    @test
    subroutine test_lessThan_fail_scalar_with_tolerance()
+
       call assertLessThan(1.0, 0.0, 0.1)
       call assertExceptionRaised(&
            & 'AssertLessThan failure:' // NL // &
-           & '              LHS: <1.000000>' // NL // &
-           & '    not less than: <0.>' &
+           & '              LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than: <'//to_string(0.0)//'>' &
            & )
    end subroutine test_lessThan_fail_scalar_with_tolerance
 
@@ -410,14 +414,14 @@ contains
       call assertLessThan(1, [2.0,0.0], 0.1)
       call assertExceptionRaised(&
            & 'ArrayAssertLessThan failure:' // NL // &
-           & '              LHS: <1.000000>' // NL // &
-           & '    not less than: <0.>' // NL // &
+           & '              LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than: <'//to_string(0.)//'>' // NL // &
            & '         at index: [2]' &
            & )
    end subroutine test_lessThan_fail_1d_with_tolerance
 
   @test
-  subroutine testLessThans_2D_SingleElementDifferent()
+  subroutine testLessThan_2D_SingleElementDifferent()
 
     real, dimension(2,2) :: expected, found
 
@@ -429,15 +433,15 @@ contains
 
     call assertExceptionRaised( &
          & 'ArrayAssertLessThan failure:' // NL // &
-         & '              LHS: <1.000000>' // NL // &
-         & '    not less than: <-999.0000>' // NL // &
+         & '              LHS: <'//to_string(1.0)//'>' // NL // &
+         & '    not less than: <'//to_string(-999.0)//'>' // NL // &
          & '         at index: [1,2]' &
          )
 
-  end subroutine testLessThans_2D_SingleElementDifferent
+  end subroutine testLessThan_2D_SingleElementDifferent
 
   @test
-  subroutine testLessThans_2d_MultipleDiffs
+  subroutine testLessThan_2d_MultipleDiffs
 
      real, dimension(2,3) :: expected, found
 
@@ -449,15 +453,15 @@ contains
      
      call assertExceptionRaised( &
           & 'ArrayAssertLessThan failure:' // NL // &
-          & '              LHS: <1.000000>' // NL // &
-          & '    not less than: <-999.0000>' // NL // &
+          & '              LHS: <'//to_string(1.0)//'>' // NL // &
+          & '    not less than: <'//to_string(-999.0)//'>' // NL // &
           & '         at index: [2,1]' &
           )
      
-  end subroutine testLessThans_2d_MultipleDiffs
+  end subroutine testLessThan_2d_MultipleDiffs
   
   @test
-  subroutine testLessThans_ScalarInf_unlessThan_A()
+  subroutine testLessThan_ScalarInf_unlessThan_A()
     
      call assertLessThan(makeInf_32(), makeInf_32())
      
@@ -467,20 +471,31 @@ contains
           & '    not less than: <'//strInf()//'>' &
           )
      
-  end subroutine testLessThans_ScalarInf_unlessThan_A
+  end subroutine testLessThan_ScalarInf_unlessThan_A
 
   @test
-  subroutine testLessThans_ScalarInf_unlessThan_B()
+  subroutine testLessThan_ScalarInf_unlessThan_B()
     
     call assertLessThan(makeInf_32(), 1._REAL32, 2._REAL32)
 
     call assertExceptionRaised( &
          & 'AssertLessThan failure:' // NL // &
          & '              LHS: <'//strInf()//'>' // NL // &
-         & '    not less than: <1.000000>' &
+         & '    not less than: <'//to_string(1.0)//'>' &
          )
 
- end subroutine testLessThans_ScalarInf_unlessThan_B
+ end subroutine testLessThan_ScalarInf_unlessThan_B
+
+
+ function to_string(x) result(str)
+    real, intent(in) :: x
+    character(len=:), allocatable :: str
+
+    character(255) :: buffer
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+
+ end function to_string
 
 end module Test_AssertLessThan_Real_mod
 

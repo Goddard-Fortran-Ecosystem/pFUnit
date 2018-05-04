@@ -48,6 +48,24 @@ module PF_AssertBasic_mod
    use PF_ExceptionList_mod
    use PF_SourceLocation_mod
    use PF_StringUtilities_mod
+#ifdef _ISO_REAL16
+   use, intrinsic :: iso_fortran_env, only: REAL16
+#endif
+#ifdef _ISO_REAL32
+   use, intrinsic :: iso_fortran_env, only: REAL32
+#endif
+#ifdef _ISO_REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL64
+#endif
+#ifdef _ISO_REAL80
+   use, intrinsic :: iso_fortran_env, only: REAL80
+#endif
+#ifdef _ISO_REAL128
+   use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
+#ifdef _ISO_REAL256
+   use, intrinsic :: iso_fortran_env, only: REAL256
+#endif
    implicit none
    private
    
@@ -104,23 +122,87 @@ module PF_AssertBasic_mod
    end interface assertExceptionRaised
 
    interface assertIsNaN
-      module procedure assertIsNan_single
-      module procedure assertIsNan_double
+#ifdef _REAL16_IEEE_SUPPORT
+      module procedure assertIsNaN_real16
+#endif
+#ifdef _REAL32_IEEE_SUPPORT
+      module procedure assertIsNaN_real32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      module procedure assertIsNaN_real64
+#endif
+#ifdef _REAL80_IEEE_SUPPORT
+      module procedure assertIsNaN_real80
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      module procedure assertIsNaN_real128
+#endif
+#ifdef _REAL256_IEEE_SUPPORT
+      module procedure assertIsNaN_real256
+#endif
    end interface assertIsNaN
 
    interface assertIsFinite
-      module procedure assertIsFinite_single
-      module procedure assertIsFinite_double
+#ifdef _REAL16_IEEE_SUPPORT
+      module procedure assertIsFinite_real16
+#endif
+#ifdef _REAL32_IEEE_SUPPORT
+      module procedure assertIsFinite_real32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      module procedure assertIsFinite_real64
+#endif
+#ifdef _REAL80_IEEE_SUPPORT
+      module procedure assertIsFinite_real80
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      module procedure assertIsFinite_real128
+#endif
+#ifdef _REAL256_IEEE_SUPPORT
+      module procedure assertIsFinite_real256
+#endif
    end interface assertIsFinite
 
    interface assertIsNotNaN
-      module procedure assertIsNotNan_single
-      module procedure assertIsNotNan_double
+#ifdef _REAL16_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real16
+#endif
+#ifdef _REAL32_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real64
+#endif
+#ifdef _REAL80_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real80
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real128
+#endif
+#ifdef _REAL256_IEEE_SUPPORT
+      module procedure assertIsNotNaN_real256
+#endif
    end interface assertIsNotNaN
 
    interface assertIsInfinite
-      module procedure assertIsInfinite_single
-      module procedure assertIsInfinite_double
+#ifdef _REAL16_IEEE_SUPPORT
+      module procedure assertIsInfinite_real16
+#endif
+#ifdef _REAL32_IEEE_SUPPORT
+      module procedure assertIsInfinite_real32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      module procedure assertIsInfinite_real64
+#endif
+#ifdef _REAL80_IEEE_SUPPORT
+      module procedure assertIsInfinite_real80
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      module procedure assertIsInfinite_real128
+#endif
+#ifdef _REAL256_IEEE_SUPPORT
+      module procedure assertIsInfinite_real256
+#endif
    end interface assertIsInfinite
 
    ! Arguments of the type below are used to force keyword arguments
@@ -553,97 +635,284 @@ contains
    end subroutine assertNotAll
 
 
-   subroutine assertIsNaN_single(x, message, location)
-      use PF_Params_mod, only: r32
+#ifdef _REAL16_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL16(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-      real(kind=r32), intent(in) :: x
+      real(kind=REAL16), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
       call assertTrue(ieee_is_nan(x), message, location)
-
-   end subroutine assertIsNaN_single
-
-   subroutine assertIsNaN_double(x, message, location)
-      use PF_Params_mod, only: r64
-      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-      real(kind=r64), intent(in) :: x
-      character(len=*), optional, intent(in) :: message
-      type (SourceLocation), optional, intent(in) :: location
       
-      call assertTrue(ieee_is_nan(x), message, location)
+   end subroutine assertIsNaN_REAL16
+#endif
 
-   end subroutine assertIsNaN_double
-
-
-   subroutine assertIsNotNaN_single(x, message, location)
-      use PF_Params_mod, only: r32
+#ifdef _REAL32_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL32(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-      real(kind=r32), intent(in) :: x
+      real(kind=REAL32), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(ieee_is_nan(x), message, location)
+      
+   end subroutine assertIsNaN_REAL32
+#endif
+
+#ifdef _REAL64_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL64(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(ieee_is_nan(x), message, location)
+      
+   end subroutine assertIsNaN_REAL64
+#endif
+
+#ifdef _REAL80_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL80(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL80), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(ieee_is_nan(x), message, location)
+      
+   end subroutine assertIsNaN_REAL80
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL128(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL128), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(ieee_is_nan(x), message, location)
+      
+   end subroutine assertIsNaN_REAL128
+#endif
+
+#ifdef _REAL256_IEEE_SUPPORT
+   subroutine assertIsNaN_REAL256(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL256), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertTrue(ieee_is_nan(x), message, location)
+      
+   end subroutine assertIsNaN_REAL256
+#endif
+
+
+#ifdef _REAL16_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real16(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL16), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
       call assertFalse(ieee_is_nan(x), message, location)
 
-   end subroutine assertIsNotNaN_single
+   end subroutine assertIsNotNaN_real16
+#endif
 
-   subroutine assertIsNotNaN_double(x, message, location)
-      use PF_Params_mod, only: r64
+#ifdef _REAL32_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real32(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
-      real(kind=r64), intent(in) :: x
+      real(kind=REAL32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-      
+
       call assertFalse(ieee_is_nan(x), message, location)
 
-   end subroutine assertIsNotNaN_double
+   end subroutine assertIsNotNaN_real32
+#endif
+
+#ifdef _REAL64_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real64(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_real64
+#endif
+
+#ifdef _REAL80_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real80(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL80), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_real80
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real128(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL128), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_real128
+#endif
+
+#ifdef _REAL16_IEEE_SUPPORT
+   subroutine assertIsNotNaN_real256(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_nan
+      real(kind=REAL256), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      call assertFalse(ieee_is_nan(x), message, location)
+
+   end subroutine assertIsNotNaN_real256
+#endif
 
 
-   subroutine assertIsFinite_single(x, message, location)
-      use PF_Params_mod, only: r32
+#ifdef _REAL16_IEEE_SUPPORT
+   subroutine assertIsFinite_real16(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-      real(kind=r32), intent(in) :: x
+      real(kind=REAL16), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
       call assertTrue(ieee_is_finite(x), message, location)
 
-   end subroutine assertIsFinite_single
+   end subroutine assertIsFinite_real16
+#endif
 
-   subroutine assertIsFinite_double(x, message, location)
-      use PF_Params_mod, only: r64
+#ifdef _REAL32_IEEE_SUPPORT
+   subroutine assertIsFinite_real32(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-
-      real(kind=r64), intent(in) :: x
+      real(kind=REAL32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-
+      
       call assertTrue(ieee_is_finite(x), message, location)
 
-   end subroutine assertIsFinite_double
+   end subroutine assertIsFinite_real32
+#endif
 
-   subroutine assertIsInfinite_single(x, message, location)
-      use PF_Params_mod, only: r32
+#ifdef _REAL64_IEEE_SUPPORT
+   subroutine assertIsFinite_real64(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-      real(kind=r32), intent(in) :: x
+      real(kind=REAL64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertTrue(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsFinite_real64
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   subroutine assertIsFinite_real128(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL128), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertTrue(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsFinite_real128
+#endif
+
+#ifdef _REAL256_IEEE_SUPPORT
+   subroutine assertIsFinite_real256(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL256), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertTrue(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsFinite_real256
+#endif
+   
+
+#ifdef _REAL16_IEEE_SUPPORT
+   subroutine assertIsInfinite_real16(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL16), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
       
       call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real16
+#endif
 
-   end subroutine assertIsInfinite_single
-
-   subroutine assertIsInfinite_double(x, message, location)
-      use PF_Params_mod, only: r64
+#ifdef _REAL32_IEEE_SUPPORT
+   subroutine assertIsInfinite_real32(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-
-      real(kind=r64), intent(in) :: x
+      real(kind=REAL32), intent(in) :: x
       character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
-
+      
       call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real32
+#endif
 
-   end subroutine assertIsInfinite_double
+#ifdef _REAL64_IEEE_SUPPORT
+   subroutine assertIsInfinite_real64(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL64), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real64
+#endif
+
+#ifdef _REAL80_IEEE_SUPPORT
+   subroutine assertIsInfinite_real80(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL80), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real80
+#endif
+
+#ifdef _REAL128_IEEE_SUPPORT
+   subroutine assertIsInfinite_real128(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL128), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real128
+#endif
+
+#ifdef _REAL256_IEEE_SUPPORT
+   subroutine assertIsInfinite_real256(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL256), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertFalse(ieee_is_finite(x), message, location)
+      
+   end subroutine assertIsInfinite_real256
+#endif
 
 
 end module PF_AssertBasic_mod

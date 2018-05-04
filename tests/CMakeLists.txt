@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
 include_directories (${pFUnit_SOURCE_DIR}/include)
+include_directories (${pFUnit_BINARY_DIR}/src)
 include_directories(${CMAKE_BINARY_DIR}/mod)
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
@@ -54,7 +56,7 @@ set(SERIAL_TEST_SRCS
   Test_AssertBasic.F90
   SimpleTestCase.F90
   Test_Assert.F90
-  Test_AssertComplex.F90
+#  Test_AssertComplex.F90
   Test_Exception.F90
   Test_FixtureTestCase.F90
   Test_MockCall.F90

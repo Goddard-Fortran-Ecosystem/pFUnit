@@ -87,9 +87,9 @@ module funit_private
    public :: assertAll
    public :: assertNone
    public :: assertNotAll
-   public :: assertLessThan, assertLessThanOrEqual
-   public :: assertGreaterThan, assertGreaterThanOrEqual
-   public :: assertRelativelyEqual
+!!$   public :: assertLessThan, assertLessThanOrEqual
+!!$   public :: assertGreaterThan, assertGreaterThanOrEqual
+!!$   public :: assertRelativelyEqual
    public :: assertExceptionRaised
    public :: assertSameShape
    public :: assertIsNan
@@ -160,7 +160,6 @@ contains
 
       allocate(listeners(1))
       allocate(listeners(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
-
 !!$      options = parse()
       suite = load_tests()
       allocate(runner, source=newTestRunner(listeners))

@@ -11,13 +11,15 @@ parser.add_argument("-r","--rank",help="rank of 'actual' parameter for template 
 
 # Fortran supported kinds.  Note the value might be "-1" if a compiler does not support a given kind,
 # but the constant is required to exist in ISO_FORTRAN_ENV.
-parser.add_argument("-_INT8", help="value of INT8 in ISO_FORTRAN_ENV")
-parser.add_argument("-_INT16", help="value of INT16 in ISO_FORTRAN_ENV")
-parser.add_argument("-_INT32", help="value of INT32 in ISO_FORTRAN_ENV")
-parser.add_argument("-_INT64", help="value of INT64 in ISO_FORTRAN_ENV")
-parser.add_argument("-_REAL32", help="value of REAL32 in ISO_FORTRAN_ENV")
-parser.add_argument("-_REAL64", help="value of REAL64 in ISO_FORTRAN_ENV")
-parser.add_argument("-_REAL128", help="value of REAL128 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_INT8", help="value of INT8 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_INT16", help="value of INT16 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_INT32", help="value of INT32 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_INT64", help="value of INT64 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_REAL16", help="value of REAL16 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_REAL32", help="value of REAL32 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_REAL64", help="value of REAL64 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_REAL80", help="value of REAL80 in ISO_FORTRAN_ENV")
+parser.add_argument("-_ISO_REAL128", help="value of REAL128 in ISO_FORTRAN_ENV")
 # To avoid duplicate interfaces, we need to know the kind value for default integer and real as well.
 parser.add_argument("-_LOGICAL_DEFAULT_KIND", help="kind of default logical")
 parser.add_argument("-_INT_DEFAULT_KIND", help="kind of default integer")
@@ -65,7 +67,7 @@ class TKR:
                 self.kind = 'kind(1)' # appears in the generated source
                 self.type_kind = 'Int' # for name mangling
             else:
-                self.kind_value = ('{_INT' + self.kind_label +'}').format(**vars(args))
+                self.kind_value = ('{_ISO_INT' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'INT' + self.kind_label
                 self.type_kind = self.kind.capitalize()
         elif self.type == 'real':
@@ -78,7 +80,7 @@ class TKR:
                 self.kind = 'kind(1.d0)' # appears in the generated source
                 self.type_kind = 'DblReal' # for name mangling
             else:
-                self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
+                self.kind_value = ('{_ISO_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
                 self.type_kind = self.kind.capitalize()
         elif self.type == 'complex':
@@ -91,7 +93,7 @@ class TKR:
                 self.kind = 'kind(1.d0)' # appears in the generated source
                 self.type_kind = 'DblComplex' # for name mangling
             else:
-                self.kind_value = ('{_REAL' + self.kind_label +'}').format(**vars(args))
+                self.kind_value = ('{_ISO_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
                 self.type_kind = 'COMPLEX' + self.kind_label*2
         elif self.type == '-1':
@@ -109,7 +111,7 @@ class TKR:
             self.dims = '(' + ','.join([':']*self.rank) + ')'
 
         self.mangle = self.type_kind + '_' + str(self.rank) + 'd'
-        if int(self.kind_value) == -1:  # unsupported kind
+        if self.kind_value == 'None' or int(self.kind_value) == -1:  # unsupported kind
             self.hash = ''
         else:
             self.hash = self.type + self.kind_value + str(self.rank)
@@ -157,7 +159,10 @@ class TKR_inside(Action):
         d = {}
         d['items'] = [TKR(*x) for x in elements]
         for tkr in d['items']:
-            hash += tkr.hash
+            if tkr.hash:
+                hash += tkr.hash
+            else:
+                return
         if hash:
             if not any([(x['hash'] == hash) for x in state.tkr_dictionaries[state.current_tkr]]):
                 d['hash'] = hash

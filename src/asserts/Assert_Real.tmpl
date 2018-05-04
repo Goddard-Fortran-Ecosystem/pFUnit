@@ -6,6 +6,7 @@
 [(real,  32, rank)]
 [(real,  double, rank)]
 [(real,  64, rank)]
+[(real,  80, rank)]
 [(real, 128, rank)]
 @end tkr_parameters
 
@@ -21,6 +22,9 @@
 [(integer, default, rank), (real,  64, rank), (-1,  0, 0)]
 [(real, default, rank), (real,  64, rank), (-1,  0, 0)]
 [(real,  64, rank), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  80, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  80, rank), (-1,  0, 0)]
+[(real,  80, rank), (real,  80, rank), (-1,  0, 0)]
 [(integer, default, rank), (real,  128, rank), (-1,  0, 0)]
 [(real, default, rank), (real,  128, rank), (-1,  0, 0)]
 [(real,  128, rank), (real,  128, rank), (-1,  0, 0)]
@@ -36,6 +40,9 @@
 [(integer, default, 0), (real,  64, rank), (-1,  0, 0)]
 [(real, default, 0), (real,  64, rank), (-1,  0, 0)]
 [(real,  64, 0), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  80, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  80, rank), (-1,  0, 0)]
+[(real,  80, 0), (real,  80, rank), (-1,  0, 0)]
 [(integer, default, 0), (real,  128, rank), (-1,  0, 0)]
 [(real, default, 0), (real,  128, rank), (-1,  0, 0)]
 [(real,  128, 0), (real,  128, rank), (-1,  0, 0)]
@@ -54,6 +61,9 @@
 [(integer, default, rank), (real,  64, rank), (real, default, 0)]
 [(real, default, rank), (real,  64, rank), (real, default, 0)]
 [(real,  64, rank), (real,  64, rank), (real, default, 0)]
+[(integer, default, rank), (real,  80, rank), (real, default, 0)]
+[(real, default, rank), (real,  80, rank), (real, default, 0)]
+[(real,  80, rank), (real,  80, rank), (real, default, 0)]
 [(integer, default, rank), (real,  128, rank), (real, default, 0)]
 [(real, default, rank), (real,  128, rank), (real, default, 0)]
 [(real,  128, rank), (real,  128, rank), (real, default, 0)]
@@ -69,6 +79,9 @@
 [(integer, default, rank), (real,  64, rank), (real, 64, 0)]
 [(real, default, rank), (real,  64, rank), (real, 64, 0)]
 [(real,  64, rank), (real,  64, rank), (real, 64, 0)]
+[(integer, default, rank), (real,  80, rank), (real, 80, 0)]
+[(real, default, rank), (real,  80, rank), (real, 80, 0)]
+[(real,  80, rank), (real,  80, rank), (real, 80, 0)]
 [(integer, default, rank), (real,  128, rank), (real, 128, 0)]
 [(real, default, rank), (real,  128, rank), (real, 128, 0)]
 [(real,  128, rank), (real,  128, rank), (real, 128, 0)]
@@ -84,6 +97,9 @@
 [(integer, default, 0), (real,  64, rank), (real, default, 0)]
 [(real, default, 0), (real,  64, rank), (real, default, 0)]
 [(real,  64, 0), (real,  64, rank), (real, default, 0)]
+[(integer, default, 0), (real,  80, rank), (real, default, 0)]
+[(real, default, 0), (real,  80, rank), (real, default, 0)]
+[(real,  80, 0), (real,  80, rank), (real, default, 0)]
 [(integer, default, 0), (real,  128, rank), (real, default, 0)]
 [(real, default, 0), (real,  128, rank), (real, default, 0)]
 [(real,  128, 0), (real,  128, rank), (real, default, 0)]
@@ -98,6 +114,9 @@
 [(integer, default, 0), (real,  64, rank), (real, 64, 0)]
 [(real, default, 0), (real,  64, rank), (real, 64, 0)]
 [(real,  64, 0), (real,  64, rank), (real, 64, 0)]
+[(integer, default, 0), (real,  80, rank), (real, 80, 0)]
+[(real, default, 0), (real,  80, rank), (real, 80, 0)]
+[(real,  80, 0), (real,  80, rank), (real, 80, 0)]
 [(integer, default, 0), (real,  128, rank), (real, 128, 0)]
 [(real, default, 0), (real,  128, rank), (real, 128, 0)]
 [(real,  128, 0), (real,  128, rank), (real, 128, 0)]
@@ -107,9 +126,25 @@
 #include "unused_dummy.fh"
 
 module pf_AssertReal_{rank}d_mod
+#ifdef _ISO_REAL16
+   use, intrinsic :: iso_fortran_env, only: REAL16
+#endif
+#ifdef _ISO_REAL32
    use, intrinsic :: iso_fortran_env, only: REAL32
+#endif
+#ifdef _ISO_REAL64
    use, intrinsic :: iso_fortran_env, only: REAL64
+#endif
+#ifdef _ISO_REAL80
+   use, intrinsic :: iso_fortran_env, only: REAL80
+#endif
+#ifdef _ISO_REAL128
    use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
+#ifdef _ISO_REAL256
+   use, intrinsic :: iso_fortran_env, only: REAL256
+#endif
+
    use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
    use pf_KeywordEnforcer_mod
    use pf_SourceLocation_mod
@@ -494,7 +529,7 @@ contains
       ! Wish: allocatable strings were useful as internal files ...
       write(lhs_str,'(g0)') l
       write(rhs_str,'(g0)') r
-      
+
 #if {rhs.rank} == 0
       call fail_not_less_than(trim(lhs_str), trim(rhs_str), &
            & message=message, location=location)
