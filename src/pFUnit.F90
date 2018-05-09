@@ -58,23 +58,26 @@ end module pFUnit_private
 !
 !-------------------------------------------------------------------------------
 module pFUnit
-   use sFUnit_private
+   use FUnit_private
    use pFUnit_private
-
+   use mpi
+   implicit none
+   
    public :: initialize
    public :: finalize
    public :: get_context
+   
 contains
 
    subroutine initialize()
-      use sFUnit, only: init_sfunit => initialize
+      use FUnit, only: init_funit => initialize
       integer :: error
 
       call mpi_init(error)
       if (error /= MPI_SUCCESS) stop
 
 
-      call init_sfunit()
+      call init_funit()
 
    end subroutine initialize
 
@@ -83,6 +86,7 @@ contains
 #ifdef NAG
       use f90_unix_proc, only: exit
 #endif
+      use FUnit, only: funit_finalize => finalize, stub
       logical, intent(in) :: successful
 
       logical :: allSuccessful
@@ -98,7 +102,7 @@ contains
       call MPI_Finalize(error)
 
       if (amRoot) then
-         call sfunit_finalize(allSuccessful)
+         call funit_finalize(stub, allSuccessful)
       else
          stop
       end if
@@ -110,7 +114,7 @@ contains
       logical, intent(in) :: use_mpi
 
       if (use_mpi) then
-         print*,'Cannot use MPI - need to link with pfunit not sfunit.'
+         print*,'Cannot use MPI - need to link with pfunit not funit.'
          stop
       end if
       context = MpiContext()

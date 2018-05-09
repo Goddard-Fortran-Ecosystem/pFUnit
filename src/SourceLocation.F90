@@ -78,11 +78,18 @@ contains
       integer, allocatable :: buffer(:)
       class (SourceLocation), intent(in) :: this
 
-      integer :: n
+      buffer = serialize_string(trim(this%filename))
+      buffer = [ buffer, this%lineNumber]
 
-      buffer = transfer(this%fileName,[1])
-      n = size(buffer)
-      buffer = [n, buffer, this%lineNumber]
+   contains
+
+      function serialize_string(string) result(buffer)
+         integer, allocatable :: buffer(:)
+         character(*), intent(in) :: string
+
+         buffer = [0, len(string), transfer(string,[1])]
+         buffer(1) = size(buffer)
+      end function serialize_string
 
    end function serialize
 
@@ -91,10 +98,28 @@ contains
       integer, intent(in) :: buffer(:)
 
       integer :: n
-      
+      character(:), allocatable :: str
+
+      call deserialize_string(buffer, str)
+      loc%fileName = str
+
       n = buffer(1)
-      loc%fileName = transfer(buffer(2:n+1),'c')
-      loc%lineNumber = buffer(n+2)
+      loc%lineNumber = buffer(n+1)
+
+   contains
+
+      subroutine deserialize_string(buffer, str)
+         integer, intent(in) :: buffer(:)
+         character(len=:), allocatable :: str
+         
+         integer :: buf_size, str_len
+
+         buf_size = buffer(1)
+         str_len = buffer(2)
+         allocate(character(str_len) :: str)
+         str = transfer(buffer(3:buf_size), str)
+
+      end subroutine deserialize_string
 
    end function deserialize
 

@@ -166,7 +166,7 @@ if (BUILD_SHARED)
     install (TARGETS funit_shared pfunit_shared DESTINATION lib)
 endif()
 
-if (USE_MPI)
+if (MPI)
     set (mpi_srcs
       MpiContext.F90
       MpiStubs.F90
@@ -176,6 +176,7 @@ if (USE_MPI)
       pFUnit.F90
       )
     add_library(pfunit STATIC ${srcs} ${mpi_srcs})
+    add_dependencies(pfunit FTL)
     if (mismatch)
       set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
     endif()

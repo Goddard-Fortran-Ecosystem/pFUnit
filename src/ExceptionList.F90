@@ -36,7 +36,7 @@ module PF_ExceptionList_mod
       procedure :: get_exceptions
    end type ExceptionList
 
-   type (ExceptionList) :: global_exception_list
+   type (ExceptionList), save :: global_exception_list
 
   interface throw
      module procedure throwMessage
@@ -151,12 +151,16 @@ contains
       integer :: empty(0)
 
       class (Exception), pointer :: p
-      class (Exception), allocatable :: t
+!!$      class (Exception) :: t
+      ! TODO:  if we want variant subclasses of exception, then
+      ! work needs to be done for deserialize.  Some sort of protocol layer
+      ! to encode the subclass.
+      type (Exception) :: t
 
       buffer = empty
       do i = 1, this%size()
          p => this%at(i)
-         allocate(t, source=p)
+         t = p
          t%message = context%labelProcess(t%message)
          b = t%serialize()
          buffer = [buffer, size(b), b]

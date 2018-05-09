@@ -96,22 +96,47 @@ contains
 
       integer, allocatable :: buffer(:)
 
-      buffer = [len(this%message)]
-      buffer = [buffer, transfer(this%message,[1])]
+      buffer = serialize_string(this%message)
       buffer = [buffer, this%location%serialize()]
+
+   contains
+
+      function serialize_string(string) result(buffer)
+         integer, allocatable :: buffer(:)
+         character(*), intent(in) :: string
+
+         buffer = [0, len(string), transfer(string,[1])]
+         buffer(1) = size(buffer)
+      end function serialize_string
+      
    end function serialize
 
    function deserialize(buffer) result(e)
       type (Exception) :: e
       integer, intent(in) :: buffer(:)
       integer :: n
-
       type (SourceLocation) :: sloc
 
+      call deserialize_string(buffer, e%message)
+
       n = buffer(1)
-      e%message = transfer(buffer(2:n+1),'c')
-      e%location = sloc%deserialize(buffer(n+2:))
+      e%location = sloc%deserialize(buffer(n+1:))
       
+   contains
+
+      subroutine deserialize_string(buffer, str)
+         integer, intent(in) :: buffer(:)
+         character(len=:), allocatable :: str
+         
+         integer :: buf_size, str_len
+
+         buf_size = buffer(1)
+         str_len = buffer(2)
+         allocate(character(str_len) :: str)
+         str = transfer(buffer(3:buf_size), str)
+
+      end subroutine deserialize_string
+
    end function deserialize
 
 end module PF_PrivateException_mod

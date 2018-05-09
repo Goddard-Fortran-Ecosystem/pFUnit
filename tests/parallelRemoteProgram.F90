@@ -1,6 +1,6 @@
 program main
    use, intrinsic :: iso_fortran_env
-   use FUnit, only: initialize, finalize
+   use FUnit, only: initialize, finalize, stub
    use FUnit, only: SubsetRunner
    use FUnit, only: TestSuite
    use FUnit, only: ParallelContext
@@ -9,9 +9,9 @@ program main
    implicit none
 
 !!$   call initialize(useMPI=.false.)
-   call initialize()
+   call initialize(stub)
    call runTests()
-   call finalize(.true.) ! let top level driver indicate success/failure
+   call finalize(stub, .true.) ! let top level driver indicate success/failure
 
 contains
 

@@ -23,32 +23,6 @@ contains
       use pfunit, only: MpiContext, newMpiContext
       use pfunit, only: ParallelContext
 
-      use Test_StringUtilities_mod, only: StringUtilitiesSuite => suite    ! (1)
-      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
-
-      use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
-      use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
-      use Test_Assert_mod, only: assertSuite => suite                      ! (3)
-      use Test_AssertInteger_mod, only: assertIntegerSuite => suite        !
-
-      use Test_AssertReal_mod, only: assertRealSuite => suite              ! (5)
-      use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
-
-      use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
-      use Test_TestSuite_mod, only: testTestSuiteSuite => suite                ! (7)
-
-      use Test_TestMethod_mod, only: testTestMethodSuite => suite  ! (8)
-      use Test_SimpleTestCase_mod, only: testSimpleTestCaseSuite => suite          ! (9)
-      use Test_FixtureTestCase_mod, only: testFixtureTestCaseSuite => suite        ! (10)
-
-      use Test_BasicOpenMP_mod, only: testBasicOpenMpSuite => suite  ! (8)
-
-      use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
-      use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
-      use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
-
-      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
-
       use Test_MpiContext_mod, only: MpiContextSuite => suite
       use Test_MpiException_mod, only: MpiExceptionSuite => suite
       use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
@@ -81,33 +55,6 @@ contains
       runner = newTestRunner(ll)
 
 #define ADD(suite) call allTests%addTest(suite())
-
-      ADD(StringUtilitiesSuite)
-      ADD(UnixProcessSuite)
-      ADD(exceptionSuite)
-
-      ADD(assertBasicSuite)
-      ADD(assertSuite)
-      ADD(assertIntegerSuite)
-
-      ADD(assertRealSuite)
-      ADD(assertComplexSuite)
-
-      ADD(testResultSuite)
-      ADD(testTestSuiteSuite)
-
-      ADD(testTestMethodSuite)
-      ADD(testSimpleTestCaseSuite)
-      ADD(testFixtureTestCaseSuite)
-
-      ADD(testBasicOpenMpSuite)
-
-      ADD(testMockCallSuite)
-      ADD(testMockRepositorySuite)
-
-      ADD(testXmlPrinterSuite)
-
-      ADD(testRobustRunnerSuite)
 
       ADD(MpiContextSuite)
       ADD(MpiExceptionSuite)

@@ -24,7 +24,7 @@
 module Test_MpiException_mod
    use PF_Test_mod
    use PF_TestCase_mod
-   use PF_Exception_mod
+   use PF_ExceptionList_mod
    use PF_MpiTestMethod_mod
    implicit none
 

@@ -2,6 +2,7 @@
 
 set(traceback "-gline")
 #set(check_all "-C=all")
+set(check_all "-C=array -C=alias -C=bits -C=calls -C=do -C=intovf -C=present -C=pointer")
 
 set(cpp "-fpp")
 set(mismatch "-mismatch")

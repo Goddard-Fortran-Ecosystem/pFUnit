@@ -104,8 +104,7 @@ contains
          end if
       end if
 
-      call gatherExceptions(this%parentContext)
-
+            call gatherExceptions(this%parentContext)
    end subroutine runBare
 
    function getMpiCommunicator(this) result(mpiCommunicator)

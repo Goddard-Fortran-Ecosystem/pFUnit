@@ -92,16 +92,17 @@ add_executable (funit_tests.x serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
 
 if (MPI)
+  set (PARALLEL_TEST_SRCS)
   list(APPEND PARALLEL_TEST_SRCS Test_MpiContext.F90)
   list(APPEND PARALLEL_TEST_SRCS Test_MpiException.F90)
   list(APPEND PARALLEL_TEST_SRCS Test_MpiTestCase.F90)
   list(APPEND PARALLEL_TEST_SRCS Test_MpiParameterizedTestCase.F90)
 
   add_library(pfunittests STATIC ${SERIAL_TEST_SRCS} ${PARALLEL_TEST_SRCS} ${OTHER_SOURCES})
-  target_link_libraries(pfunittests pfunit)
+  target_link_libraries(pfunittests pfunit funit)
 
   add_executable (parallel_tests.x parallel_tests.F90)
-  target_link_libraries(parallel_tests.x ${MPI_Fortran_LIBRARIES} pfunittests pfunit)
+  target_link_libraries(parallel_tests.x ${MPI_Fortran_LIBRARIES} pfunittests pfunit funit)
 
 # Fix for openmpi 1.8.8 which complains about forking due to selftests of
 # robust runner.

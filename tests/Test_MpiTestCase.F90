@@ -109,11 +109,8 @@ contains
    end subroutine testRunOn2Processors
 
    subroutine brokenProcess1(this)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (Test_MpiTestCase), intent(inout) :: this
-
-      integer :: unit
-      unit = 40 + this%context%processRank()
 
       if (this%context%processRank() == 1) then
          call throw('Intentional fail on process 1.')
@@ -122,11 +119,13 @@ contains
    end subroutine brokenProcess1
 
    subroutine brokenOnProcess2(this)
-      use PF_Exception_mod
+      use PF_ExceptionList_mod
       class (Test_MpiTestCase), intent(inout) :: this
+
       if (this%context%processRank() == 1 .or. this%context%processRank() == 2) then
          call throw('Intentional fail')
       end if
+
    end subroutine brokenOnProcess2
 
    ! Test that exception thrown on non root process is
@@ -134,8 +133,9 @@ contains
    subroutine testFailOn1(this)
       use PF_Assert_mod, only: assertEqual
       use PF_TestResult_mod
-      use PF_Exception_mod, only: throw
-      use PF_Exception_mod, only: catch
+      use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod, only: throw
+      use PF_ExceptionList_mod, only: catch
       use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -143,6 +143,8 @@ contains
       type (Test_MpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
+      type (Exception), pointer :: e
+
 
       reslt = newTestResult()
       brokenTest = newTest_MpiTestCase('brokenProcess1', brokenProcess1, numProcesses = 3)
@@ -161,8 +163,10 @@ contains
             case default
                call throw('this test only to be run for npes=1 or npes=3')
             end select
+
+            e => failure%exceptions%at(1)
             call assertEqual('Intentional fail on process 1. (PE=1)', &
-                 & failure%exceptions(1)%getMessage())
+                 & e%getMessage())
          end if
       end if
 
@@ -171,10 +175,11 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn2(this)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       use PF_Assert_mod, only: assertEqual
       use PF_TestResult_mod
-      use PF_Exception_mod, only: catch
+      use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod, only: catch
       use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -182,6 +187,7 @@ contains
       type (Test_MpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
+      type (Exception), pointer :: e
 
       reslt = newTestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = 3)
@@ -192,13 +198,15 @@ contains
          if (reslt%failureCount() > 0) then
 
             failure = reslt%getIthFailure(1)
-            call assertEqual(2, size(failure%exceptions))
+            call assertEqual(2, failure%exceptions%size())
             call assertEqual('brokenOnProcess2[npes=3]', failure%testName)
+            e => failure%exceptions%at(1)
             call assertEqual('Intentional fail (PE=1)', &
-                 & failure%exceptions(1)%getMessage())
+                 & e%getMessage())
 
+            e => failure%exceptions%at(2)
             call assertEqual('Intentional fail (PE=2)', &
-                 & failure%exceptions(2)%getMessage())
+                 & e%getMessage())
          end if
       end if
 
@@ -208,11 +216,12 @@ contains
    ! Purposefully request more processes than are available. 
    ! detected on root process in the end.
    subroutine testTooFewProcs(this)
-      use PF_Exception_mod, only: throw
+      use PF_ExceptionList_mod, only: throw
       use PF_Assert_mod, only: assertEqual
       use PF_TestResult_mod
-      use PF_Exception_mod, only: catch
-      use PF_Exception_mod, only: anyExceptions
+      use PF_Exception_mod, only: Exception
+      use PF_ExceptionList_mod, only: catch
+      use PF_ExceptionList_mod, only: anyExceptions
       use PF_TestFailure_mod
       class (Test_MpiTestCase), intent(inout) :: this
 
@@ -222,9 +231,9 @@ contains
       type (TestFailure) :: failure
       integer, parameter :: TOO_MANY_PES = 5
       integer, parameter :: AVAILABLE_PES = 4
+      type (Exception), pointer :: e
 
-      character(len=100) :: expectedMessage
-      character(len=:), allocatable :: suffix
+      character(len=:), allocatable :: expectedMessage
 
       reslt = newTestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
@@ -238,10 +247,9 @@ contains
 
          call assertEqual('brokenOnProcess2[npes=5]', failure%testName)
          if (anyExceptions()) return
-         expectedMessage = "Insufficient processes to run this test."
-         suffix=''
-         call this%context%labelProcess(suffix)
-         call assertEqual(trim(expectedMessage) // trim(suffix), failure%exceptions(1)%getMessage())
+         expectedMessage = this%context%labelProcess("Insufficient processes to run this test.")
+         e => failure%exceptions%at(1)
+         call assertEqual(expectedMessage, e%getMessage())
          if (anyExceptions()) return
 
       end if
