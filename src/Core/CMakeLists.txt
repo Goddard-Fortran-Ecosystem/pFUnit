@@ -160,10 +160,6 @@ if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
 
-   if (USE_MPI)
-     add_library(pfunit_shared SHARED ${srcs} ${mpi_srcs})
-     set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)
-   endif ()
 endif ()
 
 add_dependencies(funit FTL)
@@ -176,27 +172,6 @@ install (TARGETS funit DESTINATION lib)
 if (BUILD_SHARED)
     install (TARGETS funit_shared pfunit_shared DESTINATION lib)
 endif()
-
-if (MPI)
-    set (mpi_srcs
-      MpiContext.F90
-      MpiStubs.F90
-      MpiTestParameter.F90
-      MpiTestCase.F90
-      MpiTestMethod.F90
-      pFUnit.F90
-      )
-    add_library(pfunit STATIC ${srcs} ${mpi_srcs})
-    add_dependencies(pfunit FTL)
-    if (mismatch)
-      set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
-    endif()
-
-  install (TARGETS pfunit DESTINATION lib)
-  if (BUILD_SHARED)
-    install (TARGETS pfunit_shared DESTINATION lib)
-  endif ()
-endif ()
 
 INSTALL (DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
 

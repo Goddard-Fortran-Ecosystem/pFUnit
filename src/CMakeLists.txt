@@ -1,1 +1,10 @@
 add_subdirectory (core)
+
+if (MPI)
+  add_subdirectory (mpi)
+endif ()
+
+if (hamcrest)
+  add_subdirectory (hamcrest)
+endif ()
+

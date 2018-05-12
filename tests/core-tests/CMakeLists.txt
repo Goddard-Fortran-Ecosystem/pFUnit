@@ -91,69 +91,22 @@ target_link_libraries(new_tests.x new_stests funit)
 add_executable (funit_tests.x serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
 
-if (MPI)
-  set (PARALLEL_TEST_SRCS)
-  list(APPEND PARALLEL_TEST_SRCS Test_MpiContext.F90)
-  list(APPEND PARALLEL_TEST_SRCS Test_MpiException.F90)
-  list(APPEND PARALLEL_TEST_SRCS Test_MpiTestCase.F90)
-  list(APPEND PARALLEL_TEST_SRCS Test_MpiParameterizedTestCase.F90)
-
-  add_library(pfunittests STATIC ${SERIAL_TEST_SRCS} ${PARALLEL_TEST_SRCS} ${OTHER_SOURCES})
-  target_link_libraries(pfunittests pfunit funit)
-
-  add_executable (parallel_tests.x parallel_tests.F90)
-  target_link_libraries(parallel_tests.x ${MPI_Fortran_LIBRARIES} pfunittests pfunit funit)
-
-# Fix for openmpi 1.8.8 which complains about forking due to selftests of
-# robust runner.
-  if (MPIEXEC MATCHES ".*openmpi/1.8.8/.*")
-    set (MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS} --mca mpi_warn_on_fork 0)
-  endif ()
-
-  if (MPI_USE_MPIEXEC)
-    #
-    # Add the target for executing the tests by calling on CMake's FindMPI to find the
-    # standard mpiexec.  Not the default because we've found the hardcoded mpirun more portable.
-    # There may be situations, however, where the FindMPI-based target will work better.
-    #
-    add_custom_target(tests COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/parallel_tests.x DEPENDS paralell_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-  else()
-    #
-    # Add the target for executing the tests with a hardcoded call to mpirun.
-    #
-    add_custom_target(tests
-      COMMAND funit_tests.x
-      COMMAND new_tests.x
-      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 ./parallel_tests.x
-      DEPENDS funit_tests.x parallel_tests.x
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      )
-    #
-  endif()
-#
-else()
-#
 add_custom_target(tests
   COMMAND funit_tests.x
   COMMAND new_tests.x
   DEPENDS funit_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
-endif ()
 
-  set(REMOTE_EXE remote.x)
-  if (MPI)
-     add_executable (${REMOTE_EXE} parallelRemoteProgram.F90)
-   else ()
-     add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
-   endif ()
-  target_link_libraries(${REMOTE_EXE} funit funit_tests)
+set(REMOTE_EXE remote.x)
+add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
+target_link_libraries(${REMOTE_EXE} funit funit_tests)
 #  if (MPI)
 #    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
 #  endif()
 # Note for pfunit_2.1.0:  following line has no counterpart in
 #  "master" branch, i.e. > pfunit_2.1.0...
-  add_dependencies(tests ${REMOTE_EXE})
+add_dependencies(tests ${REMOTE_EXE})
 
 
 add_test(NAME new_tests
