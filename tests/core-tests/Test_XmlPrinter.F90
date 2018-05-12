@@ -71,8 +71,8 @@ contains
 
       fileName = 'test.xml'
       suiteName = 'suitename<<>>""'
-      xsdPath = 'tests/junit-4.xsd'
-      outFile = 'tests/test_xmlprinter_output.tmp'
+      xsdPath = 'junit-4.xsd'
+      outFile = 'test_xmlprinter_output.tmp'
 
       open(newunit=xmlUnit, file=fileName, iostat=iostat)
       call assertEqual(iostat, 0, 'Could not open XML file')

@@ -67,7 +67,7 @@ contains
       allocate(listeners1(1))
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
       allocate(listeners1(1)%pListener, source=newResultPrinter(unit))
-      runner = RobustRunner('./tests/remote.x', listeners1)
+      runner = RobustRunner('./remote.x', listeners1)
       result = newTestResult()
       suite = remoteSuite()
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
