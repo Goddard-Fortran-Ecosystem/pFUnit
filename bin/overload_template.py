@@ -95,7 +95,7 @@ class TKR:
             else:
                 self.kind_value = ('{_ISO_REAL' + self.kind_label +'}').format(**vars(args))
                 self.kind = 'REAL' + self.kind_label
-                self.type_kind = 'COMPLEX' + self.kind_label*2
+                self.type_kind = 'COMPLEX' + self.kind_label
         elif self.type == '-1':
             self.kind_value = '0'
             self.kind = '0'
