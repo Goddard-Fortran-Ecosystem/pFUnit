@@ -155,7 +155,6 @@ add_library(funit STATIC ${srcs} "${generated_sources_output}")
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
-
 endif ()
 
 if (NOT FTL)
