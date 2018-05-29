@@ -92,7 +92,7 @@ list(LENGTH all_files n_files)
 if(n_files EQUAL 1)
   # Clone did not use --recurse-submodules
   ExternalProject_Add(FTL
-    GIT_REPOSITORY https://github.com/nasa/gFTL.git
+    GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
     SOURCE_DIR ${ftl_dir}
     INSTALL_DIR .
