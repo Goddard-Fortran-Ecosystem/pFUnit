@@ -12,6 +12,7 @@ matrix:
               packages:
                  - gfortran-8
                  - cmake3
+                 - libxml2-utils
         env:
            - FC='gfortran-8'
       - os: osx
