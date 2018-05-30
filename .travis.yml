@@ -1,0 +1,43 @@
+sudo: false
+dist: trusty
+language: c
+
+matrix:
+   include:
+      - os: linux
+        addons:
+           apt:
+              sources:
+                 - ubuntu-toolchain-r-test
+              packages:
+                 - gfortran-8
+                 - cmake3
+        env:
+           - FC='gfortran-8'
+      - os: osx
+        env: FC='gfortran-8' BREW='gcc@8' BREW_UP='cmake'
+
+before_install:
+   - |
+      if [ $TRAVIS_OS_NAME == osx ] ; then
+         brew cask uninstall oclint || exit 1
+         brew install ${BREW} make || exit 1
+         brew upgrade ${BREW_UP} || exit 1
+      fi
+
+before_script:
+   - cd ${TRAVIS_BUILD_DIR}
+   - mkdir build
+   - cd build
+   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=$HOME/Software/pFUnit
+
+script:
+   # Build
+   - make -j4 
+   # Test
+   - make -j4 tests
+
+notifications:
+   email:
+      recipients:
+         - matthew.thompson@nasa.gov
