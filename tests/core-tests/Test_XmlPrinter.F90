@@ -64,7 +64,7 @@ contains
       type (TestResult) :: aResult
       type (SimpleTestCase), target :: aTest, aTest2
       type (XmlPrinter) :: printer
-      integer :: iostat, stat, cstat, xmlUnit, outUnit
+      integer :: iostat, stat, cmdstat, xmlUnit, outUnit
       character(len=200) :: fileName, suiteName, command, &
            xsdPath, outFile, errMsg
       type (ExceptionList) :: list
@@ -99,7 +99,7 @@ contains
       ! Validate the file against the de facto JUnit xsd.
       ! If xmlint not found, just move on quietly.
       command = 'xmllint --version > /dev/null 2>&1'
-      call execute_command_line(command,exitstat=stat)
+      call execute_command_line(command,exitstat=stat,cmdstat=cmdstat)
 
       if (stat == 0) then
          command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
