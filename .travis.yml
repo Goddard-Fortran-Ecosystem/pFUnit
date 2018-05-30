@@ -16,6 +16,7 @@ matrix:
            - FC='gfortran-8'
       - os: osx
         env: FC='gfortran-8' BREW='gcc@8' BREW_UP='cmake'
+        osx_image: xcode9.3
 
 before_install:
    - |
