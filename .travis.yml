@@ -4,26 +4,6 @@ language: c
 
 matrix:
    include:
-#     - os: linux
-#       addons:
-#          apt:
-#             sources:
-#                - ubuntu-toolchain-r-test
-#             packages:
-#                - gfortran-5
-#                - cmake3
-#       env:
-#          - FC='gfortran-5'
-#     - os: linux
-#       addons:
-#          apt:
-#             sources:
-#                - ubuntu-toolchain-r-test
-#             packages:
-#                - gfortran-6
-#                - cmake3
-#       env:
-#          - FC='gfortran-6'
       - os: linux
         addons:
            apt:
@@ -44,10 +24,6 @@ matrix:
                  - cmake3
         env:
            - FC='gfortran-8'
-#     - os: osx
-#       env: FC='gfortran-5' BREW='gcc@5' BREW_UP='cmake'
-#     - os: osx
-#       env: FC='gfortran-6' BREW='gcc@6' BREW_UP='cmake'
       - os: osx
         env: FC='gfortran-7' BREW='gcc@7' BREW_UP='cmake'
       - os: osx
