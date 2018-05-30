@@ -10,22 +10,10 @@ matrix:
               sources:
                  - ubuntu-toolchain-r-test
               packages:
-                 - gfortran-7
-                 - cmake3
-        env:
-           - FC='gfortran-7'
-      - os: linux
-        addons:
-           apt:
-              sources:
-                 - ubuntu-toolchain-r-test
-              packages:
                  - gfortran-8
                  - cmake3
         env:
            - FC='gfortran-8'
-      - os: osx
-        env: FC='gfortran-7' BREW='gcc@7' BREW_UP='cmake'
       - os: osx
         env: FC='gfortran-8' BREW='gcc@8' BREW_UP='cmake'
 
@@ -39,13 +27,13 @@ before_install:
 
 before_script:
    - cd ${TRAVIS_BUILD_DIR}
-   - mkdir build-serial
-   - cd build-serial
-   - cmake .. -DMPI=NO -DOPENMP=NO -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=$HOME/Software/pFUnit-serial
+   - mkdir build
+   - cd build
+   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=$HOME/Software/pFUnit
 
 script:
-   # Build and install
-   - make -j4 install
+   # Build
+   - make -j4 
    # Test
    - make -j4 tests
 
