@@ -84,36 +84,39 @@ if (USE_ROBUST)
     add_definitions(-DUSE_ROBUST)
 endif()
 
+# By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
+set(FTL_DIR "" CACHE PATH "Optional path to externally installed FTL package.")
 
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-set(ftl_dir ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
-file(GLOB all_files ${ftl_dir})
-list(LENGTH all_files n_files)
-if(n_files EQUAL 1)
-  # Clone did not use --recurse-submodules
-  ExternalProject_Add(FTL
-    GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-    SOURCE_DIR ${ftl_dir}
-    INSTALL_DIR .
-    DOWNLOAD_COMMAND git submodule init
-    UPDATE_COMMAND git submodule update
-    BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
-    INSTALL_COMMAND "")
+if (FTL_DIR) # use default
+  set(ftl_install_dir ${FTL_DIR})
 else()
-  # FTL submodule is already updated
+  set(ftl_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
+  set(ftl_install_dir ${CMAKE_CURRENT_BINARY_DIR}/FTL/install)
+  include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+  file(GLOB all_files ${ftl_source_dir}/*)
+  list(LENGTH all_files n_files)
+  if(n_files EQUAL 1)
+    # git clone command did not use --recurse-submodules
+    set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
+    set(download_command "git submodule init")
+    set(update_command "git submodule update")
+  else()
+    # FTL submodule is already present
+    set(repository "")
+    set(download_command "")
+    set(update_command "")
+  endif()
   ExternalProject_Add(FTL
-    DEPENDS ${ftl_dir}/CMakeLists.txt
-    SOURCE_DIR ${ftl_dir}
+    GIT_REPOSITORY ${repository}
+    DOWNLOAD_COMMAND ${download_command}
+    UPDATE_COMMAND ${update_command}
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-    INSTALL_DIR .
-    UPDATE_COMMAND git submodule update
+    SOURCE_DIR ${ftl_source_dir}
+    INSTALL_DIR ${ftl_install_dir}
     BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/install
-    INSTALL_COMMAND "")
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
+    INSTALL_COMMAND make install)
 endif()
-  
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
