@@ -95,7 +95,7 @@ else()
   include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
   file(GLOB all_files ${ftl_source_dir}/*)
   list(LENGTH all_files n_files)
-  message("n_files ${n_files}")
+
   if(n_files EQUAL 0)
     set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
     set(download_command "git submodule init")
@@ -109,7 +109,7 @@ else()
     ExternalProject_Add(FTL
       GIT_REPOSITORY ${repository}
       DOWNLOAD_COMMAND ${download_command}
-      UPDATE_COMMAND ${update command}
+      UPDATE_COMMAND ${update_command}
       PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
       SOURCE_DIR ${ftl_source_dir}
       INSTALL_DIR ${ftl_install_dir}
