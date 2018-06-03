@@ -160,8 +160,8 @@ if (BUILD_SHARED)
 
 endif ()
 
-if (NOT FTL_DIR)
-  add_dependencies(funit FTL)
+if (NOT FTL)
+  add_dependencies(funit gFTL)
 endif()
 
 include_directories(${CMAKE_BINARY_DIR}/mod)

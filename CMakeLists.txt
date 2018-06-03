@@ -85,10 +85,10 @@ if (USE_ROBUST)
 endif()
 
 # By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
-set(FTL_DIR "" CACHE PATH "Optional path to externally installed FTL package.")
+set(FTL "" CACHE PATH "Optional path to externally installed FTL package.")
 
-if (FTL_DIR) # use default
-  set(ftl_install_dir ${FTL_DIR})
+if (FTL) # use default
+  set(ftl_install_dir ${FTL})
 else()
   set(ftl_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
   set(ftl_install_dir ${CMAKE_CURRENT_BINARY_DIR}/FTL/install)
@@ -98,6 +98,7 @@ else()
   list(LENGTH all_files n_files)
 
   if(n_files LESS_EQUAL 3)
+    # git clone command did not use --recurse-submodules
     set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
     set(download_command git submodule init)
     set(update_command git submodule update)
@@ -106,17 +107,17 @@ else()
     set(download_command "")
     set(update_command "")
   endif()
-    # git clone command did not use --recurse-submodules
-    ExternalProject_Add(FTL
-      GIT_REPOSITORY ${repository}
-      DOWNLOAD_COMMAND ${download_command}
-      UPDATE_COMMAND ${update_command}
-      PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-      SOURCE_DIR ${ftl_source_dir}
-      INSTALL_DIR ${ftl_install_dir}
-      BUILD_COMMAND make
-      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
-      INSTALL_COMMAND make install)
+
+  ExternalProject_Add(gFTL
+    GIT_REPOSITORY ${repository}
+    DOWNLOAD_COMMAND ${download_command}
+    UPDATE_COMMAND ${update_command}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+    SOURCE_DIR ${ftl_source_dir}
+    INSTALL_DIR ${ftl_install_dir}
+    BUILD_COMMAND make
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
+    INSTALL_COMMAND make install)
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
