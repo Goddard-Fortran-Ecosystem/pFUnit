@@ -39,70 +39,69 @@ contains
 
    function suite()
       use PF_TestSuite_mod, only: TestSuite
-      use PF_TestSuite_mod, only: newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod!, TestMethod
+      use PF_TestMethod_mod, only: TestMethod
 
       type (TestSuite) :: suite
 
-      suite = newTestSuite('ExceptionTests')
+      suite = TestSuite('ExceptionTests')
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testGetNumExceptions', &
+           &   TestMethod('testGetNumExceptions', &
            &                  testGetNumExceptions))
       call suite%addTest( &
-           &   newTestMethod('testCatchNextEmpty', &
+           &   TestMethod('testCatchNextEmpty', &
            &                  testCatchNextEmpty))
       call suite%addTest( &
-           &   newTestMethod('testThrow1', &
+           &   TestMethod('testThrow1', &
            &                  testThrow1))
       call suite%addTest( &
-           &   newTestMethod('testCatchFail', &
+           &   TestMethod('testCatchFail', &
            &                  testCatchFail))
       call suite%addTest( &
-           &   newTestMethod('testCatchSucceed', &
+           &   TestMethod('testCatchSucceed', &
            &                  testCatchSucceed))
       call suite%addTest( &
-           &   newTestMethod('testCatchOnly', &
+           &   TestMethod('testCatchOnly', &
            &                  testCatchOnly))
       call suite%addTest( &
-           &   newTestMethod('testCatchAndRemove', &
+           &   TestMethod('testCatchAndRemove', &
            &                  testCatchAndRemove))
       call suite%addTest( &
-           &   newTestMethod('testCatchButPreserveA', &
+           &   TestMethod('testCatchButPreserveA', &
            &                  testCatchButPreserveA))
       call suite%addTest( &
-           &   newTestMethod('testCatchButPreserveB', &
+           &   TestMethod('testCatchButPreserveB', &
            &                  testCatchButPreserveB))
       call suite%addTest( &
-           &   newTestMethod('testCatchButPreserveC', &
+           &   TestMethod('testCatchButPreserveC', &
            &                  testCatchButPreserveC))
       call suite%addTest( &
-           &   newTestMethod('testCatchNextButPreserveA', &
+           &   TestMethod('testCatchNextButPreserveA', &
            &                  testCatchNextButPreserveA))
       call suite%addTest( &
-           &   newTestMethod('testCatchNextButPreserveB', &
+           &   TestMethod('testCatchNextButPreserveB', &
            &                  testCatchNextButPreserveB))
       call suite%addTest( &
-           &   newTestMethod('testCatchNextButPreserveC', &
+           &   TestMethod('testCatchNextButPreserveC', &
            &                  testCatchNextButPreserveC))
 
       call suite%addTest( &
-           &   newTestMethod('testGetLineNumberNoInfo', &
+           &   TestMethod('testGetLineNumberNoInfo', &
            &                  testGetLineNumberNoInfo))
       call suite%addTest( &
-           &   newTestMethod('testGetLineNumber', &
+           &   TestMethod('testGetLineNumber', &
            &                  testGetLineNumber))
       call suite%addTest( &
-           &   newTestMethod('testGetFileNameNoInfo', &
+           &   TestMethod('testGetFileNameNoInfo', &
            &                  testGetFileNameNoInfo))
       call suite%addTest( &
-           &   newTestMethod('testGetFileName', &
+           &   TestMethod('testGetFileName', &
            &                  testGetFileName))
 
       call suite%addTest( &
-           &   newTestMethod('testThrowWithLineAndFile', &
+           &   TestMethod('testThrowWithLineAndFile', &
            &                  testThrowWithLineAndFile))
 
    end function suite
@@ -331,6 +330,7 @@ contains
 
       call list%throw_message(message)
       found = list%catch(message, preserve=.true.)
+      call assertTrue(found)
       call assertTrue(list%catch(message)) 
       !EOC
    end subroutine testCatchButPreserveB
@@ -360,7 +360,9 @@ contains
       call list%throw_message(message1)
       call list%throw_message(message2)
       found = list%catch(message1, preserve=.true.)
+      call assertTrue(found)
       found = list%catch(message2, preserve=.true.)
+      call assertTrue(found)
       call assertEqual(2, list%get_num_exceptions())
       !EOC
    end subroutine testCatchButPreserveC

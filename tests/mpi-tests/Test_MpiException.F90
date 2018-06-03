@@ -36,24 +36,23 @@ contains
 
    function suite()
       use PF_TestSuite_mod, only: TestSuite
-      use PF_TestSuite_mod, only: newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod!, TestMethod
+      use PF_TestMethod_mod, only: TestMethod!, TestMethod
 
       type (TestSuite) :: suite
 
-      suite = newTestSuite('MpiExceptionTests')
+      suite = TestSuite('MpiExceptionTests')
 
 !#define ADD(method, npes) call suite%addTest(newMpiTestMethod(REFLECT(method), numProcesses=npes))
       call suite%addTest( &
-           &   newMpiTestMethod('test_anyExceptions_none', &
+           &   MpiTestMethod('test_anyExceptions_none', &
            &                  test_anyExceptions_none,  &
            &                  numProcesses=3))
       call suite%addTest( &
-           &   newMpiTestMethod('test_getNumExceptions', &
+           &   MpiTestMethod('test_getNumExceptions', &
            &                  test_getNumExceptions,  &
            &                  numProcesses=4))
       call suite%addTest( &
-           &   newMpiTestMethod('test_gather', &
+           &   MpiTestMethod('test_gather', &
            &                  test_gather,  &
            &                  numProcesses=3))
 

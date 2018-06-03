@@ -4,7 +4,7 @@ program main
    use FUnit, only: SubsetRunner
    use FUnit, only: TestSuite
    use FUnit, only: ParallelContext
-   use FUnit, only: SerialContext, newSerialContext
+   use FUnit, only: SerialContext
    use FUnit, only: stub
    use robustTestSuite_mod
    implicit none
@@ -39,7 +39,7 @@ contains
       read (skipString,*)numSkip
 
       runner = SubsetRunner(numSkip, OUTPUT_UNIT)
-      allocate(context, source=newSerialContext())
+      allocate(context, source=SerialContext())
       s = suite()
 
       result = runner%run(s, context)

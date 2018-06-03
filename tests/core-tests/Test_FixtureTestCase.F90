@@ -23,7 +23,7 @@
 !-------------------------------------------------------------------------------
 module Test_FixtureTestCase_mod
    use PF_TestSuite_mod
-   use PF_TestResult_mod, only: TestResult, newTestResult
+   use PF_TestResult_mod, only: TestResult
    implicit none
    private
 
@@ -32,22 +32,22 @@ module Test_FixtureTestCase_mod
 contains
 
    function suite() result(aSuite)
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: aSuite
 
-      aSuite = newTestSuite('Test_FixtureTestCase')
+      aSuite = TestSuite('Test_FixtureTestCase')
 
-!#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call aSuite%addTest(TestMethod(REFLECT(method)))
 
       call aSuite%addTest( &
-           &   newTestMethod('testRunWithFixture', &
+           &   TestMethod('testRunWithFixture', &
            &                  testRunWithFixture))
       call aSuite%addTest( &
-           &   newTestMethod('testBrokenTestCase', &
+           &   TestMethod('testBrokenTestCase', &
            &                  testBrokenTestCase))
       call aSuite%addTest( &
-           &   newTestMethod('testBrokenSetUpCase', &
+           &   TestMethod('testBrokenSetUpCase', &
            &                  testBrokenSetUpCase))
 
    end function suite
@@ -61,10 +61,10 @@ contains
       type (FixtureTestCase) :: aTest
       type (TestResult) :: aTestResult
 
-      aTestResult = newTestResult()
+      aTestResult = TestResult()
       aTest = newFixtureTestCase()
       call aTest%setSurrogate()
-      call aTest%run(aTestResult, newSerialContext())
+      call aTest%run(aTestResult, SerialContext())
       call assertEqual('setUp run tearDown', aTest%runLog)
       call delete(aTest)
 
@@ -80,9 +80,9 @@ contains
 
       call test%setSurrogate()
       call test%setName('foo')
-      aTestResult = newTestResult()
+      aTestResult = TestResult()
 
-      call test%run(aTestResult, newSerialContext())
+      call test%run(aTestResult, SerialContext())
       call assertEqual('setUp broken run tearDown', test%runLog)
       call assertEqual(1, aTestResult%failureCount())
 
@@ -98,8 +98,8 @@ contains
 
       call test%setSurrogate()
       call test%setName('foo')
-      aTestResult = newTestResult()
-      call test%run(aTestResult, newSerialContext())
+      aTestResult = TestResult()
+      call test%run(aTestResult, SerialContext())
       call assertEqual('broken setUp', test%runLog)
       call assertEqual(1, aTestResult%failureCount())
 

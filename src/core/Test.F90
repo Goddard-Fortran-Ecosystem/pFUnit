@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -71,6 +72,8 @@ contains
       class (Test), intent(inout) :: this
       character(len=*), intent(in) :: name
       ! Default: Cannot change name
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(name)
    end subroutine setName
 
 

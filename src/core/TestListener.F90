@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -90,11 +91,14 @@ contains
    ! Most scenarios in Fortran cannot diagnose true errors, so
    ! an empty stub is provided here for convenience.
    subroutine addError(this, testName, exceptions)
-      use PF_Exception_mod, only: Exception
       use PF_ExceptionList_mod
       class (TestListener), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+      _UNUSED_DUMMY(exceptions)
    end subroutine addError
 
    ! Promoted from BaseTestRunner.F90. Every listener can have debug
@@ -114,6 +118,8 @@ contains
     subroutine ignoreTest(this, testName)
        class (TestListener), intent(inout) :: this
        character(len=*), intent(in) :: testName
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
     end subroutine ignoreTest
     
 

@@ -32,15 +32,15 @@ module Test_RobustRunner_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('RobustRunner')
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+      suite = TestSuite('RobustRunner')
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testRunVariety', &
+           &   TestMethod('testRunVariety', &
            &                  testRunVariety))
 
    end function suite
@@ -66,9 +66,9 @@ contains
 
       allocate(listeners1(1))
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      allocate(listeners1(1)%pListener, source=newResultPrinter(unit))
+      allocate(listeners1(1)%pListener, source=ResultPrinter(unit))
       runner = RobustRunner('./remote.x', listeners1)
-      result = newTestResult()
+      result = TestResult()
       suite = remoteSuite()
       call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 

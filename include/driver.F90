@@ -58,7 +58,7 @@ contains
 #undef ADD_TEST_SUITE
 #undef ADD_MODULE_TEST_SUITE
 
-      suite = newTestSuite()
+      suite = TestSuite()
 
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
 #define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())

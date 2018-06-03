@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_Arg_mod
    use pf_KeywordEnforcer_mod
    use pf_StringVector_mod
@@ -59,6 +61,9 @@ contains
       type (StringVectorIterator) :: iter
       character(:), pointer :: opt_string
 
+      _UNUSED_DUMMY(unused)
+      _UNUSED_DUMMY(const)
+      
       call an_option%option_strings%push_back(opt_string_1)
       if (present(opt_string_2)) call an_option%option_strings%push_back(opt_string_2)
       if (present(opt_string_3)) call an_option%option_strings%push_back(opt_string_3)
@@ -161,7 +166,6 @@ contains
       class(*), allocatable :: default
       class(Arg), intent(in) :: this
 
-
       if (this%has_default()) default = this%default
    end function get_default
 
@@ -170,6 +174,7 @@ contains
    logical function matches(this, argument)
       class (Arg), intent(in) :: this
       character(len=*), intent(in) :: argument
+      ! TODO: unimplemented
    end function matches
 
 

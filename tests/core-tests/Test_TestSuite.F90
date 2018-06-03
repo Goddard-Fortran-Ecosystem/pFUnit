@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestSuite_mod
-   use PF_TestSuite_mod, only: newTestSuite, TestSuite
+   use PF_TestSuite_mod, only: TestSuite
    use PF_TestResult_mod
    implicit none
    private
@@ -42,41 +42,41 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-      use PF_TestMethod_mod, only: newTestMethod
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       type (TestSuite) :: suite
 
-      suite = newTestSuite('TestSuiteSuite')
+      suite = TestSuite('TestSuiteSuite')
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testCountTestCases', &
+           &   TestMethod('testCountTestCases', &
            &                  testCountTestCases))
       call suite%addTest( &
-           &   newTestMethod('testCountTestCasesNestedA', &
+           &   TestMethod('testCountTestCasesNestedA', &
            &                  testCountTestCasesNestedA))
       call suite%addTest( &
-           &   newTestMethod('testCountTestCasesNestedB', &
+           &   TestMethod('testCountTestCasesNestedB', &
            &                  testCountTestCasesNestedB))
       call suite%addTest( &
-           &   newTestMethod('testCountTestCasesNestedC', &
+           &   TestMethod('testCountTestCasesNestedC', &
            &                  testCountTestCasesNestedC))
       call suite%addTest( &
-           &   newTestMethod('testGetTestCases', &
+           &   TestMethod('testGetTestCases', &
            &                  testGetTestCases))
 
    end function suite
 
    subroutine testCountTestCases()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       use SimpleTestCase_mod, only: newSimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suite
 
-      suite = newTestSuite('aSuite')
+      suite = TestSuite('aSuite')
       call assertEqual(0, suite%countTestCases(),'a')
       call suite%addTest(newSimpleTestCase('method1', method1))
       call assertEqual(1, suite%countTestCases(),'b')
@@ -86,21 +86,21 @@ contains
    end subroutine testCountTestCases
 
    subroutine testCountTestCasesNestedA()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       use PF_Assert_mod, only: assertEqual
 
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
 
-      innerSuite = newTestSuite('inner')
-      outerSuite = newTestSuite('outer')
+      innerSuite = TestSuite('inner')
+      outerSuite = TestSuite('outer')
       call outerSuite%addTest(innerSuite)
       call assertEqual(0, outerSuite%countTestCases())
 
    end subroutine testCountTestCasesNestedA
 
    subroutine testCountTestCasesNestedB()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: innerSuite
@@ -109,8 +109,8 @@ contains
       type (SimpleTestCase) :: aTest
 
       call aTest%setName('aTest')
-      innerSuite = newTestSuite('inner')
-      outerSuite = newTestSuite('outer')
+      innerSuite = TestSuite('inner')
+      outerSuite = TestSuite('outer')
       call innerSuite%addTest(aTest)
       call outerSuite%addTest(innerSuite)
       call assertEqual(1, outerSuite%countTestCases())
@@ -131,17 +131,17 @@ contains
    !          -> Test2
    !
    subroutine testCountTestCasesNestedC()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
       call aTest%setName('aTest')
-      topSuite = newTestSuite('top')
-      suiteA = newTestSuite('A')
-      suiteB = newTestSuite('B')
-      suiteC = newTestSuite('C')
+      topSuite = TestSuite('top')
+      suiteA = TestSuite('A')
+      suiteB = TestSuite('B')
+      suiteC = TestSuite('C')
 
       call suiteC%addTest(aTest)
       call suiteC%addTest(aTest)
@@ -174,27 +174,27 @@ contains
       class (Test), pointer :: t
       integer :: i
 
-      childA = newTestSuite('childA')
-      call childA%addTest(newTestMethod('a1', myTestMethod))
-      call childA%addTest(newTestMethod('a2', myTestMethod))
-      call childA%addTest(newTestMethod('a3', myTestMethod))
+      childA = TestSuite('childA')
+      call childA%addTest(TestMethod('a1', myTestMethod))
+      call childA%addTest(TestMethod('a2', myTestMethod))
+      call childA%addTest(TestMethod('a3', myTestMethod))
 
-      childB = newTestSuite('childB')
-      call childB%addTest(newTestMethod('b1', myTestMethod))
-      call childB%addTest(newTestMethod('b2', myTestMethod))
+      childB = TestSuite('childB')
+      call childB%addTest(TestMethod('b1', myTestMethod))
+      call childB%addTest(TestMethod('b2', myTestMethod))
 
-      top = newTestSuite('top')
+      top = TestSuite('top')
       call top%addTest(childA)
       call top%addTest(childB)
 
-      aResult%TestResult = newTestResult()
+      aResult%TestResult = TestResult()
       aResult%log = ''
 
       call top%getTestCases(testCases)
 
       do i = 1, testCases%size()
          t => testCases%at(i)
-         call t%run(aResult, newSerialContext())
+         call t%run(aResult, SerialContext())
       end do
 
       call assertEqual('::childA.a1::childA.a2::childA.a3::childB.b1::childB.b2', aResult%log)

@@ -22,9 +22,8 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestResult_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
-   use PF_TestResult_mod, only: TestResult, newTestResult
-   use PF_TestResult_mod, only: newTestResult, TestResult
+   use PF_TestSuite_mod, only: TestSuite
+   use PF_TestResult_mod, only: TestResult
    use PF_TestCase_mod
    use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
    implicit none
@@ -35,45 +34,45 @@ module Test_TestResult_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestResult_mod, only: TestResult, TestResult
       use PF_TestCase_mod
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('TestResultSuite')
+      suite = TestSuite('TestResultSuite')
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
 
       call suite%addTest( &
-           &   newTestMethod('testGetNumRun', &
+           &   TestMethod('testGetNumRun', &
            &                  testGetNumRun))
       call suite%addTest( &
-           &   newTestMethod('testGetNumFailed', &
+           &   TestMethod('testGetNumFailed', &
            &                  testGetNumFailed))
 
       call suite%addTest( &
-           &   newTestMethod('testAddListenerStart', &
+           &   TestMethod('testAddListenerStart', &
            &                  testAddListenerStart))
       call suite%addTest( &
-           &   newTestMethod('testAddListenerEnd', &
+           &   TestMethod('testAddListenerEnd', &
            &                  testAddListenerEnd))
       call suite%addTest( &
-           &   newTestMethod('testAddListenerFailure', &
+           &   TestMethod('testAddListenerFailure', &
            &                  testAddListenerFailure))
 
    end function suite
 
    subroutine testGetNumRun()
       use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod, only: newTestResult, TestResult
+      use PF_TestResult_mod, only: TestResult, TestResult
       use PF_TestCase_mod
       use SimpleTestCase_mod
       type (TestResult) :: aResult
       type (SimpleTestCase) :: tstCase
 
-      aResult = newTestResult()
+      aResult = TestResult()
       call assertEqual(0, aResult%runCount())
 
       tstCase = newSimpleTestCase('method1', method1)
@@ -100,8 +99,9 @@ contains
       type (ExceptionList) :: list
       type (SimpleTestCase) :: aTest
 
+      call aTest%setName('foo')
       call aTest%setSurrogate()
-      aResult = newTestResult()
+      aResult = TestResult()
       call assertEqual(0, aResult%failureCount())
 
       call list%push_back(Exception('fail'))
@@ -127,7 +127,7 @@ contains
       type (SimpleTestCase) :: tstCase
       character(40), target :: buffer
 
-      result = newTestResult()
+      result = TestResult()
 
       listener%log => buffer
       call result%addListener(listener)
@@ -151,7 +151,7 @@ contains
       type (SimpleTestCase) :: tstCase
       character(40), target :: buffer
       
-      result = newTestResult()
+      result = TestResult()
       listener%log => buffer
       call result%addListener(listener)
       tstCase = newSimpleTestCase('method1', method1)
@@ -178,7 +178,7 @@ contains
       type (ExceptionList) :: list
       character(40), target :: buffer
 
-      result = newTestResult()
+      result = TestResult()
       listener%log => buffer
       call result%addListener(listener)
       allocate(tstCase, source = newSimpleTestCase('method1', method1))

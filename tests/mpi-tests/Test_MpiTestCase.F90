@@ -51,10 +51,10 @@ module Test_MpiTestCase_mod
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_MpiTestCase')
+      suite = TestSuite('Test_MpiTestCase')
 
       call suite%addTest(newTest_MpiTestCase('testWasRun', &
            &                                  testWasRun, numProcesses=1))
@@ -146,7 +146,7 @@ contains
       type (Exception), pointer :: e
 
 
-      reslt = newTestResult()
+      reslt = TestResult()
       brokenTest = newTest_MpiTestCase('brokenProcess1', brokenProcess1, numProcesses = 3)
 
       call brokenTest%run(reslt, this%context)
@@ -189,7 +189,7 @@ contains
       type (TestFailure) :: failure
       type (Exception), pointer :: e
 
-      reslt = newTestResult()
+      reslt = TestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = 3)
       call brokenTest%run(reslt, this%context)
 
@@ -235,7 +235,7 @@ contains
 
       character(len=:), allocatable :: expectedMessage
 
-      reslt = newTestResult()
+      reslt = TestResult()
       brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
       call brokenTest%run(reslt, this%context)
 

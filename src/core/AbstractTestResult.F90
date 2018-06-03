@@ -32,7 +32,6 @@ module PF_AbstractTestResult_mod
      end function getRunTime
 
      function getFailures(this) result(failures)
-       use PF_TestFailure_mod, only : TestFailure
        use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
        class (AbstractTestResult), target, intent(in) :: this
@@ -40,7 +39,6 @@ module PF_AbstractTestResult_mod
      end function getFailures
 
      function getErrors(this) result(errors)
-       use PF_TestFailure_mod, only : TestFailure
        use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
        class (AbstractTestResult), target, intent(in) :: this
@@ -48,7 +46,6 @@ module PF_AbstractTestResult_mod
      end function getErrors
 
      function getSuccesses(this) result(successes)
-       use PF_TestFailure_mod, only : TestFailure
        use PF_TestFailureVector_mod, only : TestFailureVector
        import AbstractTestResult
        class (AbstractTestResult), target, intent(in) :: this

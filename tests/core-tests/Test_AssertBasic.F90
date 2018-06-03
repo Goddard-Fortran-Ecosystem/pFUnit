@@ -24,7 +24,7 @@
 module Test_AssertBasic_mod
    use PF_Exception_mod, only: NULL_MESSAGE
    use PF_AssertBasic_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite
    use PF_ExceptionList_mod, only: catch
    use PF_ExceptionList_mod, only: getNumExceptions
    implicit none
@@ -35,85 +35,85 @@ module Test_AssertBasic_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       use PF_Test_mod
 
       type (TestSuite) :: suite
 
-      suite = newTestSuite('AssertIntegerTests')
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+      suite = TestSuite('AssertIntegerTests')
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testAssertTrueF', &
+           &   TestMethod('testAssertTrueF', &
            &                  testAssertTrueF))
       call suite%addTest( &
-           &   newTestMethod('testAssertTrueF1', &
+           &   TestMethod('testAssertTrueF1', &
            &                  testAssertTrueF1))
       call suite%addTest( &
-           &   newTestMethod('testAssertTrueF2', &
+           &   TestMethod('testAssertTrueF2', &
            &                  testAssertTrueF2))
       call suite%addTest( &
-           &   newTestMethod('testAssertTrueT', &
+           &   TestMethod('testAssertTrueT', &
            &                  testAssertTrueT))
       call suite%addTest( &
-           &   newTestMethod('testAssertTrueT1', &
+           &   TestMethod('testAssertTrueT1', &
            &                  testAssertTrueT1))
       call suite%addTest( &
-           &   newTestMethod('testAssertFalseT', &
+           &   TestMethod('testAssertFalseT', &
            &                  testAssertFalseT))
       call suite%addTest( &
-           &   newTestMethod('testAssertFalseT1', &
+           &   TestMethod('testAssertFalseT1', &
            &                  testAssertFalseT1))
       call suite%addTest( &
-           &   newTestMethod('testAssertFalseF', &
+           &   TestMethod('testAssertFalseF', &
            &                  testAssertFalseF))
       call suite%addTest( &
-           &   newTestMethod('testAssertFalseF1', &
+           &   TestMethod('testAssertFalseF1', &
            &                  testAssertFalseF1))
       call suite%addTest( &
-           &   newTestMethod('testAssertAny', &
+           &   TestMethod('testAssertAny', &
            &                  testAssertAny))
       call suite%addTest( &
-           &   newTestMethod('testAssertAnyFail', &
+           &   TestMethod('testAssertAnyFail', &
            &                  testAssertAnyFail))
       call suite%addTest( &
-           &   newTestMethod('testAssertAll', &
+           &   TestMethod('testAssertAll', &
            &                  testAssertAll))
       call suite%addTest( &
-           &   newTestMethod('testAssertAllFail', &
+           &   TestMethod('testAssertAllFail', &
            &                  testAssertAllFail))
       call suite%addTest( &
-           &   newTestMethod('testAssertNone', &
+           &   TestMethod('testAssertNone', &
            &                  testAssertNone))
       call suite%addTest( &
-           &   newTestMethod('testAssertNoneFail', &
+           &   TestMethod('testAssertNoneFail', &
            &                  testAssertNoneFail))
       call suite%addTest( &
-           &   newTestMethod('testAssertNotAll', &
+           &   TestMethod('testAssertNotAll', &
            &                  testAssertNotAll))
       call suite%addTest( &
-           &   newTestMethod('testAssertNotAllFail', &
+           &   TestMethod('testAssertNotAllFail', &
            &                  testAssertNotAllFail))
 
       call suite%addTest( &
-           &   newTestMethod('testAssertIsNaN', &
+           &   TestMethod('testAssertIsNaN', &
            &                  testAssertIsNaN))
       call suite%addTest( &
-           &   newTestMethod('testAssertIsFinite', &
+           &   TestMethod('testAssertIsFinite', &
            &                  testAssertIsFinite))
 
       call suite%addTest( &
-           &   newTestMethod('testAssertIsNotNaN', &
+           &   TestMethod('testAssertIsNotNaN', &
            &                  testAssertIsNotNaN))
       call suite%addTest( &
-           &   newTestMethod('testAssertIsInfinite', &
+           &   TestMethod('testAssertIsInfinite', &
            &                  testAssertIsInfinite))
       call suite%addTest( &
-           &   newTestMethod('testAssertFail', &
+           &   TestMethod('testAssertFail', &
            &                  testAssertFail))
       call suite%addTest( &
-           &   newTestMethod('testAssertExceptionRaised', &
+           &   TestMethod('testAssertExceptionRaised', &
            &                  testAssertExceptionRaised))
    end function suite
 

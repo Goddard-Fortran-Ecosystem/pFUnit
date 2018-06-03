@@ -29,17 +29,11 @@ module PF_MpiTestMethod_mod
    private
 
    public :: MpiTestMethod
-   public :: newMpiTestMethod
 
-   interface newMpiTestMethod
+   interface MpiTestMethod
       module procedure newMpiTest_basic
       module procedure newMpiTest_setUpTearDown
-   end interface newMpiTestMethod
-
-!!$   interface MpiTestMethod
-!!$      module procedure newMpiTest_basic
-!!$      module procedure newMpiTest_setUpTearDown
-!!$   end interface MpiTestMethod
+   end interface MpiTestMethod
 
    type, extends(MpiTestCase) :: MpiTestMethod
       procedure(mpiMethod), pointer :: userMethod => null()

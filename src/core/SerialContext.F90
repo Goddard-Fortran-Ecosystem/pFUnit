@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -26,7 +27,6 @@ module PF_SerialContext_mod
    private
 
    public :: SerialContext
-   public :: newSerialContext
    public :: THE_SERIAL_CONTEXT
 
    type, extends(ParallelContext) :: SerialContext
@@ -43,33 +43,42 @@ module PF_SerialContext_mod
 !!$$      final :: clean
    end type SerialContext
 
-   type (SerialContext), parameter :: THE_SERIAL_CONTEXT = SerialContext()
+   ! Really a parameter
+   type (SerialContext), protected :: THE_SERIAL_CONTEXT
 
+   interface SerialContext
+      module procedure new_SerialContext
+   end interface SerialContext
 
 contains
 
-   function newSerialContext() result(context)
+   function new_SerialContext() result(context)
       type (SerialContext) :: context
       ! prevent NAG warning about unassigned return value.
       context = THE_SERIAL_CONTEXT
-   end function newSerialContext
+   end function new_SerialContext
 
    integer function getNumProcesses(this)
       class (SerialContext),  intent(in) :: this
 
+      _UNUSED_DUMMY(this)
       getNumProcesses = 1
 
    end function getNumProcesses
 
    integer function processRank(this)
       class (SerialContext),  intent(in) :: this
+
+      _UNUSED_DUMMY(this)
       processRank = 0
+
    end function processRank
 
    integer function sum_global(this, value)
       class (SerialContext), intent(in) :: this
       integer, intent(in) :: value
 
+      _UNUSED_DUMMY(this)
       sum_global = value
 
    end function sum_global
@@ -79,6 +88,7 @@ contains
       class (SerialContext), intent(in) :: this
       integer, intent(in) :: value
 
+      _UNUSED_DUMMY(this)
       maximum = value
 
    end function maximum
@@ -88,8 +98,10 @@ contains
       class (SerialContext), intent(in) :: this
       character(len=*), intent(in) :: values(:)
       character(len=*), intent(out) :: list(:)
-      print*,__FILE__,__LINE__
+
+      _UNUSED_DUMMY(this)
       list = values
+
    end subroutine gatherString
 
 
@@ -98,10 +110,10 @@ contains
       class (SerialContext), intent(in) :: this
       integer, intent(in) :: values(:)
 
+      _UNUSED_DUMMY(this)
       global_list = values
 
    end function gatherInteger
-
 
 
    subroutine gatherLogical(this, values, list)
@@ -109,6 +121,7 @@ contains
       logical, intent(in) :: values(:)
       logical, intent(out) :: list(:)
 
+      _UNUSED_DUMMY(this)
       list = values
    end subroutine gatherLogical
 
@@ -117,11 +130,14 @@ contains
    logical function allReduce(this, q) result(anyQ)
       class (SerialContext), intent(in) :: this
       logical, intent(in) :: q
+
+      _UNUSED_DUMMY(this)
       anyQ = q
    end function allReduce
 
    subroutine clean(this)
       type (SerialContext), intent(inout) :: this
+      _UNUSED_DUMMY(this)
    end subroutine clean
 
 end module PF_SerialContext_mod

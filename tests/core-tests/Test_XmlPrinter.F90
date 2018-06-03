@@ -35,18 +35,18 @@ contains
 
    function suite()
       use PF_TestCase_mod
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestMethod_mod, only: TestMethod
       use PF_Test_mod
       use PF_TestResult_mod
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
+      use PF_TestSuite_mod, only: TestSuite
       type (TestSuite) :: suite
 
-      suite = newTestSuite('TestXmlPrinterSuite')
+      suite = TestSuite('TestXmlPrinterSuite')
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testValidXml', &
+           &   TestMethod('testValidXml', &
            &                  testValidXml))
 
    end function suite
@@ -58,7 +58,7 @@ contains
       use PF_TestCase_mod
       use SimpleTestCase_mod, only: SimpleTestCase
       use PF_SurrogateTestCase_mod
-      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestResult_mod, only: TestResult, TestResult
       use PF_XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
 
       type (TestResult) :: aResult
@@ -84,7 +84,7 @@ contains
       call aTest2%setSurrogate()
       call aTest2%setName('successtest<>"')
 
-      aResult = newTestResult()
+      aResult = TestResult()
       call list%throw(Exception('<invalid>'))
       call aResult%addFailure(aTest%getSurrogate(), list)
       call list%clear()

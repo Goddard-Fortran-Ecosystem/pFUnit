@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_SimpleTestCase_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite
    implicit none
    private
 
@@ -30,37 +30,37 @@ module Test_SimpleTestCase_mod
 
 contains
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
    function suite()
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_SimpleTestCase')
+      suite = TestSuite('Test_SimpleTestCase')
 
       call suite%addTest( &
-           &   newTestMethod('testRunSuite', &
+           &   TestMethod('testRunSuite', &
            &                  testRunSuite))
       call suite%addTest( &
-           &   newTestMethod('testRunMethodShouldFail', &
+           &   TestMethod('testRunMethodShouldFail', &
            &                  testRunMethodShouldFail))
 
    end function suite
 
    function internalSuite()
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: internalSuite
 
-      internalSuite = newTestSuite('Test_TestCase')
+      internalSuite = TestSuite('Test_TestCase')
 
-      call internalSuite%addTest(newTestMethod('testWorks',testWorks))
-      call internalSuite%addTest(newTestMethod('testFails',testFails))
+      call internalSuite%addTest(TestMethod('testWorks',testWorks))
+      call internalSuite%addTest(TestMethod('testFails',testFails))
 
    end function internalSuite
 
    subroutine testWorks()
       use PF_TestCase_mod
       use PF_TestSuite_mod
-      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestResult_mod, only: TestResult, TestResult
       use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
       use PF_Assert_mod, only: assertEqual
@@ -69,13 +69,13 @@ contains
       type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult = newTestResult()
+      aTestResult = TestResult()
       aTest = newSimpleTestCase('method1', method1)
-      call aTest%run(aTestResult, newSerialContext())
+      call aTest%run(aTestResult, SerialContext())
       call assertEqual('run method1', aTest%runLog)
 
       aTest = newSimpleTestCase('method2', method2)
-      call aTest%run(aTestResult, newSerialContext())
+      call aTest%run(aTestResult, SerialContext())
       call assertEqual('run method2', aTest%runLog)
 
    end subroutine testWorks
@@ -83,7 +83,7 @@ contains
    subroutine testFails()
       use PF_TestCase_mod
       use PF_TestSuite_mod
-      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestResult_mod, only: TestResult, TestResult
       use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
       use SimpleTestCase_mod, only: method1
       use PF_Assert_mod, only: assertEqual
@@ -92,24 +92,24 @@ contains
       type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
 
-      aTestResult = newTestResult()
+      aTestResult = TestResult()
       aTest = newSimpleTestCase('method1', method1)
-      call aTest%run(aTestResult, newSerialContext())
+      call aTest%run(aTestResult, SerialContext())
       call assertEqual('run method2', aTest%runLog)
 
    end subroutine testFails
 
    subroutine testRunSuite()
       use PF_TestSuite_mod, only: TestSuite
-      use PF_TestResult_mod, only: TestResult, newTestResult
+      use PF_TestResult_mod, only: TestResult, TestResult
       use PF_Assert_mod, only: assertEqual
       use PF_SerialContext_mod
       type (TestResult) :: aTestResult
       type (TestSuite) :: aSuite
 
       aSuite = internalSuite()
-      aTestResult = newTestResult()
-      call aSuite%run(aTestResult, newSerialContext())
+      aTestResult = TestResult()
+      call aSuite%run(aTestResult, SerialContext())
       call assertEqual(2, aTestResult%runCount())
       call assertEqual(1, aTestResult%failureCount())
 

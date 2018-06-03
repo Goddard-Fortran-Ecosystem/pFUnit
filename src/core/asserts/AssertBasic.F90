@@ -48,23 +48,20 @@ module PF_AssertBasic_mod
    use PF_ExceptionList_mod
    use PF_SourceLocation_mod
    use PF_StringUtilities_mod
-#ifdef _ISO_REAL16
+#ifdef _REAL16_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL16
 #endif
-#ifdef _ISO_REAL32
+#ifdef _REAL32_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL32
 #endif
-#ifdef _ISO_REAL64
+#ifdef _REAL64_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL64
 #endif
 #ifdef _ISO_REAL80
    use, intrinsic :: iso_fortran_env, only: REAL80
 #endif
-#ifdef _ISO_REAL128
+#ifdef _REAL128_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL128
-#endif
-#ifdef _ISO_REAL256
-   use, intrinsic :: iso_fortran_env, only: REAL256
 #endif
    implicit none
    private

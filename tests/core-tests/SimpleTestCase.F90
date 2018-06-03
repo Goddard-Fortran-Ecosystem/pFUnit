@@ -50,10 +50,10 @@ module SimpleTestCase_mod
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite
       type (TestSuite) :: suite
 
-      suite = newTestSuite('SimpleTestCase')
+      suite = TestSuite('SimpleTestCase')
 
 !#define ADD(method) call suite%addTest(newSimpleTestCase(REFLECT(method)))
 

@@ -33,7 +33,6 @@ module PF_TestResult_mod
    private
 
    public :: TestResult
-   public :: newTestResult
 
 #ifndef DEFERRED_LENGTH_CHARACTER
    integer, parameter :: MAX_LENGTH_NAME = 64
@@ -78,19 +77,23 @@ module PF_TestResult_mod
       procedure :: setName
    end type TestResult
 
+   interface TestResult
+      module procedure new_TestResult
+   end interface TestResult
+
 contains
 
-   function newTestResult(name)
-      type (TestResult) :: newTestResult
+   function new_TestResult(name)
+      type (TestResult) :: new_TestResult
       character(len=*), intent(in), optional :: name
-      newTestResult%numRun = 0
-      newTestResult%runTime = 0
+      new_TestResult%numRun = 0
+      new_TestResult%runTime = 0
       if(present(name)) then
-         newTestResult%name = name
+         new_TestResult%name = name
       else
-         newTestResult%name = 'default_suite_name'
+         new_TestResult%name = 'default_suite_name'
       end if
-   end function newTestResult
+   end function new_TestResult
 
    subroutine addFailure(this, aTest, exceptions)
       use PF_ExceptionList_mod
@@ -137,16 +140,8 @@ contains
       class (SurrogateTestCase), intent(in) :: aTest
 
       type (ExceptionList) :: noExceptions ! empty
-      integer :: i
-      class (TestListener), pointer :: pListener
 
       call this%successes%push_back(TestFailure(aTest%getName(), noExceptions))
-
-!!$      do i = 1, this%listeners%size()
-!!$         pListener => this%listeners%at(i)
-!!$         call pListener%addSuccess(aTest%getName())
-!!$      end do
-
 
    end subroutine addSuccess
 
