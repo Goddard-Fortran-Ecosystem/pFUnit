@@ -96,7 +96,7 @@ else()
   file(GLOB all_files ${ftl_source_dir}/*)
   list(LENGTH all_files n_files)
   message("n_files ${n_files}")
-  if(n_files EQUAL 1)
+  if(n_files EQUAL 0)
     # git clone command did not use --recurse-submodules
     ExternalProject_Add(FTL
       GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
@@ -117,7 +117,6 @@ else()
       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
       INSTALL_COMMAND make install)
     endif()
-  endif()
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
