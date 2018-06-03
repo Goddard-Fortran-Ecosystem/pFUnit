@@ -170,7 +170,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 install (TARGETS funit DESTINATION lib)
 if (BUILD_SHARED)
-    install (TARGETS funit_shared pfunit_shared DESTINATION lib)
+    install (TARGETS funit_shared DESTINATION lib)
 endif()
 
 INSTALL (DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
