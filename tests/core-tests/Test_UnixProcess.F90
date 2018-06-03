@@ -34,21 +34,21 @@ module Test_UnixProcess_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('UnixProcess')
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+      suite = TestSuite('UnixProcess')
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testIsActive', &
+           &   TestMethod('testIsActive', &
            &                  testIsActive))
       call suite%addTest( &
-           &   newTestMethod('testGetLine', &
+           &   TestMethod('testGetLine', &
            &                  testGetLine))
       call suite%addTest( &
-           &   newTestMethod('testGetLine2', &
+           &   TestMethod('testGetLine2', &
            &                  testGetLine2))
 
    end function suite

@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_BasicOpenMP_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite
    implicit none
    private
 
@@ -30,13 +30,13 @@ module Test_BasicOpenMP_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_TestBasicOpenMP')
-!$    call suite%addTest(newTestMethod('testRunWithOpenMP', testRunWithOpenMP))
-!$    call suite%addTest(newTestMethod('testSerializeExceptions', testSerializeExceptions))
+      suite = TestSuite('Test_TestBasicOpenMP')
+!$    call suite%addTest(TestMethod('testRunWithOpenMP', testRunWithOpenMP))
+!$    call suite%addTest(TestMethod('testSerializeExceptions', testSerializeExceptions))
 
    end function suite
 

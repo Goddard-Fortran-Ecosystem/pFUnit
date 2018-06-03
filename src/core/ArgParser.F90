@@ -116,6 +116,7 @@ contains
       class (KeywordEnforcer), optional, intent(in) :: unused
       type (StringVector), optional, intent(out) :: unprocessed
 
+      _UNUSED_DUMMY(unused)
       option_values = this%parse_args(get_command_line_arguments(), unprocessed=unprocessed)
       
    end function parse_args_command_line
@@ -134,10 +135,10 @@ contains
       type (Arg), pointer :: opt
       integer :: arg_value_int
       real :: arg_value_real
-      type (ArgVectorIterator) :: opt_iter
-      character(:), allocatable :: dest
       character(:), target, allocatable :: embedded_value
 
+      _UNUSED_DUMMY(unused)
+      
       ! TODO:  Hopefully this is a temporary workaround for ifort 19 beta
       call this%get_defaults2(option_values)
 !!$      option_values = this%get_defaults()
@@ -353,6 +354,7 @@ contains
 
    subroutine print_help_tail(this)
       class (ArgParser), target, intent(in) :: this
+      _UNUSED_DUMMY(this) ! for now
    end subroutine print_help_tail
 
 

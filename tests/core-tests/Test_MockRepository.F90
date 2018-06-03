@@ -112,23 +112,23 @@ contains
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_MockRepository')
+      suite = TestSuite('Test_MockRepository')
 
       call suite%addTest( &
-           &   newTestMethod('testNoAction', &
+           &   TestMethod('testNoAction', &
            &                  testNoAction))
       call suite%addTest( &
-           &   newTestMethod('testExpectMethod_NotCalled', &
+           &   TestMethod('testExpectMethod_NotCalled', &
            &                  testExpectMethod_NotCalled))
       call suite%addTest( &
-           &   newTestMethod('testExpectMethod_IsCalled', &
+           &   TestMethod('testExpectMethod_IsCalled', &
            &                  testExpectMethod_IsCalled))
       call suite%addTest( &
-           &   newTestMethod('testExpectMethod_CalledDifferentMethod', &
+           &   TestMethod('testExpectMethod_CalledDifferentMethod', &
            &                  testExpectMethod_CalledDifferentMethod))
 
    end function suite

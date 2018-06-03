@@ -740,7 +740,7 @@ class Parser():
             type = self.userTestCase['testParameterType']
             self.printParameterHeader(type)
 
-        self.outputFile.write("   suite = newTestSuite('" + self.suiteName + "')\n\n")
+        self.outputFile.write("   suite = TestSuite('" + self.suiteName + "')\n\n")
 
         for testMethod in self.userTestMethods:
             if ('ifdef' in testMethod):
@@ -775,7 +775,7 @@ class Parser():
         if 'type' in testMethod:
             type =  testMethod['type']
         else:
-            type = 'newTestMethod'
+            type = 'TestMethod'
 
         self.outputFile.write('   t = ' + type + '(' + args + ')\n')
         if ('ignore' in testMethod):

@@ -28,7 +28,6 @@ module PF_MpiContext_mod
    private
 
    public :: MpiContext
-   public :: newMpiContext
 
    type, extends(ParallelContext) :: MpiContext
       private
@@ -54,7 +53,7 @@ module PF_MpiContext_mod
 !!$      final :: clean
    end type MpiContext
 
-   interface newMpiContext
+   interface MpiContext
       module procedure newMpiContext_world
       module procedure newMpiContext_comm
    end interface
@@ -64,7 +63,7 @@ contains
    ! Use MPI_COMM_WORLD - avoid except in main program
    function newMpiContext_world() result(context)
       type (MpiContext) :: context
-      context = newMpiContext(MPI_COMM_WORLD)
+      context = MpiContext(MPI_COMM_WORLD)
    end function newMpiContext_world
 
    ! Make a duplicate of the communicator for internal use
@@ -350,7 +349,6 @@ contains
 
    subroutine clean(this)
       type (MpiContext), intent(inout) :: this
-      integer :: ier
 !!$      call debug(__LINE__,__FILE__)
 !!$      call MPI_Comm_free(this%mpiCommunicator, ier)
 !!$      call debug(__LINE__,__FILE__)

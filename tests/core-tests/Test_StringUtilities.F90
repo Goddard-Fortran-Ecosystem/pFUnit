@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_StringUtilities_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite
    use PF_StringUtilities_mod, only: toString
    use PF_Assert_mod
    implicit none
@@ -33,24 +33,24 @@ module Test_StringUtilities_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('StringUtilities')
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+      suite = TestSuite('StringUtilities')
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testToStringInteger1D', &
+           &   TestMethod('testToStringInteger1D', &
            &                  testToStringInteger1D))
       call suite%addTest( &
-           &   newTestMethod('testToString_realZero', &
+           &   TestMethod('testToString_realZero', &
            &                  testToString_realZero))
       call suite%addTest( &
-           &   newTestMethod('testToString_realPositive', &
+           &   TestMethod('testToString_realPositive', &
            &                  testToString_realPositive))
       call suite%addTest( &
-           &   newTestMethod('testToString_realNegative', &
+           &   TestMethod('testToString_realNegative', &
            &                  testToString_realNegative))
 
    end function suite

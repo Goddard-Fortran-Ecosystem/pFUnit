@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestMethod_mod
-   use PF_TestSuite_mod, only: TestSuite, newTestSuite
+   use PF_TestSuite_mod, only: TestSuite
    implicit none
    private
 
@@ -30,19 +30,19 @@ module Test_TestMethod_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_TestMethod')
-      call suite%addTest(newTestMethod('testMethodWasRun', testMethodWasRun))
+      suite = TestSuite('Test_TestMethod')
+      call suite%addTest(TestMethod('testMethodWasRun', testMethodWasRun))
 
    end function suite
 
    subroutine testMethodWasRun()
       use PF_TestCase_mod
-      use PF_TestResult_mod, only: TestResult, newTestResult
-      use PF_TestMethod_mod, only: TestMethod, newTestMethod
+      use PF_TestResult_mod, only: TestResult, TestResult
+      use PF_TestMethod_mod, only: TestMethod, TestMethod
       use PF_Assert_mod, only: assertEqual
       use PF_SerialContext_mod
       use PF_Exception_mod
@@ -50,16 +50,15 @@ contains
       type (TestMethod) :: method
       type (TestResult) :: aResult
 
-      method = newTestMethod(name = 'testWasRun', method = testWasRun)
-      aResult = newTestResult()
-      call method%run(aResult, newSerialContext())
+      method = TestMethod(name = 'testWasRun', method = testWasRun)
+      aResult = TestResult()
+      call method%run(aResult, SerialContext())
       call assertEqual(1, aResult%runCount())
       call assertEqual(1, aResult%failureCount())
    end subroutine testMethodWasRun
 
    subroutine testWasRun()
       use PF_ExceptionList_mod, only: throw
-      use PF_ExceptionList_mod, only: getNumExceptions
       call throw('wasRun')
    end subroutine testWasRun
 

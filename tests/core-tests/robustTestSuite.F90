@@ -31,27 +31,27 @@ module robustTestSuite_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, newTestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('robustTestSuite')
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+      suite = TestSuite('robustTestSuite')
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   newTestMethod('testRunSucceeds', &
+           &   TestMethod('testRunSucceeds', &
            &                  testRunSucceeds))
       call suite%addTest( &
-           &   newTestMethod('testRunMultipleExceptions', &
+           &   TestMethod('testRunMultipleExceptions', &
            &                  testRunMultipleExceptions))
       call suite%addTest( &
-           &   newTestMethod('testRunAssertFailure', &
+           &   TestMethod('testRunAssertFailure', &
            &                  testRunAssertFailure))
       call suite%addTest( &
-           &   newTestMethod('testRunStops', &
+           &   TestMethod('testRunStops', &
            &                  testRunStops))
       call suite%addTest( &
-           &   newTestMethod('testRunHangs', &
+           &   TestMethod('testRunHangs', &
            &                  testRunHangs))
 
    end function suite

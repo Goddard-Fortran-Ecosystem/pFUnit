@@ -26,7 +26,6 @@ module PF_TestMethod_mod
    private
 
    public :: TestMethod
-   public :: newTestMethod
 
    type, extends(TestCase) :: TestMethod
       procedure(empty), nopass, pointer :: userMethod => null()
@@ -43,16 +42,10 @@ module PF_TestMethod_mod
       end subroutine empty
    end interface
 
-   interface newTestMethod
+   interface TestMethod
       module procedure TestMethod_
       module procedure TestMethod_setUpTearDown
-   end interface newTestMethod
-
-! TODO: ifort 14.0.1 still has indirect issues with the following overload
-!!$   interface TestMethod
-!!$      module procedure TestMethod_
-!!$      module procedure TestMethod_setUpTearDown
-!!$   end interface TestMethod
+   end interface TestMethod
 
 contains
 
@@ -81,7 +74,6 @@ contains
    end function TestMethod_setUpTearDown
 
    recursive subroutine runMethod(this)
-      use PF_ExceptionList_mod, only: getNumExceptions
       class (TestMethod), intent(inOut) :: this
 
       call this%userMethod()

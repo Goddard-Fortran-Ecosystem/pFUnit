@@ -79,7 +79,6 @@ contains
       type (UnixProcess) :: timerProcess
       integer :: numExceptions, iException
       integer :: lineNumber
-      integer :: length
       character(len=100) :: timeText
 
       call this%setStartTime()
@@ -164,14 +163,13 @@ contains
 
                do iException = 1, numExceptions
                   line = contentScan(this%process%getline())
-                  read(line,*) length
+                  read(line,*)
                   
                   fileName = contentScan(this%process%getLine())
                   line = contentScan(this%process%getLine())
                   read(line,*) lineNumber
                   line = contentScan(this%process%getLine())
-                  read(line,*) length
-!                  allocate(character(len=length) :: message)
+                  read(line,*)
                   line = this%process%getDelim(C_NULL_CHAR)
                   message = contentScan(line)
                   ! eat remaining linefeed

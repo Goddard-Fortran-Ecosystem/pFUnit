@@ -38,16 +38,16 @@ contains
       use PF_TestSuite_mod
       type (TestSuite) :: aSuite
 
-      aSuite = newTestSuite('Assert')
+      aSuite = TestSuite('Assert')
 
 !#define ADD(method) call aSuite%addTest(newTestMethod(REFLECT(method)))
 
       call aSuite%addTest( &
-           &   newTestMethod('testAssertEqualStringDiffer1st', &
+           &   TestMethod('testAssertEqualStringDiffer1st', &
            &                  testAssertEqualStringDiffer1st))
 
       call aSuite%addTest( &
-           &   newTestMethod('testAssertWithLocation', &
+           &   TestMethod('testAssertWithLocation', &
            &                  testAssertWithLocation))
    end function suite
 

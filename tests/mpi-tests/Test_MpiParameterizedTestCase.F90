@@ -56,12 +56,12 @@ module Test_MpiParameterizedTestCase_mod
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite, newTestSuite
+     use PF_TestSuite_mod, only: TestSuite
       type (TestSuite) :: suite
 
       type (ExtendedTestParameter) :: testParameter
 
-      suite = newTestSuite('Test_MpiParameterizedTestCase')
+      suite = TestSuite('Test_MpiParameterizedTestCase')
 
       call testParameter%setNumProcessesRequested(2)
 

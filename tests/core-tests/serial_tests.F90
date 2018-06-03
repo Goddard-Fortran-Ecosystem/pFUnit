@@ -3,7 +3,7 @@ program main
    use FUnit, only: finalize
    use FUnit, only: TestResult
    use FUnit, only: ListenerPointer
-   use FUnit, only: newResultPrinter
+   use FUnit, only: ResultPrinter
    use FUnit, only: stub
 !$$   use FUnit, only: DebugListener
    implicit none
@@ -17,10 +17,9 @@ program main
 contains
 
    logical function runTests() result(success)
-      use FUnit, only: newTestSuite
       use FUnit, only: TestSuite
-      use FUnit, only: TestRunner, newTestRunner
-      use FUnit, only: newSerialContext
+      use FUnit, only: TestRunner, TestRunner
+      use FUnit, only: SerialContext
 
       use Test_StringUtilities_mod, only: StringUtilitiesSuite => suite    ! (1)
       use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
@@ -54,14 +53,14 @@ contains
       type (ListenerPointer), target, allocatable :: ll(:)
 
       allocate(ll(1))
-      allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
       ! TODO: We'll make this a feature in 4.0
 !!$      allocate(ll(2))
-!!$      allocate(ll(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+!!$      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
 !!$      allocate(ll(2)%pListener, source=DebugListener())
 
-      allTests = newTestSuite('allTests')
-      runner = newTestRunner(ll)
+      allTests = TestSuite('allTests')
+      runner = TestRunner(ll)
 
 #define ADD(suite) call allTests%addTest(suite())
 
@@ -88,7 +87,7 @@ contains
       ADD(testXmlPrinterSuite)
       ADD(testRobustRunnerSuite)
 
-      tstResult = runner%run(allTests, newSerialContext())
+      tstResult = runner%run(allTests, SerialContext())
 
       success = tstResult%wasSuccessful()
 

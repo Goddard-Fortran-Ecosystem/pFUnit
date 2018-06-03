@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -65,6 +66,8 @@ contains
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
 
+     _UNUSED_DUMMY(exceptions)
+
      write(this%unit,*)'Failure in <',trim(testName),'>'
      flush(this%unit)
 
@@ -101,11 +104,15 @@ contains
      use PF_AbstractTestResult_mod, only : AbstractTestResult
      class (DebugListener), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(result)
    end subroutine endRun
 
    subroutine addSuccess(this, testName)
       class (DebugListener), intent(inout) :: this
       character(*), intent(in) :: testName
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
    end subroutine addSuccess
 
 end module PF_DebugListener_mod

@@ -28,10 +28,10 @@ module pFUnit_private
    implicit none
    private
 
-   public :: MpiContext, newMpiContext
+   public :: MpiContext
    public :: MpiTestCase
    public :: MpiTestParameter
-   public :: MpiTestMethod, newMpiTestMethod
+   public :: MpiTestMethod
 
 end module pFUnit_private
 

@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -22,8 +23,6 @@
 !-------------------------------------------------------------------------------
 ! Serial TestCase 
 module PF_TestCase_mod
-   use PF_ExceptionList_mod,     only : throw
-   use PF_Params_mod,            only : MAX_LENGTH_NAME
    use PF_SurrogateTestCase_mod
    use PF_TestResult_mod
    use PF_Test_mod
@@ -46,11 +45,7 @@ module PF_TestCase_mod
    type, abstract, extends(Test) :: TestCase
       private
       type (ConcreteSurrogate) :: surrogate
-#ifdef DEFERRED_LENGTH_CHARACTER
       character(:), allocatable :: name
-#else
-      character(len=MAX_LENGTH_NAME) :: name
-#endif
    contains
       procedure :: setSurrogate
       procedure :: baseName
@@ -87,23 +82,13 @@ contains
       class (TestCase), intent(inout) :: this
       character(len=*),intent(in) :: name
 
-#ifndef DEFERRED_LENGTH_CHARACTER
-      integer :: nameLength
-
-      nameLength = len_trim( name )
-      if (nameLength > MAX_LENGTH_NAME) then
-         call throw( 'TestCase.setName: Too long: ' // name )
-         nameLength = MAX_LENGTH_NAME
-      end if
-      this%name = name(1:nameLength)
-#else
       this%name = trim(name)
-#endif
 
    end subroutine setName
 
    integer function countTestCases(this)
       class (TestCase), target, intent(in) :: this
+      _UNUSED_DUMMY(this)
       countTestCases = 1
    end function countTestCases
 
@@ -175,10 +160,12 @@ contains
 
    subroutine setUp(this)
       class (TestCase), intent(inOut) :: this
+      _UNUSED_DUMMY(this)
    end subroutine setUp
 
    subroutine tearDown(this)
       class (TestCase), intent(inOut) :: this
+      _UNUSED_DUMMY(this)
    end subroutine tearDown
 
    function getSurrogate(this) result(surrogate)
@@ -196,6 +183,7 @@ contains
    recursive subroutine runMethod(this)
       use PF_ExceptionList_mod, only: throw
       class (TestCase), intent(inout) :: this
+      _UNUSED_DUMMY(this)
       call throw('TestCase::runMethod() must be overridden.')
    end subroutine runMethod
 

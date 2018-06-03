@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
@@ -122,6 +123,7 @@ contains
 
    subroutine runMethod(this)
       class (TestCaseMonitor), intent(inout) :: this
+     _UNUSED_DUMMY(this)
    end subroutine runMethod
 
    function run(this, aTest, context) result(result)
@@ -269,6 +271,7 @@ contains
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       
+     _UNUSED_DUMMY(testName)
       this%numSkip = this%numSkip + 1
 
    end subroutine startTest
@@ -276,12 +279,20 @@ contains
    subroutine endTest(this, testName)
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+
    end subroutine endTest
 
    subroutine endRun(this, result)
      use PF_AbstractTestResult_mod
      class (RobustRunner), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(result)
+
    end subroutine endRun
 
    subroutine addFailure(this, testName, exceptions)
@@ -289,6 +300,10 @@ contains
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+     _UNUSED_DUMMY(exceptions)
 
    end subroutine addFailure
 
@@ -298,6 +313,10 @@ contains
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+     _UNUSED_DUMMY(exceptions)
+
    end subroutine addError
 
    function createTestResult(this) result(tstResult)
@@ -305,13 +324,20 @@ contains
       class (RobustRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
-      tstResult = newTestResult()
+     _UNUSED_DUMMY(this)
+
+      tstResult = TestResult()
+
     end function createTestResult
 
 
    subroutine addSuccess(this, testName)
       class (RobustRunner), intent(inout) :: this
       character(*), intent(in) :: testName
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
 
 end module PF_RobustRunner_mod

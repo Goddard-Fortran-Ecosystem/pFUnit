@@ -1,7 +1,6 @@
-
+include_directories(${ftl_install_dir}/include)
 include_directories(${pFUnit_BINARY_DIRECTORY}/src/core)
 include_directories(${CMAKE_BINARY_DIR}/mod)
-include_directories(${install_dir}/FTL/src/FTL-build/include)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${pFUnit_BINARY_DIR}/mod)
 
@@ -20,7 +19,9 @@ set (mpi_srcs
   pFUnit.F90
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
-add_dependencies(pfunit FTL)
+if (NOT FTL)
+  add_dependencies(pfunit gFTL)
+endif()
 if (mismatch)
   set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
 endif()

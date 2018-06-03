@@ -60,17 +60,16 @@ module FUnit_private
 
    public :: SourceLocation
    public :: Test
-   public :: TestSuite, newTestSuite
-   public :: TestMethod, newTestMethod
+   public :: TestSuite
+   public :: TestMethod
    public :: TestResult
-   public :: TestRunner, newTestRunner
+   public :: TestRunner
    public :: BaseTestRunner
    public :: SubsetRunner
 
    public :: ListenerPointer
    public :: ResultPrinter
-   public :: newResultPrinter
-   public :: newXmlPrinter
+   public :: XmlPrinter
    public :: DebugListener
 
    public :: RobustRunner
@@ -78,7 +77,7 @@ module FUnit_private
    public :: AbstractTestParameter
    public :: ParameterizedTestCase
    public :: ParallelContext
-   public :: SerialContext, newSerialContext
+   public :: SerialContext
 
    public :: assertFail
    public :: assertTrue, assertFalse
@@ -159,10 +158,10 @@ contains
       class (ListenerPointer), allocatable :: listeners(:)
 
       allocate(listeners(1))
-      allocate(listeners(1)%pListener, source=newResultPrinter(OUTPUT_UNIT))
+      allocate(listeners(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
 !!$      options = parse()
       suite = load_tests()
-      allocate(runner, source=newTestRunner(listeners))
+      allocate(runner, source=TestRunner(listeners))
       r = runner%run(suite, c)
       status = r%wasSuccessful()
 

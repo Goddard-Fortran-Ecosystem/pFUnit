@@ -28,7 +28,6 @@ module PF_TestSuite_mod
    private
 
    public :: TestSuite
-   public :: newTestSuite
 
    type TestReference
       class (Test), allocatable :: pTest
@@ -50,10 +49,10 @@ module PF_TestSuite_mod
       procedure :: getTestCases
    end type TestSuite
 
-   interface newTestSuite
+   interface TestSuite
       module procedure newTestSuite_unnamed
       module procedure newTestSuite_named
-   end interface newTestSuite
+   end interface TestSuite
 
 contains
 
@@ -73,7 +72,6 @@ contains
    recursive subroutine copy(this, b)
       class (TestSuite), intent(out) :: this
       type (TestSuite), intent(in) :: b
-      integer :: i, n
 
       this%name = b%name
       this%tests = b%tests
@@ -114,7 +112,6 @@ contains
    recursive subroutine addTest(this, aTest)
       class (TestSuite), intent(inout) :: this
       class (Test), intent(in) :: aTest
-      character(:), allocatable   :: name
 
       class (Test), pointer :: t
 

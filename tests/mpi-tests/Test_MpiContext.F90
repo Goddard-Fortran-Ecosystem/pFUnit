@@ -35,20 +35,19 @@ contains
 
    function suite()
       use PF_TestSuite_mod, only: TestSuite
-      use PF_TestSuite_mod, only: newTestSuite
 
       type (TestSuite) :: suite
 
-      suite = newTestSuite('MpiContext')
-      call suite%addTest(newMpiTestMethod('testNumProcesses1', userMethod=testNumProcesses1,  numProcesses = 1))
-      call suite%addTest(newMpiTestMethod('testNumProcesses3', userMethod=testNumProcesses3,  numProcesses = 3))
+      suite = TestSuite('MpiContext')
+      call suite%addTest(MpiTestMethod('testNumProcesses1', userMethod=testNumProcesses1,  numProcesses = 1))
+      call suite%addTest(MpiTestMethod('testNumProcesses3', userMethod=testNumProcesses3,  numProcesses = 3))
 
-      call suite%addTest(newMpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 1))
-      call suite%addTest(newMpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 2))
-      call suite%addTest(newMpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 3))
+      call suite%addTest(MpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 1))
+      call suite%addTest(MpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 2))
+      call suite%addTest(MpiTestMethod('testAllReduce_none', userMethod=testAllReduce_none,  numProcesses = 3))
 
-      call suite%addTest(newMpiTestMethod('testAllReduce_some', userMethod=testAllReduce_some,  numProcesses = 2))
-      call suite%addTest(newMpiTestMethod('testAllReduce_some', userMethod=testAllReduce_some,  numProcesses = 3))
+      call suite%addTest(MpiTestMethod('testAllReduce_some', userMethod=testAllReduce_some,  numProcesses = 2))
+      call suite%addTest(MpiTestMethod('testAllReduce_some', userMethod=testAllReduce_some,  numProcesses = 3))
 
    end function suite
 

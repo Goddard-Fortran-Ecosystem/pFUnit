@@ -114,7 +114,7 @@ contains
          stop
       end select
 
-      result = newTestResult()
+      result = TestResult()
       call result%setName(aTest%getName())
       call result%addListener( this )
 

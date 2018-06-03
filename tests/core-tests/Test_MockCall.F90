@@ -32,20 +32,20 @@ module Test_MockCall_mod
 
 contains
 
-!#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
+!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
    function suite()
-      use PF_TestSuite_mod, only: newTestSuite, TestSuite
-      use PF_TestMethod_mod, only: newTestMethod
+      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = newTestSuite('Test_MockCall')
+      suite = TestSuite('Test_MockCall')
 
       call suite%addTest( &
-           &   newTestMethod('testExpectOneIntegerArgument', &
+           &   TestMethod('testExpectOneIntegerArgument', &
            &                  testExpectOneIntegerArgument))
       call suite%addTest( &
-           &   newTestMethod('testFailExpectOneIntegerArgument', &
+           &   TestMethod('testFailExpectOneIntegerArgument', &
            &                  testFailExpectOneIntegerArgument))
 
    end function suite

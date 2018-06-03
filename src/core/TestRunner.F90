@@ -29,7 +29,6 @@ module PF_TestRunner_mod
    private
 
    public :: TestRunner
-   public :: newTestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
       type (ListenerPointer), allocatable :: extListeners(:)
@@ -43,7 +42,7 @@ module PF_TestRunner_mod
       procedure :: addSuccess
    end type TestRunner
 
-   interface newTestRunner
+   interface TestRunner
       module procedure newTestRunner_default
       module procedure newTestRunner_unit
    end interface
@@ -66,7 +65,7 @@ contains
       class (TestRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
-      tstResult = newTestResult()
+      tstResult = TestResult()
 
     end function createTestResult
 

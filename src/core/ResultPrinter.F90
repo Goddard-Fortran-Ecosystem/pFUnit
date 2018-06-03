@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -27,7 +29,6 @@ module PF_ResultPrinter_mod
    private
 
    public :: ResultPrinter
-   public :: newResultPrinter
 
    type, extends(TestListener) :: ResultPrinter
       integer :: unit
@@ -51,16 +52,20 @@ module PF_ResultPrinter_mod
    logical, parameter :: DEBUG = .false.
 !!$   logical, parameter :: DEBUG = .true.
 
+   interface ResultPrinter
+      module procedure new_ResultPrinter
+   end interface ResultPrinter
+
 contains
 
-  function newResultPrinter(unit)
-     type (ResultPrinter) :: newResultPrinter
+  function new_ResultPrinter(unit)
+     type (ResultPrinter) :: new_ResultPrinter
      integer, intent(in) :: unit
 
-     newResultPrinter%unit = unit
-     newResultPrinter%column = 0
+     new_ResultPrinter%unit = unit
+     new_ResultPrinter%column = 0
 
-  end function newResultPrinter
+  end function new_ResultPrinter
 
   subroutine addFailure(this, testName, exceptions)
      use PF_ExceptionList_mod
@@ -68,6 +73,8 @@ contains
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
 
+     _UNUSED_DUMMY(testName)
+     _UNUSED_DUMMY(exceptions)
      write(this%unit,'("F")', advance='no')
      call this%incrementColumn()
 
@@ -79,6 +86,8 @@ contains
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
 
+     _UNUSED_DUMMY(testName)
+     _UNUSED_DUMMY(exceptions)
      write(this%unit,'("E")', advance='no')
      call this%incrementColumn()
 
@@ -226,6 +235,10 @@ contains
    subroutine addSuccess(this, testName)
       class (ResultPrinter), intent(inout) :: this
       character(*), intent(in) :: testName
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
      
 end module PF_ResultPrinter_mod
