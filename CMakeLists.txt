@@ -95,27 +95,29 @@ else()
   include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
   file(GLOB all_files ${ftl_source_dir}/*)
   list(LENGTH all_files n_files)
+  message("n_files ${n_files}")
   if(n_files EQUAL 1)
     # git clone command did not use --recurse-submodules
-    set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
-    set(download_command "git submodule init")
-    set(update_command "git submodule update")
+    ExternalProject_Add(FTL
+      GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
+      DOWNLOAD_COMMAND git submodule init
+      UPDATE_COMMAND git submodule update
+      PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+      SOURCE_DIR ${ftl_source_dir}
+      INSTALL_DIR ${ftl_install_dir}
+      BUILD_COMMAND make
+      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
+      INSTALL_COMMAND make install)
   else()
-    # FTL submodule is already present
-    set(repository "")
-    set(download_command "")
-    set(update_command "")
+    ExternalProject_Add(FTL
+      PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
+      SOURCE_DIR ${ftl_source_dir}
+      INSTALL_DIR ${ftl_install_dir}
+      BUILD_COMMAND make
+      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
+      INSTALL_COMMAND make install)
+    endif()
   endif()
-  ExternalProject_Add(FTL
-    GIT_REPOSITORY ${repository}
-    DOWNLOAD_COMMAND ${download_command}
-    UPDATE_COMMAND ${update_command}
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-    SOURCE_DIR ${ftl_source_dir}
-    INSTALL_DIR ${ftl_install_dir}
-    BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
-    INSTALL_COMMAND make install)
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
