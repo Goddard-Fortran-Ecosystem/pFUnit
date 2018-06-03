@@ -1,6 +1,4 @@
-ExternalProject_Get_Property(FTL install_dir)
-include_directories(${ftl_dir}/include)
-include_directories(${install_dir}/FTL/src/FTL-build/include)
+include_directories(${ftl_install_dir}/include)
 
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
@@ -162,7 +160,9 @@ if (BUILD_SHARED)
 
 endif ()
 
-add_dependencies(funit FTL)
+if (NOT FTL)
+  add_dependencies(funit gFTL)
+endif()
 
 include_directories(${CMAKE_BINARY_DIR}/mod)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
