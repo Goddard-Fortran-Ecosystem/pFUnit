@@ -38,8 +38,11 @@ script:
    - make -j4 
    # Test
    - make -j4 tests
+   # install
+   - make install
 
 notifications:
    email:
       recipients:
-         - matthew.thompson@nasa.gov
+         - matthew.thompson@nasa.gov tom.clune@nasa.gov
+         
