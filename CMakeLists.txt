@@ -97,29 +97,25 @@ else()
   list(LENGTH all_files n_files)
   message("n_files ${n_files}")
   if(n_files EQUAL 0)
+    set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
+    set(download_command "git submodule init")
+    set(update_command "git submodule update")
+  else()
+    set(repository "")
+    set(download_command "")
+    set(update_command "")
+  endif()
     # git clone command did not use --recurse-submodules
     ExternalProject_Add(FTL
-      GIT_REPOSITORY https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
-      DOWNLOAD_COMMAND git submodule init
-      UPDATE_COMMAND git submodule update
+      GIT_REPOSITORY ${repository}
+      DOWNLOAD_COMMAND ${download_command}
+      UPDATE_COMMAND ${update command}
       PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
       SOURCE_DIR ${ftl_source_dir}
       INSTALL_DIR ${ftl_install_dir}
       BUILD_COMMAND make
       CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
       INSTALL_COMMAND make install)
-  else()
-    ExternalProject_Add(FTL
-      GIT_REPOSITORY ""
-      DOWNLOAD_COMMAND ""
-      UPDATE_COMMAND ""
-      PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-      SOURCE_DIR ${ftl_source_dir}
-      INSTALL_DIR ${ftl_install_dir}
-      BUILD_COMMAND make
-      CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
-      INSTALL_COMMAND make install)
-    endif()
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
