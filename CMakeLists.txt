@@ -110,6 +110,9 @@ else()
       INSTALL_COMMAND make install)
   else()
     ExternalProject_Add(FTL
+      GIT_REPOSITORY ""
+      DOWNLOAD_COMMAND ""
+      UPDATE_COMMAND ""
       PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
       SOURCE_DIR ${ftl_source_dir}
       INSTALL_DIR ${ftl_install_dir}
