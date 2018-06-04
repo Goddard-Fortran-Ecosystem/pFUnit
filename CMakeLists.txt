@@ -24,8 +24,9 @@ enable_testing()
 #---------------------------
 # Main configuration options
 #---------------------------
-OPTION(USE_MPI "Use MPI for parallel runs" NO)
 OPTION(USE_OPENMP "Use OPENMP for parallel runs" NO)
+set(MPI OFF CACHE BOOL "Build with MPI support.")
+set(OPENMP OFF CACHE BOOL "Build with OpenMP support.")
 set(MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 
 
@@ -122,6 +123,9 @@ endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
+
+add_custom_target(tests COMMAND ${CRMAKE_CTEST_COMMAND})
+
 
 add_subdirectory (src)
 add_subdirectory (tests)

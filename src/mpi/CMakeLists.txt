@@ -19,6 +19,7 @@ set (mpi_srcs
   pFUnit.F90
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
+add_dependencies(pfunit funit)
 if (NOT FTL)
   add_dependencies(pfunit gFTL)
 endif()

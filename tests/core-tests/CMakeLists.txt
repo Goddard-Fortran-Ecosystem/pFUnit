@@ -77,10 +77,10 @@ set(SERIAL_TEST_SRCS
 
 list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
-add_library(funit_tests STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
+add_library(funit_tests EXCLUDE_FROM_ALL STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
 target_link_libraries(funit_tests funit)
 
-add_library(new_stests ${new_tests} ${OTHER_SOURCES})
+add_library(new_stests EXCLUDE_FROM_ALL ${new_tests} ${OTHER_SOURCES})
 target_link_libraries(new_stests funit)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
 set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
@@ -88,18 +88,11 @@ target_link_libraries(new_tests.x new_stests funit)
 
 
 
-add_executable (funit_tests.x serial_tests.F90)
+add_executable (funit_tests.x EXCLUDE_FROM_ALL serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
 
-add_custom_target(tests
-  COMMAND funit_tests.x
-  COMMAND new_tests.x
-  DEPENDS funit_tests.x new_tests.x WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
-
 set(REMOTE_EXE remote.x)
-add_executable (${REMOTE_EXE} serialRemoteProgram.F90)
+add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
 target_link_libraries(${REMOTE_EXE} funit funit_tests)
 #  if (MPI)
 #    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
@@ -113,14 +106,17 @@ add_test(NAME new_tests
   COMMAND new_tests.x
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
+add_dependencies(tests new_tests.x)
 set_property (TEST new_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
 
 add_test(NAME old_tests
-  COMMAND tests/funit_tests.x
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  COMMAND funit_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
+add_dependencies(tests funit_tests.x)
+
 set_property (TEST old_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
