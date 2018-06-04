@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -86,24 +88,34 @@ contains
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+      _UNUSED_DUMMY(exceptions)
+
    end subroutine addError
 
    subroutine startTest(this, testName)
       class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
    end subroutine startTest
 
    subroutine ignoreTest(this, testName)
       class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
    end subroutine ignoreTest
 
    subroutine endTest(this, testName)
       class (TapListener), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
    end subroutine endTest
 
    subroutine endRun(this, result)
@@ -149,9 +161,6 @@ contains
       class (TapListener), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
-
-      integer :: i, j
-      character(len=80) :: locationString
 
       call this%printExceptions(label,aFailedTest%testName,&
            aFailedTest%exceptions)
@@ -205,7 +214,7 @@ contains
       type (TestFailure), intent(in) :: aFailedTest
       class (Exception), pointer :: pException
 
-      integer :: i, j
+      integer :: j
       character(len=80) :: locationString
 
 !mlr testcase should likely be testname or testmethod or maybe test
@@ -292,8 +301,9 @@ contains
       class (TapListener), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
-      write(this%unit,'(a)') '</testsuite>'
+      _UNUSED_DUMMY(result)
 
+      write(this%unit,'(a)') '</testsuite>'
       flush(this%unit)
 
    end subroutine printFooter

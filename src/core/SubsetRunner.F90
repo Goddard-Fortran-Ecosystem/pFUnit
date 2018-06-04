@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -143,6 +145,8 @@ contains
       integer :: i
       class (Exception), pointer :: e
 
+      _UNUSED_DUMMY(testName)
+
       write(this%unit,'(a,i0)')'failed: numExceptions=',exceptions%size()
       do i = 1, exceptions%size()
          e => exceptions%at(i)
@@ -176,11 +180,18 @@ contains
      use PF_AbstractTestResult_mod, only : AbstractTestResult
      class (SubsetRunner), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(result)
    end subroutine endRun
 
    subroutine addSuccess(this, testName)
       class (SubsetRunner), intent(inout) :: this
       character(*), intent(in) :: testName
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
    
 end module PF_SubsetRunner_mod

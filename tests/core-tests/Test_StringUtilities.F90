@@ -22,7 +22,6 @@
 !
 !-------------------------------------------------------------------------------
 module Test_StringUtilities_mod
-   use PF_TestSuite_mod, only: TestSuite
    use PF_StringUtilities_mod, only: toString
    use PF_Assert_mod
    implicit none
@@ -33,7 +32,7 @@ module Test_StringUtilities_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestSuite_mod, only: TestSuite
       use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 

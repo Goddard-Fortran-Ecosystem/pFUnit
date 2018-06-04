@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -68,6 +70,9 @@ contains
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+      _UNUSED_DUMMY(exceptions)
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
@@ -76,18 +81,25 @@ contains
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+      _UNUSED_DUMMY(exceptions)
    end subroutine addError
 
    subroutine startTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
    end subroutine startTest
 
    subroutine endTest(this, testName)
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
 
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
    end subroutine endTest
 
    subroutine endRun(this, result)
@@ -133,9 +145,6 @@ contains
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
-
-      integer :: i, j
-      character(len=80) :: locationString
 
       call this%printExceptions(label,aFailedTest%testName,&
            aFailedTest%exceptions)
@@ -189,7 +198,7 @@ contains
       type (TestFailure), intent(in) :: aFailedTest
       class (Exception), pointer :: pException
 
-      integer :: i, j
+      integer :: j
       character(len=80) :: locationString
 
 !mlr testcase should likely be testname or testmethod or maybe test
@@ -276,8 +285,9 @@ contains
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
-      write(this%unit,'(a)') '</testsuite>'
+      _UNUSED_DUMMY(result)
 
+      write(this%unit,'(a)') '</testsuite>'
       flush(this%unit)
 
    end subroutine printFooter
@@ -308,6 +318,10 @@ contains
    subroutine addSuccess(this, testName)
       class (XmlPrinter), intent(inout) :: this
       character(*), intent(in) :: testName
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
 
 end module PF_XmlPrinter_mod

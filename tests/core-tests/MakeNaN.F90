@@ -22,7 +22,15 @@
 !-------------------------------------------------------------------------------
 
 module MakeNaN_mod
-   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+#ifdef _REAL32_IEEE_SUPPORT
+   use, intrinsic :: iso_fortran_env, only: REAL32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+   use, intrinsic :: iso_fortran_env, only: REAL64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+   use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
    use, intrinsic :: ieee_arithmetic
    implicit none
    private

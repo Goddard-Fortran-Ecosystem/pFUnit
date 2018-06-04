@@ -171,8 +171,6 @@ contains
    
    @test
    subroutine testAssertEqualStringTrimWhitespace3()
-     character tab; tab = char(9)
-     ! Should fail !
      call assertEqual(expected="", found=" ", &
           & whitespace=TRIM_ALL )
    end subroutine testAssertEqualStringTrimWhitespace3
@@ -215,7 +213,6 @@ contains
 
    @test
    subroutine testAssertEqualStringKeepWhitespace3()
-     character tab; tab = char(9)
      ! Should fail !
      call assertEqual(expected="", found=" ", &
           & whitespace=KEEP_ALL )
@@ -228,7 +225,6 @@ contains
 
    @test
    subroutine testAssertEqualStringKeepWhitespace4()
-     character tab; tab = char(9)
      ! Should fail !
      call assertEqual(expected=" ", found="", &
           & whitespace=KEEP_ALL )

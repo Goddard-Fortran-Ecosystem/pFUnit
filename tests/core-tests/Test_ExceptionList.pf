@@ -27,7 +27,6 @@ contains
       !EOP
       !BOC
       type (ExceptionList) :: list
-      type (Exception) :: anException
       character(len=*), parameter :: message = 'anException'
 
       call list%throw(message)

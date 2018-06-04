@@ -1,4 +1,5 @@
-!#include "reflection.h"
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -28,8 +29,6 @@ module Test_TestSuite_mod
    private
 
    public :: suite
-
-   character(len=80) :: log
 
    ! Internal mock for TestResult
    type, extends(TestResult) :: Verbose
@@ -212,6 +211,7 @@ contains
       class (SurrogateTestCase), intent(inout) :: test
       class (ParallelContext), intent(in) :: context
 
+      _UNUSED_DUMMY(context)
       this%log = trim(this%log)//'::'//trim(test%getName())
 
    end subroutine run

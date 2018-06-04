@@ -21,7 +21,6 @@
 !
 !-------------------------------------------------------------------------------
 module Test_BasicOpenMP_mod
-   use PF_TestSuite_mod, only: TestSuite
    implicit none
    private
 
@@ -31,7 +30,7 @@ contains
 
    function suite()
       use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+!$    use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('Test_TestBasicOpenMP')
@@ -68,8 +67,7 @@ contains
    ! likely failure mode than a mismatch in the count.
    subroutine testSerializeExceptions()
       use PF_Params_mod, only : i32
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: getNumExceptions, catchNext, clearAll, throw
+      use PF_ExceptionList_mod, only: getNumExceptions, clearAll, throw
       use PF_Assert_mod, only: AssertEqual
 
       !$ integer :: omp_get_thread_num

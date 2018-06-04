@@ -1,5 +1,4 @@
-!#include "reflection.h"
-#define HERE print*,__LINE__,__FILE__
+#include "unused_dummy.fh"
 
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
@@ -41,6 +40,7 @@ contains
 
    subroutine method1(this)
       class (SUT), intent(in) :: this
+      _UNUSED_DUMMY(this)
    end subroutine method1
 
 end module SUT_mod
@@ -135,10 +135,10 @@ contains
 
    subroutine testNoAction()
       class (MockRepository), pointer :: mocker
-      type (MockSUT) :: mockObject
+!!$      type (MockSUT) :: mockObject
       
       mocker => newMockRepository()
-      mockObject = newMockSUT(mocker)
+!!$      mockObject = newMockSUT(mocker)
       call mocker%delete() ! move to a final
 
    end subroutine testNoAction

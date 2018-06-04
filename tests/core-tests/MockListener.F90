@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -50,6 +52,9 @@ contains
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
 
+     _UNUSED_DUMMY(testName)
+     _UNUSED_DUMMY(exceptions)
+
      write(this%log,'(a)') 'addFailure() was called'
 
   end subroutine addFailure
@@ -57,6 +62,8 @@ contains
   subroutine startTest(this, testName)
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
+
+     _UNUSED_DUMMY(testName)
 
      write(this%log,'(a)') 'startTest() was called'
 
@@ -66,6 +73,8 @@ contains
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
 
+     _UNUSED_DUMMY(testName)
+
      write(this%log,'(a)') 'ignoreTest() was called'
 
   end subroutine ignoreTest
@@ -74,19 +83,31 @@ contains
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
 
+     _UNUSED_DUMMY(testName)
+
      write(this%log,'(a)') 'endTest() was called'
 
    end subroutine endTest
+
 
    subroutine endRun(this, result)
      use PF_AbstractTestResult_mod, only : AbstractTestResult
      class (MockListener), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(result)
+
    end subroutine endRun
+
 
    subroutine addSuccess(this, testName)
       class (MockListener), intent(inout) :: this
       character(*), intent(in) :: testName
+
+     _UNUSED_DUMMY(this)
+     _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
 
 

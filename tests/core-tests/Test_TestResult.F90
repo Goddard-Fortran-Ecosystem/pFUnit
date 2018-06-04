@@ -22,10 +22,8 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestResult_mod
-   use PF_TestSuite_mod, only: TestSuite
-   use PF_TestResult_mod, only: TestResult
    use PF_TestCase_mod
-   use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
+   use PF_TestResult_mod, only: TestResult
    implicit none
    private
 
@@ -34,8 +32,7 @@ module Test_TestResult_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use PF_TestResult_mod, only: TestResult, TestResult
+      use PF_TestSuite_mod, only: TestSuite
       use PF_TestCase_mod
       use PF_TestMethod_mod, only: TestMethod
       type (TestSuite) :: suite
@@ -66,7 +63,7 @@ contains
 
    subroutine testGetNumRun()
       use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod, only: TestResult, TestResult
+      use PF_TestResult_mod, only: TestResult
       use PF_TestCase_mod
       use SimpleTestCase_mod
       type (TestResult) :: aResult
