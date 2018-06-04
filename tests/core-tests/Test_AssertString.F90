@@ -1,2 +1,0 @@
-module Test_AssertString_mod
-end module Test_AssertString_mod

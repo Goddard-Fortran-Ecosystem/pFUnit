@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -108,7 +110,8 @@ contains
 
    subroutine delete (this)
      class (MockRepository), intent(inout) :: this
-     
+
+     _UNUSED_DUMMY(this)
      nullify(MockRepositoryPointer)
 
    end subroutine delete
@@ -119,6 +122,8 @@ contains
       class (MockRepository), intent(inout) :: this
       class (*) :: object
       
+      _UNUSED_DUMMY(object)
+
       if (trim(this%method) /= '') then
          call throw('Expected method not called: method1() on object of class MockSUT.')
       end if
@@ -133,6 +138,7 @@ contains
       class(*), intent(in) :: obj
       character(len=*), intent(in) :: method
 
+      _UNUSED_DUMMY(obj)
       this%method = method
    end subroutine expectCall
 
@@ -141,6 +147,7 @@ contains
       class(*), intent(in) :: obj
       character(len=*), intent(in) :: method
 
+      _UNUSED_DUMMY(obj)
       if (trim(method) == trim(this%method)) then
          this%method=''
       end if

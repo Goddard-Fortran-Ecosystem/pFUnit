@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -89,6 +91,7 @@ contains
 
    subroutine delete_(this)
       type (FixtureTestCase), intent(inOut) :: this
+      _UNUSED_DUMMY(this)
    end subroutine delete_
 
 end module FixtureTestCase_mod

@@ -21,7 +21,6 @@
 !
 !-------------------------------------------------------------------------------
 module Test_TestMethod_mod
-   use PF_TestSuite_mod, only: TestSuite
    implicit none
    private
 

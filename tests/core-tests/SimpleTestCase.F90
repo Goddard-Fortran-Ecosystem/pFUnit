@@ -1,4 +1,5 @@
-!#include "reflection.h"
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -98,13 +99,14 @@ contains
       use PF_ExceptionList_mod, only: throw
       class (SimpleTestCase), intent(inOut) :: this
 
+      _UNUSED_DUMMY(this)
       call throw('failure A')
       call throw('failure B')
    end subroutine methodWith2Exceptions
 
    subroutine delete_(this)
       type (SimpleTestCase), intent(inOut) :: this
-!!$      nullify(this%testMethod)
+      _UNUSED_DUMMY(this)
    end subroutine delete_
 
 end module SimpleTestCase_mod

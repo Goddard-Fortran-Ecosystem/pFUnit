@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -65,6 +67,8 @@ contains
       class (TestRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
+      _UNUSED_DUMMY(this)
+
       tstResult = TestResult()
 
     end function createTestResult
@@ -120,17 +124,29 @@ contains
     subroutine startTest(this, testName)
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+
     end subroutine startTest
 
     subroutine endTest(this, testName)
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+
     end subroutine endTest
 
     subroutine endRun(this, result)
       use PF_AbstractTestResult_mod, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(result)
+
     end subroutine endRun
 
     subroutine addFailure(this, testName, exceptions)
@@ -138,12 +154,22 @@ contains
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
        type (ExceptionList), intent(in) :: exceptions
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+      _UNUSED_DUMMY(exceptions)
+
+
     end subroutine addFailure
 
 
    subroutine addSuccess(this, testName)
       class (TestRunner), intent(inout) :: this
       character(*), intent(in) :: testName
+
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(testName)
+
    end subroutine addSuccess
 
 end module PF_TestRunner_mod
