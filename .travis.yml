@@ -38,6 +38,7 @@ script:
    - make -j4 
    # Test
    - make -j4 tests
+   - ctest
    # install
    - make install
 
