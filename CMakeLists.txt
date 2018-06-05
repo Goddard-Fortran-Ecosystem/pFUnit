@@ -61,6 +61,7 @@ if (MPI)
     endif()
   endif()
   add_definitions(-DUSE_MPI)
+  list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
   message( STATUS "MPI enabled")
 endif()
 

@@ -89,15 +89,15 @@ before_script:
 
 script:
    # Build
-   make -j2
+   - make -j2
    # Make tests
-   make -j2 tests
-   # Run tests. Do it twice as there is often a spurious failure in one test
-   ctest || ctest
+   - make -j2 tests
+   # Run tests. If the first fails, run with -VV to try and diagnose errors
+   - ctest || ctest -VV
 
 notifications:
    email:
       recipients:
          - matthew.thompson@nasa.gov
-           #- matthew.thompson@nasa.gov tom.clune@nasa.gov
+         - tom.clune@nasa.gov
          
