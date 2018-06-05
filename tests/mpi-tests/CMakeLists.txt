@@ -17,7 +17,6 @@ target_link_libraries(pfunittests pfunit funit)
 
 add_executable (parallel_tests.x EXCLUDE_FROM_ALL parallel_tests.F90)
 target_link_libraries(parallel_tests.x pfunittests pfunit funit ${MPI_Fortran_LIBRARIES})
-message("Found these MPI_Fortran_LIBRARIES: ${MPI_Fortran_LIBRARIES}")
 
 #set(REMOTE_EXE remote.x)
 #add_executable (${REMOTE_EXE} parallelRemoteProgram.F90)

@@ -89,9 +89,9 @@ before_script:
 
 script:
    # Build
-   - make -j2 VERBOSE=1
+   - make -j2
    # Make tests
-   - make -j2 tests VERBOSE=1
+   - make -j2 tests
    # Run tests. Do it twice as there is often a spurious failure in one test
    - ctest || ctest
 
