@@ -98,5 +98,6 @@ script:
 notifications:
    email:
       recipients:
-         - matthew.thompson@nasa.gov tom.clune@nasa.gov
+         - matthew.thompson@nasa.gov
+         - tom.clune@nasa.gov
          
