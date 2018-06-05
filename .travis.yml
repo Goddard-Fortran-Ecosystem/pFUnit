@@ -15,9 +15,48 @@ matrix:
                  - libxml2-utils
         env:
            - FC='gfortran-8'
+           - USE_MPI=NO
+      - os: linux
+        addons:
+           apt:
+              sources:
+                 - ubuntu-toolchain-r-test
+              packages:
+                 - gfortran-8
+                 - cmake3
+                 - libxml2-utils
+        env:
+           - FC='gfortran-8'
+           - USE_MPI=YES
+           - MPI_NAME=openmpi-3.1.0
+           - CACHE_NAME=linux-gcc8-openmpi310
       - os: osx
-        env: FC='gfortran-8' BREW='gcc@8' BREW_UP='cmake'
         osx_image: xcode9.3
+        env:
+           - FC='gfortran-8'
+           - USE_MPI=NO
+           - BREW='gcc@8'
+           - BREW_UP='cmake'
+      - os: osx
+        osx_image: xcode9.3
+        env:
+           - FC='gfortran-8'
+           - BREW='gcc@8'
+           - BREW_UP='cmake'
+           - USE_MPI=YES
+           - MPI_NAME=openmpi-3.1.0
+           - CACHE_NAME=osx-gcc8-openmpi310
+
+
+# caching of the whole `local` directory. Can't cache only the one for this
+# `env`, because otherwise the different instances will overwrite the cache.
+# For the first test-run, the build has to be run sequentially (limit parallel
+# workers to 1) so that the cache can be correctly initialized. Once the cache
+# is build, parallel workers can be re-enabled.
+cache:
+   directories:
+      - ${HOME}/local
+   timeout: 600
 
 before_install:
    - |
@@ -28,22 +67,37 @@ before_install:
       fi
 
 before_script:
+   # install MPI
+   - |
+      if [ $USE_MPI == YES ] ; then
+         mkdir -p ${HOME}/local
+         ls -r ${HOME}/local
+         sh ./tools/travis-install-mpi.sh ${MPI_NAME}
+         # set up MPI location
+         export PATH=${PATH}:${HOME}/local/${MPI_NAME}/bin
+         export LIBRARY_PATH=${LIBRARY_PATH}:${HOME}/local/${MPI_NAME}/lib
+         export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/local/${MPI_NAME}/lib
+         # print out version information
+         ${FC} --version
+         mpirun --version
+      fi
+   # Now build pFUnit
    - cd ${TRAVIS_BUILD_DIR}
    - mkdir build
    - cd build
-   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=$HOME/Software/pFUnit
+   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit -DMPI=${USE_MPI}
 
 script:
    # Build
-   - make -j4 
-   # Test
-   - make -j4 tests
-   - ctest
-   # install
-   - make install
+   make -j2
+   # Make tests
+   make -j2 tests
+   # Run tests. Do it twice as there is often a spurious failure in one test
+   ctest || ctest
 
 notifications:
    email:
       recipients:
-         - matthew.thompson@nasa.gov tom.clune@nasa.gov
+         - matthew.thompson@nasa.gov
+           #- matthew.thompson@nasa.gov tom.clune@nasa.gov
          
