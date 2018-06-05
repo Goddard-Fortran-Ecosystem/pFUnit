@@ -92,8 +92,8 @@ script:
    - make -j2
    # Make tests
    - make -j2 tests
-   # Run tests. Do it twice as there is often a spurious failure in one test
-   - ctest -VV || ctest -VV
+   # Run tests. If the first fails, run with -VV to try and diagnose errors
+   - ctest || ctest -VV
 
 notifications:
    email:
