@@ -36,7 +36,11 @@
 #endif
 
 #define TOKEN(a) a
+#ifdef Cray
+#define RENAME(item) TOKEN(item) => item
+#else
 #define RENAME(item) TOKEN(PFUNIT_PREFIX)TOKEN(item) => item
+#endif
 
 module pFUnit
 
