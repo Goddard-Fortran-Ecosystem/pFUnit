@@ -35,11 +35,18 @@
 #define PFUNIT_PREFIX pf_
 #endif
 
-#define TOKEN(a) a
-#ifdef Cray
-#define RENAME(item) TOKEN(item) => item
+! The Cray preprocessor for Fortran does not appear to perform recursive
+! expansion. Using the normal macro would lead to
+! "PFUNIT_PREFIX<item> => <item>" instead of the expected result
+! "<prefix><item> => <item>".
+!
+! To get round these issues the "pf_" prefix is hard coded.
+
+#define WORD(word) word
+#ifndef Cray
+#define RENAME(item) WORD(PFUNIT_PREFIX)item => item
 #else
-#define RENAME(item) TOKEN(PFUNIT_PREFIX)TOKEN(item) => item
+#define RENAME(item) WORD(pf_)item => item
 #endif
 
 module pFUnit
