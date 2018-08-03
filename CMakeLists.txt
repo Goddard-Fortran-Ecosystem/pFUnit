@@ -165,8 +165,8 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Cray)
     # number like the C module does. Since CCE is a suite of compilers we
     # can use the C version as a proxy for the Fortran version.
     #
-    if(CMAKE_C_COMPILER_VERSION VERSION_GREATER 8.5.4)
-      message( FATAL_ERROR "Cray compiler version number ${CMAKE_C_COMPILER_VERSION} < 8.4.6 minimum" )
+    if(CMAKE_C_COMPILER_VERSION VERSION_GREATER 8.6.0)
+      message( FATAL_ERROR "Cray compiler version number ${CMAKE_C_COMPILER_VERSION} < 8.6.0 minimum" )
     endif()
 
     # Use Cray
