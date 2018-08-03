@@ -168,7 +168,7 @@ contains
               'Location: ', cleanXml(trim(locationString)), ', '
          write(this%unit,'(a)',advance='no') &
               cleanXml(trim(exceptions(j)%getMessage()))
-         write(this%unit,*) '"/>'
+         write(this%unit,'(a)') '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'
 
