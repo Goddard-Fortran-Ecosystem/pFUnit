@@ -157,10 +157,10 @@ contains
 #endif
 '<testcase name="successtest[]''"/>', &
 '<testcase name="failtest[]''">', &
-'<failure message="Location: [[unknown location]], [invalid] "/>', &
+'<failure message="Location: [[unknown location]], [invalid]"/>', &
 '</testcase>', &
 '<testcase name="failtest[]''">', &
-'<failure message="Location: [[unknown location]], ''test'' "/>', &
+'<failure message="Location: [[unknown location]], ''test''"/>', &
 '</testcase>', &
 '</testsuite>' /)
 
