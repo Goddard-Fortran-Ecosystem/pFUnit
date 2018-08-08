@@ -2,7 +2,6 @@ module TestCaseC_mod
    use pfunit_mod
    implicit none
 
-   
 @testCase(constructor=newTestCaseC)
    type, extends(MpiTestCase) :: TestCaseC
       integer, allocatable :: table(:)

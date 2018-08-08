@@ -100,12 +100,15 @@ class TestParseLine(unittest.TestCase):
 
         nextLine = 'subroutine myTest (] \n' # bad closing paren
         parser = MockParser([nextLine])
-        
-        with self.assertRaises(MyError):
+
+        try:
             atTest = AtTest(parser)
             line = '@test'
             m = atTest.match(line)
             atTest.action(m, line)
+            self.assertTrue(False, msg='Expected assertion was not raised')
+        except MyError:
+            pass  # Correct response
 
 
     def testAtTestSkipComment(self):

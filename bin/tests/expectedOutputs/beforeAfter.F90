@@ -40,8 +40,6 @@ function beforeAfter_suite() result(suite)
    external initA
    external finalA
 
-   integer, allocatable :: npes(:)
-
    suite = newTestSuite('beforeAfter_suite')
 
    call suite%addTest(newTestMethod('testMethodA', testMethodA, initA, finalA))
