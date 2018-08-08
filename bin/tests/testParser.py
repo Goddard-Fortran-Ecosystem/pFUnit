@@ -1,5 +1,14 @@
-import unittest
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+import os.path
+import re
+import shutil
 import sys
+import tempfile
+import unittest
+
 sys.path.append('..')
 from pFUnitParser import *
 
@@ -14,6 +23,7 @@ class MockWriter():
 
 class MockParser(Parser):
     def __init__(self, lines):
+        self.set_line = cpp_set_line
         self.saveLines = lines
         self.lines = self.saveLines[:]
         self.outputFile = MockWriter(self)
@@ -37,9 +47,13 @@ class MockParser(Parser):
 
 class TestParseLine(unittest.TestCase):
 
-    def testCppSetLineAndFile(self):
-        self.assertEqual('#line 7 "foo"\n', cppSetLineAndFile(7, 'foo'))
-        self.assertEqual('#line 3 "bar"\n', cppSetLineAndFile(3, 'bar'))
+    def testcpp_set_line(self):
+        self.assertEqual('#line 7 "foo"\n', cpp_set_line(7, 'foo'))
+        self.assertEqual('#line 3 "bar"\n', cpp_set_line(3, 'bar'))
+
+    def testcompiler_set_line(self):
+        self.assertEqual('#7 "foo"\n', compiler_set_line(7, 'foo'))
+        self.assertEqual('#3 "bar"\n', compiler_set_line(3, 'bar'))
 
     def testGetSubroutineName(self):
         self.assertEqual('a', getSubroutineName('subroutine a()'))
@@ -108,14 +122,11 @@ class TestParseLine(unittest.TestCase):
         nextLine = 'subroutine myTest (] \n'  # bad closing paren
         parser = MockParser([nextLine])
 
-        try:
+        with self.assertRaises(MyError):
             atTest = AtTest(parser)
             line = '@test'
             m = atTest.match(line)
             atTest.action(m, line)
-            self.assertTrue(False, msg='Expected assertion was not raised')
-        except MyError:
-            pass  # Correct response
 
     def testAtTestSkipComment(self):
         """Ignore comment lines between @test and subroutine foo()."""
@@ -633,6 +644,296 @@ class TestParseLine(unittest.TestCase):
 
         atSuite.apply("@suite ( name =  'mySuite')\n")
         self.assertEqual('mySuite', parser.suiteName)
+
+
+class TestParser(unittest.TestCase):
+    _FUNIT_SOURCE = '''module test_mod
+  implicit none
+  private
+  @TestCase
+  type, public, extends(TestCase) :: test_type
+  contains
+    procedure setUp
+    procedure tearDown
+    procedure testTest
+  end type test_type
+contains
+  subroutine setUp(this)
+    implicit none
+    class(test_type), intent(inout) :: this
+  end subroutine setUp
+  subroutine tearDown(this)
+    implicit none
+    class(test_type), intent(inout) :: this
+  end subroutine tearDown
+  @test
+  subroutine testTest(this)
+    implicit none
+    class(test_type), intent(inout) :: this
+    @assertEqual(2, 4)
+  end subroutine testTest
+end module test_mod
+'''
+
+    def setUp(self):
+        self._re_type = type(re.compile('hello, world'))
+        self._directory = tempfile.mkdtemp()
+        self._source_filename = os.path.join(self._directory, 'test.pf')
+        self._target_filename = os.path.join(self._directory, 'test.F90')
+
+        with open(self._source_filename, 'w') as source:
+            print(TestParser._FUNIT_SOURCE, file=source)
+
+    def tearDown(self):
+        shutil.rmtree(self._directory)
+
+    def testLinemarkers(self):
+        expected = ['module test_mod',
+                    '  implicit none',
+                    '  private',
+                    '  !@TestCase',
+                    '  type, public, extends(TestCase) :: test_type',
+                    '  contains',
+                    '    procedure setUp',
+                    '    procedure tearDown',
+                    '    procedure testTest',
+                    '  end type test_type',
+                    'contains',
+                    '  subroutine setUp(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    '  end subroutine setUp',
+                    '  subroutine tearDown(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    '  end subroutine tearDown',
+                    '  !@test',
+                    '  subroutine testTest(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    re.compile(r'#24 "/(\S+)/test.pf"'),
+                    '  call assertEqual(2, 4, &',
+                    ' & location=SourceLocation( &',
+                    ' & \'test.pf\', &',
+                    ' & 24) )',
+                    '  if (anyExceptions()) return',
+                    re.compile(r'#25 "/(\S+)/test.pf"'),
+                    '  end subroutine testTest',
+                    'end module test_mod',
+                    '',
+                    '',
+                    'module Wraptest_mod',
+                    '   use pFUnit_mod',
+                    '   use test_mod',
+                    '   implicit none',
+                    '   private',
+                    '',
+                    '   public :: WrapUserTestCase',
+                    '   public :: makeCustomTest',
+                    '   type, extends(test_type) :: WrapUserTestCase',
+                    '      procedure(userTestMethod), nopass, pointer :: '
+                    + 'testMethodPtr',
+                    '   contains',
+                    '      procedure :: runMethod',
+                    '   end type WrapUserTestCase',
+                    '',
+                    '   abstract interface',
+                    '     subroutine userTestMethod(this)',
+                    '        use test_mod',
+                    '        class (test_type), intent(inout) :: this',
+                    '     end subroutine userTestMethod',
+                    '   end interface',
+                    '',
+                    'contains',
+                    '',
+                    '   subroutine runMethod(this)',
+                    '      class (WrapUserTestCase), intent(inout) :: this',
+                    '',
+                    '      call this%testMethodPtr(this)',
+                    '   end subroutine runMethod',
+                    '',
+                    '   function makeCustomTest(methodName, testMethod) '
+                    + 'result(aTest)',
+                    '#ifdef INTEL_13',
+                    '      use pfunit_mod, only: testCase',
+                    '#endif',
+                    '      type (WrapUserTestCase) :: aTest',
+                    '#ifdef INTEL_13',
+                    '      target :: aTest',
+                    '      class (WrapUserTestCase), pointer :: p',
+                    '#endif',
+                    '      character(len=*), intent(in) :: methodName',
+                    '      procedure(userTestMethod) :: testMethod',
+                    '      aTest%testMethodPtr => testMethod',
+                    '#ifdef INTEL_13',
+                    '      p => aTest',
+                    '      call p%setName(methodName)',
+                    '#else',
+                    '      call aTest%setName(methodName)',
+                    '#endif',
+                    '   end function makeCustomTest',
+                    '',
+                    'end module Wraptest_mod',
+                    '',
+                    'function test_mod_suite() result(suite)',
+                    '   use pFUnit_mod',
+                    '   use test_mod',
+                    '   use Wraptest_mod',
+                    '   type (TestSuite) :: suite',
+                    '',
+                    "   suite = newTestSuite('test_mod_suite')",
+                    '',
+                    "   call suite%addTest(makeCustomTest('testTest', "
+                    + "testTest))",
+                    '',
+                    '',
+                    'end function test_mod_suite',
+                    '']
+
+        unit_under_test = Parser(self._source_filename,
+                                 self._target_filename,
+                                 True)
+        unit_under_test.run()
+        unit_under_test.final()
+
+        with open(self._target_filename, 'r') as target:
+            result = target.read().splitlines()
+
+        while len(expected) > 0:
+            model = expected.pop(0)
+            actual = result.pop(0)
+
+            if isinstance(model, self._re_type):
+                self.assertRegexpMatches(actual, model)
+            else:
+                self.assertEqual(actual, model)
+
+        self.assertListEqual([], expected)
+        self.assertListEqual([], result)
+
+    def testLineDirectives(self):
+        expected = ['module test_mod',
+                    '  implicit none',
+                    '  private',
+                    '  !@TestCase',
+                    '  type, public, extends(TestCase) :: test_type',
+                    '  contains',
+                    '    procedure setUp',
+                    '    procedure tearDown',
+                    '    procedure testTest',
+                    '  end type test_type',
+                    'contains',
+                    '  subroutine setUp(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    '  end subroutine setUp',
+                    '  subroutine tearDown(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    '  end subroutine tearDown',
+                    '  !@test',
+                    '  subroutine testTest(this)',
+                    '    implicit none',
+                    '    class(test_type), intent(inout) :: this',
+                    re.compile(r'#line 24 "/(\S+)/test.pf"'),
+                    '  call assertEqual(2, 4, &',
+                    ' & location=SourceLocation( &',
+                    ' & \'test.pf\', &',
+                    ' & 24) )',
+                    '  if (anyExceptions()) return',
+                    re.compile(r'#line 25 "/(\S+)/test.pf"'),
+                    '  end subroutine testTest',
+                    'end module test_mod',
+                    '',
+                    '',
+                    'module Wraptest_mod',
+                    '   use pFUnit_mod',
+                    '   use test_mod',
+                    '   implicit none',
+                    '   private',
+                    '',
+                    '   public :: WrapUserTestCase',
+                    '   public :: makeCustomTest',
+                    '   type, extends(test_type) :: WrapUserTestCase',
+                    '      procedure(userTestMethod), nopass, pointer :: '
+                    + 'testMethodPtr',
+                    '   contains',
+                    '      procedure :: runMethod',
+                    '   end type WrapUserTestCase',
+                    '',
+                    '   abstract interface',
+                    '     subroutine userTestMethod(this)',
+                    '        use test_mod',
+                    '        class (test_type), intent(inout) :: this',
+                    '     end subroutine userTestMethod',
+                    '   end interface',
+                    '',
+                    'contains',
+                    '',
+                    '   subroutine runMethod(this)',
+                    '      class (WrapUserTestCase), intent(inout) :: this',
+                    '',
+                    '      call this%testMethodPtr(this)',
+                    '   end subroutine runMethod',
+                    '',
+                    '   function makeCustomTest(methodName, testMethod) '
+                    + 'result(aTest)',
+                    '#ifdef INTEL_13',
+                    '      use pfunit_mod, only: testCase',
+                    '#endif',
+                    '      type (WrapUserTestCase) :: aTest',
+                    '#ifdef INTEL_13',
+                    '      target :: aTest',
+                    '      class (WrapUserTestCase), pointer :: p',
+                    '#endif',
+                    '      character(len=*), intent(in) :: methodName',
+                    '      procedure(userTestMethod) :: testMethod',
+                    '      aTest%testMethodPtr => testMethod',
+                    '#ifdef INTEL_13',
+                    '      p => aTest',
+                    '      call p%setName(methodName)',
+                    '#else',
+                    '      call aTest%setName(methodName)',
+                    '#endif',
+                    '   end function makeCustomTest',
+                    '',
+                    'end module Wraptest_mod',
+                    '',
+                    'function test_mod_suite() result(suite)',
+                    '   use pFUnit_mod',
+                    '   use test_mod',
+                    '   use Wraptest_mod',
+                    '   type (TestSuite) :: suite',
+                    '',
+                    "   suite = newTestSuite('test_mod_suite')",
+                    '',
+                    "   call suite%addTest(makeCustomTest('testTest', "
+                    + "testTest))",
+                    '',
+                    '',
+                    'end function test_mod_suite',
+                    '']
+
+        unit_under_test = Parser(self._source_filename,
+                                 self._target_filename,
+                                 False)
+        unit_under_test.run()
+        unit_under_test.final()
+
+        with open(self._target_filename, 'r') as target:
+            result = target.read().splitlines()
+
+        while len(expected) > 0:
+            model = expected.pop(0)
+            actual = result.pop(0)
+
+            if isinstance(model, self._re_type):
+                self.assertRegexpMatches(actual, model)
+            else:
+                self.assertEqual(actual, model)
+
+        self.assertListEqual([], expected)
+        self.assertListEqual([], result)
 
 
 if __name__ == "__main__":

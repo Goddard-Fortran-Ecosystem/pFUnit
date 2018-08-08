@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# For python 2.6-2.7
+# For python 2.7
 from __future__ import print_function
 
 from os.path import *
@@ -21,8 +21,23 @@ assertVariants += '|GreaterThanOrEqual|IsMemberOf|Contains|Any|All|NotAll|None'
 assertVariants += '|IsPermutationOf|ExceptionRaised|SameShape|IsNaN|IsFinite'
 
 
-def cppSetLineAndFile(line, file):
-    return "#line " + str(line) + ' "' + file + '"\n'
+def cpp_set_line(line, filename):
+    return "#line " + str(line) + ' "' + filename + '"\n'
+
+
+def compiler_set_line(line, filename=None):
+    '''
+    Returns a string holding a linemarker as understood by compilers.
+
+    Currently the flags which may appear in such a linemarker are not
+    supported. These are mostly related to #include debris so are of low
+    priority at the moment.
+    '''
+    linemarker = '#' + str(line)
+    if filename:
+        linemarker += ' "' + filename + '"'
+    linemarker += '\n'
+    return linemarker
 
 
 def getSubroutineName(line):
@@ -276,7 +291,8 @@ class AtAssert(Action):
     def action(self, m, line):
         p = self.parser
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         p.outputFile.write("  call assert" + m.groups()[0]
                            + "(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile,
@@ -284,7 +300,7 @@ class AtAssert(Action):
                                   p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber+1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber+1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -322,7 +338,8 @@ class AtAssertAssociated(Action):
         # print(9000,line)
         # print(9001,args)
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*', args[1], re.IGNORECASE):
                 p.outputFile.write("  call assertTrue(associated("
@@ -342,7 +359,7 @@ class AtAssertAssociated(Action):
                                   p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber+1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber+1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -392,7 +409,8 @@ class AtAssertNotAssociated(Action):
         # print(9000,line)
         # print(9001,args)
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*', args[1], re.IGNORECASE):
                 p.outputFile.write("  call assertFalse(associated("
@@ -412,7 +430,7 @@ class AtAssertNotAssociated(Action):
                                   p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber + 1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber + 1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -446,7 +464,8 @@ class AtAssertEqualUserDefined(Action):
 
         args = parseArgsFirstSecondRest('@assertequaluserdefined', line)
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         if len(args) > 2:
             p.outputFile.write("  call assertTrue(" + args[0]
                                + "==" + args[1] + ", " + args[2] + ", &\n")
@@ -461,7 +480,7 @@ class AtAssertEqualUserDefined(Action):
                                   p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber + 1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber + 1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -495,7 +514,8 @@ class AtAssertEquivalent(Action):
 
         args = parseArgsFirstSecondRest('@assertequivalent', line)
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         if len(args) > 2:
             p.outputFile.write("  call assertTrue(" + args[0]
                                + ".eqv." + args[1] + ", " + args[2] + ", &\n")
@@ -510,7 +530,7 @@ class AtAssertEquivalent(Action):
                                   p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber + 1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber + 1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -532,7 +552,8 @@ class AtMpiAssert(Action):
     def action(self, m, line):
         p = self.parser
 
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
+        p.outputFile.write(self.parser.set_line(p.currentLineNumber,
+                                                p.fileName))
         p.outputFile.write("  call assert"
                            + m.groups()[0] + "(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile,
@@ -545,7 +566,7 @@ class AtMpiAssert(Action):
             p.outputFile.write("  if (anyExceptions("
                                + p.currentSelfObjectName
                                + "%context)) return\n")
-        fragment = cppSetLineAndFile(p.currentLineNumber + 1, p.fileName)
+        fragment = self.parser.set_line(p.currentLineNumber + 1, p.fileName)
         p.outputFile.write(fragment)
 
 
@@ -610,11 +631,16 @@ class AtTestParameter(Action):
 
 
 class Parser():
-    def __init__(self, inputFileName, outputFileName):
+    def __init__(self, inputFileName, outputFileName, use_markers):
         def getBaseName(fileName):
             from os.path import basename, splitext
             base = basename(fileName)
             return splitext(base)[0]
+
+        if use_markers:
+            self.set_line = compiler_set_line
+        else:
+            self.set_line = cpp_set_line
 
         self.fileName = inputFileName
         self.inputFile = open(inputFileName, 'r')
@@ -988,10 +1014,32 @@ class Parser():
         self.outputFile.close()
 
 
+def process_cli():
+    '''
+    Processes the arguments passed on the command line interface.
+
+    Returns a tuple of source filename (str), target filename (str) and
+    whether to insert linemarkers rather than #line directives (bool).
+    '''
+    import argparse
+
+    description = 'Converts a pFUnit .pf file into compilable Fortran source.'
+    cli_parser = argparse.ArgumentParser(description=description,
+                                         add_help=False)
+    cli_parser.add_argument('-help', '-h', '--help', action='help',
+                            help='Display this help and stop')
+    cli_parser.add_argument('-markers', action='store_true',
+                            help='Use linemarkers instead of #line directives')
+    cli_parser.add_argument('source', help='Filename of .pf file')
+    cli_parser.add_argument('target', help='Filename of geenrated .f90 file')
+    arguments = cli_parser.parse_args()
+    return arguments.source, arguments.target, arguments.markers
+
+
 if __name__ == "__main__":
-    import sys
-    print("Processing file", sys.argv[1])
-    p = Parser(sys.argv[1], sys.argv[2])
+    source_filename, target_filename, use_markers = process_cli()
+    print("Processing file", source_filename)
+    p = Parser(source_filename, target_filename, use_markers)
     p.run()
     p.final()
-    print(" ... Done.  Results in", sys.argv[2])
+    print(" ... Done.  Results in", target_filename)
