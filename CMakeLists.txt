@@ -159,9 +159,25 @@ elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL PGI)
     add_definitions(-DPGI)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -g -traceback -Mallocatable=03 -Mbounds -Mchkfpstk -Mchkstk")
 
+elseif(${CMAKE_Fortran_COMPILER_ID} STREQUAL Cray)
+
+    # The Fortran module does not set a variable to the compiler version
+    # number like the C module does. Since CCE is a suite of compilers we
+    # can use the C version as a proxy for the Fortran version.
+    #
+    if(CMAKE_C_COMPILER_VERSION VERSION_GREATER 8.6.0)
+      message( FATAL_ERROR "Cray compiler version number ${CMAKE_C_COMPILER_VERSION} < 8.6.0 minimum" )
+    endif()
+
+    # Use Cray
+    add_definitions(-DCray)
+    add_definitions(-DSTRINGIFY_SIMPLE)
+    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS_DEBUG} -G0 -Rb ${CMAKE_Fortran_FLAGS}")
+    set(OPENMP_FLAGS " ")
+
 else()
 
-    message( FATAL_ERROR "Unrecognized compiler. Please use ifort, gfortran, gfortran-mp-4.8, PGI, or nagfor" )
+    message( FATAL_ERROR "Unrecognized compiler. Please use ifort, gfortran, gfortran-mp-4.8, pgfortran, nagfor or cce" )
 
 endif()
 

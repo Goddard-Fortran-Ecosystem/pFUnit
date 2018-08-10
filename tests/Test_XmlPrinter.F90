@@ -106,7 +106,7 @@ contains
       ! Validate the file against the de facto JUnit xsd.
       ! If xmlint not found, just move on quietly.
       command = 'xmllint --version > /dev/null 2>&1'
-#if defined(NAG) || defined(IBM)
+#if defined(NAG) || defined(IBM) || defined(Cray)
       ! Fortran 2008 compliant version.
       call execute_command_line(command,exitstat=stat)
 #else
@@ -115,7 +115,7 @@ contains
       if (stat == 0) then
          command = 'xmllint --noout --nowarning --schema ' // trim(xsdPath) &
               // ' ' // trim(fileName) // ' 2> ' // outFile
-#if defined(NAG) || defined(IBM)
+#if defined(NAG) || defined(IBM) || defined(Cray)
          ! Fortran 2008 compliant version.
          call execute_command_line(command,exitstat=stat)
 #else
@@ -149,7 +149,7 @@ contains
      character(len=100), dimension(9) :: expected 
 
      expected=(/ character(len=100) :: &
-#ifndef PGI
+#if !defined( PGI ) && !defined( Cray )
 '<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0" time=".0000">', &
 #else
 '<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0"&
@@ -157,10 +157,10 @@ contains
 #endif
 '<testcase name="successtest[]''"/>', &
 '<testcase name="failtest[]''">', &
-'<failure message="Location: [[unknown location]], [invalid] "/>', &
+'<failure message="Location: [[unknown location]], [invalid]"/>', &
 '</testcase>', &
 '<testcase name="failtest[]''">', &
-'<failure message="Location: [[unknown location]], ''test'' "/>', &
+'<failure message="Location: [[unknown location]], ''test''"/>', &
 '</testcase>', &
 '</testsuite>' /)
 
