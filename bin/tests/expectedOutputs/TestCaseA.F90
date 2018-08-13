@@ -67,22 +67,32 @@ contains
    end subroutine runMethod
 
    function makeCustomTest(methodName, testMethod) result(aTest)
+#ifdef INTEL_13
+      use pfunit_mod, only: testCase
+#endif
       type (WrapUserTestCase) :: aTest
+#ifdef INTEL_13
+      target :: aTest
+      class (WrapUserTestCase), pointer :: p
+#endif
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
       aTest%testMethodPtr => testMethod
+#ifdef INTEL_13
+      p => aTest
+      call p%setName(methodName)
+#else
       call aTest%setName(methodName)
+#endif
    end function makeCustomTest
 
 end module WrapTestCaseA_mod
 
 function TestCaseA_mod_suite() result(suite)
    use pFUnit_mod
-   use WrapTestCaseA_mod
    use TestCaseA_mod
+   use WrapTestCaseA_mod
    type (TestSuite) :: suite
-
-   integer, allocatable :: npes(:)
 
    suite = newTestSuite('TestCaseA_mod_suite')
 

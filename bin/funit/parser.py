@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-# For python 2.6-2.7
-from __future__ import print_function
 
 from os.path import *
 import re
 # from parseBrackets import parseBrackets
-from parseDirectiveArgs import parseDirectiveArguments
+from funit.parseDirectiveArgs import parseDirectiveArguments
 
 class MyError(Exception):
     def __init__(self, value):
@@ -34,7 +32,7 @@ def parseArgsFirstRest(directiveName,line):
     Added for assertAssociated.
     """
 
-    argStr = ''; 
+    argStr = '';
     if directiveName != '':
         m = re.match('\s*'+directiveName+'\s*\\((.*\w.*)\\)\s*$',line,re.IGNORECASE)
         if m:
@@ -52,7 +50,7 @@ def parseArgsFirstRest(directiveName,line):
         returnArgs = [args[0]]
     else:
         returnArgs = [args[0],','.join(args[1:])]
-        
+
     return returnArgs
 
 
@@ -87,7 +85,7 @@ def getSelfObjectName(line):
 def getTypeName(line):
     m = re.match('\s*type(.*::\s*|\s+)(\w*)\s*$', line, re.IGNORECASE)
     return m.groups()[1]
- 
+
 class Action():
     def apply(self, line):
         m = self.match(line)
@@ -140,17 +138,22 @@ class AtTest(Action):
             npesOption = re.search('npes\s*=\s*\\[([0-9,\s]+)\\]', options.groups()[0], re.IGNORECASE)
             if npesOption:
                 npesString = npesOption.groups()[0]
+<<<<<<< HEAD:bin/pFUnitParser.py
                 npes = map(int, npesString.split(','))
                 self.parser.current_method['npRequests'] = npes
+=======
+                npes = list(map(int, npesString.split(',')))
+                method['npRequests'] = npes
+>>>>>>> Renamed the processing tool and split the backend into a module. Updated the testing to work again.:bin/funit/parser.py
 
             #ifdef is optional
             matchIfdef = re.match('.*ifdef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
-            if matchIfdef: 
+            if matchIfdef:
                 ifdef = matchIfdef.groups()[0]
                 self.parser.current_method['ifdef'] = ifdef
 
             matchIfndef = re.match('.*ifndef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
-            if matchIfndef: 
+            if matchIfndef:
                 ifndef = matchIfndef.groups()[0]
                 self.parser.current_method['ifndef'] = ifndef
 
@@ -201,7 +204,7 @@ class AtTestCase(Action):
     def match(self, line):
         m = re.match('\s*@testcase\s*(|\\(.*\\))\s*$', line, re.IGNORECASE)
         return m
-    
+
     def action(self, m, line):
         options = re.match('\s*@testcase\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
         if options:
@@ -275,7 +278,7 @@ class AtAssert(Action):
 
     def action(self, m, line):
         p = self.parser
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
@@ -315,7 +318,7 @@ class AtAssertAssociated(Action):
 
         # print(9000,line)
         # print(9001,args)
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*',args[1],re.IGNORECASE):
@@ -360,7 +363,7 @@ class AtAssertNotAssociated(Action):
         else:
             self.name='@assertnotassociated'
 
-                                
+
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -377,7 +380,7 @@ class AtAssertNotAssociated(Action):
 
         # print(9000,line)
         # print(9001,args)
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*',args[1],re.IGNORECASE):
@@ -411,7 +414,7 @@ class AtAssertEqualUserDefined(Action):
             m  = re.match( \
                 '\s*@assertequaluserdefined\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
-                    
+
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -423,7 +426,7 @@ class AtAssertEqualUserDefined(Action):
         p = self.parser
 
         args = parseArgsFirstSecondRest('@assertequaluserdefined',line)
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 2:
             p.outputFile.write("  call assertTrue(" \
@@ -456,7 +459,7 @@ class AtAssertEquivalent(Action):
             m  = re.match( \
                 '\s*@assertequivalent\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
                 line, re.IGNORECASE)
-                    
+
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -468,7 +471,7 @@ class AtAssertEquivalent(Action):
         p = self.parser
 
         args = parseArgsFirstSecondRest('@assertequivalent',line)
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 2:
             p.outputFile.write("  call assertTrue(" \
@@ -482,7 +485,7 @@ class AtAssertEquivalent(Action):
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
-                            
+
 
 class AtMpiAssert(Action):
     def __init__(self, parser):
@@ -499,7 +502,7 @@ class AtMpiAssert(Action):
 
     def action(self, m, line):
         p = self.parser
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
@@ -516,7 +519,7 @@ class AtBefore(Action):
 
     def match(self, line):
         m = re.match('\s*@before\s*$', line, re.IGNORECASE)
-        return m 
+        return m
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
@@ -530,7 +533,7 @@ class AtAfter(Action):
 
     def match(self, line):
         m = re.match('\s*@after\s*$', line, re.IGNORECASE)
-        return m 
+        return m
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
@@ -599,7 +602,7 @@ class Parser():
         self.userTestCase['tearDownMethod'] = ''
         self.userTestCase['defaultTestParameterNpes'] = [] # is MPI if not empty
         self.userTestCase['defaultTestParametersExpr'] = ''
-        self.userTestCase['defaultTestParameterCases'] = [] 
+        self.userTestCase['defaultTestParameterCases'] = []
 
         self.userTestMethods = [] # each entry is a dictionary
 
@@ -623,7 +626,7 @@ class Parser():
 
         self.actions.append(AtAssertEqualUserDefined(self))
         self.actions.append(AtAssertEquivalent(self))
-        
+
         self.actions.append(AtMpiAssert(self))
         self.actions.append(AtBefore(self))
         self.actions.append(AtAfter(self))
@@ -687,7 +690,7 @@ class Parser():
         self.outputFile.write('   contains\n')
         self.outputFile.write('      procedure :: runMethod\n')
         self.outputFile.write('   end type WrapUserTestCase\n\n')
-        
+
         self.outputFile.write('   abstract interface\n')
         self.outputFile.write('     subroutine userTestMethod(this)\n')
         if self.userModuleName:
@@ -703,7 +706,7 @@ class Parser():
         self.outputFile.write('      call this%testMethodPtr(this)\n')
         self.outputFile.write('   end subroutine runMethod\n\n')
 
-            
+
     def printParameterHeader(self, type):
         self.outputFile.write('   type (' + type + '), allocatable :: testParameters(:)\n')
         self.outputFile.write('   type (' + type + ') :: testParameter\n')
@@ -799,14 +802,19 @@ class Parser():
                 type =  testMethod['type']
             else:
                 type = 'newMpiTestMethod'
+<<<<<<< HEAD:bin/pFUnitParser.py
                     
             self.outputFile.write('   t = ' + type + '(' + args + ')\n')
             if ('ignore' in testMethod):
                 self.outputFile.write('   call t%insert(Ignore%type_name(),Ignore)\n')
             self.outputFile.write('   call suite%addTest(t)\n')
 
+=======
 
-    
+            self.outputFile.write('   call suite%addTest(' + type + '(' + args + '))\n')
+>>>>>>> Renamed the processing tool and split the backend into a module. Updated the testing to work again.:bin/funit/parser.py
+
+
     def addUserTestMethod(self, testMethod):
 
         args = "'" + testMethod['name'] + "', " + testMethod['name']
@@ -828,8 +836,8 @@ class Parser():
         if 'cases' in locals():
             testParameterArg = ', testParameter'
             self.outputFile.write('   cases = ' + testMethod['cases'] + '\n')
-            self.outputFile.write('   testParameters = [(' + 
-                                  self.userTestCase['testParameterConstructor'] + 
+            self.outputFile.write('   testParameters = [(' +
+                                  self.userTestCase['testParameterConstructor'] +
                                   '(cases(iCase)), iCase = 1, size(cases))]\n\n')
 
         if 'testParameterType' in self.userTestCase:
@@ -846,7 +854,7 @@ class Parser():
             self.outputFile.write('   testParameters = ' + testParameters + '\n\n')
         elif isMpiTestCase:
             testParameterArg = ', testParameter'
-        
+
 
         for npes in npRequests:
 
@@ -857,12 +865,12 @@ class Parser():
             if isMpiTestCase:
                 self.outputFile.write('   call testParameter%setNumProcessesRequested(' + str(npes) + ')\n')
 
-            self.outputFile.write('   call suite%addTest(makeCustomTest(' + 
+            self.outputFile.write('   call suite%addTest(makeCustomTest(' +
                                   args + testParameterArg + '))\n')
             if 'cases' in locals() or 'testParameters' in locals():
                 self.outputFile.write('   end do\n')
 
-                
+
 
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
@@ -876,7 +884,7 @@ class Parser():
         declareArgs +=  '#endif\n'
         declareArgs += '      character(len=*), intent(in) :: methodName\n'
         declareArgs += '      procedure(userTestMethod) :: testMethod\n'
-        
+
         if 'testParameterType' in self.userTestCase:
             args += ', testParameter'
             declareArgs += '      type (' + self.userTestCase['testParameterType'] + '), intent(in) :: testParameter\n'
@@ -892,7 +900,7 @@ class Parser():
             self.outputFile.write('      aTest%' + self.userTestCase['type'] + ' = ' + constructor + '\n\n')
 
         self.outputFile.write('      aTest%testMethodPtr => testMethod\n')
-        
+
         self.outputFile.write('#ifdef INTEL_13\n')
         self.outputFile.write('      p => aTest\n')
         self.outputFile.write('      call p%setName(methodName)\n')
@@ -902,7 +910,7 @@ class Parser():
 
         if 'testParameterType' in self.userTestCase:
             self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
-        
+
 
         self.outputFile.write('   end function makeCustomTest\n')
 
@@ -913,7 +921,7 @@ class Parser():
 
         if 'type' in self.userTestCase:
             self.printWrapUserTestCase()
-        
+
         self.outputFile.write('contains\n\n')
 
         if 'type' in self.userTestCase:
@@ -933,14 +941,3 @@ class Parser():
     def final(self):
         self.inputFile.close()
         self.outputFile.close()
-
-if __name__ == "__main__":
-    import sys
-    print("Processing file", sys.argv[1])
-    p = Parser(sys.argv[1], sys.argv[2])
-    p.looking_for_test_name = False
-    p.run()
-    p.final()
-    print(" ... Done.  Results in", sys.argv[2])
-
-

@@ -68,38 +68,54 @@ contains
       call this%testMethodPtr(this)
    end subroutine runMethod
 
-   function makeCustomTest(methodName, testMethod, npesRequested) result(aTest)
+   function makeCustomTest(methodName, testMethod, testParameter) result(aTest)
+#ifdef INTEL_13
+      use pfunit_mod, only: testCase
+#endif
       type (WrapUserTestCase) :: aTest
+#ifdef INTEL_13
+      target :: aTest
+      class (WrapUserTestCase), pointer :: p
+#endif
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
-      integer, optional, intent(in) :: npesRequested
-
+      type (MpiTestParameter), intent(in) :: testParameter
       aTest%testMethodPtr => testMethod
+#ifdef INTEL_13
+      p => aTest
+      call p%setName(methodName)
+#else
       call aTest%setName(methodName)
-     if (present(npesRequested)) then
-         call aTest%setNumProcessesRequested(npesRequested) 
-     end if
-
+#endif
+      call aTest%setTestParameter(testParameter)
    end function makeCustomTest
 
 end module WrapMpiTestCaseB_mod
 
 function MpiTestCaseB_mod_suite() result(suite)
    use pFUnit_mod
-   use WrapMpiTestCaseB_mod
    use MpiTestCaseB_mod
+   use WrapMpiTestCaseB_mod
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
-
+   type (MpiTestParameter), allocatable :: testParameters(:)
+   type (MpiTestParameter) :: testParameter
+   integer :: iParam 
+   integer, allocatable :: cases(:) 
+ 
    suite = newTestSuite('MpiTestCaseB_mod_suite')
 
-   call suite%addTest(makeCustomTest('testA', testA, npesRequested=1))
-   call suite%addTest(makeCustomTest('testA', testA, npesRequested=2))
+   call testParameter%setNumProcessesRequested(1)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
+   call testParameter%setNumProcessesRequested(2)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
 
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=1))
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=3))
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=5))
+   call testParameter%setNumProcessesRequested(1)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
+   call testParameter%setNumProcessesRequested(3)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
+   call testParameter%setNumProcessesRequested(5)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
 
 
 end function MpiTestCaseB_mod_suite

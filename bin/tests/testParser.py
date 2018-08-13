@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.append('..')
-from pFUnitParser import *
+from funit.parser import *
 
 class MockWriter():
     def __init__(self, parser):

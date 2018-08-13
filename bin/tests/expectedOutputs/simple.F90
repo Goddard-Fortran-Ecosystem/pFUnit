@@ -37,8 +37,6 @@ function simple_suite() result(suite)
    external testMethodC
 
 
-   integer, allocatable :: npes(:)
-
    suite = newTestSuite('simple_suite')
 
    call suite%addTest(newTestMethod('testMethodA', testMethodA))
