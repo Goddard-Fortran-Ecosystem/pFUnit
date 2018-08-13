@@ -1,4 +1,5 @@
-python testParser.py
+export PYTHONPATH=..:$PYTHONPATH
+python -m unittest discover ../funit/tests
 
 mkdir -p outputs
 for file in simple beforeAfter TestA TestCaseA MpiTestCaseB ParameterizedTestCaseB MpiParameterizedTestCaseC
