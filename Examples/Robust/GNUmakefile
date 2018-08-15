@@ -14,9 +14,11 @@ EXE = tests$(EXE_EXT)
 # NOTE: use the -robust flag
 all: $(EXE)
 ifeq ($(USEMPI),YES)
-	echo  Warning:  Testing -robust flag with MPI, robust will override.
-	echo            driver.F90 will call mpirun on itself with robust set.
-	echo            "Top" level mpirun not needed, may be problemmatic.
+	@echo
+	@echo 'Warning:  Testing -robust flag with MPI, robust will override.'
+	@echo '          driver.F90 will call mpirun on itself with robust set.'
+	@echo '          "Top" level mpirun not needed, may be problemmatic.'
+	@echo
 	./$(EXE) -robust
 	# mpiexec -n 1 ./$(EXE) -robust
 else
