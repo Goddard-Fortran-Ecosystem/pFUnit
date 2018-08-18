@@ -2,7 +2,6 @@ module TestCaseA_mod
    use pfunit_mod
    implicit none
 
-   
 @testCase
    type, extends(TestCase) :: TestCaseA
       integer :: componentI

@@ -1,8 +1,13 @@
-python testParser.py
+#!/bin/sh
 
+python -m unittest discover
+
+TESTS=$(find inputs -name '*.pf' -print)
 mkdir -p outputs
-for file in simple beforeAfter TestA TestCaseA MpiTestCaseB ParameterizedTestCaseB MpiParameterizedTestCaseC
+for file in $TESTS
 do
-   ../pFUnitParser.py inputs/${file}.pf outputs/${file}.F90
-   diff outputs/${file}.F90 expectedOutputs/${file}.F90
+   name=$(basename $file | sed 's/\..*$//')
+
+   ../pFUnitParser.py ${file} outputs/${name}.F90
+   diff outputs/${name}.F90 expectedOutputs/${name}.F90
 done

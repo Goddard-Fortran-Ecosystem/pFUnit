@@ -9,15 +9,11 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
-ifeq ($(USEMPI),YES)
-   FC=mpif90
-endif
-
 EXE = tests$(EXE_EXT)
 
 all: $(EXE)
 ifeq ($(USEMPI),YES)
-	mpirun -np 1 ./$(EXE)
+	mpiexec -n 1 ./$(EXE)
 else
 	./$(EXE)
 endif
