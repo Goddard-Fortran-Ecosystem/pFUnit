@@ -257,9 +257,6 @@ class _AssertState(_State):
                                     + r')\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*$',
                                     re.IGNORECASE)
 
-    def directive(self):
-        return 'assert', self._DIRECTIVE_PATTERN
-
     def scan(self, scanner):
         line = scanner.take_line()
         directive_match = self._DIRECTIVE_PATTERN.match(line)
@@ -279,10 +276,47 @@ class _AssertState(_State):
             raise FUnitException('Mangled assert directive: ' + line.strip())
 
 
+class _AssertAssociatedState(_State):
+    _DIRECTIVE_PATTERN = re.compile(r'^\s*@assertassociated\s*\('
+        + r'\s*(\w+)(?:\s*,\s*(\w+)(?!\s*=))?'
+        + r'(?:\s*,\s*message\s*=\s*(?P<quote>[\'"])(.+)(?P=quote))?'
+        + r'\s*\)\s*$',
+        re.IGNORECASE)
+
+    def scan(self, scanner):
+        line = scanner.take_line()
+        directive_match = self._DIRECTIVE_PATTERN.match(line)
+        if directive_match:
+            call_template = '  call assertTrue(associated({first}'
+            if directive_match.group(2):
+                call_template += ', {second}'
+            call_template += ')'
+            if directive_match.group(4):
+                call_template += ', \'{message}\''
+                message = directive_match.group(4).replace("'", "''")
+            else:
+                message = ''
+            call_template += ', &'
+            scanner.emmit_linemarker()
+            scanner.emmit_line(call_template.format(
+                first=directive_match.group(1),
+                second=directive_match.group(2),
+                message=message))
+            scanner.emmit_line('    location=SourceLocation( &')
+            scanner.emmit_line('      \'{source_file}\', &')
+            scanner.emmit_line('      {source_line_number})')
+            scanner.emmit_line('    )')
+            scanner.emmit_line('  if (anyExceptions()) return')
+            scanner.emmit_linemarker(offset=1)
+        else:
+            raise FUnitException('Mangled assertAssociated directive: '
+                                 + line.strip())
+
 class _SeekState(_State):
     _DIRECTIVE_PATTERN = re.compile(r'^\s*(@)(\w+)')
 
-    _DIRECTIVE_MAP = {'mpitest': _MpiTestState,
+    _DIRECTIVE_MAP = {'assertassociated': _AssertAssociatedState,
+                      'mpitest': _MpiTestState,
                       'suite': _SuiteState,
                       'test': _TestState,
                       'testcase': _TestCaseState}
@@ -431,22 +465,6 @@ class Processor(object):
                 state.append(new_state)
 
 
-#from os.path import *
-#import re
-## from parseBrackets import parseBrackets
-#from funit.parseDirectiveArgs import parseDirectiveArguments
-
-#class MyError(Exception):
-    #def __init__(self, value):
-        #self.value = value
-    #def __str__(self):
-        #return repr(self.value)
-
-#assertVariants = 'Fail|Equal|NotEqual|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
-#assertVariants += '|NotEqual|RelativelyEqual'
-#assertVariants += '|IsInfinite|IsFinite|IsNaN'
-#assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
-#assertVariants += '|ExceptionRaised|SameShape'
 
 #def parseArgsFirstRest(directiveName,line):
     #"""If the @-directive has more than one argument, parse into first and rest strings.
@@ -507,53 +525,6 @@ class Processor(object):
 
 
 
-#class AtAssertAssociated(Action):
-    #def __init__(self,parser):
-        #self.parser = parser
-
-    #def match(self, line):
-        #m = re.match('\s*@assertassociated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-
-        #if not m:
-            #m  = re.match( \
-                #'\s*@assertassociated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-                #line, re.IGNORECASE)
-
-        ## How to get both (a,b) and (a,b,c) to match?
-        #if not m:
-            #m  = re.match( \
-                #'\s*@assertassociated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
-                #line, re.IGNORECASE)
-        #return m
-
-    #def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        #fileHandle.write(" & location=SourceLocation( &\n")
-        #fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
-        #fileHandle.write(" & " + str(lineNumber) + ")")
-
-    #def action(self, m, line):
-        #p = self.parser
-
-        ## args = parseArgsFirstRest('@assertassociated',line)
-        #args = parseArgsFirstSecondRest('@assertassociated',line)
-
-        ## print(9000,line)
-        ## print(9001,args)
-
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        #if len(args) > 1:
-            #if re.match('.*message=.*',args[1],re.IGNORECASE):
-                #p.outputFile.write("  call assertTrue(associated(" + args[0] + "), " + args[1] + ", &\n")
-            #elif len(args) > 2:
-                #p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
-            #else:
-                #p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), &\n")
-        #else:
-            #p.outputFile.write("  call assertTrue(associated(" + args[0] + "), &\n")
-        #self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        #p.outputFile.write(" )\n")
-        #p.outputFile.write("  if (anyExceptions()) return\n")
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 
 #class AtAssertNotAssociated(Action):

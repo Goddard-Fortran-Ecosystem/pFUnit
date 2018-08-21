@@ -207,6 +207,8 @@ class TestAtTest(unittest.TestCase, _CheckMethod):
                            + '!@test\nsubroutine second()\n',
                  'expect': [{'name': 'first', 'arguments': []},
                             {'name': 'second', 'arguments': []}]}]
+        # TODO: Add tests for empty lines and comments between directive and
+        #       subroutine.
 
 
 class TestAtMpiTest(unittest.TestCase, _CheckMethod):
@@ -365,6 +367,123 @@ class TestAssertEqual(unittest.TestCase, _CheckBase):
         pass
 
 
+class TestAssertAssociated(unittest.TestCase, _CheckBase):
+    '''
+    Check that a line starting with '@assertAssociated' is detectd as an
+    annotiation. This annotation accepts 1 or 2 arguments. A single argument
+    tests for simple association. Two arguments means that the first must be
+    associated with the second.
+    '''
+    def situations(self):
+        return [{'source': '@assertAssociated\n',
+                 'throw': 'Mangled assertAssociated directive: @assertAssociated'},
+                {'source': '@assertAssociated()\n',
+                 'throw': 'Mangled assertAssociated directive: @assertAssociated()'},
+                {'source': '@assertAssociated(a)\n',
+                 'target': '''!@assertAssociated(a)
+#line 1 "source_file"
+  call assertTrue(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                # Case insensitive
+                {'source': '@assertassociated(a)\n',
+                 'target': '''!@assertassociated(a)
+#line 1 "source_file"
+  call assertTrue(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                 # Case insensitive
+                {'source': '@ASSERTASSOCIATED(a)\n',
+                 'target': '''!@ASSERTASSOCIATED(a)
+#line 1 "source_file"
+  call assertTrue(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                 {'source': '@assertAssociated(a, message="Filthy bobbins!")\n',
+                  'target': '''!@assertAssociated(a, message="Filthy bobbins!")
+#line 1 "source_file"
+  call assertTrue(associated(a), 'Filthy bobbins!', &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                  'expect': ''},
+                 {'source': '@assertAssociated(a,b)\n',
+                  'target': '''!@assertAssociated(a,b)
+#line 1 "source_file"
+  call assertTrue(associated(a, b), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                  'expect': ''},
+                # Case insensitive
+                {'source': '@assertassociated(a,b)\n',
+                 'target': '''!@assertassociated(a,b)
+#line 1 "source_file"
+  call assertTrue(associated(a, b), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                 # Case insensitive
+                {'source': '@ASSERTASSOCIATED(a,b)\n',
+                 'target': '''!@ASSERTASSOCIATED(a,b)
+#line 1 "source_file"
+  call assertTrue(associated(a, b), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                 {'source': '@assertAssociated(a, b, message="Turgid shuttles!")\n',
+                  'target': '''!@assertAssociated(a, b, message="Turgid shuttles!")
+#line 1 "source_file"
+  call assertTrue(associated(a, b), 'Turgid shuttles!', &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                  'expect': ''}]
+
+    def check_unit(self, expectation, parameters):
+        pass
+
+
 #class TestParseLine(unittest.TestCase):
 
     #def testCppSetLineAndFile(self):
@@ -460,83 +579,7 @@ class TestAssertEqual(unittest.TestCase, _CheckBase):
         #self.assertEqual(['a4','b4','c4'],parseArgsFirstSecondRest('','a4,b4,c4'))
                                                                   
 
-    #def testMatchAtAssertAssociated(self):
-        #"""Check that a line starting with '@assertAssociated' is detected
-        #as an annotation."""
-        #parser = MockParser([' \n'])
-        #atAssertAssociated = AtAssertAssociated(parser)
 
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated'))
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated()'))
-        #self.assertTrue(atAssertAssociated.match('@assertAssociated(a)'))
-        #self.assertTrue(atAssertAssociated.match('@assertassociated(a)')) # case insensitive
-        #self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertAssociated.apply('   @assertAssociated(a)\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual("  call assertTrue(associated(a), &\n", parser.outLines[1])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
-        #self.assertEqual(" & 8)", parser.outLines[4])
-        #self.assertEqual(" )\n", parser.outLines[5])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
-
-    #def testMatchAtAssertAssociatedOverloaded1(self):
-        #"""Check that a line starting with '@assertAssociated' is detected
-        #as an annotation. atAssertAssociated(a,b) implies a points to b.
-        #Overriding the name @assertAssociated.
-        #"""
-        #parser = MockParser([' \n'])
-        #atAssertAssociated = AtAssertAssociated(parser)
-
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated'))
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated()'))
-        #self.assertTrue(atAssertAssociated.match('@assertAssociated(a)'))
-        #self.assertTrue(atAssertAssociated.match('@assertassociated(a,b)')) # case insensitive
-        #self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a,b)')) # case insensitive
-        #self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a_%z(),b)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertAssociated.apply('   @assertAssociated(a,b)\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual("  call assertTrue(associated(a,b), &\n", parser.outLines[1])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
-        #self.assertEqual(" & 8)", parser.outLines[4])
-        #self.assertEqual(" )\n", parser.outLines[5])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
-
-    #def testMatchAtAssertAssociatedOverloaded2(self):
-        #"""Check that a line starting with '@assertAssociated' is detected
-        #as an annotation. atAssertAssociated(a,b) implies a points to b.
-        #Overriding the name @assertAssociated.
-        #"""
-        #parser = MockParser([' \n'])
-        #atAssertAssociated = AtAssertAssociated(parser)
-
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated'))
-        #self.assertFalse(atAssertAssociated.match('@assertAssociated()'))
-        #self.assertTrue(atAssertAssociated.match('@assertAssociated(a)'))
-        #self.assertTrue(atAssertAssociated.match('@assertassociated(a,b)')) # case insensitive
-        #self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a,b)')) # case insensitive
-        #self.assertTrue(atAssertAssociated.match('@ASSERTASSOCIATED(a_%z(),b)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertAssociated.apply('   @assertAssociated(a,b,message="c")\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual('  call assertTrue(associated(a,b), message="c", &\n', parser.outLines[1])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
-        #self.assertEqual(" & 8)", parser.outLines[4])
-        #self.assertEqual(" )\n", parser.outLines[5])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
 
     #def testMatchAtAssertUnAssociated(self):
