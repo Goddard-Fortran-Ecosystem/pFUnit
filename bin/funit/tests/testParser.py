@@ -206,9 +206,19 @@ class TestAtTest(unittest.TestCase, _CheckMethod):
                  'target': '!@test\nsubroutine first()\n'
                            + '!@test\nsubroutine second()\n',
                  'expect': [{'name': 'first', 'arguments': []},
-                            {'name': 'second', 'arguments': []}]}]
-        # TODO: Add tests for empty lines and comments between directive and
-        #       subroutine.
+                            {'name': 'second', 'arguments': []}]},
+                {'source': '@test\n\nsubroutine one_line()\n',
+                 'target': '!@test\n\nsubroutine one_line()\n',
+                 'expect': [{'name': 'one_line', 'arguments': []}]},
+                {'source': '''@test
+! Interposing comment
+subroutine one_comment()
+''',
+                 'target': '''!@test
+! Interposing comment
+subroutine one_comment()
+''',
+                 'expect': [{'name': 'one_comment', 'arguments': []}]}]
 
 
 class TestAtMpiTest(unittest.TestCase, _CheckMethod):

@@ -45,6 +45,7 @@ class _ModuleMatcher(_CodeMatcher):
 
 
 class _SubroutineState(_State):
+    _IGNORE_PATTERN = re.compile(r'^\s*([!].*)?$')
     _SUBROUTINE_PATTERN = re.compile(r'^\s*subroutine\s+(\w+)\s*\(([\w\s,]+)?\)', re.IGNORECASE)
 
     def __init__(self):
@@ -53,7 +54,14 @@ class _SubroutineState(_State):
 
     def scan(self, scanner):
         line = scanner.take_line()
+
+        ignore_match = self._IGNORE_PATTERN.match(line)
+        if ignore_match:
+            scanner.emmit_line(line.strip())
+            return None
+
         scanner.give_line(line)
+
         match = self._SUBROUTINE_PATTERN.match(line)
         if match:
             self.name = match.group(1)
