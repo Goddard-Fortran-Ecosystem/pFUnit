@@ -262,7 +262,7 @@ assertVariants = ('Fail', 'Equal', 'True', 'False', 'LessThan',
 class _AssertState(_State):
     _DIRECTIVE_PATTERN = re.compile(r'^\s*@assert('
                                     + r'|'.join(assertVariants)
-                                    + r')\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)\s*$',
+                                    + r')\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$',
                                     re.IGNORECASE)
 
     def scan(self, scanner):
@@ -280,6 +280,7 @@ class _AssertState(_State):
             scanner.emmit_line('    )')
             scanner.emmit_line('  if (anyExceptions()) return')
             scanner.emmit_linemarker(offset=1)
+            return _StateReturn()
         else:
             raise FUnitException('Mangled assert directive: ' + line.strip())
 
@@ -330,9 +331,7 @@ class _SeekState(_State):
                       'testcase': _TestCaseState}
     _LINE_MAP = {'module': _ModuleMatcher}
 
-    def __init__(self, output_file):
-        self._output_file = output_file
-
+    def __init__(self):
         self._DIRECTIVE_MAP.update({'assert' + name.lower(): _AssertState
                                     for name in assertVariants})
 
@@ -342,7 +341,7 @@ class _SeekState(_State):
         match = self._DIRECTIVE_PATTERN.match(line)
         if match:
             at_pos = match.start(1)
-            self._output_file.write(line[:at_pos] + '!' + line[at_pos:])
+            scanner.emmit_line(line[:at_pos] + '!' + line[at_pos:].strip())
             scanner.give_line(line)
 
             new_state_class = self._DIRECTIVE_MAP.get(match.group(2).lower())
@@ -356,7 +355,7 @@ class _SeekState(_State):
                 if match:
                     matcher.action(match, scanner)
                     return
-            self._output_file.write(line)
+            scanner.emmit_line(line.strip())
 
 
 class Parameters(object):
@@ -376,13 +375,13 @@ class _Scanner(object):
 
         self._local_source_file = isinstance(source_file, str)
         if self._local_source_file:
-            self._source_file = open(input_file, 'r')
+            self._source_file = open(source_file, 'r')
         else:
             self._source_file = source_file
 
         self._local_target_file = isinstance(target_file, str)
         if self._local_target_file:
-            self._target_file = open(target_file, 'r')
+            self._target_file = open(target_file, 'w')
         else:
             self._target_file = target_file
 
@@ -396,10 +395,10 @@ class _Scanner(object):
 
     def __del__(self):
         if self._local_target_file:
-            self._close(target_file)
+            self._target_file.close()
 
-        if self._local_target_file:
-            close(self._target_file)
+        if self._local_source_file:
+            self._source_file.close()
 
     def done(self):
         return len(self._buffer) == 0
@@ -462,7 +461,7 @@ class Processor(object):
         self.parameters = Parameters()
         scanner = _Scanner(input_file, output_file, self.parameters)
 
-        state = [_SeekState(output_file)]
+        state = [_SeekState()]
         while not scanner.done():
             new_state = state[-1].scan(scanner)
             if isinstance(new_state, _StateReturn):
@@ -1137,7 +1136,3 @@ class Processor(object):
 
         #self.printTail()
         #self.printMakeSuite()
-
-    #def final(self):
-        #self.inputFile.close()
-        #self.outputFile.close()
