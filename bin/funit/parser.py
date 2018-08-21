@@ -369,7 +369,7 @@ class Parameters(object):
 
 class _Scanner(object):
     def __init__(self, source_file, target_file, parameters,
-                 line_directive=True):
+                 linemarkers):
         self._parameters = parameters
         self._previous_state = None
 
@@ -388,10 +388,10 @@ class _Scanner(object):
         self._buffer = self._source_file.readlines()
         self._line_number = 0
 
-        if line_directive is True:
-            self._line_directive = 'line'
-        else:
+        if linemarkers is True:
             self._line_directive = ''
+        else:
+            self._line_directive = 'line'
 
     def __del__(self):
         if self._local_target_file:
@@ -457,9 +457,13 @@ class _Scanner(object):
 
 
 class Processor(object):
+    def __init__(self, linemarkers):
+        self._linemarkers = linemarkers
+
     def run(self, input_file, output_file):
         self.parameters = Parameters()
-        scanner = _Scanner(input_file, output_file, self.parameters)
+        scanner = _Scanner(input_file, output_file, self.parameters,
+                           linemarkers=self._linemarkers)
 
         state = [_SeekState()]
         while not scanner.done():

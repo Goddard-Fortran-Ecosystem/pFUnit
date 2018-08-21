@@ -27,7 +27,7 @@ def main():
     else:
         logger.setLevel(logging.INFO)
     logger.info("Processing file " + arguments.source)
-    proc = funit.parser.Processor()
+    proc = funit.parser.Processor(arguments.markers)
     proc.run(arguments.source, arguments.target)
     logger.info(" ... Done.  Results in " + arguments.target)
 
