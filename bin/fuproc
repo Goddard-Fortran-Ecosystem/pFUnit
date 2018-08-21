@@ -12,6 +12,8 @@ def main():
                             help='Display this help and exit')
     cli_parser.add_argument('-markers', action='store_true',
                             help='Use linemarkers instead of #line directives')
+    cli_parser.add_argument('-quiet', action='store_true',
+                            help='Log less chatter to terminal')
     cli_parser.add_argument('source',
                             help='Filename of .pf file')
     cli_parser.add_argument('target',
@@ -20,7 +22,10 @@ def main():
 
     logger = logging.getLogger('funit')
     logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.INFO)
+    if arguments.quiet:
+        logger.setLevel(logging.WARNING)
+    else:
+        logger.setLevel(logging.INFO)
     logger.info("Processing file " + arguments.source)
     proc = funit.parser.Processor()
     proc.run(arguments.source, arguments.target)
