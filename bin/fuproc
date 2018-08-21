@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
+import logging
 
 import funit.parser
 
-if __name__ == "__main__":
+def main():
     text = 'Converts pFUnit .pf files into compilable Fortran source.'
     cli_parser = argparse.ArgumentParser(description=text, add_help=False)
     cli_parser.add_argument('-help', '-h', '--help', action='help',
@@ -17,9 +18,13 @@ if __name__ == "__main__":
                             help='Filename of generated .F90 file')
     arguments = cli_parser.parse_args()
 
-    print("Processing file", arguments.source)
+    logger = logging.getLogger('funit')
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(logging.INFO)
+    logger.info("Processing file " + arguments.source)
     proc = funit.parser.Processor()
     proc.run(arguments.source, arguments.target)
-    print(" ... Done.  Results in", arguments.target)
+    logger.info(" ... Done.  Results in " + arguments.target)
 
-
+if __name__ == "__main__":
+    main()
