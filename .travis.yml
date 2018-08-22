@@ -13,6 +13,7 @@ matrix:
                  - gfortran-8
                  - cmake3
                  - libxml2-utils
+                 - python3
         env:
            - FC='gfortran-8'
            - USE_MPI=NO
@@ -25,6 +26,7 @@ matrix:
                  - gfortran-8
                  - cmake3
                  - libxml2-utils
+                 - python3
         env:
            - FC='gfortran-8'
            - USE_MPI=YES
