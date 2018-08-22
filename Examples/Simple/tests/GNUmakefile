@@ -36,7 +36,7 @@ ifneq ($(UNAME),Windows)
 endif
 
 %.F90: %.pf
-	$(PFUNIT)/bin/pFUnitParser.py $<  $@
+	$(PFUNIT)/bin/fuproc $<  $@
 
 %$(OBJ_EXT): %.F90
 	$(FC) -c $(FFLAGS) $(FPPFLAGS) $<

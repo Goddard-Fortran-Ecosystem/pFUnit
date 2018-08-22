@@ -7,7 +7,7 @@ VERSION:   2013-1209  M. Rilee mike@rilee.net
 
 The files here provide an example of how to write parameterized, MPI
 parallel tests using TestCases and the preprocessor
-(${PFUNIT}/bin/pFUnitParser.py).  For parameterized, MPI parallel, or
+(${PFUNIT}/bin/fuproc).  For parameterized, MPI parallel, or
 TestCases on their own, please see Examples/ParameterizedTest,
 Examples/MPI_Halo, or Examples/Fixture respectively.
 
@@ -22,8 +22,8 @@ A more extensive project would likely also have a src directory for
 the user's code, to which the tests would refer.
 
 GNUMAKEFILE
-The GNUmakefile shows how to run the parser.  
-$ ${PFUNIT}/bin/pFUnitParser.py) parameterizedTests.pf parameterizedTests.F90
+The GNUmakefile shows how to run the parser.
+$ ${PFUNIT}/bin/fuproc) parameterizedTests.pf parameterizedTests.F90
 
 TESTSUITE.INC
 The include file "testSuites.inc" tells the preprocessor to generate

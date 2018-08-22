@@ -359,7 +359,7 @@ from a preprocessor input file.  For example, the GNU make rule can be:
 
 # GNU makefile rule
 %.F90: %.pf
-       $(PFUNIT)/bin/pFUnitParser.py $< $@
+       $(PFUNIT)/bin/fuproc $< $@
 
 The file testSuites.inc is included in the include/driver.F90 file
 during the build process.  To include tests, one must add the test

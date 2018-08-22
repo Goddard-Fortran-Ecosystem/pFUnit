@@ -1,4 +1,4 @@
-set (PFUNIT_PREPROCESSOR python $ENV{PFUNIT}/bin/pFUnitParser.py)
+set (PFUNIT_PREPROCESSOR python $ENV{PFUNIT}/bin/fuproc)
 set (PFUNIT_SUFFIX "\\.pfunit")
 # - Pass a list of files through the pFUnit macro processor
 #

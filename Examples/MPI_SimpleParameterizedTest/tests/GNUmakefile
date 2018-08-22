@@ -19,7 +19,7 @@ ifndef SKIP_INTENTIONALLY_BROKEN
 endif
 
 %.F90: %.pf
-	$(PFUNIT)/bin/pFUnitParser.py $<  $@
+	$(PFUNIT)/bin/fuproc $<  $@
 
 %$(OBJ_EXT): %.F90
 	$(MPIF90) -c $(FFLAGS) $<
