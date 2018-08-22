@@ -99,6 +99,52 @@ class _TypeState(_State):
             raise FUnitException('Expected type definition, found: ' + line)
 
 
+class _BeforeState(_State):
+    _DIRECTIVE_PATTERN = re.compile(r'^\s*@before\s*$', re.IGNORECASE)
+
+    def scan(self, scanner):
+        previous_state = scanner.take_previous_state()
+        if previous_state:
+            if not isinstance(previous_state, _SubroutineState):
+                text = 'Expected a subroutine to follow @before but found: ' \
+                       + previous_state.__class__.__name__
+                raise FUnitException(text)
+            details = {'name': previous_state.name,
+                       'arguments': previous_state.arguments}
+            scanner.add_user_test_case(details, ref='setUp')
+            return _StateReturn()
+
+        line = scanner.take_line()
+        directive_match = self._DIRECTIVE_PATTERN.match(line)
+        if directive_match:
+            return _SubroutineState()
+        else:
+            raise FUnitException('Malformed @before directive: '
+                                 + line.strip())
+
+class _AfterState(_State):
+    _DIRECTIVE_PATTERN = re.compile(r'^\s*@after\s*$', re.IGNORECASE)
+
+    def scan(self, scanner):
+        previous_state = scanner.take_previous_state()
+        if previous_state:
+            if not isinstance(previous_state, _SubroutineState):
+                text = 'Expected a subroutine to follow @after but found: ' \
+                       + previous_state.__class__.__name__
+                raise FUnitException(text)
+            details = {'name': previous_state.name,
+                       'arguments': previous_state.arguments}
+            scanner.add_user_test_case(details, ref='tearDown')
+            return _StateReturn()
+
+        line = scanner.take_line()
+        directive_match = self._DIRECTIVE_PATTERN.match(line)
+        if directive_match:
+            return _SubroutineState()
+        else:
+            raise FUnitException('Malformed @after directive: ' + line.strip())
+
+
 class _StateDirective(_State):
     def __init__(self):
         self._details = {}
@@ -148,6 +194,10 @@ class _TestStateBase(_StateDirective):
                 'cases': (_CASES_PATTERN, _INT_LIST_LAMBDA, 1),
                 'testParameters': (_PARAMETERS_PATTERN, _STR_LAMBDA, 1)}
 
+    @abstractmethod
+    def directive(self):
+        raise NotImplementedError('Attempt to call abstract method')
+
     def options(self):
         return self._OPTIONS
 
@@ -176,7 +226,6 @@ class _TestState(_TestStateBase):
 
     def directive(self):
         return 'test', self._DIRECTIVE_PATTERN
-
 
 
 class _MpiTestState(_TestStateBase):
@@ -252,40 +301,85 @@ class _SuiteState(_StateDirective):
         scanner.set_suite_name(self._details['name'])
 
 
-assertVariants = ('Fail', 'Equal', 'True', 'False', 'LessThan',
-                  'LessThanOrEqual', 'GreaterThan', 'GreaterThanOrEqual',
-                  'IsMemberOf', 'Contains', 'Any', 'All', 'NotAll', 'None',
-                  'IsPermutationOf', 'ExceptionRaised', 'SameShape', 'IsNaN',
-                  'IsFinite')
+_ASSERT_VARIANTS = ('Fail', 'Equal', 'True', 'False', 'LessThan',
+                    'LessThanOrEqual', 'GreaterThan', 'GreaterThanOrEqual',
+                    'IsMemberOf', 'Contains', 'Any', 'All', 'NotAll', 'None',
+                    'IsPermutationOf', 'ExceptionRaised', 'SameShape',
+                    'IsNaN', 'IsFinite')
 
 
 class _AssertState(_State):
     _DIRECTIVE_PATTERN = re.compile(r'^\s*@assert('
-                                    + r'|'.join(assertVariants)
+                                    + r'|'.join(_ASSERT_VARIANTS)
                                     + r')\s*\(\s*(.+?)\s*,\s*(.+?)\s*\)\s*$',
                                     re.IGNORECASE)
+
+    def assertion(self, scanner, name, condition, message=None):
+        scanner.emmit_linemarker()
+        scanner.emmit_line('  call assert{}({}, &'.format(name, condition))
+        if message:
+            scanner.emmit_line('    message=\'{}\', &'
+                               .format(message.replace("'", "''")))
+        scanner.emmit_line('    location=SourceLocation( &')
+        scanner.emmit_line('      \'{source_file}\', &')
+        scanner.emmit_line('      {source_line_number})')
+        scanner.emmit_line('    )')
+        scanner.emmit_line('  if (anyExceptions()) return')
+        scanner.emmit_linemarker(offset=1)
 
     def scan(self, scanner):
         line = scanner.take_line()
         directive_match = self._DIRECTIVE_PATTERN.match(line)
         if directive_match:
-            scanner.emmit_linemarker()
-            scanner.emmit_line('  call assert{}({}, {}, &' \
-                               .format(directive_match.group(1).capitalize(),
-                                       directive_match.group(2),
-                                       directive_match.group(3)))
-            scanner.emmit_line('    location=SourceLocation( &')
-            scanner.emmit_line('      \'{source_file}\', &')
-            scanner.emmit_line('      {source_line_number})')
-            scanner.emmit_line('    )')
-            scanner.emmit_line('  if (anyExceptions()) return')
-            scanner.emmit_linemarker(offset=1)
+            condition = '{}, {}'.format(directive_match.group(2),
+                                        directive_match.group(3))
+            self.assertion(scanner,
+                           name=directive_match.group(1).capitalize(),
+                           condition=condition)
             return _StateReturn()
         else:
             raise FUnitException('Mangled assert directive: ' + line.strip())
 
 
-class _AssertAssociatedState(_State):
+class _AssertEquivalentState(_AssertState):
+    '''
+    Convenience directive replacing (a,b) with a call to assertTrue(a.eqv.b)
+    and an error message, if none is provided when invoked.
+    '''
+    _DIRECTIVE_PATTERN = re.compile(r'^\s*@assertequivalent\s*\('
+        + r'\s*([^,]+)\s*,\s*([^,]+)'
+        + r'(?:\s*,\s*message\s*=\s*(?P<quote>[\'"])(.+)(?P=quote))?'
+        + '\s*\)\s*$',
+        re.IGNORECASE)
+
+    def scan(self, scanner):
+        line = scanner.take_line()
+        directive_match = self._DIRECTIVE_PATTERN.match(line)
+        if directive_match:
+            first = directive_match.group(1)
+            second = directive_match.group(2)
+
+            condition = '{first} .eqv. '
+            if directive_match.group(2):
+                condition += '{second}'
+            else:
+                condition += '{first}'
+            condition = condition.format(first=first, second=second)
+
+            if directive_match.group(4):
+                message = directive_match.group(4)
+            else:
+                message = '<{}> not equal to <{}>'.format(first, second)
+
+            self.assertion(scanner, name='True',
+                           condition=condition,
+                           message=message)
+        else:
+            raise FUnitException('Mangled assertEquivalent directive: '
+                                 + line.strip())
+
+
+class _AssertAssociatedState(_AssertState):
     _DIRECTIVE_PATTERN = re.compile(r'^\s*@assertassociated\s*\('
         + r'\s*(\w+)(?:\s*,\s*(\w+)(?!\s*=))?'
         + r'(?:\s*,\s*message\s*=\s*(?P<quote>[\'"])(.+)(?P=quote))?'
@@ -296,35 +390,60 @@ class _AssertAssociatedState(_State):
         line = scanner.take_line()
         directive_match = self._DIRECTIVE_PATTERN.match(line)
         if directive_match:
-            call_template = '  call assertTrue(associated({first}'
+            condition = 'associated({first}'
             if directive_match.group(2):
-                call_template += ', {second}'
-            call_template += ')'
+                condition += ', {second}'
+            condition += ')'
             if directive_match.group(4):
-                call_template += ', \'{message}\''
-                message = directive_match.group(4).replace("'", "''")
+                message = directive_match.group(4)
             else:
-                message = ''
-            call_template += ', &'
-            scanner.emmit_linemarker()
-            scanner.emmit_line(call_template.format(
-                first=directive_match.group(1),
-                second=directive_match.group(2),
-                message=message))
-            scanner.emmit_line('    location=SourceLocation( &')
-            scanner.emmit_line('      \'{source_file}\', &')
-            scanner.emmit_line('      {source_line_number})')
-            scanner.emmit_line('    )')
-            scanner.emmit_line('  if (anyExceptions()) return')
-            scanner.emmit_linemarker(offset=1)
+                message = None
+            self.assertion(scanner, name='True',
+                           condition=condition.format(first=directive_match.group(1),
+                                                      second=directive_match.group(2)),
+                           message=message)
         else:
             raise FUnitException('Mangled assertAssociated directive: '
                                  + line.strip())
 
+
+class _AssertNotAssociatedState(_AssertState):
+    _DIRECTIVE_PATTERN = re.compile(r'^\s*@assert(?:not|un)associated\s*\('
+        + r'\s*(\w+)(?:\s*,\s*(\w+)(?!\s*=))?'
+        + r'(?:\s*,\s*message\s*=\s*(?P<quote>[\'"])(.+)(?P=quote))?'
+        + r'\s*\)\s*$',
+        re.IGNORECASE)
+
+    def scan(self, scanner):
+        line = scanner.take_line()
+        directive_match = self._DIRECTIVE_PATTERN.match(line)
+        if directive_match:
+            condition = 'associated({first}'
+            if directive_match.group(2):
+                condition += ', {second}'
+            condition += ')'
+            if directive_match.group(4):
+                message = directive_match.group(4)
+            else:
+                message = None
+            self.assertion(scanner, name='False',
+                           condition=condition.format(first=directive_match.group(1),
+                                                      second=directive_match.group(2)),
+                           message=message)
+        else:
+            raise FUnitException('Mangled assertNotAssociated directive: '
+                                 + line.strip())
+
+
 class _SeekState(_State):
     _DIRECTIVE_PATTERN = re.compile(r'^\s*(@)(\w+)')
 
-    _DIRECTIVE_MAP = {'assertassociated': _AssertAssociatedState,
+    _DIRECTIVE_MAP = {'after': _AfterState,
+                      'assertassociated': _AssertAssociatedState,
+                      'assertnotassociated': _AssertNotAssociatedState,
+                      'assertunassociated': _AssertNotAssociatedState,
+                      'assertequivalent': _AssertEquivalentState,
+                      'before': _BeforeState,
                       'mpitest': _MpiTestState,
                       'suite': _SuiteState,
                       'test': _TestState,
@@ -332,8 +451,9 @@ class _SeekState(_State):
     _LINE_MAP = {'module': _ModuleMatcher}
 
     def __init__(self):
-        self._DIRECTIVE_MAP.update({'assert' + name.lower(): _AssertState
-                                    for name in assertVariants})
+        assert_map = {'assert' + name.lower(): _AssertState
+                      for name in _ASSERT_VARIANTS}
+        self._DIRECTIVE_MAP.update(assert_map)
 
     def scan(self, scanner):
         previous_state = scanner.take_previous_state()
@@ -341,7 +461,10 @@ class _SeekState(_State):
         match = self._DIRECTIVE_PATTERN.match(line)
         if match:
             at_pos = match.start(1)
-            scanner.emmit_line(line[:at_pos] + '!' + line[at_pos:].strip())
+            # Escape any curly brackets in the line so they don't get
+            # interpreted by the .format() method.
+            tail = line[at_pos:].strip().replace('{', '{{').replace('}', '}}')
+            scanner.emmit_line(line[:at_pos] + '!' + tail)
             scanner.give_line(line)
 
             new_state_class = self._DIRECTIVE_MAP.get(match.group(2).lower())
@@ -361,7 +484,7 @@ class _SeekState(_State):
 class Parameters(object):
     def __init__(self):
         self.user_test_methods = []
-        self.user_test_cases = []
+        self.user_test_cases = {}
         self.suite_name = None
         self.user_module_name = None
         self.wrap_user_module_name = None
@@ -369,7 +492,7 @@ class Parameters(object):
 
 class _Scanner(object):
     def __init__(self, source_file, target_file, parameters,
-                 linemarkers):
+                 linemarkers=False):
         self._parameters = parameters
         self._previous_state = None
 
@@ -427,7 +550,7 @@ class _Scanner(object):
         return previous_state
 
     def emmit_linemarker(self, offset=0):
-        print('#{directive} {number} "{filename}"' \
+        print('#{directive} {number} "{filename}"'
               .format(directive=self._line_directive,
                       number=str(self._line_number + offset),
                       filename=os.path.basename(self._source_file.name)),
@@ -442,8 +565,10 @@ class _Scanner(object):
     def add_user_test_method(self, details):
         self._parameters.user_test_methods.append(details)
 
-    def add_user_test_case(self, details):
-        self._parameters.user_test_cases.append(details)
+    def add_user_test_case(self, details, ref=None):
+        if ref is None:
+            ref = details['name']
+        self._parameters.user_test_cases[ref] = details
 
     def set_suite_name(self, name):
         self._parameters.suite_name = name
@@ -457,7 +582,7 @@ class _Scanner(object):
 
 
 class Processor(object):
-    def __init__(self, linemarkers):
+    def __init__(self, linemarkers=False):
         self._linemarkers = linemarkers
 
     def run(self, input_file, output_file):
@@ -538,67 +663,6 @@ class Processor(object):
 
 
 
-#class AtAssertNotAssociated(Action):
-    #def __init__(self,parser):
-        #self.parser = parser
-        #self.name='@assertnotassociated'
-
-    #def match(self, line):
-        #m = re.match('\s*@assert(not|un)associated\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-        #if m:
-            #self.name='@assert'+m.groups()[0]+'associated'
-        #else:
-            #self.name='@assertnotassociated'
-
-        #if not m:
-            #m  = re.match( \
-                #'\s*@assert(not|un)associated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-                #line, re.IGNORECASE)
-
-        ## How to get both (a,b) and (a,b,c) to match?
-        #if not m:
-            #m  = re.match( \
-                #'\s*@assert(not|un)associated\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
-                #line, re.IGNORECASE)
-
-        #if m:
-            #self.name='@assert'+m.groups()[0]+'associated'
-        #else:
-            #self.name='@assertnotassociated'
-
-
-        #return m
-
-    #def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        #fileHandle.write(" & location=SourceLocation( &\n")
-        #fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
-        #fileHandle.write(" & " + str(lineNumber) + ")")
-
-    #def action(self, m, line):
-        #p = self.parser
-
-        ##-- args = parseArgsFirstRest('@assertassociated',line)
-        ##ok args = parseArgsFirstSecondRest('@assertassociated',line)
-        #args = parseArgsFirstSecondRest(self.name,line)
-
-        ## print(9000,line)
-        ## print(9001,args)
-
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        #if len(args) > 1:
-            #if re.match('.*message=.*',args[1],re.IGNORECASE):
-                #p.outputFile.write("  call assertFalse(associated(" + args[0] + "), " + args[1] + ", &\n")
-            #elif len(args) > 2:
-                #p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
-            #else:
-                #p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), &\n")
-        #else:
-            #p.outputFile.write("  call assertFalse(associated(" + args[0] + "), &\n")
-        #self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        #p.outputFile.write(" )\n")
-        #p.outputFile.write("  if (anyExceptions()) return\n")
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
-
 
 #class AtAssertEqualUserDefined(Action):
     #"""Convenience directive replacing (a,b) with a call to assertTrue(a==b)
@@ -645,49 +709,6 @@ class Processor(object):
         #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 
-#class AtAssertEquivalent(Action):
-    #"""Convenience directive replacing (a,b) with a call to assertTrue(a.eqv.b)
-    #and an error message, if none is provided when invoked.
-    #"""
-    #def __init__(self,parser):
-        #self.parser = parser
-
-    #def match(self, line):
-        #m  = re.match( \
-            #'\s*@assertequivalent\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\\)\s*$', \
-            #line, re.IGNORECASE)
-
-        ## How to get both (a,b) and (a,b,c) to match?
-        #if not m:
-            #m  = re.match( \
-                #'\s*@assertequivalent\s*\\((\s*([^,]*\w.*),\s*([^,]*\w.*))\\)\s*$', \
-                #line, re.IGNORECASE)
-
-        #return m
-
-    #def appendSourceLocation(self, fileHandle, fileName, lineNumber):
-        #fileHandle.write(" & location=SourceLocation( &\n")
-        #fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
-        #fileHandle.write(" & " + str(lineNumber) + ")")
-
-    #def action(self, m, line):
-        #p = self.parser
-
-        #args = parseArgsFirstSecondRest('@assertequivalent',line)
-
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        #if len(args) > 2:
-            #p.outputFile.write("  call assertTrue(" \
-                               #+ args[0] + ".eqv." + args[1] + ", " + args[2] + ", &\n")
-        #else:
-            #p.outputFile.write("  call assertTrue(" \
-                               #+ args[0] + ".eqv." + args[1] + ", &\n")
-        #if not re.match('.*message=.*',line,re.IGNORECASE):
-            #p.outputFile.write(" & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n")
-        #self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        #p.outputFile.write(" )\n")
-        #p.outputFile.write("  if (anyExceptions()) return\n")
-        #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
 
 #class AtMpiAssert(Action):
@@ -716,33 +737,7 @@ class Processor(object):
             #p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
         #p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
 
-#class AtBefore(Action):
-    #def __init__(self, parser):
-        #self.parser = parser
 
-    #def match(self, line):
-        #m = re.match('\s*@before\s*$', line, re.IGNORECASE)
-        #return m
-
-    #def action(self, m, line):
-        #nextLine = self.parser.nextLine()
-        #self.parser.userTestCase['setUp'] = getSubroutineName(nextLine)
-        #self.parser.commentLine(line)
-        #self.parser.outputFile.write(nextLine)
-
-#class AtAfter(Action):
-    #def __init__(self, parser):
-        #self.parser = parser
-
-    #def match(self, line):
-        #m = re.match('\s*@after\s*$', line, re.IGNORECASE)
-        #return m
-
-    #def action(self, m, line):
-        #nextLine = self.parser.nextLine()
-        #self.parser.userTestCase['tearDown'] = getSubroutineName(nextLine)
-        #self.parser.commentLine(line)
-        #self.parser.outputFile.write(nextLine)
 
 #class AtTestParameter(Action):
     #def __init__(self, parser):

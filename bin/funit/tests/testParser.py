@@ -36,7 +36,7 @@ class Test_Scanner(unittest.TestCase):
         self.assertTrue(unit_under_test.done())
 
     def test_line_directives(self):
-        for switch, directive in ((True, 'line'), (False, '')):
+        for switch, directive in ((False, 'line'), (True, '')):
             with self.subTest(switch=switch, directive=directive):
                 expected = '''#{directive} 0 "test_input"
 #{directive} 1 "test_input"
@@ -54,7 +54,7 @@ class Test_Scanner(unittest.TestCase):
                 unit_under_test = funit.parser._Scanner(self._source,
                                                         self._target,
                                                         parameters,
-                                                        line_directive=switch)
+                                                        linemarkers=switch)
                 # line 0
                 unit_under_test.emmit_linemarker()
                 unit_under_test.take_line()
@@ -136,7 +136,25 @@ class _CheckCase(_CheckBase):
     metaclass = ABCMeta
 
     def check_unit(self, expectation, parameters):
-        self.assertListEqual(expectation, parameters.user_test_cases)
+        self.assertDictEqual(expectation, parameters.user_test_cases)
+
+
+class TestAtBefore(unittest.TestCase, _CheckCase):
+    def situations(self):
+        return [{'source': '  @before\nsubroutine pontefract()\n',
+                 'target': '  !@before\nsubroutine pontefract()\n',
+                 'expect': {'setUp': {'name': 'pontefract', 'arguments':[]}}},
+                {'source': '  @beforeb\nsubroutine clitheroe\n',
+                 'throw': 'Unrecognised directive: beforeb'}]
+
+
+class TestAtAfter(unittest.TestCase, _CheckCase):
+    def situations(self):
+        return [{'source': '  @after\nsubroutine smethwick()\n',
+                 'target': '  !@after\nsubroutine smethwick()\n',
+                 'expect': {'tearDown': {'name': 'smethwick', 'arguments':[]}}},
+                {'source': '  @afterb\nsubroutine clitheroe\n',
+                 'throw': 'Unrecognised directive: afterb'}]
 
 
 class TestAtTest(unittest.TestCase, _CheckMethod):
@@ -253,48 +271,62 @@ class TestTestCase(unittest.TestCase, _CheckCase):
     def situations(self):
         return [{'source': '@testcase\ntype hera\n',
                  'target': '!@testcase\ntype hera\n',
-                 'expect': [{'name': 'hera', 'modifiers': []}]},
+                 'expect': {'hera': {'name': 'hera', 'modifiers': []}}},
                 # Leading space
                 {'source': '  @testcase\ntype zeus\n',
                  'target': '  !@testcase\ntype zeus\n',
-                 'expect': [{'name': 'zeus', 'modifiers': []}]},
+                 'expect': {'zeus': {'name': 'zeus', 'modifiers': []}}},
                 # Case insensitive
                 {'source': '@TESTCASE\ntype metis\n',
                  'target': '!@TESTCASE\ntype metis\n',
-                 'expect': [{'name': 'metis', 'modifiers': []}]},
+                 'expect': {'metis': {'name': 'metis', 'modifiers': []}}},
                 # Mixed case
                 {'source': '@Testcase\ntype themis\n',
                  'target': '!@Testcase\ntype themis\n',
-                 'expect': [{'name': 'themis', 'modifiers': []}]},
+                 'expect': {'themis': {'name': 'themis', 'modifiers': []}}},
                 # Can't have trailing characters without whitespace
                 {'source': '@Testcaseb\ntype eurynome\n',
                  'throw': 'Unrecognised directive: Testcaseb'},
                 {'source': '@testCase\ntype mnemosyne\n',
                  'target': '!@testCase\ntype mnemosyne\n',
-                 'expect': [{'name': 'mnemosyne', 'modifiers': []}]},
+                 'expect': {'mnemosyne': {'name': 'mnemosyne',
+                                          'modifiers': []}}},
                 {'source': '@testcase\ntype, public :: leto\n',
                  'target': '!@testcase\ntype, public :: leto\n',
-                 'expect': [{'name': 'leto', 'modifiers': ['public']}]},
-                {'source': '@testcase\ntype :: nymphs\n@testcase\ntype mortals',
-                 'target': '!@testcase\ntype :: nymphs\n!@testcase\ntype mortals',
-                 'expect': [{'name': 'nymphs', 'modifiers': []},
-                            {'name': 'mortals', 'modifiers': []}]},
+                 'expect': {'leto': {'name': 'leto',
+                                     'modifiers': ['public']}}},
+                {'source': '@testcase\ntype :: nymphs\n@testcase\ntype mortals\n',
+                 'target': '!@testcase\ntype :: nymphs\n!@testcase\ntype mortals\n',
+                 'expect': {'nymphs': {'name': 'nymphs', 'modifiers': []},
+                            'mortals': {'name': 'mortals', 'modifiers': []}}},
                 {'source': '@testcase(constructor=build())\ntype artemis\n',
                  'target': '!@testcase(constructor=build())\ntype artemis\n',
-                 'expect': [{'name': 'artemis', 'constructor': 'build',
-                             'modifiers': []}]},
+                 'expect': {'artemis': {'name': 'artemis',
+                                        'constructor': 'build',
+                                        'modifiers': []}}},
                 {'source': '@testcase(npes=[1, 3,7])\ntype minerva\n',
                  'target': '!@testcase(npes=[1, 3,7])\ntype minerva\n',
-                 'expect': [{'name': 'minerva', 'npes': [1, 3, 7],
-                             'modifiers': []}]},
-                {'source': '@testcase(cases=[2,4, 6])\ntype hephaestus\n',
-                 'target': '!@testcase(cases=[2,4, 6])\ntype hephaestus\n',
-                 'expect': [{'name': 'hephaestus', 'cases': [2, 4, 6],
-                             'modifiers': []}]},
-                {'source': '@testcase(testParameters={enforcer})\ntype nemesis\n',
-                 'target': '!@testcase(testParameters={enforcer})\ntype nemesis\n',
-                 'expect': [{'name': 'nemesis', 'testParameters': 'enforcer',
-                             'modifiers': []}]}]
+                 'expect': {'minerva': {'name': 'minerva',
+                                        'npes': [1, 3, 7],
+                                        'modifiers': []}}},
+                {'source': '''@testcase(cases=[2,4, 6])
+type hephaestus
+''',
+                 'target': '''!@testcase(cases=[2,4, 6])
+type hephaestus
+''',
+                 'expect': {'hephaestus': {'name': 'hephaestus',
+                                           'cases': [2, 4, 6],
+                                           'modifiers': []}}},
+                {'source': '''@testcase(testParameters={enforcer})
+type nemesis
+''',
+                 'target': '''!@testcase(testParameters={enforcer})
+type nemesis
+''',
+                 'expect': {'nemesis': {'name': 'nemesis',
+                                        'testParameters': 'enforcer',
+                                        'modifiers': []}}}]
 
 
 class TestSuite(unittest.TestCase, _CheckBase):
@@ -430,7 +462,8 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
                  {'source': '@assertAssociated(a, message="Filthy bobbins!")\n',
                   'target': '''!@assertAssociated(a, message="Filthy bobbins!")
 #line 1 "source_file"
-  call assertTrue(associated(a), 'Filthy bobbins!', &
+  call assertTrue(associated(a), &
+    message='Filthy bobbins!', &
     location=SourceLocation( &
       'source_file', &
       1)
@@ -480,7 +513,8 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
                  {'source': '@assertAssociated(a, b, message="Turgid shuttles!")\n',
                   'target': '''!@assertAssociated(a, b, message="Turgid shuttles!")
 #line 1 "source_file"
-  call assertTrue(associated(a, b), 'Turgid shuttles!', &
+  call assertTrue(associated(a, b), &
+    message='Turgid shuttles!', &
     location=SourceLocation( &
       'source_file', &
       1)
@@ -489,6 +523,123 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
 #line 2 "source_file"
 ''',
                   'expect': ''}]
+
+    def check_unit(self, expectation, parameters):
+        pass
+
+class TestAssertNotAssociated(unittest.TestCase, _CheckBase):
+    '''
+    Check that a line starting with '@assertUnAssociated' is detectd as an
+    annotiation. This annotation accepts 1 or 2 arguments. A single argument
+    tests for simple association. Two arguments means that the first must be
+    associated with the second.
+    '''
+    def situations(self):
+        return [{'source': '@assertUnAssociated\n',
+                 'throw': 'Mangled assertNotAssociated directive: @assertUnAssociated'},
+                {'source': '@assertNotAssociated\n',
+                 'throw': 'Mangled assertNotAssociated directive: @assertNotAssociated'},
+                {'source': '@assertUnAssociated()\n',
+                 'throw': 'Mangled assertNotAssociated directive: @assertUnAssociated()'},
+                {'source': '@assertNotAssociated()\n',
+                 'throw': 'Mangled assertNotAssociated directive: @assertNotAssociated()'},
+                {'source': '@assertUnAssociated(a)\n',
+                 'target': '''!@assertUnAssociated(a)
+#line 1 "source_file"
+  call assertFalse(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                {'source': '@assertNotAssociated(a)\n',
+                 'target': '''!@assertNotAssociated(a)
+#line 1 "source_file"
+  call assertFalse(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                # Case insensitive
+                {'source': '@assertunassociated(a)\n',
+                 'target': '''!@assertunassociated(a)
+#line 1 "source_file"
+  call assertFalse(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                # Case insensitive
+                {'source': '@ASSERTUNASSOCIATED(a)\n',
+                 'target': '''!@ASSERTUNASSOCIATED(a)
+#line 1 "source_file"
+  call assertFalse(associated(a), &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''}]
+
+    def check_unit(self, expectation, parameters):
+        pass
+
+
+class TestAssertEquivalent(unittest.TestCase, _CheckBase):
+    '''
+    Check that a line starting with '@assertAssociated' is detectd as an
+    annotiation. This annotation accepts 1 or 2 arguments. A single argument
+    tests for simple association. Two arguments means that the first must be
+    associated with the second.
+    '''
+    def situations(self):
+        return [{'source': '@assertEquivalent\n',
+                 'throw': 'Mangled assertEquivalent directive: @assertEquivalent'},
+                {'source': '@assertEquivalent()\n',
+                 'throw': 'Mangled assertEquivalent directive: @assertEquivalent()'},
+                {'source': '@assertEquivalent(a)\n',
+                 'throw': 'Mangled assertEquivalent directive: @assertEquivalent(a)'},
+                # Case insensitive
+                {'source': '@assertequivalent(a, b)\n',
+                 'target': '''!@assertequivalent(a, b)
+#line 1 "source_file"
+  call assertTrue(a .eqv. b, &
+    message='<a> not equal to <b>', &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''},
+                # Case insensitive
+                {'source': '@ASSERTEQUIVALENT(a, b)\n',
+                 'target': '''!@ASSERTEQUIVALENT(a, b)
+#line 1 "source_file"
+  call assertTrue(a .eqv. b, &
+    message='<a> not equal to <b>', &
+    location=SourceLocation( &
+      'source_file', &
+      1)
+    )
+  if (anyExceptions()) return
+#line 2 "source_file"
+''',
+                 'expect': ''}]
 
     def check_unit(self, expectation, parameters):
         pass
@@ -592,29 +743,6 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
 
 
 
-    #def testMatchAtAssertUnAssociated(self):
-        #"""Check that a line starting with '@assertUnAssociated' is detected
-        #as an annotation."""
-        #parser = MockParser([' \n'])
-        #atAssertUnAssociated = AtAssertNotAssociated(parser)
-
-        #self.assertFalse(atAssertUnAssociated.match('@assertUnAssociated'))
-        #self.assertFalse(atAssertUnAssociated.match('@assertUnAssociated()'))
-        #self.assertTrue(atAssertUnAssociated.match('@assertUnAssociated(a)'))
-        #self.assertTrue(atAssertUnAssociated.match('@assertunassociated(a)')) # case insensitive
-        #self.assertTrue(atAssertUnAssociated.match('@ASSERTUNASSOCIATED(a)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertUnAssociated.apply('   @assertUnAssociated(a)\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual("  call assertFalse(associated(a), &\n", parser.outLines[1])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
-        #self.assertEqual(" & 8)", parser.outLines[4])
-        #self.assertEqual(" )\n", parser.outLines[5])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
     #def testMatchAtAssertUnAssociatedWith(self):
         #"""Check that a line starting with '@assertUnAssociatedWith' is detected
@@ -664,29 +792,6 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
         #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
         #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
-    #def testMatchAtAssertNotassociatedWith(self):
-        #"""Check that a line starting with '@assertNotassociatedWith' is detected
-        #as an annotation. atAssertNotassociated(a,b) implies a points to b."""
-        #parser = MockParser([' \n'])
-        #atAssertNotassociated = AtAssertNotAssociated(parser)
-
-        #self.assertFalse(atAssertNotassociated.match('@assertNotassociated'))
-        #self.assertFalse(atAssertNotassociated.match('@assertNotassociated()'))
-        #self.assertTrue(atAssertNotassociated.match('@assertNotassociated(a)'))
-        #self.assertTrue(atAssertNotassociated.match('@assertnotassociated(a,b)')) # case insensitive
-        #self.assertTrue(atAssertNotassociated.match('@ASSERTNOTASSOCIATED(a,b)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertNotassociated.apply('   @assertNotassociated(a,b)\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual("  call assertFalse(associated(a,b), &\n", parser.outLines[1])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
-        #self.assertEqual(" & 8)", parser.outLines[4])
-        #self.assertEqual(" )\n", parser.outLines[5])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
         
 
     #def testMatchAtAssertEqualUserDefined(self):
@@ -732,30 +837,7 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
         #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[6])
         #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[7])
 
-    #def testMatchAtAssertEquivalent(self):
-        #"""Check that a line starting with '@assertEquivalent' is detected
-        #as an annotation. atAssertEquivalent(a,b) implies a points to b."""
-        #parser = MockParser([' \n'])
-        #atAssertEquivalent = AtAssertEquivalent(parser)
 
-        #self.assertFalse(atAssertEquivalent.match('@assertEquivalent'))
-        #self.assertFalse(atAssertEquivalent.match('@assertEquivalent()'))
-        #self.assertFalse(atAssertEquivalent.match('@assertEquivalent(a)'))
-        #self.assertTrue(atAssertEquivalent.match('@assertequivalent(a,b)')) # case insensitive
-        #self.assertTrue(atAssertEquivalent.match('@ASSERTEQUIVALENT(a,b)')) # case insensitive
-
-        #parser.fileName = "foo.pfunit"
-        #parser.currentLineNumber = 8
-        #atAssertEquivalent.apply('   @assertEquivalent(a,b)\n')
-        #self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        #self.assertEqual("  call assertTrue(a.eqv.b, &\n", parser.outLines[1])
-        #self.assertEqual(" & message='<a> not equal to <b>', &\n", parser.outLines[2])
-        #self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[3])
-        #self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[4])
-        #self.assertEqual(" & 8)", parser.outLines[5])
-        #self.assertEqual(" )\n", parser.outLines[6])
-        #self.assertEqual("  if (anyExceptions()) return\n", parser.outLines[7])
-        #self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[8])
 
         
     #def testMatchAtAssertOther(self):
@@ -806,37 +888,6 @@ class TestAssertAssociated(unittest.TestCase, _CheckBase):
         #self.assertTrue(" )\n", parser.outLines[5])
         #self.assertTrue("  if (anyExceptions(this%getMpiCommunicator())) return\n", parser.outLines[6])
         #self.assertTrue("#line 9 'foo.pfunit'\n", parser.outLines[7])
-
-    #def testMatchAtBefore(self):
-        #"""Check that a line starting with '@before*' ...""" 
-        #procedure = 'mySetUp'
-        #nextLine = 'subroutine ' + procedure +'()\n'
-        #parser = MockParser([nextLine])
-        #atBefore = AtBefore(parser)
-        #self.assertTrue(atBefore.match('  @before'))
-        #self.assertFalse(atBefore.match('  @beforeb'))
-
-        #atBefore.apply('@before\n')
-        #self.assertEqual(procedure, parser.userTestCase['setUp'])
-        #self.assertEqual('!@before\n', parser.outLines[0])
-        #self.assertEqual(nextLine, parser.outLines[1])
-
-
-    #def testMatchAtAfter(self):
-        #"""Check that a line starting with '@after*' ...""" 
-        #procedure = 'myTearDown'
-        #nextLine = 'subroutine ' + procedure +'()\n'
-        #parser = MockParser([nextLine])
-        #atAfter = AtAfter(parser)
-        #self.assertTrue(atAfter.match('  @after'))
-        #self.assertFalse(atAfter.match('  @afterb'))
-
-        #atAfter.apply('@after\n')
-        #self.assertEqual(procedure, parser.userTestCase['tearDown'])
-        #self.assertEqual('!@after\n', parser.outLines[0])
-        #self.assertEqual(nextLine, parser.outLines[1])
-
-
 
 if __name__ == "__main__":
     unittest.main()
