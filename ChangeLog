@@ -1,3 +1,6 @@
+	
+3.2.10  - Cmake fix (#12) -- spaces in COMMAND
+	- moved to GitHub
 3.2.9   October 29, 2017
 	- bug fix for #62 -- stalled test in some environments
 	

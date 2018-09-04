@@ -2,7 +2,6 @@ module TestCaseB_mod
    use pfunit_mod
    implicit none
 
-   
 !@testCase(constructor=newTestCaseB)
    type, extends(ParameterizedTestCase) :: TestCaseB
       integer, allocatable :: table(:)
@@ -98,14 +97,26 @@ contains
    end subroutine runMethod
 
    function makeCustomTest(methodName, testMethod, testParameter) result(aTest)
+#ifdef INTEL_13
+      use pfunit_mod, only: testCase
+#endif
       type (WrapUserTestCase) :: aTest
+#ifdef INTEL_13
+      target :: aTest
+      class (WrapUserTestCase), pointer :: p
+#endif
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
       type (B_Parameter), intent(in) :: testParameter
       aTest%TestCaseB = newTestCaseB(testParameter)
 
       aTest%testMethodPtr => testMethod
+#ifdef INTEL_13
+      p => aTest
+      call p%setName(methodName)
+#else
       call aTest%setName(methodName)
+#endif
       call aTest%setTestParameter(testParameter)
    end function makeCustomTest
 
@@ -113,11 +124,9 @@ end module WrapTestCaseB_mod
 
 function TestCaseB_mod_suite() result(suite)
    use pFUnit_mod
-   use WrapTestCaseB_mod
    use TestCaseB_mod
+   use WrapTestCaseB_mod
    type (TestSuite) :: suite
-
-   integer, allocatable :: npes(:)
 
    type (B_Parameter), allocatable :: testParameters(:)
    type (B_Parameter) :: testParameter

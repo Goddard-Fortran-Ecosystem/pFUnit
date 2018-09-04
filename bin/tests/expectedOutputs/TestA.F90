@@ -13,7 +13,7 @@ contains
    !@test
    subroutine testMethodB()
    end subroutine testMethodB
-   
+
    !@mpitest(npes=[1,3,5])
    subroutine testMethodC(this)
       class (MpiTestMethod), intent(inout) :: this
@@ -36,11 +36,9 @@ end module WrapTestA_mod
 
 function TestA_mod_suite() result(suite)
    use pFUnit_mod
-   use WrapTestA_mod
    use TestA_mod
+   use WrapTestA_mod
    type (TestSuite) :: suite
-
-   integer, allocatable :: npes(:)
 
    suite = newTestSuite('TestA_mod_suite')
 

@@ -40,7 +40,7 @@ module SUT_mod
 contains
 
    subroutine method1(this)
-      class (SUT), intent(in) :: this
+      class (SUT), intent(inout) :: this
    end subroutine method1
 
 end module SUT_mod
@@ -84,7 +84,7 @@ contains
    end subroutine verifyMocking
 
    subroutine method1(this)
-      class (MockSUT), intent(in) :: this
+      class (MockSUT), intent(inout) :: this
       call this%mocker%hasCalled(this, 'method1')
    end subroutine method1
 
