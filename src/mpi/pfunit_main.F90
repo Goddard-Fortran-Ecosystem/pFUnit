@@ -9,30 +9,6 @@ subroutine funit_main(load_tests, extra_initialize, extra_finalize)
    implicit none
 
    procedure(), pointer :: extra_initialize, extra_finalize
-   interface
-      function load_tests()
-         use FUnit
-         type (TestSuite) :: suite
-      end subroutine load_tests
-   end interface
-
-   type (StringUnlimitedMap) :: option_values
-   type (TestSuite) :: all_test_suites
-
-   option_values = parse()
-   call load_tests(all_test_suites)
-   call main_sub(all_test_suites, option_values, extra_initialize, extra_finalize)
-end subroutine funit_main
-
-
-
-
-
-subroutine pfunit_main(load_tests, extra_initialize, extra_finalize)
-   use FUnit
-   implicit none
-
-   procedure(), pointer :: extra_initialize, extra_finalize
 
    interface
       subroutine load_tests(suite)
@@ -84,7 +60,7 @@ contains
 
    end function parse
 
-end subroutine pfunit_main
+end subroutine funit_main
 
 subroutine main_sub(suite, option_values, extra_initialize, extra_finalize)
    use iso_fortran_env, only: OUTPUT_UNIT

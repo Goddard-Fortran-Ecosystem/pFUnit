@@ -33,7 +33,6 @@ foreach(type Logical Integer Real Complex)
     set(ofile Assert${type}_${rank}d.F90)
     set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/Assert_${type}.tmpl)
     list(APPEND new_generated_sources ${ofile})
-    message("Rank ${rank} ${MAX_ASSERT_RANK}")
     add_custom_command(
       OUTPUT ${ofile}
       COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
@@ -59,7 +58,6 @@ foreach(rank RANGE ${MAX_ASSERT_RANK})
   set(ofile Norms_${rank}d.F90)
   set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/Norms.tmpl)
   list(APPEND new_generated_sources ${ofile})
-  message("Rank ${rank} ${MAX_ASSERT_RANK}")
   add_custom_command(
     OUTPUT ${ofile}
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}

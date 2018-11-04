@@ -12,7 +12,7 @@ list(APPEND PARALLEL_TEST_SRCS Test_MpiException.F90)
 list(APPEND PARALLEL_TEST_SRCS Test_MpiTestCase.F90)
 list(APPEND PARALLEL_TEST_SRCS Test_MpiParameterizedTestCase.F90)
 
-add_library(pfunittests EXCLUDE_FROM_ALL STATIC ${SERIAL_TEST_SRCS} ${PARALLEL_TEST_SRCS} ${OTHER_SOURCES})
+add_library(pfunittests EXCLUDE_FROM_ALL STATIC ${PARALLEL_TEST_SRCS})
 target_link_libraries(pfunittests pfunit funit)
 
 add_executable (parallel_tests.x EXCLUDE_FROM_ALL parallel_tests.F90)
