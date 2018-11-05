@@ -717,6 +717,7 @@ class Parser():
         self.outputFile.write('   use FUnit\n')
         if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
         self.outputFile.write('   use '+ self.wrapModuleName + '\n')
+        self.outputFile.write('   implicit none'+ '\n')
         self.outputFile.write('   type (TestSuite) :: suite\n\n')
         self.outputFile.write('   class (Test), allocatable :: t\n\n')
 
@@ -798,7 +799,7 @@ class Parser():
             if 'type' in testMethod:
                 type =  testMethod['type']
             else:
-                type = 'newMpiTestMethod'
+                type = 'MpiTestMethod'
                     
             self.outputFile.write('   t = ' + type + '(' + args + ')\n')
             if ('ignore' in testMethod):

@@ -120,31 +120,6 @@ contains
       t => this%tests%back()
       call t%setName(this%getName() // '.' // t%getName())
 
-   contains
-
-      recursive subroutine extend(list)
-         type (TestReference), allocatable :: list(:)
-         type (TestReference), allocatable :: temp(:)
-         integer :: i, n
-
-         n = size(list)
-         call move_alloc(from=list, to=temp)
-
-         allocate(list(n+1))
-         do i = 1, n
-            call kludge_move_alloc(from=temp(i)%ptest, to=list(i)%ptest)
-         end do
-
-         deallocate(temp)
-
-      end subroutine extend
-
-      subroutine kludge_move_alloc(from, to)
-         class (Test), allocatable :: from
-         class (Test), allocatable :: to
-         call move_alloc(from=from, to=to)
-      end subroutine kludge_move_alloc
-      
    end subroutine addTest
    
    pure integer function getNumTests(this) 
