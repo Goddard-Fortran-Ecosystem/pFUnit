@@ -4,7 +4,7 @@ program main
    real(kind=_KIND) :: x
 
    if (.not. IEEE_SUPPORT_DATATYPE (x)) then
-      error stop
+      stop 1
    else
       print*,'T'
    end if

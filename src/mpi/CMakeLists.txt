@@ -17,6 +17,7 @@ set (mpi_srcs
   MpiTestCase.F90
   MpiTestMethod.F90
   pFUnit.F90
+  pfunit_main.F90
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
 add_dependencies(pfunit funit)

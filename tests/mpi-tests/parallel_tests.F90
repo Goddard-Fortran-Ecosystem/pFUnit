@@ -4,14 +4,15 @@ program main
    use pfunit, only: TestResult
    use pfunit, only: ListenerPointer
    use pfunit, only: ResultPrinter
+   use pfunit, only: stub
 !$$   use pfunit, only: DebugListener
    implicit none
 
    logical :: success
 
-   call initialize()
+   call initialize(stub)
    success = runTests()
-   call finalize(success)
+   call finalize(stub, success)
 
 contains
 

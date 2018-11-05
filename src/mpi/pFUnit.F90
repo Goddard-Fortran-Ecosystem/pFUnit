@@ -64,29 +64,57 @@ module pFUnit
    implicit none
    
    public :: initialize
+   public :: run
    public :: finalize
    public :: get_context
+   public :: stub
    
 contains
 
-   subroutine initialize()
-      use FUnit, only: init_funit => initialize
+   subroutine initialize(extra_initialize)
+      use FUnit, only: funit_initialize => initialize
+      procedure() :: extra_initialize
       integer :: error
 
       call mpi_init(error)
       if (error /= MPI_SUCCESS) stop
 
-
-      call init_funit()
+      call funit_initialize(extra_initialize)
 
    end subroutine initialize
 
-   subroutine finalize(successful)
+
+   logical function run(load_tests) result(status)
+      use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
+      procedure(LoadTests_interface) :: load_tests
+      
+      type (TestSuite) :: suite
+      class(BaseTestRunner), allocatable :: runner
+      type (TestResult) :: r
+      class (ParallelContext), allocatable :: c
+      class (ListenerPointer), allocatable :: listeners(:)
+
+      allocate(listeners(1))
+      allocate(listeners(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
+!!$      options = parse()
+      suite = load_tests()
+      allocate(runner, source=TestRunner(listeners))
+      c = get_context()
+      r = runner%run(suite, c)
+      status = r%wasSuccessful()
+
+   end function run
+
+
+
+
+   subroutine finalize(extra_finalize, successful)
       use mpi
 #ifdef NAG
       use f90_unix_proc, only: exit
 #endif
-      use FUnit, only: funit_finalize => finalize, stub
+      use FUnit, only: funit_finalize => finalize
+      procedure() :: extra_finalize
       logical, intent(in) :: successful
 
       logical :: allSuccessful
@@ -102,22 +130,23 @@ contains
       call MPI_Finalize(error)
 
       if (amRoot) then
-         call funit_finalize(stub, allSuccessful)
+         print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
+         call funit_finalize(extra_finalize, allSuccessful)
       else
          stop
       end if
 
    end subroutine finalize
 
-   function get_context(use_mpi) result(context)
+   function get_context() result(context)
       class (ParallelContext), allocatable :: context
-      logical, intent(in) :: use_mpi
 
-      if (use_mpi) then
-         print*,'Cannot use MPI - need to link with pfunit not funit.'
-         stop
-      end if
       context = MpiContext()
+
    end function get_context
+
+   subroutine stub()
+   end subroutine stub
+
 
 end module pFUnit
