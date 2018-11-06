@@ -1,6 +1,5 @@
-include_directories(${ftl_install_dir}/include)
-include_directories(${pFUnit_BINARY_DIRECTORY}/src/core)
-include_directories(${CMAKE_BINARY_DIR}/mod)
+#include_directories(${pFUnit_BINARY_DIRECTORY}/src/core)
+#include_directories(${CMAKE_BINARY_DIR}/mod)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${pFUnit_BINARY_DIR}/mod)
 
@@ -20,7 +19,10 @@ set (mpi_srcs
   pfunit_main.F90
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
-add_dependencies(pfunit funit)
+target_link_libraries (pfunit PUBLIC funit)
+target_include_directories (pfunit PRIVATE ${ftl_install_dir}/include)
+set_target_properties (pfunit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+
 if (NOT FTL)
   add_dependencies(pfunit gFTL)
 endif()

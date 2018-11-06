@@ -79,7 +79,13 @@ if (USE_OPENMP)
 endif()
 
 
-
+# A bit ugly, but main use case install ESMF in a non-canonical manner.
+set (ESMF OFF CACHE BOOL "Build with ESMF support.")
+if (ESMF)
+  set (ESMF_LIBRARIES "" CACHE PATH "Path to ESMF libraries")
+  set (ESMF_INCLUDE "" CACHE PATH "Path to ESMF include dir")
+  set (NETCDF_INCLUDE "" CACHE PATH "Path to NETCD include dir")
+endif ()
 
 
 if (USE_ROBUST)
