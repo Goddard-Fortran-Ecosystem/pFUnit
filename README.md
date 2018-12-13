@@ -1,5 +1,14 @@
 # pFUnit
 
+pFUnit is a unit testing framework enabling JUnit-like testing of
+serial and MPI-parallel software written in Fortran. Initial support
+for OPENMP has been implemented. pFUnit makes use of modern Fortran
+programming techniques, including object oriented programming,
+offering a convenient, lightweight mechanism for Fortran developers to
+create and run software tests that specify the desired behavior for a
+given piece of code. The framework was originally created by
+developers from NASA and NGC TASC.
+
 ## Installation and basic usage guide
 
 ### Table of contents
