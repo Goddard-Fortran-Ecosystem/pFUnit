@@ -1,8 +1,9 @@
+# Examples
 
 These directories contain working examples of the use of pFUnit to
 perform unit testing.  They presume a working installation of pFUnit,
 with the PFUNIT environment variable set to the directory where it is
-installed.  
+installed.
 
 The GNUmakefile in this directory builds and runs the tests in serial
  or MPI mode. In general, to run the tests:
