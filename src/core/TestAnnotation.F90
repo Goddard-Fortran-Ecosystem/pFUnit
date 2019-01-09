@@ -3,7 +3,7 @@ module pf_TestAnnotation_mod
    private
 
    public :: TestAnnotation
-   public :: Ignore ! singleton
+   public :: Disable ! singleton
 
    type, abstract :: TestAnnotation
       private
@@ -19,23 +19,23 @@ module pf_TestAnnotation_mod
 
    end interface
 
-   type, extends(TestAnnotation) :: IgnoreAnnotation
+   type, extends(TestAnnotation) :: DisableAnnotation
    contains
-      procedure, nopass :: type_name => ignore_type_name
-   end type IgnoreAnnotation
+      procedure, nopass :: type_name => disable_type_name
+   end type DisableAnnotation
 
    ! Instance is public, type is private; semi-singleton
-   type (IgnoreAnnotation) :: Ignore
+   type (DisableAnnotation) :: Disable
 
 contains
 
 
-   function ignore_type_name() result(type_name)
+   function disable_type_name() result(type_name)
       character(:), allocatable :: type_name
 
-      type_name = 'Ignore'
+      type_name = 'Disable'
       
-   end function ignore_type_name
+   end function disable_type_name
 
 end module pf_TestAnnotation_mod
 

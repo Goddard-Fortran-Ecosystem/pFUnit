@@ -37,7 +37,7 @@ module PF_ResultPrinter_mod
       procedure :: addFailure
       procedure :: addError
       procedure :: startTest
-      procedure :: ignoreTest
+      procedure :: disableTest
       procedure :: endTest
       procedure :: endRun
       procedure :: print
@@ -107,7 +107,7 @@ contains
 
    end subroutine startTest
 
-  subroutine ignoreTest(this, testName)
+  subroutine disableTest(this, testName)
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
 
@@ -119,7 +119,7 @@ contains
         call flush(this%unit)
      end if
 
-  end subroutine ignoreTest
+  end subroutine disableTest
 
   subroutine endTest(this, testName)
      class (ResultPrinter), intent(inOut) :: this
@@ -205,8 +205,8 @@ contains
          if (result%runCount() > 1) then
             write(this%unit,'(a)',advance='no')"s"
          end if
-         if (result%ignoreCount() > 0) then
-            write(this%unit,'(a,i0,a)',advance='no')", ", result%ignoreCount(), " ignored"
+         if (result%disableCount() > 0) then
+            write(this%unit,'(a,i0,a)',advance='no')", ", result%disableCount(), " disabled"
          end if
          write(this%unit,'(a)')")"
       else
@@ -214,7 +214,7 @@ contains
          write(this%unit,'(a,i0,a,i0,a,i0)')"Tests run: ", result%runCount(), &
               & ", Failures: ",result%failureCount(), &
               & ", Errors: ",result%errorCount(), &
-              & ", Ignored: ",result%ignoreCount()
+              & ", Disabled: ",result%disableCount()
 
       end if
 

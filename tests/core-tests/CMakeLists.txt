@@ -16,7 +16,7 @@ set(OTHER_SOURCES
 
 set(pf_tests
   Test_ExceptionList.pf
-  Test_IgnoreTest.pf
+  Test_DisableTest.pf
   Test_AssertString.pf
   Test_Assert_Integer.pf
   Test_AssertEqual_Real.pf

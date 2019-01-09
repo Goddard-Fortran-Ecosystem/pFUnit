@@ -38,7 +38,7 @@ module PF_TestListener_mod
      procedure(endTest), deferred :: endTest
 !     procedure(startRun), deferred :: startRun  ! make deferred when ready
      procedure(endRun), deferred :: endRun    ! make deferred when ready
-     procedure :: ignoreTest
+     procedure :: disableTest
      procedure :: addError
      procedure :: setDebug
      procedure :: debug
@@ -113,14 +113,14 @@ contains
        debug = this%useDebug
     end function debug
 
-    ! By default, ignoreTest() does nothing.
+    ! By default, disableTest() does nothing.
     ! Maybe some listeners don't care.
-    subroutine ignoreTest(this, testName)
+    subroutine disableTest(this, testName)
        class (TestListener), intent(inout) :: this
        character(len=*), intent(in) :: testName
       _UNUSED_DUMMY(this)
       _UNUSED_DUMMY(testName)
-    end subroutine ignoreTest
+    end subroutine disableTest
     
 
  end module PF_TestListener_mod

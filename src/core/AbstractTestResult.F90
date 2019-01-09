@@ -16,7 +16,7 @@ module PF_AbstractTestResult_mod
      procedure(runCount), deferred      :: runCount
      procedure(failureCount), deferred  :: failureCount
      procedure(errorCount), deferred    :: errorCount
-     procedure(errorCount), deferred    :: ignoreCount
+     procedure(errorCount), deferred    :: disableCount
      procedure(getName), deferred       :: getName
      procedure(setName), deferred       :: setName
 
