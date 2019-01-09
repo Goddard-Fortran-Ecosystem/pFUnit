@@ -38,7 +38,7 @@ module PF_Test_mod
       procedure(getName), deferred :: getName
       procedure :: setName
 
-      procedure :: is_ignored
+      procedure :: is_disabled
    end type Test
 
    abstract interface
@@ -77,11 +77,11 @@ contains
    end subroutine setName
 
 
-   logical function is_ignored(this)
+   logical function is_disabled(this)
       class (Test), intent(in) :: this
 
-      is_ignored = (this%count(Ignore%type_name()) == 1)
+      is_disabled = (this%count(Disable%type_name()) == 1)
 
-   end function is_ignored
+   end function is_disabled
 
 end module PF_Test_mod

@@ -41,7 +41,7 @@ module PF_TestResult_mod
    type, extends(AbstractTestResult) :: TestResult
       private
       integer :: numRun = 0
-      integer :: numIgnored = 0
+      integer :: numDisabled = 0
       real    :: runTime
       type (TestListenerVector) :: listeners
       type (TestFailureVector) :: failures
@@ -61,9 +61,9 @@ module PF_TestResult_mod
       procedure :: getRunTime
       procedure :: failureCount
       procedure :: errorCount
-      procedure :: ignoreCount
+      procedure :: disableCount
       procedure :: startTest
-      procedure :: ignoreTest
+      procedure :: disableTest
       procedure :: endTest
       procedure :: runCount
       procedure :: run
@@ -155,10 +155,10 @@ contains
       errorCount = this%errors%size()
    end function errorCount
 
-   integer function ignoreCount(this)
+   integer function disableCount(this)
       class (TestResult), intent(in) :: this
-      ignoreCount = this%numIgnored
-   end function ignoreCount
+      disableCount = this%numDisabled
+   end function disableCount
 
    subroutine startTest(this, aTest)
       class (TestResult), intent(inout) :: this
@@ -176,21 +176,21 @@ contains
 
    end subroutine startTest
 
-   subroutine ignoreTest(this, aTest)
+   subroutine disableTest(this, aTest)
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
       integer :: i
       class (TestListener), pointer :: listener
 
-      this%numIgnored = this%numIgnored + 1
+      this%numDisabled = this%numDisabled + 1
 
       do i = 1, this%listeners%size()
          listener => this%listeners%at(i)
-         call listener%ignoreTest(aTest%getName())
+         call listener%disableTest(aTest%getName())
       end do
 
-   end subroutine ignoreTest
+   end subroutine disableTest
 
    subroutine endTest(this, aTest)
       class (TestResult), intent(inout) :: this
@@ -221,8 +221,8 @@ contains
       class (ParallelContext), intent(in) :: context
 
 
-      if (test%is_ignored()) then
-         call this%ignoreTest(test)
+      if (test%is_disabled()) then
+         call this%disableTest(test)
          return
       end if
 
