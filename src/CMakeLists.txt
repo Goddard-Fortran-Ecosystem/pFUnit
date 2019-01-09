@@ -8,3 +8,7 @@ if (hamcrest)
   add_subdirectory (hamcrest)
 endif ()
 
+if (ESMF)
+  add_subdirectory (esmf)
+endif ()
+

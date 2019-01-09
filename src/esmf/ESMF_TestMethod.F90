@@ -1,6 +1,6 @@
 module ESMF_TestMethod_mod
-   use MpiTestParameter_mod
-   use pFUnit_mod
+   use PF_MpiTestParameter_mod
+   use pFUnit
    use ESMF
    use ESMF_TestCase_mod
    use ESMF_TestParameter_mod

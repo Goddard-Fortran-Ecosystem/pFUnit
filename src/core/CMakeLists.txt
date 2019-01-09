@@ -1,5 +1,3 @@
-include_directories(${ftl_install_dir}/include)
-
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
@@ -147,25 +145,22 @@ set(srcs
     RemoteProxyTestCase.F90
     )
 
-#include( ${CMAKE_CURRENT_BINARY_DIR}/${generated_sources_output} )
-
 message("generated files: ${generated_sources_output}")
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
-
 endif ()
 
 if (NOT FTL)
   add_dependencies(funit gFTL)
 endif()
 
-include_directories(${CMAKE_BINARY_DIR}/mod)
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+target_include_directories (funit PRIVATE ${ftl_install_dir}/include)
+target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
+target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 install (TARGETS funit DESTINATION lib)
 if (BUILD_SHARED)
