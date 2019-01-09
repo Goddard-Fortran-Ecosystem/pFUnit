@@ -34,5 +34,10 @@ contains
    subroutine test_is_not_disabled()
    end subroutine test_is_not_disabled
    
-   
+
+   @test
+   @disable
+   subroutine test_disable_annotation()
+   end subroutine test_disable_annotation
+
 end module Test_DisableTest_mod
