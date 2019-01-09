@@ -5,11 +5,8 @@ set (srcs
   ESMF_TestParameter.F90
 )  
 
-add_library (esmfunit}  EXCLUDE_FROM_ALL ${srcs})
-
-include_directories (${INC_ESMF})
-include_directories (${INC_NETCDF})
-include_directories (${PFUNIT_INCLUDE_DIRS})
-
-target_link_libraries (esmfunit ${ESMF_LIBRARIES} ${PFUNIT_LIBRARIES})
+add_library (esmfunit  EXCLUDE_FROM_ALL ${srcs})
+target_link_libraries (esmfunit PUBLIC pfunit ${ESMF_LIBRARIES})
+target_link_libraries (esmfunit PUBLIC pfunit ${ESMF_LIBRARIES})
+target_include_directories (esmfunit PUBLIC ${ESMF_INCLUDE} ${NETCDF_INCLUDE})
 

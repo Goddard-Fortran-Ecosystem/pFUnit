@@ -1,5 +1,5 @@
 module ESMF_TestParameter_mod
-   use pfunit_mod, only: MpiTestParameter
+   use pfunit, only: MpiTestParameter
    implicit none
 
    private

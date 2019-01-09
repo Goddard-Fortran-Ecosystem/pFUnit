@@ -1,8 +1,8 @@
 module ESMF_TestCase_mod
    use ESMF
    use ESMF_TestParameter_mod
-   use pfunit_mod, only: MpiTestCase
-   use pfunit_mod, only: anyExceptions
+   use pFUnit, only: MpiTestCase
+
    implicit none
 
    private
@@ -39,8 +39,8 @@ contains
 
 
    recursive subroutine runBare(this)
-      use Exception_mod
-      use ParallelException_mod
+      use PF_Exception_mod
+      use PF_ExceptionList_mod
       use ESMF
       class (ESMF_TestCase), intent(inout) :: this
 
@@ -48,10 +48,11 @@ contains
       type (ESMF_GridComp), target :: gc
       integer :: rc
       integer :: pet
+      integer :: pet_count
 
-
-      ! Gridded component 
-      gc = ESMF_GridCompCreate(petList=[(pet,pet=0,this%getNumPETsRequested()-1)], rc=rc)
+      ! Gridded component
+      pet_count = this%getNumPETsRequested()
+      gc = ESMF_GridCompCreate(petList=[(pet,pet=0,pet_count-1)], rc=rc)
       if (rc /= ESMF_SUCCESS) call throw('Insufficient PETs for request')
       if (rc /= ESMF_SUCCESS) call throw('Failed to get vm for gridded component.')
 
@@ -278,7 +279,7 @@ contains
 
    
    integer function getNumPETsRequested(this) result(numPETsRequested)
-      use Exception_mod
+      use PF_Exception_mod
       class (ESMF_TestCase), intent(in) :: this
       select type (p => this%testParameter)
       class is (ESMF_TestParameter)
