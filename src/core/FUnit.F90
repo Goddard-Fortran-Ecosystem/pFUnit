@@ -120,7 +120,7 @@ module FUnit_private
    end interface
 
    public :: TestAnnotation
-   public :: Ignore
+   public :: Disable
 
 end module FUnit_private
 

@@ -563,19 +563,20 @@ class AtTestParameter(Action):
                 self.parser.userTestCase['testParameterConstructor'] = self.parser.userTestCase['testParameterType']
 
 
-class AtIgnore(Action):
+# @disable
+class AtDisable(Action):
     def __init__(self, parser):
         self.parser = parser
-        self.keyword = '@ignore'
+        self.keyword = '@disable'
 
     def match(self, line):
         nameRe = "'\w+'|" + """\w+"""
-        m = re.match("\s*@ignore\s*$", line, re.IGNORECASE)
+        m = re.match("\s*@disable\s*$", line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
-        print("Processing ignore:")
-        self.parser.current_method['ignore'] = True
+        print("Processing disable:")
+        self.parser.current_method['disable'] = True
         self.parser.commentLine(line)
                 
 class Parser():
@@ -610,7 +611,7 @@ class Parser():
         self.actions.append(AtTest(self))
         self.actions.append(IsTestMethod(self))
         self.actions.append(AtMpiTest(self))
-        self.actions.append(AtIgnore(self))
+        self.actions.append(AtDisable(self))
         self.actions.append(AtTestCase(self))
         self.actions.append(AtSuite(self))
         self.actions.append(AtBegin(self))
@@ -779,8 +780,8 @@ class Parser():
             type = 'TestMethod'
 
         self.outputFile.write('   t = ' + type + '(' + args + ')\n')
-        if ('ignore' in testMethod):
-            self.outputFile.write('   call t%insert(Ignore%type_name(),Ignore)\n')
+        if ('disable' in testMethod):
+            self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
         self.outputFile.write('   call suite%addTest(t)\n')
 
     def addMpiTestMethod(self, testMethod):
@@ -802,8 +803,8 @@ class Parser():
                 type = 'MpiTestMethod'
                     
             self.outputFile.write('   t = ' + type + '(' + args + ')\n')
-            if ('ignore' in testMethod):
-                self.outputFile.write('   call t%insert(Ignore%type_name(),Ignore)\n')
+            if ('disable' in testMethod):
+                self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
             self.outputFile.write('   call suite%addTest(t)\n')
 
 
