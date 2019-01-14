@@ -95,16 +95,16 @@ if (USE_ROBUST)
 endif()
 
 # By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
-set(FTL "" CACHE PATH "Optional path to externally installed FTL package.")
+set(GFTL "" CACHE PATH "Optional path to externally installed FTL package.")
 
-if (FTL) # use default
-  set(ftl_install_dir ${FTL})
+if (GFTL) # use default
+  set(gftl_install_dir ${GFTL})
 else()
-  set(ftl_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/FTL)
-  set(ftl_install_dir ${CMAKE_CURRENT_BINARY_DIR}/FTL/install)
+  set(gftl_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/gFTL)
+  set(gftl_install_dir ${CMAKE_CURRENT_BINARY_DIR}/gFTL/install)
 
   include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-  file(GLOB all_files ${ftl_source_dir}/*)
+  file(GLOB all_files ${gftl_source_dir}/*)
   list(LENGTH all_files n_files)
 
   if(n_files LESS_EQUAL 3)
@@ -122,19 +122,19 @@ else()
     GIT_REPOSITORY ${repository}
     DOWNLOAD_COMMAND ${download_command}
     UPDATE_COMMAND ${update_command}
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/FTL
-    SOURCE_DIR ${ftl_source_dir}
-    INSTALL_DIR ${ftl_install_dir}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gFTL
+    SOURCE_DIR ${gftl_source_dir}
+    INSTALL_DIR ${gftl_install_dir}
     BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${ftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
     INSTALL_COMMAND make install)
 endif()
 
 # By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
-set(gFTL_SHARED "" CACHE PATH "Optional path to externally installed gFTL-shared package.")
+set(GFTL_SHARED "" CACHE PATH "Optional path to externally installed gFTL-shared package.")
 
-if (gFTL_SHARED) # use default
-  set(gftl_shared_install_dir ${gFTL_SHARED})
+if (GFTL_SHARED) # use default
+  set(gftl_shared_install_dir ${GFTL_SHARED})
 else()
   set(gftl_shared_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/gFTL-shared)
   set(gftl_shared_install_dir ${CMAKE_CURRENT_BINARY_DIR}/gFTL-shared/install)
@@ -162,9 +162,46 @@ else()
     SOURCE_DIR ${gftl_shared_source_dir}
     INSTALL_DIR ${gftl_shared_install_dir}
     BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_shared_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${ftl_install_dir}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_shared_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir}
     INSTALL_COMMAND make install)
   ExternalProject_Add_StepDependencies(gFTL-shared configure gFTL)
+endif()
+
+# By default pFUnit uses fArgParse as a git submodule.   But this can be overridden with:
+set(FARGPARSE "" CACHE PATH "Optional path to externally installed fArgParse package.")
+
+if (FARGPARSE_SHARED) # use default
+  set(fargparse_install_dir ${FARGPARSE})
+else()
+  set(fargparse_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/fArgParse)
+  set(fargparse_install_dir ${CMAKE_CURRENT_BINARY_DIR}/fArgParse/install)
+
+  include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+  file(GLOB all_files ${fargparse_source_dir}/*)
+  list(LENGTH all_files n_files)
+
+  if(n_files LESS_EQUAL 3)
+    # git clone command did not use --recurse-submodules
+    set(repository https://github.com/Goddard-Fortran-Ecosystem/fArgParse.git)
+    set(download_command git submodule init)
+    set(update_command git submodule update)
+  else()
+    set(repository "")
+    set(download_command "")
+    set(update_command "")
+  endif()
+
+  ExternalProject_Add(fArgParse
+    GIT_REPOSITORY ${repository}
+    DOWNLOAD_COMMAND ${download_command}
+    UPDATE_COMMAND ${update_command}
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/fArgParse
+    SOURCE_DIR ${fargparse_source_dir}
+    INSTALL_DIR ${fargparse_install_dir}
+    BUILD_COMMAND make
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DFTL=${gftl_install_dir}
+    INSTALL_COMMAND make install)
+  ExternalProject_Add_StepDependencies(fArgParse configure gFTL)
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
