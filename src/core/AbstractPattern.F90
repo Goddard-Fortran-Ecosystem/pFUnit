@@ -1,7 +1,7 @@
 module PF_AbstractPattern_mod
    implicit none
    private
-
+ 
    public :: AbstractPattern
 
    type, abstract :: AbstractPattern
