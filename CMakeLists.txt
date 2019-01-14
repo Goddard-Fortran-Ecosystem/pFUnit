@@ -94,8 +94,8 @@ if (USE_ROBUST)
     add_definitions(-DUSE_ROBUST)
 endif()
 
-# By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
-set(GFTL "" CACHE PATH "Optional path to externally installed FTL package.")
+# By default pFUnit uses gFTL as a git submodule.   But this can be overridden with:
+set(GFTL "" CACHE PATH "Optional path to externally installed gFTL package.")
 
 if (GFTL) # use default
   set(gftl_install_dir ${GFTL})
@@ -130,7 +130,7 @@ else()
     INSTALL_COMMAND make install)
 endif()
 
-# By default pFUnit uses FTL as a git submodule.   But this can be overridden with:
+# By default pFUnit uses gFTL as a git submodule.   But this can be overridden with:
 set(GFTL_SHARED "" CACHE PATH "Optional path to externally installed gFTL-shared package.")
 
 if (GFTL_SHARED) # use default
@@ -199,7 +199,7 @@ else()
     SOURCE_DIR ${fargparse_source_dir}
     INSTALL_DIR ${fargparse_install_dir}
     BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DFTL=${gftl_install_dir}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir}
     INSTALL_COMMAND make install)
   ExternalProject_Add_StepDependencies(fArgParse configure gFTL)
 endif()
