@@ -2,3 +2,6 @@
 	path = FTL
 	url = https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
 	
+[submodule "gFTL-shared"]
+	path = gFTL-shared
+	url = git@github.com:Goddard-Fortran-Ecosystem/gFTL-shared.git
