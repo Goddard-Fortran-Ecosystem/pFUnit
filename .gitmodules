@@ -7,4 +7,4 @@
 	url = https://github.com:Goddard-Fortran-Ecosystem/gFTL-shared.git
 [submodule "fArgParse"]
 	path = fArgParse
-	url = gttps://github.com:Goddard-Fortran-Ecosystem/fArgParse.git
+	url = https://github.com:Goddard-Fortran-Ecosystem/fArgParse.git
