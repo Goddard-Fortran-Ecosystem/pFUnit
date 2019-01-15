@@ -153,12 +153,12 @@ if (BUILD_SHARED)
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
 endif ()
 
-if (NOT FTL)
+if (NOT GFTL)
   add_dependencies(funit gFTL)
 endif()
 
 set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
-target_include_directories (funit PRIVATE ${ftl_install_dir}/include)
+target_include_directories (funit PRIVATE ${gftl_install_dir}/include)
 target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
 target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
 

@@ -1,4 +1,10 @@
-[submodule "FTL"]
-	path = FTL
+[submodule "gFTL"]
+	path = gFTL
 	url = https://github.com/Goddard-Fortran-Ecosystem/gFTL.git
 	
+[submodule "gFTL-shared"]
+	path = gFTL-shared
+	url = https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared.git
+[submodule "fArgParse"]
+	path = fArgParse
+	url = https://github.com/Goddard-Fortran-Ecosystem/fArgParse.git
