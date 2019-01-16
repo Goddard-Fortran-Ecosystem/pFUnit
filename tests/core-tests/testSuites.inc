@@ -15,4 +15,5 @@
    ADD_TEST_SUITE(LiteralPattern_suite)
    ADD_TEST_SUITE(DotPattern_suite)
    ADD_TEST_SUITE(RepeatPattern_suite)
+   ADD_TEST_SUITE(NameFilter_suite)
    ADD_TEST_SUITE(RegularExpression_suite)
