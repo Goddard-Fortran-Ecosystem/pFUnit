@@ -42,12 +42,8 @@ module FUnit_private
    use PF_ResultPrinter_mod
    use PF_DebugListener_mod
 
-   use pf_Arg_mod
-   use pf_ArgParser_mod
-   use pf_ArgVector_mod
-   use pf_StringVector_mod
-   use pf_StringUnlimitedMap_mod
-   use pf_CommandLineArguments_mod
+   use gFTL_StringVectorMod
+   use gFTL_StringUnlimitedMapMod
 
    use PF_RobustRunner_mod
    use PF_Assert_mod
@@ -55,6 +51,9 @@ module FUnit_private
    use PF_SerialContext_mod
 
    use Pf_TestAnnotation_Mod
+
+   use fParse
+
    implicit none
    private
 
@@ -102,13 +101,6 @@ module FUnit_private
    ! Optional arguments for assertEqual
    public :: WhitespaceOptions
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
-
-
-   public :: Arg
-   public :: ArgParser, to_string, to_integer, to_real
-   public :: ArgVector
-   public :: StringVector
-   public :: StringUnlimitedMap
 
    public :: LoadTests_interface
 
