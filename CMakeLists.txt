@@ -165,6 +165,8 @@ else()
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_shared_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir}
     INSTALL_COMMAND make install)
   ExternalProject_Add_StepDependencies(gFTL-shared configure gFTL)
+  add_library(lib-gFTL-shared STATIC IMPORTED)
+  set_target_properties(lib-gFTL-shared PROPERTIES IMPORTED_LOCATION ${gftl_shared_install_dir}/lib/libgFTL-shared.a)
 endif()
 
 # By default pFUnit uses fArgParse as a git submodule.   But this can be overridden with:
@@ -199,9 +201,12 @@ else()
     SOURCE_DIR ${fargparse_source_dir}
     INSTALL_DIR ${fargparse_install_dir}
     BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir}
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir} -DGFTL_SHARED=${gftl_shared_install_dir}
     INSTALL_COMMAND make install)
-  ExternalProject_Add_StepDependencies(fArgParse configure gFTL)
+  ExternalProject_Add_StepDependencies(fArgParse configure gFTL gFTL-shared)
+  add_library(fargparse STATIC IMPORTED)
+  set_target_properties(fargparse PROPERTIES IMPORTED_LOCATION ${fargparse_install_dir}/lib/libfargparse.a)
+
 endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")

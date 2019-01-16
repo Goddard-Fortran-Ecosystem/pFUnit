@@ -81,14 +81,8 @@ set(srcs
   KeywordEnforcer.F90
   MatchObject.F90
   AbstractPattern.F90
-  StringVector.F90
-  StringUnlimitedMap.F90
   funit_main.F90
 #  pfunit_main.F90
-  CommandLineArguments.F90
-  Arg.F90
-  ArgVector.F90
-  ArgParser.F90
   None.F90
   GlobPattern.F90
   LiteralPattern.F90
@@ -148,6 +142,20 @@ set(srcs
 message("generated files: ${generated_sources_output}")
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
 
+if (NOT GFTL)
+  add_dependencies(funit gFTL)
+endif()
+
+if (NOT GFTL_SHARED)
+  add_dependencies(funit gFTL-shared)
+endif()
+
+if (NOT FARGPARSE)
+  add_dependencies(funit fArgParse)
+endif()
+
+target_link_libraries(funit PUBLIC fargparse lib-gFTL-shared)
+
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
@@ -159,6 +167,8 @@ endif()
 
 set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
 target_include_directories (funit PRIVATE ${gftl_install_dir}/include)
+target_include_directories (funit PRIVATE ${gftl_shared_install_dir}/mod)
+target_include_directories (funit PRIVATE ${fargparse_install_dir}/include)
 target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
 target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
 

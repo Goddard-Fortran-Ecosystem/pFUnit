@@ -27,8 +27,6 @@ set(pf_tests
   Test_AssertGreaterThan_Real.pf
   Test_AssertGreaterThanOrEqual_Real.pf
   Test_Norms.pf
-  Test_Arg.pf
-  Test_ArgParser.pf
   Test_GlobPattern.pf
   Test_LiteralPattern.pf
   Test_DotPattern.pf

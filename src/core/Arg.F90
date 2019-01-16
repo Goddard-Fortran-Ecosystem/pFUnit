@@ -2,7 +2,7 @@
 
 module pf_Arg_mod
    use pf_KeywordEnforcer_mod
-   use pf_StringVector_mod
+   use gFTL_StringVectorMod
    use pf_None_mod
    implicit none
    private
