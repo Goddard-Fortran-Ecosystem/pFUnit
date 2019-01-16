@@ -85,6 +85,7 @@ before_script:
    - cd ${TRAVIS_BUILD_DIR}
    - mkdir build
    - cd build
+   - cmake --version
    - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit -DMPI=${USE_MPI}
 
 script:
