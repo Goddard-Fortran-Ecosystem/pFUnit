@@ -27,13 +27,14 @@ module PF_TestRunner_mod
    use PF_Test_mod
    use PF_BaseTestRunner_mod
    use PF_TestListener_mod
+   use PF_TestListenerVector_mod
    implicit none
    private
 
    public :: TestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
-      type (ListenerPointer), allocatable :: extListeners(:)
+      type(TestListenerVector) :: extListeners
    contains
       procedure :: run
       procedure :: createTestResult
@@ -53,13 +54,12 @@ contains
 
    function newTestRunner_default() result(runner)
       type (TestRunner) :: runner
-      allocate(runner%extListeners(0))
    end function newTestRunner_default
 
    function newTestRunner_unit(extListeners) result(runner)
-      type(ListenerPointer), intent(in) :: extListeners(:)
+      type(TestListenerVector), intent(in) :: extListeners
       type (TestRunner) :: runner
-      allocate(runner%extListeners(size(extListeners)), source=extListeners)
+      runner%extListeners = extListeners
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
@@ -90,6 +90,7 @@ contains
       integer :: clockRate
       integer :: i
 
+      class(TestListener), pointer :: listener
 
       call system_clock(clockStart)
 
@@ -97,8 +98,8 @@ contains
       call result%setName(aTest%getName())
 ! Add the extListeners to the listeners list.
 
-      do i=1,size(this%extListeners)
-         call result%addListener(this%extListeners(i)%pListener)
+      do i=1,this%extListeners%size()
+         call result%addListener(this%extListeners%at(i))
       end do
       call aTest%run(result, context)
       call system_clock(clockStop, clockRate)
@@ -110,8 +111,9 @@ contains
 
 ! e.g. call result%endRun()...
       if (context%isRootProcess())  then
-         do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(result)
+         do i=1,this%extListeners%size()
+            listener => this%extListeners%at(i)
+            call listener%endRun(result)
          end do
       end if
 !tc: 2+1 lists -- extListeners, listeners and in testresult too...

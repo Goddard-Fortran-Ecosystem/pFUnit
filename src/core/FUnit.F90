@@ -38,6 +38,7 @@ module FUnit_private
    use PF_SubsetRunner_mod
 
    use PF_TestListener_mod
+   use PF_TestListenerVector_mod
    use PF_XmlPrinter_mod
    use PF_ResultPrinter_mod
    use PF_DebugListener_mod
@@ -50,7 +51,9 @@ module FUnit_private
    use PF_ParallelContext_mod
    use PF_SerialContext_mod
 
-   use Pf_TestAnnotation_Mod
+   use Pf_TestAnnotation_mod
+
+   use pf_NameFilter_mod
 
    use fParse
 
@@ -66,10 +69,14 @@ module FUnit_private
    public :: BaseTestRunner
    public :: SubsetRunner
 
+   public :: TestListener
+   public :: TestListenerVector
    public :: ListenerPointer
    public :: ResultPrinter
    public :: XmlPrinter
    public :: DebugListener
+
+   public :: NameFilter
 
    public :: RobustRunner
    public :: TestCase
@@ -136,23 +143,51 @@ contains
 
    subroutine initialize(extra)
       procedure(), optional :: extra  ! user-specific extra initialization steps
+
       if (present(extra)) call extra()
    end subroutine initialize
 
 
    logical function run(load_tests) result(status)
+      use fparse
       procedure(LoadTests_interface) :: load_tests
       
       type (TestSuite) :: suite
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
       type (SerialContext) :: c
-      class (ListenerPointer), allocatable :: listeners(:)
+      type (TestListenerVector) :: listeners
+      type(ArgParser) :: parser
+      logical :: debug
+      type (StringUnlimitedMap) :: options
+      class(*), pointer :: option
+      character(:), allocatable :: pattern
 
-      allocate(listeners(1))
-      allocate(listeners(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
+      parser = ArgParser()
+      call parser%add_argument('-d', '--debug', '--verbose', action='store_true', &
+           & help='make output more verbose')
+
+      call parser%add_argument('-f', '--filter', action='store', &
+           & help='only run tests that match pattern')
+      options =  parser%parse_args()
+      
+      call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
+      option => options%at('debug')
+      if (associated(option)) then
+         call cast(option, debug)
+         if (debug) call listeners%push_back(DebugListener(OUTPUT_UNIT))
+      end if
+
+      
 !!$      options = parse()
       suite = load_tests()
+
+      option => options%at('filter')
+      if (associated(option)) then
+         call cast(option, pattern)
+         suite = suite%filter(NameFilter(pattern))
+      end if
+      
       allocate(runner, source=TestRunner(listeners))
       r = runner%run(suite, c)
       status = r%wasSuccessful()

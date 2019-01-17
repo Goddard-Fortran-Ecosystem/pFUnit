@@ -34,6 +34,7 @@ set(pf_tests
   Test_DotPattern.pf
   Test_RepeatPattern.pf
   Test_TapListener.pf
+  Test_NameFilter.pf
   Test_RegularExpression.pf)
 
 set(new_tests)

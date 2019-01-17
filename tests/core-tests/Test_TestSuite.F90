@@ -25,6 +25,7 @@
 module Test_TestSuite_mod
    use PF_TestSuite_mod, only: TestSuite
    use PF_TestResult_mod
+   use PF_Assert_mod, only: assertEqual
    implicit none
    private
 
@@ -64,6 +65,12 @@ contains
       call suite%addTest( &
            &   TestMethod('testGetTestCases', &
            &                  testGetTestCases))
+      call suite%addTest( &
+           &   TestMethod('test_filter_simple', &
+           &                  test_filter_simple))
+      call suite%addTest( &
+           &   TestMethod('test_filter_nested', &
+           &                  test_filter_nested))
 
    end function suite
 
@@ -72,7 +79,6 @@ contains
       use SimpleTestCase_mod, only: newSimpleTestCase
       use SimpleTestCase_mod, only: method1, method2
       use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suite
 
       suite = TestSuite('aSuite')
@@ -86,7 +92,6 @@ contains
 
    subroutine testCountTestCasesNestedA()
       use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use PF_Assert_mod, only: assertEqual
 
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
@@ -101,7 +106,6 @@ contains
    subroutine testCountTestCasesNestedB()
       use PF_TestSuite_mod, only: TestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
-      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
 
@@ -132,7 +136,6 @@ contains
    subroutine testCountTestCasesNestedC()
       use PF_TestSuite_mod, only: TestSuite, TestSuite
       use SimpleTestCase_mod, only: SimpleTestCase
-      use PF_Assert_mod, only: assertEqual
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
@@ -164,7 +167,6 @@ contains
       use PF_TestCase_mod
       use PF_TestMethod_mod
       use PF_SerialContext_mod
-      use PF_Assert_mod
 
       type (TestSuite) :: top
       type (TestSuite) :: childA, childB
@@ -198,7 +200,63 @@ contains
 
       call assertEqual('::childA.a1::childA.a2::childA.a3::childB.b1::childB.b2', aResult%log)
 
-   end subroutine testGetTestCases
+    end subroutine testGetTestCases
+
+
+   subroutine test_filter_simple()
+     use pf_NameFilter_mod
+     use pf_TestMethod_mod, only: TestMethod
+     type (TestSuite) :: all_tests
+     type (TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+     call all_tests%addTest(TestMethod('a1',myTestMethod))
+     call all_tests%addTest(TestMethod('a2',myTestMethod))
+
+     filtered_tests = all_tests%filter(NameFilter('a1'))
+     call assertEqual(1, filtered_tests%countTestCases())
+     
+     filtered_tests = all_tests%filter(NameFilter('a'))
+     call assertEqual(2, filtered_tests%countTestCases())
+
+     filtered_tests = all_tests%filter(NameFilter('b'))
+     call assertEqual(0, filtered_tests%countTestCases())
+
+   end subroutine test_filter_simple
+
+   subroutine test_filter_nested()
+     use pf_NameFilter_mod
+     use pf_TestMethod_mod, only: TestMethod
+     type(TestSuite) :: all_tests
+     type(TestSuite) :: subsuite
+     type(TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+
+     subsuite = TestSuite('sub_A')
+     call subsuite%addTest(TestMethod('a1',myTestMethod))
+     call subsuite%addTest(TestMethod('a2',myTestMethod))
+     call subsuite%addTest(TestMethod('x',myTestMethod))
+     call all_tests%addTest(subsuite)
+
+     subsuite = TestSuite('sub_B')
+     call subsuite%addTest(TestMethod('b1',myTestMethod))
+     call subsuite%addTest(TestMethod('b2',myTestMethod))
+     call all_tests%addTest(subsuite)
+
+     filtered_tests = all_tests%filter(NameFilter('sub_A.'))
+     call assertEqual(3, filtered_tests%countTestCases())
+
+     filtered_tests = all_tests%filter(NameFilter('sub_A.a'))
+     call assertEqual(2, filtered_tests%countTestCases())
+
+     filtered_tests = all_tests%filter(NameFilter('sub_A.a2'))
+     call assertEqual(1, filtered_tests%countTestCases())
+     
+     filtered_tests = all_tests%filter(NameFilter('sub_'))
+     call assertEqual(5, filtered_tests%countTestCases())
+
+   end subroutine test_filter_nested
 
    subroutine myTestMethod()
    end subroutine myTestMethod

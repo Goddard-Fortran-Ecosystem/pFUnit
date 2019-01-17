@@ -47,6 +47,7 @@ module PF_TestSuite_mod
       procedure :: copy
       generic :: assignment(=) => copy
       procedure :: getTestCases
+      procedure :: filter
    end type TestSuite
 
    interface TestSuite
@@ -173,5 +174,35 @@ contains
        end subroutine accumulateTestCases
 
     end subroutine getTestCases
+
+
+    recursive function filter(this, a_filter) result(new_suite)
+      use pf_TestFilter_mod
+      type(TestSuite) :: new_suite
+      class(TestSuite), intent(in) :: this
+      class(TestFilter), intent(in) :: a_filter
+
+      type (TestVectorIterator) :: iter
+      class(Test), pointer :: t
+
+      new_suite = TestSuite(this%name)
+      
+      iter = this%tests%begin()
+      do while (iter /= this%tests%end())
+         t => iter%get()
+
+         select type (t)
+         class is (TestSuite)
+            call new_suite%tests%push_back(t%filter(a_filter))
+         class default
+            if (a_filter%filter(t)) then
+               call new_suite%tests%push_back(t)
+            end if
+         end select
+         call iter%next()
+      end do
+
+    end function filter
+
 
  end module PF_TestSuite_mod
