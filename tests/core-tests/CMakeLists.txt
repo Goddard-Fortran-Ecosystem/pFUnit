@@ -11,8 +11,10 @@ configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 set(OTHER_SOURCES
   MakeNaN.F90 MakeInf.F90 MockListener.F90
   BrokenTestCase.F90 BrokenSetUpCase.F90
-
   FixtureTestCase.F90)
+
+add_library(other_shared ${OTHER_SOURCES})
+target_link_libraries(other_shared funit)
 
 set(pf_tests
   Test_ExceptionList.pf
@@ -32,6 +34,7 @@ set(pf_tests
   Test_DotPattern.pf
   Test_RepeatPattern.pf
   Test_TapListener.pf
+  Test_NameFilter.pf
   Test_RegularExpression.pf)
 
 set(new_tests)
@@ -75,11 +78,11 @@ set(SERIAL_TEST_SRCS
 
 list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
 
-add_library(funit_tests EXCLUDE_FROM_ALL STATIC ${SERIAL_TEST_SRCS} ${OTHER_SOURCES})
-target_link_libraries(funit_tests funit)
+add_library(funit_tests EXCLUDE_FROM_ALL STATIC ${SERIAL_TEST_SRCS})
+target_link_libraries(funit_tests other_shared)
 
-add_library(new_stests EXCLUDE_FROM_ALL ${new_tests} ${OTHER_SOURCES})
-target_link_libraries(new_stests funit)
+add_library(new_stests EXCLUDE_FROM_ALL ${new_tests})
+target_link_libraries(new_stests other_shared)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
 set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_tests.x new_stests funit)

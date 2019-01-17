@@ -2,7 +2,7 @@ program main
    use FUnit, only: initialize
    use FUnit, only: finalize
    use FUnit, only: TestResult
-   use FUnit, only: ListenerPointer
+   use FUnit, only: TestListenerVector
    use FUnit, only: ResultPrinter
    use FUnit, only: stub
 !$$   use FUnit, only: DebugListener
@@ -50,10 +50,9 @@ contains
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-      type (ListenerPointer), target, allocatable :: ll(:)
+      type (TestListenerVector) :: ll
 
-      allocate(ll(1))
-      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
+      call ll%push_back(ResultPrinter(OUTPUT_UNIT))
       ! TODO: We'll make this a feature in 4.0
 !!$      allocate(ll(2))
 !!$      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))

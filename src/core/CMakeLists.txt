@@ -118,6 +118,8 @@ set(srcs
   ThrowFundamentalTypes.F90
   XmlPrinter.F90
 
+  TestFilter.F90
+  NameFilter.F90
   FUnit.F90
   )
 

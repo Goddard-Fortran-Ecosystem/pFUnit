@@ -85,17 +85,16 @@ contains
 
 
    logical function run(load_tests) result(status)
-      use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
+     use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       procedure(LoadTests_interface) :: load_tests
       
-      type (TestSuite) :: suite
+      type(TestSuite) :: suite
       class(BaseTestRunner), allocatable :: runner
-      type (TestResult) :: r
-      class (ParallelContext), allocatable :: c
-      class (ListenerPointer), allocatable :: listeners(:)
+      type(TestResult) :: r
+      class(ParallelContext), allocatable :: c
+      type(TestListenerVector) :: listeners
 
-      allocate(listeners(1))
-      allocate(listeners(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
+      call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
 !!$      options = parse()
       suite = load_tests()
       allocate(runner, source=TestRunner(listeners))
