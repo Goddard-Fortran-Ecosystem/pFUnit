@@ -145,7 +145,7 @@ if (NOT FARGPARSE)
   add_dependencies(funit fArgParse)
 endif()
 
-target_link_libraries(funit PUBLIC fargparse lib-gFTL-shared)
+target_link_libraries(funit PUBLIC lib_fargparse lib_gFTL-shared)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
@@ -157,9 +157,9 @@ if (NOT GFTL)
 endif()
 
 set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
-target_include_directories (funit PRIVATE ${gftl_install_dir}/include)
-target_include_directories (funit PRIVATE ${gftl_shared_install_dir}/mod)
-target_include_directories (funit PRIVATE ${fargparse_install_dir}/include)
+target_include_directories (funit PRIVATE ${gFTL_install_dir}/include)
+target_include_directories (funit PRIVATE ${gFTL-shared_install_dir}/mod)
+target_include_directories (funit PRIVATE ${fArgParse_install_dir}/include)
 target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
 target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
 

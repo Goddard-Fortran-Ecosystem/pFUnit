@@ -94,120 +94,25 @@ if (USE_ROBUST)
     add_definitions(-DUSE_ROBUST)
 endif()
 
-# By default pFUnit uses gFTL as a git submodule.   But this can be overridden with:
-set(GFTL "" CACHE PATH "Optional path to externally installed gFTL package.")
+include(BuildSubmodule)
+build_submodule(
+  gFTL
+  DESCRIPTION "Optional path to externally installed gFTL package."
+  )
+build_submodule(
+  gFTL-shared
+  DESCRIPTION "Optional path to externally installed gFTL-shared package."
+  DEPENDENCIES gFTL
+  TARGETS gFTL-shared
+  )
+build_submodule(
+  fArgParse
+  DESCRIPTION "Optional path to externally installed gFTL-shared package."
+  DEPENDENCIES gFTL gFTL-shared
+  TARGETS fargparse
+  )
+set (gftl_install_dir ${gFTL_install_dir})
 
-if (GFTL) # use default
-  set(gftl_install_dir ${GFTL})
-else()
-  set(gftl_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/gFTL)
-  set(gftl_install_dir ${CMAKE_CURRENT_BINARY_DIR}/gFTL/install)
-
-  include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-  file(GLOB all_files ${gftl_source_dir}/*)
-  list(LENGTH all_files n_files)
-
-  if(n_files LESS_EQUAL 3)
-    # git clone command did not use --recurse-submodules
-    set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL.git)
-    set(download_command git submodule init)
-    set(update_command git submodule update)
-  else()
-    set(repository "")
-    set(download_command "")
-    set(update_command "")
-  endif()
-
-  ExternalProject_Add(gFTL
-    GIT_REPOSITORY ${repository}
-    DOWNLOAD_COMMAND ${download_command}
-    UPDATE_COMMAND ${update_command}
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gFTL
-    SOURCE_DIR ${gftl_source_dir}
-    INSTALL_DIR ${gftl_install_dir}
-    BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_install_dir}  -DCMAKE_INSTALL_MESSAGE=LAZY
-    INSTALL_COMMAND make install)
-endif()
-
-# By default pFUnit uses gFTL as a git submodule.   But this can be overridden with:
-set(GFTL_SHARED "" CACHE PATH "Optional path to externally installed gFTL-shared package.")
-
-if (GFTL_SHARED) # use default
-  set(gftl_shared_install_dir ${GFTL_SHARED})
-else()
-  set(gftl_shared_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/gFTL-shared)
-  set(gftl_shared_install_dir ${CMAKE_CURRENT_BINARY_DIR}/gFTL-shared/install)
-
-  include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-  file(GLOB all_files ${gftl_shared_source_dir}/*)
-  list(LENGTH all_files n_files)
-
-  if(n_files LESS_EQUAL 3)
-    # git clone command did not use --recurse-submodules
-    set(repository https://github.com/Goddard-Fortran-Ecosystem/gFTL-shared.git)
-    set(download_command git submodule init)
-    set(update_command git submodule update)
-  else()
-    set(repository "")
-    set(download_command "")
-    set(update_command "")
-  endif()
-
-  ExternalProject_Add(gFTL-shared
-    GIT_REPOSITORY ${repository}
-    DOWNLOAD_COMMAND ${download_command}
-    UPDATE_COMMAND ${update_command}
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gFTL-shared
-    SOURCE_DIR ${gftl_shared_source_dir}
-    INSTALL_DIR ${gftl_shared_install_dir}
-    BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${gftl_shared_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir}
-    INSTALL_COMMAND make install)
-  ExternalProject_Add_StepDependencies(gFTL-shared configure gFTL)
-  add_library(lib-gFTL-shared STATIC IMPORTED)
-  set_target_properties(lib-gFTL-shared PROPERTIES IMPORTED_LOCATION ${gftl_shared_install_dir}/lib/libgFTL-shared.a)
-endif()
-
-# By default pFUnit uses fArgParse as a git submodule.   But this can be overridden with:
-set(FARGPARSE "" CACHE PATH "Optional path to externally installed fArgParse package.")
-
-if (FARGPARSE_SHARED) # use default
-  set(fargparse_install_dir ${FARGPARSE})
-else()
-  set(fargparse_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/fArgParse)
-  set(fargparse_install_dir ${CMAKE_CURRENT_BINARY_DIR}/fArgParse/install)
-
-  include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-  file(GLOB all_files ${fargparse_source_dir}/*)
-  list(LENGTH all_files n_files)
-
-  if(n_files LESS_EQUAL 3)
-    # git clone command did not use --recurse-submodules
-    set(repository https://github.com/Goddard-Fortran-Ecosystem/fArgParse.git)
-    set(download_command git submodule init)
-    set(update_command git submodule update)
-  else()
-    set(repository "")
-    set(download_command "")
-    set(update_command "")
-  endif()
-
-  ExternalProject_Add(fArgParse
-    GIT_REPOSITORY ${repository}
-    DOWNLOAD_COMMAND ${download_command}
-    UPDATE_COMMAND ${update_command}
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/fArgParse
-    SOURCE_DIR ${fargparse_source_dir}
-    INSTALL_DIR ${fargparse_install_dir}
-    BUILD_COMMAND make
-    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${fargparse_install_dir} -DCMAKE_INSTALL_MESSAGE=LAZY -DGFTL=${gftl_install_dir} -DGFTL_SHARED=${gftl_shared_install_dir}
-    INSTALL_COMMAND make install)
-  ExternalProject_Add_StepDependencies(fArgParse configure gFTL gFTL-shared)
-  add_library(fargparse STATIC IMPORTED)
-  set_target_properties(fargparse PROPERTIES IMPORTED_LOCATION ${fargparse_install_dir}/lib/libfargparse.a)
-
-endif()
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
