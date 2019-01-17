@@ -65,18 +65,7 @@ foreach(rank RANGE ${MAX_ASSERT_RANK})
     )
 endforeach()
 
-# Generate AssertArray files:  AssertArrays.fh, generated.inc, and AssertXYZ?.F90
-add_custom_command(
-  OUTPUT ${generated_files} AssertArrays.fh
-
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/GenerateAssertsOnArrays.py --maxRank ${MAX_ASSERT_RANK}
-  DEPENDS GenerateAssertsOnArrays.py
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  COMMENT Generating Assert<type><rank>.F90
-  )
-
 set(srcs
-#  ${generated_files}
   ${new_generated_sources}
   KeywordEnforcer.F90
   MatchObject.F90
