@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 
 include_directories (${pFUnit_SOURCE_DIR}/include)
 include_directories (${pFUnit_BINARY_DIR}/src)

@@ -13,10 +13,10 @@ module pf_AbstractMatcher_mod
 
    abstract interface
 
-      logical function matches(this, actual)
+      logical function matches(this, actual_value)
          import AbstractMatcher
          class (AbstractMatcher), intent(in) :: this
-         class(*), intent(in) :: actual
+         class(*), intent(in) :: actual_value
       end function matches
 
       subroutine describe_mismatch(this, actual, description)

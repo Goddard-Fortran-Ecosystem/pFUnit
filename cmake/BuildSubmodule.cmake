@@ -31,7 +31,6 @@ macro (build_submodule name)
     endif()
 
     message("External project ... ${name}")
-    set(extra_args "-DCMAKE_INSTALL_PREFIX=${${name}_install_dir};-DCMAKE_INSTALL_MESSAGE=LAZY")
     if(build_submodule_DEPENDENCIES)
       foreach(dependency ${build_submodule_DEPENDENCIES})
 	string(TOUPPER ${dependency} DEPENDENCY)

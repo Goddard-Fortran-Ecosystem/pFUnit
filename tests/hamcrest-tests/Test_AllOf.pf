@@ -1,0 +1,12 @@
+module Test_AllOf
+  use funit
+  use hamcrest
+  implicit none
+  @suite(name='Hamcrest_AllOf')
+
+contains
+
+  @test
+  subroutine test_basic()
+  end subroutine test_basic
+end module Test_AllOf

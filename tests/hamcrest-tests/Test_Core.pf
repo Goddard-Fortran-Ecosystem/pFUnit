@@ -1,0 +1,51 @@
+module Test_Core
+  use funit
+  use hamcrest
+  implicit none
+
+  @suite(name='HamcrestCore_suite')
+
+contains
+
+  ! Bootstrapping design with very basic requrements.
+  @test
+  subroutine test_basic_does_not_match()
+    call assert_that(2, is(equal_to(1)))
+    @assertExceptionRaised( )
+  end subroutine test_basic_does_not_match
+
+  @test
+  subroutine test_basic_matches()
+    call assert_that(1, is(equal_to(1)))
+    ! shortcut
+    call assert_that(1, is(1))
+  end subroutine test_basic_matches
+  
+  @test
+  subroutine test_basic_msg_format()
+    call assert_that(2, is(equal_to(1)))
+    @assertExceptionRaised(new_line('a')//'Expected: is <1>' // new_line('a') // '     but: was <2>')
+  end subroutine test_basic_msg_format
+
+  @test
+  subroutine test_basic_is_not()
+
+    call assert_that(2, is(not(equal_to(1))))
+    call assert_that(2, is(not(1)))
+
+  end subroutine test_basic_is_not
+
+  @test
+  subroutine test_message_is_not()
+
+    call assert_that(1, is(not(equal_to(1))))
+    @assertExceptionRaised(new_line('a')//'Expected: is not <1>' // new_line('a') // '     but: was <1>')
+
+  end subroutine test_message_is_not
+
+  @test
+  subroutine test_basic_real()
+    call assert_that(1., is(equal_to(1.)))
+  end subroutine test_basic_real
+  
+end module Test_Core

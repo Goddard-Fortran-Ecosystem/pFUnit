@@ -16,6 +16,9 @@ module pf_MatcherDescription_mod
       procedure(append_text), deferred :: append_text
       procedure(append_description_of), deferred :: append_description_of ! selfd
       procedure(to_string), deferred :: to_string
+      procedure(append_value_scalar), deferred :: append_value_scalar
+      generic :: append_value => append_value_scalar
+      procedure(append_list), deferred :: append_list
    end type MatcherDescription
 
 
@@ -43,6 +46,13 @@ module pf_MatcherDescription_mod
          class (SelfDescribing), intent(in) :: value
       end subroutine append_description_of
 
+
+      subroutine append_value_scalar(this, value)
+        import MatcherDescription
+        class(MatcherDescription), intent(inout) :: this
+        class(*), intent(in) :: value
+      end subroutine append_value_scalar
+
       function to_string(this) result(string)
          import SelfDescribing
          import MatcherDescription
@@ -50,6 +60,15 @@ module pf_MatcherDescription_mod
          class (MatcherDescription), intent(in) :: this
       end function to_string
 
+      subroutine append_list(this, start, separator, end, values)
+        import MatcherDescription
+        import SelfDescribing
+        class(MatcherDescription), intent(inout) :: this
+        character(*), intent(in) :: start
+        character(*), intent(in) :: separator
+        character(*), intent(in) :: end
+        class(SelfDescribing), intent(in) :: values(:)
+      end subroutine append_list
    end interface
 
 end module pf_MatcherDescription_mod

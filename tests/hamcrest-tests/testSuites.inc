@@ -1,0 +1,5 @@
+   ADD_TEST_SUITE(HamcrestCore_suite)
+   ADD_TEST_SUITE(Hamcrest_AnyOf_suite)
+   ADD_TEST_SUITE(Hamcrest_StringContains)
+   ADD_TEST_SUITE(Hamcrest_StringStartsWith)
+   ADD_TEST_SUITE(Hamcrest_StringEndsWith)

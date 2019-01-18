@@ -1,9 +1,12 @@
 module pf_MatcherAssert_mod
    use pf_AbstractMatcher_mod
    use pf_SourceLocation_mod
+   use funit, only: throw
    implicit none
    private
 
+   public :: assert_that
+   
    interface assert_that
       module procedure :: assert_that_no_reason
       module procedure :: assert_that_reason
@@ -30,12 +33,12 @@ contains
 
       type (StringDescription) :: description
 
-      if (matcher%matches(actual)) then
+      if (.not. matcher%matches(actual)) then
          description = StringDescription()
          call description%append_text(reason)
          call description%append_text(new_line('a')//'Expected: ')
          call description%append_description_of(matcher)
-         call description%append_text(new_line('a')//'    but: ')
+         call description%append_text(new_line('a')//'     but: ')
          call matcher%describe_mismatch(actual, description)
          call throw(description%to_string(), location)
       end if

@@ -58,6 +58,8 @@ contains
 
       if (present(message)) then
          new_Exception%message = trim(message)
+      else
+         new_Exception%message = NULL_MESSAGE
       end if
 
       if (present(location)) then
