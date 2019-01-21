@@ -9,7 +9,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(pf_tests
   Test_Core.pf
   Test_AnyOf.pf
-#  Test_Every.pf
+  Test_Every.pf
   Test_StringContains.pf
   Test_StringStartsWith.pf
   Test_StringEndsWith.pf

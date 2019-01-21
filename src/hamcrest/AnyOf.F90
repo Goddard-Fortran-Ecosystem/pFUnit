@@ -1,37 +1,20 @@
-@tkr_parameters all
-[(integer, default, 0)]
-[(integer, 32, 0)]
-[(integer, 64, 0)]
-[(real, default, 0)]
-[(real, double, 0)]
-[(real, 32, 0)]
-[(real, 64, 0)]
-[(real, 128, 0)]
-[(complex, default, 0)]
-[(complex, double, 0)]
-[(complex, 32, 0)]
-[(complex, 64, 0)]
-[(complex, 128, 0)]
-@end tkr_parameters
-
-@template(AnyOf,[case])
-module pf_{name}_mod
+module pf_AnyOf_mod
   use pf_AbstractMatcher_mod
   use pf_MatcherDescription_mod
   implicit none
   private
 
-  public :: {name}
+  public :: AnyOf
   public :: any_of
 
-  type, extends(AbstractMatcher{mangle}) :: {name}
-     class(AbstractMatcher{mangle}), allocatable :: matchers(:)
+  type, extends(AbstractMatcher) :: AnyOf
+     class(AbstractMatcher), allocatable :: matchers(:)
    contains
      procedure :: matches
      procedure :: describe_to
      procedure :: describe_to_op
      procedure :: describe_mismatch
-  end type {name}
+  end type AnyOf
 
 
   interface any_of
@@ -43,8 +26,8 @@ contains
 
 
   function any_of(matchers)
-    type ({name}) :: any_of
-    class(AbstractMatcher{mangle}), intent(in) :: matchers(:)
+    type (AnyOf) :: any_of
+    class(AbstractMatcher), intent(in) :: matchers(:)
 
     allocate(any_of%matchers, source=matchers)
 
@@ -52,7 +35,7 @@ contains
 
 
   logical function matches(this, actual_value)
-    class({name}), intent(in) :: this
+    class(AnyOf), intent(in) :: this
     class(*), intent(in) :: actual_value
 
     integer :: i
@@ -68,7 +51,7 @@ contains
   end function matches
 
   subroutine describe_to(this, description)
-    class({name}), intent(in):: this
+    class(AnyOf), intent(in):: this
     class(MatcherDescription), intent(inout) :: description
 
     integer :: i
@@ -78,7 +61,7 @@ contains
   end subroutine describe_to
 
   subroutine describe_to_op(this, description, operator)
-    class({name}), intent(in) :: this
+    class(AnyOf), intent(in) :: this
     class(MatcherDescription), intent(inout) :: description
     character(*), intent(in) :: operator
 
@@ -87,7 +70,7 @@ contains
   
 
   subroutine describe_mismatch(this, actual, description)
-    class({name}), intent(in) :: this
+    class(AnyOf), intent(in) :: this
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
@@ -97,15 +80,4 @@ contains
   end subroutine describe_mismatch
 
 
-end module pf_{name}_mod
-@end template
-
-@template(uses,[case])
-   use pf_AnyOf{mangle}_mod
-@end template
-
-@instantiate(AnyOf, all)
-
-module pf_AnyOf_mod
-  @instantiate(uses, all)
 end module pf_AnyOf_mod

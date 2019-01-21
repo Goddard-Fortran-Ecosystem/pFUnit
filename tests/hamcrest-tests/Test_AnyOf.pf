@@ -9,7 +9,9 @@ contains
 
   @test
   subroutine test_matches_one_of_one_()
-    call assert_that(2, is(any_of([equal_to(2)])))
+    type(IsEqual) :: m
+    m = equal_to(2)
+    call assert_that(2, is(any_of([m])))
   end subroutine test_matches_one_of_one_
 
   @test

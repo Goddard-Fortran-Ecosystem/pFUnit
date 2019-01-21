@@ -25,6 +25,8 @@ module pFUnit_private
    use PF_MpiTestCase_mod
    use PF_MpiTestParameter_mod
    use PF_MpiTestMethod_mod
+   use pf_OnProcess_mod
+   use pf_OnEveryProcess_mod
    implicit none
    private
 
@@ -33,6 +35,9 @@ module pFUnit_private
    public :: MpiTestParameter
    public :: MpiTestMethod
 
+   ! Hamcrest
+   public :: OnProcess, on_process
+   public :: OnEveryProcess, on_every_process
 end module pFUnit_private
 
 !-------------------------------------------------------------------------------

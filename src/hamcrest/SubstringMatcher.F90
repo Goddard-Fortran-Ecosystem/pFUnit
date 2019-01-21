@@ -1,12 +1,12 @@
 module pf_SubstringMatcher_mod
   use pf_MatcherDescription_mod
-  use pf_TypeSafeMatcher_String_mod
+  use pf_AbstractMatcher_mod
   implicit none
   private
 
   public :: SubstringMatcher
 
-  type, abstract, extends(TypeSafeMatcher_String) :: SubstringMatcher
+  type, abstract, extends(AbstractMatcher) :: SubstringMatcher
      private
      character(:), allocatable :: substring
      character(:), allocatable :: relationship
@@ -14,8 +14,9 @@ module pf_SubstringMatcher_mod
    contains
      procedure :: super ! a hack
      procedure :: get_substring
-     procedure :: matches_safely
      procedure :: describe_to
+     procedure :: matches
+     procedure :: describe_mismatch
      procedure :: describe_mismatch_safely
      procedure(eval_substring_of), deferred :: eval_substring_of
      procedure :: converted ! case converter
@@ -73,12 +74,34 @@ contains
     
   end subroutine describe_to
 
-  logical function matches_safely(this, item)
+  logical function matches(this, actual_value)
     class(SubstringMatcher), intent(in) :: this
-    character(*), intent(in) :: item
+    class(*), intent(in) :: actual_value
 
-    matches_safely = this%eval_substring_of(item)
-  end function matches_safely
+    select type(actual_value)
+    type is (character(*))
+       matches = this%eval_substring_of(actual_value)
+    class default
+       matches = .false. ! wrong type
+    end select
+  end function matches
+
+
+  subroutine describe_mismatch(this, actual, description)
+    class(SubstringMatcher), intent(in) :: this
+    class(*), intent(in) :: actual
+    class(MatcherDescription), intent(inout) :: description
+
+    select type (actual)
+    type is (character(*))
+       call this%describe_mismatch_safely(actual, description)
+    class default
+       call description%append_text("was not a ")
+       call description%append_text("character(*)")
+    end select
+       
+  end subroutine describe_mismatch
+
 
   subroutine describe_mismatch_safely(this, item, description)
     class(SubstringMatcher), intent(in) :: this
@@ -104,13 +127,13 @@ contains
     end if
   end function converted
 
+
   function to_lower(string) result(converted_string)
     character(:), allocatable :: converted_string
     character(*), intent(in) :: string
 
     integer :: i, n, ascii
     integer :: delta
-
 
     delta = iachar('a') - iachar('A')
     n = len(string)

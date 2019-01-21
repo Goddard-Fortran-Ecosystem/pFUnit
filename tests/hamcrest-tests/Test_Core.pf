@@ -12,6 +12,7 @@ contains
   subroutine test_basic_does_not_match()
     call assert_that(2, is(equal_to(1)))
     @assertExceptionRaised( )
+    print*,__FILE__,__LINE__
   end subroutine test_basic_does_not_match
 
   @test
