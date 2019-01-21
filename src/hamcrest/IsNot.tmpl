@@ -14,80 +14,91 @@
 [(complex, 128, 0)]
 @end tkr_parameters
 
-@template(IsEqual,[case])
+@template(IsNot,[case])
+
 module pf_{name}_mod
-  use iso_fortran_env
   use pf_AbstractMatcher_mod
   use pf_MatcherDescription_mod
+  use pf_IsEqual_mod
+  use, intrinsic :: iso_fortran_env
   implicit none
   private
 
   public :: {name}
-  public :: equal_to
+  public :: not
 
   type, extends(AbstractMatcher{mangle}) :: {name}
-     private	 
-     {case.type}(kind={case.kind}) :: expected_value
+     private
+     class(AbstractMatcher{mangle}), allocatable :: matcher
    contains
      procedure :: matches
      procedure :: describe_to
      procedure :: describe_mismatch
   end type {name}
 
-  interface equal_to
-     module procedure :: equal_to_
-  end interface equal_to
+
+  interface not
+     module procedure not_matcher
+     module procedure not_value
+  end interface not
+
 
 contains
 
 
-  function equal_to_(operand) result(matcher)
-    type ({name}) :: matcher
-    {case.type}(kind={case.kind}), intent(in) :: operand
-
-    matcher%expected_value = operand
-  end function equal_to_
-
-
-  subroutine describe_to(this, description)
-    class({name}), intent(in):: this
-    class(MatcherDescription), intent(inout) :: description
-    call description%append_value(this%expected_value)
-  end subroutine describe_to
+  function not_matcher(matcher) result(not_)
+    type ({name}) :: not_
+    class(AbstractMatcher{mangle}), intent(in) :: matcher
+    not_%matcher = matcher
+  end function not_matcher
 
 
-  subroutine describe_mismatch(this, actual, description)
-    class({name}), intent(in) :: this
-    class(*), intent(in) :: actual
-    class(MatcherDescription), intent(inout) :: description
-    call description%append_text("was ")
-    call description%append_value(actual)
-  end subroutine describe_mismatch
-     
+  function not_value(value) result(not_)
+    type ({name}) :: not_
+    type({case.type}(kind={case.kind})) :: value
+    not_%matcher = equal_to(value)
+  end function not_value
+
 
   logical function matches(this, actual_value)
     class({name}), intent(in) :: this
     class(*), intent(in) :: actual_value
 
-    select type (actual_value)
-    type is ({case.type}(kind={case.kind}))
-       matches = (actual_value == this%expected_value)
-    class default
-       matches = .false.
-    end select
+    matches = .not. this%matcher%matches(actual_value)
 
   end function matches
+
+  subroutine describe_to(this, description)
+    class({name}), intent(in):: this
+    class(MatcherDescription), intent(inout) :: description
+
+    call description%append_text("not ")
+    call description%append_description_of(this%matcher)
+
+  end subroutine describe_to
+
+  subroutine describe_mismatch(this, actual, description)
+    class({name}), intent(in) :: this
+    class(*), intent(in) :: actual
+    class(MatcherDescription), intent(inout) :: description
+
+    call description%append_text("was ")
+    call description%append_value(actual)
+
+  end subroutine describe_mismatch
+
 
 end module pf_{name}_mod
 @end template
 
 @template(uses,[case])
-   use pf_IsEqual{mangle}_mod
+   use pf_IsNot{mangle}_mod
 @end template
 
-@instantiate(IsEqual, all)
+@instantiate(IsNot, all)
 
-module pf_IsEqual_mod
+module pf_IsNot_mod
   @instantiate(uses, all)
-end module pf_IsEqual_mod
-
+end module pf_IsNot_mod
+ 
+   

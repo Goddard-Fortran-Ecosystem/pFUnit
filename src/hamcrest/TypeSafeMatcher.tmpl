@@ -25,7 +25,7 @@ module pf_{name}_mod
 
   public :: {name}
 
-  type, abstract, extends(AbstractMatcher) :: {name}
+  type, abstract, extends(AbstractMatcher{mangle}) :: {name}
    contains
      procedure :: matches
      procedure(matches_safely), deferred :: matches_safely
@@ -103,7 +103,7 @@ module pf_TypeSafeMatcher_String_mod
 
   public :: TypeSafeMatcher_String
 
-  type, abstract, extends(AbstractMatcher) :: TypeSafeMatcher_String
+  type, abstract, extends(AbstractMatcher_string) :: TypeSafeMatcher_String
    contains
      procedure :: matches
      procedure(matches_safely), deferred :: matches_safely

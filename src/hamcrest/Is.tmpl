@@ -1,20 +1,40 @@
-module pf_Is_mod
+@tkr_parameters all
+[(integer, default, 0)]
+[(integer, 32, 0)]
+[(integer, 64, 0)]
+[(real, default, 0)]
+[(real, double, 0)]
+[(real, 32, 0)]
+[(real, 64, 0)]
+[(real, 128, 0)]
+[(complex, default, 0)]
+[(complex, double, 0)]
+[(complex, 32, 0)]
+[(complex, 64, 0)]
+[(complex, 128, 0)]
+@end tkr_parameters
+
+@template(Is,[case])
+
+module pf_{name}_mod
   use pf_AbstractMatcher_mod
   use pf_MatcherDescription_mod
   use pf_IsEqual_mod
+  use, intrinsic :: iso_fortran_env
   implicit none
   private
 
-  public :: Is
+  public :: {name}
+  public :: is
 
-  type, extends(AbstractMatcher) :: Is
+  type, extends(AbstractMatcher{mangle}) :: {name}
      private
-     class(AbstractMatcher), allocatable :: matcher
+     class(AbstractMatcher{mangle}), allocatable :: matcher
    contains
      procedure :: matches
      procedure :: describe_to
      procedure :: describe_mismatch
-  end type Is
+  end type {name}
 
 
   interface is
@@ -27,20 +47,21 @@ contains
 
 
   function is_matcher(matcher) result(is_)
-    type (Is) :: is_
-    class(AbstractMatcher), intent(in) :: matcher
+    type ({name}) :: is_
+    class(AbstractMatcher{mangle}), intent(in) :: matcher
     is_%matcher = matcher
   end function is_matcher
 
+
   function is_value(value) result(is_)
-    type (Is) :: is_
-    type(Integer) :: value
+    type ({name}) :: is_
+    type({case.type}(kind={case.kind})) :: value
     is_%matcher = equal_to(value)
   end function is_value
 
 
   logical function matches(this, actual_value)
-    class(Is), intent(in) :: this
+    class({name}), intent(in) :: this
     class(*), intent(in) :: actual_value
 
     matches = this%matcher%matches(actual_value)
@@ -48,7 +69,7 @@ contains
   end function matches
 
   subroutine describe_to(this, description)
-    class(Is), intent(in):: this
+    class({name}), intent(in):: this
     class(MatcherDescription), intent(inout) :: description
 
     call description%append_text("is ")
@@ -57,7 +78,7 @@ contains
   end subroutine describe_to
 
   subroutine describe_mismatch(this, actual, description)
-    class(Is), intent(in) :: this
+    class({name}), intent(in) :: this
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
@@ -66,4 +87,17 @@ contains
   end subroutine describe_mismatch
 
 
+end module pf_{name}_mod
+@end template
+
+@template(uses,[case])
+   use pf_Is{mangle}_mod
+@end template
+
+@instantiate(Is, all)
+
+module pf_Is_mod
+  @instantiate(uses, all)
 end module pf_Is_mod
+ 
+   

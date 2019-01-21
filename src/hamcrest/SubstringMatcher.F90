@@ -1,5 +1,4 @@
 module pf_SubstringMatcher_mod
-  use pf_AbstractMatcher_mod
   use pf_MatcherDescription_mod
   use pf_TypeSafeMatcher_String_mod
   implicit none
