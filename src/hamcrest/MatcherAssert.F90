@@ -66,10 +66,7 @@ contains
      class(AbstractMatcher), intent(in) :: matcher
      type (SourceLocation), optional, intent(in) :: location
 
-     type (internal_array_1d) :: array
-
-     allocate(array%items, source=actual)
-     call assert_that(reason, array, matcher, location)
+     call assert_that(reason, wrap_array(actual), matcher, location)
      
    end subroutine assert_that_1d_reason
 

@@ -10,10 +10,11 @@ set(pf_tests
   Test_Core.pf
   Test_AnyOf.pf
   Test_Every.pf
+  Test_IsEqual_extended.pf
   Test_StringContains.pf
   Test_StringStartsWith.pf
   Test_StringEndsWith.pf
-
+  Test_IsArrayWithSize.pf
 )
 
 
@@ -33,8 +34,10 @@ endforeach()
   
 add_library(fhamcrest_tests EXCLUDE_FROM_ALL ${new_tests})
 target_link_libraries(fhamcrest_tests hamcrest)
-add_executable (fhamcrest_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
-set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+configure_file(${CMAKE_SOURCE_DIR}/include/driver.F90 driver.F90)
+add_executable (fhamcrest_tests.x EXCLUDE_FROM_ALL driver.F90)
+set_source_files_properties(driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+set_source_files_properties(driver.F90 PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/testSuites.inc)
 target_link_libraries(fhamcrest_tests.x fhamcrest_tests)
 
 

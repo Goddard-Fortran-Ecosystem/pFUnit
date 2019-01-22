@@ -4,3 +4,6 @@
    ADD_TEST_SUITE(Hamcrest_StringContains)
    ADD_TEST_SUITE(Hamcrest_StringStartsWith)
    ADD_TEST_SUITE(Hamcrest_StringEndsWith)
+   ADD_TEST_SUITE(Hamcrest_IsArrayWithSize)
+
+   ADD_TEST_SUITE(Hamcrest_IsEqual_extended)

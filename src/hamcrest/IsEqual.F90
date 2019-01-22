@@ -2,6 +2,7 @@ module pf_IsEqual_mod
   use iso_fortran_env
   use pf_AbstractMatcher_mod
   use pf_MatcherDescription_mod
+  use pf_Array_mod
   implicit none
   private
 
@@ -15,22 +16,35 @@ module pf_IsEqual_mod
      procedure :: matches
      procedure :: describe_to
      procedure :: describe_mismatch
+
+     procedure :: matches_list
+     procedure :: matches_intrinsic
   end type IsEqual
 
   interface equal_to
-     module procedure :: equal_to_
+     module procedure :: equal_to_scalar
+     module procedure :: equal_to_array_1d
   end interface equal_to
 
 contains
 
 
-  function equal_to_(operand) result(matcher)
+  function equal_to_scalar(operand) result(matcher)
     type (IsEqual) :: matcher
     class(*), intent(in) :: operand
 
     matcher%expected_value = operand
 
-  end function equal_to_
+  end function equal_to_scalar
+
+
+  function equal_to_array_1d(operand) result(matcher)
+    type (IsEqual) :: matcher
+    class(*), intent(in) :: operand(:)
+
+    matcher%expected_value = wrap_array(operand)
+
+  end function equal_to_array_1d
 
 
   subroutine describe_to(this, description)
@@ -53,85 +67,130 @@ contains
   ! allows CLASS(*) on RHS.
   ! Intrinsics are checked case by case.
   logical function matches(this, actual_value)
+    use pf_Matchable_mod
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: actual_value
 
+    select type (e => this%expected_value)
+    type is (internal_array_1d)
+       matches = this%matches_list(e%items, actual_value)
+    class is (Matchable)
+       matches = (e == actual_value)
+    class default ! intrinsics
+       matches = this%matches_intrinsic(actual_value)
+    end select
+       
+  end function matches
+
+
+  logical function matches_list(this, expected_items, actual_value)
+    class(IsEqual), intent(in) :: this
+    class(*), intent(in) :: expected_items(:)
+    class(*), intent(in) :: actual_value
+
+    integer :: i, n_items
+    type (IsEqual) :: m
+
     select type (a => actual_value)
-       ! Intrinsics and then derived types
-    type is (logical)
-       select type(e => this%expected_value)
-       type is (logical)
-          matches = (e .eqv. a)
-       class default
-          matches = .false.
-       end select
-    type is (integer(kind=INT32))
-       select type(e => this%expected_value)
-       type is (integer(kind=INT32))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (integer(kind=INT64))
-       select type(e => this%expected_value)
-       type is (integer(kind=INT64))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (real(kind=REAL32))
-       select type(e => this%expected_value)
-       type is (real(kind=REAL32))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (real(kind=REAL64))
-       select type(e => this%expected_value)
-       type is (real(kind=REAL64))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (real(kind=REAL128))
-       select type(e => this%expected_value)
-       type is (real(kind=REAL128))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (complex(kind=REAL32))
-       select type(e => this%expected_value)
-       type is (complex(kind=REAL32))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (complex(kind=REAL64))
-       select type(e => this%expected_value)
-       type is (complex(kind=REAL64))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (complex(kind=REAL128))
-       select type(e => this%expected_value)
-       type is (complex(kind=REAL128))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    type is (character(*))
-       select type(e => this%expected_value)
-       type is (character(*))
-          matches = (e == a)
-       class default
-          matches = .false.
-       end select
-    class default
-!!$       matches = (e == actual_value)
+    type is (internal_array_1d)
+       n_items = size(expected_items)
+       if (size(a%items) == n_items) then
+          do i = 1, n_items
+             m = equal_to(expected_items(i))
+             if (.not. m%matches(a%items(i))) then
+                matches_list = .false.
+                return
+             end if
+          end do
+          matches_list = .true.
+       else
+          matches_list = .false. ! differing number of elements
+       end if
     end select
 
-  end function matches
+  end function matches_list
+
+
+
+  logical function matches_intrinsic(this, actual_value)
+    class(IsEqual), intent(in) :: this
+    class(*), target, intent(in) :: actual_value
+
+    select type (e => this%expected_value)
+    type is (logical)
+       select type(a => actual_value)
+       type is (logical)
+          matches_intrinsic = (e .eqv. a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (integer(kind=INT32))
+       select type(a => actual_value)
+       type is (integer(kind=INT32))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (integer(kind=INT64))
+       select type(a => actual_value)
+       type is (integer(kind=INT64))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (real(kind=REAL32))
+       select type(a => actual_value)
+       type is (real(kind=REAL32))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (real(kind=REAL64))
+       select type(a => actual_value)
+       type is (real(kind=REAL64))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (real(kind=REAL128))
+       select type(a => actual_value)
+       type is (real(kind=REAL128))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (complex(kind=REAL32))
+       select type(a => actual_value)
+       type is (complex(kind=REAL32))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (complex(kind=REAL64))
+       select type(a => actual_value)
+       type is (complex(kind=REAL64))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (complex(kind=REAL128))
+       select type(a => actual_value)
+       type is (complex(kind=REAL128))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (character(*))
+       select type(a => actual_value)
+       type is (character(*))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    class default
+       matches_intrinsic = .false. ! unsupported intrinsic?
+    end select
+
+  end function matches_intrinsic
 
 end module pf_IsEqual_mod

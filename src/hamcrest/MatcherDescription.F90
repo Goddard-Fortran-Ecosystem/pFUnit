@@ -6,8 +6,12 @@ module pf_MatcherDescription_mod
    public :: SelfDescribing  ! Same module to workaround for forward reference
 
    type, abstract :: SelfDescribing
+      private
+      character(:), allocatable :: type_name
    contains
       procedure(describe_to), deferred :: describe_to
+      procedure :: get_type_name
+      procedure :: set_type_name
    end type SelfDescribing
 
 
@@ -70,5 +74,25 @@ module pf_MatcherDescription_mod
         class(SelfDescribing), intent(in) :: values(:)
       end subroutine append_list
    end interface
+
+ contains
+
+   function get_type_name(this) result(type_name)
+     character(:), allocatable :: type_name
+     class(SelfDescribing), intent(in) :: this
+     if (.not. allocated(this%type_name)) then
+        type_name = "UNKNOWN_TYPE"
+     else
+        type_name = this%type_name
+     end if
+   end function get_type_name
+
+
+   subroutine set_type_name(this, type_name)
+     class(SelfDescribing), intent(inout) :: this
+     character(*), intent(in) :: type_name
+     this%type_name = type_name
+   end subroutine set_type_name
+   
 
 end module pf_MatcherDescription_mod

@@ -8,11 +8,19 @@ module pf_Array_mod
   implicit none
   private
 
+  public :: wrap_array
   public :: internal_array
   public :: internal_array_1d
   public :: internal_array_2d
   public :: internal_array_3d
 
+
+  interface wrap_array
+     module procedure wrap_1d
+     module procedure wrap_2d
+     module procedure wrap_3d
+  end interface wrap_array
+     
   type, abstract :: internal_array
   end type internal_array
 
@@ -28,4 +36,24 @@ module pf_Array_mod
      class(*), allocatable :: items(:,:,:)
   end type internal_array_3d
 
+contains
+
+  function wrap_1d(items) result(a)
+    type(internal_array_1d) :: a
+    class(*), intent(in) :: items(:)
+    allocate(a%items, source=items)
+  end function wrap_1d
+
+  function wrap_2d(items) result(a)
+    type(internal_array_2d) :: a
+    class(*), intent(in) :: items(:,:)
+    a%items = items
+  end function wrap_2d
+  
+  function wrap_3d(items) result(a)
+    type(internal_array_3d) :: a
+    class(*), intent(in) :: items(:,:,:)
+    a%items = items
+  end function wrap_3d
+  
 end module pf_Array_mod

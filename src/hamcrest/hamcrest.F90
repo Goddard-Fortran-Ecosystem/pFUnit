@@ -12,5 +12,7 @@ module hamcrest
   use pf_StringContains_mod
   use pf_StringStartsWith_mod
   use pf_StringEndsWith_mod
+  use pf_IsArrayWithSize_mod
 
+  use pf_Matchable_mod
 end module hamcrest

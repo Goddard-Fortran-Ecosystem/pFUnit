@@ -12,7 +12,6 @@ contains
   subroutine test_basic_does_not_match()
     call assert_that(2, is(equal_to(1)))
     @assertExceptionRaised( )
-    print*,__FILE__,__LINE__
   end subroutine test_basic_does_not_match
 
   @test
@@ -48,5 +47,32 @@ contains
   subroutine test_basic_real()
     call assert_that(1., is(equal_to(1.)))
   end subroutine test_basic_real
+
+  @test
+  subroutine test_array_equal_to()
+    call assert_that([1], is(equal_to([1])))
+  end subroutine test_array_equal_to
+
+  @test
+  subroutine test_array_equal_to_real()
+    call assert_that([1.2], is(equal_to([1.2])))
+  end subroutine test_array_equal_to_real
+
+  @test
+  subroutine test_array_equal_to_2_elements()
+    call assert_that([1,2], is(equal_to([1,2])))
+  end subroutine test_array_equal_to_2_elements
+  
+  @test
+  subroutine test_array_different_sizes()
+    call assert_that([1], is(equal_to([1,2])))
+    @assertExceptionRaised( )
+  end subroutine test_array_different_sizes
+
+  @test
+  subroutine test_array_fail_different_values
+    call assert_that([1,3], is(equal_to([1,2])))
+    @assertExceptionRaised(new_line('a')//'Expected: is [<1>, <2>]' // new_line('a') // '     but: was [<1>, <3>]')
+  end subroutine test_array_fail_different_values
   
 end module Test_Core

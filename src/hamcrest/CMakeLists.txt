@@ -19,7 +19,9 @@ set (srcs
   # Matchers
   AbstractMatcher.F90
   BaseMatcher.F90
-#  TypeSafeMatcher.F90
+  TypeSafeMatcher.F90
+  FeatureMatcher.F90
+  DescribedAs.F90
   Is.F90
   IsNot.F90
   IsEqual.F90
@@ -29,7 +31,9 @@ set (srcs
   StringStartsWith.F90
   StringEndsWith.F90
   Every.F90
-  
+
+  IsArrayWithSize.F90
+  Matchable.F90
   hamcrest.F90
   )
 
