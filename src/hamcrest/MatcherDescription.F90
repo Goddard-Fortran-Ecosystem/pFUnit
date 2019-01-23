@@ -1,6 +1,7 @@
 module pf_MatcherDescription_mod
   use pf_SurrogateDescription_mod
   use pf_SelfDescribing_mod
+  use pf_SelfDescribingVector_mod
   implicit none
   private
 
@@ -14,9 +15,9 @@ module pf_MatcherDescription_mod
       procedure(append_value_scalar), deferred :: append_value_scalar
       generic :: append_value => append_value_scalar
       procedure(append_list_array), deferred :: append_list_array
-!!$      procedure(append_list_vector), deferred :: append_list_vector
+      procedure(append_list_vector), deferred :: append_list_vector
       generic :: append_list => append_list_array
-!!$      generic :: append_list => append_list_vector
+      generic :: append_list => append_list_vector
    end type MatcherDescription
 
 
@@ -60,15 +61,15 @@ module pf_MatcherDescription_mod
         class(SelfDescribing), intent(in) :: values(:)
       end subroutine append_list_array
 
-!!$      subroutine append_list_vector(this, start, separator, end, values)
-!!$        import MatcherDescription
-!!$        import SelfDescribing
-!!$        class(MatcherDescription), intent(inout) :: this
-!!$        character(*), intent(in) :: start
-!!$        character(*), intent(in) :: separator
-!!$        character(*), intent(in) :: end
-!!$        class(SelfDescribingVector), intent(in) :: values
-!!$      end subroutine append_list_vector
+      subroutine append_list_vector(this, start, separator, end, values)
+        import MatcherDescription
+        import SelfDescribingVector
+        class(MatcherDescription), intent(inout) :: this
+        character(*), intent(in) :: start
+        character(*), intent(in) :: separator
+        character(*), intent(in) :: end
+        class(SelfDescribingVector), intent(in) :: values
+      end subroutine append_list_vector
 
    end interface
 

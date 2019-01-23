@@ -1,7 +1,7 @@
 module pf_BaseDescription_mod
   use pf_MatcherDescription_mod
   use pf_SelfDescribing_mod
-  use pf_TypeSafeSelfDescribing_mod
+  use pf_SelfDescribingVector_mod
   use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -20,6 +20,7 @@ module pf_BaseDescription_mod
       generic :: append => append_string
       generic :: append => append_character
       procedure :: append_list_array
+      procedure :: append_list_vector
    end type BaseDescription
 
    abstract interface 
@@ -225,6 +226,31 @@ contains
 
     end subroutine append_list_array
 
+    subroutine append_list_vector(this, start, separator, end, values)
+      class(BaseDescription), intent(inout) :: this
+      character(*), intent(in) :: start
+      character(*), intent(in) :: separator
+      character(*), intent(in) :: end
+      class(SelfDescribingVector), intent(in) :: values
+
+      logical :: separate
+      type (SelfDescribingVectorIterator) :: iter
+
+
+      call this%append(start)
+
+      separate = .false.
+      iter = values%begin()
+      do while (iter /= values%end())
+         if (separate) call this%append(separator)
+         call this%append_description_of(iter%get())
+         separate = .true.
+         call iter%next()
+      end do
+      call this%append(end)
+
+    end subroutine append_list_vector
+
 
     function description_of_logical(value) result(string)
       use pf_Matchable_mod
@@ -322,5 +348,4 @@ contains
     end function description_of_complex128
 
     
-
 end module pf_BaseDescription_mod
