@@ -16,6 +16,8 @@ set(pf_tests
   Test_StringStartsWith.pf
   Test_StringEndsWith.pf
   Test_IsArrayWithSize.pf
+  Test_IsNear.pf
+  Test_IsRelativelyNear.pf
 )
 
 

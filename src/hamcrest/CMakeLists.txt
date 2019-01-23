@@ -31,6 +31,8 @@ set (srcs
   Is.F90
   IsNot.F90
   IsEqual.F90
+  IsNear.F90
+  IsRelativelyNear.F90
   AnyOf.F90
   AllOf.F90
   SubstringMatcher.F90

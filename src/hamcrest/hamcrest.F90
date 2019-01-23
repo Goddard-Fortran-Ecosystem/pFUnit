@@ -7,6 +7,8 @@ module hamcrest
   use pf_Is_mod
   use pf_IsNot_mod
   use pf_IsEqual_mod
+  use pf_IsNear_mod
+  use pf_IsRelativelyNear_mod
   use pf_AnyOf_mod
   use pf_AllOf_mod
   use pf_Every_mod

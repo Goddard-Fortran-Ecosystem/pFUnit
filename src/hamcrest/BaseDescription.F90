@@ -7,6 +7,7 @@ module pf_BaseDescription_mod
    private
 
    public :: BaseDescription
+   public :: description_of
 
    type, abstract, extends(MatcherDescription) :: BaseDescription
       private
