@@ -1,5 +1,6 @@
 module pf_IsNot_mod
   use pf_AbstractMatcher_mod
+  use pf_BaseMatcher_mod
   use pf_MatcherDescription_mod
   use pf_IsEqual_mod
   use, intrinsic :: iso_fortran_env
@@ -9,7 +10,7 @@ module pf_IsNot_mod
   public :: IsNot
   public :: not
 
-  type, extends(AbstractMatcher) :: IsNot
+  type, extends(BaseMatcher) :: IsNot
      private
      class(AbstractMatcher), allocatable :: matcher
    contains

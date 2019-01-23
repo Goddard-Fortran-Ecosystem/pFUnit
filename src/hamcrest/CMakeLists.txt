@@ -11,13 +11,19 @@ endforeach()
 set (srcs
   Array.F90
   MatcherAssert.F90
+
+  SurrogateDescription.F90
   MatcherDescription.F90
+  SelfDescribing.F90
+  TypeSafeSelfDescribing.F90
+  SelfDescribingVector.F90
   BaseDescription.F90
   StringDescription.F90
   MatcherAssert.F90
 
   # Matchers
   AbstractMatcher.F90
+  MatcherVector.F90
   BaseMatcher.F90
   TypeSafeMatcher.F90
   FeatureMatcher.F90
@@ -26,6 +32,7 @@ set (srcs
   IsNot.F90
   IsEqual.F90
   AnyOf.F90
+  AllOf.F90
   SubstringMatcher.F90
   StringContains.F90
   StringStartsWith.F90
@@ -38,5 +45,7 @@ set (srcs
   )
 
 add_library(hamcrest STATIC ${srcs})
+target_include_directories (hamcrest PRIVATE ${gFTL_install_dir}/include)
 target_link_libraries(hamcrest funit)
+
 

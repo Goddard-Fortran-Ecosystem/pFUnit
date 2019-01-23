@@ -1,6 +1,7 @@
 module pf_IsEqual_mod
   use iso_fortran_env
   use pf_AbstractMatcher_mod
+  use pf_BaseMatcher_mod
   use pf_MatcherDescription_mod
   use pf_Array_mod
   implicit none
@@ -9,7 +10,7 @@ module pf_IsEqual_mod
   public :: IsEqual
   public :: equal_to
 
-  type, extends(AbstractMatcher) :: IsEqual
+  type, extends(BaseMatcher) :: IsEqual
      private
      class(*), allocatable :: expected_value
    contains

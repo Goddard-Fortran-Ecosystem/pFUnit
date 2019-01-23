@@ -1,11 +1,11 @@
 module pf_AbstractMatcher_mod
-   use pf_MatcherDescription_mod, only: SelfDescribing
+   use pf_TypeSafeSelfDescribing_mod
    implicit none
    private
 
    public :: AbstractMatcher
 
-   type, abstract, extends(SelfDescribing) :: AbstractMatcher
+   type, abstract, extends(TypeSafeSelfDescribing) :: AbstractMatcher
    contains
       procedure(matches), deferred :: matches
       procedure(describe_mismatch), deferred :: describe_mismatch

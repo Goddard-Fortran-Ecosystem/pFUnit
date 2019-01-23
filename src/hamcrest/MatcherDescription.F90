@@ -1,40 +1,26 @@
 module pf_MatcherDescription_mod
-   implicit none
-   private
+  use pf_SurrogateDescription_mod
+  use pf_SelfDescribing_mod
+  implicit none
+  private
 
    public :: MatcherDescription
-   public :: SelfDescribing  ! Same module to workaround for forward reference
 
-   type, abstract :: SelfDescribing
-      private
-      character(:), allocatable :: type_name
-   contains
-      procedure(describe_to), deferred :: describe_to
-      procedure :: get_type_name
-      procedure :: set_type_name
-   end type SelfDescribing
-
-
-   type, abstract :: MatcherDescription
+   type, abstract, extends(SurrogateDescription) :: MatcherDescription
    contains
       procedure(append_text), deferred :: append_text
       procedure(append_description_of), deferred :: append_description_of ! selfd
       procedure(to_string), deferred :: to_string
       procedure(append_value_scalar), deferred :: append_value_scalar
       generic :: append_value => append_value_scalar
-      procedure(append_list), deferred :: append_list
+      procedure(append_list_array), deferred :: append_list_array
+!!$      procedure(append_list_vector), deferred :: append_list_vector
+      generic :: append_list => append_list_array
+!!$      generic :: append_list => append_list_vector
    end type MatcherDescription
 
 
    abstract interface
-
-      subroutine describe_to(this, description)
-         import SelfDescribing
-         import MatcherDescription
-         class (SelfDescribing), intent(in) :: this
-         class (MatcherDescription), intent(inout) :: description
-      end subroutine describe_to
-
 
       subroutine append_text(this, text)
          import SelfDescribing
@@ -64,7 +50,7 @@ module pf_MatcherDescription_mod
          class (MatcherDescription), intent(in) :: this
       end function to_string
 
-      subroutine append_list(this, start, separator, end, values)
+      subroutine append_list_array(this, start, separator, end, values)
         import MatcherDescription
         import SelfDescribing
         class(MatcherDescription), intent(inout) :: this
@@ -72,27 +58,19 @@ module pf_MatcherDescription_mod
         character(*), intent(in) :: separator
         character(*), intent(in) :: end
         class(SelfDescribing), intent(in) :: values(:)
-      end subroutine append_list
+      end subroutine append_list_array
+
+!!$      subroutine append_list_vector(this, start, separator, end, values)
+!!$        import MatcherDescription
+!!$        import SelfDescribing
+!!$        class(MatcherDescription), intent(inout) :: this
+!!$        character(*), intent(in) :: start
+!!$        character(*), intent(in) :: separator
+!!$        character(*), intent(in) :: end
+!!$        class(SelfDescribingVector), intent(in) :: values
+!!$      end subroutine append_list_vector
+
    end interface
 
- contains
-
-   function get_type_name(this) result(type_name)
-     character(:), allocatable :: type_name
-     class(SelfDescribing), intent(in) :: this
-     if (.not. allocated(this%type_name)) then
-        type_name = "UNKNOWN_TYPE"
-     else
-        type_name = this%type_name
-     end if
-   end function get_type_name
-
-
-   subroutine set_type_name(this, type_name)
-     class(SelfDescribing), intent(inout) :: this
-     character(*), intent(in) :: type_name
-     this%type_name = type_name
-   end subroutine set_type_name
-   
 
 end module pf_MatcherDescription_mod

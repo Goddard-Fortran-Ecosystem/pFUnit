@@ -1,7 +1,9 @@
 module pf_TypeSafeMatcher_mod
   use pf_AbstractMatcher_mod
-  use pf_MatcherDescription_mod, only: MatcherDescription, SelfDescribing
-  use pf_MatcherDescription_mod, only: SelfDescribing
+  use pf_BaseMatcher_mod
+  use pf_SelfDescribing_mod
+  use pf_MatcherDescription_mod, only: MatcherDescription
+
   use pf_Array_mod
   use iso_fortran_env
   implicit none
@@ -9,7 +11,7 @@ module pf_TypeSafeMatcher_mod
 
   public :: TypeSafeMatcher
 
-  type, abstract, extends(AbstractMatcher) :: TypeSafeMatcher
+  type, abstract, extends(BaseMatcher) :: TypeSafeMatcher
    contains
      procedure(expects_type_of), deferred :: expects_type_of
      procedure(matches_safely), deferred :: matches_safely

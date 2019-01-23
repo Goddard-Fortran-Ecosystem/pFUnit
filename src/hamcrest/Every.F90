@@ -15,6 +15,7 @@ module pf_Every_mod
     class(AbstractMatcher), allocatable :: item_matcher
    contains
      procedure :: matches
+     procedure :: describe_mismatch
      procedure :: describe_to
   end type Every
 
@@ -44,8 +45,6 @@ contains
     class is (internal_array_1d)
        do i = 1, size(a%items)
           if (.not. this%item_matcher%matches(a%items(i))) then
-!!$             call description%append_text("an item ")
-!!$             call this%item_matcher%describe_mismatch(a%items(i))
              matches = .false.
              return
           end if
@@ -57,6 +56,25 @@ contains
 
   end function matches
 
+  subroutine describe_mismatch(this, actual, description)
+    class(Every), intent(in) :: this
+    class(*), intent(in) :: actual
+    class(MatcherDescription), intent(inout) :: description
+
+    integer :: i
+
+    select type (actual)
+    type is (internal_array_1d)
+       do i = 1, size(actual%items)
+          if (.not. this%item_matcher%matches(actual%items(i))) then
+             call this%item_matcher%describe_mismatch(actual%items(i), description)
+             return
+          end if
+       end do
+    class default
+       call description%append_text("was not a 1-D array")
+    end select
+  end subroutine describe_mismatch
 
   subroutine describe_to(this, description)
     class(Every), intent(in) :: this

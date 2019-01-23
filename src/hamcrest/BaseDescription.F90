@@ -1,5 +1,7 @@
 module pf_BaseDescription_mod
   use pf_MatcherDescription_mod
+  use pf_SelfDescribing_mod
+  use pf_TypeSafeSelfDescribing_mod
   use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -17,7 +19,7 @@ module pf_BaseDescription_mod
       procedure(append_character), deferred :: append_character
       generic :: append => append_string
       generic :: append => append_character
-      procedure :: append_list
+      procedure :: append_list_array
    end type BaseDescription
 
    abstract interface 
@@ -56,7 +58,8 @@ contains
      class (BaseDescription), intent(inout) :: this
      class (SelfDescribing), intent(in) :: value
 
-     call value%describe_to(this)
+     call value%type_unsafe_describe_to(this)
+
    end subroutine append_description_of
 
 
@@ -141,7 +144,7 @@ contains
 #endif
      class is (SelfDescribing)
         call this%append('<')
-        call value%describe_to(this)
+        call value%type_unsafe_describe_to(this)
         call this%append('>')
      class is (internal_array)
         select type (value)
@@ -200,7 +203,7 @@ contains
       
     end subroutine append_string
 
-    subroutine append_list(this, start, separator, end, values)
+    subroutine append_list_array(this, start, separator, end, values)
       class(BaseDescription), intent(inout) :: this
       character(*), intent(in) :: start
       character(*), intent(in) :: separator
@@ -220,7 +223,7 @@ contains
       end do
       call this%append(end)
 
-    end subroutine append_list
+    end subroutine append_list_array
 
 
     function description_of_logical(value) result(string)

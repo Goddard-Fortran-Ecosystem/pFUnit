@@ -1,5 +1,6 @@
 module pf_AnyOf_mod
   use pf_AbstractMatcher_mod
+  use pf_BaseMatcher_mod
   use pf_MatcherDescription_mod
   implicit none
   private
@@ -7,7 +8,7 @@ module pf_AnyOf_mod
   public :: AnyOf
   public :: any_of
 
-  type, extends(AbstractMatcher) :: AnyOf
+  type, extends(BaseMatcher) :: AnyOf
      class(AbstractMatcher), allocatable :: matchers(:)
    contains
      procedure :: matches

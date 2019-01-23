@@ -1,6 +1,7 @@
 module pf_StringDescription_mod
    use pf_MatcherDescription_mod
    use pf_BaseDescription_mod
+   use pf_SelfDescribing_mod
    implicit none
    private
 
@@ -39,7 +40,7 @@ contains
       class (StringDescription), intent(inout) :: this
       class (SelfDescribing), intent(in) :: value
 
-      call value%describe_to(this)
+      call value%type_unsafe_describe_to(this)
       
    end subroutine append_description_of
 

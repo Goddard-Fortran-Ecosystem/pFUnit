@@ -1,12 +1,13 @@
 module pf_SubstringMatcher_mod
   use pf_MatcherDescription_mod
   use pf_AbstractMatcher_mod
+  use pf_TypeSafeMatcher_mod
   implicit none
   private
 
   public :: SubstringMatcher
 
-  type, abstract, extends(AbstractMatcher) :: SubstringMatcher
+  type, abstract, extends(TypeSafeMatcher) :: SubstringMatcher
      private
      character(:), allocatable :: substring
      character(:), allocatable :: relationship
@@ -15,11 +16,11 @@ module pf_SubstringMatcher_mod
      procedure :: super ! a hack
      procedure :: get_substring
      procedure :: describe_to
-     procedure :: matches
-     procedure :: describe_mismatch
+     procedure :: matches_safely
      procedure :: describe_mismatch_safely
      procedure(eval_substring_of), deferred :: eval_substring_of
      procedure :: converted ! case converter
+     procedure :: expects_type_of
   end type SubstringMatcher
 
   abstract interface
@@ -34,10 +35,10 @@ module pf_SubstringMatcher_mod
 
 contains
 
-  ! Cannot have constructor for abstract class.   But we need a mechanism
-  ! for the subclasses to set fields.  Rather than multiple setters, which
-  ! would be somewhat tedious here, a single setter that is suggestive
-  ! of Java's "super" constructors.
+  ! Cannot have constructor for abstract class.  But we need a
+  ! mechanism for the subclasses to set fields.  Rather than multiple
+  ! setters, which would be somewhat tedious here, a single setter
+  ! that is suggestive of Java's "super" constructors.
   subroutine super(this, relationship, substring, ignoring_case)
     class(SubstringMatcher), intent(inout) :: this
     character(*), intent(in) :: relationship
@@ -74,42 +75,29 @@ contains
     
   end subroutine describe_to
 
-  logical function matches(this, actual_value)
+  logical function matches_safely(this, actual_value)
     class(SubstringMatcher), intent(in) :: this
     class(*), intent(in) :: actual_value
 
     select type(actual_value)
     type is (character(*))
-       matches = this%eval_substring_of(actual_value)
-    class default
-       matches = .false. ! wrong type
+       matches_safely = this%eval_substring_of(actual_value)
     end select
-  end function matches
+
+  end function matches_safely
 
 
-  subroutine describe_mismatch(this, actual, description)
+
+  subroutine describe_mismatch_safely(this, actual, description)
     class(SubstringMatcher), intent(in) :: this
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
+    call description%append_text('was "')
     select type (actual)
     type is (character(*))
-       call this%describe_mismatch_safely(actual, description)
-    class default
-       call description%append_text("was not a ")
-       call description%append_text("character(*)")
+       call description%append_text(actual)
     end select
-       
-  end subroutine describe_mismatch
-
-
-  subroutine describe_mismatch_safely(this, item, description)
-    class(SubstringMatcher), intent(in) :: this
-    character(*), intent(in) :: item
-    class(MatcherDescription), intent(inout) :: description
-
-    call description%append_text('was "')
-    call description%append_text(item)
     call description%append_text('"')
     
   end subroutine describe_mismatch_safely
@@ -148,6 +136,19 @@ contains
     end do
   end function to_lower
 
+
+  logical function expects_type_of(this, actual)
+    class(SubstringMatcher), intent(in) :: this
+    class(*), intent(in) :: actual
+
+    select type (actual)
+    type is (character(*))
+       expects_type_of = .true.
+    class default
+       expects_type_of = .false.
+    end select
+
+  end function expects_type_of
 
   
 end module pf_SubstringMatcher_mod
