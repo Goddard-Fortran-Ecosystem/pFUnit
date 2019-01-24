@@ -35,12 +35,16 @@ endforeach()
 add_library(pfunittests EXCLUDE_FROM_ALL STATIC ${PARALLEL_TEST_SRCS})
 target_link_libraries(pfunittests pfunit funit)
 
+configure_file(${CMAKE_SOURCE_DIR}/include/driver.F90 driver.F90)
+set_source_files_properties(driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+set_source_files_properties(driver.F90 PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/testSuites.inc)
+
 add_executable (parallel_tests.x EXCLUDE_FROM_ALL parallel_tests.F90)
 target_link_libraries(parallel_tests.x pfunittests pfunit funit ${MPI_Fortran_LIBRARIES})
 
 add_library(new_ptests EXCLUDE_FROM_ALL ${new_tests})
 target_link_libraries(new_ptests pfunit funit ${MPI_Fortran_LIBRARIES})
-add_executable (new_ptests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
+add_executable (new_ptests.x EXCLUDE_FROM_ALL driver.F90)
 set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_ptests.x new_ptests)
 
