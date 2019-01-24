@@ -20,10 +20,10 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_TestSuite_mod
-   use PF_ExceptionList_mod, only : throw
-   use PF_Test_mod
-   use PF_TestVector_mod
+module PF_TestSuite
+   use PF_ExceptionList, only : throw
+   use PF_Test
+   use PF_TestVector
    implicit none
    private
 
@@ -94,8 +94,8 @@ contains
    end function countTestCases
 
    recursive subroutine run(this, tstResult, context)
-      use PF_ParallelContext_mod
-      use PF_TestResult_mod
+      use PF_ParallelContext
+      use PF_TestResult
       class (TestSuite), target, intent(inout) :: this
       class (TestResult), intent(inout) :: tstResult
       class (ParallelContext), intent(in) :: context
@@ -141,9 +141,9 @@ contains
    end subroutine setName
 
    subroutine  getTestCases(this, testList)
-      use PF_Exception_mod
-      use PF_Test_mod
-      use PF_TestCase_mod
+      use PF_Exception
+      use PF_Test
+      use PF_TestCase
       class (TestSuite), intent(in) :: this
       type (TestVector), intent(out) :: testList
 
@@ -177,7 +177,7 @@ contains
 
 
     recursive function filter(this, a_filter) result(new_suite)
-      use pf_TestFilter_mod
+      use pf_TestFilter
       type(TestSuite) :: new_suite
       class(TestSuite), intent(in) :: this
       class(TestFilter), intent(in) :: a_filter
@@ -205,4 +205,4 @@ contains
     end function filter
 
 
- end module PF_TestSuite_mod
+ end module PF_TestSuite

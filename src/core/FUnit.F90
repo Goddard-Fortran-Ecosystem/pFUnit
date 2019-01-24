@@ -21,39 +21,39 @@
 !
 !-------------------------------------------------------------------------------
 module FUnit_private
-   use PF_SourceLocation_mod
-   use PF_Exception_mod
-   use PF_ExceptionVector_mod
-   use PF_ExceptionList_mod
-   use PF_Expectation_mod
-   use PF_Test_mod
-   use PF_TestSuite_mod
-   use PF_TestCase_mod
-   use PF_TestMethod_mod
-   use PF_AbstractTestParameter_mod
-   use PF_ParameterizedTestCase_mod
-   use PF_TestResult_mod
-   use PF_TestRunner_mod
-   use PF_BaseTestRunner_mod
-   use PF_SubsetRunner_mod
+   use PF_SourceLocation
+   use PF_Exception
+   use PF_ExceptionVector
+   use PF_ExceptionList
+   use PF_Expectation
+   use PF_Test
+   use PF_TestSuite
+   use PF_TestCase
+   use PF_TestMethod
+   use PF_AbstractTestParameter
+   use PF_ParameterizedTestCase
+   use PF_TestResult
+   use PF_TestRunner
+   use PF_BaseTestRunner
+   use PF_SubsetRunner
 
-   use PF_TestListener_mod
-   use PF_TestListenerVector_mod
-   use PF_XmlPrinter_mod
-   use PF_ResultPrinter_mod
-   use PF_DebugListener_mod
+   use PF_TestListener
+   use PF_TestListenerVector
+   use PF_XmlPrinter
+   use PF_ResultPrinter
+   use PF_DebugListener
 
-   use gFTL_StringVectorMod
-   use gFTL_StringUnlimitedMapMod
+   use gFTL_StringVector
+   use gFTL_StringUnlimitedMap
 
-   use PF_RobustRunner_mod
-   use PF_Assert_mod
-   use PF_ParallelContext_mod
-   use PF_SerialContext_mod
+   use PF_RobustRunner
+   use PF_Assert
+   use PF_ParallelContext
+   use PF_SerialContext
 
-   use Pf_TestAnnotation_mod
+   use Pf_TestAnnotation
 
-   use pf_NameFilter_mod
+   use pf_NameFilter
 
    use fParse
 

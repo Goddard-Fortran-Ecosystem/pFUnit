@@ -23,7 +23,7 @@
 ! This module just provides a data type - not a class.
 ! Meant to be shared for easy access.
 
-module PF_SourceLocation_mod
+module PF_SourceLocation
    implicit none
    private
 
@@ -123,4 +123,4 @@ contains
 
    end function deserialize
 
-end module PF_SourceLocation_mod
+end module PF_SourceLocation

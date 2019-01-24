@@ -37,9 +37,9 @@
 ! RobustRunner and SubsetRunner.
 ! -----------------------------------------------------------------------
 
-module PF_SubsetRunner_mod
-   use PF_Test_mod
-   use PF_BaseTestRunner_mod
+module PF_SubsetRunner
+   use PF_Test
+   use PF_BaseTestRunner
    implicit none
    private
 
@@ -89,12 +89,12 @@ contains
 
    function run(this, aTest, context) result(result)
       use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
-      use PF_Test_mod
-      use PF_TestVector_mod
-      use PF_ParallelContext_mod
-      use PF_TestCase_mod
-      use PF_TestResult_mod
-      use PF_TestSuite_mod
+      use PF_Test
+      use PF_TestVector
+      use PF_ParallelContext
+      use PF_TestCase
+      use PF_TestResult
+      use PF_TestSuite
 
       type (TestResult) :: result
       class (SubsetRunner), target, intent(inout) :: this
@@ -135,8 +135,8 @@ contains
    end function run
 
    subroutine addFailure(this, testName, exceptions)
-      use PF_Exception_mod
-      use PF_ExceptionList_mod
+      use PF_Exception
+      use PF_ExceptionList
       use, intrinsic :: iso_c_binding
       class (SubsetRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
@@ -177,7 +177,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use PF_AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult, only : AbstractTestResult
      class (SubsetRunner), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
 
@@ -194,4 +194,4 @@ contains
 
    end subroutine addSuccess
    
-end module PF_SubsetRunner_mod
+end module PF_SubsetRunner

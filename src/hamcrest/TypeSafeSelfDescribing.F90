@@ -1,7 +1,7 @@
-module pf_TypeSafeSelfDescribing_mod
-  use pf_SurrogateDescription_mod
-  use pf_SelfDescribing_mod
-  use pf_MatcherDescription_mod
+module pf_TypeSafeSelfDescribing
+  use pf_SurrogateDescription
+  use pf_SelfDescribing
+  use pf_MatcherDescription
   implicit none
   private
 
@@ -40,5 +40,5 @@ module pf_TypeSafeSelfDescribing_mod
 
    end subroutine type_unsafe_describe_to
 
- end module pf_TypeSafeSelfDescribing_mod
+ end module pf_TypeSafeSelfDescribing
     

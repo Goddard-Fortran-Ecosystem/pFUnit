@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 
-module MakeNaN_mod
+module MakeNaN
 #ifdef _REAL32_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL32
 #endif
@@ -76,4 +76,4 @@ contains
 
 
 
-end module MakeNaN_mod
+end module MakeNaN

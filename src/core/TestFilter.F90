@@ -1,4 +1,4 @@
-module pf_TestFilter_mod
+module pf_TestFilter
   implicit none
   private
 
@@ -13,7 +13,7 @@ module pf_TestFilter_mod
   abstract interface
 
      logical function filter(this, a_test)
-       use pf_Test_mod
+       use pf_Test
        import TestFilter
        class(TestFilter), intent(in) :: this
        class(Test), intent(in) :: a_test
@@ -21,4 +21,4 @@ module pf_TestFilter_mod
 
   end interface
 
-end module pf_TestFilter_mod
+end module pf_TestFilter

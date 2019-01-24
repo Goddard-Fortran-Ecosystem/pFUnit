@@ -1,6 +1,6 @@
-module pf_IsRelativelyNear_mod
-  use pf_TypeSafeMatcher_mod
-  use pf_MatcherDescription_mod
+module pf_IsRelativelyNear
+  use pf_TypeSafeMatcher
+  use pf_MatcherDescription
   implicit none
   private
 
@@ -107,4 +107,4 @@ contains
 
   end subroutine describe_to
 
-end module pf_IsRelativelyNear_mod
+end module pf_IsRelativelyNear

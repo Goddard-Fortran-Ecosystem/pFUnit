@@ -21,9 +21,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_Test_mod
-   use pf_TestAnnotation_mod
-   use pf_StringTestAnnotationMap_mod
+module PF_Test
+   use pf_TestAnnotation
+   use pf_StringTestAnnotationMap
    implicit none
    private
 
@@ -49,8 +49,8 @@ module PF_Test_mod
       end function countTestCases
 
       recursive subroutine run(this, tstResult, context)
-         use PF_TestResult_mod
-         use PF_ParallelContext_mod
+         use PF_TestResult
+         use PF_ParallelContext
          import Test
          class (Test), target, intent(inout) :: this
          class (TestResult), intent(inout) :: tstResult
@@ -84,4 +84,4 @@ contains
 
    end function is_disabled
 
-end module PF_Test_mod
+end module PF_Test

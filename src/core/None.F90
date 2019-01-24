@@ -1,4 +1,4 @@
-module pf_None_mod
+module pf_None
    implicit none
    private
 
@@ -9,4 +9,4 @@ module pf_None_mod
 
    type (t_None), parameter :: NONE = t_NONE()
    
-end module pf_None_mod
+end module pf_None

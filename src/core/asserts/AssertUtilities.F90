@@ -1,10 +1,10 @@
 #include "unused_dummy.fh"
 
-module pf_AssertUtilities_mod
-   use pf_KeywordEnforcer_mod
-   use pf_SourceLocation_mod
-   use pf_StringUtilities_mod
-   use pf_ExceptionList_mod
+module pf_AssertUtilities
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_StringUtilities
+   use pf_ExceptionList
    implicit none
    private
 
@@ -365,4 +365,4 @@ contains
    end function base_message
      
    
-end module pf_AssertUtilities_mod
+end module pf_AssertUtilities

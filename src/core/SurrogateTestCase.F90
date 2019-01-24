@@ -32,7 +32,7 @@
 ! Multiple-Inheritance design pattern is also required.  That portion
 ! is implemented in the TestCase module.
 
-module PF_SurrogateTestCase_mod
+module PF_SurrogateTestCase
    implicit none
    private
 
@@ -76,4 +76,4 @@ module PF_SurrogateTestCase_mod
 
    end interface
 
-end module PF_SurrogateTestCase_mod
+end module PF_SurrogateTestCase

@@ -1,9 +1,9 @@
-module pf_AnyOf_mod
-  use pf_AbstractMatcher_mod
-  use pf_BaseMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_MatcherVector_mod
-  use pf_SelfDescribingVector_mod
+module pf_AnyOf
+  use pf_AbstractMatcher
+  use pf_BaseMatcher
+  use pf_MatcherDescription
+  use pf_MatcherVector
+  use pf_SelfDescribingVector
   implicit none
   private
 
@@ -146,4 +146,4 @@ contains
   end subroutine describe_mismatch
 
 
-end module pf_AnyOf_mod
+end module pf_AnyOf

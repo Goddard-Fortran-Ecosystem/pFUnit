@@ -1,4 +1,4 @@
-module pf_TestAnnotation_mod
+module pf_TestAnnotation
    implicit none
    private
 
@@ -37,11 +37,11 @@ contains
       
    end function disable_type_name
 
-end module pf_TestAnnotation_mod
+end module pf_TestAnnotation
 
 
-module pf_StringTestAnnotationMap_mod
-   use pf_TestAnnotation_mod
+module pf_StringTestAnnotationMap
+   use pf_TestAnnotation
 
 #define _map StringTestAnnotationMap
 #define _iterator StringTestAnnotationMapIterator
@@ -51,4 +51,4 @@ module pf_StringTestAnnotationMap_mod
 #define _alt
 #include "templates/map.inc"
 
-end module pf_StringTestAnnotationMap_mod
+end module pf_StringTestAnnotationMap

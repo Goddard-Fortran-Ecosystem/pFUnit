@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_Assert_mod
+!  MODULE: Test_Assert
 !
 !> @brief
 !! <BriefDescription>
@@ -21,10 +21,10 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_Assert_mod
-   use PF_TestSuite_mod
-   use PF_Assert_mod
-   use PF_ExceptionList_mod, only: catch
+module Test_Assert
+   use PF_TestSuite
+   use PF_Assert
+   use PF_ExceptionList, only: catch
    implicit none
    private
 
@@ -33,9 +33,9 @@ module Test_Assert_mod
 contains
 
    function suite() result(aSuite)
-      use PF_Test_mod
-      use PF_TestMethod_mod
-      use PF_TestSuite_mod
+      use PF_Test
+      use PF_TestMethod
+      use PF_TestSuite
       type (TestSuite) :: aSuite
 
       aSuite = TestSuite('Assert')
@@ -61,10 +61,10 @@ contains
    end subroutine testAssertEqualStringDiffer1st
 
    subroutine testAssertWithLocation
-      use PF_SourceLocation_mod
+      use PF_SourceLocation
       call assertTrue(.false., 'intentional fail', &
            & SourceLocation(fileName='nowhere', lineNumber=5))
       call assertTrue(catch('intentional fail'))
    end subroutine testAssertWithLocation
 
-end module Test_Assert_mod
+end module Test_Assert

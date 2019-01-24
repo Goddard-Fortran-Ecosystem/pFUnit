@@ -1,7 +1,7 @@
-module pf_StringStartsWith_mod
-  use pf_AbstractMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_SubstringMatcher_mod
+module pf_StringStartsWith
+  use pf_AbstractMatcher
+  use pf_MatcherDescription
+  use pf_SubstringMatcher
   implicit none
   private
 
@@ -36,4 +36,4 @@ contains
     eval_substring_of = index(this%converted(item), this%converted(this%get_substring())) == 1
   end function eval_substring_of
 
-end module pf_StringStartsWith_mod
+end module pf_StringStartsWith

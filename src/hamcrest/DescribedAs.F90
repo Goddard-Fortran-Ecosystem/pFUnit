@@ -1,7 +1,7 @@
-module pf_DescribedAs_mod
-  use pf_AbstractMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_BaseMatcher_mod
+module pf_DescribedAs
+  use pf_AbstractMatcher
+  use pf_MatcherDescription
+  use pf_BaseMatcher
   implicit none
   private
 
@@ -65,4 +65,4 @@ contains
 
   end subroutine describe_mismatch
 
-end module pf_DescribedAs_mod
+end module pf_DescribedAs

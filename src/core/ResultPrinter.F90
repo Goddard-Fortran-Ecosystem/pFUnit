@@ -22,9 +22,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
-module PF_ResultPrinter_mod
-   use PF_Exception_mod
-   use PF_TestListener_mod, only : TestListener
+module PF_ResultPrinter
+   use PF_Exception
+   use PF_TestListener, only : TestListener
    implicit none
    private
 
@@ -68,7 +68,7 @@ contains
   end function new_ResultPrinter
 
   subroutine addFailure(this, testName, exceptions)
-     use PF_ExceptionList_mod
+     use PF_ExceptionList
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
@@ -81,7 +81,7 @@ contains
   end subroutine addFailure
 
   subroutine addError(this, testName, exceptions)
-     use PF_ExceptionList_mod
+     use PF_ExceptionList
      class (ResultPrinter), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
@@ -133,7 +133,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-      use PF_AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult, only : AbstractTestResult
       class (ResultPrinter), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -142,8 +142,8 @@ contains
     end subroutine endRun
 
    subroutine print(this, result)
-      use PF_AbstractTestResult_mod, only : AbstractTestResult
-      use PF_TestFailureVector_mod
+      use PF_AbstractTestResult, only : AbstractTestResult
+      use PF_TestFailureVector
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -165,9 +165,9 @@ contains
    end subroutine printHeader
 
    subroutine printFailures(this, label, failures)
-      use PF_TestFailure_mod
-      use PF_TestFailureVector_mod
-      use PF_SourceLocation_mod
+      use PF_TestFailure
+      use PF_TestFailureVector
+      use PF_SourceLocation
       class (ResultPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailureVector), intent(in) :: failures
@@ -195,7 +195,7 @@ contains
    end subroutine printFailures
 
    subroutine printFooter(this, result)
-      use PF_AbstractTestResult_mod
+      use PF_AbstractTestResult
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -241,4 +241,4 @@ contains
 
    end subroutine addSuccess
      
-end module PF_ResultPrinter_mod
+end module PF_ResultPrinter

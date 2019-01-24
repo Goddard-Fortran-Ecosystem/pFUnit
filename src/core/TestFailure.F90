@@ -20,9 +20,9 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_TestFailure_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
+module PF_TestFailure
+   use PF_Exception
+   use PF_ExceptionList
    implicit none
    private
 
@@ -44,4 +44,4 @@ module PF_TestFailure_mod
 !!$      type (Exception), intent(in) :: exceptions(:)
 !!$   end function newTestFailure
 
-end module PF_TestFailure_mod
+end module PF_TestFailure

@@ -21,8 +21,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_DebugListener_mod
-   use PF_TestListener_mod
+module PF_DebugListener
+   use PF_TestListener
    implicit none
    private
 
@@ -61,7 +61,7 @@ contains
    end function newDebugListener_default
 
    subroutine addFailure(this, testName, exceptions)
-     use PF_ExceptionList_mod
+     use PF_ExceptionList
      class (DebugListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
@@ -101,7 +101,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use PF_AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult, only : AbstractTestResult
      class (DebugListener), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
      _UNUSED_DUMMY(this)
@@ -115,4 +115,4 @@ contains
      _UNUSED_DUMMY(testName)
    end subroutine addSuccess
 
-end module PF_DebugListener_mod
+end module PF_DebugListener

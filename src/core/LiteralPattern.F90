@@ -1,6 +1,6 @@
-module PF_LiteralPattern_mod
-   use PF_AbstractPattern_mod
-   use PF_MatchObject_mod
+module PF_LiteralPattern
+   use PF_AbstractPattern
+   use PF_MatchObject
    implicit none
    private
 
@@ -52,4 +52,4 @@ contains
 
    end function match
 
-end module PF_LiteralPattern_mod
+end module PF_LiteralPattern

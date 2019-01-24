@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: BrokenTestCase_mod
+!  MODULE: BrokenTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -20,34 +20,34 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module BrokenTestCase_mod
-   use PF_TestCase_mod, only: TestCase
+module BrokenTestCase
+   use PF_TestCase, only: TestCase
    implicit none
    private
    
-   public :: BrokenTestCase
+   public :: BrokenTest
    
-   type, extends(TestCase) :: BrokenTestCase
+   type, extends(TestCase) :: BrokenTest
       private
       character(len=40), public :: runLog
    contains
       procedure :: setUp
       procedure :: tearDown
       procedure :: runMethod
-   end type BrokenTestCase
+   end type BrokenTest
    
 contains
 
    subroutine setUp(this)
-      class(BrokenTestCase), intent(inOut) :: this
+      class(BrokenTest), intent(inOut) :: this
 
       this%runLog = 'setUp'
 
    end subroutine setUp
 
    subroutine runMethod(this)
-      use PF_ExceptionList_mod, only: throw
-      class(BrokenTestCase), intent(inOut) :: this
+      use PF_ExceptionList, only: throw
+      class(BrokenTest), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' broken run'
       call throw('This test is intentionally broken.')
@@ -55,10 +55,10 @@ contains
    end subroutine runMethod
 
    subroutine tearDown(this)
-      class(BrokenTestCase), intent(inOut) :: this
+      class(BrokenTest), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' tearDown'
 
    end subroutine tearDown
 
-end module BrokenTestCase_mod
+end module BrokenTestCase

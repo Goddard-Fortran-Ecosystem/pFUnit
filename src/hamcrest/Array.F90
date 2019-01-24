@@ -4,7 +4,7 @@
 ! be re-engineered.
 
 
-module pf_Array_mod
+module pf_Array
   implicit none
   private
 
@@ -56,4 +56,4 @@ contains
     a%items = items
   end function wrap_3d
   
-end module pf_Array_mod
+end module pf_Array

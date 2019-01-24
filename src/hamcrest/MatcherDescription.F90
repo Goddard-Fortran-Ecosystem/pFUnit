@@ -1,7 +1,7 @@
-module pf_MatcherDescription_mod
-  use pf_SurrogateDescription_mod
-  use pf_SelfDescribing_mod
-  use pf_SelfDescribingVector_mod
+module pf_MatcherDescription
+  use pf_SurrogateDescription
+  use pf_SelfDescribing
+  use pf_SelfDescribingVector
   implicit none
   private
 
@@ -74,4 +74,4 @@ module pf_MatcherDescription_mod
    end interface
 
 
-end module pf_MatcherDescription_mod
+end module pf_MatcherDescription

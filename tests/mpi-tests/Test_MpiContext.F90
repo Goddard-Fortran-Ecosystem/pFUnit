@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MpiContext_mod
+!  MODULE: Test_MpiContext
 !
 !> @brief
 !! <BriefDescription>
@@ -20,12 +20,12 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_MpiContext_mod
-   use PF_ParallelContext_mod
-   use PF_TestCase_mod
-   use PF_MpiTestCase_mod
-   use PF_MpiTestMethod_mod
-   use PF_Assert_mod
+module Test_MpiContext
+   use PF_ParallelContext
+   use PF_TestCase
+   use PF_MpiTestCase
+   use PF_MpiTestMethod
+   use PF_Assert
    implicit none
    private
 
@@ -34,7 +34,7 @@ module Test_MpiContext_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestSuite, only: TestSuite
 
       type (TestSuite) :: suite
 
@@ -87,6 +87,6 @@ contains
       call assertTrue(qOut)
    end subroutine testAllReduce_some
 
-end module Test_MpiContext_mod
+end module Test_MpiContext
 
 

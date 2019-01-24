@@ -1,9 +1,9 @@
-module pf_IsEqual_mod
+module pf_IsEqual
   use iso_fortran_env
-  use pf_AbstractMatcher_mod
-  use pf_BaseMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_Array_mod
+  use pf_AbstractMatcher
+  use pf_BaseMatcher
+  use pf_MatcherDescription
+  use pf_Array
   implicit none
   private
 
@@ -68,7 +68,7 @@ contains
   ! allows CLASS(*) on RHS.
   ! Intrinsics are checked case by case.
   logical function matches(this, actual_value)
-    use pf_Matchable_mod
+    use pf_Matchable
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: actual_value
 
@@ -194,4 +194,4 @@ contains
 
   end function matches_intrinsic
 
-end module pf_IsEqual_mod
+end module pf_IsEqual

@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MockRepository_mod
+!  MODULE: Test_MockRepository
 !
 !> @brief
 !! <BriefDescription>
@@ -24,7 +24,7 @@
 !-------------------------------------------------------------------------------
 
 
-module SUT_mod
+module pf_SUT
    implicit none
    private
 
@@ -43,11 +43,11 @@ contains
       _UNUSED_DUMMY(this)
    end subroutine method1
 
-end module SUT_mod
+end module PF_SUT
 
-module MockSUT_mod
-   use PF_MockRepository_mod
-   use SUT_mod
+module pf_MockSUT
+   use PF_MockRepository
+   use pf_SUT
    implicit none
    private
 
@@ -74,8 +74,8 @@ contains
 
 !TODO - make FINAL routine once gfortran supports it
    subroutine verifyMocking(this)
-      use PF_Exception_mod
-      use PF_ExceptionList_mod
+      use PF_Exception
+      use PF_ExceptionList
       class (MockSUT), intent(inout) :: this
 
       if (associated(this%mocker)) then
@@ -89,17 +89,17 @@ contains
       call this%mocker%hasCalled(this, 'method1')
    end subroutine method1
 
-end module MockSUT_mod
+end module pf_MockSUT
 
-module Test_MockRepository_mod
-   use PF_TestSuite_mod
-   use PF_MockRepository_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
-   use PF_Assert_mod
+module Test_MockRepository
+   use PF_TestSuite
+   use PF_MockRepository
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_Assert
 
-   use SUT_mod
-   use MockSUT_mod
+   use pf_SUT
+   use pf_MockSUT
    implicit none
    private
 
@@ -112,8 +112,8 @@ contains
 !#define ADD(method) call suite%addTest(newTestMethod(REFLECT(method)))
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('Test_MockRepository')
@@ -205,4 +205,4 @@ contains
 
    end subroutine testExpectMethod_CalledDifferentMethod
 
-end module Test_MockRepository_mod
+end module Test_MockRepository

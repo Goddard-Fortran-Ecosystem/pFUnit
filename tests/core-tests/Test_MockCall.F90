@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MockCall_mod
+!  MODULE: Test_MockCall
 !
 !> @brief
 !! <BriefDescription>
@@ -22,9 +22,9 @@
 !
 !-------------------------------------------------------------------------------
 
-module Test_MockCall_mod
-   use PF_TestSuite_mod
-   use PF_MockCall_mod
+module Test_MockCall
+   use PF_TestSuite
+   use PF_MockCall
    implicit none
    private
 
@@ -35,8 +35,8 @@ contains
 !#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('Test_MockCall')
@@ -51,7 +51,7 @@ contains
    end function suite
 
    subroutine testExpectOneIntegerArgument
-      use PF_Assert_mod
+      use PF_Assert
       type (MockCall) :: mCall
       class (*), pointer :: q
       integer, target :: one = 1
@@ -68,7 +68,7 @@ contains
    end subroutine testExpectOneIntegerArgument
 
    subroutine testFailExpectOneIntegerArgument
-      use PF_Assert_mod
+      use PF_Assert
       type (MockCall) :: mCall
       class (*), pointer :: q
 
@@ -86,4 +86,4 @@ contains
       call assertExceptionRaised()
    end subroutine testFailExpectOneIntegerArgument
 
-end module Test_MockCall_mod
+end module Test_MockCall

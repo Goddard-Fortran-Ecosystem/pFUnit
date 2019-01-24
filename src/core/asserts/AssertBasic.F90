@@ -43,11 +43,11 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_AssertBasic_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
-   use PF_SourceLocation_mod
-   use PF_StringUtilities_mod
+module PF_AssertBasic
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_SourceLocation
+   use PF_StringUtilities
 #ifdef _REAL16_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL16
 #endif
@@ -247,7 +247,7 @@ contains
 
 
    subroutine assertExceptionRaisedBasic(location)
-      use PF_ExceptionList_mod, only: throw, catch
+      use PF_ExceptionList, only: throw, catch
       type (SourceLocation), optional, intent(in) :: location
 
       if (.not. catch()) then
@@ -258,7 +258,7 @@ contains
 
 
    subroutine assertExceptionRaisedMessage(message, location)
-      use PF_ExceptionList_mod, only: throw, catch
+      use PF_ExceptionList, only: throw, catch
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
@@ -334,7 +334,7 @@ contains
 
    subroutine assertEqualString_(expected, found, message, location, &
         & whitespace)
-      use PF_ExceptionList_mod, only: throw
+      use PF_ExceptionList, only: throw
 
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
@@ -912,4 +912,4 @@ contains
 #endif
 
 
-end module PF_AssertBasic_mod
+end module PF_AssertBasic

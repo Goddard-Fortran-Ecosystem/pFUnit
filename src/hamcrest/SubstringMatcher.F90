@@ -1,7 +1,7 @@
-module pf_SubstringMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_AbstractMatcher_mod
-  use pf_TypeSafeMatcher_mod
+module pf_SubstringMatcher
+  use pf_MatcherDescription
+  use pf_AbstractMatcher
+  use pf_TypeSafeMatcher
   implicit none
   private
 
@@ -151,4 +151,4 @@ contains
   end function expects_type_of
 
   
-end module pf_SubstringMatcher_mod
+end module pf_SubstringMatcher

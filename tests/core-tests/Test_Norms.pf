@@ -1,16 +1,16 @@
-module Test_Norms_mod
-   use pf_AssertReal_0d_mod
-   use pf_AssertReal_1d_mod
-   use pf_AssertReal_2d_mod
+module Test_Norms
+   use pf_AssertReal_0d
+   use pf_AssertReal_1d
+   use pf_AssertReal_2d
    use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
    use, intrinsic :: iso_fortran_env, only: REAL128
-   use pf_StringUtilities_mod
-   use pf_SourceLocation_mod
-   use pf_Exceptionlist_mod
+   use pf_StringUtilities
+   use pf_SourceLocation
+   use pf_Exceptionlist
    use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
-   use pf_Norms_0d_mod
-   use pf_Norms_1d_mod
-   use pf_Norms_2d_mod
+   use pf_Norms_0d
+   use pf_Norms_1d
+   use pf_Norms_2d
 
    @suite(name='Norm_suite')
 
@@ -167,4 +167,4 @@ contains
    end subroutine Test_L1Norm_1d_complex
    
    
-end module Test_Norms_mod
+end module Test_Norms

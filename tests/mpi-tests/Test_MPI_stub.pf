@@ -1,4 +1,4 @@
-module Test_MPI_stub_mod
+module Test_MPI_stub
    use pfunit
 
 contains
@@ -9,4 +9,4 @@ contains
 
    end subroutine stub_mpi_test
 
-end module Test_MPI_stub_mod
+end module Test_MPI_stub

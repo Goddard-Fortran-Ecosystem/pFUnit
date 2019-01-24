@@ -5,7 +5,7 @@ program main
    use FUnit, only: TestSuite
    use FUnit, only: ParallelContext
    use FUnit, only: SerialContext, newSerialContext
-   use robustTestSuite_mod
+   use robustTestSuite
    implicit none
 
 !!$   call initialize(useMPI=.false.)

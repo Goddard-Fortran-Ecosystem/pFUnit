@@ -20,7 +20,7 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MpiStubs_mod
+module MpiStubs
    implicit none
    private
 
@@ -111,4 +111,4 @@ contains
       newCommunicator = nextCommunicator
    end function newCommunicator
    
-end module MpiStubs_mod
+end module MpiStubs

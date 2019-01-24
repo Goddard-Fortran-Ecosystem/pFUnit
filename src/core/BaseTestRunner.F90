@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_BaseTestRunner_mod
-   use PF_TestListener_mod
+module PF_BaseTestRunner
+   use PF_TestListener
    implicit none
    private
 
@@ -37,9 +37,9 @@ module PF_BaseTestRunner_mod
    abstract interface
 
       function run(this, aTest, context) result(result)
-         use PF_Test_mod
-         use PF_ParallelContext_mod
-         use PF_TestResult_mod
+         use PF_Test
+         use PF_ParallelContext
+         use PF_TestResult
          import BaseTestRunner
 
          type (TestResult) :: result
@@ -50,4 +50,4 @@ module PF_BaseTestRunner_mod
 
    end interface
 
-end module PF_BaseTestRunner_mod
+end module PF_BaseTestRunner

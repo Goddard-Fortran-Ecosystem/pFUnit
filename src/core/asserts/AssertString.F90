@@ -1,7 +1,7 @@
-module pf_AssertString_mod
-   use pf_SourceLocation_mod
-   use pf_StringUtilities_mod
-   use pf_Exception_mod
+module pf_AssertString
+   use pf_SourceLocation
+   use pf_StringUtilities
+   use pf_Exception
    implicit none
    private
 
@@ -17,7 +17,7 @@ contains
    
    subroutine assertEqual_string(expected, found, message, location, &
         & whitespace)
-      use PF_ExceptionList_mod, only: throw
+      use PF_ExceptionList, only: throw
 
       character(len=*), intent(in) :: expected
       character(len=*), intent(in) :: found
@@ -278,4 +278,4 @@ contains
 
    end subroutine assertEqual_string
 
-end module pf_AssertString_mod
+end module pf_AssertString

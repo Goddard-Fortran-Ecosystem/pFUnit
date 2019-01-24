@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_SimpleTestCase_mod
+!  MODULE: Test_SimpleTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -21,8 +21,8 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_SimpleTestCase_mod
-   use PF_TestSuite_mod, only: TestSuite
+module Test_SimpleTestCase
+   use PF_TestSuite, only: TestSuite
    implicit none
    private
 
@@ -32,7 +32,7 @@ contains
 
 !#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
    function suite()
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('Test_SimpleTestCase')
@@ -47,7 +47,7 @@ contains
    end function suite
 
    function internalSuite()
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: internalSuite
 
       internalSuite = TestSuite('Test_TestCase')
@@ -58,13 +58,13 @@ contains
    end function internalSuite
 
    subroutine testWorks()
-      use PF_TestCase_mod
-      use PF_TestSuite_mod
-      use PF_TestResult_mod, only: TestResult, TestResult
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
-      use SimpleTestCase_mod, only: method1, method2
-      use PF_Assert_mod, only: assertEqual
-      use PF_SerialContext_mod
+      use PF_TestCase
+      use PF_TestSuite
+      use PF_TestResult, only: TestResult, TestResult
+      use pf_SimpleTestCase, only: newSimpleTestCase, SimpleTestCase
+      use pf_SimpleTestCase, only: method1, method2
+      use PF_Assert, only: assertEqual
+      use PF_SerialContext
 
       type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
@@ -81,13 +81,13 @@ contains
    end subroutine testWorks
 
    subroutine testFails()
-      use PF_TestCase_mod
-      use PF_TestSuite_mod
-      use PF_TestResult_mod, only: TestResult, TestResult
-      use SimpleTestCase_mod, only: newSimpleTestCase, SimpleTestCase
-      use SimpleTestCase_mod, only: method1
-      use PF_Assert_mod, only: assertEqual
-      use PF_SerialContext_mod
+      use PF_TestCase
+      use PF_TestSuite
+      use PF_TestResult, only: TestResult, TestResult
+      use pf_SimpleTestCase, only: newSimpleTestCase, SimpleTestCase
+      use pf_SimpleTestCase, only: method1
+      use PF_Assert, only: assertEqual
+      use PF_SerialContext
 
       type (TestResult) :: aTestResult
       type (SimpleTestCase) :: aTest
@@ -100,10 +100,10 @@ contains
    end subroutine testFails
 
    subroutine testRunSuite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestResult_mod, only: TestResult, TestResult
-      use PF_Assert_mod, only: assertEqual
-      use PF_SerialContext_mod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestResult, only: TestResult, TestResult
+      use PF_Assert, only: assertEqual
+      use PF_SerialContext
       type (TestResult) :: aTestResult
       type (TestSuite) :: aSuite
 
@@ -120,8 +120,8 @@ contains
     ! (to avoid user types being ABSTRACT), but it should never be used.
     ! This test ensures that the default throws an exception.
     subroutine testRunMethodShouldFail()
-       use PF_TestCase_mod
-       use PF_Assert_mod
+       use PF_TestCase
+       use PF_Assert
 
        type, extends(TestCase) :: TempTestCase
        end type TempTestCase
@@ -132,5 +132,5 @@ contains
        call assertExceptionRaised('TestCase::runMethod() must be overridden.')
     end subroutine testRunMethodShouldFail
 
-end module Test_SimpleTestCase_mod
+end module Test_SimpleTestCase
 

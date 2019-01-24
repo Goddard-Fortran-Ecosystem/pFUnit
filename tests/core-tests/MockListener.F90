@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: MockListener_mod
+!  MODULE: MockListener
 !
 !> @brief
 !! <BriefDescription>
@@ -22,8 +22,8 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module MockListener_mod
-   use PF_TestListener_mod
+module pf_MockListener
+   use PF_TestListener
    implicit none
    private
 
@@ -47,7 +47,7 @@ module MockListener_mod
 contains
 
   subroutine addFailure(this, testName, exceptions)
-     use PF_ExceptionList_mod
+     use PF_ExceptionList
      class (MockListener), intent(inOut) :: this
      character(len=*), intent(in) :: testName
      type (ExceptionList), intent(in) :: exceptions
@@ -91,7 +91,7 @@ contains
 
 
    subroutine endRun(this, result)
-     use PF_AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult, only : AbstractTestResult
      class (MockListener), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
 
@@ -111,4 +111,4 @@ contains
    end subroutine addSuccess
 
 
-end module MockListener_mod
+end module Pf_MockListener

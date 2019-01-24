@@ -1,4 +1,4 @@
-module PF_RegularExpression_mod
+module PF_RegularExpression
    implicit none
    private
 
@@ -61,4 +61,4 @@ contains
 
    end function match
 
-end module PF_RegularExpression_mod
+end module PF_RegularExpression

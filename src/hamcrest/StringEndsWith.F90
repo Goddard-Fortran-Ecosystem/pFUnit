@@ -1,7 +1,7 @@
-module pf_StringEndsWith_mod
-  use pf_AbstractMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_SubstringMatcher_mod
+module pf_StringEndsWith
+  use pf_AbstractMatcher
+  use pf_MatcherDescription
+  use pf_SubstringMatcher
   implicit none
   private
 
@@ -41,4 +41,4 @@ contains
     eval_substring_of = idx_substring == (len(item) - len(this%get_substring()) + 1)
   end function eval_substring_of
 
-end module pf_StringEndsWith_mod
+end module pf_StringEndsWith

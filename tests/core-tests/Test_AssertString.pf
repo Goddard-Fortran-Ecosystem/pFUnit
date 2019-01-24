@@ -1,4 +1,4 @@
-module Test_AssertString_mod
+module Test_AssertString
    use FUnit
 
    @suite(name='AssertString_suite')
@@ -265,4 +265,4 @@ contains
    end subroutine testAssertEqualNonzeroBlanks4
    
 
-end module Test_AssertString_mod
+end module Test_AssertString

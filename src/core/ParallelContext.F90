@@ -24,7 +24,7 @@
 ! Subclass for MPI operations
 
 #include "unused_dummy.fh"
-module PF_ParallelContext_mod
+module PF_ParallelContext
    implicit none
    private
 
@@ -126,4 +126,4 @@ contains
 
    end function labelProcess
 
-end module PF_ParallelContext_mod
+end module PF_ParallelContext

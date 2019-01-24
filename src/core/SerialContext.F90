@@ -21,8 +21,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_SerialContext_mod
-   use PF_ParallelContext_mod
+module PF_SerialContext
+   use PF_ParallelContext
    implicit none
    private
 
@@ -140,4 +140,4 @@ contains
       _UNUSED_DUMMY(this)
    end subroutine clean
 
-end module PF_SerialContext_mod
+end module PF_SerialContext

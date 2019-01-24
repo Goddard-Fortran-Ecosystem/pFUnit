@@ -21,13 +21,13 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_TestResult_mod
-   use PF_AbstractTestResult_mod
-   use PF_SurrogateTestCase_mod
-   use PF_TestListener_mod
-   use PF_TestListenerVector_mod
-   use PF_TestFailure_mod
-   use PF_TestFailureVector_mod
+module PF_TestResult
+   use PF_AbstractTestResult
+   use PF_SurrogateTestCase
+   use PF_TestListener
+   use PF_TestListenerVector
+   use PF_TestFailure
+   use PF_TestFailureVector
 
    implicit none
    private
@@ -96,8 +96,8 @@ contains
    end function new_TestResult
 
    subroutine addFailure(this, aTest, exceptions)
-      use PF_ExceptionList_mod
-      use PF_TestFailure_mod
+      use PF_ExceptionList
+      use PF_TestFailure
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
@@ -115,8 +115,8 @@ contains
    end subroutine addFailure
 
    subroutine addError(this, aTest, exceptions)
-      use PF_TestFailure_mod
-      use PF_ExceptionList_mod
+      use PF_TestFailure
+      use PF_ExceptionList
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
@@ -134,8 +134,8 @@ contains
    end subroutine addError
 
    subroutine addSuccess(this, aTest)
-      use PF_TestFailure_mod
-      use PF_ExceptionList_mod
+      use PF_TestFailure
+      use PF_ExceptionList
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
 
@@ -213,9 +213,9 @@ contains
 
 ! only invoked for a "real" test, not suites etc.
    recursive subroutine run(this, test, context)
-      use PF_Exception_mod
-      use PF_ExceptionList_mod
-      use PF_ParallelContext_mod
+      use PF_Exception
+      use PF_ExceptionList
+      use PF_ParallelContext
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(inout) :: test 
       class (ParallelContext), intent(in) :: context
@@ -245,7 +245,7 @@ contains
    end subroutine run
 
    subroutine addListener(this, listener)
-      use PF_TestListener_mod, only: TestListener
+      use PF_TestListener, only: TestListener
       class (TestResult), intent(inOut) :: this
       class (TestListener), target, intent(in) :: listener
 
@@ -316,4 +316,4 @@ contains
       this%name = trim(name)
    end subroutine setName
 
-end module PF_TestResult_mod
+end module PF_TestResult

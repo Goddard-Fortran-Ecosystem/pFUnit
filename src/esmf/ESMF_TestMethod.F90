@@ -1,9 +1,9 @@
-module ESMF_TestMethod_mod
-   use PF_MpiTestParameter_mod
+module ESMF_TestMethod
+   use PF_MpiTestParameter
    use pFUnit
    use ESMF
-   use ESMF_TestCase_mod
-   use ESMF_TestParameter_mod
+   use ESMF_TestCase
+   use ESMF_TestParameter
    implicit none
    private
 
@@ -93,4 +93,4 @@ contains
 
    end subroutine tearDown
 
-end module ESMF_TestMethod_mod
+end module ESMF_TestMethod

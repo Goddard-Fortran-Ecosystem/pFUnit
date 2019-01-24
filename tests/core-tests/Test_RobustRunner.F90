@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_RobustRunner_mod
+!  MODULE: Test_RobustRunner
 !
 !> @brief
 !! <BriefDescription>
@@ -21,9 +21,9 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_RobustRunner_mod
-   use PF_Test_mod
-   use PF_RobustRunner_mod
+module Test_RobustRunner
+   use PF_Test
+   use PF_RobustRunner
    implicit none
    private
 
@@ -32,8 +32,8 @@ module Test_RobustRunner_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('RobustRunner')
@@ -47,13 +47,13 @@ contains
 
    subroutine testRunVariety()
       use, intrinsic :: iso_fortran_env
-      use robustTestSuite_mod, only: remoteSuite => suite
-      use PF_SerialContext_mod, only: THE_SERIAL_CONTEXT
-      use PF_TestSuite_mod
-      use PF_TestResult_mod
-      use PF_Assert_mod
-      use PF_TestListener_mod
-      use PF_ResultPrinter_mod
+      use robustTestSuite, only: remoteSuite => suite
+      use PF_SerialContext, only: THE_SERIAL_CONTEXT
+      use PF_TestSuite
+      use PF_TestResult
+      use PF_Assert
+      use PF_TestListener
+      use PF_ResultPrinter
 
       type (RobustRunner) :: runner
       type (TestSuite) :: suite
@@ -80,4 +80,4 @@ contains
 
    end subroutine testRunVariety
 
-end module Test_RobustRunner_mod
+end module Test_RobustRunner

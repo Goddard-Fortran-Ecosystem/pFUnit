@@ -33,10 +33,10 @@
 ! Further control of field width could be added at a later time.
 !
 
-module PF_StringUtilities_mod
+module PF_StringUtilities
 
-  use PF_Params_mod, only : r32, r64
-  use PF_Params_mod, only : i32, i64
+  use PF_Params, only : r32, r64
+  use PF_Params, only : i32, i64
 
    implicit none
    private
@@ -295,4 +295,4 @@ contains
    end function trimTrailingWhitespace
 
 
-end module PF_StringUtilities_mod
+end module PF_StringUtilities

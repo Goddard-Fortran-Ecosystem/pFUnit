@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_UnixProcess_mod
+!  MODULE: Test_UnixProcess
 !
 !> @brief
 !! <BriefDescription>
@@ -21,11 +21,11 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_UnixProcess_mod
-   use PF_TestSuite_mod
-   use PF_Assert_mod
-   use PF_ExceptionList_mod
-   use PF_UnixProcess_mod
+module Test_UnixProcess
+   use PF_TestSuite
+   use PF_Assert
+   use PF_ExceptionList
+   use PF_UnixProcess
    implicit none
    private
 
@@ -34,8 +34,8 @@ module Test_UnixProcess_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('UnixProcess')
@@ -94,4 +94,4 @@ contains
       
    end subroutine testGetLine2
 
-end module Test_UnixProcess_mod
+end module Test_UnixProcess

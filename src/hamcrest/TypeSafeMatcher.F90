@@ -1,10 +1,10 @@
-module pf_TypeSafeMatcher_mod
-  use pf_AbstractMatcher_mod
-  use pf_BaseMatcher_mod
-  use pf_SelfDescribing_mod
-  use pf_MatcherDescription_mod, only: MatcherDescription
+module pf_TypeSafeMatcher
+  use pf_AbstractMatcher
+  use pf_BaseMatcher
+  use pf_SelfDescribing
+  use pf_MatcherDescription, only: MatcherDescription
 
-  use pf_Array_mod
+  use pf_Array
   use iso_fortran_env
   implicit none
   private
@@ -170,4 +170,4 @@ contains
      end select
    end function type_of
 
-end module pf_TypeSafeMatcher_mod
+end module pf_TypeSafeMatcher

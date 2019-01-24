@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MpiTestCase_mod
+!  MODULE: Test_MpiTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -21,62 +21,62 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_MpiTestCase_mod
+module Test_MpiTestCase
    use mpi
-   use PF_Test_mod
-   use PF_TestCase_mod
-   use PF_MpiTestCase_mod
-   use PF_MpiTestParameter_mod
+   use PF_Test
+   use PF_TestCase
+   use PF_MpiTestCase
+   use PF_MpiTestParameter
    implicit none
    private
 
    public :: suite
-   public :: newTest_MpiTestCase
-   public :: Test_MpiTestCase
+   public :: newTestMpiTestCase
+   public :: TestMpiTestCase
 
-   type, extends(MpiTestCase) :: Test_MpiTestCase
+   type, extends(MpiTestCase) :: TestMpiTestCase
       character(len=:), allocatable, public :: runLog
       procedure(method), pointer :: testMethod => null()
    contains
       procedure :: runMethod
-   end type Test_MpiTestCase
+   end type TestMpiTestCase
 
    abstract interface
       subroutine method(this)
-        import Test_MpiTestCase
-        class (Test_MpiTestCase), intent(inout) :: this
+        import TestMpiTestCase
+        class (TestMpiTestCase), intent(inout) :: this
       end subroutine method
    end interface
    
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite
+     use PF_TestSuite, only: TestSuite
       type (TestSuite) :: suite
 
-      suite = TestSuite('Test_MpiTestCase')
+      suite = TestSuite('TestMpiTestCase')
 
-      call suite%addTest(newTest_MpiTestCase('testWasRun', &
+      call suite%addTest(newTestMpiTestCase('testWasRun', &
            &                                  testWasRun, numProcesses=1))
-      call suite%addTest(newTest_MpiTestCase('testRunOn2Processors', &
+      call suite%addTest(newTestMpiTestCase('testRunOn2Processors', &
            &                                  testRunOn2Processors, numProcesses=2))
-      call suite%addTest(newTest_MpiTestCase('testFailOn1', &
+      call suite%addTest(newTestMpiTestCase('testFailOn1', &
            &                                  testFailOn1, numProcesses=3))
-      call suite%addTest(newTest_MpiTestCase('testFailOn2', &
+      call suite%addTest(newTestMpiTestCase('testFailOn2', &
            &                                  testFailOn2, numProcesses=3))
-      call suite%addTest(newTest_MpiTestCase('testTooFewProcs', &
+      call suite%addTest(newTestMpiTestCase('testTooFewProcs', &
            &                                  testTooFewProcs, numProcesses=4))
 
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testWasRun), numProcesses=1))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn1), numProcesses=3))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testFailOn2), numProcesses=3))
-!      call suite%addTest(newTest_MpiTestCase(REFLECT(testTooFewProcs), numProcesses=4))
+!      call suite%addTest(newTestMpiTestCase(REFLECT(testWasRun), numProcesses=1))
+!      call suite%addTest(newTestMpiTestCase(REFLECT(testRunOn2Processors), numProcesses=2))
+!      call suite%addTest(newTestMpiTestCase(REFLECT(testFailOn1), numProcesses=3))
+!      call suite%addTest(newTestMpiTestCase(REFLECT(testFailOn2), numProcesses=3))
+!      call suite%addTest(newTestMpiTestCase(REFLECT(testTooFewProcs), numProcesses=4))
       
    end function suite
 
-   function newTest_MpiTestCase(name, userMethod, numProcesses) result(this)
-      type(Test_MpiTestCase) :: this
+   function newTestMpiTestCase(name, userMethod, numProcesses) result(this)
+      type(TestMpiTestCase) :: this
       character(len=*), intent(in) :: name
       procedure(method) :: userMethod
       integer, intent(in) :: numProcesses
@@ -86,11 +86,11 @@ contains
       this%testMethod => userMethod
       call this%setTestParameter(MpiTestParameter(numProcesses))
 
-    end function newTest_MpiTestCase
+    end function newTestMpiTestCase
 
    subroutine testWasRun(this)
-      use PF_Assert_mod, only: assertEqual
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_Assert, only: assertEqual
+      class (TestMpiTestCase), intent(inout) :: this
 
       this%runLog = ' ' ! empty
       call wasRun(this%runLog, this%getMpiCommunicator())
@@ -99,8 +99,8 @@ contains
    end subroutine testWasRun
 
    subroutine testRunOn2Processors(this)
-      use PF_Assert_mod, only: assertEqual
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_Assert, only: assertEqual
+      class (TestMpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
       call Mpi_Comm_Size(this%getMpiCommunicator(), numProcesses, ier)
@@ -109,8 +109,8 @@ contains
    end subroutine testRunOn2Processors
 
    subroutine brokenProcess1(this)
-      use PF_ExceptionList_mod
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_ExceptionList
+      class (TestMpiTestCase), intent(inout) :: this
 
       if (this%context%processRank() == 1) then
          call throw('Intentional fail on process 1.')
@@ -119,8 +119,8 @@ contains
    end subroutine brokenProcess1
 
    subroutine brokenOnProcess2(this)
-      use PF_ExceptionList_mod
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_ExceptionList
+      class (TestMpiTestCase), intent(inout) :: this
 
       if (this%context%processRank() == 1 .or. this%context%processRank() == 2) then
          call throw('Intentional fail')
@@ -131,23 +131,23 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn1(this)
-      use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: throw
-      use PF_ExceptionList_mod, only: catch
-      use PF_TestFailure_mod
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_Assert, only: assertEqual
+      use PF_TestResult
+      use PF_Exception, only: Exception
+      use PF_ExceptionList, only: throw
+      use PF_ExceptionList, only: catch
+      use PF_TestFailure
+      class (TestMpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
-      type (Test_MpiTestCase) :: brokenTest
+      type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
       type (Exception), pointer :: e
 
 
       reslt = TestResult()
-      brokenTest = newTest_MpiTestCase('brokenProcess1', brokenProcess1, numProcesses = 3)
+      brokenTest = newTestMpiTestCase('brokenProcess1', brokenProcess1, numProcesses = 3)
 
       call brokenTest%run(reslt, this%context)
 
@@ -175,22 +175,22 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn2(this)
-      use PF_ExceptionList_mod, only: throw
-      use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: catch
-      use PF_TestFailure_mod
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_ExceptionList, only: throw
+      use PF_Assert, only: assertEqual
+      use PF_TestResult
+      use PF_Exception, only: Exception
+      use PF_ExceptionList, only: catch
+      use PF_TestFailure
+      class (TestMpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
-      type (Test_MpiTestCase) :: brokenTest
+      type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
       type (Exception), pointer :: e
 
       reslt = TestResult()
-      brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = 3)
+      brokenTest = newTestMpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = 3)
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then
@@ -216,17 +216,17 @@ contains
    ! Purposefully request more processes than are available. 
    ! detected on root process in the end.
    subroutine testTooFewProcs(this)
-      use PF_ExceptionList_mod, only: throw
-      use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: catch
-      use PF_ExceptionList_mod, only: anyExceptions
-      use PF_TestFailure_mod
-      class (Test_MpiTestCase), intent(inout) :: this
+      use PF_ExceptionList, only: throw
+      use PF_Assert, only: assertEqual
+      use PF_TestResult
+      use PF_Exception, only: Exception
+      use PF_ExceptionList, only: catch
+      use PF_ExceptionList, only: anyExceptions
+      use PF_TestFailure
+      class (TestMpiTestCase), intent(inout) :: this
 
       integer :: numProcesses, ier
-      type (Test_MpiTestCase) :: brokenTest
+      type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
       integer, parameter :: TOO_MANY_PES = 5
@@ -236,7 +236,7 @@ contains
       character(len=:), allocatable :: expectedMessage
 
       reslt = TestResult()
-      brokenTest = newTest_MpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
+      brokenTest = newTestMpiTestCase('brokenOnProcess2', brokenOnProcess2, numProcesses = TOO_MANY_PES)
       call brokenTest%run(reslt, this%context)
 
       if (this%context%isRootProcess()) then
@@ -257,7 +257,7 @@ contains
    end subroutine testTooFewProcs
 
    recursive subroutine runMethod(this)
-      class(Test_MpiTestCase), intent(inOut) :: this
+      class(TestMpiTestCase), intent(inOut) :: this
       call this%testMethod()
    end subroutine runMethod
 
@@ -273,9 +273,9 @@ contains
    end subroutine wasRun
 
    subroutine delete_(this)
-      type (Test_MpiTestCase), intent(inOut) :: this
+      type (TestMpiTestCase), intent(inOut) :: this
       nullify(this%testMethod)
    end subroutine delete_
 
-end module Test_MpiTestCase_mod
+end module Test_MpiTestCase
 

@@ -6,7 +6,7 @@
 ! Trans. Math. Softw.. 37. 10.1145/1644001.1644004.
 !
 !
-module pf_SurrogateDescription_mod
+module pf_SurrogateDescription
   implicit none
   private
 
@@ -15,4 +15,4 @@ module pf_SurrogateDescription_mod
   type, abstract :: SurrogateDescription
   end type SurrogateDescription
 
-end module pf_SurrogateDescription_mod
+end module pf_SurrogateDescription

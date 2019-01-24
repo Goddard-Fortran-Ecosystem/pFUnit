@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: FixtureTestCase_mod
+!  MODULE: FixtureTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -22,26 +22,26 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module FixtureTestCase_mod
-   use PF_TestCase_mod, only: TestCase
+module FixtureTestCase
+   use PF_TestCase, only: TestCase
    implicit none
    private
 
-   public :: FixtureTestCase
-   public :: newFixtureTestCase
+   public :: FixtureTest
+   public :: newFixtureTest
    public :: delete
    public :: methodA
    public :: methodB
    public :: simpleTestMethod
 
-   type, extends(TestCase) :: FixtureTestCase
+   type, extends(TestCase) :: FixtureTest
       private
       character(len=30), public :: runLog
    contains
       procedure :: setUp
       procedure :: runMethod
       procedure :: tearDown
-   end type FixtureTestCase
+   end type FixtureTest
 
    interface delete
       module procedure delete_
@@ -49,49 +49,49 @@ module FixtureTestCase_mod
    
 contains
 
-   function newFixtureTestCase() result(this)
-      type(FixtureTestCase) :: this
+   function newFixtureTest() result(this)
+      type(FixtureTest) :: this
 
-      call this%setName('FixtureTestCase')
+      call this%setName('FixtureTest')
       this%runLog = ' '
 
-   end function newFixtureTestCase
+   end function newFixtureTest
 
    subroutine setUp(this)
-      class(FixtureTestCase), intent(inOut) :: this
+      class(FixtureTest), intent(inOut) :: this
       this%runLog = trim(this%runLog) // 'setUp '
    end subroutine setUp
 
    subroutine tearDown(this)
-      class(FixtureTestCase), intent(inOut) :: this
+      class(FixtureTest), intent(inOut) :: this
       this%runLog = trim(this%runLog) // ' tearDown'
    end subroutine tearDown
 
    subroutine runMethod(this)
-      class(FixtureTestCase), intent(inOut) :: this
+      class(FixtureTest), intent(inOut) :: this
 
       this%runLog = trim(this%runLog) // ' run'
 
    end subroutine runMethod
 
    subroutine simpleTestMethod(this)
-      class (FixtureTestCase), intent(inOut) :: this
+      class (FixtureTest), intent(inOut) :: this
       this%runLog = trim(this%runLog) // ' run'
    end subroutine simpleTestMethod
 
    subroutine methodA(this)
-      class (FixtureTestCase), intent(inOut) :: this
+      class (FixtureTest), intent(inOut) :: this
       this%runLog = trim(this%runLog) // ' methodA'
    end subroutine methodA
 
    subroutine methodB(this)
-      class (FixtureTestCase), intent(inOut) :: this
+      class (FixtureTest), intent(inOut) :: this
       this%runLog = trim(this%runLog) // ' methodB'
    end subroutine methodB
 
    subroutine delete_(this)
-      type (FixtureTestCase), intent(inOut) :: this
+      type (FixtureTest), intent(inOut) :: this
       _UNUSED_DUMMY(this)
    end subroutine delete_
 
-end module FixtureTestCase_mod
+end module FixtureTestCase

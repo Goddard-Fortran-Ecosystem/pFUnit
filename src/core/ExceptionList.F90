@@ -1,7 +1,7 @@
-module PF_ExceptionList_mod
-   use PF_SourceLocation_mod
-   use PF_Exception_mod, only: Exception
-   use PF_ExceptionVector_mod
+module PF_ExceptionList
+   use PF_SourceLocation
+   use PF_Exception, only: Exception
+   use PF_ExceptionVector
    implicit none
    private
 
@@ -140,7 +140,7 @@ contains
    end function catch_next
 
    subroutine gather(this, context)
-      use PF_ParallelContext_mod
+      use PF_ParallelContext
       class (ExceptionList), intent(inOut) :: this
       class (ParallelContext), intent(in) :: context
 
@@ -251,7 +251,7 @@ contains
 
 
    logical function anyExceptions_context(context) result(any)
-      use PF_ParallelContext_mod, only: ParallelContext
+      use PF_ParallelContext, only: ParallelContext
       class (ParallelContext), intent(in) :: context
 
       any = context%allReduce(anyExceptions())
@@ -295,7 +295,7 @@ contains
 
 
    integer function getNumExceptions_context(context) result(numExceptions)
-      use PF_ParallelContext_mod, only: ParallelContext
+      use PF_ParallelContext, only: ParallelContext
       class (ParallelContext), intent(in) :: context
 
       numExceptions = context%sum(getNumExceptions())
@@ -306,7 +306,7 @@ contains
 
 
    subroutine gatherExceptions(context)
-      use PF_ParallelContext_mod
+      use PF_ParallelContext
       class (ParallelContext), intent(in) :: context
 
       call global_exception_list%gather(context)
@@ -332,4 +332,4 @@ contains
    end function getExceptions
 
 
-end module PF_ExceptionList_mod
+end module PF_ExceptionList

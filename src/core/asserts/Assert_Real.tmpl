@@ -125,7 +125,7 @@
 
 #include "unused_dummy.fh"
 
-module pf_AssertReal_{rank}d_mod
+module pf_AssertReal_{rank}d
 #ifdef _ISO_REAL16
    use, intrinsic :: iso_fortran_env, only: REAL16
 #endif
@@ -146,9 +146,9 @@ module pf_AssertReal_{rank}d_mod
 #endif
 
    use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
-   use pf_KeywordEnforcer_mod
-   use pf_SourceLocation_mod
-   use pf_AssertUtilities_mod
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
    implicit none
 !!$   private
 
@@ -1008,7 +1008,7 @@ contains
    @instantiate(assert_greater_than_or_equal, minimal)
    @instantiate(assert_relatively_equal, minimal)
    
-end module pf_AssertReal_{rank}d_mod
+end module pf_AssertReal_{rank}d
 
 
    

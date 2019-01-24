@@ -44,27 +44,27 @@ contains
 
    function load_tests() result(suite)
 
-#define ADD_MODULE_TEST_SUITE(m,s) use m, only: s
+#define ADDULE_TEST_SUITE(m,s) use m, only: s
 #define ADD_TEST_SUITE(s) ! do nothing
 #include _TEST_SUITES
-#undef ADD_MODULE_TEST_SUITE
+#undef ADDULE_TEST_SUITE
 #undef ADD_TEST_SUITE
 
       type (TestSuite) :: suite
 
-#define ADD_MODULE_TEST_SUITE(m,s) ! do nothing
+#define ADDULE_TEST_SUITE(m,s) ! do nothing
 #define ADD_TEST_SUITE(s) type (TestSuite), external :: s
 #  include _TEST_SUITES
 #undef ADD_TEST_SUITE
-#undef ADD_MODULE_TEST_SUITE
+#undef ADDULE_TEST_SUITE
 
       suite = TestSuite()
 
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
-#define ADD_MODULE_TEST_SUITE(m,s) call suite%addTest(s())
+#define ADDULE_TEST_SUITE(m,s) call suite%addTest(s())
 #  include _TEST_SUITES
 #undef ADD_TEST_SUITE
-#undef ADD_MODULE_TEST_SUITE
+#undef ADDULE_TEST_SUITE
 
    end function load_tests
 

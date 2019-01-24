@@ -1,8 +1,8 @@
-module newTest_Exception_mod
-   use PF_Assert_mod
-   use PF_SourceLocation_mod
-   use PF_Exception_mod, only: Exception
-   use PF_ExceptionList_mod
+module newTest_Exception
+   use PF_Assert
+   use PF_SourceLocation
+   use PF_Exception, only: Exception
+   use PF_ExceptionList
    implicit none
 
    @suite(name='ExceptionList_suite')
@@ -35,4 +35,4 @@ contains
    end subroutine test_catch_fail
    
    
-end module newtest_Exception_mod
+end module newtest_Exception

@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_TestResult_mod
+!  MODULE: Test_TestResult
 !
 !> @brief
 !! <BriefDescription>
@@ -21,9 +21,9 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_TestResult_mod
-   use PF_TestCase_mod
-   use PF_TestResult_mod, only: TestResult
+module Test_TestResult
+   use PF_TestCase
+   use PF_TestResult, only: TestResult
    implicit none
    private
 
@@ -32,9 +32,9 @@ module Test_TestResult_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestCase_mod
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestCase
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('TestResultSuite')
@@ -62,10 +62,10 @@ contains
    end function suite
 
    subroutine testGetNumRun()
-      use PF_Assert_mod, only: assertEqual
-      use PF_TestResult_mod, only: TestResult
-      use PF_TestCase_mod
-      use SimpleTestCase_mod
+      use PF_Assert, only: assertEqual
+      use PF_TestResult, only: TestResult
+      use PF_TestCase
+      use pf_SimpleTestCase
       type (TestResult) :: aResult
       type (SimpleTestCase) :: tstCase
 
@@ -85,12 +85,12 @@ contains
    end subroutine testGetNumRun
 
    subroutine testGetNumFailed()
-      use PF_Assert_mod, only: assertEqual
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: ExceptionList
-      use SimpleTestCase_mod, only: SimpleTestCase
-      use PF_SurrogateTestCase_mod
-      use PF_TestCase_mod
+      use PF_Assert, only: assertEqual
+      use PF_Exception, only: Exception
+      use PF_ExceptionList, only: ExceptionList
+      use pf_SimpleTestCase, only: SimpleTestCase
+      use PF_SurrogateTestCase
+      use PF_TestCase
 
       type (TestResult) :: aResult
       type (ExceptionList) :: list
@@ -113,11 +113,11 @@ contains
    end subroutine testGetNumFailed
 
    subroutine testAddListenerStart()
-      use PF_TestListener_mod
-      use PF_SurrogateTestCase_mod
-      use MockListener_mod
-      use PF_Assert_mod
-      use SimpleTestCase_mod
+      use PF_TestListener
+      use PF_SurrogateTestCase
+      use pf_MockListener
+      use PF_Assert
+      use pf_SimpleTestCase
       type (TestResult) :: result
       type (MockListener), target :: listener
       
@@ -136,12 +136,12 @@ contains
    end subroutine testAddListenerStart
 
    subroutine testAddListenerEnd()
-      use PF_TestListener_mod
-      use MockListener_mod
-      use PF_Assert_mod
-      use SimpleTestCase_mod
-      use PF_SurrogateTestCase_mod
-      use PF_TestCase_mod
+      use PF_TestListener
+      use pf_MockListener
+      use PF_Assert
+      use pf_SimpleTestCase
+      use PF_SurrogateTestCase
+      use PF_TestCase
 
       type (TestResult) :: result
       type (MockListener), target :: listener
@@ -158,14 +158,14 @@ contains
    end subroutine testAddListenerEnd
 
    subroutine testAddListenerFailure()
-      use PF_TestListener_mod
-      use MockListener_mod
-      use PF_Assert_mod
-      use PF_Exception_mod
-      use PF_ExceptionList_mod
-      use SimpleTestCase_mod
-      use PF_SurrogateTestCase_mod
-      use PF_TestCase_mod
+      use PF_TestListener
+      use pf_MockListener
+      use PF_Assert
+      use PF_Exception
+      use PF_ExceptionList
+      use pf_SimpleTestCase
+      use PF_SurrogateTestCase
+      use PF_TestCase
       
       type (TestResult) :: result
       type (MockListener), target :: listener
@@ -186,4 +186,4 @@ contains
 
    end subroutine testAddListenerFailure
 
-end module Test_TestResult_mod
+end module Test_TestResult

@@ -25,9 +25,9 @@
 !    May need to separate status reports from the end-of-run summary
 !
 !-------------------------------------------------------------------------------
-module PF_XmlPrinter_mod
-   use PF_Exception_mod
-   use PF_TestListener_mod
+module PF_XmlPrinter
+   use PF_Exception
+   use PF_TestListener
    implicit none
    private
 
@@ -65,7 +65,7 @@ contains
    end function newXmlPrinter
 
    subroutine addFailure(this, testName, exceptions)
-      use PF_ExceptionList_mod
+      use PF_ExceptionList
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
@@ -76,7 +76,7 @@ contains
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
-      use PF_ExceptionList_mod
+      use PF_ExceptionList
       class (XmlPrinter), intent(inOut) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
@@ -103,7 +103,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use PF_AbstractTestResult_mod, only : AbstractTestResult
+     use PF_AbstractTestResult, only : AbstractTestResult
      class (XmlPrinter), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
 
@@ -111,7 +111,7 @@ contains
    end subroutine endRun
 
    subroutine print(this, result)
-      use PF_AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -124,7 +124,7 @@ contains
    end subroutine print
 
    subroutine printHeader(this, result)
-      use PF_AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult, only : AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -140,8 +140,8 @@ contains
    end subroutine printHeader
 
    subroutine printFailure(this, label, aFailedTest)
-      use PF_TestFailure_mod
-      use PF_SourceLocation_mod
+      use PF_TestFailure
+      use PF_SourceLocation
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
@@ -152,9 +152,9 @@ contains
    end subroutine printFailure
 
    subroutine printExceptions(this, label, testName, exceptions)
-      use PF_TestFailure_mod
-      use PF_SourceLocation_mod
-      use PF_ExceptionList_mod
+      use PF_TestFailure
+      use PF_SourceLocation
+      use PF_ExceptionList
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       character(len=*), intent(in) :: testName
@@ -191,8 +191,8 @@ contains
 
 !mlr old version
    subroutine printFailure1(this, label, aFailedTest)
-      use PF_TestFailure_mod
-      use PF_SourceLocation_mod
+      use PF_TestFailure
+      use PF_SourceLocation
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailure), intent(in) :: aFailedTest
@@ -225,9 +225,9 @@ contains
    end subroutine printFailure1
 
    subroutine printFailures(this, label, failures)
-      use PF_TestFailure_mod
-      use PF_TestFailureVector_mod
-      use PF_SourceLocation_mod
+      use PF_TestFailure
+      use PF_TestFailureVector
+      use PF_SourceLocation
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: label
       type (TestFailureVector), intent(in) :: failures
@@ -241,7 +241,7 @@ contains
    end subroutine printFailures
 
    subroutine printTestName(this, testName)
-      use PF_TestFailure_mod
+      use PF_TestFailure
       class (XmlPrinter), intent(in) :: this
       character(len=*), intent(in) :: testName
 
@@ -253,7 +253,7 @@ contains
     end subroutine printTestName
 
    subroutine printSuccess(this, aSuccessTest)
-      use PF_TestFailure_mod
+      use PF_TestFailure
       class (XmlPrinter), intent(in) :: this
       type (TestFailure) :: aSuccessTest
 
@@ -267,8 +267,8 @@ contains
    end subroutine printSuccess
 
    subroutine printSuccesses(this, successes)
-      use PF_TestFailure_mod
-      use PF_TestFailurevector_mod
+      use PF_TestFailure
+      use PF_TestFailurevector
       class (XmlPrinter), intent(in) :: this
       type (TestFailureVector), intent(in) :: successes
 
@@ -281,7 +281,7 @@ contains
    end subroutine printSuccesses
 
    subroutine printFooter(this, result)
-      use PF_AbstractTestResult_mod
+      use PF_AbstractTestResult
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -324,4 +324,4 @@ contains
 
    end subroutine addSuccess
 
-end module PF_XmlPrinter_mod
+end module PF_XmlPrinter

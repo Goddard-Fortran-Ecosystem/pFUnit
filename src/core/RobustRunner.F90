@@ -22,12 +22,12 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_RobustRunner_mod
-   use PF_Test_mod
-   use PF_TestCase_mod
-   use PF_BaseTestRunner_mod
-   use PF_TestListener_mod
-   use PF_UnixProcess_mod
+module PF_RobustRunner
+   use PF_Test
+   use PF_TestCase
+   use PF_BaseTestRunner
+   use PF_TestListener
+   use PF_UnixProcess
    implicit none
    private
 
@@ -127,10 +127,10 @@ contains
    end subroutine runMethod
 
    function run(this, aTest, context) result(result)
-      use PF_Test_mod
-      use PF_TestSuite_mod
-      use PF_TestResult_mod
-      use PF_ParallelContext_mod
+      use PF_Test
+      use PF_TestSuite
+      use PF_TestResult
+      use PF_ParallelContext
 
       type (TestResult) :: result
       class (RobustRunner), target, intent(inout) :: this
@@ -144,13 +144,13 @@ contains
    end function run
 
    subroutine runWithResult(this, aTest, context, result)
-      use PF_Test_mod
-      use PF_ParallelContext_mod
-      use PF_TestResult_mod
-      use PF_RemoteProxyTestCase_mod
-      use PF_TestSuite_mod
-      use PF_TestVector_mod
-      use PF_ExceptionList_mod
+      use PF_Test
+      use PF_ParallelContext
+      use PF_TestResult
+      use PF_RemoteProxyTestCase
+      use PF_TestSuite
+      use PF_TestVector
+      use PF_ExceptionList
       class (RobustRunner), target, intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
@@ -205,8 +205,8 @@ contains
    end subroutine runWithResult
 
    subroutine launchRemoteRunner(this, numSkip)
-      use PF_UnixProcess_mod
-      use PF_ExceptionList_mod
+      use PF_UnixProcess
+      use PF_ExceptionList
       class (RobustRunner), intent(inout) :: this
       integer, intent(in) :: numSkip
 
@@ -286,7 +286,7 @@ contains
    end subroutine endTest
 
    subroutine endRun(this, result)
-     use PF_AbstractTestResult_mod
+     use PF_AbstractTestResult
      class (RobustRunner), intent(inout) :: this
      class (AbstractTestResult), intent(in) :: result
 
@@ -296,7 +296,7 @@ contains
    end subroutine endRun
 
    subroutine addFailure(this, testName, exceptions)
-      use PF_ExceptionList_mod
+      use PF_ExceptionList
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
@@ -308,7 +308,7 @@ contains
    end subroutine addFailure
 
    subroutine addError(this, testName, exceptions)
-      use PF_ExceptionList_mod
+      use PF_ExceptionList
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
@@ -320,7 +320,7 @@ contains
    end subroutine addError
 
    function createTestResult(this) result(tstResult)
-      use PF_TestResult_mod
+      use PF_TestResult
       class (RobustRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
@@ -340,4 +340,4 @@ contains
 
    end subroutine addSuccess
 
-end module PF_RobustRunner_mod
+end module PF_RobustRunner

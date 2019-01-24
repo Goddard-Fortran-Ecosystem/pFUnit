@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_TestSuite_mod
+!  MODULE: Test_TestSuite
 !
 !> @brief
 !! <BriefDescription>
@@ -22,10 +22,10 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_TestSuite_mod
-   use PF_TestSuite_mod, only: TestSuite
-   use PF_TestResult_mod
-   use PF_Assert_mod, only: assertEqual
+module Test_TestSuite
+   use PF_TestSuite, only: TestSuite
+   use PF_TestResult
+   use PF_Assert, only: assertEqual
    implicit none
    private
 
@@ -42,8 +42,8 @@ module Test_TestSuite_mod
 contains
 
    function suite()
-      use PF_TestMethod_mod, only: TestMethod
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestMethod, only: TestMethod
+      use PF_TestSuite, only: TestSuite, TestSuite
       type (TestSuite) :: suite
 
       suite = TestSuite('TestSuiteSuite')
@@ -75,10 +75,10 @@ contains
    end function suite
 
    subroutine testCountTestCases()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use SimpleTestCase_mod, only: newSimpleTestCase
-      use SimpleTestCase_mod, only: method1, method2
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestSuite, only: TestSuite, TestSuite
+      use pf_SimpleTestCase, only: newSimpleTestCase
+      use pf_SimpleTestCase, only: method1, method2
+      use PF_TestSuite, only: TestSuite, TestSuite
       type (TestSuite) :: suite
 
       suite = TestSuite('aSuite')
@@ -91,7 +91,7 @@ contains
    end subroutine testCountTestCases
 
    subroutine testCountTestCasesNestedA()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
+      use PF_TestSuite, only: TestSuite, TestSuite
 
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
@@ -104,8 +104,8 @@ contains
    end subroutine testCountTestCasesNestedA
 
    subroutine testCountTestCasesNestedB()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use SimpleTestCase_mod, only: SimpleTestCase
+      use PF_TestSuite, only: TestSuite, TestSuite
+      use pf_SimpleTestCase, only: SimpleTestCase
       type (TestSuite) :: innerSuite
       type (TestSuite) :: outerSuite
 
@@ -134,8 +134,8 @@ contains
    !          -> Test2
    !
    subroutine testCountTestCasesNestedC()
-      use PF_TestSuite_mod, only: TestSuite, TestSuite
-      use SimpleTestCase_mod, only: SimpleTestCase
+      use PF_TestSuite, only: TestSuite, TestSuite
+      use pf_SimpleTestCase, only: SimpleTestCase
       type (TestSuite) :: suiteA, suiteB, suiteC, topSuite
       type (SimpleTestCase) :: aTest
 
@@ -162,11 +162,11 @@ contains
    end subroutine testCountTestCasesNestedC
 
    subroutine testGetTestCases()
-      use PF_Test_mod
-      use PF_TestVector_mod
-      use PF_TestCase_mod
-      use PF_TestMethod_mod
-      use PF_SerialContext_mod
+      use PF_Test
+      use PF_TestVector
+      use PF_TestCase
+      use PF_TestMethod
+      use PF_SerialContext
 
       type (TestSuite) :: top
       type (TestSuite) :: childA, childB
@@ -204,8 +204,8 @@ contains
 
 
    subroutine test_filter_simple()
-     use pf_NameFilter_mod
-     use pf_TestMethod_mod, only: TestMethod
+     use pf_NameFilter
+     use pf_TestMethod, only: TestMethod
      type (TestSuite) :: all_tests
      type (TestSuite) :: filtered_tests
 
@@ -225,8 +225,8 @@ contains
    end subroutine test_filter_simple
 
    subroutine test_filter_nested()
-     use pf_NameFilter_mod
-     use pf_TestMethod_mod, only: TestMethod
+     use pf_NameFilter
+     use pf_TestMethod, only: TestMethod
      type(TestSuite) :: all_tests
      type(TestSuite) :: subsuite
      type(TestSuite) :: filtered_tests
@@ -262,9 +262,9 @@ contains
    end subroutine myTestMethod
 
    recursive subroutine run(this, test, context)
-      use PF_TestCase_mod
-      use PF_SurrogateTestCase_mod
-      use PF_ParallelContext_mod
+      use PF_TestCase
+      use PF_SurrogateTestCase
+      use PF_ParallelContext
       class (Verbose), intent(inout) :: this
       class (SurrogateTestCase), intent(inout) :: test
       class (ParallelContext), intent(in) :: context
@@ -274,4 +274,4 @@ contains
 
    end subroutine run
 
-end module Test_TestSuite_mod
+end module Test_TestSuite

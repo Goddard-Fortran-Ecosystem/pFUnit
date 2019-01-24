@@ -1,6 +1,6 @@
-module ESMF_TestCase_mod
+module ESMF_TestCase
    use ESMF
-   use ESMF_TestParameter_mod
+   use ESMF_TestParameter
    use pFUnit, only: MpiTestCase
 
    implicit none
@@ -39,8 +39,8 @@ contains
 
 
    recursive subroutine runBare(this)
-      use PF_Exception_mod
-      use PF_ExceptionList_mod
+      use PF_Exception
+      use PF_ExceptionList
       use ESMF
       class (ESMF_TestCase), intent(inout) :: this
 
@@ -279,7 +279,7 @@ contains
 
    
    integer function getNumPETsRequested(this) result(numPETsRequested)
-      use PF_Exception_mod
+      use PF_Exception
       class (ESMF_TestCase), intent(in) :: this
       select type (p => this%testParameter)
       class is (ESMF_TestParameter)
@@ -291,4 +291,4 @@ contains
    end function getNumPETsRequested
 
 
-end module ESMF_TestCase_mod
+end module ESMF_TestCase

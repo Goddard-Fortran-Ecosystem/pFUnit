@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MpiException_mod
+!  MODULE: Test_MpiException
 !
 !> @brief
 !! <BriefDescription>
@@ -21,11 +21,11 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_MpiException_mod
-   use PF_Test_mod
-   use PF_TestCase_mod
-   use PF_ExceptionList_mod
-   use PF_MpiTestMethod_mod
+module Test_MpiException
+   use PF_Test
+   use PF_TestCase
+   use PF_ExceptionList
+   use PF_MpiTestMethod
    implicit none
 
    private
@@ -35,8 +35,8 @@ module Test_MpiException_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod!, TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod!, TestMethod
 
       type (TestSuite) :: suite
 
@@ -59,8 +59,8 @@ contains
    end function suite
 
    subroutine test_anyExceptions_none(this)
-      use PF_Assert_mod
-      use PF_ParallelContext_mod
+      use PF_Assert
+      use PF_ParallelContext
       class (MpiTestMethod), intent(inout) :: this
       class (ParallelContext), allocatable :: context
 
@@ -82,8 +82,8 @@ contains
    end subroutine test_anyExceptions_none
 
    subroutine test_getNumExceptions(this)
-      use PF_Assert_mod
-      use PF_ParallelContext_mod
+      use PF_Assert
+      use PF_ParallelContext
       class (MpiTestMethod), intent(inout) :: this
 
       call assertEqual(0, getNumExceptions(this%getContext()))
@@ -104,8 +104,8 @@ contains
    end subroutine test_getNumExceptions
 
    subroutine test_gather(this)
-      use PF_Assert_mod
-      use PF_ParallelContext_mod
+      use PF_Assert
+      use PF_ParallelContext
       class (MpiTestMethod), intent(inout) :: this
 
       select case (this%getProcessRank()) 
@@ -134,4 +134,4 @@ contains
 
    end subroutine test_gather
 
-end module Test_MpiException_mod
+end module Test_MpiException

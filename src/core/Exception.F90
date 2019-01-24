@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
-module PF_PrivateException_mod
-   use PF_SourceLocation_mod
+module PF_PrivateException
+   use PF_SourceLocation
    implicit none
    private
 
@@ -141,11 +141,11 @@ contains
 
    end function deserialize
 
-end module PF_PrivateException_mod
+end module PF_PrivateException
 
-module PF_Exception_mod
-   use PF_SourceLocation_mod
-   use PF_PrivateException_mod
+module PF_Exception
+   use PF_SourceLocation
+   use PF_PrivateException
    implicit none
    private
 
@@ -155,4 +155,4 @@ module PF_Exception_mod
    public :: UNKNOWN_LINE_NUMBER
    public :: UNKNOWN_FILE_NAME
 
-end module PF_Exception_mod
+end module PF_Exception

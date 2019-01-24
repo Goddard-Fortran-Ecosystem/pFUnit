@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_FixtureTestCase_mod
+!  MODULE: Test_FixtureTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -21,9 +21,9 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_FixtureTestCase_mod
-   use PF_TestSuite_mod
-   use PF_TestResult_mod, only: TestResult
+module Test_FixtureTestCase
+   use PF_TestSuite
+   use PF_TestResult, only: TestResult
    implicit none
    private
 
@@ -32,8 +32,8 @@ module Test_FixtureTestCase_mod
 contains
 
    function suite() result(aSuite)
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: aSuite
 
       aSuite = TestSuite('Test_FixtureTestCase')
@@ -44,25 +44,25 @@ contains
            &   TestMethod('testRunWithFixture', &
            &                  testRunWithFixture))
       call aSuite%addTest( &
-           &   TestMethod('testBrokenTestCase', &
-           &                  testBrokenTestCase))
+           &   TestMethod('testBrokenTest', &
+           &                  testBrokenTest))
       call aSuite%addTest( &
-           &   TestMethod('testBrokenSetUpCase', &
-           &                  testBrokenSetUpCase))
+           &   TestMethod('testBrokenSetUp', &
+           &                  testBrokenSetUp))
 
    end function suite
 
    subroutine testRunWithFixture()
-      use PF_TestCase_mod
-      use FixtureTestCase_mod, only: FixtureTestCase, newFixtureTestCase
-      use FixtureTestCase_mod, only: delete
-      use PF_SerialContext_mod
-      use PF_Assert_mod, only: assertEqual
-      type (FixtureTestCase) :: aTest
+      use PF_TestCase
+      use FixtureTestCase, only: FixtureTest, newFixtureTest
+      use FixtureTestCase, only: delete
+      use PF_SerialContext
+      use PF_Assert, only: assertEqual
+      type (FixtureTest) :: aTest
       type (TestResult) :: aTestResult
 
       aTestResult = TestResult()
-      aTest = newFixtureTestCase()
+      aTest = newFixtureTest()
       call aTest%setSurrogate()
       call aTest%run(aTestResult, SerialContext())
       call assertEqual('setUp run tearDown', aTest%runLog)
@@ -70,12 +70,12 @@ contains
 
    end subroutine testRunWithFixture
 
-   subroutine testBrokenTestCase()
-      use PF_TestCase_mod
-      use BrokenTestCase_mod, only: BrokenTestCase
-      use PF_Assert_mod, only: assertEqual
-      use PF_SerialContext_mod
-      type (BrokenTestCase) :: test
+   subroutine testBrokenTest()
+      use PF_TestCase
+      use BrokenTestCase, only: BrokenTest
+      use PF_Assert, only: assertEqual
+      use PF_SerialContext
+      type (BrokenTest) :: test
       type (TestResult) :: aTestResult
 
       call test%setSurrogate()
@@ -86,14 +86,14 @@ contains
       call assertEqual('setUp broken run tearDown', test%runLog)
       call assertEqual(1, aTestResult%failureCount())
 
-   end subroutine testBrokenTestCase
+   end subroutine testBrokenTest
 
-   subroutine testBrokenSetUpCase()
-      use PF_TestCase_mod
-      use BrokenSetUpCase_mod, only: BrokenSetUpCase
-      use PF_Assert_mod, only: assertEqual
-      use PF_SerialContext_mod
-      type (BrokenSetUpCase) :: test
+   subroutine testBrokenSetUp()
+      use PF_TestCase
+      use BrokenSetUpCase, only: BrokenSetUp
+      use PF_Assert, only: assertEqual
+      use PF_SerialContext
+      type (BrokenSetUp) :: test
       type (TestResult) :: aTestResult
 
       call test%setSurrogate()
@@ -103,7 +103,7 @@ contains
       call assertEqual('broken setUp', test%runLog)
       call assertEqual(1, aTestResult%failureCount())
 
-   end subroutine testBrokenSetUpCase
+   end subroutine testBrokenSetUp
 
-end module Test_FixtureTestCase_mod
+end module Test_FixtureTestCase
 
