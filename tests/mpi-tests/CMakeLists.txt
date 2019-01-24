@@ -14,7 +14,6 @@ list(APPEND PARALLEL_TEST_SRCS Test_MpiParameterizedTestCase.F90)
 
 set (pf_tests
   Test_MPI_stub.pf
-  Test_MpiHamcrest.pf
   )
 
 set(new_tests)
