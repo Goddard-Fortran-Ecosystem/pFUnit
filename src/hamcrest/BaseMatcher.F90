@@ -1,0 +1,27 @@
+module pf_BaseMatcher_mod
+  use pf_AbstractMatcher_mod
+  use pf_MatcherDescription_mod
+  implicit none
+  private
+
+  public :: BaseMatcher
+
+  type, abstract, extends(AbstractMatcher) :: BaseMatcher
+     private
+   contains
+     procedure :: describe_mismatch
+  end type BaseMatcher
+
+contains
+
+  subroutine describe_mismatch(this, actual, description)
+    class(BaseMatcher), intent(in) :: this
+    class(*), intent(in) :: actual
+    class(MatcherDescription), intent(inout) :: description
+
+    call description%append_text("was ")
+    call description%append_value(actual)
+
+  end subroutine describe_mismatch
+    
+end module pf_BaseMatcher_mod

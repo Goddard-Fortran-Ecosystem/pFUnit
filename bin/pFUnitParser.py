@@ -265,7 +265,8 @@ class AtAssert(Action):
         self.parser = parser
 
     def match(self, line):
-        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+#        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -277,7 +278,10 @@ class AtAssert(Action):
         p = self.parser
         
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
+        p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1])
+        if (not m.groups()[1].isspace()):
+            p.outputFile.write(", ")
+        p.outputFile.write("&\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")

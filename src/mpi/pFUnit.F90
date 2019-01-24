@@ -33,6 +33,9 @@ module pFUnit_private
    public :: MpiTestParameter
    public :: MpiTestMethod
 
+   ! Hamcrest
+!   public :: OnProcess, on_process
+!   public :: OnEveryProcess, on_every_process
 end module pFUnit_private
 
 !-------------------------------------------------------------------------------

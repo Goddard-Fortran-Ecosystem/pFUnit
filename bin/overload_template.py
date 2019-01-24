@@ -194,7 +194,11 @@ class Overload(Action):
 class Module(Action):
     regexp = re.compile("\s*(end)?\s*module\s+\w*\s*")
     def action(self, m, line, state):
-        state.ofile.write(line.format(rank=args.rank))
+        if state.current_template:
+            state.templates[state.current_template]['text'] += line
+        else:
+            state.ofile.write(line.format(rank=args.rank))
+
 
 class Template_begin(Action):        
     regexp = re.compile("\s*@template\s*\(\s*(\w+)\s*,\s*\[(.*)\]\s*")
@@ -224,6 +228,7 @@ class Instantiate(Action):
             d = {}
             d['name'] = name_mangle(template_name, instance['items'])
             d['rank'] = args.rank
+            d['mangle'] = name_mangle('',instance['items'])
             parameters = state.templates[template_name]['parameters']
             for item,p in zip(instance['items'],parameters):
                 d[p] = item

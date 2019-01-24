@@ -14,6 +14,7 @@ macro (build_submodule name)
   else()
     set(${name}_source_dir ${CMAKE_CURRENT_SOURCE_DIR}/${name})
     set(${name}_install_dir ${CMAKE_CURRENT_BINARY_DIR}/${name}/install)
+    message("Install dir: ${${name}_install_dir}")
     
     include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
     file(GLOB all_files ${${name}_source_dir}/*)
@@ -32,13 +33,14 @@ macro (build_submodule name)
 
     message("External project ... ${name}")
     set(extra_args "-DCMAKE_INSTALL_PREFIX=${${name}_install_dir};-DCMAKE_INSTALL_MESSAGE=LAZY")
+ 
     if(build_submodule_DEPENDENCIES)
       foreach(dependency ${build_submodule_DEPENDENCIES})
 	string(TOUPPER ${dependency} DEPENDENCY)
 	set(extra_args "${extra_args};-D${DEPENDENCY}=${${dependency}_install_dir}")
       endforeach()
     endif()
-    message("extra: ${extra_args}")
+
     ExternalProject_Add(${name}
       GIT_REPOSITORY ${repository}
       DOWNLOAD_COMMAND ${download_command}

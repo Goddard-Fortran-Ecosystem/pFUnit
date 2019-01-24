@@ -17,6 +17,7 @@ set (mpi_srcs
   MpiTestMethod.F90
   pFUnit.F90
   pfunit_main.F90
+
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
 target_link_libraries (pfunit PUBLIC funit)

@@ -72,7 +72,7 @@ contains
 
    subroutine throw_message(this, message, location)
       class (ExceptionList), intent(inOut) :: this
-      character(len=*), intent(in) :: message
+      character(len=*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
       call this%throw(Exception(message, location))
@@ -210,8 +210,10 @@ contains
       logical, optional, intent(in) :: preserve
 
       catch_any = .not. global_exception_list%empty()
-      if (.not. preserveMessage(preserve)) then
-         call this%pop_back()
+      if (catch_any) then
+         if (.not. preserveMessage(preserve)) then
+            call this%pop_back()
+         end if
       end if
          
 
