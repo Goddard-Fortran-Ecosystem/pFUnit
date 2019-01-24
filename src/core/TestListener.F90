@@ -21,7 +21,7 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_TestListener_mod
+module PF_TestListener
    implicit none
    private
 
@@ -50,8 +50,8 @@ module PF_TestListener_mod
 
    abstract interface
       subroutine addFailure(this, testName, exceptions)
-         use PF_Exception_mod
-         use PF_ExceptionList_mod
+         use PF_Exception
+         use PF_ExceptionList
          import TestListener
          class (TestListener), intent(inout) :: this
          character(len=*), intent(in) :: testName
@@ -78,7 +78,7 @@ module PF_TestListener_mod
 !
       ! Stub for future implementation.
       subroutine endRun(this, result)
-         use PF_AbstractTestResult_mod, only : AbstractTestResult
+         use PF_AbstractTestResult, only : AbstractTestResult
          import TestListener
          class (TestListener), intent(inout) :: this
          class (AbstractTestResult), intent(in) :: result
@@ -91,7 +91,7 @@ contains
    ! Most scenarios in Fortran cannot diagnose true errors, so
    ! an empty stub is provided here for convenience.
    subroutine addError(this, testName, exceptions)
-      use PF_ExceptionList_mod
+      use PF_ExceptionList
       class (TestListener), intent(inout) :: this
       character(len=*), intent(in) :: testName
       type (ExceptionList), intent(in) :: exceptions
@@ -123,4 +123,4 @@ contains
     end subroutine disableTest
     
 
- end module PF_TestListener_mod
+ end module PF_TestListener

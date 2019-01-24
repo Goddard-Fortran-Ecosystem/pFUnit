@@ -1,4 +1,4 @@
-module ESMF_TestParameter_mod
+module ESMF_TestParameter
    use pfunit, only: MpiTestParameter
    implicit none
 
@@ -79,4 +79,4 @@ contains
    end function getNumPETsRequested
 
    
-end module ESMF_TestParameter_mod
+end module ESMF_TestParameter

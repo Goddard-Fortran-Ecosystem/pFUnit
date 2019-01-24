@@ -22,10 +22,10 @@ contains
       use pfunit, only: MpiContext
       use pfunit, only: ParallelContext
 
-      use Test_MpiContext_mod, only: MpiContextSuite => suite
-      use Test_MpiException_mod, only: MpiExceptionSuite => suite
-      use Test_MpiTestCase_mod, only: MpiTestCaseSuite => suite
-      use Test_MpiParameterizedTestCase_mod, only: MpiParameterizedTestCaseSuite => suite
+      use Test_MpiContext, only: MpiContextSuite => suite
+      use Test_MpiException, only: MpiExceptionSuite => suite
+      use Test_MpiTestCase, only: MpiTestCaseSuite => suite
+      use Test_MpiParameterizedTestCase, only: MpiParameterizedTestCaseSuite => suite
       use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests

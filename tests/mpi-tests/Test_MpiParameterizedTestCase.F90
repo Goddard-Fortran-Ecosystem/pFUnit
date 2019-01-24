@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_MpiParameterizedTestCase_mod
+!  MODULE: Test_MpiParameterizedTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -21,11 +21,11 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_MpiParameterizedTestCase_mod
-   use PF_Test_mod
-   use PF_TestCase_mod
-   use PF_MpiTestCase_mod
-   use PF_MpiTestParameter_mod
+module Test_MpiParameterizedTestCase
+   use PF_Test
+   use PF_TestCase
+   use PF_MpiTestCase
+   use PF_MpiTestParameter
    implicit none
    private
 
@@ -56,7 +56,7 @@ module Test_MpiParameterizedTestCase_mod
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite
+     use PF_TestSuite, only: TestSuite
       type (TestSuite) :: suite
 
       type (ExtendedTestParameter) :: testParameter
@@ -100,7 +100,7 @@ contains
     end function toString
 
    subroutine testRunOn2PEs(this)
-      use PF_Assert_mod, only: assertEqual
+      use PF_Assert, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       call assertEqual(2, this%getNumProcesses())
@@ -110,7 +110,7 @@ contains
    ! ensure that the extra parameter is correctly captured in the 
    ! testParameter component of the base class.
    subroutine testToString(this)
-      use PF_Assert_mod, only: assertEqual
+      use PF_Assert, only: assertEqual
       class (Test_MpiTestCase), intent(inout) :: this
 
       call assertEqual('2', this%testParameter%toString())
@@ -123,4 +123,4 @@ contains
    end subroutine runMethod
 
 
-end module Test_MpiParameterizedTestCase_mod
+end module Test_MpiParameterizedTestCase

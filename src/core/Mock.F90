@@ -22,9 +22,9 @@
 !
 !-------------------------------------------------------------------------------
 
-module Mock_mod
+module Mock
 
-  use MockRepository_mod
+  use MockRepository
 
   implicit none
   private
@@ -49,6 +49,6 @@ contains
     call this%repository%registerMockCallBy(this%name)
   end subroutine registerCall
 
-end module Mock_mod
+end module Mock
 
 

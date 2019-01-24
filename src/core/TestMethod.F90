@@ -20,8 +20,8 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_TestMethod_mod
-   use PF_TestCase_mod, only: TestCase
+module PF_TestMethod
+   use PF_TestCase, only: TestCase
    implicit none
    private
 
@@ -90,4 +90,4 @@ contains
       if (associated(this%userTearDown)) call this%userTearDown()
    end subroutine tearDown
 
-end module PF_TestMethod_mod
+end module PF_TestMethod

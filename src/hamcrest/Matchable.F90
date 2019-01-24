@@ -1,5 +1,5 @@
-module pf_Matchable_mod
-  use pf_TypeSafeSelfDescribing_mod
+module pf_Matchable
+  use pf_TypeSafeSelfDescribing
   implicit none
   private
 
@@ -21,4 +21,4 @@ module pf_Matchable_mod
 
   end interface
      
-end module pf_Matchable_mod
+end module pf_Matchable

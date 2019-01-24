@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: BrokenSetUpCase_mod
+!  MODULE: BrokenSetUpCase
 !
 !> @brief
 !! <BriefDescription>
@@ -20,34 +20,34 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module BrokenSetUpCase_mod
-   use PF_TestCase_mod, only: TestCase
-   use PF_ExceptionList_mod, only: throw
+module BrokenSetUpCase
+   use PF_TestCase, only: TestCase
+   use PF_ExceptionList, only: throw
    implicit none
    private
    
-   public :: BrokenSetUpCase
-   public :: newBrokenSetUpCase
+   public :: BrokenSetUp
+   public :: newBrokenSetUp
    
-   type, extends(TestCase) :: BrokenSetUpCase
+   type, extends(TestCase) :: BrokenSetUp
       private
       character(len=40), public :: runLog
    contains
       procedure :: setUp
       procedure :: runMethod
       procedure :: tearDown
-   end type BrokenSetUpCase
+   end type BrokenSetUp
    
 contains
 
-   function newBrokenSetUpCase() result(this)
-      type (BrokenSetUpCase), pointer :: this
+   function newBrokenSetUp() result(this)
+      type (BrokenSetUp), pointer :: this
       allocate(this)
-      call this%setName('BrokenSetUpCase')
-   end function newBrokenSetUpCase
+      call this%setName('BrokenSetUp')
+   end function newBrokenSetUp
 
    subroutine setUp(this)
-      class(BrokenSetUpCase), intent(inOut) :: this
+      class(BrokenSetUp), intent(inOut) :: this
 
       this%runLog = 'broken setUp'
       call throw('This setUp() is intentionally broken.')
@@ -55,17 +55,17 @@ contains
    end subroutine setUp
 
    subroutine tearDown(this)
-      class(BrokenSetUpCase), intent(inOut) :: this
+      class(BrokenSetUp), intent(inOut) :: this
 
       this%runLog = trim(this%runLog)//' tearDown'
 
    end subroutine tearDown
 
    subroutine runMethod(this)
-      class(BrokenSetUpCase), intent(inOut) :: this
+      class(BrokenSetUp), intent(inOut) :: this
 
       this%runLog = trim(this%runLog)//' run'
 
    end subroutine runMethod
 
-end module BrokenSetUpCase_mod
+end module BrokenSetUpCase

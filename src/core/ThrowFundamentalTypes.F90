@@ -21,13 +21,13 @@
 !
 !-------------------------------------------------------------------------------
 
-module PF_ThrowFundamentalTypes_mod
+module PF_ThrowFundamentalTypes
 
-  use PF_Params_mod
-  use PF_StringUtilities_mod
-  use PF_Exception_mod
-  use PF_ExceptionList_mod
-  use PF_SourceLocation_mod
+  use PF_Params
+  use PF_StringUtilities
+  use PF_Exception
+  use PF_ExceptionList
+  use PF_SourceLocation
 
   implicit none
   private
@@ -214,4 +214,4 @@ contains
       differenceReport = '    difference: |' // trim(toString(difference)) // '| > tolerance:' // trim(toString(tolerance))
    end function differenceReport
 
-end module PF_ThrowFundamentalTypes_mod
+end module PF_ThrowFundamentalTypes

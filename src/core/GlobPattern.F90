@@ -1,4 +1,4 @@
-module PF_GlobPattern_mod
+module PF_GlobPattern
    implicit none
    private
 
@@ -72,4 +72,4 @@ contains
 
    end function match_
 
-end module PF_GlobPattern_mod
+end module PF_GlobPattern

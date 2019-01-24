@@ -13,10 +13,10 @@
 @end tkr_parameters
 
 
-module pf_AssertLogical_{rank}d_mod
-   use pf_KeywordEnforcer_mod
-   use pf_SourceLocation_mod
-   use pf_AssertUtilities_mod
+module pf_AssertLogical_{rank}d
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
 
    implicit none
    private
@@ -263,4 +263,4 @@ contains
    @instantiate(assert_equivalent, minimal)
    @instantiate(assert_not_equivalent, minimal)
 
-end module pf_AssertLogical_{rank}d_mod
+end module pf_AssertLogical_{rank}d

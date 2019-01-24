@@ -29,14 +29,14 @@
 
 #include "unused_dummy.fh"
 
-module pf_AssertInteger_{rank}d_mod
+module pf_AssertInteger_{rank}d
    use, intrinsic :: iso_fortran_env, only: INT8
    use, intrinsic :: iso_fortran_env, only: INT16
    use, intrinsic :: iso_fortran_env, only: INT32
    use, intrinsic :: iso_fortran_env, only: INT64
-   use pf_KeywordEnforcer_mod
-   use pf_SourceLocation_mod
-   use pf_AssertUtilities_mod
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
 
    implicit none
    private
@@ -598,7 +598,7 @@ contains
    @instantiate(assert_greater_than, minimal)
    @instantiate(assert_greater_than_or_equal, minimal)
    
-end module pf_AssertInteger_{rank}d_mod
+end module pf_AssertInteger_{rank}d
 
 
    

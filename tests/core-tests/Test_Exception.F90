@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_Exception_mod
+!  MODULE: Test_Exception
 !
 !> @brief
 !! <BriefDescription>
@@ -22,14 +22,14 @@
 !
 !-------------------------------------------------------------------------------
 
-module Test_Exception_mod
-   use PF_TestSuite_mod
-   use PF_ExceptionList_mod
-   use PF_Exception_mod, only: Exception
-   use PF_Assert_mod, only: assertEqual
-   use PF_Assert_mod, only: assertTrue
-   use PF_Assert_mod, only: assertFalse
-   use PF_SourceLocation_mod
+module Test_Exception
+   use PF_TestSuite
+   use PF_ExceptionList
+   use PF_Exception, only: Exception
+   use PF_Assert, only: assertEqual
+   use PF_Assert, only: assertTrue
+   use PF_Assert, only: assertFalse
+   use PF_SourceLocation
    implicit none
    private
 
@@ -38,8 +38,8 @@ module Test_Exception_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
 
       type (TestSuite) :: suite
 
@@ -186,8 +186,8 @@ contains
 
    ! !INTERFACE:
    subroutine testCatchFail()
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod, only: ExceptionList
+      use PF_Exception, only: Exception
+      use PF_ExceptionList, only: ExceptionList
       !EOP
       !BOC
       type (ExceptionList) :: list
@@ -452,7 +452,7 @@ contains
    end subroutine testCatchNextButPreserveC
 
    subroutine testGetLineNumberNoInfo()
-      use PF_Exception_mod, only: UNKNOWN_LINE_NUMBER
+      use PF_Exception, only: UNKNOWN_LINE_NUMBER
       type (Exception) :: anException
 
       anException = Exception()
@@ -471,7 +471,7 @@ contains
    end subroutine testGetLineNumber
 
    subroutine testGetFileNameNoInfo()
-      use PF_Exception_mod, only: UNKNOWN_FILE_NAME
+      use PF_Exception, only: UNKNOWN_FILE_NAME
       type (Exception) :: anException
 
       anException = Exception()
@@ -500,4 +500,4 @@ contains
 
    end subroutine testThrowWithLineAndFile
 
-end module test_Exception_mod
+end module test_Exception

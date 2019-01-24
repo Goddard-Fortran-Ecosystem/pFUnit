@@ -1,5 +1,5 @@
-module TestA_mod
-   use pfunit_mod
+module TestA
+   use pfunit
    implicit none
 
 contains
@@ -19,30 +19,30 @@ contains
       class (MpiTestMethod), intent(inout) :: this
    end subroutine testMethodC
 
-end module TestA_mod
+end module TestA
 
 
 
-module WrapTestA_mod
-   use pFUnit_mod
-   use TestA_mod
+module WrapTestA
+   use pFUnit
+   use TestA
    implicit none
    private
 
 contains
 
 
-end module WrapTestA_mod
+end module WrapTestA
 
-function TestA_mod_suite() result(suite)
-   use pFUnit_mod
-   use WrapTestA_mod
-   use TestA_mod
+function TestA_suite() result(suite)
+   use pFUnit
+   use WrapTestA
+   use TestA
    type (TestSuite) :: suite
 
    integer, allocatable :: npes(:)
 
-   suite = newTestSuite('TestA_mod_suite')
+   suite = newTestSuite('TestA_suite')
 
    call suite%addTest(newTestMethod('testMethodA', testMethodA))
 
@@ -53,5 +53,5 @@ function TestA_mod_suite() result(suite)
    call suite%addTest(newMpiTestMethod('testMethodC', testMethodC, 5))
 
 
-end function TestA_mod_suite
+end function TestA_suite
 

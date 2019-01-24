@@ -20,11 +20,11 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_RemoteProxyTestCase_mod
-   use PF_UnixProcess_mod
-   use PF_ExceptionList_mod
-   use PF_Test_mod
-   use PF_TestCase_mod
+module PF_RemoteProxyTestCase
+   use PF_UnixProcess
+   use PF_ExceptionList
+   use PF_Test
+   use PF_TestCase
    implicit none
    private
 
@@ -66,8 +66,8 @@ contains
    end function newRemoteProxyTestCase
 
    subroutine runMethod(this)
-      use PF_SourceLocation_mod
-      use PF_UnixProcess_mod
+      use PF_SourceLocation
+      use PF_UnixProcess
       use, intrinsic :: iso_c_binding
       class (RemoteProxyTestCase), intent(inout) :: this
       character(len=:), allocatable :: line
@@ -212,4 +212,4 @@ contains
       call system_clock(this%clockStart)
    end subroutine setStartTime
 
-end module PF_RemoteProxyTestCase_mod
+end module PF_RemoteProxyTestCase

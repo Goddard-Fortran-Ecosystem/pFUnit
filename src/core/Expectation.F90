@@ -3,7 +3,7 @@
 ! Note: maybe have multiple expectation types for subroutines, classes, etc.
 ! 
 
-module PF_Expectation_mod
+module PF_Expectation
   implicit none
   private
 
@@ -128,4 +128,4 @@ contains
     name = 'wasCalledOnce'
  end function get_name_was_called_once
 
-end module PF_Expectation_mod
+end module PF_Expectation

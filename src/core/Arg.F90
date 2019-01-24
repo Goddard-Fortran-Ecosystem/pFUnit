@@ -1,9 +1,9 @@
 #include "unused_dummy.fh"
 
-module pf_Arg_mod
-   use pf_KeywordEnforcer_mod
+module pf_Arg
+   use pf_KeywordEnforcer
    use gFTL_StringVectorMod
-   use pf_None_mod
+   use pf_None
    implicit none
    private
 
@@ -243,4 +243,4 @@ contains
 
    end subroutine print_help
 
-end module pf_Arg_mod
+end module pf_Arg

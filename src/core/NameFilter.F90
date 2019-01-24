@@ -1,6 +1,6 @@
-module pf_NameFilter_mod
-  use pf_TestFilter_mod
-  use pf_Test_mod
+module pf_NameFilter
+  use pf_TestFilter
+  use pf_Test
   implicit none
   private
 
@@ -35,4 +35,4 @@ contains
   end function filter
 
 
-end module pf_NameFilter_mod
+end module pf_NameFilter

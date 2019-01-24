@@ -20,14 +20,14 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module PF_Assert_mod
-   use PF_AssertBasic_mod
-   use pf_AssertString_mod
+module PF_Assert
+   use PF_AssertBasic
+   use pf_AssertString
    !#include "AssertArrays.fh"
 
-   use pf_AssertInteger_0d_mod
-   use pf_AssertReal_0d_mod
-   use pf_AssertComplex_0d_mod
+   use pf_AssertInteger_0d
+   use pf_AssertReal_0d
+   use pf_AssertComplex_0d
    implicit none
    private
 
@@ -54,4 +54,4 @@ module PF_Assert_mod
    public :: WhitespaceOptions
    public :: IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
 
-end module PF_Assert_mod
+end module PF_Assert

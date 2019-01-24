@@ -1,5 +1,5 @@
-module MpiTestCaseB_mod
-   use pfunit_mod
+module MpiTestCaseB
+   use pfunit
    implicit none
 
    
@@ -35,13 +35,13 @@ contains
       class (MpiTestCaseB), intent(inout) :: this
    end subroutine testB
 
-end module MpiTestCaseB_mod
+end module MpiTestCaseB
 
 
 
-module WrapMpiTestCaseB_mod
-   use pFUnit_mod
-   use MpiTestCaseB_mod
+module WrapMpiTestCaseB
+   use pFUnit
+   use MpiTestCaseB
    implicit none
    private
 
@@ -55,7 +55,7 @@ module WrapMpiTestCaseB_mod
 
    abstract interface
      subroutine userTestMethod(this)
-        use MpiTestCaseB_mod
+        use MpiTestCaseB
         class (MpiTestCaseB), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -82,17 +82,17 @@ contains
 
    end function makeCustomTest
 
-end module WrapMpiTestCaseB_mod
+end module WrapMpiTestCaseB
 
-function MpiTestCaseB_mod_suite() result(suite)
-   use pFUnit_mod
-   use WrapMpiTestCaseB_mod
-   use MpiTestCaseB_mod
+function MpiTestCaseB_suite() result(suite)
+   use pFUnit
+   use WrapMpiTestCaseB
+   use MpiTestCaseB
    type (TestSuite) :: suite
 
    integer, allocatable :: npes(:)
 
-   suite = newTestSuite('MpiTestCaseB_mod_suite')
+   suite = newTestSuite('MpiTestCaseB_suite')
 
    call suite%addTest(makeCustomTest('testA', testA, npesRequested=1))
    call suite%addTest(makeCustomTest('testA', testA, npesRequested=2))
@@ -102,5 +102,5 @@ function MpiTestCaseB_mod_suite() result(suite)
    call suite%addTest(makeCustomTest('testB', testB, npesRequested=5))
 
 
-end function MpiTestCaseB_mod_suite
+end function MpiTestCaseB_suite
 

@@ -1,7 +1,7 @@
-module pf_MatcherAssert_mod
-   use pf_AbstractMatcher_mod
-   use pf_SourceLocation_mod
-   use pf_Array_mod
+module pf_MatcherAssert
+   use pf_AbstractMatcher
+   use pf_SourceLocation
+   use pf_Array
    use funit, only: throw
    implicit none
    private
@@ -29,7 +29,7 @@ contains
  
 
    subroutine assert_that_reason(reason, actual, matcher, location)
-      use pf_StringDescription_mod
+      use pf_StringDescription
       character(*), intent(in) :: reason
       class(*), intent(in) :: actual
       class(AbstractMatcher), intent(in) :: matcher
@@ -50,7 +50,7 @@ contains
    end subroutine assert_that_reason
  
    subroutine assert_that_1d(actual, matcher, location)
-     use pf_StringDescription_mod
+     use pf_StringDescription
      class(*), intent(in) :: actual(:)
      class(AbstractMatcher), intent(in) :: matcher
      type (SourceLocation), optional, intent(in) :: location
@@ -60,7 +60,7 @@ contains
    end subroutine assert_that_1d
 
    subroutine assert_that_1d_reason(reason, actual, matcher, location)
-     use pf_StringDescription_mod
+     use pf_StringDescription
      character(*), intent(in) :: reason
      class(*), intent(in) :: actual(:)
      class(AbstractMatcher), intent(in) :: matcher
@@ -70,4 +70,4 @@ contains
      
    end subroutine assert_that_1d_reason
 
-end module pf_MatcherAssert_mod
+end module pf_MatcherAssert

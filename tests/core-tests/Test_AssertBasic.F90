@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_AssertBasic_mod
+!  MODULE: Test_AssertBasic
 !
 !> @brief
 !! <BriefDescription>
@@ -21,10 +21,10 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_AssertBasic_mod
-   use PF_Exception_mod, only: NULL_MESSAGE
-   use PF_AssertBasic_mod
-   use PF_ExceptionList_mod, only: catch
+module Test_AssertBasic
+   use PF_Exception, only: NULL_MESSAGE
+   use PF_AssertBasic
+   use PF_ExceptionList, only: catch
    implicit none
    private
 
@@ -33,9 +33,9 @@ module Test_AssertBasic_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
-      use PF_Test_mod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
+      use PF_Test
 
       type (TestSuite) :: suite
 
@@ -223,7 +223,7 @@ contains
    end subroutine testAssertNotAllFail
 
    subroutine testAssertIsNaN()
-      use MakeNaN_mod, only: makeNaN_32, makeNaN_64
+      use MakeNaN, only: makeNaN_32, makeNaN_64
 
       call assertIsNaN(1.e0, 'not NaN')
       call assertExceptionRaised('not NaN')
@@ -237,7 +237,7 @@ contains
 
 
    subroutine testAssertIsNotNaN()
-      use MakeNaN_mod, only: makeNaN_32, makeNaN_64
+      use MakeNaN, only: makeNaN_32, makeNaN_64
 
       call assertIsNotNaN(1.e0,'not Nan')
       call assertIsNotNaN(makeNan_32(),'is NaN')
@@ -252,7 +252,7 @@ contains
 
 
    subroutine testAssertIsFinite()
-      use MakeInf_mod, only: makeInf_32, makeInf_64
+      use MakeInf, only: makeInf_32, makeInf_64
 
       call assertIsFinite(1.e0, 'finite')
       call assertIsFinite(1.d0, 'finite')
@@ -265,7 +265,7 @@ contains
    end subroutine testAssertIsFinite
 
    subroutine testAssertIsInfinite()
-      use MakeInf_mod, only: makeInf_32, makeInf_64
+      use MakeInf, only: makeInf_32, makeInf_64
 
       call assertIsInfinite(1.e0, 'finite')
       call assertExceptionRaised('finite')
@@ -278,8 +278,8 @@ contains
    end subroutine testAssertIsInfinite
 
    subroutine testAssertExceptionRaised()
-      use PF_ExceptionList_mod, only: throw
-      use PF_SourceLocation_mod
+      use PF_ExceptionList, only: throw
+      use PF_SourceLocation
 
       character(len=*), parameter :: message = 'a message'
 
@@ -292,7 +292,7 @@ contains
    end subroutine testAssertExceptionRaised
 
    subroutine testAssertFail()
-      use PF_SourceLocation_mod
+      use PF_SourceLocation
 
       character(len=*), parameter :: message = 'a message'
 
@@ -303,4 +303,4 @@ contains
       call assertExceptionRaised(message,SourceLocation('here',5))
    end subroutine testAssertFail
 
-end module Test_AssertBasic_mod
+end module Test_AssertBasic

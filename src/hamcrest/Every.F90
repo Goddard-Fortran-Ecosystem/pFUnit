@@ -1,9 +1,9 @@
-module pf_Every_mod
+module pf_Every
   use iso_fortran_env
-  use pf_AbstractMatcher_mod
-  use pf_BaseMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_Array_mod
+  use pf_AbstractMatcher
+  use pf_BaseMatcher
+  use pf_MatcherDescription
+  use pf_Array
   implicit none
   private
 
@@ -85,4 +85,4 @@ contains
 
   end subroutine describe_to
 
-end module pf_Every_mod
+end module pf_Every

@@ -1,11 +1,11 @@
-module Test_RepeatPattern_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
-   use PF_RepeatPattern_mod
-   use PF_MatchObject_mod
-   use PF_Assert_mod
-   use PF_SourceLocation_mod
-   use PF_LiteralPattern_mod
+module Test_RepeatPattern
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_RepeatPattern
+   use PF_MatchObject
+   use PF_Assert
+   use PF_SourceLocation
+   use PF_LiteralPattern
    implicit none
 
    @suite(name='RepeatPattern_suite')
@@ -71,4 +71,4 @@ contains
    end subroutine test_match_multichar
    
    
-end module Test_RepeatPattern_mod
+end module Test_RepeatPattern

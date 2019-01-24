@@ -1,7 +1,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_BasicOpenMP_mod
+!  MODULE: Test_BasicOpenMP
 !
 !> @brief
 !! <BriefDescription>
@@ -20,7 +20,7 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module Test_BasicOpenMP_mod
+module Test_BasicOpenMP
    implicit none
    private
 
@@ -29,8 +29,8 @@ module Test_BasicOpenMP_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-!$    use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+!$    use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('Test_TestBasicOpenMP')
@@ -41,7 +41,7 @@ contains
 
    ! run on 4 threads.
    subroutine testRunWithOpenMP()
-      use PF_Assert_mod, only: assertAll
+      use PF_Assert, only: assertAll
 
       !$ integer :: omp_get_thread_num
       integer, parameter :: N = 4
@@ -66,9 +66,9 @@ contains
    ! as the number that were thrown.   Of course actually crashing is a more
    ! likely failure mode than a mismatch in the count.
    subroutine testSerializeExceptions()
-      use PF_Params_mod, only : i32
-      use PF_ExceptionList_mod, only: getNumExceptions, clearAll, throw
-      use PF_Assert_mod, only: AssertEqual
+      use PF_Params, only : i32
+      use PF_ExceptionList, only: getNumExceptions, clearAll, throw
+      use PF_Assert, only: AssertEqual
 
       !$ integer :: omp_get_thread_num
       integer, parameter :: N = 8 ! threads
@@ -93,5 +93,5 @@ contains
 
    end subroutine testSerializeExceptions
 
-end module Test_BasicOpenMP_mod
+end module Test_BasicOpenMP
 

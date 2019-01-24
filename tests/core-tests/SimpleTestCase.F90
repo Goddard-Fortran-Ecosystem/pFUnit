@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: SimpleTestCase_mod
+!  MODULE: pf_SimpleTestCase
 !
 !> @brief
 !! <BriefDescription>
@@ -22,8 +22,8 @@
 ! 20 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module SimpleTestCase_mod
-   use PF_TestCase_mod, only: TestCase
+module pf_SimpleTestCase
+   use PF_TestCase, only: TestCase
    implicit none
    private
 
@@ -42,7 +42,7 @@ module SimpleTestCase_mod
 
    abstract interface
       subroutine method(this)
-        use PF_Test_mod
+        use PF_Test
         import SimpleTestCase
         class (SimpleTestCase), intent(inOut) :: this
       end subroutine method
@@ -51,7 +51,7 @@ module SimpleTestCase_mod
 contains
 
    function suite()
-     use PF_TestSuite_mod, only: TestSuite
+     use PF_TestSuite, only: TestSuite
       type (TestSuite) :: suite
 
       suite = TestSuite('SimpleTestCase')
@@ -96,7 +96,7 @@ contains
    end subroutine method2
 
    subroutine methodWith2Exceptions(this)
-      use PF_ExceptionList_mod, only: throw
+      use PF_ExceptionList, only: throw
       class (SimpleTestCase), intent(inOut) :: this
 
       _UNUSED_DUMMY(this)
@@ -109,4 +109,4 @@ contains
       _UNUSED_DUMMY(this)
    end subroutine delete_
 
-end module SimpleTestCase_mod
+end module Pf_SimpleTestCase

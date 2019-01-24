@@ -1,21 +1,21 @@
 module hamcrest
-  use pf_MatcherDescription_mod
-  use pf_StringDescription_mod
-  use pf_MatcherAssert_mod
+  use pf_MatcherDescription
+  use pf_StringDescription
+  use pf_MatcherAssert
 
-  use pf_AbstractMatcher_mod
-  use pf_Is_mod
-  use pf_IsNot_mod
-  use pf_IsEqual_mod
-  use pf_IsNear_mod
-  use pf_IsRelativelyNear_mod
-  use pf_AnyOf_mod
-  use pf_AllOf_mod
-  use pf_Every_mod
-  use pf_StringContains_mod
-  use pf_StringStartsWith_mod
-  use pf_StringEndsWith_mod
-  use pf_IsArrayWithSize_mod
+  use pf_AbstractMatcher
+  use pf_Is
+  use pf_IsNot
+  use pf_IsEqual
+  use pf_IsNear
+  use pf_IsRelativelyNear
+  use pf_AnyOf
+  use pf_AllOf
+  use pf_Every
+  use pf_StringContains
+  use pf_StringStartsWith
+  use pf_StringEndsWith
+  use pf_IsArrayWithSize
 
-  use pf_Matchable_mod
+  use pf_Matchable
 end module hamcrest

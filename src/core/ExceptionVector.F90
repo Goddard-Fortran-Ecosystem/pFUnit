@@ -1,5 +1,5 @@
-module PF_ExceptionVector_mod
-   use PF_Exception_mod
+module PF_ExceptionVector
+   use PF_Exception
    
 #define _type class(Exception)
 #define _allocatable
@@ -7,4 +7,4 @@ module PF_ExceptionVector_mod
 #define _iterator ExceptionVectorIterator
 #include "templates/vector.inc"
 
-end module PF_ExceptionVector_mod
+end module PF_ExceptionVector

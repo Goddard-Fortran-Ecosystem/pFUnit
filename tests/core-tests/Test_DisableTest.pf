@@ -1,4 +1,4 @@
-module Test_DisableTest_mod
+module Test_DisableTest
    use FUnit
    implicit none
 
@@ -40,4 +40,4 @@ contains
    subroutine test_disable_annotation()
    end subroutine test_disable_annotation
 
-end module Test_DisableTest_mod
+end module Test_DisableTest

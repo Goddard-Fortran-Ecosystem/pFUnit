@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 
-module MakeInf_mod
+module MakeInf
 #ifdef _REAL32_IEEE_SUPPORT
    use, intrinsic :: iso_fortran_env, only: REAL32
 #endif
@@ -87,4 +87,4 @@ contains
 #endif
 
 
-end module MakeInf_mod
+end module MakeInf

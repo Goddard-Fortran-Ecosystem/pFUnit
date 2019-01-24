@@ -1,6 +1,6 @@
-module pf_IsNear_mod
-  use pf_TypeSafeMatcher_mod
-  use pf_MatcherDescription_mod
+module pf_IsNear
+  use pf_TypeSafeMatcher
+  use pf_MatcherDescription
   implicit none
   private
 
@@ -114,4 +114,4 @@ contains
 
   end subroutine describe_to
 
-end module pf_IsNear_mod
+end module pf_IsNear

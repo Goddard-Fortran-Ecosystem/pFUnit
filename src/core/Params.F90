@@ -21,7 +21,7 @@
 !
 !-------------------------------------------------------------------------------
 
-module PF_Params_mod
+module PF_Params
   use, intrinsic :: iso_fortran_env
   implicit none
 
@@ -38,5 +38,5 @@ module PF_Params_mod
   integer, parameter :: NEQP=0, EQP=1, GTP=2, GEP=3, LTP=4, LEP=5, &
   &  RELEQP=6
 
-end module PF_Params_mod
+end module PF_Params
 

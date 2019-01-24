@@ -1,4 +1,4 @@
-module PF_MatchObject_mod
+module PF_MatchObject
    implicit none
    private
 
@@ -10,4 +10,4 @@ module PF_MatchObject_mod
       character(len=:), allocatable :: string
    end type MatchObject
 
-end module PF_MatchObject_mod
+end module PF_MatchObject

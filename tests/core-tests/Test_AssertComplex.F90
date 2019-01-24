@@ -3,7 +3,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: Test_AssertComplex_mod
+!  MODULE: Test_AssertComplex
 !
 !> @brief
 !! <BriefDescription>
@@ -24,7 +24,7 @@
 !-------------------------------------------------------------------------------
 
 !
-! Test_AssertComplex_mod
+! Test_AssertComplex
 !    Were tests for AssertReal using TestAssertReal.F90 as a model.
 !
 !    2013-0425 MLR: First version. 
@@ -33,16 +33,16 @@
 ! Note: `note name' is a mark to remind me of references to code being
 !    tested.  I.e. non-boilerplate.
 
-module Test_AssertComplex_mod ! note name
-!  use PF_Exception_mod, only: getNumExceptions, anyExceptions
-  use PF_TestSuite_mod
-  use PF_Params_mod, only : r32, i64, i32
-  use PF_StringUtilities_mod, only: toString, appendWithSpace
-  use PF_AssertBasic_mod
-  use PF_Assert_mod
-  use PF_AssertArraysSupport_mod, only: differenceReport, valuesReport
-  use PF_ThrowFundamentalTypes_mod, only: locationFormat
-  use PF_SourceLocation_mod
+module Test_AssertComplex ! note name
+!  use PF_Exception, only: getNumExceptions, anyExceptions
+  use PF_TestSuite
+  use PF_Params, only : r32, i64, i32
+  use PF_StringUtilities, only: toString, appendWithSpace
+  use PF_AssertBasic
+  use PF_Assert
+  use PF_AssertArraysSupport, only: differenceReport, valuesReport
+  use PF_ThrowFundamentalTypes, only: locationFormat
+  use PF_SourceLocation
 
   implicit none
   private
@@ -55,8 +55,8 @@ module Test_AssertComplex_mod ! note name
 contains
 
   function suite()
-    use PF_TestSuite_mod, only: TestSuite, newTestSuite 
-    use PF_TestMethod_mod, only: newTestMethod
+    use PF_TestSuite, only: TestSuite, newTestSuite 
+    use PF_TestMethod, only: newTestMethod
 
     type (TestSuite) :: suite
 
@@ -156,7 +156,7 @@ contains
 
 
   subroutine testEquals_C_complexScalar()
-    use PF_Params_mod
+    use PF_Params
 
     complex(kind=r32) :: expected
     complex(kind=r32) :: found
@@ -186,7 +186,7 @@ contains
 
   ! Same rank, different shape.
   subroutine testEquals_C_0D1D()
-    use PF_Params_mod
+    use PF_Params
 
     integer(kind=i64) :: expected
     integer, parameter :: good = 42
@@ -218,7 +218,7 @@ contains
 
   ! Same rank, different shape.
   subroutine testEquals_C_1D_nonConformable1()
-    use PF_Params_mod
+    use PF_Params
 
 
     integer(kind=i32), dimension(2) :: expected
@@ -246,7 +246,7 @@ contains
   end subroutine testEquals_C_1D_nonConformable1
 
   subroutine testEquals_C_2D_SingleElementDifferent()
-    use PF_Params_mod
+    use PF_Params
 
     complex, dimension(2,2) :: expected, found
 
@@ -281,7 +281,7 @@ contains
   end subroutine testEquals_C_2D_SingleElementDifferent
 
   subroutine testEquals_C_MultiD_SingleElementDifferent()
-    use PF_Params_mod
+    use PF_Params
 
     real(kind=r32) :: expected
     complex(kind=r32), dimension(:,:), allocatable :: found
@@ -320,7 +320,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent
 
   subroutine testEquals_C_MultiD_SingleElementDifferent1
-    use PF_Params_mod
+    use PF_Params
 
 ! Don't do ths.
 !    real(kind=r32), dimension(:,:), allocatable :: found
@@ -364,7 +364,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent1
 
   subroutine testEquals_C_MultiD_SingleElementDifferent2
-    use PF_Params_mod
+    use PF_Params
 
 ! Don't do this...
 !    complex(kind=r32), dimension(:,:,:), allocatable :: expected
@@ -409,7 +409,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent2
 
   subroutine testEquals_C_MultiD_SingleElementDifferent3
-    use PF_Params_mod
+    use PF_Params
 
     complex(kind=r32), dimension(:,:,:,:), allocatable :: expected, found
 
@@ -449,7 +449,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent3
 
   subroutine testEquals_C_MultiD_SingleElementDifferent4
-    use PF_Params_mod
+    use PF_Params
 
     complex(kind=r32), dimension(:,:,:,:,:), allocatable :: expected, found
 
@@ -487,7 +487,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent4
 
   subroutine testEquals_C_MultiD_SingleElementDifferent5
-    use PF_Params_mod
+    use PF_Params
 
     complex(kind=r32), dimension(:,:,:,:,:), allocatable :: expected, found
 
@@ -530,7 +530,7 @@ contains
   end subroutine testEquals_C_MultiD_SingleElementDifferent5
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:), allocatable :: expected, found
@@ -570,7 +570,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff1()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:), allocatable :: expected, found
@@ -609,7 +609,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff1
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff2()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:,:), allocatable :: expected, found
@@ -651,7 +651,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff2
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff3()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
@@ -690,7 +690,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff3
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff4()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
@@ -733,7 +733,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff4
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff5()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:), allocatable :: expected, found
@@ -771,7 +771,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff5
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff6()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:), allocatable :: expected, found
@@ -808,7 +808,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff6
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff7()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:,:), allocatable :: expected, found
@@ -847,7 +847,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff7
 
   subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff8()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:,:,:), allocatable :: expected, found
@@ -915,7 +915,7 @@ contains
   end subroutine testEquals_C_MultiDMultiPrec_SingleEltDiff8
 
   subroutine testEquals_ScalarWithTolerance()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r32) :: expected, found
@@ -957,7 +957,7 @@ contains
   end subroutine testEquals_ScalarWithTolerance
 
   subroutine testEquals_C_MultiDWithTolerance()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r32), dimension(:,:), allocatable :: expected, found
@@ -1001,7 +1001,7 @@ contains
   end subroutine testEquals_C_MultiDWithTolerance
 
   subroutine testEquals_C_MultiDWithTolerance1()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r32), dimension(:,:), allocatable :: expected, found
@@ -1038,7 +1038,7 @@ contains
   end subroutine testEquals_C_MultiDWithTolerance1
 
   subroutine testEquals_C_MultiDWithTolerance64()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:), allocatable :: expected, found
@@ -1085,7 +1085,7 @@ contains
 end subroutine testEquals_C_MultiDWithTolerance64
 
   subroutine testEquals_C_MultiDWithTolerance64_1()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:), allocatable :: expected, found
@@ -1124,7 +1124,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
 
 
   subroutine testEquals_C_MultiDWithTolerance64_2()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:,:), allocatable :: expected, found
@@ -1171,7 +1171,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
   end subroutine testEquals_C_MultiDWithTolerance64_2
 
   subroutine testEquals_C_MultiDSourceLocation()
-    use PF_Params_mod
+    use PF_Params
     implicit none
 
     complex(kind=r64), dimension(:,:), allocatable :: expected, found
@@ -1226,7 +1226,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
   end subroutine testEquals_C_MultiDSourceLocation
 
   subroutine testEquals_4DPComplex_DifferenceReport()
-    use PF_Params_mod
+    use PF_Params
     implicit none
     
     complex(kind=r64), dimension(4) :: expected, found
@@ -1272,7 +1272,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
   end subroutine testEquals_4DPComplex_DifferenceReport
 
   subroutine testEquals_ComplexMultiD_SingleElementNE1
-    use PF_Params_mod
+    use PF_Params
 
     complex, parameter :: good = 1
 
@@ -1316,7 +1316,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
   end subroutine testEquals_ComplexMultiD_SingleElementNE1
 
   subroutine testEquals_ComplexMultiD_SingleElementRE1
-    use PF_Params_mod
+    use PF_Params
 
     complex, parameter :: good = 1
 
@@ -1368,7 +1368,7 @@ end subroutine testEquals_C_MultiDWithTolerance64
 
 
   subroutine testEquals_ComplexMultiD_SingleEltVarious1
-    use PF_Params_mod
+    use PF_Params
 
     complex, parameter :: good = 1
 
@@ -1433,10 +1433,10 @@ end subroutine testEquals_C_MultiDWithTolerance64
 
   ! Check to see that the test result is as expected...
   subroutine assertCatch(string,location)
-    use PF_Params_mod
-    use PF_Exception_mod, only: Exception
-    use PF_ExceptionList_mod, only: getNumExceptions, catchNext
-    use PF_Assert_mod, only: assertEqual
+    use PF_Params
+    use PF_Exception, only: Exception
+    use PF_ExceptionList, only: getNumExceptions, catchNext
+    use PF_Assert, only: assertEqual
     character(len=*), intent(in) :: string
     type (SourceLocation), optional, intent(in) :: location
     type (Exception) :: anException
@@ -1460,6 +1460,6 @@ end subroutine testEquals_C_MultiDWithTolerance64
   end subroutine assertCatch
 
   
-end module Test_AssertComplex_mod
+end module Test_AssertComplex
 
   

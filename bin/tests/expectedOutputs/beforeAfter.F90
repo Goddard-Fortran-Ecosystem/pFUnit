@@ -20,7 +20,7 @@ end subroutine testMethodB
 
 
 module WrapbeforeAfter
-   use pFUnit_mod
+   use pFUnit
    implicit none
    private
 
@@ -30,7 +30,7 @@ contains
 end module WrapbeforeAfter
 
 function beforeAfter_suite() result(suite)
-   use pFUnit_mod
+   use pFUnit
    use WrapbeforeAfter
    type (TestSuite) :: suite
 

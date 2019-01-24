@@ -1,7 +1,7 @@
-module pf_FeatureMatcher_mod
-  use pf_AbstractMatcher_mod
-  use pf_TypeSafeMatcher_mod
-  use pf_MatcherDescription_mod
+module pf_FeatureMatcher
+  use pf_AbstractMatcher
+  use pf_TypeSafeMatcher
+  use pf_MatcherDescription
   implicit none
   private
 
@@ -75,4 +75,4 @@ contains
 
 
 
-end module pf_FeatureMatcher_mod
+end module pf_FeatureMatcher

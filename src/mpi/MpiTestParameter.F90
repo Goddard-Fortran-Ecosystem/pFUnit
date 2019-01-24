@@ -1,5 +1,5 @@
-module PF_MpiTestParameter_mod
-   use PF_AbstractTestParameter_mod
+module PF_MpiTestParameter
+   use PF_AbstractTestParameter
    implicit none
    private
 
@@ -76,4 +76,4 @@ contains
    end function getNumProcessesRequested
 
 
-end module PF_MpiTestParameter_mod
+end module PF_MpiTestParameter

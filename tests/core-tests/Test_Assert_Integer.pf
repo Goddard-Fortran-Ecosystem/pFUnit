@@ -1,14 +1,14 @@
 ! Goal is not to exhaustively test all combinations, but rather at least
 ! one variant along each axis:
 
-module Test_Assert_Integer_mod
-   use pf_SourceLocation_mod
-   use pf_Exceptionlist_mod
+module Test_Assert_Integer
+   use pf_SourceLocation
+   use pf_Exceptionlist
    use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
    use, intrinsic :: iso_fortran_env, only: INT32, INT64
-   use pf_AssertInteger_0d_mod
-   use pf_AssertInteger_1d_mod
-   use pf_AssertInteger_2d_mod
+   use pf_AssertInteger_0d
+   use pf_AssertInteger_1d
+   use pf_AssertInteger_2d
    implicit none
    
    @suite(name='AssertInteger_suite')
@@ -238,4 +238,4 @@ contains
       call assertGreaterThanOrEqual(2, 1)
    end subroutine testAssertGreaterThanOrEqual_trueB
    
-end module Test_Assert_Integer_mod
+end module Test_Assert_Integer

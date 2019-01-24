@@ -1,5 +1,5 @@
-module pf_SelfDescribing_mod
-  use pf_SurrogateDescription_mod
+module pf_SelfDescribing
+  use pf_SurrogateDescription
   implicit none
   private
 
@@ -44,4 +44,4 @@ module pf_SelfDescribing_mod
      this%type_name = type_name
    end subroutine set_type_name
    
-end module pf_SelfDescribing_mod
+end module pf_SelfDescribing

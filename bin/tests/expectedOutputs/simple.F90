@@ -11,14 +11,14 @@ end subroutine testMethodB
 ! An MPI test
 !@mpitest(npes=[1,3,5])
 subroutine testMethodC(this)
-   use pfunit_mod
+   use pfunit
    class (MpiTestMethod), intent(inout) :: this
 end subroutine testMethodC
 
 
 
 module Wrapsimple
-   use pFUnit_mod
+   use pFUnit
    implicit none
    private
 
@@ -28,7 +28,7 @@ contains
 end module Wrapsimple
 
 function simple_suite() result(suite)
-   use pFUnit_mod
+   use pFUnit
    use Wrapsimple
    type (TestSuite) :: suite
 

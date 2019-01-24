@@ -14,7 +14,7 @@
 [(complex,  double, rank)]
 @end tkr_parameters
 
-module pf_Norms_{rank}d_mod
+module pf_Norms_{rank}d
    use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
    implicit none
    private
@@ -81,4 +81,4 @@ contains
    @instantiate(L2Norm, minimal)
    @instantiate(L1Norm, minimal)
 
-end module pf_Norms_{rank}d_mod
+end module pf_Norms_{rank}d

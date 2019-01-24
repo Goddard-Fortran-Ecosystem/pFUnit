@@ -1,10 +1,10 @@
-module Test_DotPattern_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
-   use PF_DotPattern_mod
-   use PF_MatchObject_mod
-   use PF_Assert_mod
-   use Pf_SourceLocation_mod
+module Test_DotPattern
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_DotPattern
+   use PF_MatchObject
+   use PF_Assert
+   use Pf_SourceLocation
 
 
    @suite(name='DotPattern_suite')
@@ -58,4 +58,4 @@ contains
       
    end subroutine test_match_various
    
-end module Test_DotPattern_mod
+end module Test_DotPattern

@@ -1,7 +1,7 @@
-module pf_StringDescription_mod
-   use pf_MatcherDescription_mod
-   use pf_BaseDescription_mod
-   use pf_SelfDescribing_mod
+module pf_StringDescription
+   use pf_MatcherDescription
+   use pf_BaseDescription
+   use pf_SelfDescribing
    implicit none
    private
 
@@ -53,4 +53,4 @@ contains
 
    end function to_string
 
-end module pf_StringDescription_mod
+end module pf_StringDescription

@@ -23,11 +23,11 @@
 !
 !-------------------------------------------------------------------------------
 
-module PF_TestRunner_mod
-   use PF_Test_mod
-   use PF_BaseTestRunner_mod
-   use PF_TestListener_mod
-   use PF_TestListenerVector_mod
+module PF_TestRunner
+   use PF_Test
+   use PF_BaseTestRunner
+   use PF_TestListener
+   use PF_TestListenerVector
    implicit none
    private
 
@@ -63,7 +63,7 @@ contains
    end function newTestRunner_unit
 
    function createTestResult(this) result(tstResult)
-      use PF_TestResult_mod
+      use PF_TestResult
       class (TestRunner), intent(inout) :: this
       type (TestResult) :: tstResult
 
@@ -74,11 +74,11 @@ contains
     end function createTestResult
 
     recursive function run(this, aTest, context) result(result)
-      use PF_Test_mod
-      use PF_TestSuite_mod
-      use PF_TestCase_mod
-      use PF_TestResult_mod
-      use PF_ParallelContext_mod
+      use PF_Test
+      use PF_TestSuite
+      use PF_TestCase
+      use PF_TestResult
+      use PF_ParallelContext
 
       type (TestResult) :: result
       class (TestRunner), target, intent(inout) :: this
@@ -142,7 +142,7 @@ contains
     end subroutine endTest
 
     subroutine endRun(this, result)
-      use PF_AbstractTestResult_mod, only : AbstractTestResult
+      use PF_AbstractTestResult, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
 
@@ -152,7 +152,7 @@ contains
     end subroutine endRun
 
     subroutine addFailure(this, testName, exceptions)
-       use PF_ExceptionList_mod
+       use PF_ExceptionList
        class (TestRunner), intent(inout) :: this
        character(len=*), intent(in) :: testName
        type (ExceptionList), intent(in) :: exceptions
@@ -174,4 +174,4 @@ contains
 
    end subroutine addSuccess
 
-end module PF_TestRunner_mod
+end module PF_TestRunner

@@ -21,10 +21,10 @@
 !
 !-------------------------------------------------------------------------------
 module pFUnit_private
-   use PF_MpiContext_mod
-   use PF_MpiTestCase_mod
-   use PF_MpiTestParameter_mod
-   use PF_MpiTestMethod_mod
+   use PF_MpiContext
+   use PF_MpiTestCase
+   use PF_MpiTestParameter
+   use PF_MpiTestMethod
    implicit none
    private
 

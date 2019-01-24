@@ -1,5 +1,5 @@
-module pf_AbstractMatcher_mod
-   use pf_TypeSafeSelfDescribing_mod
+module pf_AbstractMatcher
+   use pf_TypeSafeSelfDescribing
    implicit none
    private
 
@@ -20,7 +20,7 @@ module pf_AbstractMatcher_mod
       end function matches
 
       subroutine describe_mismatch(this, actual, description)
-         use pf_MatcherDescription_mod, only: MatcherDescription
+         use pf_MatcherDescription, only: MatcherDescription
          import AbstractMatcher
          class (AbstractMatcher), intent(in) :: this
          class (*), intent(in) :: actual
@@ -28,4 +28,4 @@ module pf_AbstractMatcher_mod
       end subroutine describe_mismatch
    end interface
 
- end module pf_AbstractMatcher_mod
+ end module pf_AbstractMatcher

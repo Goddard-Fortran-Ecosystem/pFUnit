@@ -1,8 +1,8 @@
-module Test_TapListener_mod
+module Test_TapListener
    use FUnit
-   use pf_ExceptionList_mod
-   use pf_Exception_mod
-   use pf_TapListener_mod
+   use pf_ExceptionList
+   use pf_Exception
+   use pf_TapListener
    implicit none
 
    @suite(name='TapListener_suite')
@@ -94,4 +94,4 @@ contains
    end subroutine test_addFailure_withmessage
 
    
-end module Test_TapListener_mod
+end module Test_TapListener

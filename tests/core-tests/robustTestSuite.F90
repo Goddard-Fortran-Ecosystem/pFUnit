@@ -2,7 +2,7 @@
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
-!  MODULE: robustTestSuite_mod
+!  MODULE: robustTestSuite
 !
 !> @brief
 !! <BriefDescription>
@@ -21,7 +21,7 @@
 ! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
-module robustTestSuite_mod
+module robustTestSuite
    use FUnit
    implicit none
    private
@@ -31,8 +31,8 @@ module robustTestSuite_mod
 contains
 
    function suite()
-      use PF_TestSuite_mod, only: TestSuite
-      use PF_TestMethod_mod, only: TestMethod
+      use PF_TestSuite, only: TestSuite
+      use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
       suite = TestSuite('robustTestSuite')
@@ -61,7 +61,7 @@ contains
    end subroutine testRunSucceeds
 
    subroutine testRunMultipleExceptions()
-     use PF_Assert_mod
+     use PF_Assert
      ! do nothing
      call assertTrue(1 == 2)
      call assertTrue(1 == 3)
@@ -69,7 +69,7 @@ contains
    end subroutine testRunMultipleExceptions
 
    subroutine testRunAssertFailure()
-      use PF_Assert_mod
+      use PF_Assert
       ! do nothing
       call assertTrue(1 == 2)
    end subroutine testRunAssertFailure
@@ -91,4 +91,4 @@ contains
       end do
    end subroutine testRunHangs
 
-end module robustTestSuite_mod
+end module robustTestSuite

@@ -1,6 +1,6 @@
-module PF_DotPattern_mod
-   use PF_AbstractPattern_mod
-   use PF_MatchObject_mod
+module PF_DotPattern
+   use PF_AbstractPattern
+   use PF_MatchObject
    implicit none
    private
 
@@ -41,4 +41,4 @@ contains
 
    end function match
 
-end module PF_DotPattern_mod
+end module PF_DotPattern

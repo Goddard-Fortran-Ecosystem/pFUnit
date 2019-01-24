@@ -25,7 +25,7 @@
 !
 !-------------------------------------------------------------------------------
 !#include "reflection.h"
-module Test_XmlPrinter_mod
+module Test_XmlPrinter
    implicit none
    private
 
@@ -34,11 +34,11 @@ module Test_XmlPrinter_mod
 contains
 
    function suite()
-      use PF_TestCase_mod
-      use PF_TestMethod_mod, only: TestMethod
-      use PF_Test_mod
-      use PF_TestResult_mod
-      use PF_TestSuite_mod, only: TestSuite
+      use PF_TestCase
+      use PF_TestMethod, only: TestMethod
+      use PF_Test
+      use PF_TestResult
+      use PF_TestSuite, only: TestSuite
       type (TestSuite) :: suite
 
       suite = TestSuite('TestXmlPrinterSuite')
@@ -52,14 +52,14 @@ contains
    end function suite
 
    subroutine testValidXml()
-      use PF_Assert_mod, only: assertEqual
-      use PF_Exception_mod, only: Exception
-      use PF_ExceptionList_mod
-      use PF_TestCase_mod
-      use SimpleTestCase_mod, only: SimpleTestCase
-      use PF_SurrogateTestCase_mod
-      use PF_TestResult_mod, only: TestResult, TestResult
-      use PF_XmlPrinter_mod, only: XmlPrinter, newXmlPrinter
+      use PF_Assert, only: assertEqual
+      use PF_Exception, only: Exception
+      use PF_ExceptionList
+      use PF_TestCase
+      use pf_SimpleTestCase, only: SimpleTestCase
+      use PF_SurrogateTestCase
+      use PF_TestResult, only: TestResult, TestResult
+      use PF_XmlPrinter, only: XmlPrinter, newXmlPrinter
 
       type (TestResult) :: aResult
       type (SimpleTestCase), target :: aTest, aTest2
@@ -122,8 +122,8 @@ contains
    end subroutine testValidXml
 
    subroutine compareXMLFileToExpectation(xmlFile)
-     use PF_Assert_mod, only: assertEqual
-     use PF_Assert_mod, only: assertTrue
+     use PF_Assert, only: assertEqual
+     use PF_Assert, only: assertTrue
      use iso_fortran_env, only: iostat_end
 
      character(len=200), intent(in) :: xmlFile
@@ -174,4 +174,4 @@ contains
    end subroutine compareXMLFileToExpectation
 
 
-end module Test_XmlPrinter_mod
+end module Test_XmlPrinter

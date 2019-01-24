@@ -1,5 +1,5 @@
-module TestCaseC_mod
-   use pfunit_mod
+module TestCaseC
+   use pfunit
    implicit none
 
    
@@ -117,13 +117,13 @@ contains
 
    end function toString
 
-end module TestCaseC_mod
+end module TestCaseC
 
 
 
-module WrapTestCaseC_mod
-   use pFUnit_mod
-   use TestCaseC_mod
+module WrapTestCaseC
+   use pFUnit
+   use TestCaseC
    implicit none
    private
 
@@ -137,7 +137,7 @@ module WrapTestCaseC_mod
 
    abstract interface
      subroutine userTestMethod(this)
-        use TestCaseC_mod
+        use TestCaseC
         class (TestCaseC), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -168,12 +168,12 @@ contains
 
    end function makeCustomTest
 
-end module WrapTestCaseC_mod
+end module WrapTestCaseC
 
-function TestCaseC_mod_suite() result(suite)
-   use pFUnit_mod
-   use WrapTestCaseC_mod
-   use TestCaseC_mod
+function TestCaseC_suite() result(suite)
+   use pFUnit
+   use WrapTestCaseC
+   use TestCaseC
    type (TestSuite) :: suite
 
    integer, allocatable :: npes(:)
@@ -183,7 +183,7 @@ function TestCaseC_mod_suite() result(suite)
    integer :: iParam 
    integer, allocatable :: cases(:) 
  
-   suite = newTestSuite('TestCaseC_mod_suite')
+   suite = newTestSuite('TestCaseC_suite')
 
    testParameters = [newC_Parameter(1,0.1,0.1)]
 
@@ -212,5 +212,5 @@ function TestCaseC_mod_suite() result(suite)
    end do
 
 
-end function TestCaseC_mod_suite
+end function TestCaseC_suite
 

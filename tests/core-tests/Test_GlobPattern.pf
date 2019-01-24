@@ -1,6 +1,6 @@
-module Test_GlobPattern_mod
+module Test_GlobPattern
    use FUnit
-   use PF_GlobPattern_mod
+   use PF_GlobPattern
    implicit none
 
    @suite(name='GlobPattern_suite')
@@ -136,4 +136,4 @@ contains
       
    end function check
 
-end module Test_GlobPattern_mod
+end module Test_GlobPattern

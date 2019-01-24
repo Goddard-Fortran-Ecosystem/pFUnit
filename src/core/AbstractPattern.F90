@@ -1,4 +1,4 @@
-module PF_AbstractPattern_mod
+module PF_AbstractPattern
    implicit none
    private
  
@@ -12,7 +12,7 @@ module PF_AbstractPattern_mod
    abstract interface
 
       function match(this, string)
-         use PF_MatchObject_mod
+         use PF_MatchObject
          import AbstractPattern
          implicit none
          type (MatchObject) :: match
@@ -21,10 +21,10 @@ module PF_AbstractPattern_mod
       end function match
    end interface
 
-end module PF_AbstractPattern_mod
+end module PF_AbstractPattern
 
-module PF_AbstractPatternVector_mod
-   use PF_AbstractPattern_mod
+module PF_AbstractPatternVector
+   use PF_AbstractPattern
 #define _type class (AbstractPattern)
 #define _allocatable
 #define _vector AbstractPatternVector
@@ -32,4 +32,4 @@ module PF_AbstractPatternVector_mod
 
 #include "templates/vector.inc"
 
-end module PF_AbstractPatternVector_mod
+end module PF_AbstractPatternVector

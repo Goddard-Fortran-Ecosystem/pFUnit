@@ -21,28 +21,28 @@ contains
       use FUnit, only: TestRunner, TestRunner
       use FUnit, only: SerialContext
 
-      use Test_StringUtilities_mod, only: StringUtilitiesSuite => suite    ! (1)
-      use Test_UnixProcess_mod, only: unixProcessSuite => suite                ! (1)
-      use Test_Exception_mod, only: exceptionSuite => suite                ! (2)
-      use Test_AssertBasic_mod, only: assertBasicSuite => suite            !
-      use Test_Assert_mod, only: assertSuite => suite                      ! (3)
+      use Test_StringUtilities, only: StringUtilitiesSuite => suite    ! (1)
+      use Test_UnixProcess, only: unixProcessSuite => suite                ! (1)
+      use Test_Exception, only: exceptionSuite => suite                ! (2)
+      use Test_AssertBasic, only: assertBasicSuite => suite            !
+      use Test_Assert, only: assertSuite => suite                      ! (3)
 
-!!$      use Test_AssertComplex_mod, only: assertComplexSuite => suite              ! (5)
+!!$      use Test_AssertComplex, only: assertComplexSuite => suite              ! (5)
 
-      use Test_TestResult_mod, only: testResultSuite => suite              ! (6)
-      use Test_TestSuite_mod, only: testTestSuiteSuite => suite                ! (7)
+      use Test_TestResult, only: testResultSuite => suite              ! (6)
+      use Test_TestSuite, only: testTestSuiteSuite => suite                ! (7)
 
-      use Test_TestMethod_mod, only: testTestMethodSuite => suite  ! (8)
-      use Test_SimpleTestCase_mod, only: testSimpleTestCaseSuite => suite          ! (9)
-      use Test_FixtureTestCase_mod, only: testFixtureTestCaseSuite => suite        ! (10)
+      use Test_TestMethod, only: testTestMethodSuite => suite  ! (8)
+      use Test_SimpleTestCase, only: testSimpleTestCaseSuite => suite          ! (9)
+      use Test_FixtureTestCase, only: testFixtureTestCaseSuite => suite        ! (10)
 
-      use Test_BasicOpenMP_mod, only: testBasicOpenMpSuite => suite  ! (8)
+      use Test_BasicOpenMP, only: testBasicOpenMpSuite => suite  ! (8)
 
-      use Test_MockCall_mod, only: testMockCallSuite => suite      ! (11)
-      use Test_MockRepository_mod, only: testMockRepositorySuite => suite      ! (11)
-      use Test_XmlPrinter_mod, only: testXmlPrinterSuite => suite
+      use Test_MockCall, only: testMockCallSuite => suite      ! (11)
+      use Test_MockRepository, only: testMockRepositorySuite => suite      ! (11)
+      use Test_XmlPrinter, only: testXmlPrinterSuite => suite
 
-      use Test_RobustRunner_mod, only: testRobustRunnerSuite => suite
+      use Test_RobustRunner, only: testRobustRunnerSuite => suite
 
       use iso_fortran_env, only: OUTPUT_UNIT
 

@@ -1,5 +1,5 @@
-module pf_MatcherVector_mod
-  use pf_AbstractMatcher_mod
+module pf_MatcherVector
+  use pf_AbstractMatcher
 
 #define _type class(AbstractMatcher)
 #define _vector MatcherVector
@@ -13,4 +13,4 @@ module pf_MatcherVector_mod
 #undef _vector
 #undef _type
   
-end module pf_MatcherVector_mod
+end module pf_MatcherVector

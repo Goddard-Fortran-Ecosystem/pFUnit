@@ -1,8 +1,8 @@
-module pf_Is_mod
-  use pf_AbstractMatcher_mod
-  use pf_BaseMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_IsEqual_mod
+module pf_Is
+  use pf_AbstractMatcher
+  use pf_BaseMatcher
+  use pf_MatcherDescription
+  use pf_IsEqual
   use, intrinsic :: iso_fortran_env
   implicit none
   private
@@ -69,4 +69,4 @@ contains
   end subroutine describe_mismatch
 
 
-end module pf_Is_mod
+end module pf_Is

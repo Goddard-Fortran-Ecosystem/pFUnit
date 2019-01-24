@@ -1,10 +1,10 @@
-module pf_IsArrayWithSize_mod
-  use pf_AbstractMatcher_mod
-  use pf_MatcherDescription_mod
-  use pf_FeatureMatcher_mod
-  use pf_DescribedAs_mod
-  use pf_IsEqual_mod
-  use pf_Array_mod
+module pf_IsArrayWithSize
+  use pf_AbstractMatcher
+  use pf_MatcherDescription
+  use pf_FeatureMatcher
+  use pf_DescribedAs
+  use pf_IsEqual
+  use pf_Array
   implicit none
   private
 
@@ -89,4 +89,4 @@ contains
        
   end function expects_type_of
   
-end module pf_IsArrayWithSize_mod
+end module pf_IsArrayWithSize

@@ -1,6 +1,6 @@
-module pf_StringContains_mod
-  use pf_MatcherDescription_mod
-  use pf_SubstringMatcher_mod
+module pf_StringContains
+  use pf_MatcherDescription
+  use pf_SubstringMatcher
   implicit none
   private
 
@@ -38,4 +38,4 @@ contains
     eval_substring_of = index(this%converted(item), this%converted(this%get_substring())) > 0
   end function eval_substring_of
 
-end module pf_StringContains_mod
+end module pf_StringContains

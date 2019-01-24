@@ -1,9 +1,9 @@
-module Test_RegularExpression_mod
-   use PF_Exception_mod
-   use PF_ExceptionList_mod
-   use PF_RegularExpression_mod
-   use PF_Assert_mod
-   use Pf_SourceLocation_mod
+module Test_RegularExpression
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_RegularExpression
+   use PF_Assert
+   use Pf_SourceLocation
 
    @suite(name='RegularExpression_suite')
    
@@ -66,4 +66,4 @@ contains
    end subroutine test_asterisk
 
    
-end module Test_RegularExpression_mod
+end module Test_RegularExpression

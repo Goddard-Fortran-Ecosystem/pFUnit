@@ -1,5 +1,5 @@
-module pf_SelfDescribingVector_mod
-  use pf_SelfDescribing_mod
+module pf_SelfDescribingVector
+  use pf_SelfDescribing
 
 #define _type class(SelfDescribing)
 #define _vector SelfDescribingVector
@@ -13,4 +13,4 @@ module pf_SelfDescribingVector_mod
 #undef _vector
 #undef _type
   
-end module pf_SelfDescribingVector_mod
+end module pf_SelfDescribingVector

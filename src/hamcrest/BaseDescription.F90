@@ -1,7 +1,7 @@
-module pf_BaseDescription_mod
-  use pf_MatcherDescription_mod
-  use pf_SelfDescribing_mod
-  use pf_SelfDescribingVector_mod
+module pf_BaseDescription
+  use pf_MatcherDescription
+  use pf_SelfDescribing
+  use pf_SelfDescribingVector
   use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -66,8 +66,8 @@ contains
 
 
    subroutine append_value_scalar(this, value)
-     use pf_Matchable_mod
-     use pf_Array_mod
+     use pf_Matchable
+     use pf_Array
      class (BaseDescription), intent(inout) :: this
      class(*), intent(in) :: value
 
@@ -162,8 +162,8 @@ contains
     end subroutine append_value_scalar
 
     subroutine append_value_list(this, start, separator, end, values)
-     use pf_Matchable_mod
-     use pf_Array_mod
+     use pf_Matchable
+     use pf_Array
      class (BaseDescription), intent(inout) :: this
      character(*), intent(in) :: start
      character(*), intent(in) :: separator
@@ -254,7 +254,7 @@ contains
 
 
     function description_of_logical(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       logical, intent(in) :: value
 
@@ -267,7 +267,7 @@ contains
     end function description_of_logical
 
     function description_of_int32(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       integer(kind=INT32), intent(in) :: value
 
@@ -277,7 +277,7 @@ contains
     end function description_of_int32
 
     function description_of_int64(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       integer(kind=INT64), intent(in) :: value
 
@@ -287,7 +287,7 @@ contains
     end function description_of_int64
 
     function description_of_real32(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       real(kind=REAL32), intent(in) :: value
 
@@ -297,7 +297,7 @@ contains
     end function description_of_real32
 
     function description_of_real64(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       real(kind=REAL64), intent(in) :: value
 
@@ -308,7 +308,7 @@ contains
 
 
     function description_of_real128(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       real(kind=REAL128), intent(in) :: value
 
@@ -318,7 +318,7 @@ contains
     end function description_of_real128
 
     function description_of_complex32(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       complex(kind=REAL32), intent(in) :: value
 
@@ -328,7 +328,7 @@ contains
     end function description_of_complex32
 
     function description_of_complex64(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       complex(kind=REAL64), intent(in) :: value
 
@@ -339,7 +339,7 @@ contains
 
 
     function description_of_complex128(value) result(string)
-      use pf_Matchable_mod
+      use pf_Matchable
       character(:), allocatable :: string
       complex(kind=REAL128), intent(in) :: value
 
@@ -349,4 +349,4 @@ contains
     end function description_of_complex128
 
     
-end module pf_BaseDescription_mod
+end module pf_BaseDescription
