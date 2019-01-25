@@ -162,6 +162,8 @@ contains
       type (StringUnlimitedMap) :: options
       class(*), pointer :: option
       character(:), allocatable :: pattern
+      integer :: unit
+      character(:), allocatable :: ofile
 
       parser = ArgParser()
       call parser%add_argument('-d', '--debug', '--verbose', action='store_true', &
@@ -169,17 +171,26 @@ contains
 
       call parser%add_argument('-f', '--filter', action='store', &
            & help='only run tests that match pattern')
-      options =  parser%parse_args()
       
-      call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
+      call parser%add_argument('-o', '--output', action='store', &
+           & help='only run tests that match pattern')
+      options =  parser%parse_args()
+
+      if (associated(options%at('output'))) then
+         call cast(options%at('output'), ofile)
+         print*,'ofile is ', ofile
+         ! If run as remote, then file will be an existing named pipe.
+         open(newunit=unit, file=ofile, status='unknown', form='formatted', access='sequential')
+         call listeners%push_back(ResultPrinter(unit))
+      else
+         call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
+      end if
       option => options%at('debug')
       if (associated(option)) then
          call cast(option, debug)
          if (debug) call listeners%push_back(DebugListener(OUTPUT_UNIT))
       end if
 
-      
-!!$      options = parse()
       suite = load_tests()
 
       option => options%at('filter')
