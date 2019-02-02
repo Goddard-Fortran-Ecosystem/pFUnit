@@ -35,7 +35,6 @@ module PF_DebugListener
       procedure :: startTest
       procedure :: disableTest
       procedure :: endTest
-      procedure :: endRun
       procedure :: addSuccess
    end type DebugListener
 
@@ -99,14 +98,6 @@ contains
      flush(this%unit)
 
    end subroutine endTest
-
-   subroutine endRun(this, result)
-     use PF_AbstractTestResult, only : AbstractTestResult
-     class (DebugListener), intent(inout) :: this
-     class (AbstractTestResult), intent(in) :: result
-     _UNUSED_DUMMY(this)
-     _UNUSED_DUMMY(result)
-   end subroutine endRun
 
    subroutine addSuccess(this, testName)
       class (DebugListener), intent(inout) :: this

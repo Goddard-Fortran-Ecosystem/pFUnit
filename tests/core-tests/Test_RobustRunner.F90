@@ -58,19 +58,13 @@ contains
       type (RobustRunner) :: runner
       type (TestSuite) :: suite
       type (TestResult) :: result
-      !mlr -problem on intel 13- type (ListenerPointer) :: listeners1(1)
-      type (ListenerPointer), target, allocatable :: listeners1(:)
-      ! class (ListenerPointer), allocatable :: listeners1(:)
 
       integer :: unit
 
-      allocate(listeners1(1))
       open(newunit=unit, access='sequential',form='formatted',status='scratch')
-      allocate(listeners1(1)%pListener, source=ResultPrinter(unit))
-      runner = RobustRunner('./remote.x', listeners1)
-      result = TestResult()
+      runner = RobustRunner(ResultPrinter(unit), remoteRunCommand='./remote.x')
       suite = remoteSuite()
-      call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
+      result = runner%run(suite, THE_SERIAL_CONTEXT)
 
       call assertEqual(5, result%runCount(),'runCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')

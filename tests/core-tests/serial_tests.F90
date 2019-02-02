@@ -3,7 +3,6 @@ program main
    use FUnit, only: finalize
    use FUnit, only: TestResult
    use FUnit, only: TestListenerVector
-   use FUnit, only: ResultPrinter
    use FUnit, only: stub
 !$$   use FUnit, only: DebugListener
    implicit none
@@ -50,16 +49,8 @@ contains
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-      type (TestListenerVector) :: ll
-
-      call ll%push_back(ResultPrinter(OUTPUT_UNIT))
-      ! TODO: We'll make this a feature in 4.0
-!!$      allocate(ll(2))
-!!$      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
-!!$      allocate(ll(2)%pListener, source=DebugListener())
-
       allTests = TestSuite('allTests')
-      runner = TestRunner(ll)
+      runner = TestRunner()
 
 #define ADD(suite) call allTests%addTest(suite())
 

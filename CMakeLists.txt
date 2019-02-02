@@ -17,7 +17,7 @@ cmake_minimum_required(VERSION 3.8.0)
 
 project (pFUnit
   VERSION 3.1.1
-  LANGUAGES Fortran)
+  LANGUAGES Fortran C)
 
 enable_testing()
 

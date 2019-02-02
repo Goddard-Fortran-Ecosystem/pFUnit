@@ -35,7 +35,7 @@ module FUnit_private
    use PF_TestResult
    use PF_TestRunner
    use PF_BaseTestRunner
-   use PF_SubsetRunner
+   use PF_RemoteRunner
 
    use PF_TestListener
    use PF_TestListenerVector
@@ -52,6 +52,8 @@ module FUnit_private
    use PF_SerialContext
 
    use Pf_TestAnnotation
+   use Pf_DisableAnnotation
+   use Pf_TimeoutAnnotation
 
    use pf_NameFilter
 
@@ -67,7 +69,7 @@ module FUnit_private
    public :: TestResult
    public :: TestRunner
    public :: BaseTestRunner
-   public :: SubsetRunner
+   public :: RemoteRunner
 
    public :: TestListener
    public :: TestListenerVector
@@ -120,6 +122,7 @@ module FUnit_private
 
    public :: TestAnnotation
    public :: Disable
+   public :: TimeoutAnnotation
 
 end module FUnit_private
 
@@ -149,7 +152,8 @@ contains
 
 
    logical function run(load_tests) result(status)
-      use fparse
+     use fparse
+     use pf_StringUtilities
       procedure(LoadTests_interface) :: load_tests
       
       type (TestSuite) :: suite
@@ -163,7 +167,9 @@ contains
       class(*), pointer :: option
       character(:), allocatable :: pattern
       integer :: unit
+      integer :: n_skip
       character(:), allocatable :: ofile
+      character(:), allocatable :: runner_class
 
       parser = ArgParser()
       call parser%add_argument('-d', '--debug', '--verbose', action='store_true', &
@@ -174,21 +180,43 @@ contains
       
       call parser%add_argument('-o', '--output', action='store', &
            & help='only run tests that match pattern')
+
+      call parser%add_argument('-r', '--runner', action='store', default='TestRunner', &
+           & help='use non-default runner run tests')
+
+      call parser%add_argument('-s', '--skip', type='integer', &
+           & dest='n_skip', action='store', default=0, &
+           & help='skip the first n_skip tests; only used with RemoteRunner')
+
       options =  parser%parse_args()
 
       if (associated(options%at('output'))) then
          call cast(options%at('output'), ofile)
-         print*,'ofile is ', ofile
-         ! If run as remote, then file will be an existing named pipe.
+         ! Note: if run as remote, then file will be an existing named pipe.
          open(newunit=unit, file=ofile, status='unknown', form='formatted', access='sequential')
-         call listeners%push_back(ResultPrinter(unit))
       else
-         call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
+         unit = OUTPUT_UNIT
       end if
+
+      call cast(options%at('runner'),runner_class)
+      select case (to_lower(runner_class))
+      case ('robust','robustrunner','robust_runner')
+         allocate(runner, source=RobustRunner(unit))
+      case ('remote','remoterunner','remote_runner')
+         call cast(options%at('n_skip'), n_skip)
+         allocate(runner, source=RemoteRunner(n_skip, unit))
+      case ('default','testrunner')
+         allocate(runner, source=TestRunner(unit))
+      case default
+         print*,__FILE__,__LINE__,'unsupported runner: ' // runner_class
+         ERROR STOP 'unsupported runner'
+      end select
+         
+      
       option => options%at('debug')
       if (associated(option)) then
          call cast(option, debug)
-         if (debug) call listeners%push_back(DebugListener(OUTPUT_UNIT))
+         if (debug) call runner%add_listener(DebugListener(unit))
       end if
 
       suite = load_tests()
@@ -199,7 +227,7 @@ contains
          suite = suite%filter(NameFilter(pattern))
       end if
       
-      allocate(runner, source=TestRunner(listeners))
+
       r = runner%run(suite, c)
       status = r%wasSuccessful()
 

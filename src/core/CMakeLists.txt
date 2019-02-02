@@ -65,6 +65,22 @@ foreach(rank RANGE ${MAX_ASSERT_RANK})
     )
 endforeach()
 
+
+  
+add_executable(posix_predefined.x posix_predefined.c)
+
+set_source_files_properties(posix_predefined.inc PROPERTIES GENERATED TRUE)
+add_custom_command(
+    OUTPUT posix_predefined.inc
+    COMMAND ./posix_predefined.x > posix_predefined.inc
+    DEPENDS posix_predefined.x
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT Generating posix_predefined.inc
+    )
+add_custom_target(generate_posix_parameters
+  DEPENDS posix_predefined.inc
+  )
+
 set(srcs
   ${new_generated_sources}
   KeywordEnforcer.F90
@@ -101,10 +117,11 @@ set(srcs
   SerialContext.F90
   SourceLocation.F90
   StringUtilities.F90
-  SubsetRunner.F90
   SurrogateTestCase.F90
   Test.F90
   TestAnnotation.F90
+  DisableAnnotation.F90
+  TimeoutAnnotation.F90
   TestVector.F90
   TestCase.F90
   TestFailure.F90
@@ -121,17 +138,25 @@ set(srcs
   TestFilter.F90
   NameFilter.F90
   FUnit.F90
+  get_errno.c
   )
 
-  list (APPEND srcs
-    UnixPipeInterfaces.F90
-    UnixProcess.F90
-    RobustRunner.F90
-    RemoteProxyTestCase.F90
-    )
+# Support for RobustRunner
+list (APPEND srcs
+  Posix.F90
+  File.F90
+  UnixPipeInterfaces.F90
+  UnixProcess.F90
+  TestTimer.F90
+  RobustRunner.F90
+  RemoteRunner.F90
+  RemoteProxyTestCase.F90
+  )
 
 message("generated files: ${generated_sources_output}")
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
+
+add_dependencies(funit generate_posix_parameters)
 
 if (NOT GFTL)
   add_dependencies(funit gFTL)
@@ -146,6 +171,7 @@ if (NOT FARGPARSE)
 endif()
 
 target_link_libraries(funit PUBLIC lib_fargparse lib_gFTL-shared)
+target_link_libraries(funit PUBLIC pthread)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
@@ -160,6 +186,7 @@ set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_
 target_include_directories (funit PRIVATE ${gFTL_install_dir}/include)
 target_include_directories (funit PRIVATE ${gFTL-shared_install_dir}/mod)
 target_include_directories (funit PRIVATE ${fArgParse_install_dir}/include)
+target_include_directories (funit PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
 target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
 

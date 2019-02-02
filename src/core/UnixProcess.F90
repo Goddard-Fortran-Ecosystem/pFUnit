@@ -53,11 +53,10 @@ module PF_UnixProcess
       type (C_PTR) :: file = C_NULL_PTR
       integer :: pid = -1
    contains
-      procedure :: getLine
-      procedure :: getDelim
-      procedure :: isActive
+      procedure :: get_line
+      procedure :: is_active
       procedure :: terminate
-      procedure :: getPid
+      procedure :: get_pid
    end type UnixProcess
 
    interface UnixProcess
@@ -94,7 +93,7 @@ contains
 
       if (present(runInBackground)) then
          if (runInBackground) then
-            string = process%getLine()
+            string = process%get_line()
             read(string,*) process%pid
          else
             process%pid = -1
@@ -121,27 +120,26 @@ contains
          command = command // '& echo $!'
       end if
       command = nullTerminate(command)
+
    end function makeCommand
 
-   logical function isActive(this)
+
+   logical function is_active(this)
       class (UnixProcess), intent(in) :: this
       
       integer, parameter :: MAX_LEN = 40
       character(len=MAX_LEN) :: command
       integer :: stat, cstat
 
-      !print *,'z02000',this%pid
-      
       if (this%pid >=0) then
          write(command, '("kill -0 ",i0," > /dev/null 2>&1")') this%pid
-         call execute_command_line(command, exitStat=stat, cmdStat=cstat)
-         !print *,'z03000',stat
-         isActive = (stat == 0)
+         call execute_command_line(trim(command), exitStat=stat, cmdStat=cstat)
+         is_active = (stat == 0)
       else
-         isActive = .false.
+         is_active = .false.
       end if
 
-   end function isActive
+   end function is_active
 
    subroutine terminate(this)
       class (UnixProcess), intent(inout) :: this
@@ -151,16 +149,17 @@ contains
       integer :: stat, cstat
 
       if (this%pid >=0) then
-         write(command,'(a,i0,a)') "kill -15 `ps -ef 2> /dev/null | awk '$3 == ",this%pid," {print $2}'` > /dev/null 2>&1" 
-         call execute_command_line(command, exitStat=stat, cmdStat=cstat)
          write(command, '("kill -15 ",i0," > /dev/null 2>&1; ")') this%pid
          call execute_command_line(command, exitStat=stat, cmdStat=cstat)
+         if (stat /= 0) then
+            ERROR STOP "unable to terminate remote process"
+         end if
       end if
 
    end subroutine terminate
 
-   function getLine(this) result(line)
-      use PF_UnixPipeInterfaces, only: c_getLine => getLine
+   function get_line(this) result(line)
+      use PF_UnixPipeInterfaces, only: getline
       use PF_UnixPipeInterfaces, only: free
       class (UnixProcess) :: this
       character(len=:), allocatable :: line
@@ -172,7 +171,7 @@ contains
       integer (kind=C_SIZE_T) :: rc
 
       pBuffer = C_NULL_PTR
-      rc = c_getline(pBuffer, length, this%file)
+      rc = getline(pBuffer, length, this%file)
       if (length >= MAX_BUFFER_SIZE) then
          print*,'Error - need to increase MAX_BUFFER_SIZE in UnixProcess::getLine().'
       end if
@@ -183,66 +182,12 @@ contains
 
       call free(pBuffer)
 
-   end function getLine
+    end function get_line
 
-   function getDelim(this, delimeter) result(line)
-      use PF_UnixPipeInterfaces, only: c_getDelim => getDelim
-      use PF_UnixPipeInterfaces, only: free
-      character(len=:), allocatable :: line
-      class (UnixProcess) :: this
-      character(len=C_CHAR), intent(in) :: delimeter
-
-      type (C_PTR) :: pBuffer
-      integer, parameter :: MAX_BUFFER_SIZE = 100000
-      character(len=MAX_BUFFER_SIZE), pointer :: buffer
-      integer (kind=C_SIZE_T) :: length
-      integer (kind=C_SIZE_T) :: rc
-
-      integer(kind=C_INT) :: useDelimeter
-
-
-      pBuffer = C_NULL_PTR
-      useDelimeter = ichar(delimeter)
-      rc = c_getdelim(pBuffer, length, useDelimeter, this%file)
-      if (length >= MAX_BUFFER_SIZE) then
-         print*,'Error - need to increase MAX_BUFFER_SIZE in UnixProcess::getLine().'
-      end if
-
-      call c_f_pointer(pBuffer, buffer)
-      ! drop newline and delimeter
-      line = buffer(1:rc-1)
-
-      call free(pBuffer)
-
-   end function getDelim
-
-   integer function getPid(this) result(pid)
+   integer function get_pid(this) result(pid)
       class (UnixProcess), intent(in) :: this
       pid = this%pid
-   end function getPid
+   end function get_pid
 
 
-#if defined(Intel) || defined(PGI)
-   subroutine execute_command_line(command, exitStat, cmdStat)
-#if defined(Intel)
-      use ifport
-      implicit none
-#else
-      implicit none
-#include <lib3f.h>
-#endif
-      character(len=*), intent(in) :: command
-      integer, optional, intent(out) :: exitStat
-      integer, optional, intent(out) :: cmdStat
-
-      integer :: exitStat_
-
-      !print *,'z04000<'//trim(command)//'>'
-      exitStat_ = system(trim(command))
-      if (present(exitStat)) exitStat = exitStat_
-      if (present(cmdStat)) cmdStat = 0
-
-   end subroutine execute_command_line
-#endif
-   
 end module PF_UnixProcess

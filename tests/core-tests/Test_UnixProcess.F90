@@ -42,14 +42,14 @@ contains
 !#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( &
-           &   TestMethod('testIsActive', &
-           &                  testIsActive))
+           &   TestMethod('testIs_active', &
+           &                  testIs_active))
       call suite%addTest( &
-           &   TestMethod('testGetLine', &
-           &                  testGetLine))
+           &   TestMethod('testGet_line', &
+           &                  testGet_line))
       call suite%addTest( &
-           &   TestMethod('testGetLine2', &
-           &                  testGetLine2))
+           &   TestMethod('testGet_Line2', &
+           &                  testGet_line2))
 
    end function suite
 
@@ -57,41 +57,41 @@ contains
    ! A bit self-referential, but at least it serves to drive
    ! development.Start a background command that persists.
    !------
-   subroutine testIsActive()
+   subroutine testIs_active()
       type (UnixProcess) :: process
 
       process = UnixProcess('sleep 10', runInBackground=.true.)
-      call assertTrue(process%isActive(),'hmm')
+      call assertTrue(process%is_active(),'hmm')
       if (anyExceptions()) return
 
       call process%terminate()
-      call assertFalse(process%isActive(),'huh')
+      call assertFalse(process%is_active(),'huh')
       
-   end subroutine testIsActive
+   end subroutine testIs_active
 
-   subroutine testGetLine()
+   subroutine testGet_Line()
       type (UnixProcess) :: process
 
       character(len=:), allocatable :: line
 
       process = UnixProcess('echo hello')
-      line = process%getLine()
+      line = process%get_line()
       call assertEqual('hello', trim(line))
       
-   end subroutine testGetLine
+    end subroutine testGet_Line
 
    ! In this test, getLine is called twice because we first
    ! need to get the pid for the background process.
-   subroutine testGetLine2()
+   subroutine testGet_Line2()
       type (UnixProcess) :: process
 
       character(len=:), allocatable :: line
 
       process = UnixProcess('echo hello', runInBackground=.true.)
-      line = process%getLine()
+      line = process%get_line()
 
       call assertEqual('hello', trim(line))
       
-   end subroutine testGetLine2
+    end subroutine testGet_Line2
 
 end module Test_UnixProcess

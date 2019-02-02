@@ -314,6 +314,7 @@ contains
       character(len=*),intent(in) :: name
 
       this%name = trim(name)
-   end subroutine setName
+    end subroutine setName
+
 
 end module PF_TestResult
