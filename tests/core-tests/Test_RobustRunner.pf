@@ -52,7 +52,6 @@ contains
       use PF_TestSuite
       use PF_TestResult
       use PF_Assert
-      use PF_TestListener
       use PF_ResultPrinter
 
       type (RobustRunner) :: runner
@@ -61,10 +60,11 @@ contains
 
       integer :: unit
 
-      open(newunit=unit, access='sequential',form='formatted',status='scratch')
+      open(newunit=unit,status='scratch')
       runner = RobustRunner(ResultPrinter(unit), remoteRunCommand='./remote.x')
+      result = TestResult()
       suite = remoteSuite()
-      result = runner%run(suite, THE_SERIAL_CONTEXT)
+      call runner%runWithResult(suite, THE_SERIAL_CONTEXT, result)
 
       call assertEqual(5, result%runCount(),'runCount()')
       call assertEqual(2, result%errorCount(), 'errorCount()')

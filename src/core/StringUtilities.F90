@@ -48,6 +48,7 @@ module PF_StringUtilities
    public :: unlessScalar
    public :: WhitespaceOptions, IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
    public :: whitespacep, trimAll, trimTrailingWhitespace
+   public :: to_lower
 
    integer, parameter :: MAXLEN_BUFFER = 80
 
@@ -294,5 +295,24 @@ contains
 
    end function trimTrailingWhitespace
 
+  function to_lower(string) result(converted_string)
+    character(:), allocatable :: converted_string
+    character(*), intent(in) :: string
+
+    integer :: i, n, ascii
+    integer :: delta
+
+    delta = iachar('a') - iachar('A')
+    n = len(string)
+    allocate(character(len=n) :: converted_string)
+    do i = 1, n
+       ascii = iachar(string(i:i))
+       if (ascii >= iachar('A') .and. ascii <= iachar('Z')) then
+          converted_string(i:i) = achar(ascii + delta)
+       else
+          converted_string(i:i) = string(i:i)
+       end if
+    end do
+  end function to_lower
 
 end module PF_StringUtilities

@@ -1,7 +1,7 @@
 program main
    use, intrinsic :: iso_fortran_env
    use FUnit, only: initialize, finalize
-   use FUnit, only: SubsetRunner
+   use FUnit, only: RemoteRunner
    use FUnit, only: TestSuite
    use FUnit, only: ParallelContext
    use FUnit, only: SerialContext
@@ -18,7 +18,7 @@ contains
 
    subroutine runTests()
       use FUnit, only: TestResult
-      type (SubsetRunner) :: runner
+      type (RemoteRunner) :: runner
       type (TestSuite) :: s
       class (ParallelContext), allocatable :: context
       character(:),allocatable :: skipString
@@ -26,6 +26,9 @@ contains
       integer :: skipArg
 
       type (TestResult) :: result
+      integer :: unit
+      ! TODO: make this a command line option
+      character(*), parameter :: REMOTE_PROCESS_PIPE = '.remote_process_pipe'
 
 #ifdef USE_MPI
       skipArg = 2
@@ -38,7 +41,9 @@ contains
       call get_command_argument(skipArg, value=skipString)
       read (skipString,*)numSkip
 
-      runner = SubsetRunner(numSkip, OUTPUT_UNIT)
+   open(newunit=unit,file=REMOTE_PROCESS_PIPE, &
+        & action='write', status='old',form='formatted',access='sequential')
+      runner = RemoteRunner(numSkip, unit)!OUTPUT_UNIT)
       allocate(context, source=SerialContext())
       s = suite()
 

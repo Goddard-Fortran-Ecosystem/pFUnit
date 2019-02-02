@@ -35,9 +35,8 @@ module PF_UnixPipeInterfaces
    use, intrinsic :: ISO_C_BINDING
    private
 
+   public :: mkfifo
    public :: popen
-   public :: fgets
-   public :: pclose
    public :: getline
    public :: getdelim
    public :: free
@@ -49,26 +48,19 @@ module PF_UnixPipeInterfaces
  
    interface
 
+      function mkfifo(pathname, mode) result(rc) bind(C, name='mkfifo')
+        use, intrinsic :: iso_c_binding
+        integer(kind=C_INT) :: rc
+        character(kind=C_CHAR), dimension(*), intent(in) :: pathname
+        integer(kind=C_INT), value, intent(in) :: mode
+      end function mkfifo
+
       function popen(command, mode) result(file) bind(C, name='popen')
          use, intrinsic :: iso_c_binding
          type (C_PTR) :: file
          character(kind=C_CHAR), dimension(*), intent(in) :: command
          character(kind=C_CHAR), dimension(*), intent(in) :: mode
       end function popen
-
-      function fgets(str, size, stream) bind(C, name='fgets')
-         use, intrinsic :: iso_c_binding
-         type (C_PTR) :: fgets
-         character(kind=C_CHAR), dimension(*), intent(inout) :: str
-         integer(kind=C_INT), value, intent(in) :: size
-         type (C_PTR), value :: stream
-      end function fgets
-
-      function pclose(stream) bind(C, name='pclose')
-         use, intrinsic :: iso_c_binding
-         integer(C_INT) :: pclose
-         type (c_ptr), value :: stream
-      end function pclose
 
       function getline(linep, linecapp, stream) bind(C, name='getline')
          use, intrinsic :: iso_c_binding

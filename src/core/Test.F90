@@ -22,7 +22,7 @@
 !
 !-------------------------------------------------------------------------------
 module PF_Test
-   use pf_TestAnnotation
+   use pf_DisableAnnotation
    use pf_StringTestAnnotationMap
    implicit none
    private

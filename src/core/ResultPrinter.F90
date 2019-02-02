@@ -39,7 +39,6 @@ module PF_ResultPrinter
       procedure :: startTest
       procedure :: disableTest
       procedure :: endTest
-      procedure :: endRun
       procedure :: print
       procedure :: printHeader
       procedure :: printFailures
@@ -132,22 +131,14 @@ contains
 
    end subroutine endTest
 
-   subroutine endRun(this, result)
-      use PF_AbstractTestResult, only : AbstractTestResult
-      class (ResultPrinter), intent(inout) :: this
-      class (AbstractTestResult), intent(in) :: result
-
-      call this%print(result)
-
-    end subroutine endRun
-
-   subroutine print(this, result)
+   subroutine print(this, result, elapsed_time)
       use PF_AbstractTestResult, only : AbstractTestResult
       use PF_TestFailureVector
       class (ResultPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
+      real, intent(in) :: elapsed_time
 
-      call this%printHeader(result%getRunTime())
+      call this%printHeader(elapsed_time)
       call this%printFailures('Error', result%getErrors())
       call this%printFailures('Failure', result%getFailures())
       call this%printFooter(result)

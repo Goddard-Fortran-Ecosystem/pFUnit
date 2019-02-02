@@ -37,7 +37,6 @@ module PF_TestListener
      procedure(startTest), deferred :: addSuccess
      procedure(endTest), deferred :: endTest
 !     procedure(startRun), deferred :: startRun  ! make deferred when ready
-     procedure(endRun), deferred :: endRun    ! make deferred when ready
      procedure :: disableTest
      procedure :: addError
      procedure :: setDebug
@@ -69,20 +68,6 @@ module PF_TestListener
          class (TestListener), intent(inout) :: this
          character(len=*), intent(in) :: testName
       end subroutine endTest
-
-!      ! Stub for future implementation.
-!      subroutine startRun(this)
-!         import TestListener
-!         class (TestListener), intent(inout) :: this
-!      end subroutine startRun
-!
-      ! Stub for future implementation.
-      subroutine endRun(this, result)
-         use PF_AbstractTestResult, only : AbstractTestResult
-         import TestListener
-         class (TestListener), intent(inout) :: this
-         class (AbstractTestResult), intent(in) :: result
-      end subroutine endRun
 
    end interface
 

@@ -94,7 +94,7 @@ end subroutine funit_main
 !!$   real :: maxLaunchDuration
 !!$
 !!$   logical :: useRobustRunner
-!!$   logical :: useSubsetRunner
+!!$   logical :: useRemoteRunner
 !!$   logical :: printXmlFile
 !!$   integer :: numSkip
 !!$   logical :: useMpi
@@ -123,7 +123,7 @@ end subroutine funit_main
 !!$   maxLaunchDuration  = 5.00 ! seconds
 !!$
 !!$   useRobustRunner = .false.
-!!$   useSubsetRunner = .false.
+!!$   useRemoteRunner = .false.
 !!$   printXmlFile = .false.
 !!$   numSkip = 0
 !!$   numListeners = 1; iListener = 0
@@ -158,7 +158,7 @@ end subroutine funit_main
 !!$   end if
 !!$
 !!$   if (option_values%count('skip') /= 0) then
-!!$      useSubsetRunner = .true.
+!!$      useRemoteRunner = .true.
 !!$      numSkip = to_integer(option_values%at('skip'))
 !!$   end if
 !!$
@@ -229,8 +229,8 @@ end subroutine funit_main
 !!$           &    listeners, &
 !!$           &    maxLaunchDuration=maxLaunchDuration, &
 !!$           &    maxTimeoutDuration=maxTimeoutDuration ))
-!!$   else if (useSubsetRunner) then
-!!$      allocate(runner, source=SubsetRunner(numSkip=numSkip))
+!!$   else if (useRemoteRunner) then
+!!$      allocate(runner, source=RemoteRunner(numSkip=numSkip))
 !!$   else
 !!$      allocate(runner, source=newTestRunner(listeners))
 !!$   end if
