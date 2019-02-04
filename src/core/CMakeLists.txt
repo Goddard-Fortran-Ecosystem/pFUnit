@@ -171,7 +171,6 @@ if (NOT FARGPARSE)
 endif()
 
 target_link_libraries(funit PUBLIC lib_fargparse lib_gFTL-shared)
-target_link_libraries(funit PUBLIC pthread)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
