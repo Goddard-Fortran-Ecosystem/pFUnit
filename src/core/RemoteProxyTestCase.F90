@@ -31,7 +31,6 @@ module PF_RemoteProxyTestCase
    use, intrinsic :: iso_fortran_env, only: INT64
    use, intrinsic :: iso_fortran_env, only: IOSTAT_EOR
    use iso_c_binding
-   use pf_pthread_interface
    use pf_Posix
    use pf_File
    use pf_TestAnnotation
