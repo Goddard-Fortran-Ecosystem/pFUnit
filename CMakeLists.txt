@@ -15,8 +15,8 @@
 # ------------------------------------------------------------------------ #
 cmake_minimum_required(VERSION 3.8.0)
 
-project (pFUnit
-  VERSION 3.1.1
+project (PFUNIT
+  VERSION 4.0.0
   LANGUAGES Fortran C)
 
 enable_testing()
@@ -24,6 +24,14 @@ enable_testing()
 #---------------------------
 # Main configuration options
 #---------------------------
+# Most users of this software do not (should not?) have permissions to
+# install in the cmake default of /usr/local (or equiv on other os's).
+# Below, the default is changed to a directory within the build tree
+# unless the user explicitly sets CMAKE_INSTALL_PREFIX in the cache.
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/installed" CACHE PATH "default install path" FORCE )
+endif()
+
 OPTION(USE_OPENMP "Use OPENMP for parallel runs" NO)
 set(MPI OFF CACHE BOOL "Build with MPI support.")
 set(OPENMP OFF CACHE BOOL "Build with OpenMP support.")
@@ -40,8 +48,6 @@ include(cmake/${CMAKE_Fortran_COMPILER_ID}.cmake RESULT_VARIABLE found)
 if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
-
-
 
 
 if (MPI)
@@ -94,32 +100,13 @@ if (USE_ROBUST)
     add_definitions(-DUSE_ROBUST)
 endif()
 
-include(BuildSubmodule)
-build_submodule(
-  gFTL
-  DESCRIPTION "Optional path to externally installed gFTL package."
-  )
-build_submodule(
-  gFTL-shared
-  DESCRIPTION "Optional path to externally installed gFTL-shared package."
-  DEPENDENCIES gFTL
-  TARGETS gFTL-shared
-  )
-build_submodule(
-  fArgParse
-  DESCRIPTION "Optional path to externally installed gFTL-shared package."
-  DEPENDENCIES gFTL gFTL-shared
-  TARGETS fargparse
-  )
-set (gftl_install_dir ${gFTL_install_dir})
-
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
 
 add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND})
 
-
+add_subdirectory (extern)
 add_subdirectory (src)
 add_subdirectory (tests)
 add_subdirectory (include)
@@ -133,13 +120,13 @@ add_subdirectory (bin)
 include (cmake/packaging.cmake)
 
 # Create the pFUnitConfig.cmake and pFUnitConfigVersion files
-configure_file(cmake/pFUnitConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake" @ONLY)
-configure_file(cmake/pFUnitConfigVersion.cmake.in
-  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake" @ONLY)
+configure_file(cmake/PFUNIT-config.cmake.in
+  "${PROJECT_BINARY_DIR}/PFUNIT-config.cmake" @ONLY)
+configure_file(cmake/PFUNIT-config-version.cmake.in
+  "${PROJECT_BINARY_DIR}/PFUNIT-config-version.cmake" @ONLY)
 
 # Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
 install(FILES
-  "${PROJECT_BINARY_DIR}/pFUnitConfig.cmake"
-  "${PROJECT_BINARY_DIR}/pFUnitConfigVersion.cmake"
-  DESTINATION . )
+  "${PROJECT_BINARY_DIR}/PFUNIT-config.cmake"
+  "${PROJECT_BINARY_DIR}/PFUNIT-config-version.cmake"
+  DESTINATION "share/PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")

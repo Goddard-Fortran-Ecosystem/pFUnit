@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 
-include_directories (${pFUnit_SOURCE_DIR}/include)
-include_directories (${pFUnit_BINARY_DIR}/src)
-include_directories(${CMAKE_BINARY_DIR}/mod)
+include_directories (${PFUNIT_SOURCE_DIR}/include)
+include_directories (${PFUNIT_BINARY_DIR}/src)
+include_directories(${PFUNIT_BINARY_DIR}/mod)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -44,7 +44,7 @@ foreach (file ${pf_tests})
   add_custom_command (
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
     COMMAND python
-    ARGS ${CMAKE_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
+    ARGS ${PFUNIT_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     DEPENDS ${file}
     )
@@ -83,8 +83,8 @@ target_link_libraries(funit_tests other_shared)
 
 add_library(new_stests EXCLUDE_FROM_ALL ${new_tests})
 target_link_libraries(new_stests other_shared)
-add_executable (new_tests.x EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/include/driver.F90)
-set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+add_executable (new_tests.x EXCLUDE_FROM_ALL ${PFUNIT_SOURCE_DIR}/include/driver.F90)
+set_source_files_properties(${PFUNIT_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_tests.x new_stests funit)
 
 

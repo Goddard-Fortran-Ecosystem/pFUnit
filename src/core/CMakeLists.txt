@@ -153,47 +153,26 @@ list (APPEND srcs
   RemoteProxyTestCase.F90
   )
 
-message("generated files: ${generated_sources_output}")
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
 
+target_link_libraries(funit PUBLIC ext)
 add_dependencies(funit generate_posix_parameters)
-
-if (NOT GFTL)
-  add_dependencies(funit gFTL)
-endif()
-
-if (NOT GFTL_SHARED)
-  add_dependencies(funit gFTL-shared)
-endif()
-
-if (NOT FARGPARSE)
-  add_dependencies(funit fArgParse)
-endif()
-
-target_link_libraries(funit PUBLIC lib_fargparse lib_gFTL-shared)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
 endif ()
 
-if (NOT GFTL)
-  add_dependencies(funit gFTL)
-endif()
-
-set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
-target_include_directories (funit PRIVATE ${gFTL_install_dir}/include)
-target_include_directories (funit PRIVATE ${gFTL-shared_install_dir}/mod)
-target_include_directories (funit PRIVATE ${fArgParse_install_dir}/include)
+set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
 target_include_directories (funit PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories (funit PUBLIC ${CMAKE_BINARY_DIR}/mod)
-target_include_directories (funit PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_include_directories (funit PUBLIC ${PFUNIT_BINARY_DIR}/mod)
+target_include_directories (funit PRIVATE ${PFUNIT_SOURCE_DIR}/include)
 
 install (TARGETS funit DESTINATION lib)
 if (BUILD_SHARED)
     install (TARGETS funit_shared DESTINATION lib)
 endif()
 
-INSTALL (DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
+INSTALL (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod DESTINATION .)
 
 
