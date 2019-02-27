@@ -57,7 +57,7 @@ module FUnit_private
 
    use pf_NameFilter
 
-   use fParse
+   use fArgParse
 
    implicit none
    private
@@ -152,7 +152,7 @@ contains
 
 
    logical function run(load_tests) result(status)
-     use fparse
+     use fArgParse
      use pf_StringUtilities
       procedure(LoadTests_interface) :: load_tests
       
@@ -161,7 +161,7 @@ contains
       type (TestResult) :: r
       type (SerialContext) :: c
       type (TestListenerVector) :: listeners
-      type(ArgParser) :: parser
+      type(ArgParser), target :: parser
       logical :: debug
       type (StringUnlimitedMap) :: options
       class(*), pointer :: option
@@ -188,7 +188,7 @@ contains
            & dest='n_skip', action='store', default=0, &
            & help='skip the first n_skip tests; only used with RemoteRunner')
 
-      options =  parser%parse_args()
+      options = parser%parse_args()
 
       if (associated(options%at('output'))) then
          call cast(options%at('output'), ofile)
@@ -227,7 +227,6 @@ contains
          suite = suite%filter(NameFilter(pattern))
       end if
       
-
       r = runner%run(suite, c)
       status = r%wasSuccessful()
 
