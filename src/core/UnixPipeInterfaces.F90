@@ -35,10 +35,8 @@ module PF_UnixPipeInterfaces
    use, intrinsic :: ISO_C_BINDING
    private
 
-   public :: mkfifo
    public :: popen
    public :: getline
-   public :: getdelim
    public :: free
 
    ! error codes
@@ -47,13 +45,6 @@ module PF_UnixPipeInterfaces
    integer(C_INT), parameter :: CLOSE_FAILED = -1
  
    interface
-
-      function mkfifo(pathname, mode) result(rc) bind(C, name='mkfifo')
-        use, intrinsic :: iso_c_binding
-        integer(kind=C_INT) :: rc
-        character(kind=C_CHAR), dimension(*), intent(in) :: pathname
-        integer(kind=C_INT), value, intent(in) :: mode
-      end function mkfifo
 
       function popen(command, mode) result(file) bind(C, name='popen')
          use, intrinsic :: iso_c_binding
@@ -69,15 +60,6 @@ module PF_UnixPipeInterfaces
          integer (kind=C_SIZE_T) :: linecapp
          type (C_PTR), value :: stream
       end function getline
-
-      function getdelim(linep, linecapp, delimeter, stream) bind(C, name='getdelim')
-         use, intrinsic :: iso_c_binding
-         integer (kind=C_SIZE_T) :: getdelim
-         type (C_PTR) :: linep
-         integer (kind=C_SIZE_T) :: linecapp
-         integer(kind=C_INT), value :: delimeter
-         type (C_PTR), value :: stream
-      end function getdelim
 
       subroutine free(ptr) bind(C, name='free')
          use, intrinsic :: iso_c_binding

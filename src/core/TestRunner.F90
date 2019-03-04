@@ -126,7 +126,7 @@ contains
 
    end function run
 
-   subroutine runWithResult(this, aTest, context, result)
+   recursive subroutine runWithResult(this, aTest, context, result)
      use PF_ParallelContext
      use PF_TestResult
      class (TestRunner), target, intent(inout) :: this

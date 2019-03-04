@@ -39,7 +39,6 @@ contains
       type(TimeoutAnnotation) :: timeout
 
       suite = TestSuite('robustTestSuite')
-!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
 
       call suite%addTest( TestMethod('testRunAssertFailure', testRunAssertFailure))
       call suite%addTest( TestMethod('testRunSucceeds', testRunSucceeds))

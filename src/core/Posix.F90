@@ -69,8 +69,7 @@ module pf_Posix
        import size_t
        integer(kind=C_INT) :: rc
        integer(kind=C_INT), value :: fd
-       type(*) :: buf
-!!$       character(len=1), intent(out) :: buf(*)
+       character(len=1), intent(out) :: buf(*)
        type(size_t), value :: count
      end function read
 

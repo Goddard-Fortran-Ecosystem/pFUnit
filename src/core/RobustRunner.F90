@@ -133,7 +133,7 @@ contains
   end function new_RobustRunner_printer
 
    subroutine runWithResult(this, aTest, context, result)
-     use pf_Posix, only: remove
+     use pf_Posix, only: remove, mkfifo, mode_t
       use PF_Test
       use PF_ParallelContext
       use PF_TestResult
@@ -151,7 +151,7 @@ contains
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
-      integer(kind=C_INT) :: mode
+      type(mode_t) :: mode
       integer(kind=C_INT) :: status
       integer :: rc
       logical :: check
@@ -175,7 +175,7 @@ contains
       do i = 1, testCases%size()
          if (needs_launch) then
             !TODO:  What is the correct mode here?
-            mode = O'0777'
+            mode%mode_t = O'0777'
             rc = mkfifo(C_REMOTE_PROCESS_PIPE, mode)
             if (rc /= 0) ERROR STOP 'failed to make named pipe'
 
@@ -203,6 +203,7 @@ contains
    subroutine launchRemoteRunner(this, f, numSkip)
       use PF_UnixProcess
       use PF_ExceptionList
+      use pf_Posix, only: remove
       class (RobustRunner), intent(inout) :: this
       type(File), intent(inout) :: f
       integer, intent(in) :: numSkip
@@ -223,18 +224,19 @@ contains
       
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' --skip ' // trim(suffix)
-
+      write(OUTPUT_UNIT,*)'remote command: ', command
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
-
       timer = TestTimer(this%maxLaunchDuration)
-      call f%open(REMOTE_PROCESS_PIPE, timer,rc=status)
+      call f%open(REMOTE_PROCESS_PIPE, timer, rc=status)
 
       select case(status)
       case (FAILED_TO_OPEN)
          call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
          ERROR STOP "unknown problem connecting with remote process"
       case (TIMER_EXPIRED)
          call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
          ERROR STOP "remote launch has timed out"
       case (SUCCESS)
          ! yay
@@ -244,11 +246,15 @@ contains
       select case (status)
       case (SUCCESS)
          if (buffer /= '*LAUNCHED*') then
+            call this%remoteProcess%terminate()
+            status = remove(C_REMOTE_PROCESS_PIPE)
             ERROR STOP "remote handshake failed"
          else
             return
          end if
       case default
+         call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
          ERROR STOP "remote handshake failed"
       end select
 

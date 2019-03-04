@@ -27,7 +27,6 @@ module PF_RemoteProxyTestCase
    use pf_DisableAnnotation
    use PF_Test
    use PF_TestCase
-   use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT, ERROR_UNIT
    use, intrinsic :: iso_fortran_env, only: INT64
    use, intrinsic :: iso_fortran_env, only: IOSTAT_EOR
    use iso_c_binding

@@ -18,7 +18,17 @@ module Test_IsEqual_extended
      procedure :: describe_to
   end type MyMatchable
 
+  interface MyMatchable
+     module procedure :: new_MyMatchable
+  end interface MyMatchable
+
 contains
+
+   function new_MyMatchable(i) result(my_matchable)
+      type(MyMatchable) :: my_matchable
+      integer, intent(in) :: i
+      my_matchable%i = i
+   end function new_MyMatchable
 
   @test
   subroutine test_matchable_matches()

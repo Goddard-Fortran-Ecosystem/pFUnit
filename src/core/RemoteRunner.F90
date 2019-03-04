@@ -106,8 +106,6 @@ contains
       class (Test), pointer :: t
       integer :: i
 
-      !print *,'a00000'
-      
       select type (aTest)
       class is (TestSuite)
          call aTest%getTestCases(testCaseList)
@@ -123,8 +121,9 @@ contains
 
       ! This should be a named pipe
       ! Note - uses F2008 extension:  "newunit=..."
-      
+
       write(this%unit,'(a)',advance='no') '*LAUNCHED*' // C_NULL_CHAR
+      flush(this%unit)
 
       do i = this%numSkip + 1, testCaseList%size()
          t => testCaseList%at(i)
@@ -148,15 +147,20 @@ contains
 
       write(this%unit,'(a,i0,a)',advance='no') &
            & 'failed: numExceptions=<<<',exceptions%size(),'>>>'//C_NULL_CHAR
+      flush(this%unit)
       do i = 1, exceptions%size()
          e => exceptions%at(i)
          associate(fileName => e%location%fileName, lineNumber => e%location%lineNumber)
            write(this%unit,'(i0,a,a,a)',advance='no')i,' fileName=<<< ',trim(fileName),' >>>'//C_NULL_CHAR
+      flush(this%unit)
            write(this%unit,'(i0,a,i0,a)',advance='no')i,' lineNumber=<<< ',lineNumber,' >>>'//C_NULL_CHAR
+      flush(this%unit)
            write(this%unit,'(a,a,a)',advance='no')'message=<<< ', &
                 trim(e%message),' >>>'//C_NULL_CHAR
+      flush(this%unit)
          end associate
       end do
+      flush(this%unit)
 
    end subroutine addFailure
 
@@ -165,6 +169,7 @@ contains
       character(len=*), intent(in) :: testName
 
       write(this%unit,'(a,a)',advance='no')'started: ', trim(testName) // C_NULL_CHAR
+      flush(this%unit)
 
    end subroutine startTest
 
@@ -173,6 +178,7 @@ contains
       character(len=*), intent(in) :: testName
 
       write(this%unit,'(a,a)',advance='no')'ended: ', trim(testName)//C_NULL_CHAR
+      flush(this%unit)
 
    end subroutine endTest
 

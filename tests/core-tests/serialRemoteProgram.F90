@@ -36,16 +36,23 @@ contains
       skipArg = 2
 #endif
 
+      write(20,*) __FILE__,__LINE__; flush(20)
       call get_command_argument(skipArg, length = strLength)
       allocate(character(len=strLength) :: skipString)
       call get_command_argument(skipArg, value=skipString)
-      read (skipString,*)numSkip
+      write(20,*) __FILE__,__LINE__, skipString; flush(20)
+      read (skipString,*)numSkip; flush(20)
+      write(20,*) __FILE__,__LINE__, numSkip; flush(20)
 
-   open(newunit=unit,file=REMOTE_PROCESS_PIPE, &
+      open(newunit=unit,file=REMOTE_PROCESS_PIPE, &
         & action='write', status='old',form='formatted',access='sequential')
+      write(20,*) __FILE__,__LINE__, numSkip; flush(20)
       runner = RemoteRunner(numSkip, unit)!OUTPUT_UNIT)
+      write(20,*) __FILE__,__LINE__, numSkip; flush(20)
       allocate(context, source=SerialContext())
+      write(20,*) __FILE__,__LINE__, numSkip; flush(20)
       s = suite()
+      write(20,*) __FILE__,__LINE__, numSkip; flush(20)
 
       result = runner%run(s, context)
 

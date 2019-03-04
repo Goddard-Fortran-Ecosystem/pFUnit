@@ -67,7 +67,7 @@ contains
   ! Derived types are expected to have type-bound OPERATOR(==) that
   ! allows CLASS(*) on RHS.
   ! Intrinsics are checked case by case.
-  logical function matches(this, actual_value)
+  recursive logical function matches(this, actual_value)
     use pf_Matchable
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: actual_value
