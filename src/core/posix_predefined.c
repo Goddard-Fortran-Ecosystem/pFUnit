@@ -1,3 +1,4 @@
+#include<stdlib.h>
 #include<errno.h>
 #include<stdio.h>
 #include<fcntl.h>
@@ -18,4 +19,6 @@ int main(){
   printf("integer(kind=C_SHORT), parameter :: O_RDONLY=%ld\n", (long) O_RDONLY);
   printf("integer(kind=C_SHORT), parameter :: O_NONBLOCK=%ld\n", (long) O_NONBLOCK);
   printf("integer(kind=C_SHORT), parameter :: POLLIN=%ld\n", (long)POLLIN);
+
+  return EXIT_SUCCESS;
 }

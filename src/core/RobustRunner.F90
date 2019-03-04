@@ -224,7 +224,6 @@ contains
       
       write(suffix,'(i0)') numSkip
       command = trim(this%remoteRunCommand) // ' --skip ' // trim(suffix)
-      write(OUTPUT_UNIT,*)'remote command: ', command
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
       timer = TestTimer(this%maxLaunchDuration)
       call f%open(REMOTE_PROCESS_PIPE, timer, rc=status)

@@ -156,7 +156,7 @@ contains
      use pf_StringUtilities
       procedure(LoadTests_interface) :: load_tests
       
-      type (TestSuite) :: suite
+      type (TestSuite), target :: suite
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
       type (SerialContext) :: c
@@ -188,7 +188,11 @@ contains
            & dest='n_skip', action='store', default=0, &
            & help='skip the first n_skip tests; only used with RemoteRunner')
 
+#ifndef _GNU
       options = parser%parse_args()
+#else
+      call parser%parse_args_kludge(option_values=options)
+#endif
 
       if (associated(options%at('output'))) then
          call cast(options%at('output'), ofile)
@@ -208,7 +212,6 @@ contains
       case ('default','testrunner')
          allocate(runner, source=TestRunner(unit))
       case default
-         print*,__FILE__,__LINE__,'unsupported runner: ' // runner_class
          ERROR STOP 'unsupported runner'
       end select
          
@@ -220,7 +223,6 @@ contains
       end if
 
       suite = load_tests()
-
       option => options%at('filter')
       if (associated(option)) then
          call cast(option, pattern)

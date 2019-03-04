@@ -1,5 +1,5 @@
 
-set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
 find_package(PythonInterp REQUIRED) #Sets ${PYTHON_EXECUTABLE}
 
 set(generated_files
@@ -33,8 +33,8 @@ foreach(type Logical Integer Real Complex)
     list(APPEND new_generated_sources ${ofile})
     add_custom_command(
       OUTPUT ${ofile}
-      COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
-      DEPENDS ${ifile} ${CMAKE_SOURCE_DIR}/bin/overload_template.py
+      COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
+      DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT Generating ${ofile}
       )
@@ -46,8 +46,8 @@ set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/FormatIntrinsic.tmpl)
 list(APPEND new_generated_sources ${ofile})
 add_custom_command(
   OUTPUT ${ofile}
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py -i ${ifile} -o ${ofile} ${python_defs}
-  DEPENDS ${ifile} ${CMAKE_SOURCE_DIR}/bin/overload_template.py
+  COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py -i ${ifile} -o ${ofile} ${python_defs}
+  DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT Generating ${ofile}
   )
@@ -58,8 +58,8 @@ foreach(rank RANGE ${MAX_ASSERT_RANK})
   list(APPEND new_generated_sources ${ofile})
   add_custom_command(
     OUTPUT ${ofile}
-    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
-    DEPENDS ${ifile} ${CMAKE_SOURCE_DIR}/bin/overload_template.py
+    COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
+    DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT Generating ${ofile}
     )
@@ -75,7 +75,7 @@ add_custom_command(
     COMMAND ./posix_predefined.x > posix_predefined.inc
     DEPENDS posix_predefined.x
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT Generating posix_predefined.inc
+    COMMENT "Generating posix_predefined.inc"
     )
 add_custom_target(generate_posix_parameters
   DEPENDS posix_predefined.inc
