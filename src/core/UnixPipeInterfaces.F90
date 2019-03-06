@@ -36,10 +36,7 @@ module PF_UnixPipeInterfaces
    private
 
    public :: popen
-   public :: fgets
-   public :: pclose
    public :: getline
-   public :: getdelim
    public :: free
 
    ! error codes
@@ -56,20 +53,6 @@ module PF_UnixPipeInterfaces
          character(kind=C_CHAR), dimension(*), intent(in) :: mode
       end function popen
 
-      function fgets(str, size, stream) bind(C, name='fgets')
-         use, intrinsic :: iso_c_binding
-         type (C_PTR) :: fgets
-         character(kind=C_CHAR), dimension(*), intent(inout) :: str
-         integer(kind=C_INT), value, intent(in) :: size
-         type (C_PTR), value :: stream
-      end function fgets
-
-      function pclose(stream) bind(C, name='pclose')
-         use, intrinsic :: iso_c_binding
-         integer(C_INT) :: pclose
-         type (c_ptr), value :: stream
-      end function pclose
-
       function getline(linep, linecapp, stream) bind(C, name='getline')
          use, intrinsic :: iso_c_binding
          integer (kind=C_SIZE_T) :: getline
@@ -77,15 +60,6 @@ module PF_UnixPipeInterfaces
          integer (kind=C_SIZE_T) :: linecapp
          type (C_PTR), value :: stream
       end function getline
-
-      function getdelim(linep, linecapp, delimeter, stream) bind(C, name='getdelim')
-         use, intrinsic :: iso_c_binding
-         integer (kind=C_SIZE_T) :: getdelim
-         type (C_PTR) :: linep
-         integer (kind=C_SIZE_T) :: linecapp
-         integer(kind=C_INT), value :: delimeter
-         type (C_PTR), value :: stream
-      end function getdelim
 
       subroutine free(ptr) bind(C, name='free')
          use, intrinsic :: iso_c_binding

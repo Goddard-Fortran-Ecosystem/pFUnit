@@ -34,7 +34,7 @@ module PF_TestSuite
    end type TestReference
 
    type, extends(Test) :: TestSuite
-      private
+!!$      private
       character(:), allocatable  :: name
       type (TestVector) :: tests
    contains

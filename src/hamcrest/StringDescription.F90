@@ -25,6 +25,10 @@ contains
       class (StringDescription), intent(inout) :: this
       character(*), intent(in) :: text
 
+      if (.not. allocated(this%out)) then
+         this%out = ''
+      end if
+
       this%out = this%out // text
     end subroutine append_string
 
@@ -36,7 +40,7 @@ contains
     end subroutine append_character
 
 
-   subroutine append_description_of(this, value)
+   recursive subroutine append_description_of(this, value)
       class (StringDescription), intent(inout) :: this
       class (SelfDescribing), intent(in) :: value
 

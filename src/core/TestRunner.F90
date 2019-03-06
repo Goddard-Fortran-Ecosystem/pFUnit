@@ -26,17 +26,19 @@
 module PF_TestRunner
    use PF_Test
    use PF_BaseTestRunner
-   use PF_TestListener
-   use PF_TestListenerVector
+   use PF_ResultPrinter
+   use Pf_TestListenerVector
    implicit none
    private
 
    public :: TestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
-      type(TestListenerVector) :: extListeners
+      private
+      type (ResultPrinter) :: printer
    contains
       procedure :: run
+      procedure :: runWithResult
       procedure :: createTestResult
       procedure :: addFailure
       procedure :: startTest
@@ -48,28 +50,43 @@ module PF_TestRunner
    interface TestRunner
       module procedure newTestRunner_default
       module procedure newTestRunner_unit
+      module procedure newTestRunner_printer
    end interface
 
 contains
 
-   function newTestRunner_default() result(runner)
-      type (TestRunner) :: runner
-   end function newTestRunner_default
+  function newTestRunner_default() result(runner)
+    use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
+    type (TestRunner) :: runner
+    runner = TestRunner(OUTPUT_UNIT)
+  end function newTestRunner_default
 
-   function newTestRunner_unit(extListeners) result(runner)
-      type(TestListenerVector), intent(in) :: extListeners
-      type (TestRunner) :: runner
-      runner%extListeners = extListeners
-   end function newTestRunner_unit
+  function newTestRunner_unit(unit) result(runner)
+    type (TestRunner) :: runner
+    integer, intent(in) :: unit
+    runner = TestRunner(ResultPrinter(unit))
+  end function newTestRunner_unit
+  
+  function newTestRunner_printer(printer) result(runner)
+    type (TestRunner) :: runner
+    type(ResultPrinter), intent(in) :: printer
+    runner%printer = printer
+  end function newTestRunner_printer
 
    function createTestResult(this) result(tstResult)
       use PF_TestResult
-      class (TestRunner), intent(inout) :: this
+      class (TestRunner), target, intent(inout) :: this
       type (TestResult) :: tstResult
 
+      integer :: i
+      type(TestListenerVector), pointer :: listeners
       _UNUSED_DUMMY(this)
 
       tstResult = TestResult()
+      listeners => this%get_listeners()
+      do i = 1, listeners%size()
+         call tstResult%addListener(listeners%at(i))
+      end do
 
     end function createTestResult
 
@@ -85,39 +102,42 @@ contains
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
       
-      integer :: clockStart
-      integer :: clockStop
-      integer :: clockRate
+      integer :: clock_start
+      integer :: clock_stop
+      integer :: clock_rate
       integer :: i
+      real :: elapsed_time
 
-      class(TestListener), pointer :: listener
-
-      call system_clock(clockStart)
+      call system_clock(clock_start)
 
       result = this%createTestResult()
+      call result%addListener(this%printer)
       call result%setName(aTest%getName())
-! Add the extListeners to the listeners list.
 
-      do i=1,this%extListeners%size()
-         call result%addListener(this%extListeners%at(i))
-      end do
-      call aTest%run(result, context)
-      call system_clock(clockStop, clockRate)
+      call this%runWithResult(aTest, context, result)
 
-      call result%addRunTime(real(clockStop - clockStart) / clockRate)
+      call system_clock(clock_stop, clock_rate)
+      elapsed_time = real(clock_stop - clock_start) / clock_rate
+      call result%addRunTime(elapsed_time)
 
-! Post run printing. Q: Should we do this for listeners too?
-! E.g. and end-run method & move this up to basetestrunner...
-
-! e.g. call result%endRun()...
       if (context%isRootProcess())  then
-         do i=1,this%extListeners%size()
-            listener => this%extListeners%at(i)
-            call listener%endRun(result)
-         end do
+         call this%printer%print(result, elapsed_time)
       end if
-!tc: 2+1 lists -- extListeners, listeners and in testresult too...
+
    end function run
+
+   recursive subroutine runWithResult(this, aTest, context, result)
+     use PF_ParallelContext
+     use PF_TestResult
+     class (TestRunner), target, intent(inout) :: this
+     class (Test), intent(inout) :: aTest
+     class (ParallelContext), intent(in) :: context
+     type (TestResult), intent(inout) :: result
+     
+     call aTest%run(result, context)
+     
+   end subroutine runWithResult
+
 
 ! Recall, runner is also a listener and these will be called from
 ! TestResult, adding the ability to put in functionality here. In

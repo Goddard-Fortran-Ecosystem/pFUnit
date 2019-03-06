@@ -95,12 +95,10 @@ contains
       class(BaseTestRunner), allocatable :: runner
       type(TestResult) :: r
       class(ParallelContext), allocatable :: c
-      type(TestListenerVector) :: listeners
 
-      call listeners%push_back(ResultPrinter(OUTPUT_UNIT))
 !!$      options = parse()
       suite = load_tests()
-      allocate(runner, source=TestRunner(listeners))
+      allocate(runner, source=TestRunner(ResultPrinter(OUTPUT_UNIT)))
       c = get_context()
       r = runner%run(suite, c)
       status = r%wasSuccessful()

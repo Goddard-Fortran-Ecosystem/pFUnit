@@ -1,7 +1,4 @@
-#include_directories(${pFUnit_BINARY_DIRECTORY}/src/core)
-#include_directories(${CMAKE_BINARY_DIR}/mod)
-
-set(CMAKE_Fortran_MODULE_DIRECTORY ${pFUnit_BINARY_DIR}/mod)
+set(CMAKE_Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
 
 if (BUILD_SHARED)
   add_library(pfunit_shared SHARED ${srcs} ${mpi_srcs})
@@ -21,12 +18,8 @@ set (mpi_srcs
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
 target_link_libraries (pfunit PUBLIC funit)
-target_include_directories (pfunit PRIVATE ${ftl_install_dir}/include)
-set_target_properties (pfunit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod)
+set_target_properties (pfunit PROPERTIES Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
 
-if (NOT FTL)
-  add_dependencies(pfunit gFTL)
-endif()
 if (mismatch)
   set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
 endif()
@@ -36,5 +29,5 @@ if (BUILD_SHARED)
   install (TARGETS pfunit_shared DESTINATION lib)
 endif ()
 
-INSTALL (DIRECTORY  ${CMAKE_BINARY_DIR}/mod DESTINATION .)
+INSTALL (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod DESTINATION .)
 

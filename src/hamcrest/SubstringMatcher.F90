@@ -104,6 +104,7 @@ contains
 
   
   function converted(this, string) result(converted_string)
+    use pf_StringUtilities, only: to_lower
     character(:), allocatable :: converted_string
     class(SubstringMatcher), intent(in) :: this
     character(*), intent(in) :: string
@@ -114,27 +115,6 @@ contains
        converted_string = string
     end if
   end function converted
-
-
-  function to_lower(string) result(converted_string)
-    character(:), allocatable :: converted_string
-    character(*), intent(in) :: string
-
-    integer :: i, n, ascii
-    integer :: delta
-
-    delta = iachar('a') - iachar('A')
-    n = len(string)
-    allocate(character(len=n) :: converted_string)
-    do i = 1, n
-       ascii = iachar(string(i:i))
-       if (ascii >= iachar('A') .and. ascii <= iachar('Z')) then
-          converted_string(i:i) = achar(ascii + delta)
-       else
-          converted_string(i:i) = string(i:i)
-       end if
-    end do
-  end function to_lower
 
 
   logical function expects_type_of(this, actual)

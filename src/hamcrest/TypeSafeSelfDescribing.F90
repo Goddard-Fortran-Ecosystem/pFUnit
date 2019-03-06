@@ -27,7 +27,7 @@ module pf_TypeSafeSelfDescribing
  contains
 
 
-   subroutine type_unsafe_describe_to(this, description)
+   recursive subroutine type_unsafe_describe_to(this, description)
      class (TypeSafeSelfDescribing), intent(in) :: this
      class (SurrogateDescription), intent(inout) :: description
 

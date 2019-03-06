@@ -19,3 +19,4 @@ set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
 set(CMAKE_Fortran_FLAGS "-g ${cpp} ${traceback} ${check_all} ${disable_warning_for_long_names} -save-temps")
 
 add_definitions(-D_INTEL)
+add_definitions(-D__ifort_18)

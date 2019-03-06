@@ -35,24 +35,21 @@ contains
       use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
-      suite = TestSuite('robustTestSuite')
-!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
+      class (Test), allocatable :: t
+      type(TimeoutAnnotation) :: timeout
 
-      call suite%addTest( &
-           &   TestMethod('testRunSucceeds', &
-           &                  testRunSucceeds))
-      call suite%addTest( &
-           &   TestMethod('testRunMultipleExceptions', &
-           &                  testRunMultipleExceptions))
-      call suite%addTest( &
-           &   TestMethod('testRunAssertFailure', &
-           &                  testRunAssertFailure))
-      call suite%addTest( &
-           &   TestMethod('testRunStops', &
-           &                  testRunStops))
-      call suite%addTest( &
-           &   TestMethod('testRunHangs', &
-           &                  testRunHangs))
+      suite = TestSuite('robustTestSuite')
+
+      call suite%addTest( TestMethod('testRunAssertFailure', testRunAssertFailure))
+      call suite%addTest( TestMethod('testRunSucceeds', testRunSucceeds))
+
+      t = TestMethod('testRunHangs', testRunHangs)
+      timeout = TimeoutAnnotation(0.1)
+      call t%insert(timeout%type_name(), timeout)
+      call suite%addTest( t )
+
+      call suite%addTest( TestMethod('testRunStops', testRunStops) )
+      call suite%addTest( TestMethod('testRunMultipleExceptions', testRunMultipleExceptions))
 
    end function suite
 
@@ -63,15 +60,15 @@ contains
    subroutine testRunMultipleExceptions()
      use PF_Assert
      ! do nothing
-     call assertTrue(1 == 2)
-     call assertTrue(1 == 3)
-     call assertTrue(1 == 4)
+     call assertTrue(1 == 2,'messageA')
+     call assertTrue(1 == 3,'message' // new_line('a') // 'B')
+     call assertTrue(1 == 4,'C')
    end subroutine testRunMultipleExceptions
 
    subroutine testRunAssertFailure()
       use PF_Assert
       ! do nothing
-      call assertTrue(1 == 2)
+      call assertTrue(1 == 2,'some message')
    end subroutine testRunAssertFailure
 
    subroutine testRunStops()

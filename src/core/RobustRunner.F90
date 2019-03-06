@@ -28,122 +28,112 @@ module PF_RobustRunner
    use PF_BaseTestRunner
    use PF_TestListener
    use PF_UnixProcess
+   use PF_UnixPipeInterfaces
+   use pf_TestRunner
+   use pf_File
+   use pf_TestTimer
+   use pf_ResultPrinter
+   use iso_c_binding
+   use iso_fortran_env
    implicit none
    private
 
    public :: RobustRunner
 
-   type, extends(BaseTestRunner) :: RobustRunner
+   type, extends(TestRunner) :: RobustRunner
       private
-      character(len=:), allocatable :: remoteRunCommand
-      integer :: numSkip
-      type (ListenerPointer), allocatable :: extListeners(:)
-      type (UnixProcess) :: remoteProcess
       real :: maxLaunchDuration
-      real :: maxTimeoutDuration
+      real :: max_time_per_test
+      character(len=:), allocatable :: remoteRunCommand
+      type (UnixProcess) :: remoteProcess
    contains
-      procedure :: run
       procedure :: runWithResult
-      procedure :: startTest
-      procedure :: endTest
-      procedure :: endRun
-      procedure :: addFailure
-      procedure :: addError
       procedure :: launchRemoteRunner
-      procedure :: createTestResult
-      procedure :: addSuccess
    end type RobustRunner
 
    interface RobustRunner
-!      module procedure newRobustRunner
-      module procedure newRobustRunner_extListeners
+      module procedure new_RobustRunner_default
+      module procedure new_RobustRunner_unit
+      module procedure new_RobustRunner_printer
    end interface RobustRunner
-
-   type, extends(TestCase) :: TestCaseMonitor
-      private
-      type (UnixProcess), pointer :: process
-   contains
-      procedure :: runMethod
-   end type TestCaseMonitor
 
 !!! Inject dependency through constructor...
    real, parameter :: MAX_TIME_LAUNCH = 5.00 ! in seconds
-   real, parameter :: MAX_TIME_TEST   = 0.11 ! in seconds
+   real, parameter :: MAX_TIME_TEST   = 0.10 ! in seconds
+
+   character(*), parameter :: REMOTE_PROCESS_PIPE = '.remote_process_pipe'
+   character(*), parameter :: C_REMOTE_PROCESS_PIPE = REMOTE_PROCESS_PIPE // C_NULL_CHAR
 
 contains
 
-!   function newRobustRunner(remoteRunCommand,maxLaunchDuration) result(runner)
-!      type (RobustRunner) :: runner
-!      character(len=*), intent(in) :: remoteRunCommand
-!      real, optional, intent(in) :: maxLaunchDuration
-!
-!      if(.not.present(maxLaunchDuration))then
-!         runner%maxLaunchDuration = MAX_TIME_LAUNCH
-!      else
-!         runner%maxLaunchDuration = maxLaunchDuration
-!      end if
-!      
-!      runner%remoteRunCommand = trim(remoteRunCommand)
-!      allocate(runner%extListeners(0))
-!   end function newRobustRunner
+  function new_RobustRunner_default(maxLaunchDuration, max_time_per_test, remoteRunCommand) result(runner)
+    use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
+    type (RobustRunner) :: runner
+    real, optional, intent(in) :: maxLaunchDuration
+    real, optional, intent(in) :: max_time_per_test
+    character(*), optional, intent(in) :: remoteRunCommand
 
-   function newRobustRunner_extListeners( &
-        & remoteRunCommand   &
-        & ,extListeners      &
-        & ,maxLaunchDuration &
-        & ,maxTimeoutDuration &
-        & ) result(runner)
-      type (RobustRunner) :: runner
-      character(len=*), intent(in) :: remoteRunCommand
-      type(ListenerPointer), optional, intent(in) :: extListeners(:)
-      
-      real, optional, intent(in) :: maxLaunchDuration
-      real, optional, intent(in) :: maxTimeoutDuration
+    runner = RobustRunner(OUTPUT_UNIT, max_time_per_test, maxLaunchDuration, remoteRunCommand)
 
-      if(.not.present(maxLaunchDuration))then
-         runner%maxLaunchDuration = MAX_TIME_LAUNCH
-      else
-         runner%maxLaunchDuration = maxLaunchDuration
-      end if
+  end function new_RobustRunner_default
 
-      if(.not.present(maxTimeoutDuration))then
-         runner%maxTimeoutDuration = MAX_TIME_TEST
-      else
-         runner%maxTimeoutDuration = maxTimeoutDuration
-      end if
 
-      if(present(extListeners))then
-         allocate(runner%extListeners(size(extListeners)), source=extListeners)
-      end if
-      
-      runner%remoteRunCommand = trim(remoteRunCommand)
-      runner%numSkip = 0
-      
-   end function newRobustRunner_extListeners
+  function new_RobustRunner_unit(unit, maxLaunchDuration, max_time_per_test, remoteRunCommand) result(runner)
+    type (RobustRunner) :: runner
+    integer, intent(in) :: unit
+    real, optional, intent(in) :: maxLaunchDuration
+    real, optional, intent(in) :: max_time_per_test
+    character(*), optional, intent(in) :: remoteRunCommand
+    runner = RobustRunner(ResultPrinter(unit), maxLaunchDuration, max_time_per_test, remoteRunCommand)
+  end function new_RobustRunner_unit
 
-   subroutine runMethod(this)
-      class (TestCaseMonitor), intent(inout) :: this
-     _UNUSED_DUMMY(this)
-   end subroutine runMethod
+  
+  function new_RobustRunner_printer(printer, maxLaunchDuration, max_time_per_test, remoteRunCommand) result(runner)
+    type (RobustRunner) :: runner
+    type(ResultPrinter), intent(in) :: printer
+    real, optional, intent(in) :: maxLaunchDuration
+    real, optional, intent(in) :: max_time_per_test
+    character(*), optional, intent(in) :: remoteRunCommand
 
-   function run(this, aTest, context) result(result)
-      use PF_Test
-      use PF_TestSuite
-      use PF_TestResult
-      use PF_ParallelContext
+    ! parent
+    runner%TestRunner = TestRunner(printer)
 
-      type (TestResult) :: result
-      class (RobustRunner), target, intent(inout) :: this
-      class (Test), intent(inout) :: aTest
-      class (ParallelContext), intent(in) :: context
+    if(present(maxLaunchDuration))then
+       runner%maxLaunchDuration = maxLaunchDuration
+    else
+       runner%maxLaunchDuration = MAX_TIME_LAUNCH
+    end if
 
-      result = this%createTestResult()
-      call result%setName(aTest%getName())
-      call this%runWithResult(aTest, context, result)
+    if (present(remoteRunCommand)) then
+       runner%remoteRunCommand = trim(remoteRunCommand)
+    else
+       runner%remoteRunCommand = get_default_launch_command()
+    end if
 
-   end function run
+    if (present(max_time_per_test)) then
+       runner%max_time_per_test = max_time_per_test
+    else
+       runner%max_time_per_test = MAX_TIME_TEST
+    end if
+
+  contains
+
+    function get_default_launch_command() result(command)
+      character(:), allocatable :: command
+      character(:), allocatable :: arg
+      integer :: n
+
+      call get_command_argument(0, length=n)
+      allocate(character(len=n) :: command)
+      call get_command_argument(0, value=command)
+
+      command = command // ' -o ' // REMOTE_PROCESS_PIPE // ' --runner RemoteRunner '
+    end function get_default_launch_command
+
+  end function new_RobustRunner_printer
 
    subroutine runWithResult(this, aTest, context, result)
+     use pf_Posix, only: remove, mkfifo, mode_t
       use PF_Test
       use PF_ParallelContext
       use PF_TestResult
@@ -151,6 +141,7 @@ contains
       use PF_TestSuite
       use PF_TestVector
       use PF_ExceptionList
+      use pf_File
       class (RobustRunner), target, intent(inout) :: this
       class (Test), intent(inout) :: aTest
       class (ParallelContext), intent(in) :: context
@@ -160,12 +151,14 @@ contains
       type (RemoteProxyTestCase) :: proxy
       integer :: i
       integer :: clockStart, clockStop, clockRate
+      type(mode_t) :: mode
+      integer(kind=C_INT) :: status
+      integer :: rc
+      logical :: check
+      logical :: needs_launch
+      type (File) :: f
+      real :: elapsed_time
 
-      call system_clock(clockStart)
-
-      do i=1,size(this%extListeners)
-         call result%addListener(this%extListeners(i)%pListener)
-      end do
       call result%addListener( this ) ! - monitoring
 
       select type (aTest)
@@ -177,102 +170,100 @@ contains
          stop
       end select
 
-! mlr q: set up named pipes or units to handle comm between remote processes
-      ! mlr q: and the root... being done at ukmet?
+      needs_launch = .true.
+      
       do i = 1, testCases%size()
-         if (.not. this%remoteProcess%isActive()) then
-            call this%launchRemoteRunner(numSkip=i-1)
+         if (needs_launch) then
+            !TODO:  What is the correct mode here?
+            mode%mode_t = O'0777'
+            rc = mkfifo(C_REMOTE_PROCESS_PIPE, mode)
+            if (rc /= 0) ERROR STOP 'failed to make named pipe'
+
+            call this%launchRemoteRunner(f, numSkip=i-1)
+            needs_launch = .false.
          end if
-         proxy = RemoteProxyTestCase( &
-              &     testCases%at(i) &
-              &     ,this%remoteProcess &
-              &     ,maxTimeoutDuration=this%maxTimeoutDuration &
-              &  )
+            
+         proxy = RemoteProxyTestCase(testCases%at(i), f, this%max_time_per_test)
          call proxy%run(result, context)
+
+         if (proxy%encountered_errors()) then
+            call execute_command_line('rm ' // REMOTE_PROCESS_PIPE)
+            if (this%remoteProcess%is_active()) then
+               call this%remoteProcess%terminate()
+            end if
+            needs_launch = .true.
+         end if
       end do
 
-      call system_clock(clockStop, clockRate)
-
-      call result%addRunTime(real(clockStop - clockStart) / clockRate)
-
-      ! Maybe push this call up into parent, i.e. loop over all of the listeners there...
-      if (context%isRootProcess())  then
-         do i=1,size(this%extListeners)
-            call this%extListeners(i)%pListener%endRun(result)
-         end do
-      end if
+      call f%close(status)
+      status = remove(C_REMOTE_PROCESS_PIPE)
 
    end subroutine runWithResult
 
-   subroutine launchRemoteRunner(this, numSkip)
+   subroutine launchRemoteRunner(this, f, numSkip)
       use PF_UnixProcess
       use PF_ExceptionList
+      use pf_Posix, only: remove
       class (RobustRunner), intent(inout) :: this
+      type(File), intent(inout) :: f
       integer, intent(in) :: numSkip
 
       character(len=:), allocatable :: command
 
       integer, parameter :: MAX_LEN=8
+      integer :: status
       character(len=MAX_LEN) :: suffix
 
       character(len=80) :: timeCommand
       type (UnixProcess) :: timerProcess
       character(len=:), allocatable :: line
+      character(:), allocatable :: buffer
       character(len=100) :: throwMessage
+      type (TestTimer) :: timer
 
       
       write(suffix,'(i0)') numSkip
-      command = trim(this%remoteRunCommand) // ' --skip ' // suffix
-
-
+      command = trim(this%remoteRunCommand) // ' --skip ' // trim(suffix)
       this%remoteProcess = UnixProcess(command, runInBackground=.true.)
+      timer = TestTimer(this%maxLaunchDuration)
+      call f%open(REMOTE_PROCESS_PIPE, timer, rc=status)
 
-      ! Check for successful launch - prevents MPI launch time from counting against
-      ! first test's time limit.
-      write(timeCommand,'(a, f10.3,a,i0,a)') &
-           & "(sleep ",this%maxLaunchDuration," && kill -9 ", &
-           & this%remoteProcess%getPid(), &
-           & ") > /dev/null 2>&1"
-      timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
+      select case(status)
+      case (FAILED_TO_OPEN)
+         call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
+         ERROR STOP "unknown problem connecting with remote process"
+      case (TIMER_EXPIRED)
+         call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
+         ERROR STOP "remote launch has timed out"
+      case (SUCCESS)
+         ! yay
+      end select
 
-      do
-         line = this%remoteProcess%getLine()
-         if (len(line) == 0) then
-            if (.not. this%remoteProcess%isActive()) then
-               write(throwMessage,'(a,f0.3,a)') &
-                    & ' (max launch duration = ',this%maxLaunchDuration,')'
-               call throw('RUNTIME-ERROR: terminated before starting'//trim(throwMessage))
-               call timerProcess%terminate()
-               return
-            else
-!!$               call timerProcess%terminate()
-!!$               timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
-               cycle ! might just not be ready yet
-            end if
+      call f%timed_read_line(buffer, timer, rc=status)
+      select case (status)
+      case (SUCCESS)
+         if (buffer /= '*LAUNCHED*') then
+            call this%remoteProcess%terminate()
+            status = remove(C_REMOTE_PROCESS_PIPE)
+            ERROR STOP "remote handshake failed"
          else
-            if ('*LAUNCHED*' /= line) then
-               call throw(&
-	       &    'Failure to launch in RobustRunner. ' &
-	       &    //"Expected: '*LAUNCHED*' Found: '"//line//"'" )
-               return
-            else
-               ! successfully launched
-               call timerProcess%terminate()
-               exit
-            end if
+            return
          end if
-      end do
+      case default
+         call this%remoteProcess%terminate()
+         status = remove(C_REMOTE_PROCESS_PIPE)
+         ERROR STOP "remote handshake failed"
+      end select
 
    end subroutine launchRemoteRunner
 
-   ! No matter what, we don't want to rerun this test, so
-   ! we need to increment numSkip here.
    subroutine startTest(this, testName)
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       
      _UNUSED_DUMMY(testName)
-      this%numSkip = this%numSkip + 1
 
    end subroutine startTest
 
@@ -284,16 +275,6 @@ contains
      _UNUSED_DUMMY(testName)
 
    end subroutine endTest
-
-   subroutine endRun(this, result)
-     use PF_AbstractTestResult
-     class (RobustRunner), intent(inout) :: this
-     class (AbstractTestResult), intent(in) :: result
-
-     _UNUSED_DUMMY(this)
-     _UNUSED_DUMMY(result)
-
-   end subroutine endRun
 
    subroutine addFailure(this, testName, exceptions)
       use PF_ExceptionList
@@ -318,26 +299,5 @@ contains
      _UNUSED_DUMMY(exceptions)
 
    end subroutine addError
-
-   function createTestResult(this) result(tstResult)
-      use PF_TestResult
-      class (RobustRunner), intent(inout) :: this
-      type (TestResult) :: tstResult
-
-     _UNUSED_DUMMY(this)
-
-      tstResult = TestResult()
-
-    end function createTestResult
-
-
-   subroutine addSuccess(this, testName)
-      class (RobustRunner), intent(inout) :: this
-      character(*), intent(in) :: testName
-
-     _UNUSED_DUMMY(this)
-     _UNUSED_DUMMY(testName)
-
-   end subroutine addSuccess
 
 end module PF_RobustRunner

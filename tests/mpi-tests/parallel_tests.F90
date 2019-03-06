@@ -3,7 +3,6 @@ program main
    use pfunit, only: finalize
    use pfunit, only: TestResult
    use pfunit, only: TestListenerVector
-   use pfunit, only: ResultPrinter
    use pfunit, only: stub
 !$$   use pfunit, only: DebugListener
    implicit none
@@ -32,19 +31,9 @@ contains
       type (TestRunner) :: runner
       type (TestResult) :: tstResult
 
-#ifdef INTEL_13
-      type (ResultPrinter), target :: printer
-#endif
-      type (TestListenerVector) :: ll
-
-      ! TODO: We'll make this a feature in 4.0
-!!$      allocate(ll(2))
-!!$      allocate(ll(1)%pListener, source=ResultPrinter(OUTPUT_UNIT))
-!!$      allocate(ll(2)%pListener, source=DebugListener())
-      call ll%push_back(ResultPrinter(OUTPUT_UNIT))
 
       allTests = TestSuite('allTests')
-      runner = TestRunner(ll)
+      runner = TestRunner()
 
 #define ADD(suite) call allTests%addTest(suite())
 

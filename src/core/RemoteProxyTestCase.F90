@@ -21,10 +21,20 @@
 !
 !-------------------------------------------------------------------------------
 module PF_RemoteProxyTestCase
+  use pf_SourceLocation
    use PF_UnixProcess
    use PF_ExceptionList
+   use pf_DisableAnnotation
    use PF_Test
    use PF_TestCase
+   use, intrinsic :: iso_fortran_env, only: INT64
+   use, intrinsic :: iso_fortran_env, only: IOSTAT_EOR
+   use iso_c_binding
+   use pf_Posix
+   use pf_File
+   use pf_TestAnnotation
+   use pf_TimeoutAnnotation
+   use pf_TestTimer
    implicit none
    private
 
@@ -32,184 +42,170 @@ module PF_RemoteProxyTestCase
 
    type, extends(TestCase) :: RemoteProxyTestCase
       private
-      type (UnixProcess), pointer :: process
-      integer :: clockStart
-      real    :: maxTimeoutDuration
+      type(File) :: posix_file
+      type(TestTimer) :: timer
+      logical :: errored = .false.
    contains
-      procedure :: runMethod
-      procedure :: setStartTime
+     procedure :: runMethod
+     procedure :: encountered_errors
    end type RemoteProxyTestCase
 
    interface RemoteProxyTestCase
       module procedure newRemoteProxyTestCase
    end interface RemoteProxyTestCase
 
-   real, parameter :: MAX_TIME_TEST = 0.10 ! in seconds
-
 contains
 
-   function newRemoteProxyTestCase(a_test, process, maxTimeoutDuration) result(proxy)
+   function newRemoteProxyTestCase(a_test, f, max_time) result(proxy)
       type (RemoteProxyTestCase) :: proxy
       class (Test), intent(in) :: a_test
-      type (UnixProcess), target :: process
-      real, optional, intent(in) :: maxTimeoutDuration
+      type(File), intent(in) :: f
+      real, intent(in) :: max_time
 
-      if(.not.present(maxTimeoutDuration))then
-         proxy%maxTimeoutDuration = MAX_TIME_TEST
+      class(TestAnnotation), pointer :: annotation
+
+      if (a_test%count('Timeout') == 1) then
+         annotation => a_test%at('Timeout')
+         ! cast
+         select type (annotation)
+         class is (TimeoutAnnotation)
+            proxy%timer = annotation%make_timer()
+         end select
       else
-         proxy%maxTimeoutDuration = maxTimeoutDuration
+         proxy%timer = TestTimer(max_time)
       end if
 
+      proxy%posix_file = f
       call proxy%setName(a_test%getName())
-      proxy%process => process
+
+      if(a_test%is_disabled()) then
+         call proxy%insert(Disable%type_name(),Disable)
+      end if
       
    end function newRemoteProxyTestCase
 
+
    subroutine runMethod(this)
-      use PF_SourceLocation
-      use PF_UnixProcess
-      use, intrinsic :: iso_c_binding
-      class (RemoteProxyTestCase), intent(inout) :: this
-      character(len=:), allocatable :: line
+     use PF_UnixPipeInterfaces
+     class (RemoteProxyTestCase), intent(inout) :: this
 
-      character(len=:), allocatable :: message
-      character(len=:), allocatable :: fileName
+     type (pollfd) :: fds(1)
+     integer :: error
+     character(:), allocatable :: line
+     character(:), allocatable :: file_name
+     integer :: line_number
+     character(:), allocatable :: num_exceptions_str
+     character(:), allocatable :: line_number_str
+     character(:), allocatable :: message_length_str
+     integer :: num_exceptions
+     character(:), allocatable :: message
+     integer :: message_length
+     integer :: i_exception
+     integer :: rc
 
-      character(len=80) :: timeCommand
-      type (UnixProcess) :: timerProcess
-      integer :: numExceptions, iException
-      integer :: lineNumber
-      character(len=100) :: timeText
 
-      call this%setStartTime()
+     call this%posix_file%timed_read_line(line, this%timer, rc)
+     if (rc /= SUCCESS) then
+        this%errored = .true.
+        call throw('RUNTIME-ERROR: failure to read start message from remote')
+        return
+     end if
 
-      ! Software equivalent of a ticking time bomb:
-      ! Timer process sleeps for n milliseconds and then kills the remote test process.
-      ! If the appropriate messages are received in time, then this timer process is 
-      ! safely stopped.
+     if (line /= 'started: '// trim(this%getName())) then
+        this%errored = .true.
+        call throw('RUNTIME-ERROR: wrong start message from remote')
+        return
+     end if
 
-      write(timeCommand,'(a, f10.3,a,i0,a)') &
-           & "(sleep ",this%maxTimeoutDuration," && kill -9 ", this%process%getPid(),") > /dev/null 2>&1"
-      timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
+     call this%posix_file%timed_read_line(line, this%timer, rc)
+     if (rc /= SUCCESS) then
+        this%errored = .true.
+        call throw('RUNTIME-ERROR: failure to message from remote')
+        return
+     end if
+     if (line == 'ended: ' // trim(this%getName())) then ! success
+        this%errored = .false.
+        return
+     else ! probably failure messages
+        if (index(line, 'failed: # exceptions = ') /= 0) then
+           this%errored = .true.
+           call throw('RUNTIME-ERROR: misformatted message from remote')
+           return
+        end if
 
-      do
-         ! important to check status _before_ getLine()
-         line = this%process%getLine()
-         if (len(line) == 0) then
-            if (.not. this%process%isActive()) then
-               call throw('RUNTIME-ERROR: terminated before starting')
-               call timerProcess%terminate()
-               return
-            else
-               call timerProcess%terminate()
-               timerProcess = UnixProcess(trim(timeCommand), runInBackground=.true.)
-               cycle ! might just not be ready yet
-            end if
-         else
-            if ('started: '//trim(this%getName()) /= line) then
-               call throw('Incorrect start line in RemoteProxyTestCase.F90.')
-               return
-            end if
-            exit
-         end if
+        num_exceptions_str = content_scan(line)
+        read(num_exceptions_str,*) num_exceptions
 
-      end do
+        do i_exception = 1, num_exceptions
+           ! File name
+           call this%posix_file%timed_read_line(line, this%timer, rc)
+           if (rc /= SUCCESS) then
+              this%errored = .true.
+              call throw('RUNTIME-ERROR: failure to parse message from remote')
+              return
+           end if
+           file_name = content_scan(line)
 
-      ! Poll for exceptions or test finished
-      do
-         ! important to check status _before_ getLine()
-! MLR Any guarantees on line?
-         line = this%process%getLine()
-         if (len(line) == 0) then
-            if (this%process%isActive()) then
-               call timerProcess%terminate()
-               call this%process%terminate()
-               call throw('RUNTIME-ERROR: active but no output?')
-               return
-            else ! process not active crashed or killed by child
-               if (timerProcess%isActive()) then
-                  call timerProcess%terminate()
-                  call this%process%terminate()
-                  call throw('RUNTIME-ERROR: terminated during execution')
-                  return
-               else ! child has completed - implies test was hung and processing terminated
-                  write(timeText, '(a,f0.3,a)') &
-                       'RUNTIME-ERROR: hung (used more than ',&
-                       this%maxTimeoutDuration, ' s)'
-                  call throw(timeText)
-                  return
-               end if
-            end if
+           ! Line number
+           call this%posix_file%timed_read_line(line, this%timer, rc)
+           if (rc /= SUCCESS) then
+              this%errored = .true.
+              call throw('RUNTIME-ERROR: failure to parse message from remote')
+              return
+           end if
+           line_number_str = content_scan(line)
+           read(line_number_str,*) line_number
 
-         else ! have some output to process
+           ! Message
+           call this%posix_file%timed_read_line(line, this%timer, rc)
+           if (rc /= SUCCESS) then
+              this%errored = .true.
+              call throw('RUNTIME-ERROR: failure to parse message from remote')
+              return
+           end if
+           message = content_scan(line)
+           
+           call throw(trim(message), SourceLocation(file_name, line_number))
+        end do
 
-            ! MLR Need to check on length of line.
+        call this%posix_file%timed_read_line(line, this%timer, rc)
+        if (rc /= SUCCESS) then
+           this%errored = .true.
+           call throw('RUNTIME-ERROR: failure to message from remote')
+           return
+        end if
+        if (line == 'ended: ' // trim(this%getName())) then ! success
+           this%errored = .false.
+           return
+        else
+           this%errored = .true.
+           call throw('RUNTIME-ERROR: failure to message from remote')
+           return
+        end if
 
-            if (line(1:6) == 'DEBUG:' .or. line(1:7) == ' DEBUG:') then
-               print*,line ! re-emit
-               cycle
-            end if
 
-            if (line == ('ended: ' // trim(this%getName()))) then
-
-               call timerProcess%terminate()
-               return
-
-! 2014-0211-1843-18-UTC MLR Huh?  Hard coding? Getting two errors here... Both Intel & GNU.
-! It turns out that printing from processes can screw up the communications that go on here.
-            elseif (index(line, 'failed: numExceptions=') /= 0) then
-
-               read(line(23:),*) numExceptions
-
-               do iException = 1, numExceptions
-                  line = contentScan(this%process%getline())
-                  read(line,*)
-                  
-                  fileName = contentScan(this%process%getLine())
-                  line = contentScan(this%process%getLine())
-                  read(line,*) lineNumber
-                  line = contentScan(this%process%getLine())
-                  read(line,*)
-                  line = this%process%getDelim(C_NULL_CHAR)
-                  message = contentScan(line)
-                  ! eat remaining linefeed
-                  line= this%process%getLine()
-                  call throw(trim(message), SourceLocation(fileName, lineNumber))
-!                  deallocate(message)
-               end do
-               cycle ! still need to process the end message
-
-            else
-               print*,'Unexpected output in remote runner: <',line,'>'
-               call timerProcess%terminate()
-               call this%process%terminate()
-               call throw('ERROR: unexpected message: '//trim(line))
-               return
-
-            end if
-         end if
-      end do
-
-      ! no path to here
+     end if
 
    contains
-
-      function contentScan(string) result(valueString)
+        
+      function content_scan(string) result(valueString)
          character(len=*), intent(in) :: string
          character(len=:), allocatable :: valueString
          
          integer :: i0, i1
-         i0 = scan(string,'<') + 1
-         i1 = scan(string,'>',back=.true.) - 1
+         i0 = scan(string,'<<<') + 3
+         i1 = scan(string,'>>>',back=.true.) - 3
 
          valueString = string(i0:i1)
-      end function contentScan
+      end function content_scan
+       
 
    end subroutine runMethod
 
-   subroutine setStartTime(this)
-      class (RemoteProxyTestCase), intent(inout) :: this
-      call system_clock(this%clockStart)
-   end subroutine setStartTime
+   logical function encountered_errors(this)
+     class(RemoteProxyTestCase), intent(in) :: this
+
+     encountered_errors = this%errored
+   end function encountered_errors
 
 end module PF_RemoteProxyTestCase

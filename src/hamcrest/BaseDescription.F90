@@ -65,7 +65,7 @@ contains
    end subroutine append_description_of
 
 
-   subroutine append_value_scalar(this, value)
+   recursive subroutine append_value_scalar(this, value)
      use pf_Matchable
      use pf_Array
      class (BaseDescription), intent(inout) :: this
