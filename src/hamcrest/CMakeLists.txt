@@ -47,7 +47,17 @@ set (srcs
   )
 
 add_library(hamcrest STATIC ${srcs})
-target_include_directories (hamcrest PRIVATE ${gFTL_install_dir}/include)
-target_link_libraries(hamcrest funit)
+target_include_directories (hamcrest PUBLIC
+  $<BUILD_INTERFACE:${PFUNIT_BINARY_DIR}/mod>
+  $<INSTALL_INTERFACE:${dest}/include>
+)
+target_link_libraries(hamcrest PUBLIC funit)
+
+install (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
+
+install (TARGETS hamcrest EXPORT PFUNIT DESTINATION ${dest}/lib)
+if (BUILD_SHARED)
+    install (TARGETS hamcrest_shared EXPORT PFUNIT DESTINATION ${dest}/lib)
+endif()
 
 

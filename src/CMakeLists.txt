@@ -9,3 +9,4 @@ if (ESMF)
   add_subdirectory (esmf)
 endif ()
 
+install (EXPORT PFUNIT DESTINATION "${dest}/cmake")

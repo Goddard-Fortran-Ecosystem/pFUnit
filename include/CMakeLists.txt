@@ -40,9 +40,9 @@ file_compile_configuration()
 #
 install(
   FILES driver.F90 PreprocessMacro.cmake
-  DESTINATION include
+  DESTINATION ${dest}/include
   )
 
 # Not sure about the fate of this file.
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/TestUtil.F90 DESTINATION include)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/TestUtil.F90 DESTINATION ${dest}/include)
 
