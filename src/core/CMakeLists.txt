@@ -170,7 +170,7 @@ target_include_directories (funit PUBLIC
   $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${dest}/include>
 )
-target_include_directories (funit PRIVATE ${PFUNIT_CURRENT_BINARY_DIR})
+target_include_directories (funit PRIVATE ${CMAKE__CURRENT_BINARY_DIR})
 
 install (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
 install (FILES ${PFUNIT_SOURCE_DIR}/include/driver.F90 DESTINATION ${dest}/include)
