@@ -8,7 +8,6 @@ endif ()
 
 set (mpi_srcs
   MpiContext.F90
-  MpiStubs.F90
   MpiTestParameter.F90
   MpiTestCase.F90
   MpiTestMethod.F90
@@ -24,10 +23,9 @@ if (mismatch)
   set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
 endif()
 
-install (TARGETS pfunit DESTINATION lib)
+install (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
+install (TARGETS pfunit EXPORT PFUNIT DESTINATION ${dest}/lib)
 if (BUILD_SHARED)
-  install (TARGETS pfunit_shared DESTINATION lib)
-endif ()
-
-INSTALL (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod DESTINATION .)
+    install (TARGETS pfunit_shared EXPORT PFUNIT DESTINATION ${dest}/lib)
+endif()
 

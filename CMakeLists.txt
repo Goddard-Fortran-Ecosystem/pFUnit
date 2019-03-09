@@ -105,6 +105,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
 
 add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND})
+set (dest "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
 
 add_subdirectory (extern)
 add_subdirectory (src)
@@ -119,14 +120,14 @@ add_subdirectory (bin)
 # Packaging
 include (cmake/packaging.cmake)
 
-# Create the pFUnitConfig.cmake and pFUnitConfigVersion files
-configure_file(cmake/PFUNIT-config.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNIT-config.cmake" @ONLY)
-configure_file(cmake/PFUNIT-config-version.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNIT-config-version.cmake" @ONLY)
+# Create the PFUNITConfig.cmake and pFUnitConfigVersion files
+configure_file(cmake/PFUNITConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake" @ONLY)
+configure_file(cmake/PFUNITConfig-version.cmake.in
+  "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake" @ONLY)
 
 # Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
 install(FILES
-  "${PROJECT_BINARY_DIR}/PFUNIT-config.cmake"
-  "${PROJECT_BINARY_DIR}/PFUNIT-config-version.cmake"
-  DESTINATION "share/PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
+  "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake"
+  "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake"
+  DESTINATION "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}/cmake")

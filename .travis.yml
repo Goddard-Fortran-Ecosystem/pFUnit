@@ -90,7 +90,7 @@ before_script:
 
 script:
    # Build
-   - make -j2
+   - make -j2 VERBOSE=1
    # Make tests
    - make -j2 tests
    # Run tests. If the first fails, run with -VV to try and diagnose errors

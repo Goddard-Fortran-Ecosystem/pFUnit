@@ -155,24 +155,32 @@ list (APPEND srcs
 
 add_library(funit STATIC ${srcs} "${generated_sources_output}")
 
-target_link_libraries(funit PUBLIC ext)
+target_link_libraries(funit PUBLIC external-pfunit)
 add_dependencies(funit generate_posix_parameters)
 
 if (BUILD_SHARED)
     add_library(funit_shared SHARED ${srcs})
+    add_dependencies(funit_shared generate_posix_parameters)
     set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
 endif ()
 
 set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
-target_include_directories (funit PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories (funit PUBLIC ${PFUNIT_BINARY_DIR}/mod)
-target_include_directories (funit PRIVATE ${PFUNIT_SOURCE_DIR}/include)
+target_include_directories (funit PUBLIC
+  $<BUILD_INTERFACE:${PFUNIT_BINARY_DIR}/mod>
+  $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${dest}/include>
+)
+target_include_directories (funit PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-install (TARGETS funit DESTINATION lib)
+install (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
+install (FILES ${PFUNIT_SOURCE_DIR}/include/driver.F90 DESTINATION ${dest}/include)
+
+install (TARGETS funit EXPORT PFUNIT DESTINATION ${dest}/lib)
 if (BUILD_SHARED)
-    install (TARGETS funit_shared DESTINATION lib)
+    install (TARGETS funit_shared EXPORT PFUNIT DESTINATION lib)
 endif()
 
-INSTALL (DIRECTORY  ${PFUNIT_BINARY_DIR}/mod DESTINATION .)
+
+
 
 
