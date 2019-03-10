@@ -1,0 +1,352 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+! Reference comparison:  default real scalar
+
+
+module Test_AssertEqual_Complex
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL128
+   use pf_StringUtilities
+   use pf_SourceLocation
+   use pf_Exceptionlist
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_AssertBasic
+   use pf_AssertComplex_0d
+   use pf_AssertComplex_1d
+   use pf_AssertComplex_2d
+   use pf_AssertComplex_3d
+#ifdef _REAL32_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_32
+      use MakeInf, only:  strInf
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_128
+#endif
+   implicit none
+      
+   @suite(name='AssertEqual_Complex_suite')
+
+   real(kind=REAL32), parameter :: good = 1
+   real(kind=REAL32), parameter :: bad  = -999
+
+   character(len=1), parameter :: NL = new_line('a')
+
+
+   complex(kind=REAL32), parameter :: a_s = (1.,0.)
+   complex(kind=REAL32), parameter :: b_s = (1.,2.)
+
+   complex(kind=REAL32), parameter :: a_d = (1.d0,0.d0)
+   complex(kind=REAL32), parameter :: b_d = (1.d0,2.d0)
+
+#ifdef _REAL32
+   complex(kind=REAL32), parameter :: a_32 = (1._REAL32,0._REAL32)
+   complex(kind=REAL32), parameter :: b_32 = (1._REAL32,2._REAL32)
+#endif
+
+#ifdef _REAL64
+   complex(kind=REAL64), parameter :: a_64 = (1._REAL64,0._REAL64)
+   complex(kind=REAL64), parameter :: b_64 = (1._REAL64,2._REAL64)
+#endif
+   
+#ifdef _REAL128
+   complex(kind=REAL128), parameter :: a_128 = (1._REAL128,0._REAL128)
+   complex(kind=REAL128), parameter :: b_128 = (1._REAL128,2._REAL128)
+#endif
+   
+
+contains
+
+
+   ! First a series of tests that should not raise exceptions.
+
+   @test
+   subroutine test_equal_scalar()
+      @assertEqual(1, a_s)
+      @assertEqual(1., a_s)
+      @assertEqual(a_s, a_s)
+
+#ifdef _REAL32
+      @assertEqual(1, a_32)
+      @assertEqual(1.0, a_32)
+      @assertEqual(1.0_REAL32, a_32)
+      @assertEqual(a_32, a_32)
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, a_64)
+      @assertEqual(1.0, a_64)
+      @assertEqual(1.0_REAL64, a_64)
+      @assertEqual(a_64, a_64)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, a_128)
+      @assertEqual(1.0, a_128)
+      @assertEqual(1.0_REAL128, a_128)
+      @assertEqual(a_128, a_128)
+#endif
+   end subroutine test_equal_scalar
+
+   @test
+   subroutine test_equal_scalar_with_tolerance()
+      @assertEqual(1, a_s, 0.2)
+      @assertEqual(1.0, a_s, 0.2)
+      @assertEqual(1.0, a_s, 0.2)
+
+#ifdef _REAL32
+      @assertEqual(1, a_32, 0.2)
+      @assertEqual(1.0, a_32, 0.2)
+      @assertEqual(1.0_REAL32, a_32, 0.2)
+      @assertEqual(a_32, a_32, 0.2)
+#endif
+      
+#ifdef _REAL64
+      @assertEqual(1, a_64, 0.2)
+      @assertEqual(1.0, a_64, 0.2)
+      @assertEqual(1.0_REAL64, a_64, 0.2)
+      @assertEqual(a_64, a_64, 0.2)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, a_128, 0.2)
+      @assertEqual(1.0, a_128, 0.2)
+      @assertEqual(1.0_REAL128, a_128, 0.2)
+      @assertEqual(a_128, a_128, 0.2)
+#endif
+
+   end subroutine test_equal_scalar_with_tolerance
+
+   @test
+   subroutine test_equal_1D_actual
+
+      @assertEqual(1, [a_s])
+      @assertEqual(1.0, [a_s,a_s,a_s])
+      @assertEqual([1,2], [a_s,2*a_s])
+      @assertEqual([1.0,2.0], [a_s,2*a_s])
+      @assertEqual([a_s,b_s], [a_s,b_s])
+
+#ifdef _REAL32
+      @assertEqual(1, [a_32])
+      @assertEqual(1.0, [a_32,a_32,a_32])
+      @assertEqual(1.0_REAL32, [a_32,a_32,a_32])
+      @assertEqual([1,2], [a_32,2*a_32])
+      @assertEqual([1.0,2.0], [a_32,2*a_32])
+      @assertEqual([1.0_REAL32,2.0_REAL32], [a_32,2*a_32])
+      @assertEqual([a_s,b_s], [a_32,b_32])
+      @assertEqual([a_32,b_32], [a_32,b_32])
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, [a_64])
+      @assertEqual(1.0, [a_64,a_64,a_64])
+      @assertEqual(1.0_REAL64, [a_64,a_64,a_64])
+      @assertEqual([1,2], [a_64,2*a_64])
+      @assertEqual([1.0,2.0], [a_64,2*a_64])
+      @assertEqual([1.0_REAL64,2.0_REAL64], [a_64,2*a_64])
+      @assertEqual([a_s,b_s], [a_64,b_64])
+      @assertEqual([a_32,b_32], [a_64,b_64])
+      @assertEqual([a_64,b_64], [a_64,b_64])
+      @assertEqual(a_64, [a_64,a_64])
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, [a_128])
+      @assertEqual(1.0, [a_128,a_128,a_128])
+      @assertEqual(1.0_REAL128, [a_128,a_128,a_128])
+      @assertEqual([1,2], [a_128,2*a_128])
+      @assertEqual([1.0,2.0], [a_128,2*a_128])
+      @assertEqual([1.0_REAL128,2.0_REAL128], [a_128,2*a_128])
+      @assertEqual([a_s,b_s], [a_128,b_128])
+      @assertEqual([a_32,b_32], [a_128,b_128])
+      @assertEqual([a_128,b_128], [a_128,b_128])
+      @assertEqual(a_128, [a_128,a_128])
+#endif
+      
+   end subroutine test_equal_1D_actual
+   
+   @test
+   subroutine test_equal_1D_actual_with_tolerance
+
+      @assertEqual(1, [a_s], 0.2)
+      @assertEqual(1.0, [a_s,a_s,a_s], 0.2)
+      @assertEqual([1,2], [a_s,2*a_s], 0.2)
+      @assertEqual([1.0,2.0], [a_s,2*a_s], 0.2)
+      @assertEqual([a_s,b_s], [a_s,b_s], 0.2)
+
+#ifdef _REAL32
+      @assertEqual(1, [a_32], 0.2)
+      @assertEqual(1.0, [a_32,a_32,a_32], 0.2)
+      @assertEqual(1.0_REAL32, [a_32,a_32,a_32], 0.2)
+      @assertEqual([1,2], [a_32,2*a_32], 0.2)
+      @assertEqual([1.0,2.0], [a_32,2*a_32], 0.2)
+      @assertEqual([1.0_REAL32,2.0_REAL32], [a_32,2*a_32], 0.2)
+      @assertEqual([a_s,b_s], [a_32,b_32], 0.2)
+      @assertEqual([a_32,b_32], [a_32,b_32], 0.2_REAL32)
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, [a_64], 0.2)
+      @assertEqual(1.0, [a_64,a_64,a_64], 0.2)
+      @assertEqual(1.0_REAL64, [a_64,a_64,a_64], 0.2)
+      @assertEqual([1,2], [a_64,2*a_64], 0.2)
+      @assertEqual([1.0,2.0], [a_64,2*a_64], 0.2)
+      @assertEqual([1.0_REAL64,2.0_REAL64], [a_64,2*a_64], 0.2)
+      @assertEqual([a_s,b_s], [a_64,b_64], 0.2)
+      @assertEqual([a_32,b_32], [a_64,b_64], 0.2)
+      @assertEqual([a_64,b_64], [a_64,b_64], 0.2)
+      @assertEqual(a_64, [a_64,a_64], 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, [a_128], 0.2)
+      @assertEqual(1.0, [a_128,a_128,a_128], 0.2)
+      @assertEqual(1.0_REAL128, [a_128,a_128,a_128], 0.2)
+      @assertEqual([1,2], [a_128,2*a_128], 0.2)
+      @assertEqual([1.0,2.0], [a_128,2*a_128], 0.2)
+      @assertEqual([1.0_REAL128,2.0_REAL128], [a_128,2*a_128], 0.2)
+      @assertEqual([a_s,b_s], [a_128,b_128], 0.2)
+      @assertEqual([a_32,b_32], [a_128,b_128], 0.2)
+      @assertEqual([a_128,b_128], [a_128,b_128], 0.2)
+      @assertEqual(a_128, [a_128,a_128], 0.2_REAL128)
+#endif
+      
+      
+   end subroutine test_equal_1D_actual_with_tolerance
+
+   ! OK - now a long series of tests that verify the expected
+   ! messages from failing asserts.   Each test has an assertion that is
+   ! intended to fail, followed by an assertExceptionRaised() that is expected
+   ! to succeed and "eat" the first exception.  
+   @test
+   subroutine test_conformability_a()
+      call assertEqual([1.0], [a_s,a_s])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [1]' // NL // &
+           & '      Actual shape: [2]' &
+           & )
+   end subroutine test_conformability_a
+
+   @test
+   subroutine test_conformability_b()
+      call assertEqual([1.0,2.0], [a_s])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [2]' // NL // &
+           & '      Actual shape: [1]' &
+           & )
+   end subroutine test_conformability_b
+   
+
+   @test
+   subroutine test_equal_fail_scalar_no_tolerance()
+
+      character(:), allocatable :: str_zero
+      character(:), allocatable :: str_one
+      character(:), allocatable :: str_two
+
+      str_zero = to_string_r(0.0)
+      str_one = to_string(a_s)
+      str_two = to_string(b_s)
+
+      call assertEqual(a_s, b_s)
+      call assertExceptionRaised(&
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <'//str_one//'>' // NL // &
+           & '        Actual: <'//str_two//'>' // NL // &
+           & '    Difference: <'//to_string(b_s-a_s)//'> (greater than tolerance of '//str_zero//')' &
+           & )
+   end subroutine test_equal_fail_scalar_no_tolerance
+
+   @test
+   subroutine test_equal_fail_scalar_with_tolerance()
+
+      call assertEqual(a_s, b_s, 0.1)
+      call assertExceptionRaised(&
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <'//to_string(a_s)//'>' // NL // &
+           & '        Actual: <'//to_string(b_s)//'>' // NL // &
+           & '    Difference: <'//to_string(b_s-a_s)//'> (greater than tolerance of '//to_string_r(0.1)//')' &
+           & )
+   end subroutine test_equal_fail_scalar_with_tolerance
+
+   @test
+   subroutine test_equal_fail_1d_with_tolerance()
+      call assertEqual(a_s, [b_s,a_s], 0.1)
+      call assertExceptionRaised(&
+           & 'ArrayAssertEqual failure:' // NL // &
+           & '      Expected: <'//to_string(a_s)//'>' // NL // &
+           & '        Actual: <'//to_string(b_s)//'>' // NL // &
+           & '    Difference: <'//to_string(b_s-a_s)//'> (greater than tolerance of '//to_string_r(0.1)//')' // NL //  &
+           & '      at index: [1]' &
+           & )
+   end subroutine test_equal_fail_1d_with_tolerance
+
+  @test
+  subroutine testEquals_2D_SingleElementDifferent()
+
+     complex, dimension(2,2) :: expected, found
+
+    expected = b_s
+    found = b_s; found(1,2) = a_s
+
+    ! The following should throw an exception...
+    call assertEqual(expected, found)
+
+    call assertExceptionRaised( &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <'//to_string(b_s)//'>' // NL // &
+         & '        Actual: <'//to_string(a_s)//'>' // NL // &
+         & '    Difference: <'//to_string(a_s-b_s)//'> (greater than tolerance of '//to_string_r(0.)//')'  // NL // &
+         & '      at index: [1,2]' &
+         )
+
+  end subroutine testEquals_2D_SingleElementDifferent
+
+  @test
+  subroutine testEquals_2d_MultipleDiffs
+
+     complex, dimension(2,3) :: expected, found
+
+    expected = a_s
+    found = a_s; found(2,[1,3]) = b_s;
+
+    ! The following should throw an exception...
+    call assertEqual(expected, found)
+
+    call assertExceptionRaised( &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <'//to_string(a_s)//'>' // NL // &
+         & '        Actual: <'//to_string(b_s)//'>' // NL // &
+         & '    Difference: <'//to_string(b_s-a_s)//'> (greater than tolerance of '//to_string_r(0.)//')'  // NL // &
+         & '      at index: [2,1]' &
+         )
+
+ end subroutine testEquals_2d_MultipleDiffs
+
+
+   function to_string(x) result(str)
+      complex, intent(in) :: x
+      character(len=:), allocatable :: str
+      
+      character(255) :: buffer
+      write(buffer,'("(",g0,",",g0,")")') x
+      str = trim(buffer)
+      
+   end function to_string
+
+   function to_string_r(x) result(str)
+      real, intent(in) :: x
+      character(len=:), allocatable :: str
+      
+      character(255) :: buffer
+      write(buffer,'(g0)') x
+      str = trim(buffer)
+      
+   end function to_string_r
+
+end module Test_AssertEqual_Complex
+   

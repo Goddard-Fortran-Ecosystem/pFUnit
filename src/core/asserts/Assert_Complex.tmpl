@@ -117,8 +117,10 @@ module pf_AssertComplex_{rank}d
    @overload(assert_not_equal, minimal)
 
 
-   integer, parameter :: MAX_LEN_COMPLEX_AS_STRING = 40
+   integer, parameter :: MAX_LEN_COMPLEX_AS_STRING = 100
 
+   character(*), parameter :: COMPLEX_FMT0 = '"(",g0,",",g0,")"'
+   character(*), parameter :: COMPLEX_FMT = '(' // COMPLEX_FMT0 // ')'
 contains
 
 
@@ -203,9 +205,9 @@ contains
       d = a - e
 
       ! Wish: allocatable strings were useful as internal files ...
-      write(expected_str,'(g0)') e
-      write(actual_str,'(g0)') a
-      write(diff_str,'("<",g0,"> (greater than tolerance of ",g0,")")') d, tolerance
+      write(expected_str,COMPLEX_FMT) e
+      write(actual_str,COMPLEX_FMT) a
+      write(diff_str,'("<",'//COMPLEX_FMT0//',"> (greater than tolerance of ",g0,")")') d, tolerance
       
 #if {actual.rank} == 0
       call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
@@ -300,8 +302,8 @@ contains
       d = a - e
       
       ! Wish: allocatable strings were useful as internal files ...
-      write(actual_str,'(g0)') a
-      write(diff_str,'(g0," less than or equal to tolerance of ",g0)') d, tolerance
+      write(actual_str,COMPLEX_FMT) a
+      write(diff_str,'('//COMPLEX_FMT0//'," less than or equal to tolerance of ",g0)') d, tolerance
       
 #if {actual.rank} == 0
       call fail_equal(trim(actual_str), difference=trim(diff_str), &

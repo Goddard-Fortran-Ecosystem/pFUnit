@@ -13,7 +13,7 @@ set(generated_files
   AssertArraysSupport.F90
   )
 
-foreach(type Integer Real Complex)
+foreach(type Logical Integer Real Complex)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
     list(APPEND generated_files Assert${type}${rank}.F90)
   endforeach()
@@ -40,6 +40,24 @@ foreach(type Logical Integer Real Complex)
       )
   endforeach()
 endforeach()
+
+set (inc_file "${CMAKE_CURRENT_BINARY_DIR}/assert_array_overload.inc")
+file (WRITE ${inc_file} "! This file was automatically generated \n")
+foreach (rank RANGE ${MAX_ASSERT_RANK})
+  file (APPEND ${inc_file} "use pf_AssertLogical_${rank}d\n")
+endforeach ()
+
+foreach (rank RANGE ${MAX_ASSERT_RANK})
+  file (APPEND ${inc_file} "use pf_AssertInteger_${rank}d\n")
+endforeach ()
+
+foreach (rank RANGE ${MAX_ASSERT_RANK})
+  file (APPEND ${inc_file} "use pf_AssertReal_${rank}d\n")
+endforeach ()
+
+foreach (rank RANGE ${MAX_ASSERT_RANK})
+  file (APPEND ${inc_file} "use pf_AssertComplex_${rank}d\n")
+endforeach ()
 
 set(ofile FormatIntrinsic.F90)
 set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/FormatIntrinsic.tmpl)
@@ -179,7 +197,6 @@ install (TARGETS funit EXPORT PFUNIT DESTINATION ${dest}/lib)
 if (BUILD_SHARED)
     install (TARGETS funit_shared EXPORT PFUNIT DESTINATION lib)
 endif()
-
 
 
 
