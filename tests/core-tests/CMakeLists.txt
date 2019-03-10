@@ -32,6 +32,9 @@ set(pf_tests
   Test_AssertLessThanOrEqual_Real.pf
   Test_AssertGreaterThan_Real.pf
   Test_AssertGreaterThanOrEqual_Real.pf
+  Test_AssertEqual_Complex.pf
+#  Test_AssertNotEqual_Real.pf
+#  Test_AssertRelativelyEqual_Real.pf
   Test_Norms.pf
   Test_GlobPattern.pf
   Test_LiteralPattern.pf
@@ -60,7 +63,6 @@ set (test_srcs
   Test_AssertBasic.F90
   SimpleTestCase.F90
   Test_Assert.F90
-#  Test_AssertComplex.F90
   Test_Exception.F90
   Test_FixtureTestCase.F90
   Test_MockCall.F90

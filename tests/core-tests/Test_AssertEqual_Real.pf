@@ -105,7 +105,6 @@ contains
    subroutine test_equal_1D_actual
       @assertEqual(1, [1.0])
       @assertEqual(1.0, [1.0,1.0,1.0])
-      @assertEqual(1.0, [1.0,1.0,1.0])
       @assertEqual([1,2], [1.0,2.0])
       @assertEqual([1.0,2.0], [1.0,2.0])
       @assertEqual([1.0,2.0], [1.0,2.0])

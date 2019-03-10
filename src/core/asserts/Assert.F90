@@ -23,11 +23,9 @@
 module PF_Assert
    use PF_AssertBasic
    use pf_AssertString
-   !#include "AssertArrays.fh"
 
-   use pf_AssertInteger_0d
-   use pf_AssertReal_0d
-   use pf_AssertComplex_0d
+   include "assert_array_overload.inc"
+
    implicit none
    private
 
