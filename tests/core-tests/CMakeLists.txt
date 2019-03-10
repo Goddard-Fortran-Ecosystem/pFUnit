@@ -8,12 +8,16 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 
-set(OTHER_SOURCES
-  MakeNaN.F90 MakeInf.F90 MockListener.F90
-  BrokenTestCase.F90 BrokenSetUpCase.F90
-  FixtureTestCase.F90)
+set (other_sources
+  MakeNaN.F90
+  MakeInf.F90
+  MockListener.F90
+  BrokenTestCase.F90
+  BrokenSetUpCase.F90
+  FixtureTestCase.F90
+  )
 
-add_library(other_shared ${OTHER_SOURCES})
+add_library(other_shared ${other_sources})
 target_link_libraries(other_shared funit)
 
 set(pf_tests
@@ -37,22 +41,21 @@ set(pf_tests
   Test_NameFilter.pf
   Test_RegularExpression.pf)
 
-set(new_tests)
-foreach (file ${pf_tests})
-  get_filename_component(basename ${file} NAME_WE)
-  set(f90_src ${basename}.F90)
-  add_custom_command (
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
-    COMMAND python
-    ARGS ${PFUNIT_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS ${file}
-    )
-  list(APPEND new_tests ${f90_src})
-endforeach()
-  
+set (new_test_srcs)
+#foreach (file ${pf_tests})
+#  get_filename_component(basename ${file} NAME_WE)
+#  set(f90_src ${basename}.F90)
+#  add_custom_command (
+#    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
+#    COMMAND python
+#    ARGS ${PFUNIT_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
+#    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#    DEPENDS ${file}
+#    )
+#  list(APPEND new_tests ${f90_src})
+#endforeach()
 
-set(SERIAL_TEST_SRCS
+set (test_srcs
   Test_Assert.F90
   Test_AssertBasic.F90
   SimpleTestCase.F90
@@ -70,23 +73,25 @@ set(SERIAL_TEST_SRCS
   Test_TestSuite.F90
   )
 
-  list (APPEND SERIAL_TEST_SRCS
-    Test_UnixProcess.F90
-    Test_RobustRunner.F90
-    robustTestSuite.F90
-    )
+list (APPEND test_srcs
+  Test_UnixProcess.F90
+  Test_RobustRunner.F90
+  robustTestSuite.F90
+  )
 
-list(APPEND SERIAL_TEST_SRCS Test_BasicOpenMP.F90)
+list(APPEND test_srcs Test_BasicOpenMP.F90)
 
-add_library(funit_tests EXCLUDE_FROM_ALL STATIC ${SERIAL_TEST_SRCS})
+
+add_library (funit_tests EXCLUDE_FROM_ALL STATIC ${test_srcs})
 target_link_libraries(funit_tests other_shared)
 
-add_library(new_stests EXCLUDE_FROM_ALL ${new_tests})
+add_pfunit_sources (new_test_srcs ${pf_tests})
+
+add_library(new_stests EXCLUDE_FROM_ALL ${new_test_srcs})
 target_link_libraries(new_stests other_shared)
 add_executable (new_tests.x EXCLUDE_FROM_ALL ${PFUNIT_SOURCE_DIR}/include/driver.F90)
 set_source_files_properties(${PFUNIT_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_tests.x new_stests funit)
-
 
 
 add_executable (funit_tests.x EXCLUDE_FROM_ALL serial_tests.F90)
@@ -95,11 +100,6 @@ target_link_libraries(funit_tests.x funit_tests funit)
 set(REMOTE_EXE remote.x)
 add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
 target_link_libraries(${REMOTE_EXE} funit funit_tests)
-#  if (MPI)
-#    target_link_libraries(${REMOTE_EXE} ${MPI_Fortran_LIBRARIES} )
-#  endif()
-# Note for pfunit_2.1.0:  following line has no counterpart in
-#  "master" branch, i.e. > pfunit_2.1.0...
 add_dependencies(tests ${REMOTE_EXE})
 
 

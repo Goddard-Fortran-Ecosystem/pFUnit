@@ -45,7 +45,7 @@ set(OPENMP OFF CACHE BOOL "Build with OpenMP support.")
 set(MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
 include(CheckCompilerCapabilities)
 
 #-----------------------------------
