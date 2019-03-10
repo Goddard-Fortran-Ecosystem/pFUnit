@@ -16,7 +16,8 @@ set (mpi_srcs
 
   )
 add_library(pfunit STATIC ${srcs} ${mpi_srcs})
-target_link_libraries (pfunit PUBLIC funit)
+target_link_libraries (pfunit PUBLIC funit ${CMAKE_Fortran_LIBRARIES})
+target_include_directories(pfunit PUBLIC ${MPI_Fortran_INCLUDE_PATH})
 set_target_properties (pfunit PROPERTIES Fortran_MODULE_DIRECTORY ${PFUNIT_BINARY_DIR}/mod)
 
 if (mismatch)

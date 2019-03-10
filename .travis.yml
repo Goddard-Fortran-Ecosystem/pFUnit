@@ -86,7 +86,7 @@ before_script:
    - mkdir build
    - cd build
    - cmake --version
-   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit -DMPI=${USE_MPI}
+   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit
 
 script:
    # Build

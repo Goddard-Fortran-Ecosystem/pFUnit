@@ -2,15 +2,22 @@
 # DOCUMENTATION:
 # ------------------------------------------------------------------------ #
 #
-# Command line options:
-#     USE_MPI=YES                             ! defaults to NO
-#     USE_OPENMP=YES                          ! defaults to NO
-#     USE_ROBUST=YES                          ! defaults to NO
-#     MAX_ASSERT_RANK=<max array rank for generated code>
-#                                             ! defaults to 5 or
+# Package specific command line options:
+#
+#     -DSKIP_MPI=YES                   Skip build of MPI features even if
+#                                      MPI is found.
+#
+#     -DMAX_ASSERT_RANK=<max_rank>     Limit overloaded interfaces to
+#                                      rank <= max_rank
+#
+#     -SKIP_OPENMP=YES                 Skip build of OpenMP features even if
+#                                      OpenMP is found
+#
+#     -SKIP_HAMCREST=YES               Skip build of Hamcrest features
+#
 #
 # Usage:
-#   cmake -DMPI=YES <path-to-source>
+#   cmake <path-to-source> [<options>]
 #
 # ------------------------------------------------------------------------ #
 cmake_minimum_required(VERSION 3.8.0)
@@ -50,27 +57,11 @@ if(NOT found)
 endif()
 
 
-if (MPI)
-  find_package(MPI REQUIRED)
-  if(MPI_Fortran_FOUND)
-    if(MPI_FORTRAN_COMPILE_FLAGS)
-      set(CMAKE_Fortran_FLAGS ${CMAKE_Fortran_FLAGS} ${MPI_Fortran_COMPILE_FLAGS})
-    endif()
-    if(MPI_Fortran_INCLUDE_PATH)
-      include_directories(${MPI_Fortran_INCLUDE_PATH})
-    endif()
-    if(MPI_Fortran_LIBRARIES)
-      set(CMAKE_Fortran_LIBRARIES "${CMAKE_Fortran_LIBRARIES} ${MPI_Fortran_LIBRARIES}")
-    endif()
-    if(MPI_Fortran_LINK_FLAGS)
-      set(CMAKE_Fortran_LINK_FLAGS "${CMAKE_Fortran_LINK_FLAGS} ${MPI_Fortran_LINK_FLAGS}")
-    endif()
-  endif()
-  add_definitions(-DUSE_MPI)
-  if (MPIEXEC MATCHES ".*openmpi*")
-    list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
-  endif()
-  message( STATUS "MPI enabled")
+if (NOT SKIP_MPI)
+  find_package (MPI QUIET)
+  if (MPI_Fortran_FOUND)
+    message (STATUS "MPI enabled")
+  endif()    
 endif()
 
 

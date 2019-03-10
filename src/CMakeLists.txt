@@ -1,7 +1,7 @@
 add_subdirectory (core)
 add_subdirectory (hamcrest)
 
-if (MPI)
+if (MPI_Fortran_FOUND)
   add_subdirectory (mpi)
 endif ()
 
