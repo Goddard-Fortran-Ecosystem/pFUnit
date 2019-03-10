@@ -1,3 +1,5 @@
+include (PreprocessMacro)
+
 add_subdirectory(core-tests)
 add_subdirectory(hamcrest-tests)
 

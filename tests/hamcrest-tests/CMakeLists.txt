@@ -21,22 +21,12 @@ set(pf_tests
 )
 
 
-set(new_tests)
-foreach (file ${pf_tests})
-  get_filename_component(basename ${file} NAME_WE)
-  set(f90_src ${basename}.F90)
-  add_custom_command (
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
-    COMMAND python
-    ARGS ${CMAKE_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS ${file}
-    )
-  list(APPEND new_tests ${f90_src})
-endforeach()
-  
-add_library(fhamcrest_tests EXCLUDE_FROM_ALL ${new_tests})
+set(test_srcs)
+add_pfunit_sources (test_srcs ${pf_tests})
+
+add_library(fhamcrest_tests EXCLUDE_FROM_ALL ${test_srcs})
 target_link_libraries(fhamcrest_tests hamcrest)
+
 configure_file(${CMAKE_SOURCE_DIR}/include/driver.F90 driver.F90)
 add_executable (fhamcrest_tests.x EXCLUDE_FROM_ALL driver.F90)
 set_source_files_properties(driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
