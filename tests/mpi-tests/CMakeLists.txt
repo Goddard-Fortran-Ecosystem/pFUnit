@@ -53,6 +53,9 @@ target_link_libraries(new_ptests.x new_ptests)
 
 # Fix for openmpi 1.8.8 which complains about forking due to selftests of
 # robust runner.
+if (MPIEXEC MATCHES ".*openmpi*")
+  list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
+endif()
 if (MPIEXEC MATCHES ".*openmpi/1.8.8/.*")
   set (MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS} --mca mpi_warn_on_fork 0)
 endif ()
