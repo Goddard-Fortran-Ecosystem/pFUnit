@@ -1,4 +1,4 @@
-python testParser.py
+python -m unittest discover --start-directory ../funit
 
 mkdir -p outputs
 for file in simple beforeAfter TestA TestCaseA MpiTestCaseB ParameterizedTestCaseB MpiParameterizedTestCaseC
