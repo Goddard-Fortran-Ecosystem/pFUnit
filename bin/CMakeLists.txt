@@ -1,2 +1,3 @@
-install(PROGRAMS pFUnitParser.py parseDirectiveArgs.py DESTINATION ${dest}/bin)
+add_subdirectory(funit)
+install(PROGRAMS funitproc DESTINATION ${dest}/bin)
 

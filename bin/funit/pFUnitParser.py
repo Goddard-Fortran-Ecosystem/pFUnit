@@ -976,14 +976,3 @@ class Parser():
     def final(self):
         self.inputFile.close()
         self.outputFile.close()
-
-if __name__ == "__main__":
-    import sys
-    print("Processing file", sys.argv[1])
-    p = Parser(sys.argv[1], sys.argv[2])
-    p.looking_for_test_name = False
-    p.run()
-    p.final()
-    print(" ... Done.  Results in", sys.argv[2])
-
-
