@@ -51,7 +51,7 @@ set (new_test_srcs)
 #  add_custom_command (
 #    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
 #    COMMAND python
-#    ARGS ${PFUNIT_SOURCE_DIR}/bin/pFUnitParser.py ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
+#    ARGS ${PFUNIT_SOURCE_DIR}/bin/funitproc ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
 #    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 #    DEPENDS ${file}
 #    )

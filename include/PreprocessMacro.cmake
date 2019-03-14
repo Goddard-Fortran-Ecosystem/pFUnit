@@ -1,4 +1,4 @@
-set (PFUNIT_PREPROCESSOR python ${PFUNIT_SOURCE_DIR}/bin/pFUnitParser.py)
+set (PFUNIT_PREPROCESSOR python ${PFUNIT_SOURCE_DIR}/bin/funitproc)
 
 # - Pass a list of files through the pFUnit macro processor
 #
