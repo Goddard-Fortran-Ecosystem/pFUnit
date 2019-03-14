@@ -33,8 +33,8 @@ foreach(type Logical Integer Real Complex)
     list(APPEND new_generated_sources ${ofile})
     add_custom_command(
       OUTPUT ${ofile}
-      COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
-      DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
+      COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
+      DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMENT Generating ${ofile}
       )
@@ -64,8 +64,8 @@ set(ifile ${CMAKE_CURRENT_SOURCE_DIR}/asserts/FormatIntrinsic.tmpl)
 list(APPEND new_generated_sources ${ofile})
 add_custom_command(
   OUTPUT ${ofile}
-  COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py -i ${ifile} -o ${ofile} ${python_defs}
-  DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
+  COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py -i ${ifile} -o ${ofile} ${python_defs}
+  DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT Generating ${ofile}
   )
@@ -76,8 +76,8 @@ foreach(rank RANGE ${MAX_ASSERT_RANK})
   list(APPEND new_generated_sources ${ofile})
   add_custom_command(
     OUTPUT ${ofile}
-    COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
-    DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/bin/overload_template.py
+    COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${ifile} -o ${ofile} ${python_defs}
+    DEPENDS ${ifile} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT Generating ${ofile}
     )
