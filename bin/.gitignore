@@ -4,6 +4,6 @@
 
 # Build and run artifacts
 
-/*.pyc
+*.pyc
 outputs
 
