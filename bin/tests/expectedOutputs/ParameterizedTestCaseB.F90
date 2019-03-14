@@ -1,5 +1,5 @@
-module TestCaseB
-   use pfunit
+module TestCaseB_mod
+   use pfunit_mod
    implicit none
 
    
@@ -44,14 +44,14 @@ contains
       deallocate(this%table)
    end subroutine tearDown
 
-   ! First test
    !@test(testParameters={[B_Parameter(0.1,0.2),B_Parameter(0.3,0.1)]})
+   ! First test
    subroutine testA(this)
       class (TestCaseB), intent(inout) :: this
    end subroutine testA
 
-   ! Second test
    !@test(testParameters={[B_Parameter(0.1,0.2)]})
+   ! Second test
    subroutine testB(this)
       class (TestCaseB), intent(inout) :: this
    end subroutine testB
@@ -64,13 +64,13 @@ contains
 
    end function toString
 
-end module TestCaseB
+end module TestCaseB_mod
 
 
 
-module WrapTestCaseB
-   use pFUnit
-   use TestCaseB
+module WrapTestCaseB_mod
+   use FUnit
+   use TestCaseB_mod
    implicit none
    private
 
@@ -84,7 +84,7 @@ module WrapTestCaseB
 
    abstract interface
      subroutine userTestMethod(this)
-        use TestCaseB
+        use TestCaseB_mod
         class (TestCaseB), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -98,33 +98,46 @@ contains
    end subroutine runMethod
 
    function makeCustomTest(methodName, testMethod, testParameter) result(aTest)
+#ifdef INTEL_13
+      use FUnit, only: testCase
+#endif
       type (WrapUserTestCase) :: aTest
+#ifdef INTEL_13
+      target :: aTest
+      class (WrapUserTestCase), pointer :: p
+#endif
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
       type (B_Parameter), intent(in) :: testParameter
       aTest%TestCaseB = newTestCaseB(testParameter)
 
       aTest%testMethodPtr => testMethod
+#ifdef INTEL_13
+      p => aTest
+      call p%setName(methodName)
+#else
       call aTest%setName(methodName)
+#endif
       call aTest%setTestParameter(testParameter)
    end function makeCustomTest
 
-end module WrapTestCaseB
+end module WrapTestCaseB_mod
 
-function TestCaseB_suite() result(suite)
-   use pFUnit
-   use WrapTestCaseB
-   use TestCaseB
+function TestCaseB_mod_suite() result(suite)
+   use FUnit
+   use TestCaseB_mod
+   use WrapTestCaseB_mod
+   implicit none
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
+   class (Test), allocatable :: t
 
    type (B_Parameter), allocatable :: testParameters(:)
    type (B_Parameter) :: testParameter
    integer :: iParam 
    integer, allocatable :: cases(:) 
  
-   suite = newTestSuite('TestCaseB_suite')
+   suite = TestSuite('TestCaseB_mod_suite')
 
    testParameters = [B_Parameter(0.1,0.2),B_Parameter(0.3,0.1)]
 
@@ -141,5 +154,5 @@ function TestCaseB_suite() result(suite)
    end do
 
 
-end function TestCaseB_suite
+end function TestCaseB_mod_suite
 

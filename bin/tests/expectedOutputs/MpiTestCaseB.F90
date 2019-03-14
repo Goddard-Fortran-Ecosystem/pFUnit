@@ -1,5 +1,5 @@
-module MpiTestCaseB
-   use pfunit
+module MpiTestCaseB_mod
+   use pfunit_mod
    implicit none
 
    
@@ -23,25 +23,25 @@ contains
       this%componentI = -1
    end subroutine tearDown
 
-   ! First test
    !@test(npes = [1,2])
+   ! First test
    subroutine testA(this)
       class (MpiTestCaseB), intent(inout) :: this
    end subroutine testA
 
-   ! Second test
    !@test
+   ! Second test
    subroutine testB(this)
       class (MpiTestCaseB), intent(inout) :: this
    end subroutine testB
 
-end module MpiTestCaseB
+end module MpiTestCaseB_mod
 
 
 
-module WrapMpiTestCaseB
-   use pFUnit
-   use MpiTestCaseB
+module WrapMpiTestCaseB_mod
+   use FUnit
+   use MpiTestCaseB_mod
    implicit none
    private
 
@@ -55,7 +55,7 @@ module WrapMpiTestCaseB
 
    abstract interface
      subroutine userTestMethod(this)
-        use MpiTestCaseB
+        use MpiTestCaseB_mod
         class (MpiTestCaseB), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -68,39 +68,58 @@ contains
       call this%testMethodPtr(this)
    end subroutine runMethod
 
-   function makeCustomTest(methodName, testMethod, npesRequested) result(aTest)
+   function makeCustomTest(methodName, testMethod, testParameter) result(aTest)
+#ifdef INTEL_13
+      use FUnit, only: testCase
+#endif
       type (WrapUserTestCase) :: aTest
+#ifdef INTEL_13
+      target :: aTest
+      class (WrapUserTestCase), pointer :: p
+#endif
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
-      integer, optional, intent(in) :: npesRequested
-
+      type (MpiTestParameter), intent(in) :: testParameter
       aTest%testMethodPtr => testMethod
+#ifdef INTEL_13
+      p => aTest
+      call p%setName(methodName)
+#else
       call aTest%setName(methodName)
-     if (present(npesRequested)) then
-         call aTest%setNumProcessesRequested(npesRequested) 
-     end if
-
+#endif
+      call aTest%setTestParameter(testParameter)
    end function makeCustomTest
 
-end module WrapMpiTestCaseB
+end module WrapMpiTestCaseB_mod
 
-function MpiTestCaseB_suite() result(suite)
-   use pFUnit
-   use WrapMpiTestCaseB
-   use MpiTestCaseB
+function MpiTestCaseB_mod_suite() result(suite)
+   use FUnit
+   use MpiTestCaseB_mod
+   use WrapMpiTestCaseB_mod
+   implicit none
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
+   class (Test), allocatable :: t
 
-   suite = newTestSuite('MpiTestCaseB_suite')
+   type (MpiTestParameter), allocatable :: testParameters(:)
+   type (MpiTestParameter) :: testParameter
+   integer :: iParam 
+   integer, allocatable :: cases(:) 
+ 
+   suite = TestSuite('MpiTestCaseB_mod_suite')
 
-   call suite%addTest(makeCustomTest('testA', testA, npesRequested=1))
-   call suite%addTest(makeCustomTest('testA', testA, npesRequested=2))
+   call testParameter%setNumProcessesRequested(1)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
+   call testParameter%setNumProcessesRequested(2)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
 
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=1))
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=3))
-   call suite%addTest(makeCustomTest('testB', testB, npesRequested=5))
+   call testParameter%setNumProcessesRequested(1)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
+   call testParameter%setNumProcessesRequested(3)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
+   call testParameter%setNumProcessesRequested(5)
+   call suite%addTest(makeCustomTest('testB', testB, testParameter))
 
 
-end function MpiTestCaseB_suite
+end function MpiTestCaseB_mod_suite
 

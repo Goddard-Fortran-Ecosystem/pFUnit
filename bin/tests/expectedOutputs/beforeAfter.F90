@@ -20,7 +20,7 @@ end subroutine testMethodB
 
 
 module WrapbeforeAfter
-   use pFUnit
+   use FUnit
    implicit none
    private
 
@@ -30,9 +30,12 @@ contains
 end module WrapbeforeAfter
 
 function beforeAfter_suite() result(suite)
-   use pFUnit
+   use FUnit
    use WrapbeforeAfter
+   implicit none
    type (TestSuite) :: suite
+
+   class (Test), allocatable :: t
 
    external testMethodA
    external testMethodB
@@ -40,13 +43,13 @@ function beforeAfter_suite() result(suite)
    external initA
    external finalA
 
-   integer, allocatable :: npes(:)
+   suite = TestSuite('beforeAfter_suite')
 
-   suite = newTestSuite('beforeAfter_suite')
+   t = TestMethod('testMethodA', testMethodA, initA, finalA)
+   call suite%addTest(t)
 
-   call suite%addTest(newTestMethod('testMethodA', testMethodA, initA, finalA))
-
-   call suite%addTest(newTestMethod('testMethodB', testMethodB, initA, finalA))
+   t = TestMethod('testMethodB', testMethodB, initA, finalA)
+   call suite%addTest(t)
 
 
 end function beforeAfter_suite
