@@ -909,14 +909,7 @@ class Parser():
 
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
-        declareArgs =  '#ifdef INTEL_13\n'
-        declareArgs +=  '      use FUnit, only: testCase\n'
-        declareArgs +=  '#endif\n'
-        declareArgs +=  '      type (WrapUserTestCase) :: aTest\n'
-        declareArgs +=  '#ifdef INTEL_13\n'
-        declareArgs +=  '      target :: aTest\n'
-        declareArgs +=  '      class (WrapUserTestCase), pointer :: p\n'
-        declareArgs +=  '#endif\n'
+        declareArgs += '      type (WrapUserTestCase) :: aTest\n'
         declareArgs += '      character(len=*), intent(in) :: methodName\n'
         declareArgs += '      procedure(userTestMethod) :: testMethod\n'
         

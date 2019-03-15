@@ -1,0 +1,38 @@
+module Test_AnyOf
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_AnyOf_suite')
+
+contains
+
+  @test
+  subroutine test_matches_one_of_one_()
+    call assert_that(2, is(any_of([equal_to(2)])))
+  end subroutine test_matches_one_of_one_
+
+  @test
+  subroutine test_matches_one_of_two()
+    call assert_that(2, is(any_of([equal_to(1), equal_to(2)])))
+  end subroutine test_matches_one_of_two
+  
+  @test
+  subroutine test_match_fail_one_of_one()
+    call assert_that(1, is(any_of([equal_to(2)])))
+    @assertExceptionRaised(new_line('a')//'Expected: is (<2>)' // new_line('a') // '     but: was <1>')
+  end subroutine test_match_fail_one_of_one
+
+  @test
+  subroutine test_match_fail_one_of_three()
+    call assert_that(1, is(any_of([equal_to(2),equal_to(4),equal_to(5)])))
+    @assertExceptionRaised(new_line('a')//'Expected: is (<2> or <4> or <5>)' // new_line('a') // '     but: was <1>')
+  end subroutine test_match_fail_one_of_three
+
+  @test
+  subroutine test_alternate_construction()
+    call assert_that(2, is(any_of(equal_to(2))))
+    call assert_that(2, is(any_of(equal_to(2), equal_to(2), not(equal_to(3)))))
+  end subroutine test_alternate_construction
+
+
+end module Test_AnyOf

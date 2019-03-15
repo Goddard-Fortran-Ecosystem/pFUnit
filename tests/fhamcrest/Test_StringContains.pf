@@ -1,0 +1,43 @@
+module Test_StringContains
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_StringContains')
+
+contains
+
+  @test
+  subroutine test_a_contains_a()
+    call assert_that('a', contains_string('a'))
+  end subroutine test_a_contains_a
+
+  @test
+  subroutine test_A_contains_a_ignoring_case()
+    call assert_that('A', contains_string('a',ignoring_case=.true.))
+  end subroutine test_A_contains_a_ignoring_case
+
+  @test
+  subroutine test_A_does_not_contain_a()
+    call assert_that('A', contains_string('a',ignoring_case=.false.))
+    @assertExceptionRaised(new_line('a')//'Expected: a string containing "a"' // new_line('a') // '     but: was "A"')
+  end subroutine test_A_does_not_contain_a
+
+  @test
+  subroutine test_B_does_not_contain_a_ignoring_case()
+    call assert_that('B', contains_string('a',ignoring_case=.true.))
+    @assertExceptionRaised(new_line('a')//'Expected: a string containing "a" ignoring case' // new_line('a') // '     but: was "B"')
+  end subroutine test_B_does_not_contain_a_ignoring_case
+
+  @test
+  subroutine test_abba_contains_bb()
+    call assert_that('abba', contains_string('bb'))
+  end subroutine test_abba_contains_bb
+
+  @test
+  subroutine test_a_does_not_contain_b()
+    call assert_that('a', contains_string('b'))
+    @assertExceptionRaised(new_line('a')//'Expected: a string containing "b"' // new_line('a') // '     but: was "a"')
+  end subroutine test_a_does_not_contain_b
+
+
+end module Test_StringContains
