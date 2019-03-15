@@ -1,0 +1,46 @@
+module Test_IsNear
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_IsNear')
+
+contains
+
+  @test
+  subroutine test_near_self()
+    call assert_that(2., is(near(2., 0.0)))
+  end subroutine test_near_self
+
+  @test
+  subroutine test_near_within_tolerance()
+    call assert_that(2., is(near(2.1, 0.2)))
+  end subroutine test_near_within_tolerance
+
+
+  ! Cannot use literals in expected message, because (a) FP arithmetic
+  ! may not match exact arithmetic and (b) the number of digits printed
+  ! may very by compiler.  
+  @test
+  subroutine test_near_not_within_tolerance()
+    character(:), allocatable :: error
+    call assert_that(2.2, is(near(2.0, 0.1)))
+    error = new_line('a') &
+         & // 'Expected: is a numeric value within <' // str(0.1) // '> of <' // str(2.0) // '>' &
+         & // new_line('a') &
+         & // '     but: <' // str(2.2) // '> differed by <' // str(2.2-2.0) &
+         & // '> which exceeds the tolerance by <' // str(abs(2.2-2.0) - 0.1) // '>'
+    @assertExceptionRaised(error)
+  end subroutine test_near_not_within_tolerance
+
+  function str(x)
+    character(:), allocatable :: str
+    real, intent(in) :: x
+
+    character(32) :: buffer
+
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+  end function str
+  
+
+end module Test_IsNear
