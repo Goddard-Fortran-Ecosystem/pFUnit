@@ -20,7 +20,7 @@
 #   cmake <path-to-source> [<options>]
 #
 # ------------------------------------------------------------------------ #
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.9)
 
 project (PFUNIT
   VERSION 4.0.0
