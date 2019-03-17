@@ -1,3 +1,9 @@
+# Editor backup files
 
 *~
-/*.pyc
+
+# Build and run artifacts
+
+*.pyc
+outputs
+

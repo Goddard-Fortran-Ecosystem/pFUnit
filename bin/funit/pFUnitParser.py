@@ -13,11 +13,13 @@ class MyError(Exception):
     def __str__(self):
         return repr(self.value)
 
-assertVariants = 'Fail|Equal|NotEqual|True|False|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual'
-assertVariants += '|NotEqual|RelativelyEqual'
-assertVariants += '|IsInfinite|IsFinite|IsNaN'
-assertVariants += '|IsMemberOf|Contains|Any|All|NotAll|None|IsPermutationOf'
-assertVariants += '|ExceptionRaised|SameShape'
+assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
+                   'lessthan': 2, 'lessthanorequal': 2, 'greaterthan': 2,
+                   'greaterthanorequal': 2, 'notequal': 2,
+                   'relativelyequal': 2, 'isinfinite': 1, 'isfinite': 1,
+                   'isnan': 1, 'ismemberof': 2, 'contains': 2, 'any': 1,
+                   'all': 1, 'notall': 1, 'none': 1, 'ispermutationof': 2,
+                   'exceptionraised': 0, 'sameshape': 2}
 
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
@@ -263,29 +265,49 @@ class AtBegin(Action):
 class AtAssert(Action):
     def __init__(self, parser):
         self.parser = parser
+        self.assert_variants = '|'.join(assert_operands.keys())
 
     def match(self, line):
 #        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*)\\)\s*$', line, re.IGNORECASE)
-        return m
+        pattern = '\s*@assert(' + self.assert_variants + ')\s*\\((.*)\\)\s*$'
+        match = re.match(pattern, line, re.IGNORECASE)
+
+        if match:
+            num_operands = match.group(2).count(',')
+            # The test is required to solve the fence post/panel problem.
+            # In particular isspace returns false if the string is empty.
+            if (len(match.group(2)) > 0) and not match.group(2).isspace():
+                num_operands += 1
+
+            # We check for "less than" because there may also be message and
+            # location arguments.
+            if num_operands < assert_operands[match.group(1).lower()]:
+                match = None
+
+        return match
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
         fileHandle.write(" & location=SourceLocation( &\n")
         fileHandle.write(" & '" + str(basename(fileName)) + "', &\n")
         fileHandle.write(" & " + str(lineNumber) + ")")
 
-    def action(self, m, line):
-        p = self.parser
+    def action(self, match, line):
+        parser = self.parser
         
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1])
-        if (not m.groups()[1].isspace()):
-            p.outputFile.write(", ")
-        p.outputFile.write("&\n")
-        self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
-        p.outputFile.write(" )\n")
-        p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+        parser.outputFile.write(cppSetLineAndFile(parser.currentLineNumber,
+                                                  parser.fileName))
+        fragment = "  call assert{}({}"
+        if (len(match.group(2)) > 0) and not match.group(2).isspace():
+            fragment += ", "
+        fragment += "&\n"
+        parser.outputFile.write(fragment.format(match.group(1), match.group(2)))
+        self.appendSourceLocation(parser.outputFile,
+                                  parser.fileName,
+                                  parser.currentLineNumber)
+        parser.outputFile.write(" )\n")
+        parser.outputFile.write("  if (anyExceptions()) return\n")
+        parser.outputFile.write(cppSetLineAndFile(parser.currentLineNumber + 1,
+                                                  parser.fileName))
 
 class AtAssertAssociated(Action):
     def __init__(self,parser):
@@ -491,10 +513,25 @@ class AtAssertEquivalent(Action):
 class AtMpiAssert(Action):
     def __init__(self, parser):
         self.parser = parser
+        self.assert_variants = '|'.join(assert_operands.keys())
 
     def match(self, line):
-        m = re.match('\s*@mpiassert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-        return m
+        pattern = '\s*@mpiassert(' + self.assert_variants + ')\s*\\((.*\w.*)\\)\s*$'
+        match = re.match(pattern, line, re.IGNORECASE)
+
+        if match:
+            num_operands = match.group(2).count(',')
+            # The test is required to solve the fence post/panel problem.
+            # In particular isspace returns false if the string is empty.
+            if (len(match.group(2)) > 0) and not match.group(2).isspace():
+                num_operands += 1
+
+            # We check for "less than" because there may also be message and
+            # location arguments.
+            if num_operands < assert_operands[match.group(1).lower()]:
+                match = None
+
+        return match
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
         fileHandle.write(" & location=SourceLocation( &\n")
@@ -939,14 +976,3 @@ class Parser():
     def final(self):
         self.inputFile.close()
         self.outputFile.close()
-
-if __name__ == "__main__":
-    import sys
-    print("Processing file", sys.argv[1])
-    p = Parser(sys.argv[1], sys.argv[2])
-    p.looking_for_test_name = False
-    p.run()
-    p.final()
-    print(" ... Done.  Results in", sys.argv[2])
-
-
