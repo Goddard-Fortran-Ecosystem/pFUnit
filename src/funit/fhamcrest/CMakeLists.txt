@@ -43,8 +43,7 @@ set (srcs
   fHamcrest.F90
   )
 
-add_library(fhamcrest OBJECT)
-target_sources (fhamcrest PRIVATE ${srcs})
+add_library(fhamcrest OBJECT ${srcs})
 set_target_properties (fhamcrest PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
 
 target_include_directories (fhamcrest PUBLIC

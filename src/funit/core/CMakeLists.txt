@@ -80,10 +80,8 @@ list (APPEND srcs
   RemoteProxyTestCase.F90
   )
 
-add_library (funit-core OBJECT)
+add_library (funit-core OBJECT ${srcs})
 set_target_properties (funit-core PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
-target_sources (funit-core PRIVATE ${srcs})
-
 add_dependencies (funit-core generate_posix_parameters)
 target_link_libraries (funit-core PUBLIC external-pfunit)
 
