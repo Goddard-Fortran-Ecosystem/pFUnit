@@ -9,6 +9,10 @@ create and run software tests that specify the desired behavior for a
 given piece of code. The framework was originally created by
 developers from NASA and NGC TASC.
 
+# NOTE: The documentation below is for pFUnit 3.x
+
+pFunit 4.0.0_beta is expected to be released in early April.
+
 ## Installation and basic usage guide
 
 ### Table of contents
