@@ -1,12 +1,10 @@
-add_subdirectory (core)
-add_subdirectory (hamcrest)
+add_subdirectory (funit)
 
 if (MPI_Fortran_FOUND)
-  add_subdirectory (mpi)
+  add_subdirectory (pfunit)
 endif ()
 
-if (ESMF)
-  add_subdirectory (esmf)
+if (ESMF_FOUND)
+  add_subdirectory (efunit)
 endif ()
 
-install (EXPORT PFUNIT DESTINATION "${dest}/cmake")

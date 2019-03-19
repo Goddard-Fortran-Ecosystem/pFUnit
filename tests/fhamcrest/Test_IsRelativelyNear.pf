@@ -1,0 +1,45 @@
+module Test_IsRelatively
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_IsRelativelyNear')
+
+contains
+
+
+  @test
+  subroutine test_relatively_near_self()
+    call assert_that(2., is(relatively_near(2., 0.0)))
+  end subroutine test_relatively_near_self
+
+  @test
+  subroutine test_relatively_near()
+    call assert_that(9., is(relatively_near(10., 0.2)))
+  end subroutine test_relatively_near
+
+  @test
+  subroutine test_not_relatively_near()
+    character(:), allocatable :: error
+    call assert_that(30., is(relatively_near(10., 1.0)))
+
+    error = new_line('a') &
+         & // 'Expected: is a numeric value whose relative error from <' &
+         & // str(10.) // '> is less than <' // str(1.0) // '>' &
+         & // new_line('a') &
+         & // '     but: <' // str(30.) // '> has a relative error of <' // str((30.-10.)/10.) &
+         & // '> which exceeds the tolerance by <' &
+         & // str((30.-10.)/10. - 1.0) // '>'
+    @assertExceptionRaised(error)
+  end subroutine test_not_relatively_near
+  
+  function str(x)
+    character(:), allocatable :: str
+    real, intent(in) :: x
+
+    character(32) :: buffer
+
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+  end function str
+  
+end module Test_IsRelatively

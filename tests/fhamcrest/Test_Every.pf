@@ -1,0 +1,14 @@
+module Test_Every
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_Every_suite')
+
+contains
+
+  @test
+  subroutine test_every_basic()
+    call assert_that([1,1], every_item(is(equal_to(1))))
+  end subroutine test_every_basic
+
+end module Test_Every

@@ -1,8 +1,8 @@
 include (PreprocessMacro)
 
-add_subdirectory(core-tests)
-add_subdirectory(hamcrest-tests)
+add_subdirectory(funit-core)
+add_subdirectory(fhamcrest)
 
 if (MPI_Fortran_FOUND)
-  add_subdirectory(mpi-tests)
+  add_subdirectory(pfunit)
 endif ()
