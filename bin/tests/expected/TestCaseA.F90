@@ -1,5 +1,5 @@
-module TestCaseA
-   use pfunit
+module TestCaseA_mod
+   use pfunit_mod
    implicit none
 
    
@@ -23,23 +23,23 @@ contains
       this%componentI = -1
    end subroutine tearDown
 
-   ! First test
    !@test
+   ! First test
    subroutine testA(this)
       class (TestCaseA), intent(inout) :: this
    end subroutine testA
 
-   ! Second test
    !@test
+   ! Second test
    subroutine testB(this)
       class (TestCaseA), intent(inout) :: this
    end subroutine testB
 
-end module TestCaseA
+end module TestCaseA_mod
 
-module WrapTestCaseA
-   use pFUnit
-   use TestCaseA
+module WrapTestCaseA_mod
+   use FUnit
+   use TestCaseA_mod
    implicit none
    private
 
@@ -53,7 +53,7 @@ module WrapTestCaseA
 
    abstract interface
      subroutine userTestMethod(this)
-        use TestCaseA
+        use TestCaseA_mod
         class (TestCaseA), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -74,22 +74,23 @@ contains
       call aTest%setName(methodName)
    end function makeCustomTest
 
-end module WrapTestCaseA
+end module WrapTestCaseA_mod
 
-function TestCaseA_suite() result(suite)
-   use pFUnit
-   use WrapTestCaseA
-   use TestCaseA
+function TestCaseA_mod_suite() result(suite)
+   use FUnit
+   use TestCaseA_mod
+   use WrapTestCaseA_mod
+   implicit none
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
+   class (Test), allocatable :: t
 
-   suite = newTestSuite('TestCaseA_suite')
+   suite = TestSuite('TestCaseA_mod_suite')
 
    call suite%addTest(makeCustomTest('testA', testA))
 
    call suite%addTest(makeCustomTest('testB', testB))
 
 
-end function TestCaseA_suite
+end function TestCaseA_mod_suite
 

@@ -1,0 +1,34 @@
+
+module Test_IsArrayWithSize
+  use funit
+  implicit none
+  
+  @suite(name='Hamcrest_IsArrayWithSize')
+
+
+contains
+
+  @test
+  subroutine test_array_with_size()
+    call assert_that([1,2],is(array_with_size(2)))
+  end subroutine test_array_with_size
+
+  @test
+  subroutine test_array_with_size_different()
+    call assert_that([1,2],is(array_with_size(3)))
+    @assertExceptionRaised(new_line("a")//"Expected: is an array with size <3>" // new_line("a") // "     but: array size was <2>")
+  end subroutine test_array_with_size_different
+  
+  @test
+  subroutine test_not_an_array()
+    call assert_that(1,is(array_with_size(3)))
+    @assertExceptionRaised(new_line("a")//"Expected: is an array with size <3>" // new_line("a") // "     but: was an integer (<1>)")
+  end subroutine test_not_an_array
+  
+  @test
+  subroutine test_array_is_empty()
+    call assert_that([1,2],is(empty_array()))
+    @assertExceptionRaised(new_line("a")//"Expected: is an empty array" // new_line("a") // "     but: array size was <2>")
+  end subroutine test_array_is_empty
+  
+end module Test_IsArrayWithSize

@@ -1,5 +1,5 @@
-module TestCaseC
-   use pfunit
+module TestCaseC_mod
+   use pfunit_mod
    implicit none
 
    
@@ -45,20 +45,20 @@ contains
       deallocate(this%table)
    end subroutine tearDown
 
-   ! First test
    !@test(npes=[1,3],testParameters={[newC_Parameter(1,0.1,0.1)]})
+   ! First test
    subroutine testA(this)
       class (TestCaseC), intent(inout) :: this
    end subroutine testA
 
-   ! Second test
    !@test(testParameters={paramGenerator()})
+   ! Second test
    subroutine testB(this)
       class (TestCaseC), intent(inout) :: this
    end subroutine testB
 
-   ! Third test
    !@test(cases=[1,2])
+   ! Third test
    subroutine testC(this)
       class (TestCaseC), intent(inout) :: this
    end subroutine testC
@@ -117,13 +117,13 @@ contains
 
    end function toString
 
-end module TestCaseC
+end module TestCaseC_mod
 
 
 
-module WrapTestCaseC
-   use pFUnit
-   use TestCaseC
+module WrapTestCaseC_mod
+   use FUnit
+   use TestCaseC_mod
    implicit none
    private
 
@@ -137,7 +137,7 @@ module WrapTestCaseC
 
    abstract interface
      subroutine userTestMethod(this)
-        use TestCaseC
+        use TestCaseC_mod
         class (TestCaseC), intent(inout) :: this
      end subroutine userTestMethod
    end interface
@@ -150,56 +150,54 @@ contains
       call this%testMethodPtr(this)
    end subroutine runMethod
 
-   function makeCustomTest(methodName, testMethod, testParameter, npesRequested) result(aTest)
+   function makeCustomTest(methodName, testMethod, testParameter) result(aTest)
       type (WrapUserTestCase) :: aTest
       character(len=*), intent(in) :: methodName
       procedure(userTestMethod) :: testMethod
       type (C_Parameter), intent(in) :: testParameter
-      integer, optional, intent(in) :: npesRequested
-
       aTest%TestCaseC = newTestCaseC(testParameter)
 
       aTest%testMethodPtr => testMethod
       call aTest%setName(methodName)
       call aTest%setTestParameter(testParameter)
-     if (present(npesRequested)) then
-         call aTest%setNumProcessesRequested(npesRequested) 
-     end if
-
    end function makeCustomTest
 
-end module WrapTestCaseC
+end module WrapTestCaseC_mod
 
-function TestCaseC_suite() result(suite)
-   use pFUnit
-   use WrapTestCaseC
-   use TestCaseC
+function TestCaseC_mod_suite() result(suite)
+   use FUnit
+   use TestCaseC_mod
+   use WrapTestCaseC_mod
+   implicit none
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
+   class (Test), allocatable :: t
 
    type (C_Parameter), allocatable :: testParameters(:)
    type (C_Parameter) :: testParameter
    integer :: iParam 
    integer, allocatable :: cases(:) 
  
-   suite = newTestSuite('TestCaseC_suite')
+   suite = TestSuite('TestCaseC_mod_suite')
 
    testParameters = [newC_Parameter(1,0.1,0.1)]
 
    do iParam = 1, size(testParameters)
       testParameter = testParameters(iParam)
-   call suite%addTest(makeCustomTest('testA', testA, testParameter, npesRequested=1))
+   call testParameter%setNumProcessesRequested(1)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
    end do
    do iParam = 1, size(testParameters)
       testParameter = testParameters(iParam)
-   call suite%addTest(makeCustomTest('testA', testA, testParameter, npesRequested=3))
+   call testParameter%setNumProcessesRequested(3)
+   call suite%addTest(makeCustomTest('testA', testA, testParameter))
    end do
 
    testParameters = paramGenerator()
 
    do iParam = 1, size(testParameters)
       testParameter = testParameters(iParam)
+   call testParameter%setNumProcessesRequested(1)
    call suite%addTest(makeCustomTest('testB', testB, testParameter))
    end do
 
@@ -208,9 +206,10 @@ function TestCaseC_suite() result(suite)
 
    do iParam = 1, size(testParameters)
       testParameter = testParameters(iParam)
+   call testParameter%setNumProcessesRequested(1)
    call suite%addTest(makeCustomTest('testC', testC, testParameter))
    end do
 
 
-end function TestCaseC_suite
+end function TestCaseC_mod_suite
 

@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+'''
+Command-line interface to the pFUnit source processing tool.
+'''
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import argparse
+import logging
+import os.path
+
+import funit.pFUnitParser
+
+
+def main():
+    '''
+    Handles command-line arguments and sets up logging. Then invokes the
+    processing of the specified file.
+    '''
+    message = 'Converts .pf source files to .F90 source files.'
+    # We disable the automatic addition of help so as to be able to add our
+    # own with a wider selection of the common arguments covered.
+    cli_parser = argparse.ArgumentParser(add_help=False, description=message)
+    cli_parser.add_argument('-help', '-h', '--help', action='help',
+                            help='Display this help message and exit')
+    cli_parser.add_argument('-quiet', action='store_true',
+                            help='Log only important messages')
+    cli_parser.add_argument('-version', action='version',
+                            version='SNAPSHOT')
+    cli_parser.add_argument('pf_filename', metavar='filename.pf',
+                            type=os.path.realpath,
+                            help='Input file')
+    cli_parser.add_argument('f90_filename', metavar='filename.F90',
+                            type=os.path.realpath,
+                            help='Output file')
+    arguments = cli_parser.parse_args()
+
+    logger = logging.getLogger('funit')
+    logger.addHandler(logging.StreamHandler())
+    if arguments.quiet:
+        logger.setLevel(logging.WARNING)
+    else:
+        logger.setLevel(logging.INFO)
+
+    logger.info('Processing file %s',
+                os.path.relpath(arguments.pf_filename))
+    processor = funit.pFUnitParser.Parser(arguments.pf_filename,
+                                          arguments.f90_filename)
+    processor.looking_for_test_name = False
+    processor.run()
+    processor.final()
+    logger.info(' ... Done.  Results in %s',
+                os.path.relpath(arguments.f90_filename))
+
+
+if __name__ == '__main__':
+    main()

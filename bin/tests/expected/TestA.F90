@@ -1,16 +1,16 @@
-module TestA
-   use pfunit
+module TestA_mod
+   use pfunit_mod
    implicit none
 
 contains
 
-   ! First test
    !@test
+   ! First test
    subroutine testMethodA()
    end subroutine testMethodA
 
-   ! Second test
    !@test
+   ! Second test
    subroutine testMethodB()
    end subroutine testMethodB
    
@@ -19,39 +19,45 @@ contains
       class (MpiTestMethod), intent(inout) :: this
    end subroutine testMethodC
 
-end module TestA
+end module TestA_mod
 
 
 
-module WrapTestA
-   use pFUnit
-   use TestA
+module WrapTestA_mod
+   use FUnit
+   use TestA_mod
    implicit none
    private
 
 contains
 
 
-end module WrapTestA
+end module WrapTestA_mod
 
-function TestA_suite() result(suite)
-   use pFUnit
-   use WrapTestA
-   use TestA
+function TestA_mod_suite() result(suite)
+   use FUnit
+   use TestA_mod
+   use WrapTestA_mod
+   implicit none
    type (TestSuite) :: suite
 
-   integer, allocatable :: npes(:)
+   class (Test), allocatable :: t
 
-   suite = newTestSuite('TestA_suite')
+   suite = TestSuite('TestA_mod_suite')
 
-   call suite%addTest(newTestMethod('testMethodA', testMethodA))
+   t = TestMethod('testMethodA', testMethodA)
+   call suite%addTest(t)
 
-   call suite%addTest(newTestMethod('testMethodB', testMethodB))
+   t = TestMethod('testMethodB', testMethodB)
+   call suite%addTest(t)
 
-   call suite%addTest(newMpiTestMethod('testMethodC', testMethodC, 1))
-   call suite%addTest(newMpiTestMethod('testMethodC', testMethodC, 3))
-   call suite%addTest(newMpiTestMethod('testMethodC', testMethodC, 5))
+   t = MpiTestMethod('testMethodC', testMethodC, 1)
+   call suite%addTest(t)
+   t = MpiTestMethod('testMethodC', testMethodC, 3)
+   call suite%addTest(t)
+   t = MpiTestMethod('testMethodC', testMethodC, 5)
+   call suite%addTest(t)
 
 
-end function TestA_suite
+end function TestA_mod_suite
 
