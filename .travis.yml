@@ -15,28 +15,8 @@ matrix:
                  - libxml2-utils
         env:
            - FC='gfortran-8'
-           - USE_MPI=NO
-      - os: linux
-        addons:
-           apt:
-              sources:
-                 - ubuntu-toolchain-r-test
-              packages:
-                 - gfortran-8
-                 - cmake
-                 - libxml2-utils
-        env:
-           - FC='gfortran-8'
-           - USE_MPI=YES
            - MPI_NAME=openmpi-3.1.0
            - CACHE_NAME=linux-gcc8-openmpi310
-      - os: osx
-        osx_image: xcode9.3
-        env:
-           - FC='gfortran-8'
-           - USE_MPI=NO
-           - BREW='gcc@8'
-           - BREW_UP='cmake'
       - os: osx
         osx_image: xcode9.3
         env:
