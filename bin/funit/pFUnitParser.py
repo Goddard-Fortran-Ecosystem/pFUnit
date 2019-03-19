@@ -909,7 +909,7 @@ class Parser():
 
     def printMakeCustomTest(self, isMpiTestCase):
         args = 'methodName, testMethod'
-        declareArgs += '      type (WrapUserTestCase) :: aTest\n'
+        declareArgs = '      type (WrapUserTestCase) :: aTest\n'
         declareArgs += '      character(len=*), intent(in) :: methodName\n'
         declareArgs += '      procedure(userTestMethod) :: testMethod\n'
         

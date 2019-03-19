@@ -1,15 +1,12 @@
-set(input_file "${CMAKE_CURRENT_SOURCE_DIR}/inputs/${name}.pf")
-set(output_file "${CMAKE_CURRENT_BINARY_DIR}/outputs/${name}.F90")
-set(expected_file "${CMAKE_CURRENT_SOURCE_DIR}/expected/${name}.F90")
-
-execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../funitproc
-                        ${input_file} ${output_file}
+execute_process(COMMAND ${executable_file} ${input_file} ${output_file}
                 RESULT_VARIABLE proc_rc
                 ERROR_VARIABLE proc_err OUTPUT_VARIABLE proc_err)
 if(NOT ${proc_rc} EQUAL 0)
-  message(SEND_ERROR "Failed to run processor: (${proc_rc})${proc_err}")
+  message(SEND_ERROR "Failed to run processor: (${proc_rc}) ${proc_err}")
   return(${proc_rc})
 endif()
+
+message(STATUS "tool ${executable_file}")
 
 execute_process(COMMAND ${CMAKE_COMMAND} -E compare_files
                         ${output_file} ${expected_file}
