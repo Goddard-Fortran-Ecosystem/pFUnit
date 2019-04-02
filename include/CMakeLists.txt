@@ -39,7 +39,7 @@ file_compile_configuration()
 # Perform the install.
 #
 install(
-  FILES driver.F90 PreprocessMacro.cmake
+  FILES driver.F90 add_pfunit_sources.cmake add_pfunit_ctest.cmake
   DESTINATION ${dest}/include
   )
 
