@@ -1,4 +1,4 @@
-set (PFUNIT_PREPROCESSOR python ${PFUNIT_SOURCE_DIR}/bin/funitproc)
+#set (PFUNIT_PREPROCESSOR python ${PFUNIT_SOURCE_DIR}/bin/funitproc)
 
 # - Pass a list of files through the pFUnit macro processor
 #
@@ -34,7 +34,7 @@ function( ADD_PFUNIT_SOURCES out_var )
          endif( NOT IS_DIRECTORY "${dir}" )
          # now add the custom command to generate the output file
          add_custom_command( OUTPUT "${out_file}"
-             COMMAND ${PFUNIT_PREPROCESSOR} "${abs_file}" "${out_file}"
+             COMMAND ${PFUNIT_PARSER} "${abs_file}" "${out_file}"
              DEPENDS "${abs_file}"
 	     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
              )

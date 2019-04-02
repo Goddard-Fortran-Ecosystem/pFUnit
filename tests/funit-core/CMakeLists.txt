@@ -44,19 +44,6 @@ set(pf_tests
   Test_RegularExpression.pf)
 
 set (new_test_srcs)
-#foreach (file ${pf_tests})
-#  get_filename_component(basename ${file} NAME_WE)
-#  set(f90_src ${basename}.F90)
-#  add_custom_command (
-#    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${f90_src}
-#    COMMAND python
-#    ARGS ${PFUNIT_SOURCE_DIR}/bin/funitproc ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${f90_src}
-#    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#    DEPENDS ${file}
-#    )
-#  list(APPEND new_tests ${f90_src})
-#endforeach()
-
 set (test_srcs
   Test_Assert.F90
   Test_AssertBasic.F90
@@ -86,32 +73,38 @@ list(APPEND test_srcs Test_BasicOpenMP.F90)
 add_library (funit_tests EXCLUDE_FROM_ALL STATIC ${test_srcs})
 target_link_libraries(funit_tests other_shared)
 
-add_pfunit_sources (new_test_srcs ${pf_tests})
+#add_pfunit_sources (new_test_srcs ${pf_tests})
 
-add_library(new_stests EXCLUDE_FROM_ALL ${new_test_srcs})
-target_link_libraries(new_stests other_shared)
-add_executable (new_tests.x EXCLUDE_FROM_ALL ${PFUNIT_SOURCE_DIR}/include/driver.F90)
-set_source_files_properties(${PFUNIT_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
-target_link_libraries(new_tests.x new_stests funit)
+#add_library(new_stests EXCLUDE_FROM_ALL ${new_test_srcs})
+#target_link_libraries(new_stests other_shared)
+#add_executable (new_tests.x EXCLUDE_FROM_ALL ${PFUNIT_SOURCE_DIR}/include/driver.F90)
+#set_source_files_properties(${PFUNIT_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+#target_link_libraries(new_tests.x new_stests funit)
 
 
 add_executable (funit_tests.x EXCLUDE_FROM_ALL serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
 
-set(REMOTE_EXE remote.x)
+set (REMOTE_EXE remote.x)
 add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
 target_link_libraries(${REMOTE_EXE} funit funit_tests)
 add_dependencies(tests ${REMOTE_EXE})
 
 
-add_test(NAME new_tests
-  COMMAND new_tests.x
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
+add_pfunit_ctest (new_tests.x
+  TEST_SOURCES ${pf_tests}
+  LINK_LIBRARIES other_shared
+  REGISTRY testSuites.inc
+)
+#add_test(NAME new_tests
+#  COMMAND new_tests.x
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#  )
+
 add_dependencies(tests new_tests.x)
-set_property (TEST new_tests
-    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-    )
+#set_property (TEST new_tests.x
+#    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+#    )
 
 add_test(NAME old_tests
   COMMAND funit_tests.x
