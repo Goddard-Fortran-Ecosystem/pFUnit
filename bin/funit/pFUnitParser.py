@@ -5,7 +5,7 @@ from __future__ import print_function
 from os.path import *
 import re
 # from parseBrackets import parseBrackets
-from parseDirectiveArgs import parseDirectiveArguments
+from .parseDirectiveArgs import parseDirectiveArguments
 
 class MyError(Exception):
     def __init__(self, value):
