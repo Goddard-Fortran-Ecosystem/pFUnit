@@ -15,7 +15,7 @@
 #                   EXTRA_USE ...
 #                   EXTRA_INITIALIZE ...
 #                   EXTRA_FINALIZE ...
-#                   NPES 5
+#                   MAX_PES 5
 #                   )
 #
 # Note: If REGISTRY is not provided, then a default testSuites.inc
@@ -32,7 +32,7 @@
 include (add_pfunit_sources)
 
 function (add_pfunit_ctest test_package_name)
-  set (oneValueArgs REGISTRY NPES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
+  set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -91,32 +91,29 @@ function (add_pfunit_ctest test_package_name)
   if (PF_TEST_LINK_LIBRARIES)
     target_link_libraries (${test_package_name} ${PF_TEST_LINK_LIBRARIES})
   endif ()
-  if (PF_TEST_NPES)
-    target_link_libraries (${test_package_name} pfunit)
-  else()
-    target_link_libraries (${test_package_name} funit)
-  endif ()
 
   #################################################
   # Define test in CTest system                   #
- #################################################
- if (PF_TEST_NPES)
-   if (MPIEXEC MATCHES ".*openmpi*")
-     list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
-   endif()
-   add_test (NAME ${test_package_name}
-     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-     COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_NPES} ${test_package_name}
-     )
- else()
-   add_test (NAME ${test_package_name}
-     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-     COMMAND ${test_package_name}
-     )
- endif()
-
- set_property (TEST ${test_package_name}
-   PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-   )
+  #################################################
+  if (PF_TEST_MAX_PES)
+    target_link_libraries (${test_package_name} pfunit)
+    if (MPIEXEC MATCHES ".*openmpi*")
+      list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
+    endif()
+    add_test (NAME ${test_package_name}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_MAX_PES} ${test_package_name}
+      )
+  else()
+    target_link_libraries (${test_package_name} funit)
+    add_test (NAME ${test_package_name}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${test_package_name}
+      )
+  endif()
+  
+  set_property (TEST ${test_package_name}
+    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+    )
 
 endfunction()

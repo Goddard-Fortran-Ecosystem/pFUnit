@@ -136,10 +136,10 @@ contains
       call MPI_Finalize(error)
 
       if (amRoot) then
-         print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
+!!$         print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
          call funit_finalize(extra_finalize, allSuccessful)
       else
-         stop
+         call funit_finalize(extra_finalize, successful=.true.)
       end if
 
    end subroutine finalize
