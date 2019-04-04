@@ -1,7 +1,8 @@
 # Function     : add_pfunit_ctest 
 #
-# Description  : Helper function for compiling and adding pFUnit tests to the CTest testing framework. Any libraries needed
-#                in testing should be linked to manually.
+# Description : Helper function for compiling and adding pFUnit tests
+#               to the CTest testing framework. Any libraries needed
+#               in testing should be linked to manually.
 #
 # Arguments    : - test_name: Name of the test package
 #
@@ -11,11 +12,17 @@
 #                   OTHER_SOURCES other.F90 yet_another.c
 #                   REGISTRY test_suites.inc             
 #                   LINK_LIBRARIES mylib
+#                   EXTRA_USE ...
+#                   EXTRA_INITIALIZE ...
+#                   EXTRA_FINALIZE ...
 #                   NPES 5
 #                   )
-# Note: If REGISTRY is not provided, then a default testSuites.inc will be created based on the PFUNIT_SOURCES file names.
-#       It is assumed that the module name is the same as the file basename.  
-#       For example, the file testSomething.pf should contain the module testSomething.
+#
+# Note: If REGISTRY is not provided, then a default testSuites.inc
+#       will be created based on the PFUNIT_SOURCES file names.  It is
+#       assumed that the module name is the same as the file basename.
+#       For example, the file testSomething.pf should contain the
+#       module testSomething.
 #                
 #
 # Compile the tests:   make myTests
@@ -25,7 +32,7 @@
 include (add_pfunit_sources)
 
 function (add_pfunit_ctest test_package_name)
-  set (oneValueArgs REGISTRY NPES)
+  set (oneValueArgs REGISTRY NPES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -68,13 +75,26 @@ function (add_pfunit_ctest test_package_name)
 
   target_compile_definitions (${test_package_name} PRIVATE -D_TEST_SUITES="${test_suite_inc_file}")
   target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
+  if (PF_TEST_EXTRA_USE)
+    target_compile_definitions (${test_package_name} PRIVATE -DPFUNIT_EXTRA_USE=${PF_TEST_EXTRA_USE})
+  endif()
+
+  if (PF_TEST_EXTRA_INITIALIZE)
+    target_compile_definitions (${test_package_name} PRIVATE -DPFUNIT_EXTRA_INITIALIZE=${PF_TEST_EXTRA_INITIALIZE})
+  endif()
+
+  if (PF_TEST_EXTRA_FINALIZE)
+    target_compile_definitions (${test_package_name} PRIVATE -DPFUNIT_EXTRA_FINALIZE=${PF_TEST_EXTRA_FINALIZE})
+  endif()
   
   if (PF_TEST_LINK_LIBRARIES)
     target_link_libraries (${test_package_name} ${PF_TEST_LINK_LIBRARIES})
   endif ()
-  target_link_libraries (${test_package_name} funit)
   if (PF_TEST_NPES)
     target_link_libraries (${test_package_name} pfunit)
+  else()
+    target_link_libraries (${test_package_name} funit)
   endif ()
 
   #################################################
