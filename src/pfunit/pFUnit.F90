@@ -61,7 +61,13 @@ end module pFUnit_private
 !
 !-------------------------------------------------------------------------------
 module pFUnit
-   use FUnit_core
+   ! Rename overlapping entities to avoid name conflicts
+   ! Cannot use ONLY, because the list will change over time.
+   use FUnit, funit_initialize => initialize
+   use FUnit, funit_finalize => finalize
+   use FUnit, funit_run => run
+   use FUnit, funit_context => get_context
+   use FUnit, funit_stub => stub
    use pFUnit_private
    use mpi
    implicit none
@@ -130,10 +136,10 @@ contains
       call MPI_Finalize(error)
 
       if (amRoot) then
-         print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
+!!$         print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
          call funit_finalize(extra_finalize, allSuccessful)
       else
-         stop
+         call funit_finalize(extra_finalize, successful=.true.)
       end if
 
    end subroutine finalize

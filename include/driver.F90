@@ -17,9 +17,9 @@
 
 program main
    use FUnit
-#ifdef PFUNIT_EXTRA_USES
+#ifdef PFUNIT_EXTRA_USE
       ! Use external code for whatever suite-wide fixture is in use.
-      use PFUNIT_EXTRA_USES
+      use PFUNIT_EXTRA_USE
 #endif
    implicit none
 
