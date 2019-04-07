@@ -1,0 +1,65 @@
+# Include file for external  projects using Unix Make instead of cmake.
+# Usage:
+
+# $(call make_pfunit_test name, tests, other_srcs)
+# FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
+# LFLAGS += $(PFUNIT_LIBRARIES)
+
+# fArgParse
+FARGPARSE_TOP_DIR := @FARGPARSE_TOP_DIR@
+include ${FARGPARSE_TOP_DIR}/include/FARGPARSE.mk
+
+# pFUnit
+PFUNIT_INSTALL_PREFIX := @CMAKE_INSTALL_PREFIX@
+PFUNIT_VERSION := @PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@
+PFUNIT_TOP_DIR := $(PFUNIT_INSTALL_PREFIX)/PFUNIT-$(PFUNIT_VERSION)
+PFUNIT_BIN_DIR := $(PFUNIT_TOP_DIR)/bin
+PFUNIT_INCLUDE_DIR := $(PFUNIT_TOP_DIR)/include
+PFUNIT_LIBRARIES := -L$(PFUNIT_TOP_DIR)/lib -lfunit $(FARGPARSE_LIBRARIES)
+PFUNIT_EXTRA_FFLAGS := -I$(GFTL_INCLUDE_DIR) -I$(GFTL_SHARED_INCLUDE_DIR) -I$(FARGPARSE_INCLUDE_DIR) -I$(PFUNIT_INCLUDE_DIR) -I.
+
+
+###########
+define newline
+
+
+endef
+###########
+
+define pf_preprocess
+$$(basename $(1)).F90: $(1)
+	$(PFUNIT_BIN_DIR)/funitproc $$< $$@
+endef
+
+
+define make_pfunit_test
+
+   $(1)_test_srcs := $$(foreach test,$$($(1)_TESTS),$$(basename $$(test)).F90)
+   $(1)_test_objs := $$(foreach test,$$($(1)_TESTS),$$(basename $$(test)).o)
+   $(1)_other_objs := $$(foreach src,$$($(1)_OTHER_SRCS),$$(basename $$(src)).o)
+
+   ifneq (,$$($(1)_REGISTRY))
+      $(1)_inc := $(1)_REGISTRY
+   else
+      $(1)_inc := $$(foreach test, $$($(1)_TESTS),ADD_TEST_SUITE($$(basename $$(test))_suite) $${newline})
+      export $(1)_inc
+      $(1).inc:
+	-@echo "$$$${$(1)_inc}" > $$@
+   endif
+
+   $(foreach test,$($(1)_TESTS),$(eval $(call pf_preprocess,$(test))))
+
+   $(1)_extra_cpp := -D_TEST_SUITES='"$(1).inc"'
+   ifneq (,$$($(1)_EXTRA_USE))
+     $(1)_extra_cpp += -DPFUNIT_EXTRA_USE=$$($(1)_EXTRA_USE)
+   endif
+   ifneq (,$$($(1)_EXTRA_INITIALIZE))
+     $(1)_extra_cpp += -DPFUNIT_EXTRA_INITIALIZE=$$($(1)_EXTRA_INITIALIZE)
+  endif
+   $(1)_driver.o: $(PFUNIT_INCLUDE_DIR)/driver.F90 $(1).inc
+	$$(FC) -o $$@ -c $(FFLAGS) $(PFUNIT_INCLUDES) -I. $(PFUNIT_EXTRA_FFLAGS) $$($(1)_extra_cpp) $$<
+
+   $(1): $(1)_driver.o $$($(1)_test_objs) $$($(1)_other_objs)
+	$$(FC) -o $$@  $(1)_driver.o $$($(1)_test_objs) $$($(1)_other_objs) $(PFUNIT_EXTRA_FFLAGS) $$($(1)_OTHER_LIBRARIES) $(PFUNIT_LIBRARIES)
+
+endef

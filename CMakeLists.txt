@@ -116,9 +116,16 @@ configure_file(cmake/PFUNITConfig.cmake.in
   "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake" @ONLY)
 configure_file(cmake/PFUNITConfig-version.cmake.in
   "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake" @ONLY)
+configure_file(cmake/PFUNIT.mk.in
+  "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
 # Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
+set (top_dir PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR})
 install(FILES
   "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake"
   "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake"
-  DESTINATION "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}/cmake")
+  DESTINATION "${top_dir}/cmake")
+install(FILES
+  "${PROJECT_BINARY_DIR}/PFUNIT.mk"
+  DESTINATION "${top_dir}/include")
+
