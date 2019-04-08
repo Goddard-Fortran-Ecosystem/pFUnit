@@ -1,3 +1,12 @@
+# ANNOUNCEMENT:  Release of 4.0_beta
+
+The beta release of 4.0 is now available (on branch release/4.0_beta).  Please give it a try.
+
+Documentation (esp. diffs) is forthcoming, but there is now set of [demos](https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos).
+
+
+
+
 # pFUnit
 
 pFUnit is a unit testing framework enabling JUnit-like testing of
