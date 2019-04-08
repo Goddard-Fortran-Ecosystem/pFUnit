@@ -2,7 +2,6 @@ program main
    use FUnit, only: initialize
    use FUnit, only: finalize
    use FUnit, only: TestResult
-   use FUnit, only: TestListenerVector
    use FUnit, only: stub
 !$$   use FUnit, only: DebugListener
    implicit none
@@ -43,7 +42,6 @@ contains
 
       use Test_RobustRunner, only: testRobustRunnerSuite => suite
 
-      use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner

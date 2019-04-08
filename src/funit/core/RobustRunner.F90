@@ -120,7 +120,6 @@ contains
 
     function get_default_launch_command() result(command)
       character(:), allocatable :: command
-      character(:), allocatable :: arg
       integer :: n
 
       call get_command_argument(0, length=n)
@@ -150,14 +149,11 @@ contains
       type (TestVector) :: testCases
       type (RemoteProxyTestCase) :: proxy
       integer :: i
-      integer :: clockStart, clockStop, clockRate
       type(mode_t) :: mode
       integer(kind=C_INT) :: status
       integer :: rc
-      logical :: check
       logical :: needs_launch
       type (File) :: f
-      real :: elapsed_time
 
       call result%addListener( this ) ! - monitoring
 
@@ -214,11 +210,7 @@ contains
       integer :: status
       character(len=MAX_LEN) :: suffix
 
-      character(len=80) :: timeCommand
-      type (UnixProcess) :: timerProcess
-      character(len=:), allocatable :: line
       character(:), allocatable :: buffer
-      character(len=100) :: throwMessage
       type (TestTimer) :: timer
 
       
@@ -263,6 +255,7 @@ contains
       class (RobustRunner), intent(inout) :: this
       character(len=*), intent(in) :: testName
       
+     _UNUSED_DUMMY(this)
      _UNUSED_DUMMY(testName)
 
    end subroutine startTest

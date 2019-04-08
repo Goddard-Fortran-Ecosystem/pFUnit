@@ -158,7 +158,6 @@ contains
    subroutine addExpectationThat_sub_(this,sub,pred)
      class (MockRepository), intent(inout) :: this
      procedure(subVoid), pointer, intent(in) :: sub
-!     procedure(subVoid), pointer, intent(in) :: subptr
      class(Predicate), intent(in) :: pred
      type(Expectation) exp
 
@@ -175,8 +174,6 @@ contains
    subroutine addExpectationThat_subNameOnly_(this,subName,pred)
      class (MockRepository), intent(inout) :: this
      character(len=*), intent(in) :: subName
-!     procedure(subVoid), pointer, intent(in) :: sub
-!     procedure(subVoid), pointer, intent(in) :: subptr
      class (Predicate), intent(in) :: pred
      type(Expectation) exp
 

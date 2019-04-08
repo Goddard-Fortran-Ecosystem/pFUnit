@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_SubstringMatcher
   use pf_MatcherDescription
   use pf_AbstractMatcher
@@ -93,6 +95,8 @@ contains
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
+    _UNUSED_DUMMY(this)
+    
     call description%append_text('was "')
     select type (actual)
     type is (character(*))
@@ -121,6 +125,8 @@ contains
     class(SubstringMatcher), intent(in) :: this
     class(*), intent(in) :: actual
 
+    _UNUSED_DUMMY(this)
+    
     select type (actual)
     type is (character(*))
        expects_type_of = .true.

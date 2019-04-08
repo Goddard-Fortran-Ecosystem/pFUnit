@@ -1,4 +1,6 @@
+
 ! Test that derived types can be used with matchers
+#include "unused_dummy.fh"
 module Test_IsEqual_extended
   use funit
   implicit none
@@ -71,6 +73,11 @@ contains
     integer, intent(in) :: vlist(:)
     integer, intent(out) :: iostat
     character(*), intent(inout) :: iomsg
+
+    _UNUSED_DUMMY(iotype)
+    _UNUSED_DUMMY(vlist)
+    _UNUSED_DUMMY(iostat)
+    _UNUSED_DUMMY(iomsg)
 
     write(unit,'(a,i0,a)') 'MyMatchable(', this%i, ')'
   end subroutine write_formatted

@@ -27,8 +27,6 @@ module PF_RemoteProxyTestCase
    use pf_DisableAnnotation
    use PF_Test
    use PF_TestCase
-   use, intrinsic :: iso_fortran_env, only: INT64
-   use, intrinsic :: iso_fortran_env, only: IOSTAT_EOR
    use iso_c_binding
    use pf_Posix
    use pf_File
@@ -89,17 +87,13 @@ contains
      use PF_UnixPipeInterfaces
      class (RemoteProxyTestCase), intent(inout) :: this
 
-     type (pollfd) :: fds(1)
-     integer :: error
      character(:), allocatable :: line
      character(:), allocatable :: file_name
      integer :: line_number
      character(:), allocatable :: num_exceptions_str
      character(:), allocatable :: line_number_str
-     character(:), allocatable :: message_length_str
      integer :: num_exceptions
      character(:), allocatable :: message
-     integer :: message_length
      integer :: i_exception
      integer :: rc
 

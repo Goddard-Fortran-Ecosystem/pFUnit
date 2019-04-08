@@ -31,7 +31,6 @@ contains
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
       type (SerialContext) :: c
-      type (TestListenerVector) :: listeners
       type(ArgParser), target :: parser
       logical :: debug
       type (StringUnlimitedMap) :: options

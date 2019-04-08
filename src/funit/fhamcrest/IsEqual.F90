@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_IsEqual
   use iso_fortran_env
   use pf_AbstractMatcher
@@ -59,6 +61,9 @@ contains
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
+
+    _UNUSED_DUMMY(this)
+
     call description%append_text("was ")
     call description%append_value(actual)
   end subroutine describe_mismatch
@@ -91,6 +96,8 @@ contains
 
     integer :: i, n_items
     type (IsEqual) :: m
+
+    _UNUSED_DUMMY(this)
 
     select type (a => actual_value)
     type is (internal_array_1d)
