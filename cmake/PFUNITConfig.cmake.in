@@ -6,6 +6,11 @@
 #    PFUNIT_DRIVER       - The pFUnit driver needed for running tests
 #    add_pfunit_test     - Helper function for defining test suites with .pf-files
 
+find_package (PythonInterp REQUIRED)
+find_package (GFTL REQUIRED)
+find_package (GFTL_SHARED REQUIRED)
+find_package (FARGPARSE REQUIRED)
+
 set (prefix ${CMAKE_CURRENT_LIST_DIR}/../..)
 set (PFUNIT_TOP_DIR ${prefix}/PFUNIT-@PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@ CACHE PATH "")
 include ("${PFUNIT_TOP_DIR}/cmake/PFUNIT.cmake")
@@ -13,15 +18,6 @@ include ("${PFUNIT_TOP_DIR}/cmake/PFUNIT.cmake")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../include")
 include (add_pfunit_ctest)
 
-find_package (PythonInterp REQUIRED)
-
-#include(CMakeFindDependencyMacro)
-#find_dependency(GFTL)
-#find_dependency(GFTL_SHARED)
-#find_dependency(FARGPARSE)
-find_package (GFTL REQUIRED)
-find_package (GFTL_SHARED REQUIRED)
-find_package (FARGPARSE REQUIRED)
 
 #set (PFUNIT_FOUND TRUE)
 #set (PFUNIT_VERSION "@PROJECT_VERSION@")
