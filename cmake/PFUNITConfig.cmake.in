@@ -7,7 +7,8 @@
 #    add_pfunit_test     - Helper function for defining test suites with .pf-files
 
 set (prefix ${CMAKE_CURRENT_LIST_DIR}/../..)
-include ("${prefix}/PFUNIT-@PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@/cmake/PFUNIT.cmake")
+set (PFUNIT_TOP_DIR ${prefix}/PFUNIT-@PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@ CACHE PATH "")
+include ("${PFUNIT_TOP_DIR}/cmake/PFUNIT.cmake")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../include")
 include (add_pfunit_ctest)
