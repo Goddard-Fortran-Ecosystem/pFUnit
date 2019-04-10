@@ -4,6 +4,9 @@ The beta release of 4.0 is now available (on branch release/4.0_beta).  Please g
 
 Documentation (esp. diffs) is forthcoming, but there is now set of [demos](https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos).
 
+**Note** the GitHub release tarballs don't work due to a technical issue with git archive and git submodules.   Please use git to directly clone the repository.    A helpful user has already provided a solution for the tar balls but it will probably not be available until this weekend.
+
+
 
 
 
