@@ -820,7 +820,8 @@ class Parser():
         else:
             type = 'TestMethod'
 
-        self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+        self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
+        self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
         if ('disable' in testMethod):
             self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
         self.outputFile.write('   call suite%addTest(t)\n')
@@ -843,7 +844,8 @@ class Parser():
             else:
                 type = 'MpiTestMethod'
                     
-            self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+            self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
+            self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
             if ('disable' in testMethod):
                 self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
             self.outputFile.write('   call suite%addTest(t)\n')
