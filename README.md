@@ -399,7 +399,7 @@ during the build process. To include tests, one must add the test
 suite module to testSuites.inc, as follows.
 
     ! Add a test suite to the build.
-    ADD_TESTS_SUITE(helloWorld_suite)
+    ADD_TEST_SUITE(helloWorld_suite)
 
 A preprocessor input file contains tests and is a 
 Fortran free-format file with directives, for example:
