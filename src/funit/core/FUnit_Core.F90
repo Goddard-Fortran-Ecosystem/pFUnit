@@ -35,6 +35,7 @@ module FUnit_Core
    use pf_NameFilter
 
    use fArgParse
+   use pf_TapListener
 
    implicit none
    private
@@ -82,6 +83,8 @@ module FUnit_Core
    public :: TestAnnotation
    public :: Disable
    public :: TimeoutAnnotation
+
+   public :: TapListener
 
 end module FUnit_Core
 
