@@ -6,7 +6,9 @@ include (add_pfunit_ctest)
 
 
 add_subdirectory(funit-core)
-add_subdirectory(fhamcrest)
+if (NOT SKIP_FHAMCREST)
+  add_subdirectory(fhamcrest)
+endif ()
 
 if (MPI_Fortran_FOUND)
   add_subdirectory(pfunit)

@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -349,6 +350,8 @@ contains
 
    subroutine clean(this)
       type (MpiContext), intent(inout) :: this
+      _UNUSED_DUMMY(this)
+      
 !!$      call debug(__LINE__,__FILE__)
 !!$      call MPI_Comm_free(this%mpiCommunicator, ier)
 !!$      call debug(__LINE__,__FILE__)

@@ -4,16 +4,18 @@
 #
 # Package specific command line options:
 #
-#     -DSKIP_MPI=YES                   Skip build of MPI features even if
-#                                      MPI is found.
-#
 #     -DMAX_ASSERT_RANK=<max_rank>     Limit overloaded interfaces to
 #                                      rank <= max_rank
+#
+#     -DSKIP_MPI=YES                   Skip build of MPI features even if
+#                                      MPI is found.
 #
 #     -SKIP_OPENMP=YES                 Skip build of OpenMP features even if
 #                                      OpenMP is found
 #
-#     -SKIP_HAMCREST=YES               Skip build of Hamcrest features
+#     -SKIP_FHAMCREST=YES              Skip build of Hamcrest features
+#
+#     -SKIP_ROBUST=YES                 Skip build of RobustRunner
 #
 #
 # Usage:
@@ -37,12 +39,15 @@ enable_testing()
 # unless the user explicitly sets CMAKE_INSTALL_PREFIX in the cache.
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set (CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/installed" CACHE PATH "default install path" FORCE )
+    message(STATUS "*** Setting default install prefix to ${CMAKE_INSTALL_PREFIX}.")
+    message(STATUS "*** Override with -DCMAKE_INSTALL_PREFIX=<path>.")
 endif()
 
-OPTION(USE_OPENMP "Use OPENMP for parallel runs" NO)
-set(MPI OFF CACHE BOOL "Build with MPI support.")
-set(OPENMP OFF CACHE BOOL "Build with OpenMP support.")
-set(MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
+set (MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
+set (SKIP_MPI NO CACHE BOOL "Skip building MPI support.")
+set (SKIP_OPENMP NO CACHE BOOL "Skip OpenMP compiler options.")
+set (SKIP_FHAMCREST NO CACHE BOOL "Skip building fHamcrest support")
+set (SKIP_ESMF YES CACHE BOOL "Skip building ESMF support")
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
@@ -61,6 +66,8 @@ if (NOT SKIP_MPI)
   find_package (MPI QUIET)
   if (MPI_Fortran_FOUND)
     message (STATUS "MPI enabled")
+  else ()
+    message (STATUS "MPI not found; building without MPI")
   endif()    
 endif()
 
@@ -68,28 +75,23 @@ endif()
 
 
 # Fortran OpenMP support is not yet integrated into the CMake distribution.
-if (USE_OPENMP)
-  find_package(OpenMP_Fortran REQUIRED)
-  if(OPENMP_FORTRAN_FOUND)
-    set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
-    set(CMAKE_Fortran_LINKER_FLAGS "${CMAKE_Fortran_FLAGS} ${OpenMP_Fortran_FLAGS}")
-    message( STATUS "OpenMP enabled")
+if (NOT SKIP_OPENMP)
+  find_package(OpenMP QUIET)
+  if (OpenMP_Fortran_FOUND)
+    message (STATUS "OpenMP enabled")
+  else (OpenMP_Fortran_FOUND)
+    message (STATUS "OpenMP not found - skipping openmp support.")
   endif()
 endif()
 
 
-# A bit ugly, but main use case install ESMF in a non-canonical manner.
-set (ESMF OFF CACHE BOOL "Build with ESMF support.")
-if (ESMF)
+# ESMF options are still under development ...
+if (NOT SKIP_ESMF)
   set (ESMF_LIBRARIES "" CACHE PATH "Path to ESMF libraries")
   set (ESMF_INCLUDE "" CACHE PATH "Path to ESMF include dir")
   set (NETCDF_INCLUDE "" CACHE PATH "Path to NETCD include dir")
+  set (ESMF_FOUND)
 endif ()
-
-
-if (USE_ROBUST)
-    add_definitions(-DUSE_ROBUST)
-endif()
 
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
@@ -100,10 +102,8 @@ set (dest "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
 
 # Code to silence warnings from RANLIB on OSX
 # From https://stackoverflow.com/questions/4929255/building-static-libraries-on-mac-using-cmake-and-gcc
-SET(CMAKE_C_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
-SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
-SET(CMAKE_C_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
-SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+SET(CMAKE_Fortran_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
+SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 
 add_subdirectory (extern)
 add_subdirectory (src)

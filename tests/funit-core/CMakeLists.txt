@@ -61,13 +61,17 @@ set (test_srcs
   Test_TestSuite.F90
   )
 
-list (APPEND test_srcs
-  Test_UnixProcess.F90
-  Test_RobustRunner.F90
-  robustTestSuite.F90
-  )
+if (NOT SKIP_ROBUST)
+  list (APPEND test_srcs
+    Test_UnixProcess.F90
+    Test_RobustRunner.F90
+    robustTestSuite.F90
+    )
+endif ()
 
-list(APPEND test_srcs Test_BasicOpenMP.F90)
+if (OPENMP_FORTRAN_FOUND)
+  list(APPEND test_srcs Test_BasicOpenMP.F90)
+endif ()
 
 
 add_library (funit_tests EXCLUDE_FROM_ALL STATIC ${test_srcs})
