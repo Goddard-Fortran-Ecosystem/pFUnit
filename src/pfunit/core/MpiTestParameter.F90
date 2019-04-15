@@ -1,3 +1,4 @@
+#include "unused_dummy.fh"
 module PF_MpiTestParameter
    use PF_AbstractTestParameter
    implicit none
@@ -66,6 +67,8 @@ contains
       class (MpiTestParameter), intent(in) :: this
       character(:), allocatable :: string
 
+      _UNUSED_DUMMY(this)
+      
       string = ''
 
    end function toString

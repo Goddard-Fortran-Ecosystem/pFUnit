@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -52,6 +54,7 @@ contains
 
    integer function countTestCases_mpi(this) result(countTestCases)
       class (MpiTestCase), target, intent(in) :: this
+      _UNUSED_DUMMY(this)
       countTestCases = 1
    end function countTestCases_mpi
 
@@ -101,6 +104,7 @@ contains
          ! only report context failure on root PE
          if (.not. this%parentContext%isRootProcess()) then
             discard = catch()
+            if (.false.) print*,discard ! prevent warning from compiler that discard is not used.
          end if
       end if
 

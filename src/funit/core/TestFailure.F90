@@ -33,15 +33,4 @@ module PF_TestFailure
       type (ExceptionList) :: exceptions
    end type TestFailure
 
-!!$   interface TestFailure
-!!$      module procedure newTestFailure
-!!$   end interface TestFailure
-!!$
-!!$contains
-!!$
-!!$   function newTestFailure(testName, list)
-!!$      character(len=*), intent(in) :: testName
-!!$      type (Exception), intent(in) :: exceptions(:)
-!!$   end function newTestFailure
-
 end module PF_TestFailure

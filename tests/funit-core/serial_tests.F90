@@ -25,8 +25,6 @@ contains
       use Test_AssertBasic, only: assertBasicSuite => suite            !
       use Test_Assert, only: assertSuite => suite                      ! (3)
 
-!!$      use Test_AssertComplex, only: assertComplexSuite => suite              ! (5)
-
       use Test_TestResult, only: testResultSuite => suite              ! (6)
       use Test_TestSuite, only: testTestSuiteSuite => suite                ! (7)
 
@@ -34,7 +32,8 @@ contains
       use Test_SimpleTestCase, only: testSimpleTestCaseSuite => suite          ! (9)
       use Test_FixtureTestCase, only: testFixtureTestCaseSuite => suite        ! (10)
 
-      use Test_BasicOpenMP, only: testBasicOpenMpSuite => suite  ! (8)
+
+!$    use Test_BasicOpenMP, only: testBasicOpenMpSuite => suite  ! (8)
 
       use Test_MockCall, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository, only: testMockRepositorySuite => suite      ! (11)
@@ -67,7 +66,7 @@ contains
       ADD(testSimpleTestCaseSuite)
       ADD(testFixtureTestCaseSuite)
 
-      ADD(testBasicOpenMpSuite)
+!$    ADD(testBasicOpenMpSuite)
 
       ADD(testMockCallSuite)
       ADD(testMockRepositorySuite)

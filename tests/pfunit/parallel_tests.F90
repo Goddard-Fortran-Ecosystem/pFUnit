@@ -2,7 +2,6 @@ program main
    use pfunit, only: initialize
    use pfunit, only: finalize
    use pfunit, only: TestResult
-   use pfunit, only: TestListenerVector
    use pfunit, only: stub
 !$$   use pfunit, only: DebugListener
    implicit none
@@ -19,13 +18,11 @@ contains
       use pfunit, only: TestSuite
       use pfunit, only: TestRunner
       use pfunit, only: MpiContext
-      use pfunit, only: ParallelContext
 
       use Test_MpiContext, only: MpiContextSuite => suite
       use Test_MpiException, only: MpiExceptionSuite => suite
       use Test_MpiTestCase, only: MpiTestCaseSuite => suite
       use Test_MpiParameterizedTestCase, only: MpiParameterizedTestCaseSuite => suite
-      use iso_fortran_env, only: OUTPUT_UNIT
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
