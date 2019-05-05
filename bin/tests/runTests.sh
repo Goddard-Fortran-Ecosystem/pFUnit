@@ -1,13 +1,8 @@
-#!/bin/sh
+python -m unittest discover --start-directory ../funit
 
-python -m unittest discover
-
-TESTS=$(find inputs -name '*.pf' -print)
 mkdir -p outputs
-for file in $TESTS
+for file in simple beforeAfter TestA TestCaseA MpiTestCaseB ParameterizedTestCaseB MpiParameterizedTestCaseC
 do
-   name=$(basename $file | sed 's/\..*$//')
-
-   ../pFUnitParser.py ${file} outputs/${name}.F90
-   diff outputs/${name}.F90 expectedOutputs/${name}.F90
+   ../funitproc inputs/${file}.pf outputs/${file}.F90
+   diff outputs/${file}.F90 expectedOutputs/${file}.F90
 done

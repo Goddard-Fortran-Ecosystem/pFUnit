@@ -1,0 +1,350 @@
+! -*-f90-*-
+! Minimum support is for expected and actual arguments to have the same
+! kind.
+@tkr_parameters minimal
+[(complex,  32, rank)]
+[(complex,  64, rank)]
+[(complex, 128, rank)]
+@end tkr_parameters
+
+@tkr_parameters useful
+! exact TKR matches
+[(complex,  32, rank), (complex,  32, rank), (real,  32, 0)]
+[(complex,  64, rank), (complex,  64, rank), (real,  64, 0)]
+[(complex, 128, rank), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default kind
+[(complex, default, rank), (complex,  32, rank), (real,  32, 0)]
+[(complex, default, rank), (complex,  64, rank), (real,  64, 0)]
+[(complex, default, rank), (complex, 128, rank), (real, 128, 0)]
+!
+! tolerance is default kind
+[(complex,  32, rank), (complex,  32, rank), (real, default, 0)]
+[(complex,  64, rank), (complex,  64, rank), (real, default, 0)]
+[(complex, 128, rank), (complex, 128, rank), (real, default, 0)]
+!
+! expected and tolerance are default kind
+[(complex, default, rank), (complex,  32, rank), (real, default, 0)]
+[(complex, default, rank), (complex,  64, rank), (real, default, 0)]
+[(complex, default, rank), (complex, 128, rank), (real, default, 0)]
+!
+! expected is default real
+[(real, default, rank), (complex,  32, rank), (real,  32, 0)]
+[(real, default, rank), (complex,  64, rank), (real,  64, 0)]
+[(real, default, rank), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default integer and tolerance is default kind
+[(real, default, rank), (complex,  32, rank), (real, default, 0)]
+[(real, default, rank), (complex,  64, rank), (real, default, 0)]
+[(real, default, rank), (complex, 128, rank), (real, default, 0)]
+!
+! expected is default integer
+[(integer, default, rank), (complex,  32, rank), (real,  32, 0)]
+[(integer, default, rank), (complex,  64, rank), (real,  64, 0)]
+[(integer, default, rank), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default integer and tolerance is default kind
+[(integer, default, rank), (complex,  32, rank), (real, default, 0)]
+[(integer, default, rank), (complex,  64, rank), (real, default, 0)]
+[(integer, default, rank), (complex, 128, rank), (real, default, 0)]
+!
+!
+! Allow expected to be conformable scalar
+! exact TKR matches
+[(complex,  32, 0), (complex,  32, rank), (real,  32, 0)]
+[(complex,  64, 0), (complex,  64, rank), (real,  64, 0)]
+[(complex, 128, 0), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default real
+[(complex, default, 0), (complex,  32, rank), (real,  32, 0)]
+[(complex, default, 0), (complex,  64, rank), (real,  64, 0)]
+[(complex, default, 0), (complex, 128, rank), (real, 128, 0)]
+!
+! tolerance is default real
+[(complex,  32, 0), (complex,  32, rank), (real, default, 0)]
+[(complex,  64, 0), (complex,  64, rank), (real, default, 0)]
+[(complex, 128, 0), (complex, 128, rank), (real, default, 0)]
+!
+! expected and tolerance are default real
+[(complex, default, 0), (complex,  32, rank), (real, default, 0)]
+[(complex, default, 0), (complex,  64, rank), (real, default, 0)]
+[(complex, default, 0), (complex, 128, rank), (real, default, 0)]
+!
+! expected is default real
+[(real, default, 0), (complex,  32, rank), (real,  32, 0)]
+[(real, default, 0), (complex,  64, rank), (real,  64, 0)]
+[(real, default, 0), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default real and tolerance is default real
+[(real, default, 0), (complex,  32, rank), (real, default, 0)]
+[(real, default, 0), (complex,  64, rank), (real, default, 0)]
+[(real, default, 0), (complex, 128, rank), (real, default, 0)]
+!
+! expected is default integer
+[(integer, default, 0), (complex,  32, rank), (real,  32, 0)]
+[(integer, default, 0), (complex,  64, rank), (real,  64, 0)]
+[(integer, default, 0), (complex, 128, rank), (real, 128, 0)]
+!
+! expected is default integer and tolerance is default real
+[(integer, default, 0), (complex,  32, rank), (real, default, 0)]
+[(integer, default, 0), (complex,  64, rank), (real, default, 0)]
+[(integer, default, 0), (complex, 128, rank), (real, default, 0)]
+@end tkr_parameters
+
+#include "unused_dummy.fh"
+
+module pf_AssertComplex_{rank}d
+   use, intrinsic :: iso_fortran_env, only: REAL32
+   use, intrinsic :: iso_fortran_env, only: REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL128
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
+   implicit none
+   private
+
+   public :: AssertEqual
+   public :: AssertNotEqual
+   
+   public :: AssertAssociated
+
+   @overload(AssertEqual, useful)
+   @overload(AssertNotEqual, useful)
+
+   @overload(AssertAssociated, minimal)
+
+   @overload(assert_equal, minimal)
+   @overload(assert_not_equal, minimal)
+
+
+   integer, parameter :: MAX_LEN_COMPLEX_AS_STRING = 100
+
+   character(*), parameter :: COMPLEX_FMT0 = '"(",g0,",",g0,")"'
+   character(*), parameter :: COMPLEX_FMT = '(' // COMPLEX_FMT0 // ')'
+contains
+
+
+   @template(AssertEqual,[expected,actual,tolerance])
+   subroutine {name}(expected, actual, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      {tolerance.type} (kind={tolerance.kind}), optional, intent(in) :: tolerance      
+#else
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+#endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+
+      real(kind=kind(actual)) :: t
+      complex(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      ! Trick to get e to have the right shape even if "expected" is a scalar.
+      e = 0*actual + expected
+
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = real(tolerance, kind(actual))
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+   @template(assert_equal,[actual])
+   subroutine {name}(expected, actual, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      real (kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      complex(kind=kind(actual)) :: e, a, d
+
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_COMPLEX_AS_STRING) :: expected_str
+      character(len=MAX_LEN_COMPLEX_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_COMPLEX_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (abs(actual - expected) <= tolerance)) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(abs(actual - expected) <= tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. abs(actual-expected) <= tolerance))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+      d = a - e
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,COMPLEX_FMT) e
+      write(actual_str,COMPLEX_FMT) a
+      write(diff_str,'("<",'//COMPLEX_FMT0//',"> (greater than tolerance of ",g0,")")') d, tolerance
+      
+#if {actual.rank} == 0
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertNotEqual,[expected,actual,tolerance])
+   recursive subroutine {name}(expected, actual, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      {tolerance.type} (kind={tolerance.kind}), optional, intent(in) :: tolerance
+#else
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+#endif
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+      complex(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      e = cmplx(expected, kind=kind(actual))
+#if {tolerance.kind_value} == _REAL_DEFAULT_KIND
+      if (present(tolerance)) then
+         t = real(tolerance, kind(actual))
+      else
+         t = 0
+      end if
+#else
+      t = tolerance
+#endif
+
+      call assert_not_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+
+   @template(assert_not_equal,[actual])
+   recursive subroutine {name}(expected, actual, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      real(kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      complex(kind=kind(actual)) :: e, a, d
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_COMPLEX_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_COMPLEX_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (abs(actual - expected) > tolerance)) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(abs(actual - expected) > tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. abs(actual-expected) > tolerance))
+#if {actual.rank} == 0
+         e = expected
+#else
+         e = expected({actual.multi_index})
+#endif
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+      d = a - e
+      
+      ! Wish: allocatable strings were useful as internal files ...
+      write(actual_str,COMPLEX_FMT) a
+      write(diff_str,'('//COMPLEX_FMT0//'," less than or equal to tolerance of ",g0)') d, tolerance
+      
+#if {actual.rank} == 0
+      call fail_equal(trim(actual_str), difference=trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_equal(trim(actual_str), difference=trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertAssociated,[tkr])
+   subroutine {name}(p, t, unused, message, location)
+      {tkr.type} (kind={tkr.kind}), pointer, intent(in) :: p {tkr.dims}
+      {tkr.type} (kind={tkr.kind}), target, intent(in) :: t {tkr.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. associated(p, t)) then
+         call fail_not_associated(message=message, location=location)
+      end if
+
+   end subroutine {name}
+   @end template
+
+
+   @instantiate(AssertEqual, useful)
+   @instantiate(AssertNotEqual, useful)
+   @instantiate(AssertAssociated, minimal)
+
+   @instantiate(assert_equal, minimal)
+   @instantiate(assert_not_equal, minimal)
+   
+end module pf_AssertComplex_{rank}d
+
+
+   
+

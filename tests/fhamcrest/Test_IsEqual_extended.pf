@@ -1,0 +1,85 @@
+
+! Test that derived types can be used with matchers
+#include "unused_dummy.fh"
+module Test_IsEqual_extended
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_IsEqual_extended')
+
+
+  ! Users extend Matchable to wrap their own types
+  ! for use within the framework.   Unfortunately,
+  ! Fortran lacks something like Java interfaces to
+  ! indicate that a type implements "==".
+  type, private, extends(Matchable) :: MyMatchable
+     integer :: i
+   contains
+     procedure :: equals
+     procedure :: describe_to
+  end type MyMatchable
+
+  interface MyMatchable
+     module procedure :: new_MyMatchable
+  end interface MyMatchable
+
+contains
+
+   function new_MyMatchable(i) result(my_matchable)
+      type(MyMatchable) :: my_matchable
+      integer, intent(in) :: i
+      my_matchable%i = i
+   end function new_MyMatchable
+
+  @test
+  subroutine test_matchable_matches()
+    call assert_that(MyMatchable(1),is(equal_to(MyMatchable(1))))
+  end subroutine test_matchable_matches
+
+  @test
+  subroutine test_matchable_does_not_match()
+    call assert_that(MyMatchable(1),is(equal_to(MyMatchable(2))))
+    @assertExceptionRaised( )
+  end subroutine test_matchable_does_not_match
+
+
+  ! Foo methods
+  logical function equals(this, other)
+    class(MyMatchable), intent(in) :: this
+    class(*), intent(in) :: other
+    select type (other)
+    class is (MyMatchable)
+       equals = (this%i == other%i)
+    class default
+       equals = .false.
+    end select
+  end function equals
+
+  subroutine describe_to(this, description)
+    class(MyMatchable), intent(in) :: this
+    class(MatcherDescription), intent(inout) :: description
+
+    character(100) :: buffer
+
+    write(buffer,'(a,i0,a)') 'MyMatchable(', this%i, ')'
+    call description%append_text(trim(buffer))
+
+  end subroutine describe_to
+
+  subroutine write_formatted(this, unit, iotype, vlist, iostat, iomsg)
+    class(MyMatchable), intent(in) :: this
+    integer, intent(in) :: unit
+    character(*), intent(in) :: iotype
+    integer, intent(in) :: vlist(:)
+    integer, intent(out) :: iostat
+    character(*), intent(inout) :: iomsg
+
+    _UNUSED_DUMMY(iotype)
+    _UNUSED_DUMMY(vlist)
+    _UNUSED_DUMMY(iostat)
+    _UNUSED_DUMMY(iomsg)
+
+    write(unit,'(a,i0,a)') 'MyMatchable(', this%i, ')'
+  end subroutine write_formatted
+
+end module Test_IsEqual_Extended

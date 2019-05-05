@@ -9,18 +9,20 @@ VPATH = . $(SRC_DIR) $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
+ifeq ($(USEMPI),YES)
+   FC=mpif90
+endif
+
 EXE = tests$(EXE_EXT)
 
 # NOTE: use the -robust flag
 all: $(EXE)
 ifeq ($(USEMPI),YES)
-	@echo
-	@echo 'Warning:  Testing -robust flag with MPI, robust will override.'
-	@echo '          driver.F90 will call mpirun on itself with robust set.'
-	@echo '          "Top" level mpirun not needed, may be problemmatic.'
-	@echo
+	echo  Warning:  Testing -robust flag with MPI, robust will override.
+	echo            driver.F90 will call mpirun on itself with robust set.
+	echo            "Top" level mpirun not needed, may be problemmatic.
 	./$(EXE) -robust
-	# mpiexec -n 1 ./$(EXE) -robust
+	# mpirun -np 1 ./$(EXE) -robust
 else
 	./$(EXE) -robust -max-timeout-duration 0.16 -max-launch-duration 4.72
 endif

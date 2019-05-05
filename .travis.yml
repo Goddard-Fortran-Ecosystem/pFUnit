@@ -1,0 +1,84 @@
+sudo: false
+dist: xenial
+language: c
+
+matrix:
+   include:
+      - os: linux
+        addons:
+           apt:
+              sources:
+                 - ubuntu-toolchain-r-test
+              packages:
+                 - gfortran-8
+                 - cmake
+                 - libxml2-utils
+        env:
+           - FC='gfortran-8'
+           - MPI_NAME=openmpi-3.1.0
+           - CACHE_NAME=linux-gcc8-openmpi310
+      - os: osx
+        osx_image: xcode9.3
+        env:
+           - FC='gfortran-8'
+           - BREW='gcc@8'
+           - BREW_UP='cmake'
+           - USE_MPI=YES
+           - MPI_NAME=openmpi-3.1.0
+           - CACHE_NAME=osx-gcc8-openmpi310
+
+
+# caching of the whole `local` directory. Can't cache only the one for this
+# `env`, because otherwise the different instances will overwrite the cache.
+# For the first test-run, the build has to be run sequentially (limit parallel
+# workers to 1) so that the cache can be correctly initialized. Once the cache
+# is build, parallel workers can be re-enabled.
+cache:
+   directories:
+      - ${HOME}/local
+   timeout: 600
+
+before_install:
+   - |
+      if [ $TRAVIS_OS_NAME == osx ] ; then
+         # brew cask uninstall oclint || exit 1
+         brew install ${BREW} make || exit 1
+         brew upgrade ${BREW_UP} || exit 1
+      fi
+
+before_script:
+   # install MPI
+   - |
+      if [ $USE_MPI == YES ] ; then
+         mkdir -p ${HOME}/local
+         ls -r ${HOME}/local
+         sh ./tools/travis-install-mpi.sh ${MPI_NAME}
+         # set up MPI location
+         export PATH=${PATH}:${HOME}/local/${MPI_NAME}/bin
+         export LIBRARY_PATH=${LIBRARY_PATH}:${HOME}/local/${MPI_NAME}/lib
+         export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/local/${MPI_NAME}/lib
+         # print out version information
+         ${FC} --version
+         mpirun --version
+      fi
+   # Now build pFUnit
+   - cd ${TRAVIS_BUILD_DIR}
+   - mkdir build
+   - cd build
+   - cmake --version
+   - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit
+
+script:
+   # Build
+   - make -j2 VERBOSE=1
+   # Make tests
+   - make -j2 tests
+   # Run tests. If the first fails, run with -VV to try and diagnose errors
+   - ctest || ctest -VV
+
+notifications:
+   email:
+      recipients:
+         - matthew.thompson@nasa.gov
+         - tom.clune@nasa.gov
+         

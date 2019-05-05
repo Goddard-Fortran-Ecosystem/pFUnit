@@ -1,9 +1,8 @@
 #!/bin/bash
 #SBATCH --account=k3002
 #SBATCH --job-name=pFUnit
-#SBATCH --time=02:00:00
+#SBATCH --time=04:00:00
 #SBATCH --ntasks=16
-#SBATCH --constraint=hasw
 
 # This script manages the jobs in a batch environment.
 # It gets called from mainRegress.sh.
@@ -41,16 +40,10 @@ function setModule {
    moduleList=''
    moduleMPI=''
    
-   export PATH=/usr/local/other/SSSO_Ana-PyD/2.1.0/bin/python:$PATH
+   export PATH=/usr/local/other/SSSO_Ana-PyD/2.1.0/bin:$PATH
    if [ "$fortranCompiler" == "INTEL" ]; then
-      if [ "$version" == "13.1" ]; then
-         moduleFortran='comp/intel-13.1.3.192'
-      elif [ "$version" == "13.0" ]; then
-         moduleFortran='comp/intel-13.0.1.117'
-      elif [ "$version" == "14.0" ]; then
-         moduleFortran='comp/intel-14.0.3.174'
-      elif [ "$version" == "15.0" ]; then
-         moduleFortran='comp/intel-15.0.3.187'
+      if [ "$version" == "16.0" ]; then
+         moduleFortran='comp/intel-16.0.3.210'
       else
          msg="$fortranCompiler version $version is not supported yet"
          echo -e "$msg\n\n" >> $DebugLog
@@ -83,6 +76,11 @@ function setModule {
          moduleFortran='other/comp/gcc-5.2-sp3'
          if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
            moduleMPI=' other/mpi/openmpi/1.8.7-gcc-5.2-sp3'
+         fi
+      elif [ "$version" == "5.3" ]; then
+         moduleFortran='other/comp/gcc-5.3-sp3'
+         if [[ "$parallel" == "mpi"  || "$parallel" == "hybrid" ]]; then
+           moduleMPI=' other/mpi/openmpi/1.10.1-gcc-5.3-sp3'
          fi
       else
          msg="$fortranCompiler version $version is not supported yet"
@@ -119,9 +117,9 @@ function doMake {
       if [[ "$VER" == "13.0" && "$COM" == "INTEL" ]]; then
          return 0
       fi
-      if [[ "$VER" == "13.1" && "$COM" == "INTEL" ]]; then
-         return 0
-      fi
+      #if [[ "$VER" == "13.1" && "$COM" == "INTEL" ]]; then
+      #   return 0
+      #fi
    fi
    if [ "$BRANCH" == "pfunit_2.1.0" ]; then
       if [ "$VER" == "4.8.1" ]; then
@@ -314,10 +312,10 @@ COMPILERS=(INTEL GNU NAG PGI)
 # Compiler versions are separated into those that work
 # with pfunit_2.1.0 and those that work with the master,
 # development and release-3.0 branches.
-INTEL_VERSIONS_master=(13.1 14.0 15.0)
-INTEL_VERSIONS_2_1_0=(13.0 13.1 14.0)
-GNU_VERSIONS_master=(4.9.1 5.2)
-GNU_VERSIONS_2_1_0=(4.8.1 4.9.1)
+INTEL_VERSIONS_master=(13.1 14.0 15.0 16.0)
+INTEL_VERSIONS_2_1_0=(13.0 13.1 14.0 15.0)
+GNU_VERSIONS_master=(5.3)
+GNU_VERSIONS_2_1_0=(4.8.1 4.9.1 5.2)
 NAG_VERSIONS=(6.0)
 PGI_VERSIONS=(15.9.0)
 

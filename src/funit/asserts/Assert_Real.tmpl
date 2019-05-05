@@ -1,0 +1,1015 @@
+! -*-f90-*-
+! Minimum support is for expected and actual arguments to have the same
+! kind.
+@tkr_parameters minimal
+[(real,  default, rank)]
+[(real,  32, rank)]
+[(real,  double, rank)]
+[(real,  64, rank)]
+[(real,  80, rank)]
+[(real, 128, rank)]
+@end tkr_parameters
+
+@tkr_parameters no_tol
+[(integer,  default, rank), (real,  default, rank), (-1,  0, 0)]
+[(real,  default, rank), (real,  default, rank), (-1,  0, 0)]
+[(integer,  default, rank), (real,  double, rank), (-1,  0, 0)]
+[(real,  default, rank), (real,  double, rank), (-1,  0, 0)]
+[(real,  double, rank), (real,  double, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  32, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  32, rank), (-1,  0, 0)]
+[(real,  32, rank), (real,  32, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  64, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  64, rank), (-1,  0, 0)]
+[(real,  64, rank), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  80, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  80, rank), (-1,  0, 0)]
+[(real,  80, rank), (real,  80, rank), (-1,  0, 0)]
+[(integer, default, rank), (real,  128, rank), (-1,  0, 0)]
+[(real, default, rank), (real,  128, rank), (-1,  0, 0)]
+[(real,  128, rank), (real,  128, rank), (-1,  0, 0)]
+! Rank 0 is also conformable
+[(integer,  default, 0), (real,  default, rank), (-1,  0, 0)]
+[(real,  default, 0), (real,  default, rank), (-1,  0, 0)]
+[(integer,  default, 0), (real,  double, rank), (-1,  0, 0)]
+[(real,  default, 0), (real,  double, rank), (-1,  0, 0)]
+[(real,  double, 0), (real,  double, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  32, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  32, rank), (-1,  0, 0)]
+[(real,  32, 0), (real,  32, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  64, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  64, rank), (-1,  0, 0)]
+[(real,  64, 0), (real,  64, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  80, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  80, rank), (-1,  0, 0)]
+[(real,  80, 0), (real,  80, rank), (-1,  0, 0)]
+[(integer, default, 0), (real,  128, rank), (-1,  0, 0)]
+[(real, default, 0), (real,  128, rank), (-1,  0, 0)]
+[(real,  128, 0), (real,  128, rank), (-1,  0, 0)]
+@end tkr_parameters
+
+@tkr_parameters with_tol
+! Tolerance is default real
+[(integer,  default, rank), (real,  default, rank), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, default, 0)]
+[(real,  default, rank), (real,  double, rank), (real, default, 0)]
+[(real,  double, rank), (real,  double, rank), (real, default, 0)]
+[(integer, default, rank), (real,  32, rank), (real, default, 0)]
+[(real, default, rank), (real,  32, rank), (real, default, 0)]
+[(real,  32, rank), (real,  32, rank), (real, default, 0)]
+[(integer, default, rank), (real,  64, rank), (real, default, 0)]
+[(real, default, rank), (real,  64, rank), (real, default, 0)]
+[(real,  64, rank), (real,  64, rank), (real, default, 0)]
+[(integer, default, rank), (real,  80, rank), (real, default, 0)]
+[(real, default, rank), (real,  80, rank), (real, default, 0)]
+[(real,  80, rank), (real,  80, rank), (real, default, 0)]
+[(integer, default, rank), (real,  128, rank), (real, default, 0)]
+[(real, default, rank), (real,  128, rank), (real, default, 0)]
+[(real,  128, rank), (real,  128, rank), (real, default, 0)]
+! Tolerance is same kind as actual
+[(integer,  default, rank), (real,  default, rank), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, double, 0)]
+[(real,  default, rank), (real,  double, rank), (real, double, 0)]
+[(real,  double, rank), (real,  double, rank), (real, double, 0)]
+[(integer, default, rank), (real,  32, rank), (real, 32, 0)]
+[(real, default, rank), (real,  32, rank), (real, 32, 0)]
+[(real,  32, rank), (real,  32, rank), (real, 32, 0)]
+[(integer, default, rank), (real,  64, rank), (real, 64, 0)]
+[(real, default, rank), (real,  64, rank), (real, 64, 0)]
+[(real,  64, rank), (real,  64, rank), (real, 64, 0)]
+[(integer, default, rank), (real,  80, rank), (real, 80, 0)]
+[(real, default, rank), (real,  80, rank), (real, 80, 0)]
+[(real,  80, rank), (real,  80, rank), (real, 80, 0)]
+[(integer, default, rank), (real,  128, rank), (real, 128, 0)]
+[(real, default, rank), (real,  128, rank), (real, 128, 0)]
+[(real,  128, rank), (real,  128, rank), (real, 128, 0)]
+! And again with conformable rank 0
+[(integer,  default, 0), (real,  default, rank), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, default, 0)]
+[(real,  default, 0), (real,  double, rank), (real, default, 0)]
+[(real,  double, 0), (real,  double, rank), (real, default, 0)]
+[(integer, default, 0), (real,  32, rank), (real, default, 0)]
+[(real, default, 0), (real,  32, rank), (real, default, 0)]
+[(real,  32, 0), (real,  32, rank), (real, default, 0)]
+[(integer, default, 0), (real,  64, rank), (real, default, 0)]
+[(real, default, 0), (real,  64, rank), (real, default, 0)]
+[(real,  64, 0), (real,  64, rank), (real, default, 0)]
+[(integer, default, 0), (real,  80, rank), (real, default, 0)]
+[(real, default, 0), (real,  80, rank), (real, default, 0)]
+[(real,  80, 0), (real,  80, rank), (real, default, 0)]
+[(integer, default, 0), (real,  128, rank), (real, default, 0)]
+[(real, default, 0), (real,  128, rank), (real, default, 0)]
+[(real,  128, 0), (real,  128, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  default, rank), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, double, 0)]
+[(real,  default, 0), (real,  double, rank), (real, double, 0)]
+[(real,  double, 0), (real,  double, rank), (real, double, 0)]
+[(integer, default, 0), (real,  32, rank), (real, 32, 0)]
+[(real, default, 0), (real,  32, rank), (real, 32, 0)]
+[(real,  32, 0), (real,  32, rank), (real, 32, 0)]
+[(integer, default, 0), (real,  64, rank), (real, 64, 0)]
+[(real, default, 0), (real,  64, rank), (real, 64, 0)]
+[(real,  64, 0), (real,  64, rank), (real, 64, 0)]
+[(integer, default, 0), (real,  80, rank), (real, 80, 0)]
+[(real, default, 0), (real,  80, rank), (real, 80, 0)]
+[(real,  80, 0), (real,  80, rank), (real, 80, 0)]
+[(integer, default, 0), (real,  128, rank), (real, 128, 0)]
+[(real, default, 0), (real,  128, rank), (real, 128, 0)]
+[(real,  128, 0), (real,  128, rank), (real, 128, 0)]
+@end tkr_parameters
+
+
+#include "unused_dummy.fh"
+
+module pf_AssertReal_{rank}d
+#ifdef _ISO_REAL16
+   use, intrinsic :: iso_fortran_env, only: REAL16
+#endif
+#ifdef _ISO_REAL32
+   use, intrinsic :: iso_fortran_env, only: REAL32
+#endif
+#ifdef _ISO_REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL64
+#endif
+#ifdef _ISO_REAL80
+   use, intrinsic :: iso_fortran_env, only: REAL80
+#endif
+#ifdef _ISO_REAL128
+   use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
+#ifdef _ISO_REAL256
+   use, intrinsic :: iso_fortran_env, only: REAL256
+#endif
+
+   use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
+   implicit none
+!!$   private
+
+   public :: AssertEqual
+   public :: AssertNotEqual
+   public :: AssertLessThan
+   public :: AssertLessThanOrEqual
+   public :: AssertGreaterThan
+   public :: AssertGreaterThanOrEqual
+   
+   public :: AssertAssociated
+
+   @overload(AssertEqual, with_tol)
+   @overload(AssertNotEqual, with_tol)
+   @overload(AssertLessThan, with_tol)
+   @overload(AssertLessThanOrEqual, with_tol)
+   @overload(AssertGreaterThan, with_tol)
+   @overload(AssertGreaterThanOrEqual, with_tol)
+
+   @overload(AssertEqual, no_tol)
+   @overload(AssertNotEqual, no_tol)
+   @overload(AssertLessThan, no_tol)
+   @overload(AssertLessThanOrEqual, no_tol)
+   @overload(AssertGreaterThan, no_tol)
+   @overload(AssertGreaterThanOrEqual, no_tol)
+
+   @overload(AssertRelativelyEqual, with_tol)
+   @overload(AssertAssociated, minimal)
+
+   @overload(assert_equal, minimal)
+   @overload(assert_not_equal, minimal)
+   @overload(assert_less_than, minimal)
+   @overload(assert_less_than_or_equal, minimal)
+   @overload(assert_greater_than, minimal)
+   @overload(assert_greater_than_or_equal, minimal)
+   @overload(assert_relatively_equal, minimal)
+
+
+   integer, parameter :: MAX_LEN_REAL_AS_STRING = 40
+
+contains
+
+   @template(AssertEqual,[expected,actual,tolerance])
+#if {tolerance.type} == -1
+   subroutine {name}(expected, actual, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+
+      t = 0
+      call AssertEqual(expected, actual, t, message=message, location=location)
+
+   end subroutine {name}
+#else
+   subroutine {name}(expected, actual, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+      real(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      ! Trick to get e to have the right shape even if "expected" is a scalar.
+      allocate(e, mold=actual)
+      e = expected
+
+      t = real(tolerance, kind(actual))
+
+      call assert_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+#endif      
+   @end template
+   
+
+   @template(assert_equal,[actual])
+   subroutine {name}(expected, actual, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: e, a, d
+
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+      logical, allocatable :: within_tolerance {actual.dims}
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: expected_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! Scalar
+      
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+      if (actual == expected) return
+
+      if (.not. (abs(actual - expected) <= tolerance)) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+
+      allocate(within_tolerance, mold=(actual==actual))
+      where (actual == expected)
+         within_tolerance = .true.
+      elsewhere (abs(actual-expected) <= tolerance)
+         within_tolerance = .true.
+      elsewhere
+         within_tolerance = .false.
+      end where
+
+      if (all(within_tolerance)) return
+
+      ! index of first difference is
+      i = maxloc(merge(1,0, .not. within_tolerance))
+      e = expected({actual.multi_index})
+      a = actual({actual.multi_index})
+#endif
+      d = a - e
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(g0)') e
+      write(actual_str,'(g0)') a
+      write(diff_str,'("<",g0,"> (greater than tolerance of ",g0,")")') d, tolerance
+      
+#if {actual.rank} == 0
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertNotEqual,[expected,actual,tolerance])
+#if {tolerance.type} == -1
+
+   recursive subroutine {name}(expected, actual, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+
+      t = 0
+      call AssertNotEqual(expected, actual, t, message=message, location=location)
+
+   end subroutine {name}
+
+#else
+   
+   recursive subroutine {name}(expected, actual, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+      real(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      allocate(e, mold=actual)
+      e = expected
+      t = real(tolerance, kind(actual))
+
+      call assert_not_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+#endif
+   @end template
+
+
+   @template(assert_not_equal,[actual])
+   recursive subroutine {name}(expected, actual, tolerance, unused, message, location)
+      use, intrinsic :: ieee_arithmetic
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: e, a, d
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+      logical, allocatable :: within_tolerance {actual.dims}
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! Handle exact equality to support comparing Inf values.
+      if (actual /= expected) then
+         if (.not. (abs(actual - expected) > tolerance)) then
+            e = expected
+            a = actual
+         else
+            return
+         end if
+      else
+         e = expected
+         a = actual
+      end if
+         
+#else
+      ! Handle exact equality to support comparing Inf values.
+      allocate(within_tolerance, mold=(actual==actual))
+      where (actual == expected)
+         within_tolerance = .true.
+      elsewhere (abs(actual-expected) <= tolerance)
+         within_tolerance = .true.
+      elsewhere
+         within_tolerance = .false.
+      end where
+
+      if (all(.not. within_tolerance)) return
+
+      ! index of first difference is
+      i = maxloc(merge(1,0, within_tolerance))
+#  if {actual.rank} == 0
+      e = expected
+#  else
+      e = expected({actual.multi_index})
+#  endif
+      a = actual({actual.multi_index})
+#endif
+      if (a == e) then
+         d = 0 ! cheat: inf-inf is actually NaN
+      else
+         d = a - e
+      end if
+      
+      ! Wish: allocatable strings were useful as internal files ...
+      write(actual_str,'(g0)') a
+      write(diff_str,'("<",g0,"> (less than or equal to tolerance of ",g0,")")') d, tolerance
+      
+#if {actual.rank} == 0
+      call fail_equal(trim(actual_str), difference=trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_equal(trim(actual_str), difference=trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertLessThan,[lhs,rhs,tolerance])
+
+#if {tolerance.type} == -1
+   recursive subroutine {name}(lhs, rhs, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: t
+
+      t = 0
+      call AssertLessThan(lhs, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+
+#else
+
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
+      t = tolerance
+      call assert_less_than(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+#endif   
+
+   @end template
+
+   
+   @template(assert_less_than,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: l, r
+#if {rhs.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs < rhs + tolerance)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs < rhs + tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (lhs < rhs + tolerance)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(g0)') l
+      write(rhs_str,'(g0)') r
+
+#if {rhs.rank} == 0
+      call fail_not_less_than(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_less_than(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertLessThanOrEqual,[lhs,rhs,tolerance])
+
+#if {tolerance.type} == -1
+
+   recursive subroutine {name}(lhs, rhs, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: t
+
+      t = 0
+      call AssertLessThanOrEqual(lhs, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+
+#else
+
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
+      t = tolerance
+      call assert_less_than_or_equal(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+#endif   
+
+   @end template
+
+   
+   @template(assert_less_than_or_equal,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: l, r
+#if {rhs.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs <= rhs + tolerance)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs <= rhs + tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (lhs <= rhs + tolerance)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(g0)') l
+      write(rhs_str,'(g0)') r
+      
+#if {rhs.rank} == 0
+      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertGreaterThan,[lhs,rhs,tolerance])
+#if {tolerance.type} == -1
+
+   recursive subroutine {name}(lhs, rhs, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: t
+
+      t = 0
+      call AssertGreaterThan(lhs, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+
+#else
+
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
+      t = tolerance
+      call assert_greater_than(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+#endif   
+   @end template
+
+   
+   @template(assert_greater_than,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: l, r
+#if {rhs.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs > rhs - tolerance)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs > rhs - tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (lhs > rhs - tolerance)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(g0)') l
+      write(rhs_str,'(g0)') r
+      
+#if {rhs.rank} == 0
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+
+
+   @template(AssertGreaterThanOrEqual,[lhs,rhs,tolerance])
+#if {tolerance.type} == -1
+
+   recursive subroutine {name}(lhs, rhs, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: t
+
+      t = 0
+      call AssertGreaterThanOrEqual(lhs, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+
+#else
+
+   recursive subroutine {name}(lhs, rhs, tolerance, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)), allocatable :: l {rhs.dims}
+      real(kind=kind(rhs)) :: t
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      l = lhs
+#else
+      allocate(l, mold=rhs)
+      l = lhs
+#endif
+      t = tolerance
+      call assert_greater_than_or_equal(l, rhs, t, message=message, location=location)
+
+   end subroutine {name}
+#endif   
+   @end template
+
+   
+   @template(assert_greater_than_or_equal,[rhs])
+   recursive subroutine {name}(lhs, rhs, tolerance, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      real (kind={rhs.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(rhs)) :: l, r
+#if {rhs.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs >= rhs - tolerance)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs >= rhs - tolerance)) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (lhs >= rhs - tolerance)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(g0)') l
+      write(rhs_str,'(g0)') r
+      
+#if {rhs.rank} == 0
+      call fail_not_greater_than_or_equal(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_greater_than_or_equal(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertAssociated,[tkr])
+   subroutine {name}(p, t, unused, message, location)
+      {tkr.type} (kind={tkr.kind}), pointer, intent(in) :: p {tkr.dims}
+      {tkr.type} (kind={tkr.kind}), target, intent(in) :: t {tkr.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. associated(p, t)) then
+         call fail_not_associated(message=message, location=location)
+      end if
+
+   end subroutine {name}
+   @end template
+
+   @template(AssertRelativelyEqual,[expected,actual,tolerance])
+   subroutine {name}(expected, actual, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: t
+      real(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      ! Trick to get e to have the right shape even if "expected" is a scalar.
+      e = 0*actual + expected
+
+      if (any([e] == 0)) then
+         call fail_generic('Zero denominator detected in AssertRelativelyEqual.',message=message, location=location)
+         return
+      end if
+
+      t = real(tolerance, kind(actual))
+
+      call assert_relatively_equal(e, actual, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+   
+   @template(assert_relatively_equal,[actual])
+   subroutine {name}(expected, actual, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: e, a, rd
+
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: expected_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (abs(actual - expected) <= tolerance*abs(expected))) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(abs(actual - expected) <= tolerance*abs(expected))) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. abs(actual-expected) <= tolerance))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+      rd = (a - e)/e
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(g0)') e
+      write(actual_str,'(g0)') a
+      write(diff_str,'("<",g0,"> (greater than tolerance of ",g0,")")') rd, tolerance
+      
+#if {actual.rank} == 0
+      call fail_not_relatively_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_not_relatively_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+   end subroutine {name}
+   @end template
+
+   
+
+   @instantiate(AssertEqual, with_tol)
+   @instantiate(AssertNotEqual, with_tol)
+   @instantiate(AssertLessThan, with_tol)
+   @instantiate(AssertLessThanOrEqual, with_tol)
+   @instantiate(AssertGreaterThan, with_tol)
+   @instantiate(AssertGreaterThanOrEqual, with_tol)
+   @instantiate(AssertRelativelyEqual, with_tol)
+
+   @instantiate(AssertEqual, no_tol)
+   @instantiate(AssertNotEqual, no_tol)
+   @instantiate(AssertLessThan, no_tol)
+   @instantiate(AssertLessThanOrEqual, no_tol)
+   @instantiate(AssertGreaterThan, no_tol)
+   @instantiate(AssertGreaterThanOrEqual, no_tol)
+
+   @instantiate(AssertAssociated, minimal)
+
+   @instantiate(assert_equal, minimal)
+   @instantiate(assert_not_equal, minimal)
+   @instantiate(assert_less_than, minimal)
+   @instantiate(assert_less_than_or_equal, minimal)
+   @instantiate(assert_greater_than, minimal)
+   @instantiate(assert_greater_than_or_equal, minimal)
+   @instantiate(assert_relatively_equal, minimal)
+   
+end module pf_AssertReal_{rank}d
+
+
+   
+

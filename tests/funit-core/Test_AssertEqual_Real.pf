@@ -1,0 +1,507 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+! Reference comparison:  default real scalar
+
+
+module Test_AssertEqual_Real
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL128
+   use pf_StringUtilities
+   use pf_SourceLocation
+   use pf_Exceptionlist
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_AssertBasic
+   use pf_AssertReal_0d
+   use pf_AssertReal_1d
+   use pf_AssertReal_2d
+   use pf_AssertReal_3d
+#ifdef _REAL32_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_32
+      use MakeInf, only:  strInf
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_128
+#endif
+   implicit none
+      
+   @suite(name='AssertEqual_Real_suite')
+
+   real(kind=REAL32), parameter :: good = 1
+   real(kind=REAL32), parameter :: bad  = -999
+
+   character(len=1), parameter :: NL = new_line('a')
+contains
+
+
+   ! First a series of tests that should not raise exceptions.
+
+   @test
+   subroutine test_equal_scalar()
+      @assertEqual(1, 1.0)
+      @assertEqual(1.0, 1.0)
+      @assertEqual(1.0, 1.0)
+
+#ifdef _REAL32
+      @assertEqual(1, 1.0_REAL32)
+      @assertEqual(1.0, 1.0_REAL32)
+      @assertEqual(1.0_REAL32, 1.0_REAL32)
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, 1.0_REAL64)
+      @assertEqual(1.0, 1.0_REAL64)
+      @assertEqual(1.0_REAL64, 1.0_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, 1.0_REAL128)
+      @assertEqual(1.0, 1.0_REAL128)
+      @assertEqual(1.0_REAL128, 1.0_REAL128)
+#endif
+   end subroutine test_equal_scalar
+
+   @test
+   subroutine test_equal_scalar_with_tolerance()
+      @assertEqual(1, 1.1, 0.2)
+      @assertEqual(1.0, 1.1, 0.2)
+      @assertEqual(1.0, 1.1, 0.2)
+
+#ifdef _REAL32
+      @assertEqual(1, 1.1_REAL32, 0.2)
+      @assertEqual(1.0, 1.1_REAL32, 0.2)
+      @assertEqual(1.0_REAL32, 1.1_REAL32, 0.2)
+
+      @assertEqual(1, 1.1_REAL32, 0.2_REAL32)
+      @assertEqual(1.0, 1.1_REAL32, 0.2_REAL32)
+      @assertEqual(1.0_REAL32, 1.1_REAL32, 0.2_REAL32)
+#endif
+      
+#ifdef _REAL64
+      @assertEqual(1, 1.1_REAL64, 0.2)
+      @assertEqual(1.0, 1.1_REAL64, 0.2)
+      @assertEqual(1.0_REAL64, 1.1_REAL64, 0.2)
+
+      @assertEqual(1, 1.1_REAL64, 0.2_REAL64)
+      @assertEqual(1.0, 1.1_REAL64, 0.2_REAL64)
+      @assertEqual(1.0_REAL64, 1.1_REAL64, 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, 1.1_REAL128, 0.2)
+      @assertEqual(1.0, 1.1_REAL128, 0.2)
+      @assertEqual(1.0_REAL128, 1.1_REAL128, 0.2)
+
+      @assertEqual(1, 1.1_REAL128, 0.2_REAL128)
+      @assertEqual(1.0, 1.1_REAL128, 0.2_REAL128)
+      @assertEqual(1.0_REAL128, 1.1_REAL128, 0.2_REAL128)
+#endif
+
+   end subroutine test_equal_scalar_with_tolerance
+
+   @test
+   subroutine test_equal_1D_actual
+      @assertEqual(1, [1.0])
+      @assertEqual(1.0, [1.0,1.0,1.0])
+      @assertEqual([1,2], [1.0,2.0])
+      @assertEqual([1.0,2.0], [1.0,2.0])
+      @assertEqual([1.0,2.0], [1.0,2.0])
+
+#ifdef _REAL32
+      @assertEqual(1, [1.0_REAL32])
+      @assertEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
+      @assertEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
+      @assertEqual([1,2], [1.0_REAL32,2.0_REAL32])
+      @assertEqual([1.0,2.0], [1.0_REAL32,2.0_REAL32])
+      @assertEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32])
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, [1.0_REAL64])
+      @assertEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
+      @assertEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
+      @assertEqual([1,2], [1.0_REAL64,2.0_REAL64])
+      @assertEqual([1.0,2.0], [1.0_REAL64,2.0_REAL64])
+      @assertEqual([1.0_REAL64,2.0_REAL64], [1.0_REAL64,2.0_REAL64])
+#endif
+
+
+#ifdef _REAL128
+      @assertEqual(1, [1.0_REAL128])
+      @assertEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
+      @assertEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
+      @assertEqual([1,2], [1.0_REAL128,2.0_REAL128])
+      @assertEqual([1.0,2.0], [1.0_REAL128,2.0_REAL128])
+      @assertEqual([1.0_REAL128,2.0_REAL128], [1.0_REAL128,2.0_REAL128])
+#endif
+      
+   end subroutine test_equal_1D_actual
+   
+   @test
+   subroutine test_equal_1D_actual_with_tolerance
+
+      @assertEqual(1, [1.1], 0.2)
+      @assertEqual(1.0, [1.1,1.1,1.1], 0.2)
+      @assertEqual(1.1, [1.1,1.1,1.1],0.2)
+      @assertEqual([1,2], [1.1,2.1], 0.2)
+      @assertEqual([1.0,2.0], [1.1,2.1], 0.2)
+      @assertEqual([1.1,2.1], [1.1,2.1], 0.2)
+
+#ifdef _REAL32      
+      @assertEqual(1, [1.1_REAL32], 0.2)
+      @assertEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2)
+      @assertEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2)
+      @assertEqual([1,2], [1.1_REAL32,2.1_REAL32], 0.2)
+      @assertEqual([1.0,2.0], [1.1_REAL32,2.1_REAL32], 0.2)
+      @assertEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2)
+
+      @assertEqual(1, [1.1_REAL32], 0.2_REAL32)
+      @assertEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2_REAL32)
+      @assertEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2_REAL32)
+      @assertEqual([1,2], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
+      @assertEqual([1.0,2.0], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
+      @assertEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, [1.1_REAL64], 0.2)
+      @assertEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2)
+      @assertEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2)
+      @assertEqual([1,2], [1.1_REAL64,2.1_REAL64], 0.2)
+      @assertEqual([1.0,2.0], [1.1_REAL64,2.1_REAL64], 0.2)
+      @assertEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2)
+
+      @assertEqual(1, [1.1_REAL64], 0.2_REAL64)
+      @assertEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2_REAL64)
+      @assertEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2_REAL64)
+      @assertEqual([1,2], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
+      @assertEqual([1.0,2.0], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
+      @assertEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertEqual(1, [1.1_REAL128], 0.2)
+      @assertEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2)
+      @assertEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2)
+      @assertEqual([1,2], [1.1_REAL128,2.1_REAL128], 0.2)
+      @assertEqual([1.0,2.0], [1.1_REAL128,2.1_REAL128], 0.2)
+      @assertEqual([1.1_REAL128,2.1_REAL128], [1.1_REAL128,2.1_REAL128], 0.2)
+
+      @assertEqual(1, [1.1_REAL128], 0.2_REAL128)
+      @assertEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2_REAL128)
+      @assertEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2_REAL128)
+      @assertEqual([1,2], [1.1_REAL128,2.1_REAL128], 0.2_REAL128)
+      @assertEqual([1.0,2.0], [1.1_REAL128,2.1_REAL128], 0.2_REAL128)
+      @assertEqual([1.1_REAL128,2.1_REAL128], [1.1_REAL128,2.1_REAL128], 0.2_REAL128)
+#endif
+      
+   end subroutine test_equal_1D_actual_with_tolerance
+
+   
+   @test
+   subroutine test_equal_2D_actual
+      integer :: const(2,3) = reshape([1,1,1,1,1,1],[2,3])
+      integer :: array(2,3) = reshape([1,2,3,4,5,6],[2,3])
+      
+      @assertEqual(1, real(const))
+      @assertEqual(1.0, real(const))
+
+      @assertEqual(array, real(array))
+      @assertEqual(real(array), real(array))
+
+#ifdef _REAL32
+      @assertEqual(1, real(const,kind=REAL32))
+      @assertEqual(1.0, real(const,kind=REAL32))
+      @assertEqual(1.0_REAL32, real(const,kind=REAL32))
+
+      @assertEqual(array, real(array,kind=REAL32))
+      @assertEqual(real(array), real(array,kind=REAL32))
+      @assertEqual(real(array,kind=REAL32), real(array,kind=REAL32))
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, real(const,kind=REAL64))
+      @assertEqual(1.0, real(const,kind=REAL64))
+      @assertEqual(1.0_REAL64, real(const,kind=REAL64))
+
+      @assertEqual(array, real(array,kind=REAL64))
+      @assertEqual(real(array), real(array,kind=REAL64))
+      @assertEqual(real(array,kind=REAL64), real(array,kind=REAL64))
+#endif
+
+
+#ifdef _REAL128
+      @assertEqual(1, real(const,kind=REAL128))
+      @assertEqual(1.0, real(const,kind=REAL128))
+      @assertEqual(1.0_REAL128, real(const,kind=REAL128))
+
+      @assertEqual(array, real(array,kind=REAL128))
+      @assertEqual(real(array), real(array,kind=REAL128))
+      @assertEqual(real(array,kind=REAL128), real(array,kind=REAL128))
+#endif
+      
+   end subroutine test_equal_2D_actual
+
+   @test
+   subroutine test_equal_2D_actual_with_tolerance
+      integer :: const(2,3) = reshape([1,1,1,1,1,1],[2,3])
+      integer :: array(2,3) = reshape([1,2,3,4,5,6],[2,3])
+      
+      @assertEqual(1, real(const)+1, 2.)
+      @assertEqual(1.0, real(const)+1, 2.)
+
+      @assertEqual(array, real(array)+1, 2.)
+      @assertEqual(real(array), real(array)+1,2.)
+
+#ifdef _REAL32
+      @assertEqual(1, real(const,kind=REAL32)+1, 2._REAL32)
+      @assertEqual(1.0, real(const,kind=REAL32)+1, 2._REAL32)
+      @assertEqual(1.0_REAL32, real(const,kind=REAL32)+1, 2._REAL32)
+
+      @assertEqual(array, real(array,kind=REAL32)+1, 2._REAL32)
+      @assertEqual(real(array), real(array,kind=REAL32)+1, 2._REAL32)
+      @assertEqual(real(array,kind=REAL32), real(array,kind=REAL32)+1, 2._REAL32)
+
+      @assertEqual(1, real(const,kind=REAL32)+1, 2.)
+      @assertEqual(1.0, real(const,kind=REAL32)+1, 2.)
+      @assertEqual(1.0_REAL32, real(const,kind=REAL32)+1, 2.)
+
+      @assertEqual(array, real(array,kind=REAL32)+1, 2.)
+      @assertEqual(real(array), real(array,kind=REAL32)+1, 2.)
+      @assertEqual(real(array,kind=REAL32), real(array,kind=REAL32)+1, 2.)
+#endif
+
+#ifdef _REAL64
+      @assertEqual(1, real(const,kind=REAL64)+1, 2._REAL64)
+      @assertEqual(1.0, real(const,kind=REAL64)+1, 2._REAL64)
+      @assertEqual(1.0_REAL64, real(const,kind=REAL64)+1, 2._REAL64)
+
+      @assertEqual(array, real(array,kind=REAL64)+1, 2._REAL64)
+      @assertEqual(real(array), real(array,kind=REAL64)+1, 2._REAL64)
+      @assertEqual(real(array,kind=REAL64), real(array,kind=REAL64)+1, 2._REAL64)
+
+      @assertEqual(1, real(const,kind=REAL64)+1, 2.)
+      @assertEqual(1.0, real(const,kind=REAL64)+1, 2.)
+      @assertEqual(1.0_REAL64, real(const,kind=REAL64)+1, 2.)
+
+      @assertEqual(array, real(array,kind=REAL64)+1, 2.)
+      @assertEqual(real(array), real(array,kind=REAL64)+1, 2.)
+      @assertEqual(real(array,kind=REAL64), real(array,kind=REAL64)+1, 2.)
+#endif
+
+
+#ifdef _REAL128
+      @assertEqual(1, real(const,kind=REAL128)+1, 2._REAL128)
+      @assertEqual(1.0, real(const,kind=REAL128)+1, 2._REAL128)
+      @assertEqual(1.0_REAL128, real(const,kind=REAL128)+1, 2._REAL128)
+
+      @assertEqual(array, real(array,kind=REAL128)+1, 2._REAL128)
+      @assertEqual(real(array), real(array,kind=REAL128)+1, 2._REAL128)
+      @assertEqual(real(array,kind=REAL128), real(array,kind=REAL128)+1, 2._REAL128)
+
+      @assertEqual(1, real(const,kind=REAL128)+1, 2.)
+      @assertEqual(1.0, real(const,kind=REAL128)+1, 2.)
+      @assertEqual(1.0_REAL128, real(const,kind=REAL128)+1, 2.)
+
+      @assertEqual(array, real(array,kind=REAL128)+1, 2.)
+      @assertEqual(real(array), real(array,kind=REAL128)+1, 2.)
+      @assertEqual(real(array,kind=REAL128), real(array,kind=REAL128)+1, 2.)
+#endif
+      
+   end subroutine test_equal_2D_actual_with_tolerance
+
+   ! Ensure that Infinity does not cause floating exceptions
+   @test
+   subroutine test_infinity()
+#ifdef _REAL32_IEEE_SUPPORT
+      @assertIsInfinite(makeInf_32())
+      @assertIsFinite(1._REAL32)
+      @assertEqual(makeInf_32(), makeInf_32())
+      @assertEqual(makeInf_32(), makeInf_32(), 0.5)
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      @assertIsInfinite(makeInf_64())
+      @assertIsFinite(1._REAL64)
+      @assertEqual(makeInf_64(), makeInf_64())
+      @assertEqual(makeInf_64(), makeInf_64(), 0.5_REAL64)
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      @assertIsInfinite(makeInf_128())
+      @assertIsFinite(1._REAL128)
+      @assertEqual(makeInf_128(), makeInf_128())
+      @assertEqual(makeInf_128(), makeInf_128(), 0.5_REAL128)
+#endif
+
+   end subroutine test_infinity
+
+   @test
+   subroutine test_infinity_1d()
+      use iso_fortran_env, only: REAL64
+
+#ifdef _REAL32_IEEE_SUPPORT
+      @assertIsFinite(1._REAL32)
+      @assertEqual([1._REAL32,makeInf_32()], [1._REAL32,makeInf_32()])
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      @assertIsFinite(1._REAL64)
+      @assertEqual([1._REAL64,makeInf_64()], [1._REAL64,makeInf_64()])
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      @assertIsFinite(1._REAL128)
+      @assertEqual([1._REAL128,makeInf_128()], [1._REAL128,makeInf_128()])
+#endif
+
+   end subroutine test_infinity_1d
+
+
+   ! OK - now a long series of tests that verify the expected
+   ! messages from failing asserts.   Each test has an assertion that is
+   ! intended to fail, followed by an assertExceptionRaised() that is expected
+   ! to succeed and "eat" the first exception.  
+   @test
+   subroutine test_conformability_a()
+      call assertEqual([1.0], [1.0, 1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [1]' // NL // &
+           & '      Actual shape: [2]' &
+           & )
+   end subroutine test_conformability_a
+
+   @test
+   subroutine test_conformability_b()
+      call assertEqual([1.0,2.0], [1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [2]' // NL // &
+           & '      Actual shape: [1]' &
+           & )
+   end subroutine test_conformability_b
+   
+
+   @test
+   subroutine test_equal_fail_scalar_no_tolerance()
+
+      character(:), allocatable :: str_zero
+      character(:), allocatable :: str_one
+      character(:), allocatable :: str_two
+      str_zero = to_string(0.0)
+      str_one = to_string(1.0)
+      str_two = to_string(2.0)
+
+      call assertEqual(1.0, 2.0)
+      call assertExceptionRaised(&
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.0)//')' &
+           & )
+   end subroutine test_equal_fail_scalar_no_tolerance
+
+   @test
+   subroutine test_equal_fail_scalar_with_tolerance()
+
+      call assertEqual(1.0, 2.0, 0.1)
+      call assertExceptionRaised(&
+           & 'AssertEqual failure:' // NL // &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.1)//')' &
+           & )
+   end subroutine test_equal_fail_scalar_with_tolerance
+
+   @test
+   subroutine test_equal_fail_1d_with_tolerance()
+      call assertEqual(1, [2.0,1.0], 0.1)
+      call assertExceptionRaised(&
+           & 'ArrayAssertEqual failure:' // NL // &
+           & '      Expected: <'//to_string(1.0)//'>' // NL // &
+           & '        Actual: <'//to_string(2.0)//'>' // NL // &
+           & '    Difference: <'//to_string(1.0)//'> (greater than tolerance of '//to_string(0.1)//')' // NL //  &
+           & '      at index: [1]' &
+           & )
+   end subroutine test_equal_fail_1d_with_tolerance
+
+  @test
+  subroutine testEquals_2D_SingleElementDifferent()
+
+    real, dimension(2,2) :: expected, found
+
+    expected = good
+    found = good; found(1,2) = bad
+
+    ! The following should throw an exception...
+    call assertEqual(expected, found)
+
+    call assertExceptionRaised( &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
+         & '        Actual: <'//to_string(-999.)//'>' // NL // &
+         & '    Difference: <'//to_string(-1000.)//'> (greater than tolerance of '//to_string(0.)//')'  // NL // &
+         & '      at index: [1,2]' &
+         )
+
+  end subroutine testEquals_2D_SingleElementDifferent
+
+  @test
+  subroutine testEquals_2d_MultipleDiffs
+
+    real, dimension(2,3) :: expected, found
+
+    expected = good
+    found = good; found(2,[1,3]) = bad;
+
+    ! The following should throw an exception...
+    call assertEqual(expected, found)
+
+    call assertExceptionRaised( &
+         & 'ArrayAssertEqual failure:' // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
+         & '        Actual: <'//to_string(-999.)//'>' // NL // &
+         & '    Difference: <'//to_string(-1000.)//'> (greater than tolerance of '//to_string(0.)//')'  // NL // &
+         & '      at index: [2,1]' &
+         )
+
+ end subroutine testEquals_2d_MultipleDiffs
+
+  @test
+  subroutine testEquals_ScalarInf_unequal_A()
+    
+    call assertEqual(1._REAL32, makeInf_32())
+
+    call assertExceptionRaised( &
+         & 'AssertEqual failure:' // NL // &
+         & '      Expected: <'//to_string(1.)//'>' // NL // &
+         & '        Actual: <'//strInf()//'>' // NL // &
+         & '    Difference: <'//strInf()//'> (greater than tolerance of '//to_string(0.)//')' &
+         )
+
+  end subroutine testEquals_ScalarInf_unequal_A
+
+  @test
+  subroutine testEquals_ScalarInf_unequal_B()
+    
+    call assertEqual(makeInf_32(), 1._REAL32, 2._REAL32)
+
+    call assertExceptionRaised( &
+         & 'AssertEqual failure:' // NL // &
+         & '      Expected: <'//strInf()//'>' // NL // &
+         & '        Actual: <'//to_string(1.)//'>' // NL // &
+         & '    Difference: <-'//strInf()//'> (greater than tolerance of '//to_string(2.)//')' &
+         )
+ end subroutine testEquals_ScalarInf_unequal_B
+
+   function to_string(x) result(str)
+      real, intent(in) :: x
+      character(len=:), allocatable :: str
+      
+      character(255) :: buffer
+      write(buffer,'(g0)') x
+      str = trim(buffer)
+      
+   end function to_string
+
+end module Test_AssertEqual_Real
+   

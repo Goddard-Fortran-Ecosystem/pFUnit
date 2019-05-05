@@ -1,0 +1,38 @@
+module newTest_Exception
+   use PF_Assert
+   use PF_SourceLocation
+   use PF_Exception, only: Exception
+   use PF_ExceptionList
+   implicit none
+
+   @suite(name='ExceptionList_suite')
+
+contains
+
+   @test
+   subroutine test_throw_message()
+      type (ExceptionList) :: list
+
+      call list%throw('foo')
+      call assertEqual(1, list%size())
+      call list%throw('bar', SourceLocation('f.F90', 35))
+      call assertEqual(2, list%size())
+
+   end subroutine test_throw_message
+
+
+
+   @test
+   subroutine test_catch_fail()
+      !EOP
+      !BOC
+      type (ExceptionList) :: list
+      character(len=*), parameter :: message = 'anException'
+
+      call list%throw(message)
+      call assertFalse(list%catch('different exception'))
+      !EOC
+   end subroutine test_catch_fail
+   
+   
+end module newtest_Exception

@@ -405,10 +405,10 @@ One then instructs the preprocessor to construct a suite to execute these tests 
 ! from testSuites.inc
 ADD_TEST_SUITE(helloWorld_suite)\endcode
 
-At this point, one can invoke the preprocessor to generate a Fortran file that when compiled and linked with pFUnit will execute the tests. For more information please see \ref page_pFUnitParser or try out the examples in Example/Simple.
+At this point, one can invoke the preprocessor to generate a Fortran file that when compiled and linked with pFUnit will execute the tests. For more information please see \ref page_funitproc or try out the examples in Example/Simple.
 
 \section sec_UsagePreprocessor Usage - Preprocessor
-Please see \ref page_pFUnitParser.
+Please see \ref page_funitproc.
 
 \section sec_UsageExecutingTheTest Compiling and Executing The Test
 
@@ -553,7 +553,7 @@ pFUnit supports the software development of several weather and climate simulati
 <p><em>Solutions:</em>
 <ul><li>There is no <code>-DUSE_MPI</code> passed to the compiler during the build.  Please add as in the following example.
 \code
-% $PFUNIT/bin/pFUnitParser.py test_pio.pf test_pio.F90
+% $PFUNIT/bin/funitproc test_pio.pf test_pio.F90
 % mpif90 -DUSE_MPI $PFUNIT/include/driver.F90 \
 %     -I$PFUNIT/mod -L$PFUNIT/lib -lpfunit test_pio.F90
 
@@ -695,9 +695,9 @@ pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
 - Make other directory.
 - Make Environment Modules example in other directory.
 
-\page page_pFUnitParser The Preprocessor - pFUnitParser
+\page page_funitproc The Preprocessor - funitproc
 
-Overview of Preprocessor (pFUnitParser.py)
+Overview of Preprocessor (funitproc)
 
 <ul>
    <li>\ref sec_UsingThePreprocessor</li>
@@ -746,11 +746,11 @@ ADD_TEST_SUITE(exampleTests_mod_suite)\endcode
 
 To run the preprocessor on on a preprocessor input file "exampleTests.pf", invoke:
 \code
-$ ${PFUNIT}/bin/pFUnitParser.py exampleTests.pf exampleTests.F90 \endcode
+$ ${PFUNIT}/bin/funitproc exampleTests.pf exampleTests.F90 \endcode
 A convenient GNUmakefile rule is as follows.
 \code
 %.F90: %.pf
-       $(PFUNIT)/bin/pFUnitParser.py $<  $@ \endcode
+       $(PFUNIT)/bin/funitproc $<  $@ \endcode
 
 \subsection ss_PreprocessorInput Preprocessor Input File (.pf)
 

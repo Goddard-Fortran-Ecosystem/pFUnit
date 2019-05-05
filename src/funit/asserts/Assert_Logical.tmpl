@@ -1,0 +1,266 @@
+#include "unused_dummy.fh"
+
+! Minimum support is for expected and actual arguments to have the same
+! kind.
+
+@tkr_parameters minimal
+[(logical, default, rank)]
+@end tkr_parameters
+
+@tkr_parameters useful
+[(logical, default, rank), (logical, default, rank)]
+[(logical, default, 0), (logical, default, rank)]
+@end tkr_parameters
+
+
+module pf_AssertLogical_{rank}d
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
+
+   implicit none
+   private
+
+   public :: assertEqual
+   public :: assertNotEqual
+   public :: assertEquivalent
+   public :: assertNotEquivalent
+   public :: assertAssociated
+
+   @overload(AssertEqual, useful)
+   @overload(AssertNotEqual, useful)
+   @overload(AssertEquivalent, useful)
+   @overload(AssertNotEquivalent, useful)
+   @overload(AssertAssociated, minimal)
+
+   ! internal
+   @overload(assert_equivalent, minimal)
+   @overload(assert_not_equivalent, minimal)
+
+contains
+
+
+   @template(AssertEqual, [expected,actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {expected.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      call AssertEquivalent(expected, actual, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertNotEqual, [expected,actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {expected.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      call AssertNotEquivalent(expected, actual, message=message, location=location)
+
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertEquivalent, [expected,actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {expected.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} != 0 && {expected.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_equivalent(expected .or. (actual .neqv. actual), actual, message=message, location=location)
+#else
+      call assert_equivalent(expected, actual, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertNotEquivalent, [expected,actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {expected.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} != 0 && {expected.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_not_equivalent(expected .or. (actual .neqv. actual), actual, message=message, location=location)
+#else
+      call assert_not_equivalent(expected, actual, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertAssociated, [t])
+   subroutine {name}(p, t, unused, message, location)
+      logical, pointer, intent(in) :: p {t.dims}
+      logical, target, intent(in) :: t {t.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. associated(p, t)) then
+         call fail_not_associated(message=message, location=location)
+      end if
+   end subroutine {name}
+   @end template
+
+
+
+   @template(assert_equivalent, [actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {actual.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      logical :: e, a
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+
+      character(1) :: expected_str
+      character(1) :: actual_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+#if {actual.rank} == 0
+      ! scalar
+      if (expected .neqv. actual) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+#else
+      if (.not. all(expected .eqv. actual)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (expected .eqv. actual)))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(g0)') e
+      write(actual_str,'(g0)') a
+      
+#if {rank} == 0
+      call fail_not_equivalent(trim(expected_str), trim(actual_str), &
+           & message=message, location=location)
+#else
+      call fail_not_equivalent(trim(expected_str), trim(actual_str), index=i, &
+           & message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+   
+
+   @template(assert_not_equivalent, [actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      logical, intent(in) :: expected {actual.dims}
+      logical, intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      logical :: e, a
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+
+      character(1) :: expected_str
+      character(1) :: actual_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+#if {actual.rank} == 0
+      ! scalar
+      if (expected .eqv. actual) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+#else
+      if (.not. all(expected .neqv. actual)) then ! array
+         ! index of first equivalence is
+         i = maxloc(merge(1,0, .not. (expected .eqv. actual)))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(g0)') e
+      write(expected_str,'(g0)') a
+      
+#if {rank} == 0
+      call fail_equivalent(trim(expected_str), trim(actual_str), &
+           & message=message, location=location)
+#else
+      call fail_equivalent(trim(expected_str), trim(actual_str), index=i, &
+           & message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+   
+
+   ! public
+   @instantiate(AssertEqual, useful)
+   @instantiate(AssertNotEqual, useful)
+   @instantiate(AssertEquivalent, useful)
+   @instantiate(AssertNotEquivalent, useful)
+   @instantiate(AssertAssociated, minimal)
+
+   ! private
+   @instantiate(assert_equivalent, minimal)
+   @instantiate(assert_not_equivalent, minimal)
+
+end module pf_AssertLogical_{rank}d

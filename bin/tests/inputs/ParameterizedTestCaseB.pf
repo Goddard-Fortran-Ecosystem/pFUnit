@@ -2,6 +2,7 @@ module TestCaseB_mod
    use pfunit_mod
    implicit none
 
+   
 @testCase(constructor=newTestCaseB)
    type, extends(ParameterizedTestCase) :: TestCaseB
       integer, allocatable :: table(:)

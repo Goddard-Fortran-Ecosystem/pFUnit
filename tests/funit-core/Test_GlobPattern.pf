@@ -1,0 +1,139 @@
+module Test_GlobPattern
+   use FUnit
+   use PF_GlobPattern
+   implicit none
+
+   @suite(name='GlobPattern_suite')
+
+contains
+
+   @test
+   subroutine test_patterns()
+
+      if (.not. check('a', 'a', .true.)) return
+      if (.not. check('a', 'b', .false.)) return
+
+      ! From Dr. Dobbs <http://www.drdobbs.com/architecture-and-design/matching-wildcards-an-empirical-way-to-t/240169123>
+      
+      if (.not. check('abcccd', '*ccd', .true.)) return
+      if (.not. check('mississipissippi', '*issip*ss*', .true.)) return
+      if (.not. check('mississipissippi', '*issip*ss*', .true.)) return
+      if (.not. check("xxxx*zzzzzzzzy*f", "xxxx*zzy*fffff", .false.)) return 
+      if (.not. check("xxxx*zzzzzzzzy*f", "xxx*zzy*f", .true.)) return
+      if (.not. check("xxxxzzzzzzzzyf", "xxxx*zzy*fffff", .false.)) return
+      if (.not. check("xxxxzzzzzzzzyf", "xxxx*zzy*f", .true.)) return
+      if (.not. check("xyxyxyzyxyz", "xy*z*xyz", .true.)) return
+      if (.not. check("mississippi", "*sip*", .true.)) return
+      if (.not. check("xyxyxyxyz", "xy*xyz", .true.)) return
+      if (.not. check("mississippi", "mi*sip*", .true.)) return
+      if (.not. check("ababac", "*abac*", .true.)) return
+      if (.not. check("ababac", "*abac*", .true.)) return
+      if (.not. check("aaazz", "a*zz*", .true.)) return
+      if (.not. check("a12b12", "*12*23", .false.)) return
+      if (.not. check("a12b12", "a12b", .false.)) return
+      if (.not. check("a12b12", "*12*12*", .true.)) return
+
+      if (.not. check("*", "*", .true.)) return
+      if (.not. check("a*abab", "a*b", .true.)) return
+      if (.not. check("a*r", "a*", .true.)) return
+      if (.not. check("a*ar", "a*aar", .false.)) return
+
+
+      if (.not. check("XYXYXYZYXYz", "XY*Z*XYz", .true.)) return
+      if (.not. check("missisSIPpi", "*SIP*", .true.)) return
+      if (.not. check("mississipPI", "*issip*PI", .true.)) return
+      if (.not. check("xyxyxyxyz", "xy*xyz", .true.)) return
+      if (.not. check("miSsissippi", "mi*sip*", .true.)) return
+      if (.not. check("miSsissippi", "mi*Sip*", .false.)) return
+      if (.not. check("abAbac", "*Abac*", .true.)) return
+      if (.not. check("abAbac", "*Abac*", .true.)) return
+      if (.not. check("aAazz", "a*zz*", .true.)) return
+      if (.not. check("A12b12", "*12*23", .false.)) return
+      if (.not. check("a12B12", "*12*12*", .true.)) return
+      if (.not. check("oWn", "*oWn*", .true.)) return
+
+      ! Completely tame (no wildcards) cases.
+      if (.not. check("bLah", "bLah", .true.)) return
+      if (.not. check("bLah", "bLaH", .false.)) return
+
+      ! Not doing '?' for now.
+      
+      ! Simple mixed wildcard tests suggested by IBMer Marlin Deckert.
+      if (.not. check("a", "*?", .true.)) return
+      if (.not. check("ab", "*?", .true.)) return
+      if (.not. check("abc", "*?", .true.)) return
+
+      ! More mixed wildcard tests including coverage for .false. positives.
+      if (.not. check("a", "??", .false.)) return
+      if (.not. check("ab", "?*?", .true.)) return
+      if (.not. check("ab", "*?*?*", .true.)) return
+      if (.not. check("abc", "?**?*?", .true.)) return
+      if (.not. check("abc", "?**?*&?", .false.)) return
+      if (.not. check("abcd", "?b*??", .true.)) return
+      if (.not. check("abcd", "?a*??", .false.)) return
+      if (.not. check("abcd", "?**?c?", .true.)) return
+      if (.not. check("abcd", "?**?d?", .false.)) return
+      if (.not. check("abcde", "?*b*?*d*?", .true.)) return
+
+      ! Single-character-match cases.
+      if (.not. check("bLah", "bL?h", .true.)) return
+      if (.not. check("bLaaa", "bLa?", .false.)) return
+      if (.not. check("bLah", "bLa?", .true.)) return
+      if (.not. check("bLaH", "?Lah", .false.)) return
+      if (.not. check("bLaH", "?LaH", .true.)) return
+
+
+      ! Many-wildcard scenarios.
+      ! These will blow up with the current recursive implementation ...
+!!$      if (.not. check("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", &
+!!$           & "a*a*a*a*a*a*aa*aaa*a*a*b", .true.)) return
+!!$      if (.not. check( &
+!!$           & "abababababababababababababababababababaacacacacacacacadaeafagahaiajakalaaaaaaaaaaaaaaaaaffafagaagggagaaaaaaaab", &
+!!$           & "*a*b*ba*ca*a*aa*aaa*fa*ga*b*", .true.)) return
+!!$      if (.not. check( &
+!!$           & "abababababababababababababababababababaacacacacacacacadaeafagahaiajakalaaaaaaaaaaaaaaaaaffafagaagggagaaaaaaaab", &
+!!$           & "*a*b*ba*ca*a*x*aaa*fa*ga*b*", .false.)) return
+!!$      if (.not. check( &
+!!$           & "abababababababababababababababababababaacacacacacacacadaeafagahaiajakalaaaaaaaaaaaaaaaaaffafagaagggagaaaaaaaab", &
+!!$           & "*a*b*ba*ca*aaaa*fa*ga*gggg*b*", .false.)) return
+!!$      if (.not. check(&
+!!$           & "abababababababababababababababababababaacacacacacacacadaeafagahaiajakalaaaaaaaaaaaaaaaaaffafagaagggagaaaaaaaab", &
+!!$           & "*a*b*ba*ca*aaaa*fa*ga*ggg*b*", .true.)) return
+!!$      if (.not. check("aaabbaabbaab", "*aabbaa*a*", .true.)) return
+!!$      if (.not. check("a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*", &
+!!$           & "a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*", .true.)) return
+!!$      if (.not. check("aaaaaaaaaaaaaaaaa", &
+!!$           & "*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*", .true.)) return
+!!$      if (.not. check("aaaaaaaaaaaaaaaa", &
+!!$           & "*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*a*", .false.)) return
+!!$      if (.not. check( &
+!!$           & "abc*abcd*abcde*abcdef*abcdefg*abcdefgh*abcdefghi*abcdefghij*abcdefghijk*abcdefghijkl*abcdefghijklm*abcdefghijklmn", &
+!!$           & "abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*", .false.)) return
+!!$      if (.not. check( &
+!!$           & "abc*abcd*abcde*abcdef*abcdefg*abcdefgh*abcdefghi*abcdefghij*abcdefghijk*abcdefghijkl*abcdefghijklm*abcdefghijklmn", &
+!!$           & "abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*", .true.)) return
+!!$      if (.not. check("abc*abcd*abcd*abc*abcd", "abc*abc*abc*abc*abc", .false.)) return
+!!$      if (.not. check( &
+!!$           & "abc*abcd*abcd*abc*abcd*abcd*abc*abcd*abc*abc*abcd", &
+!!$           & "abc*abc*abc*abc*abc*abc*abc*abc*abc*abc*abcd", .true.)) return
+!!$      if (.not. check("abc", "********a********b********c********", .true.)) return
+!!$      if (.not. check("********a********b********c********", "abc", .false.)) return
+!!$      if (.not. check("abc", "********a********b********b********", .false.)) return
+!!$      if (.not. check("*abc*", "***a*b*c***", .true.)) return      
+
+   end subroutine test_patterns
+
+   logical function check(string, pattern, expected)
+      character(len=*), intent(in) :: string
+      character(len=*), intent(in) :: pattern
+      logical, intent(in) :: expected
+
+      type (GlobPattern) :: g
+
+      g = GlobPattern(pattern)
+      check = expected .eqv. g%match(string)
+      @assertTrue(check, message='pattern <' // pattern // '>; string <' // string //'>')
+      
+   end function check
+
+end module Test_GlobPattern

@@ -1,0 +1,84 @@
+! -*-f90-*-
+! Minimum support is for expected and actual arguments to have the same
+! kind.
+@tkr_parameters minimal
+[(real,  32, rank)]
+[(real,  64, rank)]
+[(real, 128, rank)]
+[(real,  default, rank)]
+[(real,  double, rank)]
+[(complex,  32, rank)]
+[(complex,  64, rank)]
+[(complex, 128, rank)]
+[(complex,  default, rank)]
+[(complex,  double, rank)]
+@end tkr_parameters
+
+module pf_Norms_{rank}d
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+   implicit none
+   private
+
+   public :: LinfinityNorm
+   public :: L2Norm
+   public :: L1Norm
+
+   @overload(LinfinityNorm, minimal)
+   @overload(L2Norm, minimal)
+   @overload(L1Norm, minimal)
+   
+contains
+
+
+   @template(LinfinityNorm, [this]) result(norm)
+   function {name}(this) result(norm)
+   real (kind={this.kind}) :: norm
+   {this.type} (kind={this.kind}), intent(in) :: this {this.dims}
+
+
+#if {this.rank} == 0
+   norm = abs(this)
+#else
+   norm = maxval(abs(this))
+#endif
+   
+   end function {name}
+   @end template
+
+
+   @template(L2Norm, [this]) result(norm)
+   function {name}(this) result(norm)
+   real (kind={this.kind}) :: norm
+   {this.type} (kind={this.kind}), intent(in) :: this {this.dims}
+
+
+#if {this.rank} == 0
+   norm = abs(this)
+#else
+   norm = sqrt(sum(abs(this)**2))
+#endif
+   
+   end function {name}
+   @end template
+   
+
+   @template(L1Norm, [this]) result(norm)
+   function {name}(this) result(norm)
+   real (kind={this.kind}) :: norm
+   {this.type} (kind={this.kind}), intent(in) :: this {this.dims}
+
+
+#if {this.rank} == 0
+   norm = abs(this)
+#else
+   norm = sum(abs(this))
+#endif
+   
+   end function {name}
+   @end template
+
+   @instantiate(LinfinityNorm, minimal)
+   @instantiate(L2Norm, minimal)
+   @instantiate(L1Norm, minimal)
+
+end module pf_Norms_{rank}d

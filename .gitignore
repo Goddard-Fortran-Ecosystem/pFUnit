@@ -1,3 +1,11 @@
+
+# vim swap files
+*.gz
+*~
+.*.swp
+.swn
+.swo
+.swp
 /*.patch
 /.DS_Store
 /.pFUnitLog
@@ -6,11 +14,6 @@
 /mod
 /mpi_pFUnit.x
 /nag
+*.zip
 build/
 include/configuration.mk
-
-# vim swap files
-.*.swp
-.swp
-.swo
-.swn

@@ -1,0 +1,32 @@
+module Test_StringEndsWith
+  use funit
+  implicit none
+
+  @suite(name='Hamcrest_StringEndsWith')
+
+contains
+
+  @test
+  subroutine test_abcd_ends_with_cd()
+    call assert_that('abcd', ends_with('cd'))
+  end subroutine test_abcd_ends_with_cd
+
+  @test
+  subroutine test_abcd_does_not_start_with_b()
+    call assert_that('abcd', ends_with('b'))
+    @assertExceptionRaised(new_line('a')//'Expected: a string ending with "b"' // new_line('a') // '     but: was "abcd"')
+  end subroutine test_abcd_does_not_start_with_b
+
+  @test
+  subroutine test_abcd_ends_with_AB_ignoring_case()
+    call assert_that('abcd', ends_with('CD', ignoring_case=.true.))
+  end subroutine test_abcd_ends_with_AB_ignoring_case
+
+  @test
+  subroutine test_abcd_does_not_start_with_B_ignoring_case()
+    call assert_that('abcd', ends_with('B', ignoring_case=.true.))
+    @assertExceptionRaised(new_line('a')//'Expected: a string ending with "B" ignoring case'  // new_line('a') // '     but: was "abcd"')
+  end subroutine test_abcd_does_not_start_with_B_ignoring_case
+
+
+end module Test_StringEndsWith

@@ -1,0 +1,62 @@
+module Test_LiteralPattern
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_LiteralPattern
+   use PF_MatchObject
+   use PF_Assert
+   use Pf_SourceLocation
+
+
+   @suite(name='LiteralPattern_suite')
+   
+contains
+
+   @test
+   subroutine test_match_found()
+      type (LiteralPattern) :: p
+      type (MatchObject) :: m
+      
+      p = LiteralPattern('a')
+      m = p%match('a')
+
+      @assertTrue(m%found)
+      @assertEqual(1, m%num_characters)
+      @assertEqual('a', m%string)
+      
+   end subroutine test_match_found
+
+
+   @test
+   subroutine test_match_not_found()
+      type (LiteralPattern) :: p
+      type (MatchObject) :: m
+      
+      p = LiteralPattern('a')
+      m = p%match('b')
+
+      @assertFalse(m%found)
+      @assertEqual(0, m%num_characters)
+      @assertEqual('', m%string)
+      
+   end subroutine test_match_not_found
+
+   @test
+   subroutine test_match_various()
+      type (LiteralPattern) :: p
+      type (MatchObject) :: m
+      
+      p = LiteralPattern('ab')
+      m = p%match('abc')
+      @assertTrue(m%found)
+      @assertEqual(2, m%num_characters)
+      @assertEqual('ab', m%string)
+
+      p = LiteralPattern('abc')
+      m = p%match('ab')
+      @assertFalse(m%found)
+      @assertEqual(0, m%num_characters)
+      @assertEqual('', m%string)
+      
+   end subroutine test_match_various
+   
+end module Test_LiteralPattern

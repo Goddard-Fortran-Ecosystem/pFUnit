@@ -1,0 +1,268 @@
+module Test_AssertString
+   use FUnit
+
+   @suite(name='AssertString_suite')
+
+contains
+
+   @test
+   subroutine testAssertEqualStringSame()
+      call assertEqual(expected="string A", found="string A")
+   end subroutine testAssertEqualStringSame
+
+   @test
+   subroutine testAssertEqualStringDifferent()
+      call assertEqual(expected="string A", found="string B")
+      call assertTrue(catch('String assertion failed:' // new_line('A') // &
+           & '    expected: <"string A">' // new_line('A') // &
+           & '   but found: <"string B">' // new_line('A') // &
+           & '  first diff:   -------^'),'Unexpected Equal String')
+   end subroutine testAssertEqualStringDifferent
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite1()
+     call assertEqual(expected="stringA", found="string A", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite1
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite2()
+     call assertEqual(expected="string A", found="stringA", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite2
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite3()
+     call assertEqual(expected="stringA ", found="string A", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite3
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite4()
+     call assertEqual(expected=" string A", found="string A", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite4
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite5()
+     call assertEqual(expected=" string A ", found="stringA", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite5
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite6()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found="stringA", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite6
+
+   @test
+   subroutine testAssertEqualStrIgnAllWhite7()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found=" stringA"//tab, &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualStrIgnAllWhite7
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif1()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab, found=spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif2()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=spc, found=tab, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif3()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found="string A", &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif4()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found=spc//"string A", &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif5()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string A", found=spc//"string A"//spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif6()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual( &
+          & expected =spc//"string"//tab//spc//"6", &
+          & found    ="string"//spc//spc//spc//spc//"6"//spc, &
+          & whitespace=IGNORE_DIFFERENCES)
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif7()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected=tab//"string 7 ", found="string7", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"'//tab//'string 7">' // new_line('A') // &
+          & '   but found: <"string7">'  // new_line('A') // &
+          & '  first diff:   ------^'))
+
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif8()
+     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected="string8A", found="string8B", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"string8A">' // new_line('A') // &
+          & '   but found: <"string8B">'  // new_line('A') // &
+          & '  first diff:   -------^'))
+
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStrIgnWhiDif9()
+!     character, parameter :: tab = char(9), spc = char(32)
+     call assertEqual(expected="", found=" ", &
+          & whitespace=IGNORE_DIFFERENCES)
+
+!     call assertTrue(catch( &
+!          & 'String assertion failed:' // new_line('A') // &
+!          & '    expected: <"string8A">' // new_line('A') // &
+!          & '   but found: <"string8B">'  // new_line('A') // &
+!          & '  first diff:   -------^'))
+
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStringTrimWhitespace1()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found="string A", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualStringTrimWhitespace1
+
+   @test
+   subroutine testAssertEqualStringTrimWhitespace2()
+     character tab; tab = char(9)
+     ! Should fail !
+     call assertEqual(expected=tab//"string A ", found="stringA", &
+          & whitespace=TRIM_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"'//tab//'string A">' // new_line('A') // &
+          & '   but found: <"stringA">'  // new_line('A') // &
+          & '  first diff:   ------^'))
+   end subroutine testAssertEqualStringTrimWhitespace2
+   
+   @test
+   subroutine testAssertEqualStringTrimWhitespace3()
+     call assertEqual(expected="", found=" ", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualStringTrimWhitespace3
+
+   @test
+   subroutine testAssertEqualStringTrimWhitespace4()
+     call assertEqual( &
+          & expected = "i= 1 f= F s=word x=  1.23", &
+          & found    = "i= 1  f= F s=word x=  1.23", &
+!          & expected = "i= 1 f= F s=word x=  1.23", &
+!          & found    = “i= 1  f= F s=word x=  1.23", &
+          & whitespace=TRIM_ALL )
+!          & whitespace=IGNORE_DIFFERENCES )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"i= 1 f= F s=word x=  1.23">' // new_line('A') // &
+          & '   but found: <"i= 1  f= F s=word x=  1.23">' // new_line('A') // &
+          & '  first diff:   -----^'))
+   end subroutine
+
+   @test
+   subroutine testAssertEqualStringKeepWhitespace1()
+     character tab; tab = char(9)
+     call assertEqual(expected=tab//"string A ", found=tab//"string A ", &
+          & whitespace=KEEP_ALL )
+   end subroutine testAssertEqualStringKeepWhitespace1
+
+   @test
+   subroutine testAssertEqualStringKeepWhitespace2()
+     character tab; tab = char(9)
+     ! A strict interpretation of keep:  TAB != SPC !
+     call assertEqual(expected=tab//"string A ", found=" string A ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"	string A ">' // new_line('A') // &
+          & '   but found: <" string A ">' // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace2
+
+   @test
+   subroutine testAssertEqualStringKeepWhitespace3()
+     ! Should fail !
+     call assertEqual(expected="", found=" ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <"">' // new_line('A') // &
+          & '   but found: <" ">'  // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace3
+
+   @test
+   subroutine testAssertEqualStringKeepWhitespace4()
+     ! Should fail !
+     call assertEqual(expected=" ", found="", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <" ">' // new_line('A') // &
+          & '   but found: <"">'  // new_line('A') // &
+          & '  first diff:   ^'))
+   end subroutine testAssertEqualStringKeepWhitespace4
+
+   @test
+   subroutine testAssertEqualNonzeroBlanks1
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=KEEP_ALL )
+     call assertTrue(catch( &
+          & 'String assertion failed:' // new_line('A') // &
+          & '    expected: <" ">' // new_line('A') // &
+          & '   but found: <"      ">'  // new_line('A') // &
+          & '  first diff:   -^'))
+   end subroutine testAssertEqualNonzeroBlanks1
+
+   @test
+   subroutine testAssertEqualNonzeroBlanks2
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=TRIM_ALL )
+   end subroutine testAssertEqualNonzeroBlanks2
+
+   @test
+   subroutine testAssertEqualNonzeroBlanks3
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_DIFFERENCES )
+   end subroutine testAssertEqualNonzeroBlanks3
+
+   @test
+   subroutine testAssertEqualNonzeroBlanks4
+     call assertEqual(expected=" ", found="      ", &
+          & whitespace=IGNORE_ALL )
+   end subroutine testAssertEqualNonzeroBlanks4
+   
+
+end module Test_AssertString

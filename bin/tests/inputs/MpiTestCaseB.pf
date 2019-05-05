@@ -2,6 +2,7 @@ module MpiTestCaseB_mod
    use pfunit_mod
    implicit none
 
+   
 @testCase(npes = [1,3,5])
    type, extends(MpiTestCase) :: MpiTestCaseB
       integer :: componentI

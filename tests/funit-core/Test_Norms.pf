@@ -1,0 +1,170 @@
+module Test_Norms
+   use pf_AssertReal_0d
+   use pf_AssertReal_1d
+   use pf_AssertReal_2d
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL128
+   use pf_StringUtilities
+   use pf_SourceLocation
+   use pf_Exceptionlist
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_Norms_0d
+   use pf_Norms_1d
+   use pf_Norms_2d
+
+   @suite(name='Norm_suite')
+
+contains
+
+   @test
+   subroutine Test_Linfinity_Norm_scalar()
+      real :: x
+
+      x = 1.0
+      @assertEqual(1.0, LinfinityNorm(x))
+
+      x = -1.0
+      @assertEqual(1.0, LinfinityNorm(x))
+
+      x = 2.0
+      @assertEqual(2.0, LinfinityNorm(x))
+
+   end subroutine Test_Linfinity_Norm_Scalar
+
+
+   @test
+   subroutine Test_Linfinity_Norm_1d()
+      real :: x(3)
+
+      x = [1.0,3.0,2.0]
+      @assertEqual(3.0, LinfinityNorm(x))
+
+      x = [1.0,-3.0,2.0]
+      @assertEqual(3.0, LinfinityNorm(x))
+
+   end subroutine Test_Linfinity_Norm_1d
+
+
+   @test
+   subroutine Test_L2Norm_scalar()
+      real :: x
+
+      x = 1.0
+      @assertEqual(1.0, L2Norm(x))
+
+      x = -1.0
+      @assertEqual(1.0, L2Norm(x))
+
+      x = 2.0
+      @assertEqual(2.0, L2Norm(x))
+
+   end subroutine Test_L2Norm_Scalar
+
+
+   @test
+   subroutine Test_L2Norm_1d()
+      real :: x(2)
+
+      x = [3.0,4.0]
+      @assertEqual(5.0, L2Norm(x))
+
+      x = [-4.0,3.0]
+      @assertEqual(5.0, L2Norm(x))
+
+   end subroutine Test_L2Norm_1d 
+
+   
+   @test
+   subroutine Test_L1Norm_scalar()
+      real :: x
+
+      x = 1.0
+      @assertEqual(1.0, L1Norm(x))
+
+      x = -1.0
+      @assertEqual(1.0, L1Norm(x))
+
+      x = 2.0
+      @assertEqual(2.0, L1Norm(x))
+
+   end subroutine Test_L1Norm_Scalar
+
+
+   @test
+   subroutine Test_L1Norm_1d()
+      real :: x(2)
+
+      x = [3.0,4.0]
+      @assertEqual(7.0, L1Norm(x))
+
+      x = [-4.0,3.0]
+      @assertEqual(7.0, L1Norm(x))
+
+   end subroutine Test_L1Norm_1d 
+
+
+   ! Check complex values
+   @test
+   subroutine Test_Linfinity_Norm_scalar_complex()
+      complex :: x
+
+      x = (3.0,4.0)
+      @assertEqual(5.0, LinfinityNorm(x))
+
+   end subroutine Test_Linfinity_Norm_Scalar_complex
+
+
+   @test
+   subroutine Test_Linfinity_Norm_1d_complex()
+      complex :: x(2)
+
+      x = [(1.0,0.0),(0.0,-1.0)]
+      @assertEqual(1.0, LinfinityNorm(x))
+
+   end subroutine Test_Linfinity_Norm_1d_complex
+
+
+   @test
+   subroutine Test_L2Norm_scalar_complex()
+      complex :: x
+
+      x = (3.0,4.0)
+      @assertEqual(5.0, L2Norm(x))
+
+      
+   end subroutine Test_L2Norm_Scalar_Complex
+
+
+   @test
+   subroutine Test_L2Norm_1d_complex()
+      complex :: x(2)
+
+      x = [(3.0,4.0),(12.0,0.0)]
+      @assertEqual(13.0, L2Norm(x))
+
+   end subroutine Test_L2Norm_1d_complex
+
+   
+   @test
+   subroutine Test_L1Norm_scalar_complex()
+      complex :: x
+
+      x = (4.0,3.0)
+      @assertEqual(5.0, L1Norm(x))
+
+
+   end subroutine Test_L1Norm_Scalar_Complex
+
+
+   @test
+   subroutine Test_L1Norm_1d_complex()
+      complex :: x(3)
+
+      x = [(3.0,4.0),(6.0,0.0),(0.0,1.0)]
+      @assertEqual(5 + 6 + 1, L1Norm(x))
+
+
+   end subroutine Test_L1Norm_1d_complex
+   
+   
+end module Test_Norms

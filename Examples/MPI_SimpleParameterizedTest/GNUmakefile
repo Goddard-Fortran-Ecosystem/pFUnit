@@ -8,10 +8,14 @@ VPATH = . $(TEST_DIR)
 
 include $(PFUNIT)/include/base.mk
 
+ifeq ($(USEMPI),YES)
+   MPIF90=mpif90
+endif
+
 EXE = tests$(EXE_EXT)
 
 all: $(EXE)
-	mpiexec -n 4 ./$(EXE)
+	mpirun -np 4 ./$(EXE)
 
 SUT:
 	make -C $(TEST_DIR) tests

@@ -1,0 +1,41 @@
+module Test_NameFilter
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_RegularExpression
+   use PF_Assert
+   use Pf_SourceLocation
+
+   @suite(name='NameFilter_suite')
+   
+contains
+
+   @test
+   subroutine test_matches_exact()
+     use pf_TestMethod
+     use pf_NameFilter
+     type(TestMethod) :: method
+     type(NameFilter) :: filter
+
+     method = TestMethod('foo', was_run)
+     filter = NameFilter('foo')
+
+     @assertTrue(filter%filter(method))
+   end subroutine test_matches_exact
+
+   @test
+   subroutine test_does_not_match_exact()
+     use pf_TestMethod
+     use pf_NameFilter
+     type(TestMethod) :: method
+     type(NameFilter) :: filter
+
+     method = TestMethod('foo', was_run)
+     filter = NameFilter('bar')
+
+     @assertFalse(filter%filter(method))
+   end subroutine test_does_not_match_exact
+
+   subroutine was_run()
+   end subroutine was_run
+
+end module Test_NameFilter

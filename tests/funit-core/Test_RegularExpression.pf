@@ -1,0 +1,69 @@
+module Test_RegularExpression
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_RegularExpression
+   use PF_Assert
+   use Pf_SourceLocation
+
+   @suite(name='RegularExpression_suite')
+   
+contains
+
+   @test
+   subroutine test_basic()
+      type (RegularExpression) :: r
+
+      r = RegularExpression('a')
+
+      @assertFalse(r%match('b'))
+      @assertTrue(r%match('a'))
+
+   end subroutine test_basic
+
+   @test
+   subroutine test_dot()
+      type (RegularExpression) :: r
+
+      r = RegularExpression('.')
+
+      @assertTrue(r%match('b'))
+      @assertTrue(r%match('a'))
+
+      r = RegularExpression('test_.')
+      @assertTrue(r%match('test_a'))
+      @assertFalse(r%match('abcdef'))
+
+   end subroutine test_dot
+
+
+   @test
+   subroutine test_wrong_legth()
+      type (RegularExpression) :: r
+
+      r = RegularExpression('abc')
+
+      @assertFalse(r%match('ab'), 'string too short')
+      @assertFalse(r%match('abcd'), 'string too long')
+
+   end subroutine test_wrong_legth
+
+
+   @test
+   subroutine test_asterisk()
+!!$      type (RegularExpression) :: r
+!!$
+!!$      r = RegularExpression('a*')
+!!$
+!!$      @assertFalse(r%match(''), '')
+!!$      @assertFalse(r%match('b'), 'b')
+!!$      @assertTrue(r%match('a'), 'a')
+!!$      @assertFalse(r%match('ab'), 'ab')
+!!$      @assertFalse(r%match('ba'), 'ba')
+!!$      @assertTrue(r%match('aa'), 'aa')
+!!$      @assertTrue(r%match('aaa'), 'aaa')
+
+
+   end subroutine test_asterisk
+
+   
+end module Test_RegularExpression

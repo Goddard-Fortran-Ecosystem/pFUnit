@@ -1,0 +1,241 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+
+module Test_Assert_Integer
+   use pf_SourceLocation
+   use pf_Exceptionlist
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use, intrinsic :: iso_fortran_env, only: INT32, INT64
+   use pf_AssertInteger_0d
+   use pf_AssertInteger_1d
+   use pf_AssertInteger_2d
+   implicit none
+   
+   @suite(name='AssertInteger_suite')
+
+contains
+
+   @test
+   subroutine test_AssertAssociated_0d()
+
+      integer, target :: t1, t2
+      integer, pointer :: p
+
+      p => t1
+      call assertAssociated(p, t1)
+
+      ! should fail
+      call assertAssociated(p, t2)
+      call assertExceptionRaised('AssertAssociated failure:')
+      
+   end subroutine test_AssertAssociated_0d
+
+
+
+   @test
+   subroutine testAssertEqual_equal()
+      call assertEqual(2,2)
+   end subroutine testAssertEqual_equal
+
+   @test
+   subroutine testAssertEqual_unequal()
+      call assertEqual(2,3)
+      call assertExceptionRaised( &
+           & 'AssertEqual failure:' // new_line('a') // &
+           & '      Expected: <2>' // new_line('a') // &
+           & '        Actual: <3>' // new_line('a') // &
+           & '    Difference: <1>')
+   end subroutine testAssertEqual_unequal
+
+   @test
+   subroutine testAssertEqual_unequalWithMessage()
+      call assertEqual(2,3,'what?')
+      call assertExceptionRaised( &
+           & 'what?' // new_line('a') // &
+           & 'AssertEqual failure:' // new_line('a') // &
+           & '      Expected: <2>' // new_line('a') // &
+           & '        Actual: <3>' // new_line('a') // &
+           & '    Difference: <1>')
+   end subroutine testAssertEqual_unequalWithMessage
+
+   @test
+   subroutine testAssertEqual1D1D_equal()
+      call assertEqual([1,2],[1,2])
+   end subroutine testAssertEqual1D1D_equal
+
+   @test
+   subroutine testAssertEqual1D1D_nonconforming()
+      call assertEqual([1,2],[1,2,3])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // new_line('a') // &
+           & '    Expected shape: [2]' // new_line('a') // &
+           & '      Actual shape: [3]')
+   end subroutine testAssertEqual1D1D_nonconforming
+
+   @test
+   subroutine testAssertEqual1D1D_conforming()
+      call assertEqual(1,[1,1,1])
+   end subroutine testAssertEqual1D1D_conforming
+
+   @test
+   subroutine testAssertEqual1D1D_unequalA()
+      call assertEqual([1,2,3],[1,3,3])
+      call assertExceptionRaised( &
+           & 'ArrayAssertEqual failure:' // new_line('a') // &
+           & '      Expected: <2>' // new_line('a') // &
+           & '        Actual: <3>' // new_line('a') // &
+           & '    Difference: <1>' // new_line('a') // &
+           & '      at index: [2]')
+
+   end subroutine testAssertEqual1D1D_unequalA
+
+   @test
+   subroutine testAssertEqual1D1D_unequalB()
+      call assertEqual(1, [1,2,1])
+      call assertExceptionRaised( &
+           & 'ArrayAssertEqual failure:' // new_line('a') // &
+           & '      Expected: <1>' // new_line('a') // &
+           & '        Actual: <2>' // new_line('a') // &
+           & '    Difference: <1>' // new_line('a') // &
+           & '      at index: [2]')
+   end subroutine testAssertEqual1D1D_unequalB
+
+   @test
+   subroutine testAssertEqual2D2D_equal()
+      integer :: array(2,3)
+      array = reshape([1,2,3,4,5,6],[2,3])
+      call assertEqual(array, array)
+   end subroutine testAssertEqual2D2D_equal
+
+   @test
+   subroutine testAssertEqual2D2D_nonconforming()
+      integer :: expected(2,3)
+      integer :: found(3,5)
+
+      expected = 1
+      found = 1
+      call assertEqual(expected, found)
+      call assertExceptionRaised( &
+           'Arrays not conformable failure:' // new_line('a') // &
+           '    Expected shape: [2,3]' // new_line('a') // &
+           '      Actual shape: [3,5]')
+
+   end subroutine testAssertEqual2D2D_nonconforming
+
+   @test
+   subroutine testAssertEqual2D2D_unequal()
+      integer(kind=INT32) :: expected(2,3)
+      integer(kind=INT64) :: found(2,3)
+
+      expected = 1
+      found = 1
+      found(1,2) = -1
+
+      call assertEqual(expected, found)
+      call assertExceptionRaised( &
+           'ArrayAssertEqual failure:' // new_line('a') // &
+           '      Expected: <1>' // new_line('a') // &
+           '        Actual: <-1>' // new_line('a') // &
+           '    Difference: <-2>' // new_line('a') // &
+           '      at index: [1,2]')
+
+      found(1,2) = 1
+      found(2,3) = -1
+
+      call assertEqual(expected, found)
+      call assertExceptionRaised( &
+           'ArrayAssertEqual failure:' // new_line('a') // &
+           '      Expected: <1>' // new_line('a') // &
+           '        Actual: <-1>' // new_line('a') // &
+           '    Difference: <-2>' // new_line('a') // &
+           '      at index: [2,3]')
+
+   end subroutine testAssertEqual2D2D_unequal
+
+   @test
+   subroutine testAssertLessThan_falseA()
+      call assertLessThan(1, 1)
+      call assertExceptionRaised( &
+           'AssertLessThan failure:' // new_line('a') // &
+           '              LHS: <1>' // new_line('a') // &
+           '    not less than: <1>' )
+
+   end subroutine testAssertLessThan_falseA
+
+   @test
+   subroutine testAssertLessThan_falseB()
+      call assertLessThan(2, 1)
+      call assertExceptionRaised( &
+           'AssertLessThan failure:' // new_line('a') // &
+           '              LHS: <2>' // new_line('a') // &
+           '    not less than: <1>' )
+
+   end subroutine testAssertLessThan_falseB
+
+   @test
+   subroutine testAssertLessThan_true()
+      call assertLessThan(1, 2)
+   end subroutine testAssertLessThan_true
+   
+   @test
+   subroutine testAssertLessThanOrEqual_false()
+      call assertLessThanOrEqual(2, 1)
+      call assertExceptionRaised( &
+           'AssertLessThanOrEqual failure:' // new_line('a') // &
+           '                          LHS: <2>' // new_line('a') // &
+           '    not less than or equal to: <1>' )
+   end subroutine testAssertLessThanOrEqual_false
+
+   @test
+   subroutine testAssertLessThanOrEqual_trueA()
+      call assertLessThanOrEqual(2, 2)
+   end subroutine testAssertLessThanOrEqual_trueA
+
+   @test
+   subroutine testAssertLessThanOrEqual_trueB()
+     call assertLessThanOrEqual(1, 2)
+   end subroutine testAssertLessThanOrEqual_trueB
+   
+   @test
+   subroutine testAssertGreaterThan_falseA()
+      call assertGreaterThan(1, 1)
+      call assertExceptionRaised( &
+           'AssertGreaterThan failure:' // new_line('a') // &
+           '                 LHS: <1>' // new_line('a') // &
+           '    not greater than: <1>' )
+   end subroutine testAssertGreaterThan_falseA
+
+   @test
+   subroutine testAssertGreaterThan_falseB()
+      call assertGreaterThan(1, 2)
+      call assertExceptionRaised( &
+           'AssertGreaterThan failure:' // new_line('a') // &
+           '                 LHS: <1>' // new_line('a') // &
+           '    not greater than: <2>' )
+   end subroutine testAssertGreaterThan_falseB
+
+   @test
+   subroutine testAssertGreaterThan_true()
+      call assertGreaterThan(2, 1)
+   end subroutine testAssertGreaterThan_true
+   
+   @test
+   subroutine testAssertGreaterThanOrEqual_false()
+      call assertGreaterThanOrEqual(1, 2)
+      call assertExceptionRaised( &
+           'AssertGreaterThanOrEqual failure:' // new_line('a') // &
+           '                             LHS: <1>' // new_line('a') // &
+           '    not greater than or equal to: <2>' )
+   end subroutine testAssertGreaterThanOrEqual_false
+
+   @test
+   subroutine testAssertGreaterThanOrEqual_trueA()
+      call assertGreaterThanOrEqual(2, 2)
+   end subroutine testAssertGreaterThanOrEqual_trueA
+
+   @test
+   subroutine testAssertGreaterThanOrEqual_trueB()
+      call assertGreaterThanOrEqual(2, 1)
+   end subroutine testAssertGreaterThanOrEqual_trueB
+   
+end module Test_Assert_Integer

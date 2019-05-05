@@ -38,8 +38,11 @@ file_compile_configuration()
 
 # Perform the install.
 #
-install(FILES CRAY.mk GNU.mk IBM.mk INTEL.mk NAG.mk PGI.mk extensions.mk driver.F90 DESTINATION include)
-install(FILES base-install.mk DESTINATION include RENAME base.mk)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk DESTINATION include)
-install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/TestUtil.F90 DESTINATION include)
+install(
+  FILES driver.F90 add_pfunit_sources.cmake add_pfunit_ctest.cmake
+  DESTINATION ${dest}/include
+  )
+
+# Not sure about the fate of this file.
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/TestUtil.F90 DESTINATION ${dest}/include)
 

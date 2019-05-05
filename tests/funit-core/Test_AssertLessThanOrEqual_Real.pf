@@ -1,0 +1,499 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+! Reference comparison:  default real scalar
+
+
+module Test_AssertLessThanOrEqual_Real
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+   use, intrinsic :: iso_fortran_env, only: REAL128
+   use pf_StringUtilities
+   use pf_SourceLocation
+   use pf_Exceptionlist
+   use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+   use pf_AssertBasic
+   use pf_AssertReal_0d
+   use pf_AssertReal_1d
+   use pf_AssertReal_2d
+   use pf_AssertReal_3d
+#ifdef _REAL32_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_32
+      use MakeInf, only:  strInf
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      use MakeInf, only:  makeInf_128
+#endif
+   implicit none
+      
+   @suite(name='AssertLessThanOrEqual_Real_suite')
+
+   real(kind=REAL32), parameter :: good = 1
+   real(kind=REAL32), parameter :: bad  = -999
+
+   character(len=1), parameter :: NL = new_line('a')
+contains
+
+
+   ! First a series of tests that should not raise exceptions.
+
+   @test
+   subroutine test_lessThan_scalar()
+      @assertLessThanOrEqual(1, 1.0)
+      @assertLessThanOrEqual(1.0, 1.0)
+      @assertLessThanOrEqual(1.0, 1.0)
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, 1.0_REAL32)
+      @assertLessThanOrEqual(1.0, 1.0_REAL32)
+      @assertLessThanOrEqual(1.0_REAL32, 1.0_REAL32)
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, 1.0_REAL64)
+      @assertLessThanOrEqual(1.0, 1.0_REAL64)
+      @assertLessThanOrEqual(1.0_REAL64, 1.0_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, 1.0_REAL128)
+      @assertLessThanOrEqual(1.0, 1.0_REAL128)
+      @assertLessThanOrEqual(1.0_REAL128, 1.0_REAL128)
+#endif
+   end subroutine test_lessThan_scalar
+
+   @test
+   subroutine test_lessThan_scalar_with_tolerance()
+      @assertLessThanOrEqual(1, 1.0, 0.2)
+      @assertLessThanOrEqual(1.0, 1.0, 0.2)
+      @assertLessThanOrEqual(1.0, 1.0, 0.2)
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, 1.0_REAL32, 0.2)
+      @assertLessThanOrEqual(1.0, 1.0_REAL32, 0.2)
+      @assertLessThanOrEqual(1.0_REAL32, 1.0_REAL32, 0.2)
+
+      @assertLessThanOrEqual(1, 1.0_REAL32, 0.2_REAL32)
+      @assertLessThanOrEqual(1.0, 1.0_REAL32, 0.2_REAL32)
+      @assertLessThanOrEqual(1.0_REAL32, 1.0_REAL32, 0.2_REAL32)
+#endif
+      
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, 1.0_REAL64, 0.2)
+      @assertLessThanOrEqual(1.0, 1.0_REAL64, 0.2)
+      @assertLessThanOrEqual(1.0_REAL64, 1.0_REAL64, 0.2)
+
+      @assertLessThanOrEqual(1, 1.0_REAL64, 0.2_REAL64)
+      @assertLessThanOrEqual(1.0, 1.0_REAL64, 0.2_REAL64)
+      @assertLessThanOrEqual(1.0_REAL64, 1.0_REAL64, 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, 1.0_REAL128, 0.2)
+      @assertLessThanOrEqual(1.0, 1.0_REAL128, 0.2)
+      @assertLessThanOrEqual(1.0_REAL128, 1.0_REAL128, 0.2)
+
+      @assertLessThanOrEqual(1, 1.0_REAL128, 0.2_REAL128)
+      @assertLessThanOrEqual(1.0, 1.0_REAL128, 0.2_REAL128)
+      @assertLessThanOrEqual(1.0_REAL128, 1.0_REAL128, 0.2_REAL128)
+#endif
+
+   end subroutine test_lessThan_scalar_with_tolerance
+
+   ! Test that 1. is considered to be less than the next representable
+   ! FP number.  Uses Fortran intrinsic NEAREST().
+   @test
+   subroutine test_lessThan_scalar_epsilon()
+      
+      @assertLessThanOrEqual(1, nearest(1.,1.))
+      @assertLessThanOrEqual(1.0, nearest(1.,1.))
+      @assertLessThanOrEqual(1.0, nearest(1.,1.))
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, nearest(1.0_REAL32, 1.))
+      @assertLessThanOrEqual(1.0, nearest(1.0_REAL32, 1.))
+      @assertLessThanOrEqual(1.0_REAL32, nearest(1.0_REAL32, 1.))
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, nearest(1._REAL64,1.))
+      @assertLessThanOrEqual(1.0, nearest(1._REAL64,1.))
+      @assertLessThanOrEqual(1.0_REAL64, nearest(1._REAL64,1.))
+#endif
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, nearest(1._REAL128,1.))
+      @assertLessThanOrEqual(1.0, nearest(1._REAL128,1.))
+      @assertLessThanOrEqual(1.0_REAL128, nearest(1._REAL128,1.))
+#endif
+   end subroutine test_lessThan_scalar_epsilon
+
+   @test
+   subroutine test_lessThan_1D_actual
+      @assertLessThanOrEqual(1, [1.0])
+      @assertLessThanOrEqual(1.0, [1.0,1.0,1.0])
+      @assertLessThanOrEqual(1.0, [1.0,1.0,1.0])
+      @assertLessThanOrEqual([1,2], [1.0,2.0])
+      @assertLessThanOrEqual([1.0,2.0], [1.0,2.0])
+      @assertLessThanOrEqual([1.0,2.0], [1.0,2.0])
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, [1.0_REAL32])
+      @assertLessThanOrEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
+      @assertLessThanOrEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
+      @assertLessThanOrEqual([1,2], [1.0_REAL32,2.0_REAL32])
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL32,2.0_REAL32])
+      @assertLessThanOrEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32])
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, [1.0_REAL64])
+      @assertLessThanOrEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
+      @assertLessThanOrEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
+      @assertLessThanOrEqual([1,2], [1.0_REAL64,2.0_REAL64])
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL64,2.0_REAL64])
+      @assertLessThanOrEqual([1.0_REAL64,2.0_REAL64], [1.0_REAL64,2.0_REAL64])
+#endif
+
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, [1.0_REAL128])
+      @assertLessThanOrEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
+      @assertLessThanOrEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
+      @assertLessThanOrEqual([1,2], [1.0_REAL128,2.0_REAL128])
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL128,2.0_REAL128])
+      @assertLessThanOrEqual([1.0_REAL128,2.0_REAL128], [1.0_REAL128,2.0_REAL128])
+#endif
+      
+   end subroutine test_lessThan_1D_actual
+
+   @test
+   subroutine test_lessThan_1D_actual_with_tolerance
+
+      @assertLessThanOrEqual(1, [1.0], 0.2)
+      @assertLessThanOrEqual(1.0, [1.0,1.0,1.0], 0.2)
+      @assertLessThanOrEqual(1.0, [1.0,1.0,1.0],0.2)
+      @assertLessThanOrEqual([1,2], [1.0,2.0], 0.2)
+      @assertLessThanOrEqual([1.0,2.0], [1.0,2.0], 0.2)
+      @assertLessThanOrEqual([1.0,2.0], [1.0,2.0], 0.2)
+
+#ifdef _REAL32      
+      @assertLessThanOrEqual(1, [1.0_REAL32], 0.2)
+      @assertLessThanOrEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32], 0.2)
+      @assertLessThanOrEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32],0.2)
+      @assertLessThanOrEqual([1,2], [1.0_REAL32,2.0_REAL32], 0.2)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL32,2.0_REAL32], 0.2)
+      @assertLessThanOrEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32], 0.2)
+
+      @assertLessThanOrEqual(1, [1.0_REAL32], 0.2_REAL32)
+      @assertLessThanOrEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32], 0.2_REAL32)
+      @assertLessThanOrEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32],0.2_REAL32)
+      @assertLessThanOrEqual([1,2], [1.0_REAL32,2.0_REAL32], 0.2_REAL32)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL32,2.0_REAL32], 0.2_REAL32)
+      @assertLessThanOrEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32], 0.2_REAL32)
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, [1.0_REAL64], 0.2)
+      @assertLessThanOrEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64], 0.2)
+      @assertLessThanOrEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64],0.2)
+      @assertLessThanOrEqual([1,2], [1.0_REAL64,2.0_REAL64], 0.2)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL64,2.0_REAL64], 0.2)
+      @assertLessThanOrEqual([1.0_REAL64,2.0_REAL64], [1.0_REAL64,2.0_REAL64], 0.2)
+
+      @assertLessThanOrEqual(1, [1.0_REAL64], 0.2_REAL64)
+      @assertLessThanOrEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64], 0.2_REAL64)
+      @assertLessThanOrEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64],0.2_REAL64)
+      @assertLessThanOrEqual([1,2], [1.0_REAL64,2.0_REAL64], 0.2_REAL64)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL64,2.0_REAL64], 0.2_REAL64)
+      @assertLessThanOrEqual([1.0_REAL64,2.0_REAL64], [1.0_REAL64,2.0_REAL64], 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, [1.0_REAL128], 0.2)
+      @assertLessThanOrEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128], 0.2)
+      @assertLessThanOrEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128],0.2)
+      @assertLessThanOrEqual([1,2], [1.0_REAL128,2.0_REAL128], 0.2)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL128,2.0_REAL128], 0.2)
+      @assertLessThanOrEqual([1.0_REAL128,2.0_REAL128], [1.0_REAL128,2.0_REAL128], 0.2)
+
+      @assertLessThanOrEqual(1, [1.0_REAL128], 0.2_REAL128)
+      @assertLessThanOrEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128], 0.2_REAL128)
+      @assertLessThanOrEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128],0.2_REAL128)
+      @assertLessThanOrEqual([1,2], [1.0_REAL128,2.0_REAL128], 0.2_REAL128)
+      @assertLessThanOrEqual([1.0,2.0], [1.0_REAL128,2.0_REAL128], 0.2_REAL128)
+      @assertLessThanOrEqual([1.0_REAL128,2.0_REAL128], [1.0_REAL128,2.0_REAL128], 0.2_REAL128)
+#endif
+      
+   end subroutine test_lessThan_1D_actual_with_tolerance
+
+   
+   @test
+   subroutine test_lessThan_2D_actual
+      integer :: const(2,3) = reshape([1,1,1,1,1,1],[2,3])
+      integer :: array(2,3) = reshape([1,2,3,4,5,6],[2,3])
+      
+      @assertLessThanOrEqual(1, real(const))
+      @assertLessThanOrEqual(1.0, real(const))
+
+      @assertLessThanOrEqual(array, real(array))
+      @assertLessThanOrEqual(real(array), real(array))
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, real(const,kind=REAL32))
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL32))
+      @assertLessThanOrEqual(1.0_REAL32, real(const,kind=REAL32))
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL32))
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL32))
+      @assertLessThanOrEqual(real(array,kind=REAL32), real(array,kind=REAL32))
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, real(const,kind=REAL64))
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL64))
+      @assertLessThanOrEqual(1.0_REAL64, real(const,kind=REAL64))
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL64))
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL64))
+      @assertLessThanOrEqual(real(array,kind=REAL64), real(array,kind=REAL64))
+#endif
+
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, real(const,kind=REAL128))
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL128))
+      @assertLessThanOrEqual(1.0_REAL128, real(const,kind=REAL128))
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL128))
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL128))
+      @assertLessThanOrEqual(real(array,kind=REAL128), real(array,kind=REAL128))
+#endif
+      
+   end subroutine test_lessThan_2D_actual
+
+   @test
+   subroutine test_lessThan_2D_actual_with_tolerance
+      integer :: const(2,3) = reshape([1,1,1,1,1,1],[2,3])
+      integer :: array(2,3) = reshape([1,2,3,4,5,6],[2,3])
+      
+      @assertLessThanOrEqual(1, real(const)-2, 2.)
+      @assertLessThanOrEqual(1.0, real(const)-2, 2.)
+
+      @assertLessThanOrEqual(array, real(array)-2, 2.)
+      @assertLessThanOrEqual(real(array), real(array)-2,2.)
+
+#ifdef _REAL32
+      @assertLessThanOrEqual(1, real(const,kind=REAL32)-2, 2._REAL32)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL32)-2, 2._REAL32)
+      @assertLessThanOrEqual(1.0_REAL32, real(const,kind=REAL32)-2, 2._REAL32)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL32)-2, 2._REAL32)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL32)-2, 2._REAL32)
+      @assertLessThanOrEqual(real(array,kind=REAL32), real(array,kind=REAL32)-2, 2._REAL32)
+
+      @assertLessThanOrEqual(1, real(const,kind=REAL32)-2, 2.)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL32)-2, 2.)
+      @assertLessThanOrEqual(1.0_REAL32, real(const,kind=REAL32)-2, 2.)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL32)-2, 2.)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL32)-2, 2.)
+      @assertLessThanOrEqual(real(array,kind=REAL32), real(array,kind=REAL32)-2, 2.)
+#endif
+
+#ifdef _REAL64
+      @assertLessThanOrEqual(1, real(const,kind=REAL64)-2, 2._REAL64)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL64)-2, 2._REAL64)
+      @assertLessThanOrEqual(1.0_REAL64, real(const,kind=REAL64)-2, 2._REAL64)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL64)-2, 2._REAL64)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL64)-2, 2._REAL64)
+      @assertLessThanOrEqual(real(array,kind=REAL64), real(array,kind=REAL64)-2, 2._REAL64)
+
+      @assertLessThanOrEqual(1, real(const,kind=REAL64)-2, 2.)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL64)-2, 2.)
+      @assertLessThanOrEqual(1.0_REAL64, real(const,kind=REAL64)-2, 2.)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL64)-2, 2.)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL64)-2, 2.)
+      @assertLessThanOrEqual(real(array,kind=REAL64), real(array,kind=REAL64)-2, 2.)
+#endif
+
+
+#ifdef _REAL128
+      @assertLessThanOrEqual(1, real(const,kind=REAL128)-2, 2._REAL128)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL128)-2, 2._REAL128)
+      @assertLessThanOrEqual(1.0_REAL128, real(const,kind=REAL128)-2, 2._REAL128)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL128)-2, 2._REAL128)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL128)-2, 2._REAL128)
+      @assertLessThanOrEqual(real(array,kind=REAL128), real(array,kind=REAL128)-2, 2._REAL128)
+
+      @assertLessThanOrEqual(1, real(const,kind=REAL128)-2, 2.)
+      @assertLessThanOrEqual(1.0, real(const,kind=REAL128)-2, 2.)
+      @assertLessThanOrEqual(1.0_REAL128, real(const,kind=REAL128)-2, 2.)
+
+      @assertLessThanOrEqual(array, real(array,kind=REAL128)-2, 2.)
+      @assertLessThanOrEqual(real(array), real(array,kind=REAL128)-2, 2.)
+      @assertLessThanOrEqual(real(array,kind=REAL128), real(array,kind=REAL128)-2, 2.)
+#endif
+      
+   end subroutine test_lessThan_2D_actual_with_tolerance
+
+   ! Ensure that Infinity does not cause floating exceptions
+   @test
+   subroutine test_infinity()
+#ifdef _REAL32_IEEE_SUPPORT
+      @assertLessThanOrEqual(makeInf_32(), makeInf_32())
+      @assertLessThanOrEqual(1., makeInf_32(), 0.5)
+      @assertLessThanOrEqual(-makeInf_32(), 1._REAL32, 0.5)
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+      @assertLessThanOrEqual(makeInf_64(), makeInf_64())
+      @assertLessThanOrEqual(1., makeInf_64(), 0.5)
+      @assertLessThanOrEqual(-makeInf_64(), 1._REAL64, 0.5)
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+      @assertLessThanOrEqual(makeInf_128(), makeInf_128())
+      @assertLessThanOrEqual(1., makeInf_128(), 0.5)
+      @assertLessThanOrEqual(-makeInf_128(), 1._REAL128, 0.5)
+#endif
+
+   end subroutine test_infinity
+
+
+   ! OK - now a long series of tests that verify the expected
+   ! messages from failing asserts.   Each test has an assertion that is
+   ! intended to fail, followed by an assertExceptionRaised() that is expected
+   ! to succeed and "eat" the first exception.  
+   @test
+   subroutine test_conformability_a()
+      call assertLessThanOrEqual([1.0], [1.0, 1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [1]' // NL // &
+           & '      Actual shape: [2]' &
+           & )
+   end subroutine test_conformability_a
+
+   @test
+   subroutine test_conformability_b()
+      call assertLessThanOrEqual([1.0,2.0], [1.0])
+      call assertExceptionRaised( &
+           & 'Arrays not conformable failure:' // NL // &
+           & '    Expected shape: [2]' // NL // &
+           & '      Actual shape: [1]' &
+           & )
+   end subroutine test_conformability_b
+   
+
+   @test
+   subroutine test_lessThan_fail_scalar_no_tolerance()
+      call assertLessThanOrEqual(1.0, 0.5)
+      call assertExceptionRaised(&
+           & 'AssertLessThanOrEqual failure:' // NL // &
+           & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than or equal to: <'//to_string(0.5)//'>' &
+           & )
+   end subroutine test_lessThan_fail_scalar_no_tolerance
+
+   @test
+   subroutine test_lessThan_fail_scalar_with_tolerance()
+      call assertLessThanOrEqual(1.0, 0.0, 0.1)
+      call assertExceptionRaised(&
+           & 'AssertLessThanOrEqual failure:' // NL // &
+           & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than or equal to: <'//to_string(0.0)//'>' &
+           & )
+   end subroutine test_lessThan_fail_scalar_with_tolerance
+
+   @test
+   subroutine test_lessThan_fail_1d_with_tolerance()
+      call assertLessThanOrEqual(1, [2.0,0.0], 0.1)
+      call assertExceptionRaised(&
+           & 'ArrayAssertLessThanOrEqual failure:' // NL // &
+           & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+           & '    not less than or equal to: <'//to_string(0.0)//'>' // NL // &
+           & '                     at index: [2]' &
+           & )
+   end subroutine test_lessThan_fail_1d_with_tolerance
+
+  @test
+  subroutine testLessThanOrEquals_2D_SingleElementDifferent()
+
+    real, dimension(2,2) :: expected, found
+
+    expected = good
+    found = good + 1; found(1,2) = bad
+
+    ! The following should throw an exception...
+    call assertLessThanOrEqual(expected, found)
+
+    call assertExceptionRaised( &
+         & 'ArrayAssertLessThanOrEqual failure:' // NL // &
+         & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+         & '    not less than or equal to: <'//to_string(-999.)//'>' // NL // &
+         & '                     at index: [1,2]' &
+         )
+
+  end subroutine testLessThanOrEquals_2D_SingleElementDifferent
+
+  @test
+  subroutine testLessThanOrEquals_2d_MultipleDiffs
+
+     real, dimension(2,3) :: expected, found
+
+     expected = good
+     found = good + 1; found(2,[1,3]) = bad;
+     
+     ! The following should throw an exception...
+     call assertLessThanOrEqual(expected, found)
+     
+     call assertExceptionRaised( &
+          & 'ArrayAssertLessThanOrEqual failure:' // NL // &
+          & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+          & '    not less than or equal to: <'//to_string(-999.)//'>' // NL // &
+          & '                     at index: [2,1]' &
+          )
+     
+  end subroutine testLessThanOrEquals_2d_MultipleDiffs
+  
+  @test
+  subroutine testLessThanOrEquals_ScalarInf_unlessThan_A()
+    
+     call assertLessThanOrEqual(1., -makeInf_32())
+     
+     call assertExceptionRaised( &
+          & 'AssertLessThanOrEqual failure:' // NL // &
+          & '                          LHS: <'//to_string(1.0)//'>' // NL // &
+          & '    not less than or equal to: <-'//strInf()//'>' &
+          )
+     
+  end subroutine testLessThanOrEquals_ScalarInf_unlessThan_A
+
+  @test
+  subroutine testLessThanOrEquals_ScalarInf_unlessThan_B()
+    
+    call assertLessThanOrEqual(makeInf_32(), 1._REAL32, 2._REAL32)
+
+    call assertExceptionRaised( &
+         & 'AssertLessThanOrEqual failure:' // NL // &
+         & '                          LHS: <'//strInf()//'>' // NL // &
+         & '    not less than or equal to: <'//to_string(1.0)//'>' &
+         )
+
+ end subroutine testLessThanOrEquals_ScalarInf_unlessThan_B
+
+ function to_string(x) result(str)
+    real, intent(in) :: x
+    character(len=:), allocatable :: str
+
+    character(255) :: buffer
+    write(buffer,'(g0)') x
+    str = trim(buffer)
+
+ end function to_string
+
+end module Test_AssertLessThanOrEqual_Real
+

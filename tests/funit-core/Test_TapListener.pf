@@ -1,0 +1,97 @@
+module Test_TapListener
+   use FUnit
+   use pf_ExceptionList
+   use pf_Exception
+   use pf_TapListener
+   implicit none
+
+   @suite(name='TapListener_suite')
+
+contains
+
+   @before
+   subroutine setUp()
+   end subroutine setUp
+
+   @after
+   subroutine teardown()
+      integer :: unit
+      open(newunit=unit, file='tapListener.out', status='unknown', form='formatted')
+      close(unit, status='delete')
+   end subroutine teardown
+
+   @test
+   subroutine test_addSuccess()
+      type (TapListener) :: listener
+      integer :: unit
+      character(len=128) :: buffer
+
+      open(newunit=unit, file='tapListener.out', status='new', form='formatted')
+      listener = TapListener(unit)
+      call listener%addSuccess('test_that_succeeds')
+      close(unit)
+
+      open(newunit=unit, file='tapListener.out', status='old', form='formatted')
+      read(unit,'(a)') buffer
+
+      @assertEqual('ok - test_that_succeeds', trim(buffer))
+
+      close(unit, status='delete')
+      
+   end subroutine test_addSuccess
+
+   @test
+   subroutine test_addFailure_nomessage()
+      type (TapListener) :: listener
+      integer :: unit
+      character(len=128) :: buffer
+
+      type (ExceptionList) :: exceptions
+      
+      open(newunit=unit, file='tapListener.out', status='new', form='formatted')
+      listener = TapListener(unit)
+      call listener%addFailure('test_that_fails', exceptions)
+      close(unit)
+
+      open(newunit=unit, file='tapListener.out', status='old', form='formatted')
+      read(unit,'(a)') buffer
+
+      @assertEqual('not ok - test_that_fails', trim(buffer))
+
+      close(unit, status='delete')
+      
+   end subroutine test_addFailure_nomessage
+
+   @test
+   subroutine test_addFailure_withmessage()
+      type (TapListener) :: listener
+      integer :: unit
+      character(len=128) :: buffer
+
+      type (ExceptionList) :: exceptions
+      
+      open(newunit=unit, file='tapListener.out', status='new', form='formatted')
+      listener = TapListener(unit)
+
+      call exceptions%push_back(Exception('This is a failing message.', &
+           & SourceLocation('foo.F90', 19)))
+      call listener%addFailure('test_that_fails', exceptions)
+      close(unit)
+
+      open(newunit=unit, file='tapListener.out', status='old', form='formatted')
+
+      read(unit,'(a)') buffer
+      @assertEqual('not ok - test_that_fails', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  ---', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  message: This is a failing message.', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  ...', trim(buffer))
+
+      close(unit, status='delete')
+      
+   end subroutine test_addFailure_withmessage
+
+   
+end module Test_TapListener

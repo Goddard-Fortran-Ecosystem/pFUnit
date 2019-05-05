@@ -1,0 +1,48 @@
+module Test_DisableTest
+   use FUnit
+   implicit none
+
+   @suite(name='Disable_suite')
+
+contains
+
+   @test
+   subroutine test_disable()
+      type (TestSuite) :: s
+      type (TestRunner) :: r
+      type (TestResult) :: rslt
+      class (Test), allocatable :: t
+      integer :: unit
+      
+      s = TestSuite()
+      t = TestMethod('test_is_disabled',test_is_disabled)
+      call t%insert(Disable%type_name(), Disable)
+      call s%addTest(t)
+
+      t = TestMethod('test_is_not_igored',test_is_not_disabled)
+      call s%addTest(t)
+
+      ! Do not send any output to STDOUT
+      open(newunit=unit, access='sequential',form='formatted',status='scratch')
+      r = TestRunner(ResultPrinter(unit))
+      rslt = r%run(s, SerialContext())
+      close(unit)
+      
+      @assertEqual(1, rslt%runCount())
+      @assertEqual(1, rslt%disableCount())
+   end subroutine test_disable
+
+
+   subroutine test_is_disabled()
+   end subroutine test_is_disabled
+
+   subroutine test_is_not_disabled()
+   end subroutine test_is_not_disabled
+   
+
+   @test
+   @disable
+   subroutine test_disable_annotation()
+   end subroutine test_disable_annotation
+
+end module Test_DisableTest

@@ -1,0 +1,74 @@
+module Test_RepeatPattern
+   use PF_Exception
+   use PF_ExceptionList
+   use PF_RepeatPattern
+   use PF_MatchObject
+   use PF_Assert
+   use PF_SourceLocation
+   use PF_LiteralPattern
+   implicit none
+
+   @suite(name='RepeatPattern_suite')
+   
+contains
+
+   @test
+   subroutine test_match_zero()
+      type (RepeatPattern) :: p
+      type (MatchObject) :: m
+      
+      p = RepeatPattern(LiteralPattern('a'))
+      m = p%match('')
+
+      @assertTrue(m%found)
+      @assertEqual(0, m%num_characters)
+      @assertEqual('', m%string)
+      
+   end subroutine test_match_zero
+
+   @test
+   subroutine test_match_one()
+      type (RepeatPattern) :: p
+      type (MatchObject) :: m
+      
+      p = RepeatPattern(LiteralPattern('a'))
+      m = p%match('a')
+
+      @assertTrue(m%found)
+      @assertEqual(1, m%num_characters)
+      @assertEqual('a', m%string)
+      
+   end subroutine test_match_one
+   
+   
+   @test
+   subroutine test_match_two()
+      type (RepeatPattern) :: p
+      type (MatchObject) :: m
+      
+      p = RepeatPattern(LiteralPattern('a'))
+      m = p%match('aa')
+
+      @assertTrue(m%found)
+      @assertEqual(2, m%num_characters)
+      @assertEqual('aa', m%string)
+      
+   end subroutine test_match_two
+   
+
+   @test
+   subroutine test_match_multichar()
+      type (RepeatPattern) :: p
+      type (MatchObject) :: m
+      
+      p = RepeatPattern(LiteralPattern('ab'))
+      m = p%match('ababc')
+
+      @assertTrue(m%found)
+      @assertEqual(4, m%num_characters)
+      @assertEqual('abab', m%string)
+      
+   end subroutine test_match_multichar
+   
+   
+end module Test_RepeatPattern

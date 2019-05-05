@@ -1,0 +1,604 @@
+! Minimum support is for expected and actual arguments to have the same
+! kind.
+
+@tkr_parameters minimal
+[(integer,  8, rank)]
+[(integer, 16, rank)]
+[(integer, 32, rank)]
+[(integer, 64, rank)]
+@end tkr_parameters
+
+@tkr_parameters useful
+[(integer,  8, rank), (integer,  8, rank)]
+[(integer, 16, rank), (integer, 16, rank)]
+[(integer, 32, rank), (integer, 32, rank)]
+[(integer, 64, rank), (integer, 64, rank)]
+[(integer, default, rank), (integer,  8, rank)]
+[(integer, default, rank), (integer, 16, rank)]
+[(integer, default, rank), (integer, 32, rank)]
+[(integer, default, rank), (integer, 64, rank)]
+[(integer,  8, 0), (integer,  8, rank)]
+[(integer, 16, 0), (integer, 16, rank)]
+[(integer, 32, 0), (integer, 32, rank)]
+[(integer, 64, 0), (integer, 64, rank)]
+[(integer, default, 0), (integer,  8, rank)]
+[(integer, default, 0), (integer, 16, rank)]
+[(integer, default, 0), (integer, 32, rank)]
+[(integer, default, 0), (integer, 64, rank)]
+@end tkr_parameters
+
+#include "unused_dummy.fh"
+
+module pf_AssertInteger_{rank}d
+   use, intrinsic :: iso_fortran_env, only: INT8
+   use, intrinsic :: iso_fortran_env, only: INT16
+   use, intrinsic :: iso_fortran_env, only: INT32
+   use, intrinsic :: iso_fortran_env, only: INT64
+   use pf_KeywordEnforcer
+   use pf_SourceLocation
+   use pf_AssertUtilities
+
+   implicit none
+   private
+
+   public :: AssertEqual
+   public :: AssertNotEqual
+   public :: AssertLessThan
+   public :: AssertLessThanOrEqual
+   public :: AssertGreaterThan
+   public :: AssertGreaterThanOrEqual
+
+   public :: AssertAssociated
+
+   @overload(AssertEqual, useful)
+   @overload(AssertNotEqual, useful)
+   @overload(AssertLessThan, useful)
+   @overload(AssertLessThanOrEqual, useful)
+   @overload(AssertGreaterThan, useful)
+   @overload(AssertGreaterThanOrEqual, useful)
+
+   @overload(AssertAssociated, minimal)
+
+   @overload(assert_equal, minimal)
+   @overload(assert_not_equal, minimal)
+   @overload(assert_less_than, minimal)
+   @overload(assert_less_than_or_equal, minimal)
+   @overload(assert_greater_than, minimal)
+   @overload(assert_greater_than_or_equal, minimal)
+   
+
+
+
+   integer, parameter :: MAX_LEN_INT_AS_STRING = 20
+
+contains
+
+   @template(AssertEqual,[expected,actual])
+   subroutine {name}(expected, actual, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+#if {actual.rank} != 0 && {expected.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_equal(int(expected+0*actual,kind(actual)), actual, message=message, location=location)
+#else
+      call assert_equal(int(expected,kind(actual)), actual, message=message, location=location)
+#endif
+   end subroutine {name}
+   @end template
+
+
+   @template(assert_equal,[actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer(kind=kind(actual)) :: e, a, d
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_INT_AS_STRING) :: expected_str
+      character(len=MAX_LEN_INT_AS_STRING) :: actual_str
+      character(len=MAX_LEN_INT_AS_STRING) :: diff_str
+     
+
+      _UNUSED_DUMMY(unused)
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (expected == actual)) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(expected == actual)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (expected == actual)))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+      d = a - e
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(i0)') e
+      write(actual_str,'(i0)') a
+      write(diff_str,'("<",i0,">")') d
+      
+#if {rank} == 0
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_not_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+      return
+   end subroutine {name}
+   @end template
+
+
+
+   @template(AssertNotEqual,[expected,actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+      
+#if {actual.rank} != 0 && {expected.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_not_equal(int(expected+0*actual,kind(actual)), actual, message=message, location=location)
+#else
+      call assert_not_equal(int(expected,kind(actual)), actual, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+
+   @template(assert_not_equal,[actual])
+   subroutine {name}(expected, actual, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      integer(kind=kind(actual)) :: a
+      character(len=MAX_LEN_INT_AS_STRING) :: actual_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (expected /= actual)) then
+         a = actual
+      end if
+         
+#else
+      if (.not. all(expected /= actual)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. (expected /= actual)))
+         a = actual({actual.multi_index})
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(actual_str,'(i0)') a
+      
+#if {actual.rank} == 0
+      call fail_equal(trim(actual_str), message=message, location=location)
+#else
+      call fail_equal(trim(actual_str), index=i, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertLessThan,[lhs,rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+#if {rhs.rank} != 0 && {lhs.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_less_than(int(lhs+0*rhs,kind(rhs)), rhs, message=message, location=location)
+#else
+      call assert_less_than(int(lhs,kind(rhs)), rhs, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+
+
+   @template(assert_less_than,[rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer(kind=kind(rhs)) :: l, r
+#if {rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_INT_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_INT_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs < rhs)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs < rhs)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1, 0, .not. (lhs < rhs)))
+         l = lhs({rhs.multi_index})
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(i0)') l
+      write(rhs_str,'(i0)') r
+      
+#if {rank} == 0
+      call fail_not_less_than(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_less_than(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertLessThanOrEqual,[lhs,rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+#if {rhs.rank} != 0 && {lhs.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_less_than_or_equal(int(lhs+0*rhs,kind(rhs)), rhs, message=message, location=location)
+#else
+      call assert_less_than_or_equal(int(lhs,kind(rhs)), rhs, message=message, location=location)
+#endif
+
+
+   end subroutine {name}
+   @end template
+
+   @template(assert_less_than_or_equal,[rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer(kind=kind(rhs)) :: l, r
+#if {rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_INT_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_INT_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      
+#if {rhs.rank} == 0
+      ! scalar
+      if (.not. (lhs <= rhs)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs <= rhs)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1, 0, .not. (lhs <= rhs)))
+         l = lhs({rhs.multi_index})
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(i0)') l
+      write(rhs_str,'(i0)') r
+      
+#if {rhs.rank} == 0
+      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_less_than_or_equal(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+
+   end subroutine {name}
+   @end template
+
+   @template(AssertGreaterThan,[lhs,rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+#if {rhs.rank} != 0 && {lhs.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_greater_than(int(lhs+0*rhs,kind(rhs)), rhs, message=message, location=location)
+#else
+      call assert_greater_than(int(lhs,kind(rhs)), rhs, message=message, location=location)
+#endif
+
+   end subroutine {name}
+   @end template
+   
+   @template(assert_greater_than,[rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer(kind=kind(rhs)) :: l, r
+#if {rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_INT_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_INT_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      
+#if {rank} == 0
+      ! scalar
+      if (.not. (lhs > rhs)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs > rhs)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1, 0, .not. (lhs > rhs)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(i0)') l
+      write(rhs_str,'(i0)') r
+      
+#if {rank} == 0
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_greater_than(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+
+   end subroutine {name}
+   @end template
+
+
+   @template(AssertGreaterThanOrEqual,[lhs,rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {lhs.type} (kind={lhs.kind}), intent(in) :: lhs {lhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+
+      _UNUSED_DUMMY(unused)
+
+#if {rhs.rank} != 0 && {lhs.rank} == 0
+      ! Convert scalar 'expected' to array of same shape as 'actual'
+      ! Obscure but convenient
+      call assert_greater_than_or_equal(int(lhs+0*rhs,kind(rhs)), rhs, message=message, location=location)
+#else
+      call assert_greater_than_or_equal(int(lhs,kind(rhs)), rhs, message=message, location=location)
+#endif
+
+
+   end subroutine {name}
+   @end template
+
+   
+   @template(assert_greater_than_or_equal,[rhs])
+   subroutine {name}(lhs, rhs, unused, message, location)
+      {rhs.type} (kind={rhs.kind}), intent(in) :: lhs {rhs.dims}
+      {rhs.type} (kind={rhs.kind}), intent(in) :: rhs {rhs.dims}
+
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer(kind=kind(rhs)) :: l, r
+#if {rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_INT_AS_STRING) :: lhs_str
+      character(len=MAX_LEN_INT_AS_STRING) :: rhs_str
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. conformable(shape(lhs), shape(rhs))) then
+         call fail_not_conformable(shape(lhs), shape(rhs), message=message, location=location)
+         return
+      end if
+
+      
+#if {rank} == 0
+      ! scalar
+      if (.not. (lhs >= rhs)) then
+         l = lhs
+         r = rhs
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(lhs >= rhs)) then ! array
+         ! index of first difference is
+         i = maxloc(merge(1, 0, .not. (lhs >= rhs)))
+#if {rhs.rank} == 0
+         l = lhs
+#else
+         l = lhs({rhs.multi_index})
+#endif
+         r = rhs({rhs.multi_index})
+      else
+         return
+      end if
+#endif
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(lhs_str,'(i0)') l
+      write(rhs_str,'(i0)') r
+      
+#if {rank} == 0
+      call fail_not_greater_than_or_equal(trim(lhs_str), trim(rhs_str), &
+           & message=message, location=location)
+#else
+      call fail_not_greater_than_or_equal(trim(lhs_str), trim(rhs_str), index=i, &
+           & message=message, location=location)
+#endif
+      
+
+   end subroutine {name}
+   @end template
+
+   @template(AssertAssociated,[tkr])
+   subroutine {name}(p, t, unused, message, location)
+      {tkr.type} (kind={tkr.kind}), pointer, intent(in) :: p {tkr.dims}
+      {tkr.type} (kind={tkr.kind}), target, intent(in) :: t {tkr.dims}
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      _UNUSED_DUMMY(unused)
+
+      if (.not. associated(p, t)) then
+         call fail_not_associated(message=message, location=location)
+      end if
+
+   end subroutine {name}
+   @end template
+
+! Heavily overloaded wrappers   
+   @instantiate(AssertEqual, useful)
+   @instantiate(AssertNotEqual, useful)
+   @instantiate(AssertLessThan, useful)
+   @instantiate(AssertLessThanOrEqual, useful)
+   @instantiate(AssertGreaterThan, useful)
+   @instantiate(AssertGreaterThanOrEqual, useful)
+
+   @instantiate(AssertAssociated, minimal)
+
+! Internal procedures
+   @instantiate(assert_equal, minimal)
+   @instantiate(assert_not_equal, minimal)
+   @instantiate(assert_less_than, minimal)
+   @instantiate(assert_less_than_or_equal, minimal)
+   @instantiate(assert_greater_than, minimal)
+   @instantiate(assert_greater_than_or_equal, minimal)
+   
+end module pf_AssertInteger_{rank}d
+
+
+   

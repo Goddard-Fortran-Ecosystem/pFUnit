@@ -47,7 +47,6 @@ sftp> put pFUnit3-ReferenceManual.pdf pFUnit3-ReferenceManual-<version>-<date>-1
 
 Similarly, one can put a tar'd version of the pFUnit release into
 "/home/pfs/project/pfunit/Source" at frs.sourceforge.net.
-$ git archive master --prefix pFUnit-<version>/ --output pFUnit-<version>.tar --format tgz
 
 3. Clean pFUnit, especially the documentation directory, but retain
 the PDF file.  At this point the documentation files (README-INSTALL,

@@ -1,0 +1,54 @@
+@tkr_parameters cases
+[(integer,  32, 0)]
+[(integer,  64, 0)]
+[(integer,  default, 0)]
+[(real,  32, 0)]
+[(real,  64, 0)]
+[(real, 128, 0)]
+[(real,  default, 0)]
+[(real,  double, 0)]
+[(complex,  32, 0)]
+[(complex,  64, 0)]
+[(complex, 128, 0)]
+[(complex,  default, 0)]
+[(complex,  double, 0)]
+@end tkr_parameters
+
+
+
+module pf_Formatter
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+   use, intrinsic :: iso_fortran_env, only: INT32, INT64
+   implicit none
+   private
+
+   public :: Formatter
+
+   type :: Formatter
+      private
+   contains
+
+@template(format, [case])
+      procedure, nopass :: {name}
+      generic :: format => {name}
+@end template
+@instantiate(format, cases)
+
+   end type Formatter
+
+   integer, parameter :: MAX_LEN_FORMAT = 256
+contains
+
+   @template(format, [case])
+   function {name}(arg) result(str)
+      character(:), allocatable :: str
+      {case.type} (kind={case.kind}), intent(in) :: arg
+      character(MAX_LEN_FORMAT) :: buffer
+      write(buffer,'(g0)') arg
+      str = trim(buffer)
+   end function {name}
+   @end template
+
+   @instantiate(format, cases)
+
+end module pf_Formatter

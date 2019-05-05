@@ -1,0 +1,14 @@
+#include "unused_dummy.fh"
+module Test_MPI_stub
+   use pfunit
+
+contains
+
+   @test(npes=[1,2,3])
+   subroutine stub_mpi_test(this)
+      class (MpiTestMethod), intent(inout) :: this
+
+      _UNUSED_DUMMY(this)
+   end subroutine stub_mpi_test
+
+end module Test_MPI_stub
