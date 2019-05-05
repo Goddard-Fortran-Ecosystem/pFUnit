@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_IsArrayWithSize
   use pf_AbstractMatcher
   use pf_MatcherDescription
@@ -58,6 +60,7 @@ contains
     class(IsArrayWithSize), intent(in) :: this
     class(*), intent(in) :: actual
 
+    _UNUSED_DUMMY(this)
     select type (actual)
     type is (internal_array_1d)
        feature_value = size(actual%items)
@@ -79,6 +82,8 @@ contains
   logical function expects_type_of(this, actual)
     class(IsArrayWithSize), intent(in) :: this
     class(*), intent(in) :: actual
+
+    _UNUSED_DUMMY(this)
 
     select type(actual)
     type is (internal_array_1d)

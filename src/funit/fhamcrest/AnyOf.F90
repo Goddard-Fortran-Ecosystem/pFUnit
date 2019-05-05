@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_AnyOf
   use pf_AbstractMatcher
   use pf_BaseMatcher
@@ -85,7 +87,6 @@ contains
     class(AnyOf), intent(in) :: this
     class(*), intent(in) :: actual_value
 
-    integer :: i
     
     type(MatcherVectorIterator) :: iter
     class(AbstractMatcher), pointer :: matcher
@@ -108,8 +109,6 @@ contains
   subroutine describe_to(this, description)
     class(AnyOf), intent(in):: this
     class(MatcherDescription), intent(inout) :: description
-
-    integer :: i
 
     call this%describe_to_op(description, "or")
 
@@ -140,6 +139,8 @@ contains
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
+    _UNUSED_DUMMY(this)
+    
     call description%append_text("was ")
     call description%append_value(actual)
 

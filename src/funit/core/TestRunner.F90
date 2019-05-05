@@ -105,7 +105,6 @@ contains
       integer :: clock_start
       integer :: clock_stop
       integer :: clock_rate
-      integer :: i
       real :: elapsed_time
 
       call system_clock(clock_start)
@@ -133,6 +132,8 @@ contains
      class (Test), intent(inout) :: aTest
      class (ParallelContext), intent(in) :: context
      type (TestResult), intent(inout) :: result
+
+     _UNUSED_DUMMY(this)
      
      call aTest%run(result, context)
      

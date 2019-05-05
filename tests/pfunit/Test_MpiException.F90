@@ -1,4 +1,4 @@
-!#include "reflection.h"
+#include "unused_dummy.fh"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -36,7 +36,6 @@ contains
 
    function suite()
       use PF_TestSuite, only: TestSuite
-      use PF_TestMethod, only: TestMethod!, TestMethod
 
       type (TestSuite) :: suite
 
@@ -64,6 +63,7 @@ contains
       class (MpiTestMethod), intent(inout) :: this
       class (ParallelContext), allocatable :: context
 
+      _UNUSED_DUMMY(this)
       allocate(context, source=this%getContext())
       call assertFalse(anyExceptions(context))
       

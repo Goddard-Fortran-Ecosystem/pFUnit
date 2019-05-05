@@ -26,7 +26,7 @@ contains
     type(TestTimer) :: timer
     real, intent(in) :: max_time
     
-    integer(kind=INT64) :: count, count_rate
+    integer(kind=INT64) :: count_rate
 
     call system_clock(timer%start_count, count_rate)
     timer%max_count = timer%start_count + ceiling(1000*max_time) * count_rate/1000

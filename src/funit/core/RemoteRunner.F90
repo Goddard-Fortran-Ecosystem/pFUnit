@@ -89,7 +89,6 @@ contains
    end function newRemoteRunner
 
    function run(this, aTest, context) result(result)
-      use, intrinsic :: iso_fortran_env, only: OUTPUT_UNIT
       use PF_Test
       use PF_TestVector
       use PF_ParallelContext

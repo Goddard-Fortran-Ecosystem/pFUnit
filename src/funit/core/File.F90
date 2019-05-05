@@ -69,7 +69,6 @@ contains
     type(TestTimer), intent(in) :: timer
     integer, intent(out) :: rc
 
-    integer :: line_length
     integer :: status
     type(pollfd) :: fds(1)
     integer(kind=C_INT) :: timeout
@@ -149,7 +148,6 @@ contains
   subroutine file_close(this, rc)
     class(File), intent(inout) :: this
     integer(kind=C_INT), intent(out) :: rc
-    integer :: status
 
     rc = close(this%file_descriptor)
   end subroutine file_close

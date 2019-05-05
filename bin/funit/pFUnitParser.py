@@ -19,7 +19,7 @@ assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
                    'relativelyequal': 2, 'isinfinite': 1, 'isfinite': 1,
                    'isnan': 1, 'ismemberof': 2, 'contains': 2, 'any': 1,
                    'all': 1, 'notall': 1, 'none': 1, 'ispermutationof': 2,
-                   'exceptionraised': 0, 'sameshape': 2}
+                   'exceptionraised': 0, 'sameshape': 2, 'that': 2}
 
 def cppSetLineAndFile(line, file):
     return "#line " + str(line) + ' "' + file + '"\n'
@@ -820,7 +820,8 @@ class Parser():
         else:
             type = 'TestMethod'
 
-        self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+        self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
+        self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
         if ('disable' in testMethod):
             self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
         self.outputFile.write('   call suite%addTest(t)\n')
@@ -843,7 +844,8 @@ class Parser():
             else:
                 type = 'MpiTestMethod'
                     
-            self.outputFile.write('   t = ' + type + '(' + args + ')\n')
+            self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
+            self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
             if ('disable' in testMethod):
                 self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
             self.outputFile.write('   call suite%addTest(t)\n')

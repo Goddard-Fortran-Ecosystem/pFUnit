@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_AllOf
   use pf_AbstractMatcher
   use pf_MatcherDescription
@@ -103,8 +105,6 @@ contains
     class(AllOf), intent(in):: this
     class(MatcherDescription), intent(inout) :: description
 
-    integer :: i
-
     call this%describe_to_op(description, "and")
 
   end subroutine describe_to
@@ -132,6 +132,8 @@ contains
     class(AllOf), intent(in) :: this
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
+
+    _UNUSED_DUMMY(this)
 
     call description%append_text("was ")
     call description%append_value(actual)

@@ -25,15 +25,20 @@ endif ()
 # funit is the "real" library.
 add_subdirectory (core)
 add_subdirectory (asserts)
-add_subdirectory (fhamcrest)
 add_dependencies (funit funit-core)
 add_dependencies (funit asserts)
-add_dependencies (funit fhamcrest)
+if (NOT SKIP_FHAMCREST)
+  add_subdirectory (fhamcrest)
+  add_dependencies (funit fhamcrest)
+endif ()
 
 target_sources(funit PRIVATE FUnit.F90 funit_main.F90)
 target_sources(funit PRIVATE $<TARGET_OBJECTS:funit-core>)
 target_sources(funit PRIVATE $<TARGET_OBJECTS:asserts>)
 target_sources(funit PRIVATE $<TARGET_OBJECTS:fhamcrest>)
+if (OpenMP_Fortran_FOUND)
+  target_link_libraries (funit PUBLIC OpenMP::OpenMP_Fortran)
+endif ()
 
 
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)

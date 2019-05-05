@@ -135,11 +135,9 @@ contains
       use PF_TestResult
       use PF_Exception, only: Exception
       use PF_ExceptionList, only: throw
-      use PF_ExceptionList, only: catch
       use PF_TestFailure
       class (TestMpiTestCase), intent(inout) :: this
 
-      integer :: numProcesses, ier
       type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
@@ -175,15 +173,12 @@ contains
    ! Test that exception thrown on non root process is
    ! detected on root process in the end.
    subroutine testFailOn2(this)
-      use PF_ExceptionList, only: throw
       use PF_Assert, only: assertEqual
       use PF_TestResult
       use PF_Exception, only: Exception
-      use PF_ExceptionList, only: catch
       use PF_TestFailure
       class (TestMpiTestCase), intent(inout) :: this
 
-      integer :: numProcesses, ier
       type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
@@ -216,16 +211,13 @@ contains
    ! Purposefully request more processes than are available. 
    ! detected on root process in the end.
    subroutine testTooFewProcs(this)
-      use PF_ExceptionList, only: throw
       use PF_Assert, only: assertEqual
       use PF_TestResult
       use PF_Exception, only: Exception
-      use PF_ExceptionList, only: catch
       use PF_ExceptionList, only: anyExceptions
       use PF_TestFailure
       class (TestMpiTestCase), intent(inout) :: this
 
-      integer :: numProcesses, ier
       type (TestMpiTestCase) :: brokenTest
       type (TestResult) :: reslt
       type (TestFailure) :: failure
@@ -265,7 +257,7 @@ contains
       character(len=:), allocatable, intent(inout) :: runLog
       integer, intent(in) :: mpiCommunicator
       
-      integer :: numProcesses, rank, ier
+      integer :: ier
 
       runLog = 'was run'
       call Mpi_Barrier(mpiCommunicator, ier)

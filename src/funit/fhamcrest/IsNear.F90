@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module pf_IsNear
   use pf_TypeSafeMatcher
   use pf_MatcherDescription
@@ -91,6 +93,8 @@ contains
     class(IsNear), intent(in) :: this
     class(*), intent(in) :: actual
 
+    _UNUSED_DUMMY(this)
+    
     select type (actual)
     type is (real)
        supported = .true.

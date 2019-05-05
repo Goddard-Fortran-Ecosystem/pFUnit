@@ -189,7 +189,7 @@ contains
       character(len=*), intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      !omp critical
+      !$omp critical
       call global_exception_list%throw(message, location)
       !$omp end critical
 

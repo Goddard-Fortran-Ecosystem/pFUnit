@@ -69,21 +69,27 @@ set(srcs
   )
 
 # Support for RobustRunner
-list (APPEND srcs
-  Posix.F90
-  File.F90
-  UnixPipeInterfaces.F90
-  UnixProcess.F90
-  TestTimer.F90
-  RobustRunner.F90
-  RemoteRunner.F90
-  RemoteProxyTestCase.F90
-  )
+if (NOT SKIP_ROBUST)
+  list (APPEND srcs
+    Posix.F90
+    File.F90
+    UnixPipeInterfaces.F90
+    UnixProcess.F90
+    TestTimer.F90
+    RobustRunner.F90
+    RemoteRunner.F90
+    RemoteProxyTestCase.F90
+    )
+endif ()
+
 
 add_library (funit-core OBJECT ${srcs})
 set_target_properties (funit-core PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
 add_dependencies (funit-core generate_posix_parameters)
 target_link_libraries (funit-core PUBLIC external-pfunit)
+if (OpenMP_Fortran_FOUND)
+  target_link_libraries (funit-core PUBLIC OpenMP::OpenMP_Fortran)
+endif ()
 
 target_include_directories (funit-core PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../mod>

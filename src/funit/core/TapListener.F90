@@ -1,30 +1,5 @@
 #include "unused_dummy.fh"
 
-!-------------------------------------------------------------------------------
-! NASA/GSFC Advanced Software Technology Group
-!-------------------------------------------------------------------------------
-!  MODULE: TapListener
-!
-!> @brief
-!! <BriefDescription>
-!!
-!! @author
-!! Halvor Lund, SINTEF Energy Research
-!!
-!! @date
-!! 30 Jan 2014
-!!
-!! @note <A note here.>
-!! Need to improve the handling of nested quotes.
-!
-! REVISION HISTORY:
-! 2014 June 4 ML Rilee
-!    Added intermediate status output. Refactored prints to handle both single
-!    and arrays of Failure and Success.  Exceptions can be printed too. Quotes 
-!    are not handled well: need to consider going to "&quot;" and "&apos;".
-!    May need to separate status reports from the end-of-run summary
-!
-!-------------------------------------------------------------------------------
 module PF_TapListener
    use PF_Exception
    use PF_TestListener
@@ -32,7 +7,6 @@ module PF_TapListener
    private
 
    public :: TapListener
-   public :: newTapListener
 
    type, extends(TestListener) :: TapListener
       integer :: unit
@@ -55,15 +29,31 @@ module PF_TapListener
       procedure :: addSuccess
    end type TapListener
 
+   interface TapListener
+      module procedure new_TapListener_unit
+      module procedure new_TapListener_file
+   end interface TapListener
+
+
 contains
 
-   function newTapListener(unit)
-      type (TapListener) :: newTapListener
+   function new_TapListener_unit(unit) result(listener)
+      type (TapListener) :: listener
       integer, intent(in) :: unit
 
-      newTapListener%unit = unit
+      listener%unit = unit
 
-   end function newTapListener
+   end function new_TapListener_unit
+
+   function new_TapListener_file(file) result(listener)
+      type (TapListener) :: listener
+      character(*), intent(in) :: file
+
+      open(newunit=listener%unit, file=file,status='unknown',form='formatted',access='sequential')
+
+   end function new_TapListener_file
+
+   
 
    subroutine addFailure(this, testName, exceptions)
       use PF_ExceptionList

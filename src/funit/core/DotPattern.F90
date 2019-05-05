@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module PF_DotPattern
    use PF_AbstractPattern
    use PF_MatchObject
@@ -21,6 +23,7 @@ contains
 
    function new_DotPattern() result(pattern)
       type (DotPattern) :: pattern
+      _UNUSED_DUMMY(pattern)
    end function new_DotPattern
 
 
@@ -28,6 +31,8 @@ contains
       type (MatchObject) :: match
       class (DotPattern), intent(in) :: this
       character(len=*), intent(in) :: string
+
+      _UNUSED_DUMMY(this)
 
       if (len(string) > 0) then
          match%found = .true.
