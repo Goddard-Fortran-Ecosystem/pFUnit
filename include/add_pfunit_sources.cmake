@@ -23,8 +23,14 @@ function( ADD_PFUNIT_SOURCES out_var )
          file( RELATIVE_PATH rel_file "${CMAKE_CURRENT_SOURCE_DIR}" "${abs_file}" )
 
          # replace the extension with .F90 to determine the output file name
-	 get_filename_component (extension ${file} EXT)
-         string( REGEX REPLACE "${extension}" ".F90" out_file "${CMAKE_CURRENT_BINARY_DIR}/${rel_file}" )
+	 get_filename_component (file_name "${rel_file}" NAME_WE)
+	 get_filename_component (file_dir "${rel_file}" DIRECTORY)
+	 if(NOT "${file_dir}" STREQUAL "")
+	   set(file_dir "${CMAKE_CURRENT_BINARY_DIR}/${file_dir}")
+	 else()
+	   set(file_dir "${CMAKE_CURRENT_BINARY_DIR}")
+	 endif()
+	 set(out_file "${file_dir}/${file_name}.F90")
          # append the output file to the list of outputs
          list( APPEND out_files "${out_file}" )
          # create the output directory if it doesn't exist
