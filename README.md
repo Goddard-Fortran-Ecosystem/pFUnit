@@ -108,16 +108,15 @@ files.
 
 - `COPYRIGHT` - Contains information pertaining to the use and
   distribution of pFUnit.
-
+  
 - `Examples` - Contains examples of how to use pFUnit once it is
   installed.
 
-- `GNUmakefile` - The top level makefile for building and installing
-  pFUnit.
-
 - `bin` - Executables used to construct and perform unit tests.
 
-- `documentation` - Provides information about the pFUnit.
+- `documentation` - Provides information about the pFUnit.  (Very out of date.)
+
+- `extern` - external dependencies installed as git submodules
 
 - `include` - Files to be included into makefiles or source, including use
   code.
@@ -127,7 +126,7 @@ files.
 
 - `README.md` - This file.
 
-- `source` - Source code and scripts of the pFUnit library and framework.
+- `src` - Source code and scripts of the pFUnit library and framework.
 
 - `tests` - Source code for unit testing pFUnit itself.
 
@@ -140,21 +139,9 @@ files.
 Little needs to be done to configure pFUnit for the build, however
 there are several environment variables on which the package depends.
 
-- `F90_VENDOR` - is set to include the correct makefile in
-  `$(TOP_DIR)/include`, i.e. GNU, Intel, NAG, or PGI. Case insensitive
-  file systems may cause some confusion from time-to-time.
+- `FC` - possibly used by CMake to identify your Fortran compiler.
 
-- `F90` - is set to the Fortran compiler being used: e.g. ifort for
-  Intel, gfortran for GNU.
-
-- `COMPILER` - is set according to F90_VENDOR and is automatically set in
-  the top level makefile.
-
-For MPI-based unit testing, your setup may require the following as well.
-
-    MPIF90
-    $ # e.g.
-    $ export MPIF90=mpif90
+- If using MPI, it must be in a location that CMake's FindMPI can find.
 
 As a convenience for working with multiple MPI configurations, you may
 also set the following.
@@ -163,144 +150,29 @@ also set the following.
     $ # e.g.
     $ export MPIRUN=/some.path/mpirun
 
-- `pFUnit_MAX_ARRAY_RANK` - controls the maximum number of (Fortran)
-  dimensions of the arrays asserts are defined over. If
-  `pFUnit_MAX_ARRAY_RANK` is not set, the default is 5 and pFUnit's
-  assertions will be able to handle arrays up to rank 5,
-  i.e. `A(:,:,:,:,:)`. `pFUnit_MAX_ARRAY_RANK` and `MAX_RANK` do not
-  refer to MPI ranks (process id within a group). Example:
+- `-DDMAX_ASSERT_RANK` - controls the maximum number of (Fortran)
+  dimensions of the arrays asserts are defined over. If not set, the default is 5 and pFUnit's
+  assertions will be able to handle arrays up to rank 5.
 
-        $ export pFUnit_MAX_ARRAY_RANK=8
+## Building pFUnit with CMake
 
-  `pFUnit_MAX_RANK` is a deprecated way to set maximum rank and is to
-  be removed in version 4.
+*** Note that vanilla Make is no longer supported.***
 
-- `DOXYGEN` - To generate documentation, set DOXYGEN to the desired
-  executable. NOTE: Doxygen Version 1.8.5 does not respect CamelCase
-  names from Fortran source code by currently converting all to
-  lowercase. It does this to get HTML links correct for references in
-  the source code that also do not respect the CamelCase convention.
-  The Fortran standard specifies case insensitivity. Doxygen 1.7.x
-  seems to better respect CamelCase.
-
-        $ #.e.g.
-        $ export DOXYGEN=/opt/local/share/doxygen/doxygen-1.7.6/bin/doxygen
-
-## Building pFUnit
-
-### Testing serial codes (Non-MPI)
-
-1. Change to the directory into which pFUnit has been placed.
-2. Set these environment variables (bash example):
-
-         $ export F90=gfortran-mp-4.8
-         $ export F90_VENDOR=GNU
-
-3. To build pFUnit for unit testing of serial codes, execute make.
-   The unit tests for pFUnit itself will run automatically.
-
-         $ make tests
-   1. Occasionally on the first run through, one will get a spurious
-      (runtime) error, for example in the unix process component.
-      Re-execute "make tests" to check again.
-4. At this point the pFUnit object library is in the source directory,
-   along with a large number of Fortran module files.
-
-### Testing parallel codes (MPI)
-
-To build pFUnit for unit testing MPI-based codes, be sure that the
-environment is properly set up for the MPI implementation you are
-using. Depending on your local environment, you may need execute the
-build within a batch or other job queing system, e.g. an interactive
-batch job under PBS. The steps for building pFUnit start out the same
-as for the serial case above, but add `MPI=YES` to the environment to
-switch on MPI support. The MPI-based unit tests for pFUnit itself
-will run automatically. Again, occasionally a spurious (runtime)
-error may appear on the first execution.
-
-3\. Execute make as follows.
-
-    $ make tests MPI=YES 
-
-4\. At this point an MPI-enabled pFUnit object library is in the source
-directory, along with a large number of Fortran module files.
-
-Also, one may get some harmless "no symbols" warnings when the pFUnit
-library is constructed.
-
-### Testing parallel codes (OpenMP)
-
-Initial (limited) support for OPENMP has been implemented. At this
-writing, a basic functionality is available.
-
-The process for building pFUnit for testing OPENMP-based codes is
-similar to that for other paradigms.
-
-3\. To compile for OPENMP support execute make as follows.
-
-    $ make tests OPENMP=YES 
-
-4\. At this point the OPENMP-enabled pFUnit is ready to be installed.
-
-### Cleaning
-
-To clean the pFUnit build directory for the space or to rebuild there
-are two options.
-
-1. Make clean to remove object files and other intermediate products.
-
-        $ make clean
-
-2. Make distclean to remove libraries and other more final products.
-
-        $ make distclean
-
-3. Some directories support a `make src_clean` to remove intermediate
-   products in subdirectories.
-
-### Building the documentation
-
-A start at documentation for pFUnit is in the documentation directory.
-Doxygen is our primary documentation tool. To make the documentation,
-which will be generated in the documentation directory, please invoke
-the following from the top level of the pFUnit distribution.
-
-    $ make documentation
-
-Or to make a reference manual:
-
-    $ make documentation/pFUnit2-ReferenceManual.pdf
-
-To select a specific version of Doxygen, please set the DOXYGEN
-environment variable as in the Configuration section above. You 
-may wish to do this if your code uses CamelCase names as current
-versions of Doxygen (1.8.5) do not respect this convention for
-Fortran.
-
-### Building pFUnit using CMake
-
-Initial support for CMake has been implemented. At this
-writing, a basic functionality is available.
-
-1. The process for building pFUnit using cmake is as follows. In the
+   The process for building pFUnit using cmake is as follows. In the
    top directory of the distribution make a new directory to support the
    build, then change to that directory and run cmake (pointing back to
    the source) to generate the required makefiles.
 
         $ mkdir build
         $ cd build
-        $ # e.g. cmake -DMPI=YES -DOPENMP=NO <path to source>
-        $ cmake -DMPI=NO ..
+        $ cmake ..
         $ make tests
 
    Don't forget you can use the standard `-DCMAKE_INSTALL_PREFIX` to
-   define where the resulting tool will be installed.
+   define where the resulting tool will be installed.    
+   Otherwise the install will be inside your build directory in a directory called `installed'
 
-   If your MPI installation does not provide mpirun, you may try to set
-   `-DMPI_USE_MPIEXEC=YES` to tell CMake to use its `FindMPI` function to
-   find out how to execute the tests.
-
-4. If the build is successful, then at this point `make install` should work.
+ If the build is successful, then at this point `make install` should work.
 
 ## INSTALLATION
 
@@ -308,57 +180,6 @@ Installations 6.1-6.5 are based on GNU make and the project
 makefiles. If you use CMake then `make install` will install to the
 expected place. That is, to `/usr/local` if you specify nothing,
 otherwise to wherever `CMAKE_INSTALL_PREFIX` points.
-
-## Serial
-
-To install pFUnit for regular use, set `INSTALL_DIR` to the location
-in which to place pFUnit. This can be done on the make command line.
-For example, after compiling pFUnit for serial use (MPI absent or
-`MPI=NO`), please try.
-
-    $ # In the top of the pFUnit build directory.
-    $ make install INSTALL_DIR=/opt/pfunit/pfunit-serial
-
-Note: you may need special privileges to install in some locations,
-e.g. via sudo.
-
-To test the installation set pFUnit to `INSTALL_DIR`, then change the
-working directory to Examples in pFUnit distribution and execute
-`make` which will run a number of examples. These include some
-expected (intentional) failures.
-
-    $ # In the top pFUnit build directory...
-    $ export pFUnit=/opt/pfunit/pfunit-serial
-    $ cd Examples
-    $ make
-
-### MPI
-
-For installing an MPI-enabled pFUnit library, change to the top of the
-distribution and execute make with `MPI=YES`. You may need to `make
-distclean` first. After compilation and pFUnit passes its self-tests,
-then installation proceeds as for the serial case above.
-
-    $ make install INSTALL_DIR=/opt/pfunit/pfunit-parallel
-
-To test, set pFUnit and go into Examples/MPI_Halo directory.
-
-    $ # In the top pFUnit build directory...
-    $ export pFUnit=/opt/pfunit/pfunit-parallel
-    $ # The variable MPIF90 must be set to the appropriate build script.
-    $ export MPIF90=mpif90
-    $ cd Examples/MPI_Halo/
-    $ make
-
-This will compile and run a set of parallel examples that includes
-intentional failures. To run all of the examples try executing
-`make MPI=YES` in the Examples directory.
-
-### OpenMP
-
-At this time the OPENMP version of pFUnit can be installed in the same
-way as for the serial or MPI-parallel codes. OpenMP support, tests,
-and examples are limited as of this writing.
 
 ## Default directory
 
