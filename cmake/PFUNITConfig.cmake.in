@@ -98,9 +98,10 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
         list (GET test_sources_f90 ${i} f90_file)
         add_custom_command(
             OUTPUT ${f90_file}
-            COMMAND ${PFUNIT_PARSER} ${CMAKE_CURRENT_SOURCE_DIR}/${pf_file} ${f90_file}
-            MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${pf_file}
-            #COMMENT "Generating '${f90_file}' from '${CMAKE_CURRENT_SOURCE_DIR}/${pf_file}'"
+            COMMAND ${PFUNIT_PARSER} ${pf_file} ${CMAKE_CURRENT_BINARY_DIR}/${f90_file}
+            MAIN_DEPENDENCY ${pf_file}
+	    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            #COMMENT "Generating '${f90_file}' from '${pf_file}'"
             )
     endforeach()
 
