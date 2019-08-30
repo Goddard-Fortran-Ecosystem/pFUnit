@@ -184,13 +184,8 @@ otherwise to wherever `CMAKE_INSTALL_PREFIX` points.
 ## Default directory
 
 If `INSTALL_DIR` is not set, `make install` will attempt to install
-pFUnit into the top build directory. This will create directories
-such as lib and mod in the top level of the build directory and will
-overwrite the include/base.mk with include/base-install.mk. If this
-is not desired, then "make develop" will put back the original
-base.mk, which is the file to be used for development and building
-pFUnit. In general, we recommend installing to a directory that is
-not also the build directory.
+pFUnit into a directory called `installed` at the top build directory. 
+
 
 ## Usage
 ### Configuration
@@ -240,9 +235,9 @@ end subroutine testHelloWorld
 An example of a GNU make rule for for the final step of compiling a test follows.
 
 ```make
-# This step presumes "include $(pFUnit)/include/base.mk" earlier in the makefile.
+# This step presumes "include $(pFUnit)/include/PFUNIT.mk" earlier in the makefile.
 tests.x: testSuites.inc myTests.pf
-         $(F90) -o $@ -I$(pFUnit)/mod -I$(pFUnit)/include \
+         $(F90) -o $@ -I$(pFUnit)/include \
                 $(pFUnit)/include/driver.F90 \
                 ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
 ```
