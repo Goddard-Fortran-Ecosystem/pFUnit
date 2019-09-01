@@ -10,12 +10,12 @@
 #     -DSKIP_MPI=YES                   Skip build of MPI features even if
 #                                      MPI is found.
 #
-#     -SKIP_OPENMP=YES                 Skip build of OpenMP features even if
+#     -DSKIP_OPENMP=YES                 Skip build of OpenMP features even if
 #                                      OpenMP is found
 #
-#     -SKIP_FHAMCREST=YES              Skip build of Hamcrest features
+#     -DSKIP_FHAMCREST=YES              Skip build of Hamcrest features
 #
-#     -SKIP_ROBUST=YES                 Skip build of RobustRunner
+#     -DSKIP_ROBUST=YES                 Skip build of RobustRunner
 #
 #
 # Usage:
@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.0.0
+  VERSION 4.0.1
   LANGUAGES Fortran C)
 
 enable_testing()
@@ -44,10 +44,10 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 set (MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
-set (SKIP_MPI NO CACHE BOOL "Skip building MPI support.")
-set (SKIP_OPENMP NO CACHE BOOL "Skip OpenMP compiler options.")
-set (SKIP_FHAMCREST NO CACHE BOOL "Skip building fHamcrest support")
-set (SKIP_ESMF YES CACHE BOOL "Skip building ESMF support")
+option (SKIP_MPI "Skip building MPI support." NO)
+option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
+option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
+option (SKIP_ESMF "Skip building ESMF support" YES)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")

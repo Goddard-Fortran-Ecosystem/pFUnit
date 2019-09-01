@@ -5,7 +5,12 @@
 # FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
 # LFLAGS += $(PFUNIT_LIBRARIES)
 
-# fArgParse
+# If using MPI, also set:
+#   USEMPI=YES
+
+
+
+# Find fArgParse
 FARGPARSE_TOP_DIR := @FARGPARSE_TOP_DIR@
 include ${FARGPARSE_TOP_DIR}/include/FARGPARSE.mk
 
@@ -15,8 +20,20 @@ PFUNIT_VERSION := @PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@
 PFUNIT_TOP_DIR := $(PFUNIT_INSTALL_PREFIX)/PFUNIT-$(PFUNIT_VERSION)
 PFUNIT_BIN_DIR := $(PFUNIT_TOP_DIR)/bin
 PFUNIT_INCLUDE_DIR := $(PFUNIT_TOP_DIR)/include
-PFUNIT_LIBRARIES := -L$(PFUNIT_TOP_DIR)/lib -lfunit $(FARGPARSE_LIBRARIES)
+
 PFUNIT_EXTRA_FFLAGS := -I$(GFTL_INCLUDE_DIR) -I$(GFTL_SHARED_INCLUDE_DIR) -I$(FARGPARSE_INCLUDE_DIR) -I$(PFUNIT_INCLUDE_DIR) -I.
+ifeq ($(USEMPI),YES)
+    PFUNIT_EXTRA_FFLAGS += $(foreach inc,$(subst ;, ,@MPI_Fortran_INCLUDE_DIRS@), -I$(inc))
+endif
+
+PFUNIT_LIBRARIES := -L$(PFUNIT_TOP_DIR)/lib
+ifeq ($(USEMPI),YES)
+  PFUNIT_LIBRARIES += -lpfunit
+endif
+PFUNIT_LIBRARIES += -lfunit $(FARGPARSE_LIBRARIES)
+ifeq ($(USEMPI),YES)
+    PFUNIT_LIBRARIES += $(subst ;, ,@MPI_Fortran_LIBRARIES@)
+endif
 
 
 ###########
@@ -55,9 +72,9 @@ define make_pfunit_test
    endif
    ifneq (,$$($(1)_EXTRA_INITIALIZE))
      $(1)_extra_cpp += -DPFUNIT_EXTRA_INITIALIZE=$$($(1)_EXTRA_INITIALIZE)
-  endif
+   endif
    $(1)_driver.o: $(PFUNIT_INCLUDE_DIR)/driver.F90 $(1).inc
-	$$(FC) -o $$@ -c $(FFLAGS) $(PFUNIT_INCLUDES) -I. $(PFUNIT_EXTRA_FFLAGS) $$($(1)_extra_cpp) $$<
+	$$(FC) -o $$@ -c $(FFLAGS) -I. $(PFUNIT_EXTRA_FFLAGS) $$($(1)_extra_cpp) $$<
 
    $(1): $(1)_driver.o $$($(1)_test_objs) $$($(1)_other_objs)
 	$$(FC) -o $$@  $(1)_driver.o $$($(1)_test_objs) $$($(1)_other_objs) $(PFUNIT_EXTRA_FFLAGS) $$($(1)_OTHER_LIBRARIES) $(PFUNIT_LIBRARIES)

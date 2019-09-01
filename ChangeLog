@@ -1,3 +1,14 @@
+4.0.1   September 01, 2019
+        - various (still incomplete) improvements to the README instructions.
+	- Added preprocessor support for hamcrest @assert_that
+	- Corrected issue with absolute paths for add_pfunit_sources()
+4.0.0   May 2019
+        - Major cleanup of source code and CMake logic.
+	- Single build now builds both serial and mpi support layers
+	- Introduced initial hamcrest support
+	- Improved mechanism for cmake building of test suites.
+	- Simplified overload process for assertions.
+
 3.2.7   May 24, 2016
 	- Fix 3.2.7 broke the NAG 6.0 compiler (internal compiler error).
 	  Workaround is to simply not use -C=all during the build for now.
