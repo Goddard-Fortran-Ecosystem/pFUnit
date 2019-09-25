@@ -2,6 +2,8 @@ module pf_BaseDescription
   use pf_MatcherDescription
   use pf_SelfDescribing
   use pf_SelfDescribingVector
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
   use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -16,12 +18,16 @@ module pf_BaseDescription
       procedure :: append_description_of
       procedure :: append_value_scalar
       procedure :: append_value_list
+      procedure :: append_value_array_2d
+      procedure :: append_value_array_3d
       procedure :: append_string
       procedure(append_character), deferred :: append_character
       generic :: append => append_string
       generic :: append => append_character
-      procedure :: append_list_array
       procedure :: append_list_vector
+      procedure :: append_list_array
+      procedure :: append_list_array_2d
+      procedure :: append_list_array_3d
    end type BaseDescription
 
    abstract interface 
@@ -67,7 +73,6 @@ contains
 
    recursive subroutine append_value_scalar(this, value)
      use pf_Matchable
-     use pf_Array
      class (BaseDescription), intent(inout) :: this
      class(*), intent(in) :: value
 
@@ -148,10 +153,14 @@ contains
         call this%append('<')
         call value%type_unsafe_describe_to(this)
         call this%append('>')
-     class is (internal_array)
+     class is (AbstractArrayWrapper)
         select type (value)
-        class is (internal_array_1d)
+        class is (ArrayWrapper_1d)
            call this%append_value_list("[",", ","]",value%items)
+        class is (ArrayWrapper_2d)
+           call this%append_value_array_2d("[",", ","]",value%items)
+        class is (ArrayWrapper_3d)
+           call this%append_value_array_3d("[",", ","]",value%items)
         class default
            ERROR STOP __FILE__ // ' :: unsupported rank'
         end select
@@ -163,7 +172,7 @@ contains
 
     subroutine append_value_list(this, start, separator, end, values)
      use pf_Matchable
-     use pf_Array
+     use pf_AbstractArrayWrapper
      class (BaseDescription), intent(inout) :: this
      character(*), intent(in) :: start
      character(*), intent(in) :: separator
@@ -190,6 +199,65 @@ contains
 
    end subroutine append_value_list
 
+   subroutine append_value_array_2d(this, start, separator, end, values)
+     use pf_Matchable
+     use pf_AbstractArrayWrapper
+     class (BaseDescription), intent(inout) :: this
+     character(*), intent(in) :: start
+     character(*), intent(in) :: separator
+     character(*), intent(in) :: end
+     class(*), intent(in) :: values(:,:)
+
+     integer :: i
+     logical :: separate
+
+     separate = .false.
+
+     select type (values)
+     class is (SelfDescribing)
+        call this%append_list(start, separator, end, values)
+     class default
+        call this%append(start)
+        do i = 1, size(values,2)
+           if (separate) call this%append(separator)
+           call this%append_value_list(start, separator, end, values(:,i))
+           separate = .true.
+        end do
+        call this%append(end)
+     end select
+
+   end subroutine append_value_array_2d
+   
+
+   subroutine append_value_array_3d(this, start, separator, end, values)
+     use pf_Matchable
+
+     class (BaseDescription), intent(inout) :: this
+     character(*), intent(in) :: start
+     character(*), intent(in) :: separator
+     character(*), intent(in) :: end
+     class(*), intent(in) :: values(:,:,:)
+
+     integer :: i
+     logical :: separate
+
+     separate = .false.
+
+     select type (values)
+     class is (SelfDescribing)
+        call this%append_list(start, separator, end, values)
+     class default
+        call this%append(start)
+        do i = 1, size(values,3)
+           if (separate) call this%append(separator)
+           call this%append_value_array_2d(start, separator, end, values(:,:,i))
+           separate = .true.
+        end do
+        call this%append(end)
+     end select
+
+   end subroutine append_value_array_3d
+   
 
     ! JUnit does this, but it seems overkill. Currently am not planning
     ! to intercept special characters.   Will be overridden in StringDescription.
@@ -226,6 +294,50 @@ contains
       call this%append(end)
 
     end subroutine append_list_array
+
+    subroutine append_list_array_2d(this, start, separator, end, values)
+      class(BaseDescription), intent(inout) :: this
+      character(*), intent(in) :: start
+      character(*), intent(in) :: separator
+      character(*), intent(in) :: end
+      class(SelfDescribing), intent(in) :: values(:,:)
+
+      integer :: i
+      logical :: separate
+
+      separate = .false.
+
+      call this%append(start)
+      do i = 1, size(values,2)
+         if (separate) call this%append(separator)
+         call this%append_list(start, separator, end, values(:,i))
+         separate = .true.
+      end do
+      call this%append(end)
+
+    end subroutine append_list_array_2d
+
+    subroutine append_list_array_3d(this, start, separator, end, values)
+      class(BaseDescription), intent(inout) :: this
+      character(*), intent(in) :: start
+      character(*), intent(in) :: separator
+      character(*), intent(in) :: end
+      class(SelfDescribing), intent(in) :: values(:,:,:)
+
+      integer :: i
+      logical :: separate
+
+      separate = .false.
+
+      call this%append(start)
+      do i = 1, size(values,2)
+         if (separate) call this%append(separator)
+         call this%append_list(start, separator, end, values(:,:,i))
+         separate = .true.
+      end do
+      call this%append(end)
+
+    end subroutine append_list_array_3d
 
     subroutine append_list_vector(this, start, separator, end, values)
       class(BaseDescription), intent(inout) :: this

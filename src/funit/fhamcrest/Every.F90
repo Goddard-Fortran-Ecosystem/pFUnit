@@ -3,7 +3,9 @@ module pf_Every
   use pf_AbstractMatcher
   use pf_BaseMatcher
   use pf_MatcherDescription
-  use pf_Array
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
+
   implicit none
   private
 
@@ -39,15 +41,37 @@ contains
     class(Every), intent(in) :: this
     class(*), intent(in) :: actual_value
 
-    integer :: i
+    integer :: i, j, k
 
     select type (a => actual_value)
-    class is (internal_array_1d)
+    class is (ArrayWrapper_1d)
        do i = 1, size(a%items)
           if (.not. this%item_matcher%matches(a%items(i))) then
              matches = .false.
              return
           end if
+       end do
+       matches = .true.
+    class is (ArrayWrapper_2d)
+       do j = 1, size(a%items,2)
+          do i = 1, size(a%items,1)
+             if (.not. this%item_matcher%matches(a%items(i,j))) then
+                matches = .false.
+                return
+             end if
+          end do
+       end do
+       matches = .true.
+    class is (ArrayWrapper_3d)
+       do k = 1, size(a%items,3)
+          do j = 1, size(a%items,2)
+             do i = 1, size(a%items,1)
+                if (.not. this%item_matcher%matches(a%items(i,j,k))) then
+                   matches = .false.
+                   return
+                end if
+             end do
+          end do
        end do
        matches = .true.
     class default
@@ -61,18 +85,38 @@ contains
     class(*), intent(in) :: actual
     class(MatcherDescription), intent(inout) :: description
 
-    integer :: i
+    integer :: i, j, k
 
     select type (actual)
-    type is (internal_array_1d)
+    type is (ArrayWrapper_1d)
        do i = 1, size(actual%items)
           if (.not. this%item_matcher%matches(actual%items(i))) then
              call this%item_matcher%describe_mismatch(actual%items(i), description)
              return
           end if
        end do
+    type is (ArrayWrapper_2d)
+       do j = 1, size(actual%items,2)
+          do i = 1, size(actual%items,1)
+             if (.not. this%item_matcher%matches(actual%items(i,j))) then
+                call this%item_matcher%describe_mismatch(actual%items(i,j), description)
+                return
+             end if
+          end do
+       end do
+    type is (ArrayWrapper_3d)
+       do k = 1, size(actual%items,3)
+          do j = 1, size(actual%items,2)
+             do i = 1, size(actual%items,1)
+                if (.not. this%item_matcher%matches(actual%items(i,j,k))) then
+                   call this%item_matcher%describe_mismatch(actual%items(i,j,k), description)
+                   return
+                end if
+             end do
+          end do
+       end do
     class default
-       call description%append_text("was not a 1-D array")
+       call description%append_text("was not rank <= 3")
     end select
   end subroutine describe_mismatch
 
