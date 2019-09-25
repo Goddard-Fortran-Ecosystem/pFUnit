@@ -1,0 +1,34 @@
+! -*-f90-*-
+! This module allows pFUnit to treat arrays as single objects which
+! greatly simplifies the overloading of hamcrest matcher interfaces.
+! Once SELECT RANK (Fortran 2015) is widely available, this should
+! be re-engineered.
+
+module pf_ArrayWrapper_{rank}d
+  use pf_AbstractArrayWrapper
+  implicit none
+  private
+
+  public :: ArrayWrapper
+  public :: ArrayWrapper_{rank}d
+
+  interface ArrayWrapper
+     module procedure wrap
+  end interface ArrayWrapper
+     
+  type, abstract :: internal_array
+  end type internal_array
+
+  type, extends(AbstractArrayWrapper) :: ArrayWrapper_{rank}d
+     class(*), allocatable :: items {dims}
+  end type ArrayWrapper_{rank}d
+
+contains
+
+  function wrap(items) result(a)
+    type (ArrayWrapper_{rank}d) :: a
+    class(*), intent(in) :: items {dims}
+    allocate(a%items, source=items)
+  end function wrap
+
+end module pf_ArrayWrapper_{rank}d

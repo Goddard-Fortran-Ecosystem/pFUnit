@@ -6,7 +6,7 @@ foreach (def ${dir_defs})
 endforeach()
 
 set (srcs
-  Array.F90
+  AbstractArrayWrapper.F90
   MatcherAssert.F90
 
   SurrogateDescription.F90
@@ -43,8 +43,38 @@ set (srcs
   fHamcrest.F90
   )
 
-add_library(fhamcrest OBJECT ${srcs})
+set (generated_sources)
+function (expand in out)
+  set (generated_sources ${generated_sources} ${CMAKE_CURRENT_BINARY_DIR}/${out} PARENT_SCOPE)
+  add_custom_command (
+    OUTPUT ${out}
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/multirank.py -i ${in} -o ${out} --rank=${rank}
+    DEPENDS ${in} ${CMAKE_CURRENT_SOURCE_DIR}/multirank.py
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT Generating ${out}
+    )
+endfunction()
+
+foreach(rank RANGE 1 ${MAX_ASSERT_RANK})
+  expand (${CMAKE_CURRENT_SOURCE_DIR}/ArrayWrapper.tmpl ArrayWrapper_${rank}d.F90)
+endforeach()
+
+
+set (overloads_file "${CMAKE_CURRENT_BINARY_DIR}/ArrayWrapper.F90")
+list(APPEND generated_sources ${overloads_file})
+set_source_files_properties (${overloads_file} PROPERTIES GENERATED 1)
+set_source_files_properties (Asset.F90 PROPERTIES GENERATED 1)
+file (WRITE ${overloads_file} "! This file was automatically generated \n")
+file (WRITE ${overloads_file} "module pf_ArrayWrapper \n")
+foreach (rank RANGE 1 ${MAX_ASSERT_RANK})
+  file (APPEND ${overloads_file} "use pf_ArrayWrapper_${rank}d\n")
+endforeach ()
+
+file (APPEND ${overloads_file} "end module pf_ArrayWrapper \n")
+
+add_library(fhamcrest OBJECT ${srcs} ${generated_sources})
 set_target_properties (fhamcrest PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
+target_compile_definitions (fhamcrest PRIVATE -DMAX_ASSERTRANK=${MAX_ASSERT_RANK})
 
 target_include_directories (fhamcrest PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../mod>
