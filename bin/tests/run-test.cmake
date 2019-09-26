@@ -1,4 +1,4 @@
-execute_process(COMMAND ${executable_file} ${input_file} ${output_file}
+execute_process(COMMAND ${Python_EXECUTABLE} ${executable_file} ${input_file} ${output_file}
                 RESULT_VARIABLE proc_rc
                 ERROR_VARIABLE proc_err OUTPUT_VARIABLE proc_err)
 if(NOT ${proc_rc} EQUAL 0)
