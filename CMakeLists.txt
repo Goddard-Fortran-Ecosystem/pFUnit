@@ -47,6 +47,7 @@ set (MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 option (SKIP_MPI "Skip building MPI support." NO)
 option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
 option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
+option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
 
 

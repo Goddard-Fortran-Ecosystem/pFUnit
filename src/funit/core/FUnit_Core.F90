@@ -13,7 +13,11 @@ module FUnit_Core
    use PF_TestResult
    use PF_TestRunner
    use PF_BaseTestRunner
+
+#ifdef Robust
    use PF_RemoteRunner
+   use PF_RobustRunner
+#endif
 
    use PF_TestListener
    use PF_TestListenerVector
@@ -24,7 +28,6 @@ module FUnit_Core
    use gFTL_StringVector
    use gFTL_StringUnlimitedMap
 
-   use PF_RobustRunner
    use PF_ParallelContext
    use PF_SerialContext
 
@@ -47,7 +50,11 @@ module FUnit_Core
    public :: TestResult
    public :: TestRunner
    public :: BaseTestRunner
+
+#ifdef Robust
    public :: RemoteRunner
+   public :: RobustRunner
+#endif
 
    public :: TestListener
    public :: TestListenerVector
@@ -58,7 +65,6 @@ module FUnit_Core
 
    public :: NameFilter
 
-   public :: RobustRunner
    public :: TestCase
    public :: AbstractTestParameter
    public :: ParameterizedTestCase
