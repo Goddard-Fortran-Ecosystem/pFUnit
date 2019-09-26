@@ -1,4 +1,4 @@
-find_package(PythonInterp REQUIRED) # Sets ${PYTHON_EXECUTABLE}
+find_package(Python REQUIRED) # Sets ${PYTHON_EXECUTABLE}
   
 add_executable(posix_predefined.x posix_predefined.c)
 

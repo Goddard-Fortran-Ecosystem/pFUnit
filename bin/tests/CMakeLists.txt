@@ -15,6 +15,7 @@ foreach( case ${test_cases})
   get_filename_component(executable_file
                          "${CMAKE_CURRENT_SOURCE_DIR}/../funitproc" REALPATH)
   add_test(processor_test_${name} ${CMAKE_COMMAND}
+           -D Python_EXECUTABLE=${Python_EXECUTABLE}
            -D executable_file=${executable_file}
            -D input_file=${input_file}
            -D output_file=${output_file}
