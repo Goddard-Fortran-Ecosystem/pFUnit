@@ -62,6 +62,12 @@ if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
 
+# Skip MPI and RobustRunner on MinGW
+if (MINGW)
+  set(SKIP_MPI YES)
+  set(SKIP_ROBUST YES)
+endif ()
+
 
 if (NOT SKIP_MPI)
   find_package (MPI QUIET)
