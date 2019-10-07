@@ -47,6 +47,7 @@ set (MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
 option (SKIP_MPI "Skip building MPI support." NO)
 option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
 option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
+option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
 
 
@@ -60,6 +61,12 @@ include(cmake/${CMAKE_Fortran_COMPILER_ID}.cmake RESULT_VARIABLE found)
 if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
+
+# Skip MPI and RobustRunner on MinGW
+if (MINGW)
+  set(SKIP_MPI YES)
+  set(SKIP_ROBUST YES)
+endif ()
 
 
 if (NOT SKIP_MPI)

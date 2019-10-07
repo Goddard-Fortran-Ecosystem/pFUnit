@@ -88,11 +88,16 @@ target_link_libraries(funit_tests other_shared)
 
 add_executable (funit_tests.x EXCLUDE_FROM_ALL serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
+if (NOT SKIP_ROBUST)
+  target_compile_definitions(funit_tests.x PRIVATE Robust)
+endif ()
 
-set (REMOTE_EXE remote.x)
-add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
-target_link_libraries(${REMOTE_EXE} funit funit_tests)
-add_dependencies(tests ${REMOTE_EXE})
+if (NOT SKIP_ROBUST)
+  set (REMOTE_EXE remote.x)
+  add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
+  target_link_libraries(${REMOTE_EXE} funit funit_tests)
+  add_dependencies(tests ${REMOTE_EXE})
+endif ()
 
 
 add_pfunit_ctest (new_tests.x
