@@ -177,9 +177,14 @@ also set the following.
 ## INSTALLATION
 
 Installations 6.1-6.5 are based on GNU make and the project
-makefiles. If you use CMake then `make install` will install to the
-expected place. That is, to `/usr/local` if you specify nothing,
-otherwise to wherever `CMAKE_INSTALL_PREFIX` points.
+makefiles.   Because many pFUnit users lack permissions to install 
+in the cmake default installation path, pFUnit instead by default
+installs in the "installed" subdirectory in the main build directory.  
+This can be easily overridden via  `CMAKE_INSTALL_PREFIX` on the cmake
+command line.  Note that cmake allows a few variants on the internal structure
+of the install, and future versions of pFUnit are likely to switch to a different 
+variant.  (`find_package(pFUnit)` should continue to work, but there may be 
+issues with the search order for users with conflicting installs.)
 
 ## Default directory
 
