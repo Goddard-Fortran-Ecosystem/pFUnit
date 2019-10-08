@@ -158,7 +158,10 @@ also set the following.
 
 *** Note that vanilla Make is no longer supported.***
 
-   The process for building pFUnit using cmake is as follows. In the
+   
+   The process for building pFUnit using cmake is as follows.  Be certain that the FC environment
+   variable corresponds to the desired Fortran implementation.   (Alternatively, CMake provides a command
+   line option to explicitly give the path for the Fortran compiler.)  In the
    top directory of the distribution make a new directory to support the
    build, then change to that directory and run cmake (pointing back to
    the source) to generate the required makefiles.
@@ -176,8 +179,7 @@ also set the following.
 
 ## INSTALLATION
 
-Installations 6.1-6.5 are based on GNU make and the project
-makefiles.   Because many pFUnit users lack permissions to install 
+Because many pFUnit users lack permissions to install 
 in the cmake default installation path, pFUnit instead by default
 installs in the "installed" subdirectory in the main build directory.  
 This can be easily overridden via  `CMAKE_INSTALL_PREFIX` on the cmake
