@@ -10,7 +10,7 @@ macro (CHECK_FORTRAN_SOURCE_RUN file var)
 
   # Successful runs return "0", which is opposite of CMake sense of "if":
   if (NOT run)
-    string(STRIP ${${var}} ${var})
+    string(STRIP "${${var}}" ${var})
     if (NOT CMAKE_REQUIRED_QUIET)
       message(STATUS "Performing Test ${var}: SUCCESS (value=${${var}})")
     endif ()
