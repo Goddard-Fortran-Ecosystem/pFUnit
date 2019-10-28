@@ -26,6 +26,14 @@ else:
 
 mydict = {}
 mydict['rank'] = args.rank
+mydict['rank_minus_1'] = args.rank-1
+if args.rank == 1:
+    mydict['get_ith'] = 'this%items(i)'
+    mydict['use_rank_minus_1'] = ''
+else:
+    mydict['get_ith'] = 'ArrayWrapper(this%items(' + ':,'*(args.rank-1) + 'i))'
+    mydict['use_rank_minus_1'] = 'use pf_ArrayWrapper_'+ str(args.rank-1) +'d'
+    
 mydict['dims'] = '('+','.join(':'*args.rank)+')'
 
 for line in text:

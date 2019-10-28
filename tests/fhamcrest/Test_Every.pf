@@ -11,4 +11,39 @@ contains
     call assert_that([1,1], every_item(is(equal_to(1))))
   end subroutine test_every_basic
 
+
+  @test
+  subroutine test_every_fail()
+    character(:), allocatable :: error
+
+    call assert_that([1,2], every_item(is(equal_to(1))))
+
+    error = new_line('a') &
+         & // 'Expected: every item is <1>' &
+         & // new_line('a') &
+         & // '     but: was <2> at index [<2>]'
+    @assertExceptionRaised(error)
+
+  end subroutine test_every_fail
+
+
+  @test
+  subroutine test_every_fail_2d()
+    character(:), allocatable :: error
+
+    integer :: values(3,4)
+
+    values = 1
+    values(2,3) = 2
+    
+    call assert_that(values, every_item(is(equal_to(1))))
+
+    error = new_line('a') &
+         & // 'Expected: every item is <1>' &
+         & // new_line('a') &
+         & // '     but: was <2> at index [<2>,<3>]'
+    @assertExceptionRaised(error)
+
+  end subroutine test_every_fail_2d
+
 end module Test_Every

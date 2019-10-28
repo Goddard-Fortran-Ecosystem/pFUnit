@@ -16,7 +16,6 @@ set (srcs
   SelfDescribingVector.F90
   BaseDescription.F90
   StringDescription.F90
-  MatcherAssert.F90
 
   # Matchers
   AbstractMatcher.F90
@@ -27,6 +26,7 @@ set (srcs
   DescribedAs.F90
   Is.F90
   IsNot.F90
+  IsTrueOrFalse.F90
   IsEqual.F90
   IsNear.F90
   IsRelativelyNear.F90

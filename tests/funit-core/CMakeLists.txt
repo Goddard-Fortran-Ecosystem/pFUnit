@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 
-include_directories (${PFUNIT_SOURCE_DIR}/include)
-include_directories (${PFUNIT_BINARY_DIR}/src)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+#include_directories (${PFUNIT_SOURCE_DIR}/include)
+#include_directories (${PFUNIT_BINARY_DIR}/src)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 configure_file( junit-4.xsd junit-4.xsd COPYONLY )
 
@@ -17,7 +17,7 @@ set (other_sources
   )
 
 add_library(other_shared ${other_sources})
-target_link_libraries(other_shared funit)
+target_link_libraries(other_shared PUBLIC funit)
 
 set(pf_tests
   Test_ExceptionList.pf
