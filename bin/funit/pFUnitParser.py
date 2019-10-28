@@ -142,7 +142,7 @@ class AtTest(Action):
             npesOption = re.search('npes\s*=\s*\\[([0-9,\s]+)\\]', options.groups()[0], re.IGNORECASE)
             if npesOption:
                 npesString = npesOption.groups()[0]
-                npes = map(int, npesString.split(','))
+                npes = list(map(int, npesString.split(',')))
                 self.parser.current_method['npRequests'] = npes
 
             #ifdef is optional
@@ -214,7 +214,7 @@ class AtTestCase(Action):
             value = re.search('npes\s*=\s*\\[([0-9,\s]+)\\]', options.groups()[0], re.IGNORECASE)
             if value:
                 npesString = value.groups()[0]
-                npes = map(int,npesString.split(','))
+                npes = list(map(int,npesString.split(',')))
                 self.parser.userTestCase['npRequests'] = npes
 
             value = re.search('cases\s*=\s*(\\[[0-9,\s]+\\])', options.groups()[0], re.IGNORECASE)
