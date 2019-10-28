@@ -36,10 +36,10 @@ comprehensive, and earlier compilers may work for some user code.
 
 - Fortran compilers:
   - Intel v18.0.5, v19.0.3
-  - NAG 6.2
-  - GFortran 8.3, 9.2
+  - NAG v6.2
+  - GFortran v8.3, v9.2
 - CMake v3.12+
-- Python 2.7* or 3.x
+- Python v2.7* or v3.x
 - GNU make
 - Optional
   - MPI (tested with OpenMPI and iMPI)
