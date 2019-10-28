@@ -19,6 +19,7 @@ TASC.
 2. [Obtaining pFUnit](#obtaining-pfunit)
 3. [What's in the directory?](#whats-in-the-directory)
 4. [Building and installing pFUnit](#building-and-installing-pfunit)
+6. [Using pFUnit in your application](#using-pfunit)
 5. [Command line options](#command-line-options)
 6. [Acknowledgments](#acknowledgments)
 7. [Revisions](#revisions-to-this-document)
@@ -180,6 +181,73 @@ default (from a CMake perspective) is due to the fact that
 many/most pFUnit users lack elevated priviges for installing in the
 usual places.  Most users will want to explicitly override the
 default with CMake's `-DCMAKE_INSTALL_PREFIX=...`
+
+## Using pFUnit
+
+Please see https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos for
+more details.
+
+
+### Using pFUnit in a CMake project
+
+First, one must tell CMake where to find your installation of pFUnit.
+Typically this looks like:
+```script
+$ cmake .. -DCAMKE_PREFIX_PATH=<path-to-pfunit-install>
+```
+
+Next, within your CMakeLists.txt, enable pFUnit with the lines:
+```cmake
+find_package(PFUNIT REQUIRED)
+enable_testing()
+```
+
+Then, for each test suite, use the `add_pfunit_ctest` macro.
+E.g.,
+
+```cmake
+add_pfunit_ctest (my_tests
+  TEST_SOURCES ${test_srcs}
+  LINK_LIBRARIES sut # your application library
+  )
+```
+
+The make step should then produce a test executable.  In the example
+above it would be `my_tests`.   To run:
+```script
+$ ./my_tests
+```
+
+
+### Using pFUnit in a GNU make project
+
+Somewher in your Makefile you should add the lines
+```make
+include $(PFUNIT_DIR)/PFUNIT-4.0/include/PFUNIT.mk
+FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
+```
+
+Note that the path to `PFUNIT.mk` may change in the future.
+
+Then, for each test suite, specify a set of make variables prefixed by
+your test suite name, and invoke the `make_pfunit_test` function.
+E.g.:
+
+```make
+my_tests_TESTS := test_square.pf
+my_tests_REGISTRY :=
+my_tests_OTHER_SOURCES :=
+my_tests_OTHER_LIBRARIES := -L. -lsut
+my_tests_OTHER_INCS :=
+
+$(eval $(call make_pfunit_test,my_tests))
+```
+
+Then to build and execute:
+```script
+make all
+./my_tests
+```
 
 ### Command Line Options
 
