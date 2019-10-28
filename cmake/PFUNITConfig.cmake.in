@@ -6,10 +6,10 @@
 #    PFUNIT_DRIVER       - The pFUnit driver needed for running tests
 #    add_pfunit_test     - Helper function for defining test suites with .pf-files
 
-find_package (PythonInterp REQUIRED)
-find_package (GFTL REQUIRED)
-find_package (GFTL_SHARED REQUIRED)
-find_package (FARGPARSE REQUIRED)
+find_package (Python REQUIRED)
+include ("@GFTL_TOP_DIR@/cmake/GFTLConfig.cmake")
+include ("@GFTL_SHARED_TOP_DIR@/cmake/GFTL_SHAREDConfig.cmake")
+include ("@FARGPARSE_TOP_DIR@/cmake/FARGPARSEConfig.cmake")
 
 set (prefix ${CMAKE_CURRENT_LIST_DIR}/../..)
 set (PFUNIT_TOP_DIR ${prefix}/PFUNIT-@PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@ CACHE PATH "")
@@ -20,13 +20,11 @@ include (add_pfunit_ctest)
 
 
 #set (PFUNIT_FOUND TRUE)
-#set (PFUNIT_VERSION "@PROJECT_VERSION@")
-#set (PFUNIT_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/mod)
+set (PFUNIT_VERSION "@PROJECT_VERSION@")
+set (PFUNIT_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/../include)
 #set (PFUNIT_LINK_DIRS ${CMAKE_CURRENT_LIST_DIR}/lib)
-#find_library (PFUNIT_LIBRARIES pfunit
-#    PATHS ${CMAKE_CURRENT_LIST_DIR}/lib
-#    NO_DEFAULT_PATH)
-set (PFUNIT_PARSER "${PYTHON_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
+set (PFUNIT_LIBRARIES funit)
+set (PFUNIT_PARSER "${Python_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
 set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/../include/driver.F90")
 set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/../include/TestUtil.F90")
 
@@ -128,11 +126,14 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     endif ()
     
     # Define dependencies
+    find_package(OpenMP)
     target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
     target_include_directories (${test_package_name} PRIVATE ${PFUNIT_INCLUDE_DIRS})
     target_include_directories (${test_package_name} PRIVATE ${SRC_GEN_DIR})
     target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include/${test_package_name})
 
+    # Define TestSuites
+    target_compile_definitions (${test_package_name} PRIVATE -D_TEST_SUITES="${TEST_SUITE_INC_FILE}")
     
     # Test utility preprocessing
     set_property ( SOURCE ${PFUNIT_TESTUTILS}
