@@ -20,7 +20,9 @@ contains
       use FUnit, only: SerialContext
 
       use Test_StringUtilities, only: StringUtilitiesSuite => suite    ! (1)
+#ifdef Robust
       use Test_UnixProcess, only: unixProcessSuite => suite                ! (1)
+#endif
       use Test_Exception, only: exceptionSuite => suite                ! (2)
       use Test_AssertBasic, only: assertBasicSuite => suite            !
       use Test_Assert, only: assertSuite => suite                      ! (3)
@@ -38,9 +40,9 @@ contains
       use Test_MockCall, only: testMockCallSuite => suite      ! (11)
       use Test_MockRepository, only: testMockRepositorySuite => suite      ! (11)
       use Test_XmlPrinter, only: testXmlPrinterSuite => suite
-
+#ifdef Robust
       use Test_RobustRunner, only: testRobustRunnerSuite => suite
-
+#endif
 
       type (TestSuite) :: allTests
       type (TestRunner) :: runner
@@ -52,7 +54,9 @@ contains
 #define ADD(suite) call allTests%addTest(suite())
 
       ADD(StringUtilitiesSuite)
+#ifdef Robust
       ADD(UnixProcessSuite)
+#endif
       ADD(exceptionSuite)
       ADD(assertBasicSuite)
       ADD(assertSuite)
@@ -72,7 +76,9 @@ contains
       ADD(testMockRepositorySuite)
 
       ADD(testXmlPrinterSuite)
+#ifdef Robust
       ADD(testRobustRunnerSuite)
+#endif
 
       tstResult = runner%run(allTests, SerialContext())
 

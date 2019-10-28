@@ -79,11 +79,13 @@ contains
 
       call cast(options%at('runner'),runner_class)
       select case (to_lower(runner_class))
+#ifdef Robust
       case ('robust','robustrunner','robust_runner')
          allocate(runner, source=RobustRunner(unit))
       case ('remote','remoterunner','remote_runner')
          call cast(options%at('n_skip'), n_skip)
          allocate(runner, source=RemoteRunner(n_skip, unit))
+#endif
       case ('default','testrunner')
          allocate(runner, source=TestRunner(unit))
       case default

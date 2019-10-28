@@ -1,18 +1,4 @@
-find_package(PythonInterp REQUIRED) # Sets ${PYTHON_EXECUTABLE}
-  
-add_executable(posix_predefined.x posix_predefined.c)
-
-set_source_files_properties(posix_predefined.inc PROPERTIES GENERATED TRUE)
-add_custom_command(
-    OUTPUT posix_predefined.inc
-    COMMAND ./posix_predefined.x > posix_predefined.inc
-    DEPENDS posix_predefined.x
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Generating posix_predefined.inc"
-    )
-add_custom_target(generate_posix_parameters
-  DEPENDS posix_predefined.inc
-  )
+find_package(Python REQUIRED) # Sets ${PYTHON_EXECUTABLE}
 
 set(srcs
   KeywordEnforcer.F90
@@ -59,6 +45,7 @@ set(srcs
   TestResult.F90
   TestRunner.F90
   TestSuite.F90
+  TestTimer.F90
   ThrowFundamentalTypes.F90
   XmlPrinter.F90
 
@@ -70,12 +57,25 @@ set(srcs
 
 # Support for RobustRunner
 if (NOT SKIP_ROBUST)
+
+  add_executable(posix_predefined.x posix_predefined.c)
+  set_source_files_properties(posix_predefined.inc PROPERTIES GENERATED TRUE)
+  add_custom_command(
+    OUTPUT posix_predefined.inc
+    COMMAND ./posix_predefined.x > posix_predefined.inc
+    DEPENDS posix_predefined.x
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Generating posix_predefined.inc"
+    )
+  add_custom_target(generate_posix_parameters
+    DEPENDS posix_predefined.inc
+    )
+
   list (APPEND srcs
     Posix.F90
     File.F90
     UnixPipeInterfaces.F90
     UnixProcess.F90
-    TestTimer.F90
     RobustRunner.F90
     RemoteRunner.F90
     RemoteProxyTestCase.F90
@@ -85,7 +85,10 @@ endif ()
 
 add_library (funit-core OBJECT ${srcs})
 set_target_properties (funit-core PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
-add_dependencies (funit-core generate_posix_parameters)
+if (NOT SKIP_ROBUST)
+  add_dependencies (funit-core generate_posix_parameters)
+  target_compile_definitions(funit-core PRIVATE Robust)
+endif ()
 target_link_libraries (funit-core PUBLIC external-pfunit)
 if (OpenMP_Fortran_FOUND)
   target_link_libraries (funit-core PUBLIC OpenMP::OpenMP_Fortran)

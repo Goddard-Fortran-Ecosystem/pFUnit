@@ -18,11 +18,22 @@
 #                   MAX_PES 5
 #                   )
 #
+# TEST_SOURCES items with relative paths are treated as relative to
+# CMAKE_CURRENT_SOURCE_DIR, and the processed file is placed into a
+# file with the same basename but relative to
+# CMAKE_CURRENT_BINARY_DIR.  (And with .F90 suffix, of course.)
+#
+# TEST_SOURCES items with absolute paths are trated as being within
+# the build tree, and the processed file is placed in the same directory.
+# (And with the .F90 suffix, of course.)
+#
 # Note: If REGISTRY is not provided, then a default testSuites.inc
 #       will be created based on the PFUNIT_SOURCES file names.  It is
 #       assumed that the module name is the same as the file basename.
 #       For example, the file testSomething.pf should contain the
 #       module testSomething.
+#
+# 
 #                
 #
 # Compile the tests:   make myTests

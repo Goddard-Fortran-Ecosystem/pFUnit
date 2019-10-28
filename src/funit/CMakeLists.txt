@@ -32,6 +32,10 @@ if (NOT SKIP_FHAMCREST)
   add_dependencies (funit fhamcrest)
 endif ()
 
+if (NOT SKIP_ROBUST)
+  target_compile_definitions(funit PRIVATE Robust)
+endif ()
+
 target_sources(funit PRIVATE FUnit.F90 funit_main.F90)
 target_sources(funit PRIVATE $<TARGET_OBJECTS:funit-core>)
 target_sources(funit PRIVATE $<TARGET_OBJECTS:asserts>)

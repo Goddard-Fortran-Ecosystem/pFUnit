@@ -11,7 +11,7 @@ function (expand in out)
   set (generated_sources ${generated_sources} ${CMAKE_CURRENT_BINARY_DIR}/${out} PARENT_SCOPE)
   add_custom_command(
     OUTPUT ${out}
-    COMMAND ${PYTHON_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${in} -o ${out} ${python_defs}
+    COMMAND ${Python_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${in} -o ${out} ${python_defs}
     DEPENDS ${in} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT Generating ${out}

@@ -10,12 +10,12 @@
 #     -DSKIP_MPI=YES                   Skip build of MPI features even if
 #                                      MPI is found.
 #
-#     -SKIP_OPENMP=YES                 Skip build of OpenMP features even if
+#     -DSKIP_OPENMP=YES                 Skip build of OpenMP features even if
 #                                      OpenMP is found
 #
-#     -SKIP_FHAMCREST=YES              Skip build of Hamcrest features
+#     -DSKIP_FHAMCREST=YES              Skip build of Hamcrest features
 #
-#     -SKIP_ROBUST=YES                 Skip build of RobustRunner
+#     -DSKIP_ROBUST=YES                 Skip build of RobustRunner
 #
 #
 # Usage:
@@ -44,10 +44,11 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 
 set (MAX_ASSERT_RANK 5 CACHE STRING "Maximum array rank for generated code.")
-set (SKIP_MPI NO CACHE BOOL "Skip building MPI support.")
-set (SKIP_OPENMP NO CACHE BOOL "Skip OpenMP compiler options.")
-set (SKIP_FHAMCREST NO CACHE BOOL "Skip building fHamcrest support")
-set (SKIP_ESMF YES CACHE BOOL "Skip building ESMF support")
+option (SKIP_MPI "Skip building MPI support." NO)
+option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
+option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
+option (SKIP_ROBUST "Skip building RobustRunner" NO)
+option (SKIP_ESMF "Skip building ESMF support" YES)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
@@ -60,6 +61,12 @@ include(cmake/${CMAKE_Fortran_COMPILER_ID}.cmake RESULT_VARIABLE found)
 if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
+
+# Skip MPI and RobustRunner on MinGW
+if (MINGW)
+  set(SKIP_MPI YES)
+  set(SKIP_ROBUST YES)
+endif ()
 
 
 if (NOT SKIP_MPI)
@@ -102,8 +109,10 @@ set (dest "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
 
 # Code to silence warnings from RANLIB on OSX
 # From https://stackoverflow.com/questions/4929255/building-static-libraries-on-mac-using-cmake-and-gcc
-SET(CMAKE_Fortran_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
-SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+if (APPLE)
+  SET(CMAKE_Fortran_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
+  SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+endif ()
 
 add_subdirectory (extern)
 add_subdirectory (src)
