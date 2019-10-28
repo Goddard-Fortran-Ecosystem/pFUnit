@@ -164,16 +164,18 @@ CMake options:
   extensions.  It should be easy to complete if there is any demand.
 
 
+
 The process for building pFUnit using CMake is as follows. In the
 top directory of the distribution make a new directory to support the
 build, then change to that directory and run cmake (pointing back to
 the source) to generate the required makefiles.
 
-        $ mkdir build
-        $ cd build
-        $ cmake ..
-        $ make tests
+    $ mkdir build
+    $ cd build
+    $ cmake ..
+    $ make tests
 		$ make install
+
 
 By default, pFUnit will put the installation in a subdirectory
 called `installed` inside the build directory.  This unusual
@@ -181,6 +183,17 @@ default (from a CMake perspective) is due to the fact that
 many/most pFUnit users lack elevated priviges for installing in the
 usual places.  Most users will want to explicitly override the
 default with CMake's `-DCMAKE_INSTALL_PREFIX=...`
+
+## INSTALLATION
+
+Because many pFUnit users lack permissions to install 
+in the cmake default installation path, pFUnit instead by default
+installs in the "installed" subdirectory in the main build directory.  
+This can be easily overridden via  `CMAKE_INSTALL_PREFIX` on the cmake
+command line.  Note that cmake allows a few variants on the internal structure
+of the install, and future versions of pFUnit are likely to switch to a different 
+variant.  (`find_package(pFUnit)` should continue to work, but there may be 
+issues with the search order for users with conflicting installs.)
 
 ## Using pFUnit
 
