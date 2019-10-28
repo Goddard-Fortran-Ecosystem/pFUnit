@@ -5,7 +5,8 @@ module pf_IsEqual
   use pf_AbstractMatcher
   use pf_BaseMatcher
   use pf_MatcherDescription
-  use pf_Array
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
   implicit none
   private
 
@@ -21,12 +22,16 @@ module pf_IsEqual
      procedure :: describe_mismatch
 
      procedure :: matches_list
+     procedure :: matches_array_2d
+     procedure :: matches_array_3d
      procedure :: matches_intrinsic
   end type IsEqual
 
   interface equal_to
      module procedure :: equal_to_scalar
      module procedure :: equal_to_array_1d
+     module procedure :: equal_to_array_2d
+     module procedure :: equal_to_array_3d
   end interface equal_to
 
 contains
@@ -45,9 +50,26 @@ contains
     type (IsEqual) :: matcher
     class(*), intent(in) :: operand(:)
 
-    matcher%expected_value = wrap_array(operand)
+    matcher%expected_value = ArrayWrapper(operand)
 
   end function equal_to_array_1d
+
+  function equal_to_array_2d(operand) result(matcher)
+    type (IsEqual) :: matcher
+    class(*), intent(in) :: operand(:,:)
+
+    matcher%expected_value = ArrayWrapper(operand)
+
+  end function equal_to_array_2d
+
+
+  function equal_to_array_3d(operand) result(matcher)
+    type (IsEqual) :: matcher
+    class(*), intent(in) :: operand(:,:,:)
+
+    matcher%expected_value = ArrayWrapper(operand)
+
+  end function equal_to_array_3d
 
 
   subroutine describe_to(this, description)
@@ -78,8 +100,12 @@ contains
     class(*), intent(in) :: actual_value
 
     select type (e => this%expected_value)
-    type is (internal_array_1d)
+    type is (ArrayWrapper_1d)
        matches = this%matches_list(e%items, actual_value)
+    type is (ArrayWrapper_2d)
+       matches = this%matches_array_2d(e%items, actual_value)
+    type is (ArrayWrapper_3d)
+       matches = this%matches_array_3d(e%items, actual_value)
     class is (Matchable)
        matches = (e == actual_value)
     class default ! intrinsics
@@ -100,7 +126,7 @@ contains
     _UNUSED_DUMMY(this)
 
     select type (a => actual_value)
-    type is (internal_array_1d)
+    type is (ArrayWrapper_1d)
        n_items = size(expected_items)
        if (size(a%items) == n_items) then
           do i = 1, n_items
@@ -117,6 +143,70 @@ contains
     end select
 
   end function matches_list
+
+
+  logical function matches_array_2d(this, expected_items, actual_value)
+    class(IsEqual), intent(in) :: this
+    class(*), intent(in) :: expected_items(:,:)
+    class(*), intent(in) :: actual_value
+
+    integer :: i, j
+    type (IsEqual) :: m
+
+    _UNUSED_DUMMY(this)
+
+    select type (a => actual_value)
+    type is (ArrayWrapper_2d)
+       if (all(shape(a%items) == shape(expected_items))) then
+          do j = 1, size(a%items,2)
+             do i = 1, size(a%items,1)
+                m = equal_to(expected_items(i,j))
+                if (.not. m%matches(a%items(i,j))) then
+                   matches_array_2d = .false.
+                   return
+                end if
+             end do
+          end do
+          matches_array_2d = .true.
+       else
+          matches_array_2d = .false. ! differing shape/size
+       end if
+    end select
+
+  end function matches_array_2d
+
+
+  logical function matches_array_3d(this, expected_items, actual_value)
+    class(IsEqual), intent(in) :: this
+    class(*), intent(in) :: expected_items(:,:,:)
+    class(*), intent(in) :: actual_value
+
+    integer :: i, j, k
+    type (IsEqual) :: m
+
+    _UNUSED_DUMMY(this)
+
+    select type (a => actual_value)
+    type is (ArrayWrapper_3d)
+       if (all(shape(a%items) == shape(expected_items))) then
+          do k = 1, size(a%items,3)
+             do j = 1, size(a%items,2)
+                do i = 1, size(a%items,1)
+                   m = equal_to(expected_items(i,j,k))
+                   if (.not. m%matches(a%items(i,j,k))) then
+                      matches_array_3d = .false.
+                      return
+                   end if
+                end do
+             end do
+          end do
+          matches_array_3d = .true.
+       else
+          matches_array_3d = .false. ! differing shape/size
+       end if
+    end select
+
+  end function matches_array_3d
 
 
 

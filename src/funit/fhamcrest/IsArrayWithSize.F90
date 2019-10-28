@@ -6,7 +6,8 @@ module pf_IsArrayWithSize
   use pf_FeatureMatcher
   use pf_DescribedAs
   use pf_IsEqual
-  use pf_Array
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
   implicit none
   private
 
@@ -62,7 +63,11 @@ contains
 
     _UNUSED_DUMMY(this)
     select type (actual)
-    type is (internal_array_1d)
+    type is (ArrayWrapper_1d)
+       feature_value = size(actual%items)
+    type is (ArrayWrapper_2d)
+       feature_value = size(actual%items)
+    type is (ArrayWrapper_3d)
        feature_value = size(actual%items)
     class default
        ERROR STOP __FILE__ // " This case is guarded againts by TypeSafeMatcher."
@@ -78,6 +83,8 @@ contains
 
   end function empty_array
 
+  ! Questionable:  This implementation will not match scalars.
+  ! But if we want to consider scalars as 0-sized arrays ...
 
   logical function expects_type_of(this, actual)
     class(IsArrayWithSize), intent(in) :: this
@@ -86,7 +93,7 @@ contains
     _UNUSED_DUMMY(this)
 
     select type(actual)
-    type is (internal_array_1d)
+    class is (AbstractArrayWrapper)
        expects_type_of = .true.
     class default
        expects_type_of = .false.
