@@ -9,6 +9,28 @@ module pf_AbstractArrayWrapper
   public :: AbstractArrayWrapper
 
   type, abstract :: AbstractArrayWrapper
+   contains
+     procedure(get_ith), deferred :: get_ith
+     procedure(get), deferred :: get
   end type AbstractArrayWrapper
 
+  abstract interface
+
+     function get_ith(this, i) result(item)
+       import AbstractArrayWrapper
+       class(*), allocatable :: item
+       class(AbstractArrayWrapper), target, intent(in) :: this
+       integer, intent(in) :: i
+     end function get_ith
+
+     function get(this) result(list)
+       import AbstractArrayWrapper
+       class(*), allocatable :: list(:)
+       class(AbstractArrayWrapper), intent(in) :: this
+     end function get
+
+  end interface
+
 end module pf_AbstractArrayWrapper
+
+

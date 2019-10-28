@@ -281,7 +281,11 @@ contains
     type is (character(*))
        select type(a => actual_value)
        type is (character(*))
-          matches_intrinsic = (e == a)
+          ! Fortran pads strings of different lengths when comparing.
+          ! But we want to test for strict equality.
+          ! May add a PAD option later on
+          matches_intrinsic = (len(e) == len(a))
+          if (matches_intrinsic) matches_intrinsic = (e == a)
        class default
           matches_intrinsic = .false.
        end select

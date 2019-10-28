@@ -10,32 +10,32 @@ module pf_MatcherAssert
   public :: assert_that
 
   interface assert_that
-     module procedure :: assert_that_no_reason
-     module procedure :: assert_that_reason
+     module procedure :: assert_that_0d_no_reason
+     module procedure :: assert_that_0d_reason
 
-     module procedure :: assert_that_1d
+     module procedure :: assert_that_1d_no_reason
      module procedure :: assert_that_1d_reason
 
-     module procedure :: assert_that_2d
+     module procedure :: assert_that_2d_no_reason
      module procedure :: assert_that_2d_reason
 
-     module procedure :: assert_that_3d
+     module procedure :: assert_that_3d_no_reason
      module procedure :: assert_that_3d_reason
   end interface assert_that
 
 contains
 
-  subroutine assert_that_no_reason(actual, matcher, location)
+  subroutine assert_that_0d_no_reason(actual, matcher, location)
     class(*), intent(in) :: actual
     class(AbstractMatcher), intent(in) :: matcher
     type (SourceLocation), optional, intent(in) :: location
 
     call assert_that('', actual, matcher, location=location)
 
-  end subroutine assert_that_no_reason
+  end subroutine assert_that_0d_no_reason
 
 
-  subroutine assert_that_reason(reason, actual, matcher, location)
+  subroutine assert_that_0d_reason(reason, actual, matcher, location)
     use pf_StringDescription
     character(*), intent(in) :: reason
     class(*), intent(in) :: actual
@@ -54,9 +54,9 @@ contains
        call throw(description%to_string(), location)
     end if
 
-  end subroutine assert_that_reason
+  end subroutine assert_that_0d_reason
 
-  subroutine assert_that_1d(actual, matcher, location)
+  subroutine assert_that_1d_no_reason(actual, matcher, location)
     use pf_StringDescription
     class(*), intent(in) :: actual(:)
     class(AbstractMatcher), intent(in) :: matcher
@@ -64,7 +64,7 @@ contains
 
     call assert_that('', actual, matcher, location)
 
-  end subroutine assert_that_1d
+  end subroutine assert_that_1d_no_reason
 
   subroutine assert_that_1d_reason(reason, actual, matcher, location)
     use pf_StringDescription
@@ -77,7 +77,7 @@ contains
 
   end subroutine assert_that_1d_reason
 
-  subroutine assert_that_2d(actual, matcher, location)
+  subroutine assert_that_2d_no_reason(actual, matcher, location)
     use pf_StringDescription
     class(*), intent(in) :: actual(:,:)
     class(AbstractMatcher), intent(in) :: matcher
@@ -85,7 +85,7 @@ contains
 
     call assert_that('', actual, matcher, location)
 
-  end subroutine assert_that_2d
+  end subroutine assert_that_2d_no_reason
 
   subroutine assert_that_2d_reason(reason, actual, matcher, location)
     use pf_StringDescription
@@ -99,7 +99,7 @@ contains
   end subroutine assert_that_2d_reason
 
 
-  subroutine assert_that_3d(actual, matcher, location)
+  subroutine assert_that_3d_no_reason(actual, matcher, location)
     use pf_StringDescription
     class(*), intent(in) :: actual(:,:,:)
     class(AbstractMatcher), intent(in) :: matcher
@@ -107,7 +107,7 @@ contains
 
     call assert_that('', actual, matcher, location)
 
-  end subroutine assert_that_3d
+  end subroutine assert_that_3d_no_reason
 
   subroutine assert_that_3d_reason(reason, actual, matcher, location)
     use pf_StringDescription

@@ -13,15 +13,13 @@ module pf_MatcherDescription
       procedure(append_description_of), deferred :: append_description_of ! selfd
       procedure(to_string), deferred :: to_string
       procedure(append_value_scalar), deferred :: append_value_scalar
+      procedure(append_value_array_1d), deferred :: append_value_array_1d
       generic :: append_value => append_value_scalar
+      generic :: append_value => append_value_array_1d
       procedure(append_list_array), deferred :: append_list_array
-      procedure(append_list_array_2d), deferred :: append_list_array_2d
-      procedure(append_list_array_3d), deferred :: append_list_array_3d
       procedure(append_list_vector), deferred :: append_list_vector
       generic :: append_list => append_list_vector
       generic :: append_list => append_list_array
-      generic :: append_list => append_list_array_2d
-      generic :: append_list => append_list_array_3d
    end type MatcherDescription
 
 
@@ -47,6 +45,15 @@ module pf_MatcherDescription
         class(MatcherDescription), intent(inout) :: this
         class(*), intent(in) :: value
       end subroutine append_value_scalar
+
+      subroutine append_value_array_1d(this, start, separator, end, values)
+        import MatcherDescription
+        class(MatcherDescription), intent(inout) :: this
+        character(*), intent(in) :: start
+        character(*), intent(in) :: separator
+        character(*), intent(in) :: end
+        class(*), intent(in) :: values(:)
+      end subroutine append_value_array_1d
 
       function to_string(this) result(string)
          import SelfDescribing
@@ -74,26 +81,6 @@ module pf_MatcherDescription
         character(*), intent(in) :: end
         class(SelfDescribing), intent(in) :: values(:)
       end subroutine append_list_array
-
-      subroutine append_list_array_2d(this, start, separator, end, values)
-        import MatcherDescription
-        import SelfDescribing
-        class(MatcherDescription), intent(inout) :: this
-        character(*), intent(in) :: start
-        character(*), intent(in) :: separator
-        character(*), intent(in) :: end
-        class(SelfDescribing), intent(in) :: values(:,:)
-      end subroutine append_list_array_2d
-
-      subroutine append_list_array_3d(this, start, separator, end, values)
-        import MatcherDescription
-        import SelfDescribing
-        class(MatcherDescription), intent(inout) :: this
-        character(*), intent(in) :: start
-        character(*), intent(in) :: separator
-        character(*), intent(in) :: end
-        class(SelfDescribing), intent(in) :: values(:,:,:)
-      end subroutine append_list_array_3d
 
    end interface
 
