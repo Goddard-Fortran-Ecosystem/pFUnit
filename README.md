@@ -257,11 +257,11 @@ the pFUnit preprocessor.
 
     -h or --help                    Prints this help message
     -d or -debug or --verbose       Provide debugging information.  Useful when a test crashes.
-	-f or --filter <pattern>        Only run tests that match the specified substring
-    -h                              Print help message.
-    -o <outputfile>                 Direct pFUnit messages to a file.
+    -f or --filter <pattern>        Only run tests that match the specified substring
+    -h or --help                    Print help message.
+    -o or --output <outputfile>     Direct pFUnit messages to a file.
     -r or --runner <runner>         Specify a non default test runner. (Advanced)
-    -s or -sk  <n>                   Used internally.
+    -s or -skip  <n>                Used internally.
 
 For example to run all tests whose names start with "test_ABC":
 
