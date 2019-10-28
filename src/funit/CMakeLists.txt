@@ -2,6 +2,8 @@
 # subdirs.  Further, do to a limitation in the scope for generated
 # files, we must "include" the CMakeLists.txt in each subdir rather
 # than use add_subdirectory().
+
+find_package(Python REQUIRED) # Sets ${PYTHON_EXECUTABLE}
 add_library (funit)
 
 set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod)

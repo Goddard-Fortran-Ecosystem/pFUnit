@@ -1,5 +1,3 @@
-find_package(Python REQUIRED) # Sets ${PYTHON_EXECUTABLE}
-
 set(srcs
   KeywordEnforcer.F90
   MatchObject.F90
