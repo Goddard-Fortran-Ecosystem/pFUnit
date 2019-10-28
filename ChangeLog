@@ -1,3 +1,8 @@
+4.0.2   October 27, 2019
+	- Major correction to README to reflect changes from v3.0
+	- Expansion of hamcrest capabilities
+	
+	
 4.0.1   September 01, 2019
         - various (still incomplete) improvements to the README instructions.
 	- Added preprocessor support for hamcrest @assert_that
