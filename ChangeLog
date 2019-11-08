@@ -1,6 +1,9 @@
-4.0.2   October 27, 2019
+4.1.0   October 27, 2019
 	- Major correction to README to reflect changes from v3.0
 	- Expansion of hamcrest capabilities
+	- Completed TAP listener
+	- Fixes for self-tests that were failing due to Python-3 support
+	
 	
 	
 4.0.1   September 01, 2019
