@@ -174,7 +174,7 @@ the source) to generate the required makefiles.
     $ cd build
     $ cmake ..
     $ make tests
-		$ make install
+    $ make install
 
 
 By default, pFUnit will put the installation in a subdirectory
