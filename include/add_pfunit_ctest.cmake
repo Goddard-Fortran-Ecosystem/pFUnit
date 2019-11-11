@@ -7,7 +7,7 @@
 # Arguments    : - test_name: Name of the test package
 #
 # Example usage: enable_testing()
-#                add_pfunit_test (myTests
+#                add_pfunit_ctest (myTests
 #                   TEST_SOURCES testMyLib.pf
 #                   OTHER_SOURCES other.F90 yet_another.c
 #                   REGISTRY test_suites.inc             
