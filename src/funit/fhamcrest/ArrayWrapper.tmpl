@@ -1,0 +1,96 @@
+! -*-f90-*-
+! This module allows pFUnit to treat arrays as single objects which
+! greatly simplifies the overloading of hamcrest matcher interfaces.
+! Once SELECT RANK (Fortran 2015) is widely available, this should
+! be re-engineered.
+
+module pf_ArrayWrapper_{rank}d
+  use pf_AbstractArrayWrapper
+  {use_rank_minus_1}
+  implicit none
+  private
+
+  public :: ArrayWrapper
+  public :: ArrayWrapper_{rank}d
+
+  interface ArrayWrapper
+     module procedure wrap
+  end interface ArrayWrapper
+     
+  type, extends(AbstractArrayWrapper) :: ArrayWrapper_{rank}d
+     class(*), allocatable :: items {dims}
+   contains
+     procedure :: get
+     procedure :: get_ith
+     procedure :: to_list
+  end type ArrayWrapper_{rank}d
+
+contains
+
+  function wrap(items) result(a)
+    type (ArrayWrapper_{rank}d) :: a
+    class(*), intent(in) :: items {dims}
+    allocate(a%items, source=items)
+  end function wrap
+
+  function get(this) result(list)
+    class(*), allocatable :: list(:)
+    class (ArrayWrapper_{rank}d), intent(in) :: this
+
+#if {rank} > 1
+    integer :: i, n
+    type (ArrayWrapper_{rank_minus_1}d), allocatable :: items(:)
+#endif
+
+#if {rank}==1
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=this%items)
+#else
+    n = size(this%items)
+    allocate(items(n))
+    do i = 1, n
+       items(i) = {get_ith}
+    end do
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=items)
+#endif
+    
+  end function get
+
+  function get_ith(this, i) result(item)
+    class(*), allocatable :: item
+    class(ArrayWrapper_{rank}d), target, intent(in) :: this
+    integer, intent(in) :: i
+
+    item = {get_ith}
+
+  end function get_ith
+
+  subroutine to_list(this, list)
+    class (ArrayWrapper_{rank}d), intent(in) :: this
+    class(*), allocatable, intent(out) :: list(:)
+
+#if {rank} > 1
+    integer :: i, n
+    type (ArrayWrapper_{rank_minus_1}d), allocatable :: items(:)
+#endif
+#if {rank}==1
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=this%items)
+#else
+    n = size(this%items)
+    allocate(items(n))
+    do i = 1, n
+       items(i) = {get_ith}
+    end do
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=items)
+#endif
+    
+  end subroutine to_list
+
+end module pf_ArrayWrapper_{rank}d

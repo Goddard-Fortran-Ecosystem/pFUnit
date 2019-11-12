@@ -3,8 +3,8 @@ module pf_TypeSafeMatcher
   use pf_BaseMatcher
   use pf_SelfDescribing
   use pf_MatcherDescription, only: MatcherDescription
-
-  use pf_Array
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
   use iso_fortran_env
   implicit none
   private
@@ -159,7 +159,7 @@ contains
 #endif
      class is (SelfDescribing)
         type_name = actual%get_type_name()
-     class is (internal_array_1d)
+     class is (ArrayWrapper_1d)
         if (size(actual%items) == 0) then ! no type
            type_name = "1-D array of zero size"
            item_type = type_of(actual%items(1))

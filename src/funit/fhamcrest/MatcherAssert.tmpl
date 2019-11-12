@@ -1,0 +1,35 @@
+module pf_MatcherAssert_{rank}d
+  use pf_ArrayWrapper_{rank}d
+  use pf_ExceptionList, only: throw
+  implicit none
+  private
+
+  public :: assert_that
+
+  interface assert_that
+     module procedure :: assert_that_no_reason
+     module procedure :: assert_that_reason_reason
+  end interface assert_that
+
+contains
+  
+  subroutine assert_that_no_reason(actual, matcher, location)
+    class(*), intent(in) :: actual {dims}
+    class(AbstractMatcher), intent(in) :: matcher
+    type (SourceLocation), optional, intent(in) :: location
+
+    call assert_that('', actual, matcher, location)
+
+  end subroutine assert_that_no_reason
+
+  subroutine assert_that_reason(reason, actual, matcher, location)
+    character(*), intent(in) :: reason
+    class(*), intent(in) :: actual {dims}
+    class(AbstractMatcher), intent(in) :: matcher
+    type (SourceLocation), optional, intent(in) :: location
+
+    call assert_that(reason, ArrayWrapper(actual), matcher, location)
+
+  end subroutine assert_that_reason
+
+end module pf_MatcherAssert_

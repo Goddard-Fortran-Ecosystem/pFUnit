@@ -114,8 +114,6 @@ contains
     call description%append_text(" of ")
     call description%append_value(this%value)
 
-    
-
   end subroutine describe_to
 
 end module pf_IsNear
