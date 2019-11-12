@@ -12,6 +12,7 @@ module pf_AbstractArrayWrapper
    contains
      procedure(get_ith), deferred :: get_ith
      procedure(get), deferred :: get
+     procedure(to_list), deferred :: to_list
   end type AbstractArrayWrapper
 
   abstract interface
@@ -28,6 +29,12 @@ module pf_AbstractArrayWrapper
        class(*), allocatable :: list(:)
        class(AbstractArrayWrapper), intent(in) :: this
      end function get
+
+     subroutine to_list(this, list)
+       import AbstractArrayWrapper
+       class(AbstractArrayWrapper), intent(in) :: this
+       class(*), allocatable, intent(out) :: list(:)
+     end subroutine to_list
 
   end interface
 

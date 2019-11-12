@@ -76,15 +76,25 @@ contains
     integer, allocatable :: index(:)
     class(*), allocatable :: items(:)
 
+    print*,__FILE__,__LINE__
     select type (a => actual)
     class is (AbstractArrayWrapper)
-       items = a%get()
+       print*,__FILE__,__LINE__
+       call a%to_list(items)
+!!$       items = a%get()
+       print*,__FILE__,__LINE__
        allocate(index(0))
+       print*,__FILE__,__LINE__
        call this%describe_first_mismatch(items, description, index)
+       print*,__FILE__,__LINE__
        call description%append_text(' at index ')
+       print*,__FILE__,__LINE__
        call description%append_value('[',',',']',index)
+    print*,__FILE__,__LINE__
     class default ! scalar
+    print*,__FILE__,__LINE__
        call this%item_matcher%describe_mismatch(a, description)
+    print*,__FILE__,__LINE__
     end select
 
   end subroutine describe_mismatch

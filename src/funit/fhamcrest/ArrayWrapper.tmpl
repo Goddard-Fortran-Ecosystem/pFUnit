@@ -22,6 +22,7 @@ module pf_ArrayWrapper_{rank}d
    contains
      procedure :: get
      procedure :: get_ith
+     procedure :: to_list
   end type ArrayWrapper_{rank}d
 
 contains
@@ -42,14 +43,18 @@ contains
 #endif
 
 #if {rank}==1
-    list = this%items
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=this%items)
 #else
     n = size(this%items)
     allocate(items(n))
     do i = 1, n
        items(i) = {get_ith}
     end do
-    list = items
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=items)
 #endif
     
   end function get
@@ -62,6 +67,30 @@ contains
     item = {get_ith}
 
   end function get_ith
-  
+
+  subroutine to_list(this, list)
+    class (ArrayWrapper_{rank}d), intent(in) :: this
+    class(*), allocatable, intent(out) :: list(:)
+
+#if {rank} > 1
+    integer :: i, n
+    type (ArrayWrapper_{rank_minus_1}d), allocatable :: items(:)
+#endif
+#if {rank}==1
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=this%items)
+#else
+    n = size(this%items)
+    allocate(items(n))
+    do i = 1, n
+       items(i) = {get_ith}
+    end do
+    ! GFortran 9.2 has some issues with polymorphic intrinsic
+    ! assignment in this context.
+    allocate(list, source=items)
+#endif
+    
+  end subroutine to_list
 
 end module pf_ArrayWrapper_{rank}d
