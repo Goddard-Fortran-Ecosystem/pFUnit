@@ -148,7 +148,7 @@ Previously one explictly built and installed pFUnit separately for
 serial and parallel configurations.  4.0 instead builds and install
 both with a separate library for the MPI features.  E.g., a serial
 application now links to libfunit.a, while a parallel application
-links to `libpfunit.a` *and_ `libfpnut.a`.
+links to `libpfunit.a` _and_ `libfunit.a`.
   
 CMake options:
 
@@ -206,7 +206,7 @@ more details.
 First, one must tell CMake where to find your installation of pFUnit.
 Typically this looks like:
 ```script
-$ cmake .. -DCAMKE_PREFIX_PATH=<path-to-pfunit-install>
+$ cmake .. -DCMAKE_PREFIX_PATH=<path-to-pfunit-install>
 ```
 
 Next, within your CMakeLists.txt, enable pFUnit with the lines:
