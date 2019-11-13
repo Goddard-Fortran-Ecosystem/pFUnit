@@ -27,12 +27,18 @@ program main
    procedure(), pointer :: extra_finalize
    
 #ifdef PFUNIT_EXTRA_INITIALIZE
+#  ifndef PFUNIT_EXTRA_USE
+   external :: PFUNIT_EXTRA_INITIALIZE
+#  endif
    extra_initialize => PFUNIT_EXTRA_INITIALIZE
 #else
    extra_initialize => stub
 #endif
 
 #ifdef PFUNIT_EXTRA_FINALIZE
+#  ifndef PFUNIT_EXTRA_USE
+   external :: PFUNIT_EXTRA_FINALIZE
+#  endif
    extra_finalize => PFUNIT_EXTRA_FINALIZE
 #else
    extra_finalize => stub
