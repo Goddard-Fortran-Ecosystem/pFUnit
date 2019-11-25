@@ -43,4 +43,17 @@ contains
   end function str
   
 
+  @test
+  subroutine test_wrong_type()
+    character(:), allocatable :: error
+
+    call assert_that(2, is(near(2.0, 0.1)))
+    error = new_line('a') &
+         & // 'Expected: is a numeric value within <' // str(0.1) // '> of <' // str(2.0) // '>' &
+         & // new_line('a') &
+         & // '     but: was an integer (<2>)'
+    @assertExceptionRaised(error)
+
+  end subroutine test_wrong_type
+
 end module Test_IsNear
