@@ -171,7 +171,7 @@ contains
       do i = 1, testCases%size()
          if (needs_launch) then
             !TODO:  What is the correct mode here?
-            mode%mode_t = O'0777'
+            mode%mode_t = INT( O'0777' )
             rc = mkfifo(C_REMOTE_PROCESS_PIPE, mode)
             if (rc /= 0) ERROR STOP 'failed to make named pipe'
 
