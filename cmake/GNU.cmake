@@ -1,7 +1,7 @@
 # Compiler specific flags for GNU Fortran compiler
 
 set(traceback "-fbacktrace")
-set(check_all "-fbounds-check")
+set(check_all "-fcheck=all -std=f2018")
 set(cpp "-cpp")
 
 

@@ -2,10 +2,10 @@
 
 if(WIN32)
   set(no_optimize "-Od")
-  set(check_all "-check:all")
+  set(check_all "-check:all -stand:f18")
 else()
   set(no_optimize "-O0")
-  set(check_all "-check all")
+  set(check_all "-check all -stand f18")
 endif()
   
 
