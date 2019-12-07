@@ -2,6 +2,8 @@ module pf_BaseDescription
   use pf_MatcherDescription
   use pf_SelfDescribing
   use pf_SelfDescribingVector
+  use pf_AbstractArrayWrapper
+  use pf_ArrayWrapper
   use, intrinsic :: iso_fortran_env
    implicit none
    private
@@ -15,13 +17,13 @@ module pf_BaseDescription
       procedure :: append_text
       procedure :: append_description_of
       procedure :: append_value_scalar
-      procedure :: append_value_list
+      procedure :: append_value_array_1d
       procedure :: append_string
       procedure(append_character), deferred :: append_character
       generic :: append => append_string
       generic :: append => append_character
-      procedure :: append_list_array
       procedure :: append_list_vector
+      procedure :: append_list_array
    end type BaseDescription
 
    abstract interface 
@@ -67,7 +69,6 @@ contains
 
    recursive subroutine append_value_scalar(this, value)
      use pf_Matchable
-     use pf_Array
      class (BaseDescription), intent(inout) :: this
      class(*), intent(in) :: value
 
@@ -148,22 +149,17 @@ contains
         call this%append('<')
         call value%type_unsafe_describe_to(this)
         call this%append('>')
-     class is (internal_array)
-        select type (value)
-        class is (internal_array_1d)
-           call this%append_value_list("[",", ","]",value%items)
-        class default
-           ERROR STOP __FILE__ // ' :: unsupported rank'
-        end select
+     class is (AbstractArrayWrapper)
+        call this%append_value("[",", ","]",value%get())
      class default
         ERROR STOP __FILE__ // ' :: unsupported type'
      end select
 
     end subroutine append_value_scalar
 
-    subroutine append_value_list(this, start, separator, end, values)
+    subroutine append_value_array_1d(this, start, separator, end, values)
      use pf_Matchable
-     use pf_Array
+     use pf_AbstractArrayWrapper
      class (BaseDescription), intent(inout) :: this
      character(*), intent(in) :: start
      character(*), intent(in) :: separator
@@ -175,9 +171,9 @@ contains
 
      separate = .false.
 
-     select type (values)
+     select type (q => values)
      class is (SelfDescribing)
-        call this%append_list(start, separator, end, values)
+        call this%append_list(start, separator, end, q)
      class default
         call this%append(start)
         do i = 1, size(values)
@@ -188,8 +184,7 @@ contains
         call this%append(end)
      end select
 
-   end subroutine append_value_list
-
+   end subroutine append_value_array_1d
 
     ! JUnit does this, but it seems overkill. Currently am not planning
     ! to intercept special characters.   Will be overridden in StringDescription.
@@ -226,6 +221,7 @@ contains
       call this%append(end)
 
     end subroutine append_list_array
+
 
     subroutine append_list_vector(this, start, separator, end, values)
       class(BaseDescription), intent(inout) :: this
@@ -348,5 +344,5 @@ contains
       string = trim(buffer)
     end function description_of_complex128
 
-    
+
 end module pf_BaseDescription
