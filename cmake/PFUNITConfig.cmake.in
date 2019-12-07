@@ -7,6 +7,7 @@
 #    add_pfunit_test     - Helper function for defining test suites with .pf-files
 
 find_package (Python REQUIRED)
+find_package (OpenMP QUIET)
 include ("@GFTL_TOP_DIR@/cmake/GFTLConfig.cmake")
 include ("@GFTL_SHARED_TOP_DIR@/cmake/GFTL_SHAREDConfig.cmake")
 include ("@FARGPARSE_TOP_DIR@/cmake/FARGPARSEConfig.cmake")
