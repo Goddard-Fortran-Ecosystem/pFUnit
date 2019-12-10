@@ -1,3 +1,10 @@
+4.1.3   December 10, 2019
+	- Fix bug in add_pfunit_ctest() macro involving path
+	  Only affects using with Intel MPI
+	
+4.1.2   December 07, 2019
+	- Fix minor bug related to OpenMP propagation
+	
 4.1.1   November 10, 2019
 	- Fix for #122 (allow add_pfunit_test() with abs path)
 
