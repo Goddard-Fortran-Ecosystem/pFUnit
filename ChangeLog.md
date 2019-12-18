@@ -1,3 +1,9 @@
+4.1.4   December 18, 2019
+	- Fix bug in exported pFUnit.mk file.    Was not correctly expanding
+	  openmp libraries for projects built with Make.
+	- Improved pFunit driver to avoid name conflicts with
+	  user defined initialize()
+
 4.1.3   December 10, 2019
 	- Fix bug in add_pfunit_ctest() macro involving path
 	  Only affects using with Intel MPI
