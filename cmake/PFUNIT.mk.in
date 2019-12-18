@@ -35,7 +35,7 @@ PFUNIT_LIBRARIES += -lfunit $(FARGPARSE_LIBRARIES)
 ifeq ($(USEMPI),YES)
     PFUNIT_LIBRARIES += $(subst ;, ,@MPI_Fortran_LIBRARIES@)
 endif
-PFUNIT_LIBRARIES += @OpenMP_Fortran_LIBRARIES@
+PFUNIT_LIBRARIES += $(subst ;, , @OpenMP_Fortran_LIBRARIES@)
 
 
 
