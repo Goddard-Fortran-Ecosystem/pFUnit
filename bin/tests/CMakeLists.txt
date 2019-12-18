@@ -1,5 +1,3 @@
-find_package(Python REQUIRED)
-
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/outputs)
 
 file(GLOB test_cases

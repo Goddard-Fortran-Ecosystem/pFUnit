@@ -100,6 +100,7 @@ if (NOT SKIP_ESMF)
   set (ESMF_FOUND)
 endif ()
 
+find_package(Python)
 
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
