@@ -113,7 +113,7 @@ function (add_pfunit_ctest test_package_name)
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_MAX_PES} ${test_package_name}
+      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
     target_link_libraries (${test_package_name} funit)

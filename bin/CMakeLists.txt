@@ -1,5 +1,3 @@
-find_package(Python REQUIRED)
-
 add_subdirectory(funit)
 add_subdirectory(tests)
 

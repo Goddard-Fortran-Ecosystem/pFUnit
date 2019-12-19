@@ -19,10 +19,14 @@ matrix:
            - CACHE_NAME=linux-gcc8-openmpi310
       - os: osx
         osx_image: xcode9.3
+        addons:
+           homebrew:
+              packages:
+                 - gcc@8
+                 - cmake
+              update: true
         env:
            - FC='gfortran-8'
-           - BREW='gcc@8'
-           - BREW_UP='cmake'
            - USE_MPI=YES
            - MPI_NAME=openmpi-3.1.0
            - CACHE_NAME=osx-gcc8-openmpi310
@@ -37,14 +41,6 @@ cache:
    directories:
       - ${HOME}/local
    timeout: 600
-
-before_install:
-   - |
-      if [ $TRAVIS_OS_NAME == osx ] ; then
-         # brew cask uninstall oclint || exit 1
-         brew install ${BREW} make || exit 1
-         brew upgrade ${BREW_UP} || exit 1
-      fi
 
 before_script:
    # install MPI

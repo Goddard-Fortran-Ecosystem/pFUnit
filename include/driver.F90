@@ -16,7 +16,8 @@
 
 
 program main
-   use FUnit
+   use FUnit, only: TestSuite
+   use FUnit, only: stub
 #ifdef PFUNIT_EXTRA_USE
       ! Use external code for whatever suite-wide fixture is in use.
       use PFUNIT_EXTRA_USE
