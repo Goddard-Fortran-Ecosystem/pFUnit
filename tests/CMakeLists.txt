@@ -1,4 +1,3 @@
-find_package (Python REQUIRED)
 set (PFUNIT_PARSER "${Python_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
 set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/../include/driver.F90")
 include (add_pfunit_sources)
