@@ -27,14 +27,13 @@
 !-------------------------------------------------------------------------------
 module PF_XmlPrinter
    use PF_Exception
-   use PF_TestListener
+   use PF_AbstractPrinter
    implicit none
    private
 
    public :: XmlPrinter
-   public :: newXmlPrinter
 
-   type, extends(TestListener) :: XmlPrinter
+   type, extends(AbstractPrinter) :: XmlPrinter
       integer :: unit
       integer :: privateUnit
    contains
@@ -54,15 +53,19 @@ module PF_XmlPrinter
       procedure :: addSuccess
    end type XmlPrinter
 
+   interface XmlPrinter
+      module procedure new_XmlPrinter_unit
+   end interface
+
 contains
 
-   function newXmlPrinter(unit)
-      type (XmlPrinter) :: newXmlPrinter
+   function new_XmlPrinter_unit(unit) result(printer)
+      type (XmlPrinter) :: printer
       integer, intent(in) :: unit
 
-      newXmlPrinter%unit = unit
+      printer%unit = unit
 
-   end function newXmlPrinter
+    end function new_XmlPrinter_unit
 
    subroutine addFailure(this, testName, exceptions)
       use PF_ExceptionList
@@ -102,18 +105,21 @@ contains
       _UNUSED_DUMMY(testName)
    end subroutine endTest
 
-   subroutine endRun(this, result)
+   subroutine endRun(this, result, elapsed_time)
      use PF_AbstractTestResult, only : AbstractTestResult
      class (XmlPrinter), intent(inOut) :: this
      class (AbstractTestResult), intent(in) :: result
+      real, intent(in) :: elapsed_time
 
-     call this%print(result)
+     call this%print(result, elapsed_time)
+
    end subroutine endRun
 
-   subroutine print(this, result)
+   subroutine print(this, result, elapsed_time)
       use PF_AbstractTestResult, only : AbstractTestResult
-      class (XmlPrinter), intent(in) :: this
-      class (AbstractTestResult), intent(in) :: result
+      class(XmlPrinter), intent(in) :: this
+      class(AbstractTestResult), intent(in) :: result
+      real, intent(in) :: elapsed_time
 
       call this%printHeader(result)
       call this%printSuccesses(result%getSuccesses())

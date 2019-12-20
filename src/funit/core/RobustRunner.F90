@@ -32,6 +32,7 @@ module PF_RobustRunner
    use pf_TestRunner
    use pf_File
    use pf_TestTimer
+   use pf_AbstractPrinter
    use pf_ResultPrinter
    use iso_c_binding
    use iso_fortran_env
@@ -90,7 +91,7 @@ contains
   
   function new_RobustRunner_printer(printer, maxLaunchDuration, max_time_per_test, remoteRunCommand) result(runner)
     type (RobustRunner) :: runner
-    type(ResultPrinter), intent(in) :: printer
+    class(AbstractPrinter), intent(in) :: printer
     real, optional, intent(in) :: maxLaunchDuration
     real, optional, intent(in) :: max_time_per_test
     character(*), optional, intent(in) :: remoteRunCommand
