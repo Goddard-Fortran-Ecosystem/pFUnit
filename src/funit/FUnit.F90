@@ -43,7 +43,7 @@ contains
       character(:), allocatable :: tap_file
 
       parser = ArgParser()
-      call parser%add_argument('-d', '--debug', '--verbose', action='store_true', &
+      call parser%add_argument('-d', '-v', '--debug', '--verbose', action='store_true', &
            & help='make output more verbose')
 
       call parser%add_argument('-f', '--filter', action='store', &
