@@ -26,6 +26,7 @@
 module PF_TestRunner
    use PF_Test
    use PF_BaseTestRunner
+   use PF_AbstractPrinter
    use PF_ResultPrinter
    use Pf_TestListenerVector
    implicit none
@@ -35,7 +36,7 @@ module PF_TestRunner
 
    type, extends(BaseTestRunner) :: TestRunner
       private
-      type (ResultPrinter) :: printer
+      class(AbstractPrinter), allocatable :: printer
    contains
       procedure :: run
       procedure :: runWithResult
@@ -69,7 +70,7 @@ contains
   
   function newTestRunner_printer(printer) result(runner)
     type (TestRunner) :: runner
-    type(ResultPrinter), intent(in) :: printer
+    class(AbstractPrinter), intent(in) :: printer
     runner%printer = printer
   end function newTestRunner_printer
 
@@ -120,7 +121,7 @@ contains
       call result%addRunTime(elapsed_time)
 
       if (context%isRootProcess())  then
-         call this%printer%print(result, elapsed_time)
+         call this%endRun(result, elapsed_time)
       end if
 
    end function run
@@ -162,13 +163,13 @@ contains
 
     end subroutine endTest
 
-    subroutine endRun(this, result)
+    subroutine endRun(this, result, elapsed_time)
       use PF_AbstractTestResult, only : AbstractTestResult
       class (TestRunner), intent(inout) :: this
       class (AbstractTestResult), intent(in) :: result
+      real, intent(in) :: elapsed_time
 
-      _UNUSED_DUMMY(this)
-      _UNUSED_DUMMY(result)
+      call this%printer%print(result, elapsed_time)
 
     end subroutine endRun
 

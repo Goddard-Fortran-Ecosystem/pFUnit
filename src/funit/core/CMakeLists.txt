@@ -11,6 +11,7 @@ set(srcs
   RegularExpression.F90
   AbstractTestParameter.F90
   AbstractTestResult.F90
+  AbstractPrinter.F90
   BaseTestRunner.F90
   DebugListener.F90
   TapListener.F90
