@@ -1,4 +1,4 @@
-# Function     : add_pfunit_ctest 
+# Function     : add_pfunit_ctest
 #
 # Description : Helper function for compiling and adding pFUnit tests
 #               to the CTest testing framework. Any libraries needed
@@ -10,7 +10,7 @@
 #                add_pfunit_ctest (myTests
 #                   TEST_SOURCES testMyLib.pf
 #                   OTHER_SOURCES other.F90 yet_another.c
-#                   REGISTRY test_suites.inc             
+#                   REGISTRY test_suites.inc
 #                   LINK_LIBRARIES mylib
 #                   EXTRA_USE ...
 #                   EXTRA_INITIALIZE ...
@@ -33,8 +33,8 @@
 #       For example, the file testSomething.pf should contain the
 #       module testSomething.
 #
-# 
-#                
+#
+#
 #
 # Compile the tests:   make myTests
 # Run the tests with CTest: ctest -R myTests --verbose
@@ -106,7 +106,7 @@ function (add_pfunit_ctest test_package_name)
   if (PF_TEST_EXTRA_FINALIZE)
     target_compile_definitions (${test_package_name} PRIVATE -DPFUNIT_EXTRA_FINALIZE=${PF_TEST_EXTRA_FINALIZE})
   endif()
-  
+
   if (PF_TEST_LINK_LIBRARIES)
     target_link_libraries (${test_package_name} ${PF_TEST_LINK_LIBRARIES})
   endif ()
@@ -114,14 +114,18 @@ function (add_pfunit_ctest test_package_name)
   #################################################
   # Define test in CTest system                   #
   #################################################
-  if (PF_TEST_MAX_PES)
+  if (PF_TEST_MAX_PES AND NOT PFUNIT_SKIP_MPI)
     target_link_libraries (${test_package_name} ${_PFUNIT_LIBRARIES})
+    if (NOT PFUNIT_MPI_USE_MPIEXEC)
+      set(MPIEXEC mpirun)
+      set(MPIEXEC_NUMPROC_FLAG "-np")
+    endif()
     if (MPIEXEC MATCHES ".*openmpi*")
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
+      COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
     target_link_libraries (${test_package_name} ${_FUNIT_LIBRARIES})
@@ -130,7 +134,7 @@ function (add_pfunit_ctest test_package_name)
       COMMAND ${test_package_name}
       )
   endif()
-  
+
   set_property (TEST ${test_package_name}
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
