@@ -16,19 +16,22 @@ set (prefix ${CMAKE_CURRENT_LIST_DIR}/../..)
 set (PFUNIT_TOP_DIR ${prefix}/PFUNIT-@PFUNIT_VERSION_MAJOR@.@PFUNIT_VERSION_MINOR@ CACHE PATH "")
 include ("${PFUNIT_TOP_DIR}/cmake/PFUNIT.cmake")
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../include")
-include (add_pfunit_ctest)
-
-
 #set (PFUNIT_FOUND TRUE)
 set (PFUNIT_VERSION "@PROJECT_VERSION@")
 set (PFUNIT_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/../include)
+set (PFUNIT_BUILD_SHARED "@BUILD_SHARED@")
 #set (PFUNIT_LINK_DIRS ${CMAKE_CURRENT_LIST_DIR}/lib)
-set (PFUNIT_LIBRARIES funit)
+if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
+  set (PFUNIT_LIBRARIES funit_shared)
+else()
+  set (PFUNIT_LIBRARIES funit)
+endif()
 set (PFUNIT_PARSER "${Python_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
 set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/../include/driver.F90")
 set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/../include/TestUtil.F90")
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../include")
+include (add_pfunit_ctest)
 
 
 # Function     : add_pfunit_test 

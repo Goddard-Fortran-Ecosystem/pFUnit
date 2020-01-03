@@ -1,5 +1,6 @@
 set (PFUNIT_PARSER "${Python_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
 set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/../include/driver.F90")
+set (PFUNIT_BUILD_SHARED ${BUILD_SHARED})
 include (add_pfunit_sources)
 include (add_pfunit_ctest)
 

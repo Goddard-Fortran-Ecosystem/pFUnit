@@ -42,6 +42,14 @@
 
 include (add_pfunit_sources)
 
+if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
+  set(_PFUNIT_LIBRARIES pfunit_shared)
+  set(_FUNIT_LIBRARIES funit_shared)
+else()
+  set(_PFUNIT_LIBRARIES pfunit)
+  set(_FUNIT_LIBRARIES funit)
+endif()
+
 function (add_pfunit_ctest test_package_name)
   set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
@@ -107,7 +115,7 @@ function (add_pfunit_ctest test_package_name)
   # Define test in CTest system                   #
   #################################################
   if (PF_TEST_MAX_PES)
-    target_link_libraries (${test_package_name} pfunit)
+    target_link_libraries (${test_package_name} ${_PFUNIT_LIBRARIES})
     if (MPIEXEC MATCHES ".*openmpi*")
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
@@ -116,7 +124,7 @@ function (add_pfunit_ctest test_package_name)
       COMMAND mpirun ${MPIEXEC_PREFLAGS} -np ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
-    target_link_libraries (${test_package_name} funit)
+    target_link_libraries (${test_package_name} ${_FUNIT_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMAND ${test_package_name}
