@@ -5,25 +5,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow @before without requiring @after
+
 ### Changed
 
+- Fixed support for building shared libraries
+
+
+
+
+## [4.1.5] - 2019-12-12
+
+### Changed
+- Fixed XML
+- Updated to latest external dependencies (bugfix in fArgParse)
 - Start using new format for ChangeLog.md
 
-## [4.1.4] - December 18, 2019
+## [4.1.4] - 2019-12-19
 
 - Fix bug in exported pFUnit.mk file.    Was not correctly expanding openmp libraries for projects built with Make.
 - Improved pFunit driver to avoid name conflicts with user defined initialize()
 
-## [4.1.3] - December 10, 2019
+## [4.1.3] - 2019-12-10
 
 - Fix bug in add_pfunit_ctest() macro involving path
   Only affects using with Intel MPI
 	
-## [4.1.2] - December 07, 2019
+## [4.1.2] - 2019-12-07
 
 - Fix minor bug related to OpenMP propagation
 	
-## [4.1.1] - November 10, 2019
+## [4.1.1] - 2019-11-10
 
 - Fix for #122 (allow add_pfunit_test() with abs path)
 

@@ -59,7 +59,7 @@ contains
       use pf_SimpleTestCase, only: SimpleTestCase
       use PF_SurrogateTestCase
       use PF_TestResult, only: TestResult, TestResult
-      use PF_XmlPrinter, only: XmlPrinter, newXmlPrinter
+      use PF_XmlPrinter, only: XmlPrinter
 
       type (TestResult) :: aResult
       type (SimpleTestCase), target :: aTest, aTest2
@@ -77,7 +77,7 @@ contains
       open(newunit=xmlUnit, file=fileName, iostat=iostat)
       call assertEqual(iostat, 0, 'Could not open XML file')
 
-      printer = newXmlPrinter(xmlUnit)
+      printer = XmlPrinter(xmlUnit)
 
       call aTest%setSurrogate()
       call aTest%setName('failtest<>"')
@@ -93,7 +93,7 @@ contains
       call aResult%addSuccess(aTest2%getSurrogate())
 
       call aResult%setName(suiteName)
-      call printer%print(aResult)
+      call printer%print(aResult, elapsed_time=1.2)
       close(xmlUnit)
 
       ! Validate the file against the de facto JUnit xsd.

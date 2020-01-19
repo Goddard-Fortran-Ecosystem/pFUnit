@@ -43,33 +43,34 @@ if (MPIEXEC MATCHES ".*openmpi/1.8.8/.*")
   set (MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS} --mca mpi_warn_on_fork 0)
 endif ()
 
-if (MPI_USE_MPIEXEC)
-  #
-  # Add the target for executing the tests by calling on CMake's FindMPI to find the
-  # standard mpiexec.  Not the default because we've found the hardcoded mpirun more portable.
-  # There may be situations, however, where the FindMPI-based target will work better.
-  #
-  add_test(NAME mpi-tests
-    COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 ${MPIEXEC_PREFLAGS} tests/parallel_tests.x
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-  #
-  # Add the target for executing the tests with a hardcoded call to mpirun.
-  #
-  add_test(NAME mpi-tests
-    COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 ./parallel_tests.x
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-  #
+if (NOT DEFINED MPI_USE_MPIEXEC)
+  # See if mpirun exists in the user's environment
+  find_program(MPIRUN_EXECUTABLE mpirun)
+  if (NOT MPIRUN_EXECUTABLE)
+    set(MPI_USE_MPIEXEC_DEFAULT ON)
+  else()
+    set(MPI_USE_MPIEXEC_DEFAULT OFF)
+  endif()
+  set(MPI_USE_MPIEXEC ${MPI_USE_MPIEXEC_DEFAULT} CACHE BOOL "Use mpiexec rather than mpirun for testing")
 endif()
+
+if (NOT MPI_USE_MPIEXEC)
+  set(MPIEXEC mpirun)
+  set(MPIEXEC_NUMPROC_FLAG "-np")
+endif()
+
+add_test(NAME mpi-tests
+  COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 ./parallel_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
 add_dependencies(tests parallel_tests.x)
 
 add_test(NAME new_ptests
-    COMMAND mpirun ${MPIEXEC_PREFLAGS} -np 4 ./new_ptests.x
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
+  COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 ./new_ptests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
 set_property (TEST new_ptests
-    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-    )
+  PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+  )
 
 add_dependencies(tests new_ptests.x)

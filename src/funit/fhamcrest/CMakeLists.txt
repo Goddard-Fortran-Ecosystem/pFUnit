@@ -73,14 +73,9 @@ endforeach ()
 file (APPEND ${overloads_file} "end module pf_ArrayWrapper \n")
 
 add_library(fhamcrest OBJECT ${srcs} ${generated_sources})
-set_target_properties (fhamcrest PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
+# Set Fortran module directories
+set_funit_target_properties (fhamcrest)
+
 target_compile_definitions (fhamcrest PRIVATE -DMAX_ASSERTRANK=${MAX_ASSERT_RANK})
-
-target_include_directories (fhamcrest PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../mod>
-  $<INSTALL_INTERFACE:${dest}/include>
-)
 target_link_libraries(fhamcrest PUBLIC funit-core)
-
-
 

@@ -24,13 +24,14 @@
 !-------------------------------------------------------------------------------
 module PF_ResultPrinter
    use PF_Exception
+   use pf_AbstractPrinter
    use PF_TestListener, only : TestListener
    implicit none
    private
 
    public :: ResultPrinter
 
-   type, extends(TestListener) :: ResultPrinter
+   type, extends(AbstractPrinter) :: ResultPrinter
       integer :: unit
       integer :: column
    contains

@@ -25,6 +25,7 @@ contains
    logical function run(load_tests) result(status)
      use fArgParse
      use pf_StringUtilities
+     use pf_AbstractPrinter
       procedure(LoadTests_interface) :: load_tests
       
       type (TestSuite), target :: suite
@@ -33,6 +34,7 @@ contains
       type (SerialContext) :: c
       type(ArgParser), target :: parser
       logical :: debug
+      logical :: xml
       type (StringUnlimitedMap) :: options
       class(*), pointer :: option
       character(:), allocatable :: pattern
@@ -41,9 +43,10 @@ contains
       character(:), allocatable :: ofile
       character(:), allocatable :: runner_class
       character(:), allocatable :: tap_file
+      class(AbstractPrinter), allocatable :: printer
 
       parser = ArgParser()
-      call parser%add_argument('-d', '--debug', '--verbose', action='store_true', &
+      call parser%add_argument('-d', '-v', '--debug', '--verbose', action='store_true', &
            & help='make output more verbose')
 
       call parser%add_argument('-f', '--filter', action='store', &
@@ -63,6 +66,9 @@ contains
            & dest='tap_file', action='store', default=0, &
            & help='add a TAP listener and send results to file name')
 
+      call parser%add_argument('-x', '--xml', action='store_true', &
+           & help='print results with XmlPrinter')
+
 #ifndef _GNU
       options = parser%parse_args()
 #else
@@ -77,17 +83,27 @@ contains
          unit = OUTPUT_UNIT
       end if
 
+      option => options%at('xml')
+      if (associated(option)) then
+         call cast(option, xml)
+         if (xml) then
+            printer = XmlPrinter(unit)
+         else
+            printer = ResultPrinter(unit)
+         end if
+      end if
+
       call cast(options%at('runner'),runner_class)
       select case (to_lower(runner_class))
 #ifdef Robust
       case ('robust','robustrunner','robust_runner')
-         allocate(runner, source=RobustRunner(unit))
+         allocate(runner, source=RobustRunner(printer))
       case ('remote','remoterunner','remote_runner')
          call cast(options%at('n_skip'), n_skip)
          allocate(runner, source=RemoteRunner(n_skip, unit))
 #endif
       case ('default','testrunner')
-         allocate(runner, source=TestRunner(unit))
+         allocate(runner, source=TestRunner(printer))
       case default
          ERROR STOP 'unsupported runner'
       end select

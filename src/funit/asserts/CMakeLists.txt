@@ -54,13 +54,12 @@ add_library (asserts OBJECT
   AssertBasic.F90
   AssertString.F90
   )
+# Set Fortran module directories
+set_funit_target_properties (asserts)
 
-set_target_properties (asserts PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
 target_sources (asserts PRIVATE ${generated_sources})
 target_link_libraries (asserts funit-core)
 
 target_include_directories (asserts PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../mod>
   $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:${dest}/include>
-)
+  )
