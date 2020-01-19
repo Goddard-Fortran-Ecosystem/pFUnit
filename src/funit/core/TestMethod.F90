@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 module PF_TestMethod
    use PF_TestCase, only: TestCase
+   use PF_KeywordEnforcer
    implicit none
    private
 
@@ -49,22 +50,30 @@ module PF_TestMethod
 
 contains
 
-   function TestMethod_(name, method) result(this)
+  ! The optional dummy arguments have weird names to prevent backward incompatibility
+  ! issues.
+   function TestMethod_(name, method, unused, opt_setUp, opt_TearDown) result(this)
       type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
+      class(KeywordEnforcer), optional, intent(in) :: unused
+      procedure(empty), optional :: opt_setUp
+      procedure(empty), optional :: opt_tearDown
 
       call this%setName(name)
       this%userMethod => method
+      this%userSetUp => opt_setUp
+      this%userTearDown => opt_tearDown
 
    end function TestMethod_
 
+   ! This interface (nonoptional dummies)  should be deprecated. (Delete in 5.0)
    function TestMethod_setUpTearDown(name, method, setUp, tearDown) result(this)
       type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
       procedure(empty) :: setUp
-      procedure(empty) :: tearDown
+      procedure(empty), optional :: tearDown
 
       call this%setName(name)
       this%userMethod => method
@@ -72,6 +81,7 @@ contains
       this%userTearDown => tearDown
 
    end function TestMethod_setUpTearDown
+
 
    recursive subroutine runMethod(this)
       class (TestMethod), intent(inOut) :: this
