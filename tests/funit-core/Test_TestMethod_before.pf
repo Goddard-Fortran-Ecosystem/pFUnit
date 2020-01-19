@@ -1,0 +1,22 @@
+! Test suite with @before, but not @after
+
+module Test_TestMethod_before
+  use FUnit
+
+   @suite(name='TestMethod_before')
+
+  logical :: setup_was_run = .false.
+
+contains
+
+  @before
+  subroutine setup()
+    setup_was_run = .true.
+  end subroutine setup
+
+  @test
+  subroutine test1()
+    @assertTrue(setup_was_run)
+  end subroutine test1
+
+end module Test_TestMethod_Before
