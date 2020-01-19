@@ -47,7 +47,7 @@ contains
     ! assignment in this context.
     allocate(list, source=this%items)
 #else
-    n = size(this%items)
+    n = size(this%items,{rank})
     allocate(items(n))
     do i = 1, n
        items(i) = {get_ith}
