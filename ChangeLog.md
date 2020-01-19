@@ -5,6 +5,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow @before without requiring @after
+
+### Changed
+
+- Fixed support for building shared libraries
+
+
+
+
 ## [4.1.5] - 2019-12-12
 
 ### Changed
