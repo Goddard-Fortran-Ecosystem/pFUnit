@@ -50,35 +50,35 @@ module PF_TestMethod
 
 contains
 
-  ! The optional dummy arguments have weird names to prevent backward incompatibility
-  ! issues.
-   function TestMethod_(name, method, unused, opt_setUp, opt_TearDown) result(this)
+
+   function TestMethod_(name, method, unused, setUp, tearDown) result(this)
       type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
       class(KeywordEnforcer), optional, intent(in) :: unused
-      procedure(empty), optional :: opt_setUp
-      procedure(empty), optional :: opt_tearDown
-
-      call this%setName(name)
-      this%userMethod => method
-      this%userSetUp => opt_setUp
-      this%userTearDown => opt_tearDown
-
-   end function TestMethod_
-
-   ! This interface (nonoptional dummies)  should be deprecated. (Delete in 5.0)
-   function TestMethod_setUpTearDown(name, method, setUp, tearDown) result(this)
-      type (TestMethod) :: this
-      character(len=*), intent(in) :: name
-      procedure(empty) :: method
-      procedure(empty) :: setUp
+      procedure(empty), optional :: setUp
       procedure(empty), optional :: tearDown
 
       call this%setName(name)
       this%userMethod => method
       this%userSetUp => setUp
       this%userTearDown => tearDown
+
+   end function TestMethod_
+
+   ! Modified dummy arguments to avoid overload conflict with above variant.
+   ! This interface is deprecated and should be deleted in 5.0.
+   function TestMethod_setUpTearDown(name, method, setUp_, tearDown_) result(this)
+      type (TestMethod) :: this
+      character(len=*), intent(in) :: name
+      procedure(empty) :: method
+      procedure(empty) :: setUp_
+      procedure(empty) :: tearDown_
+
+      call this%setName(name)
+      this%userMethod => method
+      this%userSetUp => setUp_
+      this%userTearDown => tearDown_
 
    end function TestMethod_setUpTearDown
 
