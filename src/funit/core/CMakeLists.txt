@@ -83,25 +83,15 @@ endif ()
 
 
 add_library (funit-core OBJECT ${srcs})
-set_target_properties (funit-core PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../mod)
+# Set Fortran module directories
+set_funit_target_properties (funit-core)
+# Link libraries and set compile definitions
+funit_target_link_pfunit (funit-core)
+
 if (NOT SKIP_ROBUST)
   add_dependencies (funit-core generate_posix_parameters)
-  target_compile_definitions(funit-core PRIVATE Robust)
+  target_include_directories (funit-core PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  )
 endif ()
-target_link_libraries (funit-core PUBLIC external-pfunit)
-if (OpenMP_Fortran_FOUND)
-  target_link_libraries (funit-core PUBLIC OpenMP::OpenMP_Fortran)
-endif ()
-
-target_include_directories (funit-core PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../mod>
-  $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:${dest}/include>
-)
-
-
-
-
-
 

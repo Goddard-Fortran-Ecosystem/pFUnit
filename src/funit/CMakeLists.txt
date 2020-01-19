@@ -2,52 +2,76 @@
 # subdirs.  Further, do to a limitation in the scope for generated
 # files, we must "include" the CMakeLists.txt in each subdir rather
 # than use add_subdirectory().
-add_library (funit)
+set(FUNIT_MODULE_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/mod)
 
-set_target_properties (funit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod)
-target_include_directories (funit PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/mod>
-  $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:${dest}/include>
-)
+function(set_funit_target_properties funit_target)
+  target_include_directories(${funit_target} PUBLIC
+    $<BUILD_INTERFACE:${FUNIT_MODULE_BUILD_DIR}>
+    $<INSTALL_INTERFACE:${dest}/include>
+  )
+  set_target_properties(${funit_target}
+    PROPERTIES Fortran_MODULE_DIRECTORY ${FUNIT_MODULE_BUILD_DIR})
+endfunction()
 
-target_link_libraries(funit PUBLIC external-pfunit)
+function(funit_target_link_pfunit funit_target)
+  if (NOT SKIP_ROBUST)
+    target_compile_definitions(${funit_target} PRIVATE Robust)
+  endif ()
 
+  if (OpenMP_Fortran_FOUND)
+    target_link_libraries (${funit_target} PUBLIC OpenMP::OpenMP_Fortran)
+  endif ()
 
-if (BUILD_SHARED)
-  get_target_properties (srcs funit SOURCES)
-  add_library (funit_shared SHARED ${srcs})
-  target_link_libraries (funit_shared PUBLIC external-pfunit)
-endif ()
+  target_link_libraries (${funit_target} PUBLIC external-pfunit)
+  target_include_directories(${funit_target} PUBLIC
+    $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
+    )
+endfunction()
 
-
-# Subdirectories declare simple OBJECT directories to capture sources
-# funit is the "real" library.
+# Add dependency directories
+set(funit_deps funit-core asserts)
 add_subdirectory (core)
 add_subdirectory (asserts)
-add_dependencies (funit funit-core)
-add_dependencies (funit asserts)
 if (NOT SKIP_FHAMCREST)
   add_subdirectory (fhamcrest)
-  add_dependencies (funit fhamcrest)
-endif ()
+  list(APPEND funit_deps fhamcrest)
+endif()
 
-if (NOT SKIP_ROBUST)
-  target_compile_definitions(funit PRIVATE Robust)
-endif ()
+# Add object library for 'main' functions
+add_library(funit-main OBJECT
+  FUnit.F90
+  funit_main.F90
+  )
+set_funit_target_properties(funit-main)
+funit_target_link_pfunit(funit-main)
+add_dependencies(funit-main ${funit_deps})
+list(APPEND funit_deps funit-main)
 
-target_sources(funit PRIVATE FUnit.F90 funit_main.F90)
-target_sources(funit PRIVATE $<TARGET_OBJECTS:funit-core>)
-target_sources(funit PRIVATE $<TARGET_OBJECTS:asserts>)
-target_sources(funit PRIVATE $<TARGET_OBJECTS:fhamcrest>)
-if (OpenMP_Fortran_FOUND)
-  target_link_libraries (funit PUBLIC OpenMP::OpenMP_Fortran)
-endif ()
+# Create list of objects to be added to libraries
+foreach (funit_dep ${funit_deps})
+  list(APPEND funit_target_objects "$<TARGET_OBJECTS:${funit_dep}>")
+endforeach()
 
+# Create exported funit libraries
+add_library (funit)
+set(funit_targets funit)
+if (BUILD_SHARED)
+  add_library (funit_shared SHARED)
+  set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
+  list(APPEND funit_targets funit_shared)
+endif()
+
+foreach(funit_target ${funit_targets})
+  set_funit_target_properties(${funit_target})
+  funit_target_link_pfunit(${funit_target})
+
+  # Subdirectories declare simple OBJECT directories to capture sources
+  # funit is the "real" library.
+  add_dependencies(${funit_target} ${funit_deps})
+  target_sources(${funit_target} PRIVATE ${funit_target_objects})
+
+  install (TARGETS ${funit_target} EXPORT PFUNIT DESTINATION ${dest}/lib)
+endforeach ()
 
 install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
 install (EXPORT PFUNIT DESTINATION "${dest}/cmake")
-install (TARGETS funit EXPORT PFUNIT DESTINATION ${dest}/lib)
-if (BUILD_SHARED)
-    install (TARGETS funit_shared EXPORT PFUNIT DESTINATION lib)
-endif()
