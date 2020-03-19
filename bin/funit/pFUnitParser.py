@@ -811,14 +811,14 @@ class Parser():
     def addSimpleTestMethod(self, testMethod):
         args = "'" + testMethod['name'] + "', " + testMethod['name']
         if 'setUp' in testMethod:
-            args += ', ' + testMethod['setUp']
+            args += ', ' + 'setUp='+testMethod['setUp']
         elif 'setUp' in self.userTestCase:
-            args += ', ' + self.userTestCase['setUp']
+            args += ', ' + 'setUp='+self.userTestCase['setUp']
 
         if 'tearDown' in testMethod:
-            args += ', ' + testMethod['tearDown']
+            args += ', ' + 'tearDown='+testMethod['tearDown']
         elif 'tearDown' in self.userTestCase:
-            args += ', ' + self.userTestCase['tearDown']
+            args += ', ' + 'tearDown='+self.userTestCase['tearDown']
 
         if 'type' in testMethod:
             type =  testMethod['type']

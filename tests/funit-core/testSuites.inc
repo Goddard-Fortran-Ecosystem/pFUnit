@@ -18,3 +18,5 @@
    ADD_TEST_SUITE(RepeatPattern_suite)
    ADD_TEST_SUITE(NameFilter_suite)
    ADD_TEST_SUITE(RegularExpression_suite)
+   ADD_TEST_SUITE(TestMethod_before)
+   
