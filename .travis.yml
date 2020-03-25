@@ -1,36 +1,44 @@
-sudo: false
-dist: xenial
+os:
+   - linux
+   - osx
+
+dist: bionic
+
 language: c
 
-matrix:
-   include:
-      - os: linux
-        addons:
-           apt:
-              sources:
-                 - ubuntu-toolchain-r-test
-              packages:
-                 - gfortran-8
-                 - cmake
-                 - libxml2-utils
-        env:
-           - FC='gfortran-8'
-           - MPI_NAME=openmpi-3.1.0
-           - CACHE_NAME=linux-gcc8-openmpi310
-      - os: osx
-        osx_image: xcode9.3
-        addons:
-           homebrew:
-              packages:
-                 - gcc@8
-                 - cmake
-              update: true
-        env:
-           - FC='gfortran-8'
-           - USE_MPI=YES
-           - MPI_NAME=openmpi-3.1.0
-           - CACHE_NAME=osx-gcc8-openmpi310
+arch:
+  - amd64
+  - arm64
+  - ppc64le
 
+addons:
+   apt:
+      sources:
+         - ubuntu-toolchain-r-test
+         - sourceline: deb https://apt.kitware.com/ubuntu/ bionic main
+           key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+      packages:
+         - gfortran-8
+         - gfortran-9
+         - libxml2-utils
+         - cmake
+   homebrew:
+      packages:
+         - gcc@8
+         - gcc@9
+         - cmake
+      update: true
+
+env:
+   global:
+      - MPI_NAME=openmpi
+   jobs:
+      - FC='gfortran-8' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-8' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-8' USE_MPI=NO
+      - FC='gfortran-9' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-9' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-9' USE_MPI=NO
 
 # caching of the whole `local` directory. Can't cache only the one for this
 # `env`, because otherwise the different instances will overwrite the cache.
@@ -43,12 +51,25 @@ cache:
    timeout: 600
 
 before_script:
+   # Install cmake
+   - |
+      if [ $TRAVIS_CPU_ARCH != 'amd64' ] ; then
+         export cmake_ver=3.17.0
+         sh ./tools/travis-install-cmake.sh ${cmake_ver}
+         # set up cmake location
+         export PATH=${HOME}/local/cmake/bin:${PATH}
+         export LIBRARY_PATH=${HOME}/local/cmake/lib:${LIBRARY_PATH}
+         export LD_LIBRARY_PATH=${HOME}/local/cmake/lib:${LD_LIBRARY_PATH}
+         # print out version information
+         sudo apt purge --autoremove cmake
+         cmake --version
+      fi
    # install MPI
    - |
       if [ $USE_MPI == YES ] ; then
          mkdir -p ${HOME}/local
          ls -r ${HOME}/local
-         sh ./tools/travis-install-mpi.sh ${MPI_NAME}
+         sh ./tools/travis-install-mpi.sh ${MPI_NAME} ${MPI_VER}
          # set up MPI location
          export PATH=${PATH}:${HOME}/local/${MPI_NAME}/bin
          export LIBRARY_PATH=${LIBRARY_PATH}:${HOME}/local/${MPI_NAME}/lib
@@ -59,22 +80,19 @@ before_script:
       fi
    # Now build pFUnit
    - cd ${TRAVIS_BUILD_DIR}
-   - mkdir build
-   - cd build
-   - cmake --version
+   - mkdir -p build && cd build
    - cmake .. -DCMAKE_Fortran_COMPILER=${FC} -DCMAKE_INSTALL_PREFIX=${HOME}/Software/pFUnit
 
 script:
    # Build
-   - make -j2 VERBOSE=1
+   - make -j$(nproc) VERBOSE=1
    # Make tests
-   - make -j2 tests
+   - make -j$(nproc) tests
    # Run tests. If the first fails, run with -VV to try and diagnose errors
-   - ctest || ctest -VV
+   - ctest -j $(nproc) || ctest -VV
 
 notifications:
    email:
       recipients:
          - matthew.thompson@nasa.gov
          - tom.clune@nasa.gov
-         
