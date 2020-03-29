@@ -26,7 +26,9 @@ program main
 
    procedure(), pointer :: extra_initialize
    procedure(), pointer :: extra_finalize
-   
+
+   external :: funit_main
+
 #ifdef PFUNIT_EXTRA_INITIALIZE
 #  ifndef PFUNIT_EXTRA_USE
    external :: PFUNIT_EXTRA_INITIALIZE
