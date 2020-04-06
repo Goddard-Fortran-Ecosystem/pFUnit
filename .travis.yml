@@ -20,6 +20,7 @@ addons:
       packages:
          - gfortran-8
          - gfortran-9
+         - libgfortran5-dbg
          - libxml2-utils
          - cmake
    homebrew:
@@ -39,6 +40,11 @@ env:
       - FC='gfortran-9' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-9' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-9' USE_MPI=NO
+
+# Allow failures on arm64
+jobs:
+   allow_failures:
+      - arch: arm64
 
 # caching of the whole `local` directory. Can't cache only the one for this
 # `env`, because otherwise the different instances will overwrite the cache.
@@ -88,8 +94,8 @@ script:
    - make -j$(nproc) VERBOSE=1
    # Make tests
    - make -j$(nproc) tests
-   # Run tests. If the first fails, run with -VV to try and diagnose errors
-   - ctest -j $(nproc) || ctest -VV
+   # Run tests
+   - ctest -j $(nproc) --output-on-failure
 
 notifications:
    email:
