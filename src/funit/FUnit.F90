@@ -11,6 +11,7 @@ module FUnit
 
    public :: initialize
    public :: run
+   public :: generic_run
    public :: finalize
    public :: LoadTests_interface
    public :: stub
@@ -25,15 +26,24 @@ contains
 
 
    logical function run(load_tests) result(status)
-     use fArgParse
-     use pf_StringUtilities
-     use pf_AbstractPrinter
       procedure(LoadTests_interface) :: load_tests
       
+      type (SerialContext) :: c
+
+      status = generic_run(load_tests, c)
+
+   end function run
+
+   logical function generic_run(load_tests, context) result(status)
+      use fArgParse
+      use pf_StringUtilities
+      use pf_AbstractPrinter
+      procedure(LoadTests_interface) :: load_tests
+      class(ParallelContext), intent(in) :: context
+
       type (TestSuite), target :: suite
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
-      type (SerialContext) :: c
       type(ArgParser), target :: parser
       logical :: debug
       logical :: xml
@@ -47,35 +57,7 @@ contains
       character(:), allocatable :: tap_file
       class(AbstractPrinter), allocatable :: printer
 
-      parser = ArgParser()
-      call parser%add_argument('-d', '-v', '--debug', '--verbose', action='store_true', &
-           & help='make output more verbose')
-
-      call parser%add_argument('-f', '--filter', action='store', &
-           & help='only run tests that match pattern')
-      
-      call parser%add_argument('-o', '--output', action='store', &
-           & help='only run tests that match pattern')
-
-      call parser%add_argument('-r', '--runner', action='store', default='TestRunner', &
-           & help='use non-default runner run tests')
-
-      call parser%add_argument('-s', '--skip', type='integer', &
-           & dest='n_skip', action='store', default=0, &
-           & help='skip the first n_skip tests; only used with RemoteRunner')
-
-      call parser%add_argument('-t', '--tap', type='string', &
-           & dest='tap_file', action='store', default=0, &
-           & help='add a TAP listener and send results to file name')
-
-      call parser%add_argument('-x', '--xml', action='store_true', &
-           & help='print results with XmlPrinter')
-
-#ifndef _GNU
-      options = parser%parse_args()
-#else
-      call parser%parse_args_kludge(option_values=options)
-#endif
+      call set_command_line_options()
 
       if (associated(options%at('output'))) then
          call cast(options%at('output'), ofile)
@@ -133,11 +115,45 @@ contains
          suite = suite%filter(NameFilter(pattern))
       end if
       
-      r = runner%run(suite, c)
+      r = runner%run(suite, context)
       status = r%wasSuccessful()
 
-   end function run
+   contains
 
+
+      subroutine set_command_line_options()
+         parser = ArgParser()
+         call parser%add_argument('-d', '-v', '--debug', '--verbose', action='store_true', &
+              & help='make output more verbose')
+
+         call parser%add_argument('-f', '--filter', action='store', &
+              & help='only run tests that match pattern')
+
+         call parser%add_argument('-o', '--output', action='store', &
+              & help='only run tests that match pattern')
+
+         call parser%add_argument('-r', '--runner', action='store', default='TestRunner', &
+              & help='use non-default runner run tests')
+
+         call parser%add_argument('-s', '--skip', type='integer', &
+              & dest='n_skip', action='store', default=0, &
+              & help='skip the first n_skip tests; only used with RemoteRunner')
+
+         call parser%add_argument('-t', '--tap', type='string', &
+              & dest='tap_file', action='store', default=0, &
+              & help='add a TAP listener and send results to file name')
+
+         call parser%add_argument('-x', '--xml', action='store_true', &
+              & help='print results with XmlPrinter')
+
+#ifndef _GNU
+         options = parser%parse_args()
+#else
+         call parser%parse_args_kludge(option_values=options)
+#endif
+      end subroutine set_command_line_options
+   end function generic_run
+   
 
    subroutine finalize(extra, successful)
 #ifdef NAG

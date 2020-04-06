@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
   - Corrected problem with cmake -DSKIP_FHAMCREST
+  - Command line arguments not working with MPI
+
 
 ## [4.1.5] - 2019-12-12
 
