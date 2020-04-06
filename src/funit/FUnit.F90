@@ -2,7 +2,9 @@ module FUnit
    ! use these, but do not re-export:
    use FUnit_Core
    use PF_Assert
+#ifndef SKIP_FHAMCREST
    use fHamcrest
+#endif
    use iso_fortran_env, only: OUTPUT_UNIT
    implicit none
    ! add these
