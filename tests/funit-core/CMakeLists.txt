@@ -24,6 +24,7 @@ set(pf_tests
   Test_DisableTest.pf
   Test_AssertString.pf
   Test_Assert_Integer.pf
+  Test_AssertGreaterThan_Integer.pf
   Test_AssertEqual_Real.pf
   Test_AssertNotEqual_Real.pf
   Test_AssertRelativelyEqual_Real.pf
