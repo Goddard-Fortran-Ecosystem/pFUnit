@@ -39,6 +39,7 @@ The Message Passing Interface (MPI)
 OPENMP
 GNU Make
 Python 2.7+
+m4 (must be in default path)
 
 A CMake build process is also available.
 

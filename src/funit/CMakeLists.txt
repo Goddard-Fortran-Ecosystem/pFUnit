@@ -42,6 +42,10 @@ add_library(funit-main OBJECT
   FUnit.F90
   funit_main.F90
   )
+if (SKIP_FHAMCREST)
+  target_compile_definitions(funit-main PRIVATE -DSKIP_FHAMCREST)
+endif ()
+
 set_funit_target_properties(funit-main)
 funit_target_link_pfunit(funit-main)
 add_dependencies(funit-main ${funit_deps})
