@@ -64,8 +64,8 @@ module pFUnit
    ! Rename overlapping entities to avoid name conflicts
    ! Cannot use ONLY, because the list will change over time.
    use FUnit, funit_initialize => initialize
-   use FUnit, funit_finalize => finalize
    use FUnit, funit_run => run
+   use FUnit, funit_finalize => finalize
    use FUnit, funit_context => get_context
    use FUnit, funit_stub => stub
    use pFUnit_private
@@ -102,12 +102,16 @@ contains
       type(TestResult) :: r
       class(ParallelContext), allocatable :: c
 
-!!$      options = parse()
-      suite = load_tests()
-      allocate(runner, source=TestRunner(ResultPrinter(OUTPUT_UNIT)))
       c = get_context()
-      r = runner%run(suite, c)
-      status = r%wasSuccessful()
+      status = generic_run(load_tests, c)
+
+!!!  !!$      options = parse()
+
+!!$      suite = load_tests()
+!!$      allocate(runner, source=TestRunner(ResultPrinter(OUTPUT_UNIT)))
+!!$      c = get_context()
+!!$      r = runner%run(suite, c)
+!!$      status = r%wasSuccessful()
 
    end function run
 
