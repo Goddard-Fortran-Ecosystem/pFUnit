@@ -8,9 +8,17 @@ contains
 
   @test
   subroutine test_every_basic()
-    call assert_that([1,1], every_item(is(equal_to(1))))
+    
   end subroutine test_every_basic
 
+
+  ! Derived from problem in AMR snowfake project
+  @test
+  subroutine test_every_3d()
+    real :: a(2,2,2)
+    a = 1.0
+    call assert_that(a, every_item(is(equal_to(1.0))))
+  end subroutine test_every_3d
 
   @test
   subroutine test_every_fail()

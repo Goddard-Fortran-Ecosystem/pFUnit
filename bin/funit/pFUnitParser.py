@@ -3,6 +3,8 @@
 from __future__ import print_function
 
 from os.path import *
+import sysconfig
+import posixpath
 import re
 # from parseBrackets import parseBrackets
 from .parseDirectiveArgs import parseDirectiveArguments
@@ -22,7 +24,10 @@ assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
                    'exceptionraised': 0, 'sameshape': 2, 'that': 2, '_that': 2}
 
 def cppSetLineAndFile(line, file):
-    return "#line " + str(line) + ' "' + file + '"\n'
+    if sysconfig.get_platform() == 'mingw':
+        return "#line " + str(line) + ' "' + file.replace(sep,posixpath.sep) + '"\n'
+    else:
+        return "#line " + str(line) + ' "' + file + '"\n'
 
 def getSubroutineName(line):
     try:
@@ -806,14 +811,14 @@ class Parser():
     def addSimpleTestMethod(self, testMethod):
         args = "'" + testMethod['name'] + "', " + testMethod['name']
         if 'setUp' in testMethod:
-            args += ', ' + testMethod['setUp']
+            args += ', ' + 'setUp='+testMethod['setUp']
         elif 'setUp' in self.userTestCase:
-            args += ', ' + self.userTestCase['setUp']
+            args += ', ' + 'setUp='+self.userTestCase['setUp']
 
         if 'tearDown' in testMethod:
-            args += ', ' + testMethod['tearDown']
+            args += ', ' + 'tearDown='+testMethod['tearDown']
         elif 'tearDown' in self.userTestCase:
-            args += ', ' + self.userTestCase['tearDown']
+            args += ', ' + 'tearDown='+self.userTestCase['tearDown']
 
         if 'type' in testMethod:
             type =  testMethod['type']

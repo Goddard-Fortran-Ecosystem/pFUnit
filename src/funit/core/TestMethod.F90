@@ -22,6 +22,7 @@
 !-------------------------------------------------------------------------------
 module PF_TestMethod
    use PF_TestCase, only: TestCase
+   use PF_KeywordEnforcer
    implicit none
    private
 
@@ -49,29 +50,38 @@ module PF_TestMethod
 
 contains
 
-   function TestMethod_(name, method) result(this)
+
+   function TestMethod_(name, method, unused, setUp, tearDown) result(this)
       type (TestMethod) :: this
       character(len=*), intent(in) :: name
       procedure(empty) :: method
-
-      call this%setName(name)
-      this%userMethod => method
-
-   end function TestMethod_
-
-   function TestMethod_setUpTearDown(name, method, setUp, tearDown) result(this)
-      type (TestMethod) :: this
-      character(len=*), intent(in) :: name
-      procedure(empty) :: method
-      procedure(empty) :: setUp
-      procedure(empty) :: tearDown
+      class(KeywordEnforcer), optional, intent(in) :: unused
+      procedure(empty), optional :: setUp
+      procedure(empty), optional :: tearDown
 
       call this%setName(name)
       this%userMethod => method
       this%userSetUp => setUp
       this%userTearDown => tearDown
 
+   end function TestMethod_
+
+   ! Modified dummy arguments to avoid overload conflict with above variant.
+   ! This interface is deprecated and should be deleted in 5.0.
+   function TestMethod_setUpTearDown(name, method, setUp_, tearDown_) result(this)
+      type (TestMethod) :: this
+      character(len=*), intent(in) :: name
+      procedure(empty) :: method
+      procedure(empty) :: setUp_
+      procedure(empty) :: tearDown_
+
+      call this%setName(name)
+      this%userMethod => method
+      this%userSetUp => setUp_
+      this%userTearDown => tearDown_
+
    end function TestMethod_setUpTearDown
+
 
    recursive subroutine runMethod(this)
       class (TestMethod), intent(inOut) :: this
