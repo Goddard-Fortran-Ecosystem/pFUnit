@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.1
+  VERSION 4.1.7
   LANGUAGES Fortran C)
 
 enable_testing()

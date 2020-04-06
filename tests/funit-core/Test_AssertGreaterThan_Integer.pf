@@ -1,0 +1,12 @@
+module Test_AssertGreaterThan_Integer
+   use funit
+contains
+
+   ! From issue #197
+   @test
+   subroutine test_assert_greater_than()
+
+      @assertGreaterThan(99, 24, message="greater-int")
+   end subroutine test_assert_greater_than
+
+end module Test_AssertGreaterThan_Integer

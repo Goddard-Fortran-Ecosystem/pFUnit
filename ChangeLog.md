@@ -5,15 +5,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+## [4.1.7] - 2020-03-06
 
+### Added
 - Allow @before without requiring @after
 
 ### Changed
-
 - Fixed support for building shared libraries
+- Updated to latest submodules
 
 
+## [4.1.6] - 2020-03-05
+
+### Fixed
+  - Corrected problem with cmake -DSKIP_FHAMCREST
+  - Command line arguments not working with MPI
 
 
 ## [4.1.5] - 2019-12-12
