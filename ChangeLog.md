@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+  - Corrected problem with cmake -DSKIP_FHAMCREST
+
 ## [4.1.5] - 2019-12-12
 
 ### Changed
