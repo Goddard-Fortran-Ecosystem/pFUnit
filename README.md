@@ -21,8 +21,9 @@ TASC.
 4. [Building and installing pFUnit](#building-and-installing-pfunit)
 6. [Using pFUnit in your application](#using-pfunit)
 5. [Command line options](#command-line-options)
-6. [Acknowledgments](#acknowledgments)
-7. [Revisions](#revisions-to-this-document)
+6. [Incompatibilities with pFUnit 3](#incompatibilities-with-pfunit-3)
+7. [Acknowledgments](#acknowledgments)
+8. [Revisions](#revisions-to-this-document)
 
 ## Prerequisites
 
@@ -279,6 +280,13 @@ the pFUnit preprocessor.
 For example to run all tests whose names start with "test_ABC":
 
     $ ./tests.x -f  test_ABC
+
+## Incompatibilities with pFUnit 3
+
+**Note: this list is known to be incomplete - a work in progress**
+
+* Many/most optional arguments now require keyword association.  E.g. the optional "message" argument for old style asserts.
+
 
 ## Acknowledgments
 
