@@ -42,7 +42,7 @@ comprehensive, and earlier compilers may work for some user code.
   - GFortran v8.3, v9.2
 - CMake v3.12+
 - Python v2.7* or v3.x
-- GNU make
+- make (or ninja or ...)
 - Optional
   - MPI (tested with OpenMPI and iMPI)
   - OpenMP
