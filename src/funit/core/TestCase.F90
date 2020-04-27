@@ -39,7 +39,11 @@ module PF_TestCase
       procedure :: runBare => runBare_surrogate
       procedure :: setName => setName_surrogate
       procedure :: getName => getName_surrogate
-      procedure :: is_disabled
+#ifdef __PGI__
+      procedure :: is_disabled => is_disabled_concrete
+#else
+      procedure :: is_disabled => is_disabled
+#endif
    end type ConcreteSurrogate
    
    type, abstract, extends(Test) :: TestCase
@@ -187,11 +191,20 @@ contains
       call throw('TestCase::runMethod() must be overridden.')
    end subroutine runMethod
 
+#ifdef __PGI__
+   logical function is_disabled_concrete(this)
+      class (ConcreteSurrogate), intent(in) :: this
+
+      is_disabled_concrete = this%tCase%is_disabled()
+
+   end function is_disabled_concrete
+#else
    logical function is_disabled(this)
       class (ConcreteSurrogate), intent(in) :: this
 
-      is_disabled = this%tCase%is_disabled()
+      is_disabled_concrete = this%tCase%is_disabled()
 
    end function is_disabled
+#endif
 
 end module PF_TestCase

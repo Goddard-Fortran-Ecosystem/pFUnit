@@ -43,7 +43,12 @@ contains
     type(pollfd) :: fds(1)
     integer(kind=C_INT) :: timeout
 
+#ifdef __PGI__
+    fd = posix_open(filename // C_NULL_CHAR, mode_t(ior(O_RDONLY, O_NONBLOCK)))
+#else
     fd = open(filename // C_NULL_CHAR, mode_t(ior(O_RDONLY, O_NONBLOCK)))
+#endif
+
     if (fd == -1) then
        rc = FAILED_TO_OPEN
        return
@@ -149,7 +154,11 @@ contains
     class(File), intent(inout) :: this
     integer(kind=C_INT), intent(out) :: rc
 
+#ifdef __PGI__
+    rc = posix_close(this%file_descriptor)
+#else
     rc = close(this%file_descriptor)
+#endif
   end subroutine file_close
 
 end module pf_File

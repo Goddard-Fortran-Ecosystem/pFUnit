@@ -78,6 +78,7 @@ contains
 
       if(a_test%is_disabled()) then
          call proxy%insert(Disable%type_name(),Disable)
+!!$         call proxy%StringTestAnnotationMap%insert(Disable%type_name(),Disable)
       end if
       
    end function newRemoteProxyTestCase

@@ -10,8 +10,13 @@ module pf_Posix
 
   ! Posix interfaces
   public :: mkfifo
+#ifdef __PGI__
+  public :: posix_open
+  public :: posix_close
+#else
   public :: open
   public :: close
+#endif
   public :: remove
   public :: poll
   public :: read
@@ -50,6 +55,21 @@ module pf_Posix
        type(mode_t), value, intent(in) :: mode
      end function mkfifo
      
+#ifdef __PGI__
+     function posix_open(pathname, mode) result(fd) bind(c,name="open")
+       use, intrinsic :: iso_c_binding
+       import mode_t
+       integer(kind=C_INT) :: fd
+       character(len=1) :: pathname(*)
+       type(mode_t), value :: mode
+     end function posix_open
+     
+     function posix_close(fd) result(rc) bind(c,name="close")
+       use, intrinsic :: iso_c_binding
+       integer(kind=C_INT) :: rc
+       integer(kind=C_INT), value :: fd
+     end function posix_close
+#else
      function open(pathname, mode) result(fd) bind(c,name="open")
        use, intrinsic :: iso_c_binding
        import mode_t
@@ -57,12 +77,13 @@ module pf_Posix
        character(len=1) :: pathname(*)
        type(mode_t), value :: mode
      end function open
-
+     
      function close(fd) result(rc) bind(c,name="close")
        use, intrinsic :: iso_c_binding
        integer(kind=C_INT) :: rc
        integer(kind=C_INT), value :: fd
      end function close
+#endif
 
      function read(fd, buf, count) result(rc) bind(c, name="read")
        use, intrinsic :: iso_c_binding
