@@ -109,6 +109,8 @@ contains
     character(16) :: buffer
     character(:), allocatable :: item_type
 
+    integer, parameter :: DP = kind(1.d0)
+
      select type (actual)
      type is (character(*))
         write(buffer,'(i0)') len(actual)
@@ -127,7 +129,7 @@ contains
 #endif
      type is (real)
         type_name = "real"
-     type is (real(kind(1.0d0)))
+     type is (real(kind=DP))
         type_name = "double precision"
 #if (defined(_ISO_REAL32) && (_ISO_REAL32 != _REAL_DEFAULT_KIND) && (_ISO_REAL32 != _DOUBLE_DEFAULT_KIND))
      type is (real(kind=REAL32))
@@ -143,7 +145,7 @@ contains
 #endif
      type is (complex)
         type_name = "complex"
-     type is (complex(kind=kind(1.d0)))
+     type is (complex(kind=DP))
         type_name = "double complex"
 #if (defined(_ISO_REAL32) && (_ISO_REAL32 != _REAL_DEFAULT_KIND) && (_ISO_REAL32 != _DOUBLE_DEFAULT_KIND))
      type is (complex(kind=REAL32))

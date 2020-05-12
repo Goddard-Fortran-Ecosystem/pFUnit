@@ -72,6 +72,8 @@ contains
      class (BaseDescription), intent(inout) :: this
      class(*), intent(in) :: value
 
+     integer, parameter :: DP = kind(1.d0)
+
      select type (value)
      type is (character(*))
         call this%append('"'//value// '"')
@@ -97,7 +99,7 @@ contains
         call this%append('<')
         call this%append(description_of(value))
         call this%append('>')
-     type is (real(kind(1.0d0)))
+     type is (real(kind=DP))
         call this%append('<')
         call this%append(description_of(value))
         call this%append('D>')
@@ -123,7 +125,7 @@ contains
         call this%append('<')
         call this%append(description_of(value))
         call this%append('>')
-     type is (complex(kind=kind(1.d0)))
+     type is (complex(kind=DP))
         call this%append('<')
         call this%append(description_of(value))
         call this%append('D>')
