@@ -5,7 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.8] - 2020-05-12
 
+- Compiler workarounds
+  - Changes in gFTL maps to allow IBM XLF to compile
+  - Workaround for GFortran regression in 10.1 release
+- Submodule updates
+	
 ## [4.1.7] - 2020-03-06
 
 ### Added
