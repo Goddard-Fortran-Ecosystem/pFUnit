@@ -26,6 +26,7 @@ module pf_StringTestAnnotationMap
 
 #define _map StringTestAnnotationMap
 #define _iterator StringTestAnnotationMapIterator
+#define _pair StringTestAnnotationPair
 #include "types/key_deferredLengthString.inc"
 #define _value_allocatable
 #define _value class(TestAnnotation)
