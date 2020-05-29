@@ -63,7 +63,7 @@ add_test(NAME mpi-tests
   COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 ./parallel_tests.x
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
-add_dependencies(tests parallel_tests.x)
+add_dependencies(build-tests parallel_tests.x)
 
 add_test(NAME new_ptests
   COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 ./new_ptests.x
@@ -72,5 +72,4 @@ add_test(NAME new_ptests
 set_property (TEST new_ptests
   PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
   )
-
-add_dependencies(tests new_ptests.x)
+add_dependencies(build-tests new_ptests.x)

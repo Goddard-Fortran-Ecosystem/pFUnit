@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.8
+  VERSION 4.1.9
   LANGUAGES Fortran C)
 
 enable_testing()
@@ -105,7 +105,6 @@ find_package(Python)
 set(CMAKE_SHARED_LIBRARY_LINK_Fortran_FLAGS "")
 set(CMAKE_SKIP_RPATH ON)
 
-add_custom_target(tests COMMAND ${CMAKE_CTEST_COMMAND})
 set (dest "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
 
 # Code to silence warnings from RANLIB on OSX
@@ -115,11 +114,27 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
 
+add_custom_target(build-tests)
+
+add_custom_target(tests
+  COMMAND ${CMAKE_CTEST_COMMAND}
+  EXCLUDE_FROM_ALL)
+add_dependencies(tests build-tests)
+
+
 add_subdirectory (extern)
 add_subdirectory (src)
-add_subdirectory (tests)
 add_subdirectory (include)
 add_subdirectory (bin)
+add_subdirectory (tests EXCLUDE_FROM_ALL)
+
+# The following forces tests to be built when using "make ctest" even if some targets
+# are EXCLUDE_FROM_ALL
+# From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
+build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
+file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
+
 
 
 

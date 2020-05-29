@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+	
+## [4.1.9] - 2020-05-29
+
+### Fixed
+- Changed internal cmake dependencies so that "make test" will now build
+  tests.   The tests and test executables are intentionally EXCLUDE_FROM_OLL
+  which interferes with some canonical ways of driving cmake projects.
+  "make tests" will continue to work as before.
+  
 
 ## [4.1.8] - 2020-05-12
 

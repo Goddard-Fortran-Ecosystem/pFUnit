@@ -76,7 +76,7 @@ if (OPENMP_FORTRAN_FOUND)
 endif ()
 
 
-add_library (funit_tests EXCLUDE_FROM_ALL STATIC ${test_srcs})
+add_library (funit_tests STATIC ${test_srcs})
 target_link_libraries(funit_tests other_shared)
 
 #add_pfunit_sources (new_test_srcs ${pf_tests})
@@ -94,10 +94,17 @@ if (NOT SKIP_ROBUST)
   target_compile_definitions(funit_tests.x PRIVATE Robust)
 endif ()
 
+add_test(old_tests
+  COMMAND ./funit_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+add_dependencies(build-tests funit_tests.x)
+
 if (NOT SKIP_ROBUST)
   set (REMOTE_EXE remote.x)
   add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
   target_link_libraries(${REMOTE_EXE} funit funit_tests)
+  add_dependencies(funit_tests.x ${REMOTE_EXE})
   add_dependencies(tests ${REMOTE_EXE})
 endif ()
 
@@ -107,22 +114,8 @@ add_pfunit_ctest (new_tests.x
   LINK_LIBRARIES other_shared
   REGISTRY testSuites.inc
 )
-#add_test(NAME new_tests
-#  COMMAND new_tests.x
-#  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-#  )
 
-add_dependencies(tests new_tests.x)
-#set_property (TEST new_tests.x
-#    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-#    )
-
-add_test(NAME old_tests
-  COMMAND funit_tests.x
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
-add_dependencies(tests funit_tests.x)
-
+add_dependencies(build-tests new_tests.x)
 set_property (TEST old_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
