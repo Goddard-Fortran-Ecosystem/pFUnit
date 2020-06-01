@@ -95,7 +95,7 @@ if (NOT SKIP_ROBUST)
 endif ()
 
 add_test(old_tests
-  COMMAND ./funit_tests.x
+  COMMAND funit_tests.x
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 add_dependencies(build-tests funit_tests.x)
