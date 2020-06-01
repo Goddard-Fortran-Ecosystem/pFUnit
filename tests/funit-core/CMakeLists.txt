@@ -94,7 +94,7 @@ if (NOT SKIP_ROBUST)
   target_compile_definitions(funit_tests.x PRIVATE Robust)
 endif ()
 
-add_test(old_tests
+add_test(NAME old_tests
   COMMAND funit_tests.x
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
