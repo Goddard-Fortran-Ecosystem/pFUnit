@@ -1,0 +1,38 @@
+name: CI Tests
+
+on: [pull-request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    env:
+      LANGUAGE: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LC_TYPE: en_US.UTF-8 
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      OMPI_MCA_btl_vader_single_copy_mechanism: none
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    name: Test on ${{ matrix.os }}
+    steps:
+    - name: Install Open MPI
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt install -y openmpi-bin libopenmpi-dev
+      - if: matrix.os == 'macos-latest'
+        run: |
+          brew install openmpi
+    - name: Versions
+      run: |
+        gfortran --version
+        mpirun --version
+    - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+
