@@ -34,10 +34,10 @@ jobs:
           echo ::set-env name=mpi-compiler::${FC}
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v2
+        uses: actions/cache@v1
         with:
           path: ~/local/openmpi
-          key: ${{ runner.os }}-mpi-$${ env.mpi-compiler }}
+          key: mpi-${{runner.os}}-$${matrix.compiler}}
       #- name: Build MPI
         #if: steps.cache-mpi.outputs.cache-hit != 'true'
         #run: |
