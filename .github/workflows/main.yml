@@ -29,15 +29,16 @@ jobs:
         name: Install Brew Packages
         run: |
           brew install libevent
-      - name: set env compiler
+      - name: Hash Compiler
         run: |
-          echo ::set-env name=mpi-compiler::${FC}
+          echo "::set-env name=COMPHASH::$(echo ${FC} | md5sum | cut -f1 -d' ')"
+          echo $COMPHASH
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: mpi-${{runner.os}}-$${matrix.compiler}}
+          key: mpi-${{runner.os}}-${{matrix.compiler}}
       #- name: Build MPI
         #if: steps.cache-mpi.outputs.cache-hit != 'true'
         #run: |
