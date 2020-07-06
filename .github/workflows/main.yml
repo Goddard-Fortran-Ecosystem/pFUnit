@@ -48,8 +48,8 @@ jobs:
       - name: Set MPI Environment
         run: |
           echo "::add-path::${HOME}/local/openmpi/bin"
-          echo "::set-env name=LD_LIBRARY_PATH::${LD_LIBRARY_PATH}:${HOME}/local/openmpi/lib"
-          echo "::set-env name=DYLD_LIBRARY_PATH::${DYLD_LIBRARY_PATH}:${HOME}/local/openmpi/lib"
+          echo "::set-env name=LD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
+          echo "::set-env name=DYLD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
       - name: Echo environment 2
         run: |
           echo ${PATH}
@@ -58,7 +58,7 @@ jobs:
       - name: Versions
         run: |
           ${FC} --version
-          #mpirun --version
+          mpirun --version
       #- name: Build pFUnit
         #run: | 
           #mkdir -p build
