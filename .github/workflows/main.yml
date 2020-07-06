@@ -19,11 +19,12 @@ jobs:
 
     name: Test on ${{ matrix.os }}
     steps:
-      - name: Install Open MPI
-        if: matrix.os == 'ubuntu-latest'
+      - if: matrix.os == 'ubuntu-latest'
+        name: Install Open MPI with apt
         run: |
           sudo apt install -y openmpi-bin libopenmpi-dev
-        if: matrix.os == 'macos-latest'
+      - if: matrix.os == 'macos-latest'
+        name: Install Open MPI with brew
         run: |
           brew install openmpi
       - name: Versions
