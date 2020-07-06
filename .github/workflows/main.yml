@@ -44,6 +44,9 @@ jobs:
           export PATH=${PATH}:${HOME}/local/openmpi/bin
           export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${HOME}/local/openmpi/lib
           export DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH}:${HOME}/local/openmpi/lib
+      - name: Echo environment
+        run: |
+          printenv
       - name: Versions
         run: |
           ${FC} --version
