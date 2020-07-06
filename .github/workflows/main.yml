@@ -35,21 +35,11 @@ jobs:
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
           sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
-      - name: Echo environment 1
-        run: |
-          echo "PATH: ${PATH}"
-          echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
-          echo "DYLD_LIBRARY_PATH: ${DYLD_LIBRARY_PATH}"
       - name: Set MPI Environment
         run: |
           echo "::add-path::${HOME}/local/openmpi/bin"
           echo "::set-env name=LD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
           echo "::set-env name=DYLD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
-      - name: Echo environment 2
-        run: |
-          echo "PATH: ${PATH}"
-          echo "LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}"
-          echo "DYLD_LIBRARY_PATH: ${DYLD_LIBRARY_PATH}"
       - name: Versions
         run: |
           ${FC} --version
