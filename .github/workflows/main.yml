@@ -36,7 +36,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Build pFUnit
-        run:
+        run: | 
           mkdir -p build
           cd build
           cmake .. -DCMAKE_Fortran_COMPILER=gfortran-9 
