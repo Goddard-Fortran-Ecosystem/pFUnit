@@ -15,7 +15,8 @@ jobs:
       OMPI_MCA_btl_vader_single_copy_mechanism: none
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [macos-latest]
+          #os: [ubuntu-latest, macos-latest]
 
     name: Test on ${{ matrix.os }}
     steps:
