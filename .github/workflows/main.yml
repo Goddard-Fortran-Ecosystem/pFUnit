@@ -7,10 +7,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        #os: [ubuntu-latest]
-        os: [macos-latest]
-          #os: [ubuntu-latest, macos-latest]
-        compiler: [gfortran-9]
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15]
+        compiler: [gfortran-8, gfortran-9]
     env:
       FC: ${{ matrix.compiler }}
       LANGUAGE: en_US.UTF-8
@@ -32,7 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: mpi-${{ runner.os }}-${{ matrix.compiler }}
+          key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
@@ -57,16 +55,16 @@ jobs:
           ${FC} --version
           mpirun --version
           mpifort --show
-      - name: Build pFUnit
-        run: | 
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_Fortran_COMPILER=${FC}
-      - name: Run Tests
-        run: |
-          cd build
-          make -j 
-          make -j tests
-          ctest -j --output-on-failure
+      #- name: Build pFUnit
+        #run: | 
+          #mkdir -p build
+          #cd build
+          #cmake .. -DCMAKE_Fortran_COMPILER=${FC}
+      #- name: Run Tests
+        #run: |
+          #cd build
+          #make -j 
+          #make -j tests
+          #ctest -j --output-on-failure
 
 
