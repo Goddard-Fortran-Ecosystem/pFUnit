@@ -29,7 +29,7 @@ jobs:
           brew install openmpi
       - name: Versions
         run: |
-          gfortran --version
+          gfortran-9 --version
           mpirun --version
       - name: Checkout
         uses: actions/checkout@v2
