@@ -19,20 +19,20 @@ jobs:
 
     name: Test on ${{ matrix.os }}
     steps:
-    - name: Install Open MPI
-      - if: matrix.os == 'ubuntu-latest'
+      - name: Install Open MPI
+        - if: matrix.os == 'ubuntu-latest'
+          run: |
+            sudo apt install -y openmpi-bin libopenmpi-dev
+        - if: matrix.os == 'macos-latest'
+          run: |
+            brew install openmpi
+      - name: Versions
         run: |
-          sudo apt install -y openmpi-bin libopenmpi-dev
-      - if: matrix.os == 'macos-latest'
-        run: |
-          brew install openmpi
-    - name: Versions
-      run: |
-        gfortran --version
-        mpirun --version
-    - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
+          gfortran --version
+          mpirun --version
+      - name: Checkout
+          uses: actions/checkout@v2
+          with:
+            fetch-depth: 1
 
 
