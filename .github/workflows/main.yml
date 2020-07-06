@@ -18,8 +18,8 @@ jobs:
         os: [macos-latest]
         compiler: [gfortran-9]
           #os: [ubuntu-latest, macos-latest]
-      env:
-        FC: ${{ matrix.compiler }}
+    env:
+      FC: ${{ matrix.compiler }}
 
     name: Test on ${{ matrix.os }}
     steps:
