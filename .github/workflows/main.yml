@@ -31,8 +31,8 @@ jobs:
           gfortran --version
           mpirun --version
       - name: Checkout
-          uses: actions/checkout@v2
-          with:
-            fetch-depth: 1
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
 
 
