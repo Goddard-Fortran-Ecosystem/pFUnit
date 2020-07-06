@@ -26,10 +26,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - if: matrix.os == 'macos-latest'
-        name: Install Brew Packages
-        run: |
-          brew install libevent
+      #- if: matrix.os == 'macos-latest'
+        #name: Install Brew Packages
+        #run: |
+          #brew install libevent
       - name: Cache MPI
         id: cache-mpi
         uses: actions/cache@v2
@@ -48,9 +48,9 @@ jobs:
       - name: Echo environment
         run: |
           printenv
-      #- name: Versions
-        #run: |
-          #${FC} --version
+      - name: Versions
+        run: |
+          ${FC} --version
           #mpirun --version
       #- name: Build pFUnit
         #run: | 
