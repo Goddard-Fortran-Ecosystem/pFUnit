@@ -40,5 +40,10 @@ jobs:
           mkdir -p build
           cd build
           cmake .. -DCMAKE_Fortran_COMPILER=gfortran-9 
+      - name: Run Tests
+        run: |
+          make -j 
+          make -j tests
+          ctest -j --output-on-failure
 
 
