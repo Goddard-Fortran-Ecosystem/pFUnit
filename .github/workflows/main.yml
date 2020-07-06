@@ -16,36 +16,44 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest]
+        compiler: [gfortran-9]
           #os: [ubuntu-latest, macos-latest]
+        env:
+          FC: ${{ matrix.compiler }}
 
     name: Test on ${{ matrix.os }}
     steps:
-      - if: matrix.os == 'ubuntu-latest'
-        name: Install Open MPI with apt
-        run: |
-          sudo apt install -y openmpi-bin libopenmpi-dev
-      - if: matrix.os == 'macos-latest'
-        name: Install Open MPI with brew
-        run: |
-          brew install openmpi
-      - name: Versions
-        run: |
-          gfortran-9 --version
-          mpirun --version
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
-      - name: Build pFUnit
-        run: | 
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_Fortran_COMPILER=gfortran-9 
-      - name: Run Tests
+      - name: Cache MPI
+        id: cache-mpi
+        uses: actions/cache@v2
+        with:
+          path: ~/local/openmpi
+          key: ${{ runner.os }}-mpi
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          cd build
-          make -j 
-          make -j tests
-          ctest -j --output-on-failure
+          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+          echo "::set-env name=PATH::~/local/openmpi/bin"
+          echo "::set-env name=LD_LIBRARY_PATH::~/local/openmpi/lib"
+          echo "::set-env name=DYLD_LIBRARY_PATH::~/local/openmpi/lib"
+      - name: Versions
+        run: |
+          ${FC} --version
+          mpirun --version
+      #- name: Build pFUnit
+        #run: | 
+          #mkdir -p build
+          #cd build
+          #cmake .. -DCMAKE_Fortran_COMPILER=gfortran-9 
+      #- name: Run Tests
+        #run: |
+          #cd build
+          #make -j 
+          #make -j tests
+          #ctest -j --output-on-failure
 
 
