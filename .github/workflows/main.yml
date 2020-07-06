@@ -29,20 +29,16 @@ jobs:
         name: Install Brew Packages
         run: |
           brew install libevent
-      - name: Hash Compiler
-        run: |
-          echo "::set-env name=COMPHASH::$(echo ${FC} | md5sum | cut -f1 -d' ')"
-          echo $COMPHASH
       - name: Cache MPI
         id: cache-mpi
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: mpi-${{runner.os}}-${{matrix.compiler}}
-      #- name: Build MPI
-        #if: steps.cache-mpi.outputs.cache-hit != 'true'
-        #run: |
-          #sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+          key: mpi-${{ runner.os }}-${{ matrix.compiler }}
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        run: |
+          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
       - name: Set MPI Environment
         run: |
           export PATH=${PATH}:${HOME}/local/openmpi/bin
@@ -51,10 +47,10 @@ jobs:
       - name: Echo environment
         run: |
           printenv
-      - name: Versions
-        run: |
-          ${FC} --version
-          mpirun --version
+      #- name: Versions
+        #run: |
+          #${FC} --version
+          #mpirun --version
       #- name: Build pFUnit
         #run: | 
           #mkdir -p build
