@@ -59,6 +59,7 @@ jobs:
         run: |
           ${FC} --version
           mpirun --version
+          mpifort --show
       #- name: Build pFUnit
         #run: | 
           #mkdir -p build
