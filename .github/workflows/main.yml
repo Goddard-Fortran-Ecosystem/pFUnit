@@ -29,16 +29,19 @@ jobs:
         name: Install Brew Packages
         run: |
           brew install libevent
+      - name: set env compiler
+        run: |
+          echo ::set-env name=mpi-compiler::${FC}
       - name: Cache MPI
         id: cache-mpi
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: ${{ runner.os }}-mpi-$${ env.FC }}
-      - name: Build MPI
-        if: steps.cache-mpi.outputs.cache-hit != 'true'
-        run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+          key: ${{ runner.os }}-mpi-$${ env.mpi-compiler }}
+      #- name: Build MPI
+        #if: steps.cache-mpi.outputs.cache-hit != 'true'
+        #run: |
+          #sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
       - name: Set MPI Environment
         run: |
           export PATH=${PATH}:${HOME}/local/openmpi/bin
