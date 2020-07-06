@@ -5,14 +5,6 @@ on: [pull_request]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    env:
-      LANGUAGE: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-      LANG: en_US.UTF-8
-      LC_TYPE: en_US.UTF-8 
-      OMPI_ALLOW_RUN_AS_ROOT: 1
-      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
-      OMPI_MCA_btl_vader_single_copy_mechanism: none
     strategy:
       matrix:
         os: [macos-latest]
@@ -20,6 +12,13 @@ jobs:
           #os: [ubuntu-latest, macos-latest]
     env:
       FC: ${{ matrix.compiler }}
+      LANGUAGE: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LC_TYPE: en_US.UTF-8 
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      OMPI_MCA_btl_vader_single_copy_mechanism: none
 
     name: Test on ${{ matrix.os }}
     steps:
