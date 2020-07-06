@@ -34,7 +34,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: ${{ runner.os }}-mpi-$${ matrix.compiler }}
+          key: ${{ runner.os }}-mpi-$${ env.FC }}
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
