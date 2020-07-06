@@ -7,9 +7,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [ubuntu-latest, macos-latest]
         compiler: [gfortran-9]
-          #os: [ubuntu-latest, macos-latest]
     env:
       FC: ${{ matrix.compiler }}
       LANGUAGE: en_US.UTF-8
@@ -20,22 +19,28 @@ jobs:
       OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
       OMPI_MCA_btl_vader_single_copy_mechanism: none
 
-    name: Test on ${{ matrix.os }}
+    name: ${{ matrix.os }} / ${{ matrix.compiler }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 1
+      - if: matrix.os == 'macos-latest'
+        name: Install Brew Packages
+        run: |
+          brew install libevent
       - name: Cache MPI
         id: cache-mpi
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: ${{ runner.os }}-mpi
+          key: ${{ runner.os }}-mpi-$${ runner.compiler }}
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
           sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+      - name: Set MPI Environment
+        run: |
           echo "::set-env name=PATH::~/local/openmpi/bin"
           echo "::set-env name=LD_LIBRARY_PATH::~/local/openmpi/lib"
           echo "::set-env name=DYLD_LIBRARY_PATH::~/local/openmpi/lib"
