@@ -9,6 +9,12 @@ jobs:
       matrix:
         os: [ubuntu-18.04, ubuntu-20.04, macos-10.15]
         compiler: [gfortran-8, gfortran-9]
+      # fail-fast is set to 'true' here which is good for production, but when
+      # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
+      # GitHub Actions will stop any other test immediately. So good for production, bad
+      # when trying to figure something out. For more info see:
+      # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html
+      fail-fast: true
     env:
       FC: ${{ matrix.compiler }}
       LANGUAGE: en_US.UTF-8
