@@ -30,7 +30,9 @@ contains
       
       type (SerialContext) :: c
 
+      print*,__FILE__,__LINE__
       status = generic_run(load_tests, c)
+      print*,__FILE__,__LINE__
 
    end function run
 
@@ -57,7 +59,9 @@ contains
       character(:), allocatable :: tap_file
       class(AbstractPrinter), allocatable :: printer
 
+      print*,__FILE__,__LINE__
       call set_command_line_options()
+      print*,__FILE__,__LINE__
 
       if (associated(options%at('output'))) then
          call cast(options%at('output'), ofile)
@@ -67,7 +71,9 @@ contains
          unit = OUTPUT_UNIT
       end if
 
+      print*,__FILE__,__LINE__
       option => options%at('xml')
+      print*,__FILE__,__LINE__
       if (associated(option)) then
          call cast(option, xml)
          if (xml) then
@@ -76,8 +82,10 @@ contains
             printer = ResultPrinter(unit)
          end if
       end if
+      print*,__FILE__,__LINE__
 
       call cast(options%at('runner'),runner_class)
+      print*,__FILE__,__LINE__
       select case (to_lower(runner_class))
 #ifdef Robust
       case ('robust','robustrunner','robust_runner')
@@ -91,6 +99,7 @@ contains
       case default
          ERROR STOP 'unsupported runner'
       end select
+      print*,__FILE__,__LINE__
          
       
       option => options%at('debug')
@@ -98,6 +107,7 @@ contains
          call cast(option, debug)
          if (debug) call runner%add_listener(DebugListener(unit))
       end if
+      print*,__FILE__,__LINE__
 
       option => options%at('tap_file')
       if (associated(option)) then
@@ -106,6 +116,7 @@ contains
             call runner%add_listener(TapListener(tap_file))
          end if
       end if
+      print*,__FILE__,__LINE__
          
 
       suite = load_tests()
@@ -114,18 +125,25 @@ contains
          call cast(option, pattern)
          suite = suite%filter(NameFilter(pattern))
       end if
+      print*,__FILE__,__LINE__
       
       r = runner%run(suite, context)
+      print*,__FILE__,__LINE__
       status = r%wasSuccessful()
+      print*,__FILE__,__LINE__
 
    contains
 
 
       subroutine set_command_line_options()
+
+      print*,__FILE__,__LINE__
          parser = ArgParser()
+      print*,__FILE__,__LINE__
          call parser%add_argument('-d', '-v', '--debug', '--verbose', action='store_true', &
               & help='make output more verbose')
 
+      print*,__FILE__,__LINE__
          call parser%add_argument('-f', '--filter', action='store', &
               & help='only run tests that match pattern')
 
@@ -146,11 +164,17 @@ contains
          call parser%add_argument('-x', '--xml', action='store_true', &
               & help='print results with XmlPrinter')
 
+      print*,__FILE__,__LINE__
 #ifndef _GNU
+      print*,__FILE__,__LINE__
          options = parser%parse_args()
 #else
+      print*,__FILE__,__LINE__
          call parser%parse_args_kludge(option_values=options)
+      print*,__FILE__,__LINE__
 #endif
+      print*,__FILE__,__LINE__
+
       end subroutine set_command_line_options
    end function generic_run
    
