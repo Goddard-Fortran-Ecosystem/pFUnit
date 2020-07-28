@@ -4,11 +4,13 @@ set(traceback "-fbacktrace")
 set(check_all "-fbounds-check")
 set(cpp "-cpp")
 
+string(REGEX MATCH "Microsoft" WSL ${CMAKE_HOST_SYSTEM_VERSION})
+if (WSL AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 10)
+  set(opt "-O2")
+else ()
+  set(opt "-O0")
+endif ()
 
-set(CMAKE_Fortran_FLAGS_DEBUG  "-O0")
-set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-#set(CMAKE_Fortran_FLAGS "-g ${cpp} -O0 ${traceback} ${check_all} -ffree-line-length-512")
-set(CMAKE_Fortran_FLAGS "-g ${cpp} -O0 ${traceback}  -ffree-line-length-512")
-
+set(CMAKE_Fortran_FLAGS "-g ${cpp} ${opt} ${traceback}  -ffree-line-length-512")
 
 add_definitions(-D_GNU)
