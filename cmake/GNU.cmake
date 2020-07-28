@@ -5,7 +5,7 @@ set(check_all "-fbounds-check")
 set(cpp "-cpp")
 
 string(REGEX MATCH "Microsoft" WSL ${CMAKE_HOST_SYSTEM_VERSION})
-if (WSL AND CMAKE_Fortran_COMPILER_VERSION VERSION_LESS 10)
+if (WSL)
   set(opt "-O2")
 else ()
   set(opt "-O0")
