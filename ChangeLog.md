@@ -5,8 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.10] - 2020-07-29
 ### Fixed
-
 - Fixed problem under WSL+Gfortran-9 in which -O0 crashed pFUnit self tests.
 	
 ## [4.1.9] - 2020-05-29
