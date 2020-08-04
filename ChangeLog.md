@@ -5,7 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.11] - 2020-08-04
+
+### Fixed
+- Added flag that allows GFortran 10.x to compile with argument mismatches
+  in MPI layer.  This apparently is only an issue for some MPI flavors, with
+  others importing the correct interface variability via ```use mpi```.
+
+
 ## [4.1.10] - 2020-07-29
+
 ### Fixed
 - Fixed problem under WSL+Gfortran-9 in which -O0 crashed pFUnit self tests.
 	
