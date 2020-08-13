@@ -4,6 +4,8 @@ os:
 
 dist: bionic
 
+osx_image: xcode11.6
+
 language: c
 
 arch:
@@ -20,6 +22,10 @@ addons:
       packages:
          - gfortran-8
          - gfortran-9
+         - gfortran-10
+         - g++-8
+         - g++-9
+         - g++-10
          - libgfortran5-dbg
          - libxml2-utils
          - cmake
@@ -28,18 +34,20 @@ addons:
          - gcc@8
          - gcc@9
          - cmake
-      update: true
+      update: false
 
 env:
    global:
       - MPI_NAME=openmpi
    jobs:
-      - FC='gfortran-8' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-8' MPI_VER=4.0.4 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-8' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-8' USE_MPI=NO
-      - FC='gfortran-9' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-9' MPI_VER=4.0.4 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-9' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
       - FC='gfortran-9' USE_MPI=NO
+      - FC='gfortran-10' MPI_VER=4.0.4 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-10' USE_MPI=NO
 
 # Allow failures on arm64
 jobs:
@@ -57,10 +65,10 @@ cache:
    timeout: 600
 
 before_script:
-   # Install cmake
+   # Install cmake on linux (assume osx is good)
    - |
-      if [ $TRAVIS_CPU_ARCH != 'amd64' ] ; then
-         export cmake_ver=3.17.0
+      if [ $TRAVIS_OS_NAME != 'osx' ] ; then
+         export cmake_ver=3.18.1
          sh ./tools/travis-install-cmake.sh ${cmake_ver}
          # set up cmake location
          export PATH=${HOME}/local/cmake/bin:${PATH}
@@ -68,6 +76,8 @@ before_script:
          export LD_LIBRARY_PATH=${HOME}/local/cmake/lib:${LD_LIBRARY_PATH}
          # print out version information
          sudo apt purge --autoremove cmake
+         cmake --version
+      else
          cmake --version
       fi
    # install MPI
