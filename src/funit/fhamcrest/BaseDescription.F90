@@ -321,7 +321,7 @@ contains
       complex(kind=REAL32), intent(in) :: value
 
       character(128) :: buffer
-      write(buffer,'(g0)') value
+      write(buffer,'("(",g0,",",g0,")")') value
       string = trim(buffer)
     end function description_of_complex32
 
@@ -331,7 +331,7 @@ contains
       complex(kind=REAL64), intent(in) :: value
 
       character(128) :: buffer
-      write(buffer,'(g0)') value
+      write(buffer,'("(",g0,",",g0,")")') value
       string = trim(buffer)
     end function description_of_complex64
 
@@ -342,7 +342,7 @@ contains
       complex(kind=REAL128), intent(in) :: value
 
       character(128) :: buffer
-      write(buffer,'(g0)') value
+      write(buffer,'("(",g0,",",g0,")")') value
       string = trim(buffer)
     end function description_of_complex128
 
