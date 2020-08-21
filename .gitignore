@@ -17,5 +17,3 @@
 *.zip
 build/
 include/configuration.mk
-/cmake-build-debug/
-/.idea/

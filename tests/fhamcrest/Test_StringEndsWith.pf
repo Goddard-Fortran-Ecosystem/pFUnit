@@ -2,8 +2,6 @@ module Test_StringEndsWith
   use funit
   implicit none
 
-  @suite(name='Hamcrest_StringEndsWith')
-
 contains
 
   @test
