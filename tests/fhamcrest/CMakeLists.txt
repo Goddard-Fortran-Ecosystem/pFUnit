@@ -15,12 +15,6 @@ set(pf_tests
   Test_IsRelativelyNear.pf
 )
 
-set(test_srcs)
-add_pfunit_sources (test_srcs ${pf_tests})
-
-add_library(fhamcrest_tests  ${test_srcs})
-target_link_libraries(fhamcrest_tests funit)
-
 add_pfunit_ctest(fhamcrest_tests.x
         TEST_SOURCES ${pf_tests}
         LINK_LIBRARIES funit
