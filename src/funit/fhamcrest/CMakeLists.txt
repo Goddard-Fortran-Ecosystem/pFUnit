@@ -28,6 +28,7 @@ set (srcs
   IsNot.F90
   IsTrueOrFalse.F90
   IsEqual.F90
+  RelationalMatcher.F90
   IsGreater.F90
   IsGreaterOrEqual.F90
   IsLess.F90
