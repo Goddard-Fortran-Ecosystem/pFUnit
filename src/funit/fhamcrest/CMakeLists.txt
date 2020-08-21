@@ -28,6 +28,7 @@ set (srcs
   IsNot.F90
   IsTrueOrFalse.F90
   IsEqual.F90
+  IsGreater.F90
   IsNear.F90
   IsRelativelyNear.F90
   AnyOf.F90
