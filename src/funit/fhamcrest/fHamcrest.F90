@@ -7,6 +7,7 @@ module fHamcrest
   use pf_Is
   use pf_IsNot
   use pf_IsEqual
+  use pf_IsGreater
   use pf_IsTrueOrFalse
   use pf_IsNear
   use pf_IsRelativelyNear

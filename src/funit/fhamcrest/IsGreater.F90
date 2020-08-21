@@ -20,8 +20,7 @@ module pf_IsGreater
       procedure :: matches
       procedure :: describe_to
       procedure :: describe_mismatch
-
-!      procedure :: matches_intrinsic
+      procedure :: describe_numeric_mismatch
    end type IsGreater
 
 contains
@@ -81,6 +80,7 @@ contains
       class(IsGreater), intent(in) :: this
       class(MatcherDescription), intent(inout) :: description
 
+      call description%append_text("integer or real value strictly greater than ")
       call description%append_value(this%expected_value)
    end subroutine describe_to
 
@@ -89,9 +89,28 @@ contains
       class(*), intent(in) :: actual
       class(MatcherDescription), intent(inout) :: description
 
-      _UNUSED_DUMMY(this)
-
-      call description%append_text("was ")
-      call description%append_value(actual)
+      select type (actual)
+      type is (integer(kind=INT32))
+         call this%describe_numeric_mismatch(actual, description)
+      type is (integer(kind=INT64))
+         call this%describe_numeric_mismatch(actual, description)
+      type is (real(kind=REAL32))
+         call this%describe_numeric_mismatch(actual, description)
+      type is (real(kind=REAL64))
+         call this%describe_numeric_mismatch(actual, description)
+      class default
+         call description%append_value(actual)
+         call description%append_text(" is not integer or real")
+      end select
    end subroutine describe_mismatch
+
+   subroutine describe_numeric_mismatch(this, actual, description)
+      class(IsGreater), intent(in) :: this
+      class(*), intent(in) :: actual
+      class(MatcherDescription), intent(inout) :: description
+
+      call description%append_value(actual)
+      call description%append_text(" is less than or equal to ")
+      call description%append_value(this%expected_value)
+   end subroutine describe_numeric_mismatch
 end module pf_IsGreater

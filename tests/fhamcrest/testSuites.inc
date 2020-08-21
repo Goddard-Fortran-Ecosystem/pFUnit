@@ -8,6 +8,7 @@
    ADD_TEST_SUITE(Hamcrest_IsArrayWithSize)
 
    ADD_TEST_SUITE(Hamcrest_IsEqual)
+   ADD_TEST_SUITE(Hamcrest_IsGreater)
 
    ADD_TEST_SUITE(Hamcrest_IsNear)
    ADD_TEST_SUITE(Hamcrest_IsRelativelyNear)
