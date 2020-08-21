@@ -4,17 +4,187 @@ module Test_IsGreater
    use funit
    implicit none
 
-   @suite(name='Hamcrest_IsGreater')
 contains
    @test
-   subroutine test_is_greater_integer()
-      @assert_that(1, is(greater_than(0)))
-      @assert_that(2, is(greater_than(0)))
+   subroutine test_error_msg()
+      character(:), allocatable :: error_compair
+      character(:), allocatable :: error_type
 
-      @assert_that(1_INT64, is(greater_than(0_INT64)))
-      @assert_that(2_INT64, is(greater_than(0_INT64)))
+      call assert_that(1, is(greater_than(2)))
+      error_compair = new_line('a') &
+            // 'Expected: is integer or real value strictly greater than <2>' &
+            // new_line('a') &
+            // '     but: <1> is less than or equal to <2>'
+      @assertExceptionRaised(error_compair)
 
-      @assert_that(1.0 == 1, is(true()))
-      @assert_that(1.0, is(equal_to(1)))
-   end subroutine test_is_greater_integer
+      call assert_that('a', is(greater_than(2)))
+      error_type = new_line('a') &
+            // 'Expected: is integer or real value strictly greater than <2>' &
+            // new_line('a') &
+            // '     but: "a" is not integer or real'
+      @assertExceptionRaised(error_type)
+   end subroutine test_error_msg
+
+   @test
+   subroutine test_is_greater_than_integer()
+      integer, parameter :: a = 1
+      integer, parameter :: b = 2
+
+      integer(kind=INT32), parameter :: a_32 = 1
+      integer(kind=INT32), parameter :: b_32 = 2
+
+      integer(kind=INT64), parameter :: a_64 = 1
+      integer(kind=INT64), parameter :: b_64 = 2
+
+      ! integer
+      @assert_that(b, is(greater_than(a)))
+
+      @assert_that(a, is(not(greater_than(a))))
+      @assert_that(a, is(not(greater_than(b))))
+      @assert_that(b, is(not(greater_than(b))))
+
+      ! INT32
+      @assert_that(b_32, is(greater_than(a_32)))
+
+      @assert_that(a_32, is(not(greater_than(a_32))))
+      @assert_that(a_32, is(not(greater_than(b_32))))
+      @assert_that(b_32, is(not(greater_than(b_32))))
+
+      ! INT64
+      @assert_that(b_64, is(greater_than(a_64)))
+
+      @assert_that(a_64, is(not(greater_than(a_64))))
+      @assert_that(a_64, is(not(greater_than(b_64))))
+      @assert_that(b_64, is(not(greater_than(b_64))))
+   end subroutine test_is_greater_than_integer
+
+   @test
+   subroutine test_is_greater_than_real()
+      real, parameter :: a_s = 1.0
+      real, parameter :: b_s = 2.0
+
+      double precision, parameter :: a_d = 1.d0
+      double precision, parameter :: b_d = 2.d0
+
+      real(kind=REAL32), parameter :: a_32 = 1.0_REAL32
+      real(kind=REAL32), parameter :: b_32 = 2.0_REAL32
+
+      real(kind=REAL64), parameter :: a_64 = 1.0_REAL64
+      real(kind=REAL64), parameter :: b_64 = 2.0_REAL64
+
+      real(kind=REAL128), parameter :: a_128 = 1.0_REAL128
+      real(kind=REAL128), parameter :: b_128 = 2.0_REAL128
+
+      ! real
+      @assert_that(b_s, is(greater_than(a_s)))
+
+      @assert_that(a_s, is(not(greater_than(a_s))))
+      @assert_that(a_s, is(not(greater_than(b_s))))
+      @assert_that(b_s, is(not(greater_than(b_s))))
+
+      ! double
+      @assert_that(b_d, is(greater_than(a_d)))
+
+      @assert_that(a_d, is(not(greater_than(a_d))))
+      @assert_that(a_d, is(not(greater_than(b_d))))
+      @assert_that(b_d, is(not(greater_than(b_d))))
+
+      ! REAL32
+      @assert_that(b_32, is(greater_than(a_32)))
+
+      @assert_that(a_32, is(not(greater_than(a_32))))
+      @assert_that(a_32, is(not(greater_than(b_32))))
+      @assert_that(b_32, is(not(greater_than(b_32))))
+
+      ! REAL64
+      @assert_that(b_64, is(greater_than(a_64)))
+
+      @assert_that(a_64, is(not(greater_than(a_64))))
+      @assert_that(a_64, is(not(greater_than(b_64))))
+      @assert_that(b_64, is(not(greater_than(b_64))))
+
+      ! REAL128
+      @assert_that(b_128, is(greater_than(a_128)))
+
+      @assert_that(a_128, is(not(greater_than(a_128))))
+      @assert_that(a_128, is(not(greater_than(b_128))))
+      @assert_that(b_128, is(not(greater_than(b_128))))
+   end subroutine test_is_greater_than_real
+   
+   @test
+   subroutine test_is_greater_than_incompatable_type()
+      integer(kind=INT32), parameter :: a = 1_INT32
+      integer(kind=INT64), parameter :: b = 2_INT64
+      real(kind=REAL32),   parameter :: c = 3.0_REAL32
+      real(kind=REAL64),   parameter :: d = 4.0_REAL64
+      real(kind=REAL128),  parameter :: e = 5.0_REAL128
+
+      logical,      parameter :: lgc  = .true.
+      complex,      parameter :: cplx = (1.0, 2.0)
+      character(*), parameter :: str = 'test'
+
+      integer, parameter :: int_1D(4) = [1,2,3,4]
+      integer, parameter :: int_2D(2,2) = reshape(int_1D, shape(int_2D))
+      integer, parameter :: int_3D(2,2,2) = reshape([1,2,3,4,5,6,7,8], shape(int_3D))
+
+      @assert_that(a, is(not(greater_than(lgc))))
+      @assert_that(a, is(not(greater_than(cplx))))
+      @assert_that(a, is(not(greater_than(str))))
+
+      @assert_that(b, is(not(greater_than(lgc))))
+      @assert_that(b, is(not(greater_than(cplx))))
+      @assert_that(b, is(not(greater_than(str))))
+
+      @assert_that(c, is(not(greater_than(lgc))))
+      @assert_that(c, is(not(greater_than(cplx))))
+      @assert_that(c, is(not(greater_than(str))))
+
+      @assert_that(d, is(not(greater_than(lgc))))
+      @assert_that(d, is(not(greater_than(cplx))))
+      @assert_that(d, is(not(greater_than(str))))
+
+      @assert_that(e, is(not(greater_than(lgc))))
+      @assert_that(e, is(not(greater_than(cplx))))
+      @assert_that(e, is(not(greater_than(str))))
+
+      !! NOTE: greater_than has no interface for any non-intrinsic types so
+      !!       code will not build if one attempts to use a non-intrinsic
+      !!       expected_value. Thus we cannot cover these cases.
+
+      @assert_that(lgc, is(not(greater_than(a))))
+      @assert_that(lgc, is(not(greater_than(b))))
+      @assert_that(lgc, is(not(greater_than(c))))
+      @assert_that(lgc, is(not(greater_than(d))))
+      @assert_that(lgc, is(not(greater_than(e))))
+
+      @assert_that(cplx, is(not(greater_than(a))))
+      @assert_that(cplx, is(not(greater_than(b))))
+      @assert_that(cplx, is(not(greater_than(c))))
+      @assert_that(cplx, is(not(greater_than(d))))
+      @assert_that(cplx, is(not(greater_than(e))))
+
+      @assert_that(str, is(not(greater_than(a))))
+      @assert_that(str, is(not(greater_than(b))))
+      @assert_that(str, is(not(greater_than(c))))
+      @assert_that(str, is(not(greater_than(d))))
+      @assert_that(str, is(not(greater_than(e))))
+
+      @assert_that(int_1D, is(not(greater_than(a))))
+      @assert_that(int_1D, is(not(greater_than(b))))
+      @assert_that(int_1D, is(not(greater_than(c))))
+      @assert_that(int_1D, is(not(greater_than(d))))
+      @assert_that(int_1D, is(not(greater_than(e))))
+
+      @assert_that(int_2D, is(not(greater_than(a))))
+      @assert_that(int_2D, is(not(greater_than(b))))
+      @assert_that(int_2D, is(not(greater_than(c))))
+      @assert_that(int_2D, is(not(greater_than(d))))
+      @assert_that(int_2D, is(not(greater_than(e))))
+
+      @assert_that(int_3D, is(not(greater_than(a))))
+      @assert_that(int_3D, is(not(greater_than(b))))
+      @assert_that(int_3D, is(not(greater_than(c))))
+      @assert_that(int_3D, is(not(greater_than(d))))
+      @assert_that(int_3D, is(not(greater_than(e))))
+   end subroutine test_is_greater_than_incompatable_type
 end module Test_IsGreater
