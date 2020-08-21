@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.12] - 2020-08-21
+
 ### Fixed
 - Problem with FHamcrest `equal_to` where when the expected value is a numeric
   array and the actual value is any type except a numeric array the test still
