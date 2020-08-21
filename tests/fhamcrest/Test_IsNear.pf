@@ -2,8 +2,6 @@ module Test_IsNear
   use funit
   implicit none
 
-  @suite(name='Hamcrest_IsNear')
-
 contains
 
   @test
