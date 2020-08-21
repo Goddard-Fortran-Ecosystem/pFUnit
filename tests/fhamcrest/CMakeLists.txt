@@ -8,7 +8,9 @@ set(pf_tests
   Test_IsEqual.pf
   Test_IsEqual_extended.pf
   Test_IsGreater.pf
+  Test_IsGreaterOrEqual.pf
   Test_IsLess.pf
+  Test_IsLessOrEqual.pf
   Test_StringContains.pf
   Test_StringStartsWith.pf
   Test_StringEndsWith.pf

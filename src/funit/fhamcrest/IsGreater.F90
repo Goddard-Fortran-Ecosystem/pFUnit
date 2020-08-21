@@ -1,12 +1,7 @@
-#include "unused_dummy.fh"
-
 module pf_IsGreater
    use iso_fortran_env
-   use pf_AbstractMatcher
    use pf_BaseMatcher
    use pf_MatcherDescription
-   use pf_AbstractArrayWrapper
-   use pf_ArrayWrapper
    implicit none
    private
 
