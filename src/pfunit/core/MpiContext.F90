@@ -27,7 +27,6 @@ module PF_MpiContext
    use mpi
    implicit none
    private
-
    public :: MpiContext
 
    type, extends(ParallelContext) :: MpiContext
@@ -179,7 +178,7 @@ contains
       integer :: ier
       integer :: tmp
 
-      call mpi_allreduce(value, tmp, 1, MPI_INTEGER, MPI_SUM, &
+      call MPI_Allreduce(value, tmp, 1, MPI_INTEGER, MPI_SUM, &
            &     this%mpiCommunicator, ier)
       sum_global = tmp
       

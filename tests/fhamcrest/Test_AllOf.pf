@@ -2,8 +2,6 @@ module Test_AllOf
   use funit
   implicit none
 
-  @suite(name='Hamcrest_AllOf_suite')
-
 contains
 
   @test

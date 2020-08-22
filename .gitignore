@@ -16,4 +16,3 @@
 /nag
 *.zip
 build/
-include/configuration.mk

@@ -2,8 +2,6 @@
 module Test_IsArrayWithSize
   use funit
   implicit none
-  
-  @suite(name='Hamcrest_IsArrayWithSize')
 
 
 contains

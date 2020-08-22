@@ -1,8 +1,6 @@
-module Test_IsRelatively
+module Test_IsRelativelyNear
   use funit
   implicit none
-
-  @suite(name='Hamcrest_IsRelativelyNear')
 
 contains
 
@@ -42,4 +40,4 @@ contains
     str = trim(buffer)
   end function str
   
-end module Test_IsRelatively
+end module Test_IsRelativelyNear

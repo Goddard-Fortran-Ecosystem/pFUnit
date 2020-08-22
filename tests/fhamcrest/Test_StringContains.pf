@@ -2,8 +2,6 @@ module Test_StringContains
   use funit
   implicit none
 
-  @suite(name='Hamcrest_StringContains')
-
 contains
 
   @test
