@@ -21,7 +21,7 @@ module pf_IsEqual
      procedure :: describe_to
      procedure :: describe_mismatch
 
-     procedure :: matches_list
+     procedure :: matches_array_1d
      procedure :: matches_array_2d
      procedure :: matches_array_3d
      procedure :: matches_intrinsic
@@ -101,7 +101,7 @@ contains
 
     select type (e => this%expected_value)
     type is (ArrayWrapper_1d)
-       matches = this%matches_list(e%items, actual_value)
+       matches = this%matches_array_1d(e%items, actual_value)
     type is (ArrayWrapper_2d)
        matches = this%matches_array_2d(e%items, actual_value)
     type is (ArrayWrapper_3d)
@@ -115,7 +115,7 @@ contains
   end function matches
 
 
-  logical function matches_list(this, expected_items, actual_value)
+  logical function matches_array_1d(this, expected_items, actual_value)
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: expected_items(:)
     class(*), intent(in) :: actual_value
@@ -132,17 +132,19 @@ contains
           do i = 1, n_items
              m = equal_to(expected_items(i))
              if (.not. m%matches(a%items(i))) then
-                matches_list = .false.
+                matches_array_1d = .false.
                 return
              end if
           end do
-          matches_list = .true.
+          matches_array_1d = .true.
        else
-          matches_list = .false. ! differing number of elements
+          matches_array_1d = .false. ! differing number of elements
        end if
+    class default
+       matches_array_1d = .false. ! differing types
     end select
 
-  end function matches_list
+  end function matches_array_1d
 
 
   logical function matches_array_2d(this, expected_items, actual_value)
@@ -171,6 +173,8 @@ contains
        else
           matches_array_2d = .false. ! differing shape/size
        end if
+    class default
+       matches_array_2d = .false. ! differing types
     end select
 
   end function matches_array_2d
@@ -204,6 +208,8 @@ contains
        else
           matches_array_3d = .false. ! differing shape/size
        end if
+    class default
+       matches_array_3d = .false. ! differing types
     end select
 
   end function matches_array_3d

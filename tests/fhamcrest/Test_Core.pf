@@ -2,8 +2,6 @@ module Test_Core
   use funit
   implicit none
 
-  @suite(name='HamcrestCore_suite')
-
 contains
 
   ! Bootstrapping design with very basic requrements.
