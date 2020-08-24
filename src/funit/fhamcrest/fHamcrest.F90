@@ -6,11 +6,12 @@ module fHamcrest
   use pf_AbstractMatcher
   use pf_Is
   use pf_IsNot
+  use pf_RelationalMatcherV2
   use pf_IsEqual
-  use pf_IsGreater
-  use pf_IsGreaterOrEqual
-  use pf_IsLess
-  use pf_IsLessOrEqual
+!  use pf_IsGreater
+!  use pf_IsGreaterOrEqual
+!  use pf_IsLess
+!  use pf_IsLessOrEqual
   use pf_IsTrueOrFalse
   use pf_IsNear
   use pf_IsRelativelyNear

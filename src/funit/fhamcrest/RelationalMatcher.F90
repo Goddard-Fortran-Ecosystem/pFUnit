@@ -8,7 +8,7 @@ module pf_RelationalMatcher
    public :: RelationalMatcher
 
    type, abstract, extends(BaseMatcher) :: RelationalMatcher
-      ! private
+      private
       class(*), allocatable :: expected_value
 
       character(:), allocatable :: relationship
