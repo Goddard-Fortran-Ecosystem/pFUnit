@@ -9,10 +9,12 @@ module pf_Int32RelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: Int32Matcher
+   public :: Int32RelationalMatcher
+
+   type, extends(RelationalMatcher) :: Int32RelationalMatcher
    contains
       procedure, nopass :: less
-   end type Int32Matcher
+   end type Int32RelationalMatcher
 
    interface less_than
       module procedure :: less_than_int32
@@ -31,28 +33,28 @@ module pf_Int32RelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_than_int32(operand) result(matcher)
-      type(Int32Matcher) :: matcher
+      type(Int32RelationalMatcher) :: matcher
       integer(kind=INT32), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_than_int32
 
    function less_than_or_equal_to_int32(operand) result(matcher)
-      type(Int32Matcher) :: matcher
+      type(Int32RelationalMatcher) :: matcher
       integer(kind=INT32), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_to_int32
 
    function greater_than_int32(operand) result(matcher)
-      type(Int32Matcher) :: matcher
+      type(Int32RelationalMatcher) :: matcher
       integer(kind=INT32), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_than_int32
 
    function greater_than_or_equal_to_int32(operand) result(matcher)
-      type(Int32Matcher) :: matcher
+      type(Int32RelationalMatcher) :: matcher
       integer(kind=INT32), intent(in) :: operand
 
       call matcher%super('>=', operand)

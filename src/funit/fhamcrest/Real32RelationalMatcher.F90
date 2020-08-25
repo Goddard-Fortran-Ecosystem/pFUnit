@@ -9,10 +9,12 @@ module pf_Real32RelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: Real32Matcher
+   public :: Real32RelationalMatcher
+
+   type, extends(RelationalMatcher) :: Real32RelationalMatcher
    contains
       procedure, nopass :: less
-   end type Real32Matcher
+   end type Real32RelationalMatcher
 
    interface less_than
       module procedure :: less_than_real32
@@ -31,28 +33,28 @@ module pf_Real32RelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_than_real32(operand) result(matcher)
-      type(Real32Matcher) :: matcher
+      type(Real32RelationalMatcher) :: matcher
       real(kind=REAL32), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_than_real32
 
    function less_than_or_equal_to_real32(operand) result(matcher)
-      type(Real32Matcher) :: matcher
+      type(Real32RelationalMatcher) :: matcher
       real(kind=REAL32), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_to_real32
 
    function greater_than_real32(operand) result(matcher)
-      type(Real32Matcher) :: matcher
+      type(Real32RelationalMatcher) :: matcher
       real(kind=REAL32), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_than_real32
 
    function greater_than_or_equal_to_real32(operand) result(matcher)
-      type(Real32Matcher) :: matcher
+      type(Real32RelationalMatcher) :: matcher
       real(kind=REAL32), intent(in) :: operand
 
       call matcher%super('>=', operand)

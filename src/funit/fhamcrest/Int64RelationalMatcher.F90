@@ -9,10 +9,12 @@ module pf_Int64RelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: Int64Matcher
+   public :: Int64RelationalMatcher
+
+   type, extends(RelationalMatcher) :: Int64RelationalMatcher
    contains
       procedure, nopass :: less
-   end type Int64Matcher
+   end type Int64RelationalMatcher
 
    interface less_than
       module procedure :: less_than_int64
@@ -31,28 +33,28 @@ module pf_Int64RelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_than_int64(operand) result(matcher)
-      type(Int64Matcher) :: matcher
+      type(Int64RelationalMatcher) :: matcher
       integer(kind=INT64), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_than_int64
 
    function less_than_or_equal_to_int64(operand) result(matcher)
-      type(Int64Matcher) :: matcher
+      type(Int64RelationalMatcher) :: matcher
       integer(kind=INT64), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_to_int64
 
    function greater_than_int64(operand) result(matcher)
-      type(Int64Matcher) :: matcher
+      type(Int64RelationalMatcher) :: matcher
       integer(kind=INT64), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_than_int64
 
    function greater_than_or_equal_to_int64(operand) result(matcher)
-      type(Int64Matcher) :: matcher
+      type(Int64RelationalMatcher) :: matcher
       integer(kind=INT64), intent(in) :: operand
 
       call matcher%super('>=', operand)

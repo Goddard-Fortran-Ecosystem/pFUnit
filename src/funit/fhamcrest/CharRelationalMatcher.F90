@@ -9,10 +9,12 @@ module pf_CharRelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: CharMatcher
+   public :: CharRelationalMatcher
+
+   type, extends(RelationalMatcher) :: CharRelationalMatcher
    contains
       procedure, nopass :: less
-   end type CharMatcher
+   end type CharRelationalMatcher
 
    interface less_than
       module procedure :: less_thanchar
@@ -31,28 +33,28 @@ module pf_CharRelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_thanchar(operand) result(matcher)
-      type(CharMatcher) :: matcher
+      type(CharRelationalMatcher) :: matcher
       character(*), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_thanchar
 
    function less_than_or_equal_tochar(operand) result(matcher)
-      type(CharMatcher) :: matcher
+      type(CharRelationalMatcher) :: matcher
       character(*), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_tochar
 
    function greater_thanchar(operand) result(matcher)
-      type(CharMatcher) :: matcher
+      type(CharRelationalMatcher) :: matcher
       character(*), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_thanchar
 
    function greater_than_or_equal_tochar(operand) result(matcher)
-      type(CharMatcher) :: matcher
+      type(CharRelationalMatcher) :: matcher
       character(*), intent(in) :: operand
 
       call matcher%super('>=', operand)

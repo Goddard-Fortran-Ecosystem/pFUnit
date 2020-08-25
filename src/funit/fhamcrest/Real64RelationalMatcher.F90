@@ -9,10 +9,12 @@ module pf_Real64RelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: Real64Matcher
+   public :: Real64RelationalMatcher
+
+   type, extends(RelationalMatcher) :: Real64RelationalMatcher
    contains
       procedure, nopass :: less
-   end type Real64Matcher
+   end type Real64RelationalMatcher
 
    interface less_than
       module procedure :: less_than_real64
@@ -31,28 +33,28 @@ module pf_Real64RelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_than_real64(operand) result(matcher)
-      type(Real64Matcher) :: matcher
+      type(Real64RelationalMatcher) :: matcher
       real(kind=REAL64), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_than_real64
 
    function less_than_or_equal_to_real64(operand) result(matcher)
-      type(Real64Matcher) :: matcher
+      type(Real64RelationalMatcher) :: matcher
       real(kind=REAL64), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_to_real64
 
    function greater_than_real64(operand) result(matcher)
-      type(Real64Matcher) :: matcher
+      type(Real64RelationalMatcher) :: matcher
       real(kind=REAL64), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_than_real64
 
    function greater_than_or_equal_to_real64(operand) result(matcher)
-      type(Real64Matcher) :: matcher
+      type(Real64RelationalMatcher) :: matcher
       real(kind=REAL64), intent(in) :: operand
 
       call matcher%super('>=', operand)

@@ -9,10 +9,12 @@ module pf_Real128RelationalMatcher
    public :: greater_than
    public :: greater_than_or_equal_to
 
-   type, extends(RelationalMatcher) :: Real128Matcher
+   public :: Real128RelationalMatcher
+
+   type, extends(RelationalMatcher) :: Real128RelationalMatcher
    contains
       procedure, nopass :: less
-   end type Real128Matcher
+   end type Real128RelationalMatcher
 
    interface less_than
       module procedure :: less_than_real128
@@ -31,28 +33,28 @@ module pf_Real128RelationalMatcher
    end interface greater_than_or_equal_to
 contains
    function less_than_real128(operand) result(matcher)
-      type(Real128Matcher) :: matcher
+      type(Real128RelationalMatcher) :: matcher
       real(kind=REAL128), intent(in) :: operand
 
       call matcher%super('<', operand)
    end function less_than_real128
 
    function less_than_or_equal_to_real128(operand) result(matcher)
-      type(Real128Matcher) :: matcher
+      type(Real128RelationalMatcher) :: matcher
       real(kind=REAL128), intent(in) :: operand
 
       call matcher%super('<=', operand)
    end function less_than_or_equal_to_real128
 
    function greater_than_real128(operand) result(matcher)
-      type(Real128Matcher) :: matcher
+      type(Real128RelationalMatcher) :: matcher
       real(kind=REAL128), intent(in) :: operand
 
       call matcher%super('>', operand)
    end function greater_than_real128
 
    function greater_than_or_equal_to_real128(operand) result(matcher)
-      type(Real128Matcher) :: matcher
+      type(Real128RelationalMatcher) :: matcher
       real(kind=REAL128), intent(in) :: operand
 
       call matcher%super('>=', operand)
