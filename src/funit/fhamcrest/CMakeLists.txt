@@ -30,6 +30,12 @@ set (srcs
   IsEqual.F90
   RelationalMatcher.F90
   RelationalMatcherV2.F90
+  RelationalMatcherV3.F90
+  Int32RelationalMatcher.F90
+  Int64RelationalMatcher.F90
+  Real32RelationalMatcher.F90
+  Real64RelationalMatcher.F90
+  Real128RelationalMatcher.F90
   IsGreater.F90
   IsGreaterOrEqual.F90
   IsLess.F90

@@ -17,12 +17,12 @@ contains
             // '     but: <2> is strictly greater than <1>'
       @assertExceptionRaised(error_compair)
 
-      call assert_that('a', is(less_than_or_equal_to(1)))
-      error_type = new_line('a') &
-            // 'Expected: is integer or real value less than or equal to <1>' &
-            // new_line('a') &
-            // '     but: "a" is not integer or real'
-      @assertExceptionRaised(error_type)
+!      call assert_that('a', is(less_than_or_equal_to(1)))
+!      error_type = new_line('a') &
+!            // 'Expected: is integer or real value less than or equal to <1>' &
+!            // new_line('a') &
+!            // '     but: "a" is not integer or real'
+!      @assertExceptionRaised(error_type)
    end subroutine test_error_msg
 
    @test
@@ -127,25 +127,25 @@ contains
       integer, parameter :: int_2D(2,2) = reshape(int_1D, shape(int_2D))
       integer, parameter :: int_3D(2,2,2) = reshape([1,2,3,4,5,6,7,8], shape(int_3D))
 
-      @assert_that(a, is(not(less_than_or_equal_to(lgc))))
-      @assert_that(a, is(not(less_than_or_equal_to(cplx))))
-      @assert_that(a, is(not(less_than_or_equal_to(str))))
-
-      @assert_that(b, is(not(less_than_or_equal_to(lgc))))
-      @assert_that(b, is(not(less_than_or_equal_to(cplx))))
-      @assert_that(b, is(not(less_than_or_equal_to(str))))
-
-      @assert_that(c, is(not(less_than_or_equal_to(lgc))))
-      @assert_that(c, is(not(less_than_or_equal_to(cplx))))
-      @assert_that(c, is(not(less_than_or_equal_to(str))))
-
-      @assert_that(d, is(not(less_than_or_equal_to(lgc))))
-      @assert_that(d, is(not(less_than_or_equal_to(cplx))))
-      @assert_that(d, is(not(less_than_or_equal_to(str))))
-
-      @assert_that(e, is(not(less_than_or_equal_to(lgc))))
-      @assert_that(e, is(not(less_than_or_equal_to(cplx))))
-      @assert_that(e, is(not(less_than_or_equal_to(str))))
+!      @assert_that(a, is(not(less_than_or_equal_to(lgc))))
+!      @assert_that(a, is(not(less_than_or_equal_to(cplx))))
+!      @assert_that(a, is(not(less_than_or_equal_to(str))))
+!
+!      @assert_that(b, is(not(less_than_or_equal_to(lgc))))
+!      @assert_that(b, is(not(less_than_or_equal_to(cplx))))
+!      @assert_that(b, is(not(less_than_or_equal_to(str))))
+!
+!      @assert_that(c, is(not(less_than_or_equal_to(lgc))))
+!      @assert_that(c, is(not(less_than_or_equal_to(cplx))))
+!      @assert_that(c, is(not(less_than_or_equal_to(str))))
+!
+!      @assert_that(d, is(not(less_than_or_equal_to(lgc))))
+!      @assert_that(d, is(not(less_than_or_equal_to(cplx))))
+!      @assert_that(d, is(not(less_than_or_equal_to(str))))
+!
+!      @assert_that(e, is(not(less_than_or_equal_to(lgc))))
+!      @assert_that(e, is(not(less_than_or_equal_to(cplx))))
+!      @assert_that(e, is(not(less_than_or_equal_to(str))))
 
       !! NOTE: less_than_or_equal_to has no interface for any non-intrinsic types so
       !!       code will not build if one attempts to use a non-intrinsic

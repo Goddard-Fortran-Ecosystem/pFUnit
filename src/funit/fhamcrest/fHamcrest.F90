@@ -6,8 +6,13 @@ module fHamcrest
   use pf_AbstractMatcher
   use pf_Is
   use pf_IsNot
-  use pf_RelationalMatcherV2
+!  use pf_RelationalMatcherV2
   use pf_IsEqual
+  use pf_Int32RelationalMatcher
+  use pf_Int64RelationalMatcher
+  use pf_Real32RelationalMatcher
+  use pf_Real64RelationalMatcher
+  use pf_Real128RelationalMatcher
 !  use pf_IsGreater
 !  use pf_IsGreaterOrEqual
 !  use pf_IsLess
