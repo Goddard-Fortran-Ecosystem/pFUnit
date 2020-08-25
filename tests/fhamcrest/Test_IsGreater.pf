@@ -26,6 +26,34 @@ contains
    end subroutine test_error_msg
 
    @test
+   subroutine test_is_greater_than_character()
+      character(*), parameter :: a = 'abc'
+      character(*), parameter :: b = 'efg'
+      character(*), parameter :: c = 'abc   '
+      character(*), parameter :: d = '   abc'
+
+      @assert_that(a, is(not(greater_than(a))))
+      @assert_that(a, is(not(greater_than(b))))
+      @assert_that(a, is(not(greater_than(c))))
+      @assert_that(a, is(greater_than(d)))
+
+      @assert_that(b, is(greater_than(a)))
+      @assert_that(b, is(not(greater_than(b))))
+      @assert_that(b, is(greater_than(c)))
+      @assert_that(b, is(greater_than(d)))
+
+      @assert_that(c, is(not(greater_than(a))))
+      @assert_that(c, is(not(greater_than(b))))
+      @assert_that(c, is(not(greater_than(c))))
+      @assert_that(c, is(greater_than(d)))
+
+      @assert_that(d, is(not(greater_than(a))))
+      @assert_that(d, is(not(greater_than(b))))
+      @assert_that(d, is(not(greater_than(c))))
+      @assert_that(d, is(not(greater_than(d))))
+   end subroutine test_is_greater_than_character
+
+   @test
    subroutine test_is_greater_than_integer()
       integer, parameter :: a = 1
       integer, parameter :: b = 2

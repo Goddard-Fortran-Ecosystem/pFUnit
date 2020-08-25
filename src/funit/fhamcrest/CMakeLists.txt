@@ -31,6 +31,7 @@ set (srcs
   RelationalMatcher.F90
   RelationalMatcherV2.F90
   RelationalMatcherV3.F90
+  CharRelationalMatcher.F90
   Int32RelationalMatcher.F90
   Int64RelationalMatcher.F90
   Real32RelationalMatcher.F90
