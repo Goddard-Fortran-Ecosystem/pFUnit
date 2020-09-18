@@ -2,8 +2,6 @@ module Test_AnyOf
   use funit
   implicit none
 
-  @suite(name='Hamcrest_AnyOf_suite')
-
 contains
 
   @test

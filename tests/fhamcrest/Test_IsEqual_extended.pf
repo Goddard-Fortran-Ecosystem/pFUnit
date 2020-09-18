@@ -5,9 +5,6 @@ module Test_IsEqual_extended
   use funit
   implicit none
 
-  @suite(name='Hamcrest_IsEqual_extended')
-
-
   ! Users extend Matchable to wrap their own types
   ! for use within the framework.   Unfortunately,
   ! Fortran lacks something like Java interfaces to

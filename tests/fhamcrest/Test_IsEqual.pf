@@ -1,0 +1,367 @@
+module Test_IsEqual
+   use iso_fortran_env
+
+   use funit
+   implicit none
+
+contains
+   @test
+   subroutine test_error_msg()
+      character(:), allocatable :: error
+
+      call assert_that(1, is(equal_to(2)))
+      error = new_line('a') &
+            // 'Expected: is <2>' &
+            // new_line('a') &
+            // '     but: was <1>'
+      @assertExceptionRaised(error)
+   end subroutine test_error_msg
+
+   @test
+   subroutine test_is_equal_intrinsic_logical()
+      logical, parameter :: T = .true.
+      logical, parameter :: F = .false.
+
+      @assert_that(T, is(equal_to(T)))
+      @assert_that(F, is(equal_to(F)))
+
+      @assert_that(T, is(not(equal_to(F))))
+      @assert_that(F, is(not(equal_to(T))))
+   end subroutine test_is_equal_intrinsic_logical
+
+   @test
+   subroutine test_is_equal_intrinsic_integer()
+      integer, parameter :: a = 1
+      integer, parameter :: b = 2
+
+      integer(kind=INT32), parameter :: a_32 = 1
+      integer(kind=INT32), parameter :: b_32 = 2
+
+      integer(kind=INT64), parameter :: a_64 = 1
+      integer(kind=INT64), parameter :: b_64 = 2
+
+      ! integer
+      @assert_that(a, is(equal_to(a)))
+      @assert_that(b, is(equal_to(b)))
+
+      @assert_that(a, is(not(equal_to(b))))
+      @assert_that(b, is(not(equal_to(a))))
+
+      ! INT32
+      @assert_that(a_32, is(equal_to(a_32)))
+      @assert_that(b_32, is(equal_to(b_32)))
+
+      @assert_that(a_32, is(not(equal_to(b_32))))
+      @assert_that(b_32, is(not(equal_to(a_32))))
+
+      ! INT64
+      @assert_that(a_64, is(equal_to(a_64)))
+      @assert_that(b_64, is(equal_to(b_64)))
+
+      @assert_that(a_64, is(not(equal_to(b_64))))
+      @assert_that(b_64, is(not(equal_to(a_64))))
+   end subroutine test_is_equal_intrinsic_integer
+
+   @test
+   subroutine test_is_equal_intrinsic_real()
+      real, parameter :: a_s = 1.0
+      real, parameter :: b_s = 2.0
+
+      double precision, parameter :: a_d = 1.d0
+      double precision, parameter :: b_d = 2.d0
+
+      real(kind=REAL32), parameter :: a_32 = 1.0_REAL32
+      real(kind=REAL32), parameter :: b_32 = 2.0_REAL32
+
+      real(kind=REAL64), parameter :: a_64 = 1.0_REAL64
+      real(kind=REAL64), parameter :: b_64 = 2.0_REAL64
+
+      real(kind=REAL128), parameter :: a_128 = 1.0_REAL128
+      real(kind=REAL128), parameter :: b_128 = 2.0_REAL128
+
+      ! real
+      @assert_that(a_s, is(equal_to(a_s)))
+      @assert_that(b_s, is(equal_to(b_s)))
+
+      @assert_that(a_s, is(not(equal_to(b_s))))
+      @assert_that(b_s, is(not(equal_to(a_s))))
+
+      ! double
+      @assert_that(a_d, is(equal_to(a_d)))
+      @assert_that(b_d, is(equal_to(b_d)))
+
+      @assert_that(a_d, is(not(equal_to(b_d))))
+      @assert_that(b_d, is(not(equal_to(a_d))))
+
+      ! REAL32
+      @assert_that(a_32, is(equal_to(a_32)))
+      @assert_that(b_32, is(equal_to(b_32)))
+
+      @assert_that(a_32, is(not(equal_to(b_32))))
+      @assert_that(b_32, is(not(equal_to(a_32))))
+
+      ! REAL64
+      @assert_that(a_64, is(equal_to(a_64)))
+      @assert_that(b_64, is(equal_to(b_64)))
+
+      @assert_that(a_64, is(not(equal_to(b_64))))
+      @assert_that(b_64, is(not(equal_to(a_64))))
+
+      ! REAL128
+      @assert_that(a_128, is(equal_to(a_128)))
+      @assert_that(b_128, is(equal_to(b_128)))
+
+      @assert_that(a_128, is(not(equal_to(b_128))))
+      @assert_that(b_128, is(not(equal_to(a_128))))
+   end subroutine test_is_equal_intrinsic_real
+
+   @test
+   subroutine test_is_equal_intrinsic_complex()
+      complex, parameter :: a_s = (1.0, 2.0)
+      complex, parameter :: b_s = (3.0, 4.0)
+
+      double complex, parameter :: a_d = (1.d0, 2.d0)
+      double complex, parameter :: b_d = (3.d0, 4.d0)
+
+      complex(kind=REAL32), parameter :: a_32 = (1.0_REAL32, 2.0_REAL32)
+      complex(kind=REAL32), parameter :: b_32 = (3.0_REAL32, 4.0_REAL32)
+
+      complex(kind=REAL64), parameter :: a_64 = (1.0_REAL64, 2.0_REAL64)
+      complex(kind=REAL64), parameter :: b_64 = (3.0_REAL64, 4.0_REAL64)
+
+      complex(kind=REAL128), parameter :: a_128 = (1.0_REAL128, 2.0_REAL128)
+      complex(kind=REAL128), parameter :: b_128 = (3.0_REAL128, 4.0_REAL128)
+
+      ! complex single
+      @assert_that(a_s, is(equal_to(a_s)))
+      @assert_that(b_s, is(equal_to(b_s)))
+
+      @assert_that(a_s, is(not(equal_to(b_s))))
+      @assert_that(b_s, is(not(equal_to(a_s))))
+
+      ! complex double
+      @assert_that(a_d, is(equal_to(a_d)))
+      @assert_that(b_d, is(equal_to(b_d)))
+
+      @assert_that(a_d, is(not(equal_to(b_d))))
+      @assert_that(b_d, is(not(equal_to(a_d))))
+
+      ! complex REAL32
+      @assert_that(a_32, is(equal_to(a_32)))
+      @assert_that(b_32, is(equal_to(b_32)))
+
+      @assert_that(a_32, is(not(equal_to(b_32))))
+      @assert_that(b_32, is(not(equal_to(a_32))))
+
+      ! complex REAL64
+      @assert_that(a_64, is(equal_to(a_64)))
+      @assert_that(b_64, is(equal_to(b_64)))
+
+      @assert_that(a_64, is(not(equal_to(b_64))))
+      @assert_that(b_64, is(not(equal_to(a_64))))
+
+      ! complex REAL128
+      @assert_that(a_128, is(equal_to(a_128)))
+      @assert_that(b_128, is(equal_to(b_128)))
+
+      @assert_that(a_128, is(not(equal_to(b_128))))
+      @assert_that(b_128, is(not(equal_to(a_128))))
+
+      !! Below specifically tests that issue #234 no longer occurs
+      call assert_that(a_32, is(equal_to(b_32)))
+      @assertExceptionRaised()
+      call assert_that(a_64, is(equal_to(b_64)))
+      @assertExceptionRaised()
+      call assert_that(a_128, is(equal_to(b_128)))
+      @assertExceptionRaised()
+   end subroutine test_is_equal_intrinsic_complex
+
+   @test
+   subroutine test_is_equal_intrinsic_str()
+      character(len=*), parameter :: test0 = 'test'
+      character(len=*), parameter :: test1 = '    test'
+      character(len=*), parameter :: test2 = 'test    '
+
+      @assert_that(test0, is(equal_to(test0)))
+      @assert_that(test1, is(equal_to(test1)))
+      @assert_that(test2, is(equal_to(test2)))
+
+      @assert_that(test0, is(not(equal_to(test1))))
+      @assert_that(test0, is(not(equal_to(test2))))
+
+      @assert_that(test1, is(not(equal_to(test0))))
+      @assert_that(test1, is(not(equal_to(test2))))
+
+      @assert_that(test2, is(not(equal_to(test0))))
+      @assert_that(test2, is(not(equal_to(test1))))
+   end subroutine test_is_equal_intrinsic_str
+
+   @test
+   subroutine test_is_equal_array_1d()
+      integer              :: int32_array(3)
+      integer(kind=INT64)  :: int64_array(3)
+      real(kind=REAL32)    :: real32_array(3)
+      real(kind=REAL64)    :: real64_array(3)
+      complex(kind=REAL32) :: complex32_array(3)
+      complex(kind=REAL64) :: complex64_array(3)
+
+      int32_array     = reshape([1, 2, 3], shape(int32_array))
+      int64_array     = int32_array
+      real32_array    = int32_array
+      real64_array    = int32_array
+      complex32_array = int32_array
+      complex64_array = int32_array
+
+      @assert_that(int32_array, is(equal_to(int32_array)))
+      @assert_that(int64_array, is(equal_to(int64_array)))
+      @assert_that(real32_array, is(equal_to(real32_array)))
+      @assert_that(real64_array, is(equal_to(real64_array)))
+      @assert_that(complex32_array, is(equal_to(complex32_array)))
+      @assert_that(complex64_array, is(equal_to(complex64_array)))
+
+      @assert_that(['a', 'b'], is(equal_to(['a', 'b'])))
+
+      !! Below specifically tests that issue #233 no longer occurs
+      @assert_that(1, is(not(equal_to(int32_array))))
+      @assert_that(1, is(not(equal_to(int64_array))))
+      @assert_that(1, is(not(equal_to(real32_array))))
+      @assert_that(1, is(not(equal_to(real64_array))))
+      @assert_that(1, is(not(equal_to(complex32_array))))
+      @assert_that(1, is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to(1))))
+      @assert_that(int64_array, is(not(equal_to(1))))
+      @assert_that(real32_array, is(not(equal_to(1))))
+      @assert_that(real64_array, is(not(equal_to(1))))
+      @assert_that(complex32_array, is(not(equal_to(1))))
+      @assert_that(complex64_array, is(not(equal_to(1))))
+   end subroutine test_is_equal_array_1d
+
+   @test
+   subroutine test_is_equal_array_2d()
+      integer              :: int32_array(2,2)
+      integer(kind=INT64)  :: int64_array(2,2)
+      real(kind=REAL32)    :: real32_array(2,2)
+      real(kind=REAL64)    :: real64_array(2,2)
+      complex(kind=REAL32) :: complex32_array(2,2)
+      complex(kind=REAL64) :: complex64_array(2,2)
+
+      int32_array     = reshape([1, 2, 3, 4], shape(int32_array))
+      int64_array     = int32_array
+      real32_array    = int32_array
+      real64_array    = int32_array
+      complex32_array = int32_array
+      complex64_array = int32_array
+
+      @assert_that(int32_array, is(equal_to(int32_array)))
+      @assert_that(int64_array, is(equal_to(int64_array)))
+      @assert_that(real32_array, is(equal_to(real32_array)))
+      @assert_that(real64_array, is(equal_to(real64_array)))
+      @assert_that(complex32_array, is(equal_to(complex32_array)))
+      @assert_that(complex64_array, is(equal_to(complex64_array)))
+
+      @assert_that(['a', 'b'], is(equal_to(['a', 'b'])))
+
+      !! Below specifically tests that issue #233 no longer occurs
+      @assert_that(1, is(not(equal_to(int32_array))))
+      @assert_that(1, is(not(equal_to(int64_array))))
+      @assert_that(1, is(not(equal_to(real32_array))))
+      @assert_that(1, is(not(equal_to(real64_array))))
+      @assert_that(1, is(not(equal_to(complex32_array))))
+      @assert_that(1, is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to(1))))
+      @assert_that(int64_array, is(not(equal_to(1))))
+      @assert_that(real32_array, is(not(equal_to(1))))
+      @assert_that(real64_array, is(not(equal_to(1))))
+      @assert_that(complex32_array, is(not(equal_to(1))))
+      @assert_that(complex64_array, is(not(equal_to(1))))
+
+      @assert_that([1,2,3], is(not(equal_to(int32_array))))
+      @assert_that([1,2,3], is(not(equal_to(int64_array))))
+      @assert_that([1,2,3], is(not(equal_to(real32_array))))
+      @assert_that([1,2,3], is(not(equal_to(real64_array))))
+      @assert_that([1,2,3], is(not(equal_to(complex32_array))))
+      @assert_that([1,2,3], is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(int64_array, is(not(equal_to([1,2,3]))))
+      @assert_that(real32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(real64_array, is(not(equal_to([1,2,3]))))
+      @assert_that(complex32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(complex64_array, is(not(equal_to([1,2,3]))))
+   end subroutine test_is_equal_array_2d
+
+   @test
+   subroutine test_is_equal_array_3d()
+      integer              :: int32_array(2,2,2)
+      integer(kind=INT64)  :: int64_array(2,2,2)
+      real(kind=REAL32)    :: real32_array(2,2,2)
+      real(kind=REAL64)    :: real64_array(2,2,2)
+      complex(kind=REAL32) :: complex32_array(2,2,2)
+      complex(kind=REAL64) :: complex64_array(2,2,2)
+
+      integer :: int_2D(2,2)
+
+      int32_array     = reshape([1, 2, 3, 4, 5, 6, 7, 8], shape(int32_array))
+      int64_array     = int32_array
+      real32_array    = int32_array
+      real64_array    = int32_array
+      complex32_array = int32_array
+      complex64_array = int32_array
+
+      int_2D = reshape([1, 2, 3, 4], shape(int_2D))
+
+      @assert_that(int32_array, is(equal_to(int32_array)))
+      @assert_that(int64_array, is(equal_to(int64_array)))
+      @assert_that(real32_array, is(equal_to(real32_array)))
+      @assert_that(real64_array, is(equal_to(real64_array)))
+      @assert_that(complex32_array, is(equal_to(complex32_array)))
+      @assert_that(complex64_array, is(equal_to(complex64_array)))
+
+      @assert_that(['a', 'b'], is(equal_to(['a', 'b'])))
+
+      !! Below specifically tests that issue #233 no longer occurs
+      @assert_that(1, is(not(equal_to(int32_array))))
+      @assert_that(1, is(not(equal_to(int64_array))))
+      @assert_that(1, is(not(equal_to(real32_array))))
+      @assert_that(1, is(not(equal_to(real64_array))))
+      @assert_that(1, is(not(equal_to(complex32_array))))
+      @assert_that(1, is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to(1))))
+      @assert_that(int64_array, is(not(equal_to(1))))
+      @assert_that(real32_array, is(not(equal_to(1))))
+      @assert_that(real64_array, is(not(equal_to(1))))
+      @assert_that(complex32_array, is(not(equal_to(1))))
+      @assert_that(complex64_array, is(not(equal_to(1))))
+
+      @assert_that([1,2,3], is(not(equal_to(int32_array))))
+      @assert_that([1,2,3], is(not(equal_to(int64_array))))
+      @assert_that([1,2,3], is(not(equal_to(real32_array))))
+      @assert_that([1,2,3], is(not(equal_to(real64_array))))
+      @assert_that([1,2,3], is(not(equal_to(complex32_array))))
+      @assert_that([1,2,3], is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(int64_array, is(not(equal_to([1,2,3]))))
+      @assert_that(real32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(real64_array, is(not(equal_to([1,2,3]))))
+      @assert_that(complex32_array, is(not(equal_to([1,2,3]))))
+      @assert_that(complex64_array, is(not(equal_to([1,2,3]))))
+
+      @assert_that(int_2D, is(not(equal_to(int32_array))))
+      @assert_that(int_2D, is(not(equal_to(int64_array))))
+      @assert_that(int_2D, is(not(equal_to(real32_array))))
+      @assert_that(int_2D, is(not(equal_to(real64_array))))
+      @assert_that(int_2D, is(not(equal_to(complex32_array))))
+      @assert_that(int_2D, is(not(equal_to(complex64_array))))
+
+      @assert_that(int32_array, is(not(equal_to(int_2D))))
+      @assert_that(int64_array, is(not(equal_to(int_2D))))
+      @assert_that(real32_array, is(not(equal_to(int_2D))))
+      @assert_that(real64_array, is(not(equal_to(int_2D))))
+      @assert_that(complex32_array, is(not(equal_to(int_2D))))
+      @assert_that(complex64_array, is(not(equal_to(int_2D))))
+   end subroutine test_is_equal_array_3d
+end module Test_IsEqual

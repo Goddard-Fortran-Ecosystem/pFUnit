@@ -5,7 +5,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.12] - 2020-08-21
+
+### Fixed
+- Problem with FHamcrest `equal_to` where when the expected value is a numeric
+  array and the actual value is any type except a numeric array the test still
+  passes, such as: ` @assert_that(1, is(equal_to([2, 3, 4])))` passes.
+  
+- Problem with FHamcrest tests causing a segment fault when a test fails that
+  involves a complex number.
+  
+### Added
+- Tests for FHamcrest `equal_to` functionality.
+
+### Chaneged
+- Changed `CMakeLists.txt` for FHamcrest tests to use the new `pfunit_add_ctest`
+  cmake macro.
+
+
+## [4.1.11] - 2020-08-04
+
+### Fixed
+- Added flag that allows GFortran 10.x to compile with argument mismatches
+  in MPI layer.  This apparently is only an issue for some MPI flavors, with
+  others importing the correct interface variability via ```use mpi```.
+
+
 ## [4.1.10] - 2020-07-29
+
 ### Fixed
 - Fixed problem under WSL+Gfortran-9 in which -O0 crashed pFUnit self tests.
 	

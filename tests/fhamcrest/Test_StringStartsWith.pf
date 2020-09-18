@@ -2,8 +2,6 @@ module Test_StringStartsWith
   use funit
   implicit none
 
-  @suite(name='Hamcrest_StringStartsWith')
-
 contains
 
   @test

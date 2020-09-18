@@ -320,9 +320,7 @@ contains
       character(:), allocatable :: string
       complex(kind=REAL32), intent(in) :: value
 
-      character(128) :: buffer
-      write(buffer,'(g0)') value
-      string = trim(buffer)
+      string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex32
 
     function description_of_complex64(value) result(string)
@@ -330,9 +328,7 @@ contains
       character(:), allocatable :: string
       complex(kind=REAL64), intent(in) :: value
 
-      character(128) :: buffer
-      write(buffer,'(g0)') value
-      string = trim(buffer)
+      string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex64
 
 
@@ -341,9 +337,7 @@ contains
       character(:), allocatable :: string
       complex(kind=REAL128), intent(in) :: value
 
-      character(128) :: buffer
-      write(buffer,'(g0)') value
-      string = trim(buffer)
+      string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex128
 
 
