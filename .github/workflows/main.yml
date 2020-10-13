@@ -52,17 +52,17 @@ jobs:
           ${FC} --version
           mpirun --version
           mpifort --show
-      - name: Build pFUnit
-        run: |
-          mkdir -p build
-          cd build
-          cmake .. -DCMAKE_Fortran_COMPILER=${FC}
-          make -j$(nproc)
-      - name: Build Tests
-        run: |
-          cd build
-          make -j$(nproc) tests
-      - name: Run Tests
-        run: |
-          cd build
+      #- name: Build pFUnit
+        #run: |
+          #mkdir -p build
+          #cd build
+          #cmake .. -DCMAKE_Fortran_COMPILER=${FC}
+          #make -j$(nproc)
+      #- name: Build Tests
+        #run: |
+          #cd build
+          #make -j$(nproc) tests
+      #- name: Run Tests
+        #run: |
+          #cd build
           #ctest -j1 --output-on-failure
