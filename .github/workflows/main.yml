@@ -57,9 +57,12 @@ jobs:
           mkdir -p build
           cd build
           cmake .. -DCMAKE_Fortran_COMPILER=${FC}
-          make -j
+          make -j$(nproc)
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) tests
       - name: Run Tests
         run: |
           cd build
-          make -j tests
-          ctest -j1 --output-on-failure
+          #ctest -j1 --output-on-failure

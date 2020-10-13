@@ -105,7 +105,7 @@ script:
    # Make tests
    - make -j$(nproc) tests
    # Run tests
-   - ctest -j $(nproc) --output-on-failure
+   - ctest -j1 --output-on-failure
 
 notifications:
    email:
