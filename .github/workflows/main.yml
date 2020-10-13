@@ -41,7 +41,7 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.5
       - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
