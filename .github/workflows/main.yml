@@ -62,4 +62,4 @@ jobs:
           cd build
           make -j
           make -j tests
-          ctest -j --output-on-failure
+          ctest -j1 --output-on-failure
