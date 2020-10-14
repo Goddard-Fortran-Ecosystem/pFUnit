@@ -59,10 +59,10 @@ jobs:
           cd build
           cmake .. -DCMAKE_Fortran_COMPILER=${FC}
           make -j$(nproc)
-      #- name: Build Tests
-        #run: |
-          #cd build
-          #make -j$(nproc) tests
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) tests
       #- name: Run Tests
         #run: |
           #cd build
