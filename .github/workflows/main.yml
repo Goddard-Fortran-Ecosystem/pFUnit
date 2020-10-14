@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15]
+        os: [ubuntu-20.04, macos-10.15]
         compiler: [gfortran-8, gfortran-9]
 
       # fail-fast is set to 'true' here which is good for production, but when
@@ -15,6 +15,7 @@ jobs:
       # GitHub Actions will stop any other test immediately. So good for production, bad
       # when trying to figure something out. For more info see:
       # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html
+
       fail-fast: true
     env:
       FC: ${{ matrix.compiler }}
@@ -41,12 +42,12 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.4
+          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.5
       - name: Set MPI Environment
         run: |
-          echo "::add-path::${HOME}/local/openmpi/bin"
-          echo "::set-env name=LD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
-          echo "::set-env name=DYLD_LIBRARY_PATH::${HOME}/local/openmpi/lib"
+          echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
       - name: Versions
         run: |
           ${FC} --version
@@ -57,9 +58,12 @@ jobs:
           mkdir -p build
           cd build
           cmake .. -DCMAKE_Fortran_COMPILER=${FC}
+          make -j$(nproc)
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) build-tests
       - name: Run Tests
         run: |
           cd build
-          make -j
-          make -j tests
-          ctest -j --output-on-failure
+          ctest -j1 --output-on-failure --repeat until-pass:4
