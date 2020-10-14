@@ -2,7 +2,7 @@ os:
    - linux
      #- osx
 
-dist: bionic
+dist: focal
 
 osx_image: xcode12
 
@@ -17,7 +17,7 @@ addons:
    apt:
       sources:
          - ubuntu-toolchain-r-test
-         - sourceline: deb https://apt.kitware.com/ubuntu/ bionic main
+         - sourceline: deb https://apt.kitware.com/ubuntu/ focal main
            key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
       packages:
          - gfortran-8
@@ -101,11 +101,11 @@ before_script:
 
 script:
    # Build
-   - make -j$(nproc) VERBOSE=1
+   - make -j4 VERBOSE=1
    # Make tests
-   - make -j$(nproc) build-tests
+   - make -j4 build-tests
    # Run tests
-   - ctest -j1 --output-on-failure
+   - ctest -j1 --output-on-failure --repeat until-pass:4
 
 notifications:
    email:
