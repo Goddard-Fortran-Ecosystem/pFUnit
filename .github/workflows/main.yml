@@ -62,7 +62,7 @@ jobs:
       - name: Build Tests
         run: |
           cd build
-          make -j$(nproc) tests
+          make -j$(nproc) build-tests
       #- name: Run Tests
         #run: |
           #cd build
