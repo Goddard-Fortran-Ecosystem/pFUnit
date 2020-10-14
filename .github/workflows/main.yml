@@ -63,7 +63,7 @@ jobs:
         run: |
           cd build
           make -j$(nproc) build-tests
-      #- name: Run Tests
-        #run: |
-          #cd build
-          #ctest -j1 --output-on-failure
+      - name: Run Tests
+        run: |
+          cd build
+          ctest --output-on-failure
