@@ -9,16 +9,14 @@ osx_image: xcode12
 language: c
 
 arch:
+  - amd64
+  - arm64
   - ppc64le
-  #- amd64
-  #- arm64
 
 addons:
    apt:
       sources:
          - sourceline: "ppa:ubuntu-toolchain-r/test"
-           #- sourceline: "deb https://apt.kitware.com/ubuntu/ focal main"
-           #key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
       packages:
          - gfortran-8
          - gfortran-9
@@ -26,7 +24,6 @@ addons:
          - g++-8
          - g++-9
          - g++-10
-           #- libgfortran5-dbg
          - libxml2-utils
          - cmake
    homebrew:
@@ -104,7 +101,7 @@ script:
    - make -j4 VERBOSE=1
    # Make tests
    - make -j4 build-tests
-   # Run tests
+   # Run tests (with repeat for transient robust failure)
    - ctest -j1 --output-on-failure --repeat until-pass:4
 
 notifications:
