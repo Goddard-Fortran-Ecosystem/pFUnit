@@ -103,7 +103,7 @@ script:
    # Build
    - make -j$(nproc) VERBOSE=1
    # Make tests
-   - make -j$(nproc) tests
+   - make -j$(nproc) build-tests
    # Run tests
    - ctest -j1 --output-on-failure
 
