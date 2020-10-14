@@ -2,7 +2,9 @@ os:
    - linux
    - osx
 
-dist: bionic
+dist: focal
+
+osx_image: xcode12
 
 language: c
 
@@ -14,13 +16,14 @@ arch:
 addons:
    apt:
       sources:
-         - ubuntu-toolchain-r-test
-         - sourceline: deb https://apt.kitware.com/ubuntu/ bionic main
-           key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+         - sourceline: "ppa:ubuntu-toolchain-r/test"
       packages:
          - gfortran-8
          - gfortran-9
-         - libgfortran5-dbg
+         - gfortran-10
+         - g++-8
+         - g++-9
+         - g++-10
          - libxml2-utils
          - cmake
    homebrew:
@@ -28,18 +31,20 @@ addons:
          - gcc@8
          - gcc@9
          - cmake
-      update: true
+      update: false
 
 env:
    global:
       - MPI_NAME=openmpi
    jobs:
-      - FC='gfortran-8' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
-      - FC='gfortran-8' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
-      - FC='gfortran-8' USE_MPI=NO
-      - FC='gfortran-9' MPI_VER=4.0.3 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
-      - FC='gfortran-9' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
-      - FC='gfortran-9' USE_MPI=NO
+      - FC='gfortran-8' CC='gcc-8' CXX='g++-8' MPI_VER=4.0.5 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-8' CC='gcc-8' CXX='g++-8' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-8' CC='gcc-8' CXX='g++-8' USE_MPI=NO CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-NOMPI
+      - FC='gfortran-9' CC='gcc-9' CXX='g++-9' MPI_VER=4.0.5 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-9' CC='gcc-9' CXX='g++-9' MPI_VER=3.1.6 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-9' CC='gcc-9' CXX='g++-9' USE_MPI=NO CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-NOMPI
+      - FC='gfortran-10' CC='gcc-10' CXX='g++-10' MPI_VER=4.0.5 USE_MPI=YES CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-$MPI_NAME-$MPI_VER
+      - FC='gfortran-10' CC='gcc-10' CXX='g++-10' USE_MPI=NO CACHE_NAME=$TRAVIS_OS_NAME-$TRAVIS_CPU_ARCH-$FC-NOMPI
 
 # Allow failures on arm64
 jobs:
@@ -57,10 +62,10 @@ cache:
    timeout: 600
 
 before_script:
-   # Install cmake
+   # Install cmake on linux (assume osx is good)
    - |
-      if [ $TRAVIS_CPU_ARCH != 'amd64' ] ; then
-         export cmake_ver=3.17.0
+      if [ $TRAVIS_OS_NAME != 'osx' ] ; then
+         export cmake_ver=3.18.1
          sh ./tools/travis-install-cmake.sh ${cmake_ver}
          # set up cmake location
          export PATH=${HOME}/local/cmake/bin:${PATH}
@@ -68,6 +73,8 @@ before_script:
          export LD_LIBRARY_PATH=${HOME}/local/cmake/lib:${LD_LIBRARY_PATH}
          # print out version information
          sudo apt purge --autoremove cmake
+         cmake --version
+      else
          cmake --version
       fi
    # install MPI
@@ -91,11 +98,11 @@ before_script:
 
 script:
    # Build
-   - make -j$(nproc) VERBOSE=1
+   - make -j4 VERBOSE=1
    # Make tests
-   - make -j$(nproc) tests
-   # Run tests
-   - ctest -j $(nproc) --output-on-failure
+   - make -j4 build-tests
+   # Run tests (with repeat for transient robust failure)
+   - ctest -j1 --output-on-failure --repeat until-pass:4
 
 notifications:
    email:
