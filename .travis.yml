@@ -16,9 +16,9 @@ arch:
 addons:
    apt:
       sources:
-         - ubuntu-toolchain-r-test
-         - sourceline: deb https://apt.kitware.com/ubuntu/ focal main
-           key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
+         - sourceline: "ppa:ubuntu-toolchain-r/test"
+           #- sourceline: "deb https://apt.kitware.com/ubuntu/ focal main"
+           #key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
       packages:
          - gfortran-8
          - gfortran-9
