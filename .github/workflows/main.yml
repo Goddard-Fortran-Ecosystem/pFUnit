@@ -15,6 +15,7 @@ jobs:
       # GitHub Actions will stop any other test immediately. So good for production, bad
       # when trying to figure something out. For more info see:
       # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html
+
       fail-fast: true
     env:
       FC: ${{ matrix.compiler }}
