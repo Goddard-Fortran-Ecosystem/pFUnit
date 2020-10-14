@@ -9,8 +9,8 @@ osx_image: xcode12
 language: c
 
 arch:
-  - amd64
-  - arm64
+  #- amd64
+  #- arm64
   - ppc64le
 
 addons:
