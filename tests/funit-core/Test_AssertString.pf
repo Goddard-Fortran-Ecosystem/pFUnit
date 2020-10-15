@@ -180,8 +180,6 @@ contains
      call assertEqual( &
           & expected = "i= 1 f= F s=word x=  1.23", &
           & found    = "i= 1  f= F s=word x=  1.23", &
-!          & expected = "i= 1 f= F s=word x=  1.23", &
-!          & found    = “i= 1  f= F s=word x=  1.23", &
           & whitespace=TRIM_ALL )
 !          & whitespace=IGNORE_DIFFERENCES )
      call assertTrue(catch( &
