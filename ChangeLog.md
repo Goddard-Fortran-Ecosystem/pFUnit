@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- Separated tests related to RobustRunner into separate test suite.  This is to
+  facilitate CI, as the tests do intermittently fail under CI, though rarely
+  in any development environment used by the main developers.
+	
 ## [4.1.12] - 2020-08-21
 
 ### Fixed
@@ -18,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Tests for FHamcrest `equal_to` functionality.
 
-### Chaneged
+### Changed
 - Changed `CMakeLists.txt` for FHamcrest tests to use the new `pfunit_add_ctest`
   cmake macro.
 
