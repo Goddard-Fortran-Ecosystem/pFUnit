@@ -27,31 +27,8 @@ module Test_UnixProcess
    use PF_ExceptionList
    use PF_UnixProcess
    implicit none
-   private
-
-   public :: suite
 
 contains
-
-   function suite()
-      use PF_TestSuite, only: TestSuite
-      use PF_TestMethod, only: TestMethod
-      type (TestSuite) :: suite
-
-      suite = TestSuite('UnixProcess')
-!#define ADD(method) call suite%addTest(TestMethod(REFLECT(method)))
-
-      call suite%addTest( &
-           &   TestMethod('testIs_active', &
-           &                  testIs_active))
-      call suite%addTest( &
-           &   TestMethod('testGet_line', &
-           &                  testGet_line))
-      call suite%addTest( &
-           &   TestMethod('testGet_Line2', &
-           &                  testGet_line2))
-
-   end function suite
 
    !------
    ! A bit self-referential, but at least it serves to drive

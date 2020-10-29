@@ -63,14 +63,6 @@ set (test_srcs
   Test_TestSuite.F90
   )
 
-if (NOT SKIP_ROBUST)
-  list (APPEND test_srcs
-    Test_UnixProcess.F90
-    Test_RobustRunner.F90
-    robustTestSuite.F90
-    )
-endif ()
-
 if (OPENMP_FORTRAN_FOUND)
   list(APPEND test_srcs Test_BasicOpenMP.F90)
 endif ()
@@ -90,9 +82,6 @@ target_link_libraries(funit_tests other_shared)
 
 add_executable (funit_tests.x EXCLUDE_FROM_ALL serial_tests.F90)
 target_link_libraries(funit_tests.x funit_tests funit)
-if (NOT SKIP_ROBUST)
-  target_compile_definitions(funit_tests.x PRIVATE Robust)
-endif ()
 
 add_test(NAME old_tests
   COMMAND funit_tests.x
@@ -101,11 +90,23 @@ add_test(NAME old_tests
 add_dependencies(build-tests funit_tests.x)
 
 if (NOT SKIP_ROBUST)
+endif ()
+
+if (NOT SKIP_ROBUST)
+  add_library(robust robustTestSuite.F90)
+  target_link_libraries(robust funit)
+  add_pfunit_ctest (robust_tests.x
+    TEST_SOURCES Test_UnixProcess.pf Test_RobustRunner.pf
+    LINK_LIBRARIES robust
+    )
+  add_dependencies(build-tests robust_tests.x)
+
   set (REMOTE_EXE remote.x)
   add_executable (${REMOTE_EXE} EXCLUDE_FROM_ALL serialRemoteProgram.F90)
-  target_link_libraries(${REMOTE_EXE} funit funit_tests)
-  add_dependencies(funit_tests.x ${REMOTE_EXE})
-  add_dependencies(tests ${REMOTE_EXE})
+  target_link_libraries(${REMOTE_EXE} funit robust)
+  add_dependencies(robust_tests.x ${REMOTE_EXE})
+  add_dependencies(build-tests ${REMOTE_EXE})
+
 endif ()
 
 
