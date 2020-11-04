@@ -106,7 +106,7 @@ files.
 
 - `Examples` - Contains examples of how to use pFUnit once it is
   installed.   These are deprecated.  Users should instead go to the
-  pFUnit-demos repository.
+  [pFUnit-demos](https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos) repository.
 
 - `LICENSE` - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT,
   also known as pFUnit.
