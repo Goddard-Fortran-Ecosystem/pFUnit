@@ -52,4 +52,15 @@ contains
 
   end subroutine test_every_fail_2d
 
+  ! Ifort 19.1.2 reproducer fom AMR_Snowfake
+  @test
+  subroutine test_triply_periodic()
+     integer, parameter :: N = 2
+     real :: a(N,N,N)
+
+     a = 1
+     @assert_that(a(1,:,:), every_item(is(real(1))))
+     
+  end subroutine test_triply_periodic
+     
 end module Test_Every

@@ -61,8 +61,8 @@ contains
 
       call this%setName(name)
       this%userMethod => method
-      this%userSetUp => setUp
-      this%userTearDown => tearDown
+      if (present(setUp)) this%userSetUp => setUp
+      if (present(tearDown)) this%userTearDown => tearDown
 
    end function TestMethod_
 

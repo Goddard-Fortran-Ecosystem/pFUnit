@@ -12,9 +12,12 @@ else ()
   set(opt "-O0")
 endif ()
 
-set(CMAKE_Fortran_FLAGS "-g ${cpp} ${opt} ${traceback} -ffree-line-length-512")
+set(common_flags "${cpp} ${opt} -ffree-line-length-512")
 if (CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 10)
-  set (CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} ${MISMATCH}")
+  set (common_flags "${common_flags} ${MISMATCH}")
 endif ()
+
+set(CMAKE_Fortran_FLAGS_DEBUG "-g ${common_flags} ${traceback}")
+set(CMAKE_Fortran_FLAGS_RELEASE "${common_flags}")
 
 add_definitions(-D_GNU)
