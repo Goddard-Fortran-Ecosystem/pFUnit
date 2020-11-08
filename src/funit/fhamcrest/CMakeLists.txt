@@ -44,7 +44,7 @@ set (srcs
   )
 
 set (generated_sources)
-function (expand in out)
+function (expand in out rank)
   set (generated_sources ${generated_sources} ${CMAKE_CURRENT_BINARY_DIR}/${out} PARENT_SCOPE)
   add_custom_command (
     OUTPUT ${out}
@@ -56,7 +56,7 @@ function (expand in out)
 endfunction()
 
 foreach(rank RANGE 1 ${MAX_ASSERT_RANK})
-  expand (${CMAKE_CURRENT_SOURCE_DIR}/ArrayWrapper.tmpl ArrayWrapper_${rank}d.F90)
+  expand (${CMAKE_CURRENT_SOURCE_DIR}/ArrayWrapper.tmpl ArrayWrapper_${rank}d.F90 ${rank})
 endforeach()
 
 

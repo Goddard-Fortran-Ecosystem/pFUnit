@@ -5,6 +5,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.13]	
+
+There is a ticket opened against Intel Fortran 19.2 which breaks some
+fHamcrest functionality.  A failing test has been added to the test
+suite.  19.1.3 still has this bug.  (I have not checked if earlier
+compilers also had this problem, but quite possibly they do as
+fHamcrest is still under development.)
+	
+## Changed
+
+- Separated tests related to RobustRunner into separate test suite.  This is to
+  facilitate CI, as the tests do intermittently fail under CI, though rarely
+  in any development environment used by the main developers.
+
+- Corrected so that default flags are with aggressive debugging.  This had been
+  the default in the past, but was apparently lost for NAG to workaround a compiler
+  bug in an intermediate release.  Also corrected the way the flags are managed
+  for Debug vs Release.
+
+## Fixed
+
+- Added workaround for NAG+cmake+OpenMP.  An issue has been filed with kitware
+  https://gitlab.kitware.com/cmake/cmake/-/issues/21280
+
+- Missing PRESENT checks for arguments in TestMethod.  Not sure how
+  these were not being caught - probably related to change mentioned
+  above about skipping debug flags with NAG Fortran.
+
+- Missing RECURSIVE attribute on function in Every.F90.  Not necessary
+  in F2008, but not all compilers have implemented this yet.
+
 ## [4.1.12] - 2020-08-21
 
 ### Fixed
@@ -18,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Tests for FHamcrest `equal_to` functionality.
 
-### Chaneged
+### Changed
 - Changed `CMakeLists.txt` for FHamcrest tests to use the new `pfunit_add_ctest`
   cmake macro.
 
