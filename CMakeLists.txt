@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.12
+  VERSION 4.1.13
   LANGUAGES Fortran C)
 
 enable_testing()
@@ -52,6 +52,7 @@ option (SKIP_ESMF "Skip building ESMF support" YES)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
+include(BuildType)
 include(CheckCompilerCapabilities)
 
 #-----------------------------------
@@ -89,6 +90,12 @@ if (NOT SKIP_OPENMP)
   else (OpenMP_Fortran_FOUND)
     message (STATUS "OpenMP not found - skipping openmp support.")
   endif()
+  # Kludge to workaround cmake+NAG+openmp linkage problem
+  if (CMAKE_Fortran_COMPILER_ID MATCHES NAG)
+    set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY
+      INTERFACE_LINK_LIBRARIES "")
+    set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY INTERFACE_LINK_OPTIONS "-openmp")
+  endif ()
 endif()
 
 

@@ -14,9 +14,9 @@ set(traceback "-traceback")
 set(cpp "-cpp")
 
 
-set(CMAKE_Fortran_FLAGS_DEBUG  "${no_optimize}")
-set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
-set(CMAKE_Fortran_FLAGS "-g ${cpp} ${traceback} ${check_all} ${disable_warning_for_long_names} -save-temps")
+set(common_flags "${cpp} ${disable_warning_for_long_names}")
+set(CMAKE_Fortran_FLAGS_DEBUG  "-O0 -g ${common_flags} ${traceback} ${no_optimize} ${check_all}")
+set(CMAKE_Fortran_FLAGS_RELEASE "-O3 ${common_flags}")
 
 add_definitions(-D_INTEL)
 add_definitions(-D__ifort_18)

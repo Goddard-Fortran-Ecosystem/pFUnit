@@ -38,7 +38,7 @@ contains
     matcher%item_matcher = item_matcher
   end function every_item_
 
-  logical function matches(this, actual_value)
+  recursive logical function matches(this, actual_value)
     class(Every), intent(in) :: this
     class(*), intent(in) :: actual_value
 
@@ -51,7 +51,7 @@ contains
 
   end function matches
 
-  logical function matches_list(this, actual_values)
+  recursive logical function matches_list(this, actual_values)
     class(Every), intent(in) :: this
     class(*), intent(in) :: actual_values(:)
 
