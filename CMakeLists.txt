@@ -63,6 +63,8 @@ if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Skip MPI and RobustRunner on MinGW
 if (MINGW)
   set(SKIP_MPI YES)
