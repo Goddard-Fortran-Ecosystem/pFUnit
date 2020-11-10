@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.14]	
+
+### Added
+- Flag for position independent code.
+
 ## [4.1.13]	
 
 There is a ticket opened against Intel Fortran 19.2 which breaks some

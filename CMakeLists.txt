@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.13
+  VERSION 4.1.14
   LANGUAGES Fortran C)
 
 enable_testing()
@@ -62,6 +62,8 @@ include(cmake/${CMAKE_Fortran_COMPILER_ID}.cmake RESULT_VARIABLE found)
 if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Skip MPI and RobustRunner on MinGW
 if (MINGW)
