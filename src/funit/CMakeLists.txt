@@ -22,7 +22,7 @@ function(funit_target_link_pfunit funit_target)
     target_link_libraries (${funit_target} PUBLIC OpenMP::OpenMP_Fortran)
   endif ()
 
-  target_link_libraries (${funit_target} PUBLIC external-pfunit)
+  target_link_libraries (${funit_target} PUBLIC gftl gftl-shared fargparse)
   target_include_directories(${funit_target} PUBLIC
     $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
     )

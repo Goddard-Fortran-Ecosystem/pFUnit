@@ -157,6 +157,17 @@ configure_file(cmake/PFUNITConfig.cmake.in
   "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake" @ONLY)
 configure_file(cmake/PFUNITConfig-version.cmake.in
   "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake" @ONLY)
+
+install(EXPORT PFUNIT
+  FILE PFUNITTargets.cmake
+  NAMESPACE PFUNIT::
+  DESTINATION "${top_dir}/cmake/PFUNIT"
+  )
+export(EXPORT PFUNIT
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/PFUNITTargets.cmake"
+  NAMESPACE PFUNIT::
+  )
+
 configure_file(cmake/PFUNIT.mk.in
   "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
