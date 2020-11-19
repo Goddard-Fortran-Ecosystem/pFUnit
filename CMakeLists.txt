@@ -150,13 +150,19 @@ file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${
 
 
 # Packaging
+include(CMakePackageConfigHelpers)
 include (cmake/packaging.cmake)
 
 # Create the PFUNITConfig.cmake and pFUnitConfigVersion files
-configure_file(cmake/PFUNITConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake" @ONLY)
-configure_file(cmake/PFUNITConfig-version.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake" @ONLY)
+configure_package_config_file(cmake/PFUNITConfig.cmake.in PFUNITConfig.cmake
+  INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/PFUNITConfig.cmake"
+)
+
+write_basic_package_version_file(
+  PFUNITConfig-version.cmake
+  VERSION ${PACKAGE_VERSION}
+  COMPATIBILITY SameMajorVersion
+  )
 
 install(EXPORT PFUNIT
   FILE PFUNITTargets.cmake

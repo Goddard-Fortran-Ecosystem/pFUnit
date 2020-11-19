@@ -6,6 +6,10 @@
 #    PFUNIT_DRIVER       - The pFUnit driver needed for running tests
 #    add_pfunit_test     - Helper function for defining test suites with .pf-files
 
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 
 if (EXISTS "@CMAKE_BINARY_DIR@/extern/gFTL")
