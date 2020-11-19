@@ -51,7 +51,7 @@ option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
 
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake" "${PROJECT_SOURCE_DIR}/include")
 include(BuildType)
 include(CheckCompilerCapabilities)
 
