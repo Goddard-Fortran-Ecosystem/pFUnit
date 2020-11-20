@@ -195,20 +195,22 @@ export(EXPORT PFUNIT
 
 # Set some variables needed by add_pfunit_test in the parent scope so
 # that the build directory can be used directly
-set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
-set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
-set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
+if (NOT MAIN_PROJECT)
+  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
+  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
+  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
 
-if (BUILD_SHARED_LIBS)
-  set (PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
-  if (NOT SKIP_MPI)
-    set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit_shared PARENT_SCOPE)
+  if (BUILD_SHARED_LIBS)
+    set (PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+    if (NOT SKIP_MPI)
+      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit_shared PARENT_SCOPE)
+    endif()
+  else()
+    set (PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+    if (NOT SKIP_MPI)
+      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit PARENT_SCOPE)
+    endif()
   endif()
-else()
-  set (PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
-  if (NOT SKIP_MPI)
-    set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit PARENT_SCOPE)
-  endif()
+
+  include(add_pfunit_test)
 endif()
-
-include(add_pfunit_test)
