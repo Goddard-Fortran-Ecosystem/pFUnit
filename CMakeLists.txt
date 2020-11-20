@@ -186,3 +186,5 @@ export(EXPORT PFUNIT
   FILE "${CMAKE_CURRENT_BINARY_DIR}/PFUNITTargets.cmake"
   NAMESPACE PFUNIT::
   )
+
+include(add_pfunit_test)
