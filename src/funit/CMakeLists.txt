@@ -58,9 +58,11 @@ endforeach()
 
 # Create exported funit libraries
 add_library (funit)
+add_library (PFUNIT::funit ALIAS funit)
 set(funit_targets funit)
 if (BUILD_SHARED)
   add_library (funit_shared SHARED)
+  add_library (PFUNIT::funit_shared ALIAS funit_shared)
   set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
   list(APPEND funit_targets funit_shared)
 endif()
