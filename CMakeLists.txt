@@ -164,16 +164,6 @@ write_basic_package_version_file(
   COMPATIBILITY SameMajorVersion
   )
 
-install(EXPORT PFUNIT
-  FILE PFUNITTargets.cmake
-  NAMESPACE PFUNIT::
-  DESTINATION "${top_dir}/cmake/PFUNIT"
-  )
-export(EXPORT PFUNIT
-  FILE "${CMAKE_CURRENT_BINARY_DIR}/PFUNITTargets.cmake"
-  NAMESPACE PFUNIT::
-  )
-
 configure_file(cmake/PFUNIT.mk.in
   "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
@@ -187,3 +177,12 @@ install(FILES
   "${PROJECT_BINARY_DIR}/PFUNIT.mk"
   DESTINATION "${top_dir}/include")
 
+install(EXPORT PFUNIT
+  FILE PFUNITTargets.cmake
+  NAMESPACE PFUNIT::
+  DESTINATION "${top_dir}/cmake"
+  )
+export(EXPORT PFUNIT
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/PFUNITTargets.cmake"
+  NAMESPACE PFUNIT::
+  )
