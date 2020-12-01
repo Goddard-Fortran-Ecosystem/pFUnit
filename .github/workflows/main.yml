@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-10.15]
-        compiler: [gfortran-8, gfortran-9]
+        gcc_version: [8, 9]
 
       # fail-fast is set to 'true' here which is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
@@ -18,7 +18,9 @@ jobs:
 
       fail-fast: true
     env:
-      FC: ${{ matrix.compiler }}
+      CC: gcc-${{ matrix.gcc_version }}
+      CXX: g++-${{ matrix.gcc_version }}
+      FC: gfortran-${{ matrix.gcc_version }}
       LANGUAGE: en_US.UTF-8
       LC_ALL: en_US.UTF-8
       LANG: en_US.UTF-8
@@ -27,11 +29,12 @@ jobs:
       OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
       OMPI_MCA_btl_vader_single_copy_mechanism: none
 
-    name: ${{ matrix.os }} / ${{ matrix.compiler }}
+    name: ${{ matrix.os }} / ${FC}
     steps:
       - name: Compiler Versions
         run: |
           ${CC} --version
+          ${CXX} --version
           ${FC} --version
       - name: Checkout
         uses: actions/checkout@v2
@@ -42,7 +45,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
+          key: mpi-${{ runner.os }}-${{ matrix.os }}-${FC}
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
