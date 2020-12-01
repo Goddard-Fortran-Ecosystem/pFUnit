@@ -29,7 +29,7 @@ jobs:
       OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
       OMPI_MCA_btl_vader_single_copy_mechanism: none
 
-    name: ${{ matrix.os }} / ${FC}
+    name: ${{ matrix.os }} / ${{ FC }}
     steps:
       - name: Compiler Versions
         run: |
@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/local/openmpi
-          key: mpi-${{ runner.os }}-${{ matrix.os }}-${FC}
+          key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ FC }}
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
