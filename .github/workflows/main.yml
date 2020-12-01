@@ -29,6 +29,10 @@ jobs:
 
     name: ${{ matrix.os }} / ${{ matrix.compiler }}
     steps:
+      - name: Compiler Versions
+        run: |
+          ${CC} --version
+          ${FC} --version
       - name: Checkout
         uses: actions/checkout@v2
         with:
