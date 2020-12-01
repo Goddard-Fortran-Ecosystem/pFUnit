@@ -7,8 +7,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-10.15]
+        os: [ubuntu-20.04]
         compiler: [gfortran-8, gfortran-9]
+        #os: [ubuntu-20.04, macos-10.15]
 
       # fail-fast is set to 'true' here which is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
