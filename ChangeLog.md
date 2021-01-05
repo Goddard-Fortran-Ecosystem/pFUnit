@@ -5,6 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.15]
+
+### Fixed
+
+- Bug in assert for relatively equal.  Incorrect index for location of of first
+  failing element.
+
 ## [4.1.14]	
 
 ### Added
