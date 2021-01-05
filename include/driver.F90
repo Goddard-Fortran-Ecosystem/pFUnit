@@ -14,40 +14,9 @@
 ! runs the user links with FUnit _and_ pFUnit.
 !---------------------------------------------------------------------------
 
-
-program main
+module loader
    use FUnit, only: TestSuite
-   use FUnit, only: stub
-#ifdef PFUNIT_EXTRA_USE
-      ! Use external code for whatever suite-wide fixture is in use.
-      use PFUNIT_EXTRA_USE
-#endif
    implicit none
-
-   procedure(), pointer :: extra_initialize
-   procedure(), pointer :: extra_finalize
-
-   external :: funit_main
-
-#ifdef PFUNIT_EXTRA_INITIALIZE
-#  ifndef PFUNIT_EXTRA_USE
-   external :: PFUNIT_EXTRA_INITIALIZE
-#  endif
-   extra_initialize => PFUNIT_EXTRA_INITIALIZE
-#else
-   extra_initialize => stub
-#endif
-
-#ifdef PFUNIT_EXTRA_FINALIZE
-#  ifndef PFUNIT_EXTRA_USE
-   external :: PFUNIT_EXTRA_FINALIZE
-#  endif
-   extra_finalize => PFUNIT_EXTRA_FINALIZE
-#else
-   extra_finalize => stub
-#endif
-
-   call funit_main(load_tests, extra_initialize, extra_finalize)
 
 contains
 
@@ -77,10 +46,38 @@ contains
 
    end function load_tests
 
+end module loader
+
+program main
+   use FUnit, only : stub
+   use loader
+#ifdef PFUNIT_EXTRA_USE
+      ! Use external code for whatever suite-wide fixture is in use.
+      use PFUNIT_EXTRA_USE
+#endif
+   implicit none
+
+   procedure(), pointer :: extra_initialize
+   procedure(), pointer :: extra_finalize
+
+#ifdef PFUNIT_EXTRA_INITIALIZE
+#  ifndef PFUNIT_EXTRA_USE
+   external :: PFUNIT_EXTRA_INITIALIZE
+#  endif
+   extra_initialize => PFUNIT_EXTRA_INITIALIZE
+#else
+   extra_initialize => stub
+#endif
+
+#ifdef PFUNIT_EXTRA_FINALIZE
+#  ifndef PFUNIT_EXTRA_USE
+   external :: PFUNIT_EXTRA_FINALIZE
+#  endif
+   extra_finalize => PFUNIT_EXTRA_FINALIZE
+#else
+   extra_finalize => stub
+#endif
+
+   call funit_main(load_tests, extra_initialize, extra_finalize)
+
 end program main
-
-
-
-
-
-
