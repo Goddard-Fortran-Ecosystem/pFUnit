@@ -957,7 +957,7 @@ contains
 #else
       if (.not. all(abs(actual - expected) <= tolerance*abs(expected))) then
          ! index of first difference is
-         i = maxloc(merge(1,0, .not. abs(actual-expected) <= tolerance))
+         i = maxloc(merge(1,0, .not. abs(actual-expected) <= tolerance%abs(expected)))
          e = expected({actual.multi_index})
          a = actual({actual.multi_index})
       else
