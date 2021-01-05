@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bug in assert for relatively equal.  Incorrect index for location of of first
   failing element.
+  
+- Workaround for WSL issue in driver.
+
 
 ## [4.1.14]	
 
