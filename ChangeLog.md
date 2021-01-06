@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.1.15]
 
+### Added
+
+- Enabled use off `add_subdirectory` and build directory directly.
+  This improves the ability to build pFUnit when embedded within
+  another project instead of building it as a separate project.
+
 ### Fixed
 
 - Bug in assert for relatively equal.  Incorrect index for location of of first
   failing element.
-  
 - Workaround for WSL issue in driver.
 
 
