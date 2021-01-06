@@ -7,6 +7,7 @@ set (srcs
 )  
 
 add_library (efunit  EXCLUDE_FROM_ALL ${srcs})
+add_library (PFUNIT::efunit ALIAS efunit)
 set_target_properties (efunit PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod)
 target_include_directories (efunit PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/../pfunit/mod>
@@ -18,6 +19,7 @@ target_link_libraries (efunit PUBLIC pfunit ${ESMF_LIBRARIES})
 
 if (BUILD_SHARED)
   add_library (efunit_shared SHARED EXCLUDE_FROM_ALL ${srcs})
+  add_library (PFUNIT::efunit_shared ALIAS efunit_shared)
   target_link_libraries (efunit_shared PUBLIC pfunit ${ESMF_LIBRARIES})
   set_target_properties (efunit_shared PROPERTIES OUTPUT_NAME efunit)
   target_include_directories (efunit_shared PUBLIC

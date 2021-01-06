@@ -20,7 +20,7 @@ set (pf_tests
 add_library (pfunittests EXCLUDE_FROM_ALL STATIC ${test_srcs})
 target_link_libraries (pfunittests pfunit funit)
 
-configure_file (${CMAKE_SOURCE_DIR}/include/driver.F90 driver.F90)
+configure_file (${PROJECT_SOURCE_DIR}/include/driver.F90 driver.F90)
 set_source_files_properties (driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 set_source_files_properties (driver.F90 PROPERTIES OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/testSuites.inc)
 
@@ -31,7 +31,7 @@ add_pfunit_sources (new_tests ${pf_tests})
 add_library(new_ptests EXCLUDE_FROM_ALL ${new_tests})
 target_link_libraries(new_ptests pfunit funit ${MPI_Fortran_LIBRARIES})
 add_executable (new_ptests.x EXCLUDE_FROM_ALL driver.F90)
-set_source_files_properties(${CMAKE_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
+set_source_files_properties(${PROJECT_SOURCE_DIR}/include/driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
 target_link_libraries(new_ptests.x new_ptests)
 
 # Fix for openmpi 1.8.8 which complains about forking due to selftests of

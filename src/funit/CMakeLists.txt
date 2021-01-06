@@ -22,7 +22,7 @@ function(funit_target_link_pfunit funit_target)
     target_link_libraries (${funit_target} PUBLIC OpenMP::OpenMP_Fortran)
   endif ()
 
-  target_link_libraries (${funit_target} PUBLIC external-pfunit)
+  target_link_libraries (${funit_target} PUBLIC gftl gftl-shared fargparse)
   target_include_directories(${funit_target} PUBLIC
     $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
     )
@@ -58,9 +58,11 @@ endforeach()
 
 # Create exported funit libraries
 add_library (funit)
+add_library (PFUNIT::funit ALIAS funit)
 set(funit_targets funit)
 if (BUILD_SHARED)
   add_library (funit_shared SHARED)
+  add_library (PFUNIT::funit_shared ALIAS funit_shared)
   set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
   list(APPEND funit_targets funit_shared)
 endif()
