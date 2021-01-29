@@ -107,3 +107,42 @@ jobs:
         run: |
           cd build
           ctest -j1 --output-on-failure --repeat until-pass:4
+
+  Nvidia:
+    runs-on: ubuntu-20.04
+    container: nvcr.io/nvidia/nvhpc:20.11-devel-cuda11.1-ubuntu20.04
+    env:
+      FC: nvfortran
+      LANGUAGE: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LC_TYPE: en_US.UTF-8
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+    name: Nvidia HPC
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+      - name: Versions
+        run: |
+          ${FC} --version
+          mpirun --version
+          mpifort --show
+      - name: Build pFUnit
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make -j$(nproc)
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) build-tests
+      - name: Run Tests
+        run: |
+          cd build
+          ctest -j1 --output-on-failure --repeat until-pass:4
