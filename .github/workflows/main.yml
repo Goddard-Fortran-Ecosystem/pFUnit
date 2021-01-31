@@ -8,10 +8,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-10.15]
-        compiler: [gfortran-8, gfortran-9]
+        compiler: [gfortran-8, gfortran-9, gfortran-10]
         exclude:
           - os: macos-10.15
             compiler: gfortran-8
+          - os: macos-10.15
+            compiler: gfortran-10
 
       # fail-fast is set to 'true' here which is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
