@@ -5,7 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.1.15] - 2020-01-06
+## [4.1.16] - 2021-01-31
+
+### Fixed
+
+- Recent CMake changes did not work with some configurations of
+  pFUnit.  E.g., builds linking to separate installations of gFTL, gFTL-shared, etc
+  would not quite work.
+
+## [4.1.15] - 2021-01-06
 
 ### Added
 

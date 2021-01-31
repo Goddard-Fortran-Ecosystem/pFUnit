@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.15
+  VERSION 4.1.16
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using

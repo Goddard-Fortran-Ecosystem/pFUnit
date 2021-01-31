@@ -9,7 +9,7 @@ macro (build_submodule submodule)
 
   find_package(${build_submodule_PROJECT} QUIET)
 
-  if (NOT ${project}_FOUND)
+  if (NOT ${build_submodule_PROJECT}_FOUND)
     if (NOT TARGET ${build_submodule_TARGET})
 
       # from https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html
