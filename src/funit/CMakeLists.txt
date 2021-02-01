@@ -22,7 +22,13 @@ function(funit_target_link_pfunit funit_target)
     target_link_libraries (${funit_target} PUBLIC OpenMP::OpenMP_Fortran)
   endif ()
 
-  target_link_libraries (${funit_target} PUBLIC gftl gftl-shared fargparse)
+  include(build_submodule)
+  # Find fArgParse first so that gFTL and gFTL-shared are consistent
+  build_submodule(${PROJECT_SOURCE_DIR}/extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse)
+  build_submodule(${PROJECT_SOURCE_DIR}/extern/gFTL-shared PROJECT GFTL_SHARED TARGET GFTL_SHARED::gftl-shared)
+  build_submodule(${PROJECT_SOURCE_DIR}/extern/gFTL PROJECT GFTL TARGET GFTL::gftl)
+
+  target_link_libraries (${funit_target} PUBLIC GFTL::gftl GFTL_SHARED::gftl-shared FARGPARSE::fargparse)
   target_include_directories(${funit_target} PUBLIC
     $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
     )
