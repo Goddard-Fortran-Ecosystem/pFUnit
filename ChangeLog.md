@@ -5,6 +5,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+ - The `add_pfunit_ctest()` macro could fail under several not-so-rare
+   circumstances.  One way is for CMake to fail to build
+   `OTHER_SOURCES` before the driver as it cannot correctly analyze
+   the indirect Fortran `USE PFUNIT_EXTRA_INITIALIZE` statement.  The
+   other is when using paralle builds with multiple test suites using
+   Intel and the `-save-temps` flag.  Here the compiler would overwrite the 
+   `driver.i90` in the build directory and produce confusing results.
+   
+   The solution is to use Cmake `configure_file()` to preprocess the driver
+   directly on a per-suite basis.   This will allow CMake+FPP to corretly 
+   analyze dependencies and avoid reuse of `driver.i90`.
+
 ## [4.1.15] - 2020-01-06
 
 ### Added
