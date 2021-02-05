@@ -2,7 +2,11 @@
 # (or is this now NVIDIA?)
 
 set(traceback "-traceback")
-set(check_all "-Mbounds -Mchkfpstk -Mchkstk")
+if( CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 20.11 )
+  set(check_all "-Mbounds -Mchkstk")
+else()
+  set(check_all "-Mbounds -Mchkfpstk -Mchkstk")
+endif()
 
 set(CMAKE_Fortran_FLAGS_DEBUG  "-O0")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
