@@ -43,11 +43,11 @@
 include (add_pfunit_sources)
 
 if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
-  set(_PFUNIT_LIBRARIES pfunit_shared)
-  set(_FUNIT_LIBRARIES funit_shared)
+  set(_PFUNIT_LIBRARIES PFUNIT::pfunit_shared)
+  set(_FUNIT_LIBRARIES PFUNIT::funit_shared)
 else()
-  set(_PFUNIT_LIBRARIES pfunit)
-  set(_FUNIT_LIBRARIES funit)
+  set(_PFUNIT_LIBRARIES PFUNIT::pfunit)
+  set(_FUNIT_LIBRARIES PFUNIT::funit)
 endif()
 
 function (add_pfunit_ctest test_package_name)

@@ -131,7 +131,6 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
 
-add_subdirectory (extern)
 add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (bin)
