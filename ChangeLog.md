@@ -5,6 +5,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2021-02-06
+
+This release fixes some instability in the build that is related to the switch
+to using namespaces and exporting targets.
+
+### Added
+
+ - Improved ability to embed pFUnit in the source tree of other projects.
+
+### Changed
+
+ - pFUnit now uses CMake namespaces.  Upstream projects should now link
+   against `PFUNIT::funit` (or `PFUNIT::pfunit`) rather than just `funit`.  Users that
+   build test suites using the `add_pfunit_ctest()` macro should not see an impact.
+
 ### Fixed
 
  - The `add_pfunit_ctest()` macro could fail under several not-so-rare
@@ -19,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    directly on a per-suite basis.   This will allow CMake+FPP to corretly 
    analyze dependencies and avoid reuse of `driver.i90`.
 
-## [4.1.15] - 2020-01-06
+## [4.1.15] - 2021-01-06
 
 ### Added
 
