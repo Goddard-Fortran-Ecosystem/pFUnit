@@ -25,10 +25,16 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.13
+  VERSION 4.2.0
   LANGUAGES Fortran C)
 
-enable_testing()
+# Determine if pFUnit is built as a subproject (using
+# add_subdirectory) or if it is the main project. Snippet taken from
+# fmt: https://github.com/fmtlib/fmt/blob/eb52ac7/CMakeLists.txt
+set(MAIN_PROJECT OFF)
+if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  set(MAIN_PROJECT ON)
+endif ()
 
 #---------------------------
 # Main configuration options
@@ -49,9 +55,11 @@ option (SKIP_OPENMP "Skip OpenMP compiler options." NO)
 option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
 option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
+option (ENABLE_TESTS "Build pFUnit tests" ${MAIN_PROJECT})
 
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PFUNIT_SOURCE_DIR}/cmake" "${PFUNIT_SOURCE_DIR}/include")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake" "${PROJECT_SOURCE_DIR}/include")
 include(BuildType)
 include(CheckCompilerCapabilities)
 
@@ -62,6 +70,8 @@ include(cmake/${CMAKE_Fortran_COMPILER_ID}.cmake RESULT_VARIABLE found)
 if(NOT found)
   message( FATAL_ERROR "Unrecognized Fortran compiler. Please use ifort, gfortran, NAG, PGI, or XL.")
 endif()
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Skip MPI and RobustRunner on MinGW
 if (MINGW)
@@ -121,40 +131,44 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
 
-add_custom_target(build-tests)
-
-add_custom_target(tests
-  COMMAND ${CMAKE_CTEST_COMMAND}
-  EXCLUDE_FROM_ALL)
-add_dependencies(tests build-tests)
-
-
-add_subdirectory (extern)
 add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (bin)
-add_subdirectory (tests EXCLUDE_FROM_ALL)
 
-# The following forces tests to be built when using "make ctest" even if some targets
-# are EXCLUDE_FROM_ALL
-# From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
-build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
-string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
-file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
+if (ENABLE_TESTS)
+  enable_testing()
+  add_custom_target(build-tests)
 
+  add_custom_target(tests
+    COMMAND ${CMAKE_CTEST_COMMAND}
+    EXCLUDE_FROM_ALL)
+  add_dependencies(tests build-tests)
 
+  add_subdirectory (tests EXCLUDE_FROM_ALL)
 
-
-
+  # The following forces tests to be built when using "make ctest" even if some targets
+  # are EXCLUDE_FROM_ALL
+  # From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
+  build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+  string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
+  file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
+endif()
 
 # Packaging
+include(CMakePackageConfigHelpers)
 include (cmake/packaging.cmake)
 
 # Create the PFUNITConfig.cmake and pFUnitConfigVersion files
-configure_file(cmake/PFUNITConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake" @ONLY)
-configure_file(cmake/PFUNITConfig-version.cmake.in
-  "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake" @ONLY)
+configure_package_config_file(cmake/PFUNITConfig.cmake.in PFUNITConfig.cmake
+  INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/PFUNITConfig.cmake"
+)
+
+write_basic_package_version_file(
+  PFUNITConfig-version.cmake
+  VERSION ${PACKAGE_VERSION}
+  COMPATIBILITY SameMajorVersion
+  )
+
 configure_file(cmake/PFUNIT.mk.in
   "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
@@ -168,3 +182,34 @@ install(FILES
   "${PROJECT_BINARY_DIR}/PFUNIT.mk"
   DESTINATION "${top_dir}/include")
 
+install(EXPORT PFUNIT
+  FILE PFUNITTargets.cmake
+  NAMESPACE PFUNIT::
+  DESTINATION "${top_dir}/cmake"
+  )
+export(EXPORT PFUNIT
+  FILE "${CMAKE_CURRENT_BINARY_DIR}/PFUNITTargets.cmake"
+  NAMESPACE PFUNIT::
+  )
+
+# Set some variables needed by add_pfunit_test in the parent scope so
+# that the build directory can be used directly
+if (NOT MAIN_PROJECT)
+  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
+  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
+  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
+
+  if (BUILD_SHARED_LIBS)
+    set (PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+    if (NOT SKIP_MPI)
+      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit_shared PARENT_SCOPE)
+    endif()
+  else()
+    set (PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+    if (NOT SKIP_MPI)
+      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit PARENT_SCOPE)
+    endif()
+  endif()
+
+  include(add_pfunit_test)
+endif()

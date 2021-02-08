@@ -22,7 +22,19 @@ function(funit_target_link_pfunit funit_target)
     target_link_libraries (${funit_target} PUBLIC OpenMP::OpenMP_Fortran)
   endif ()
 
-  target_link_libraries (${funit_target} PUBLIC external-pfunit)
+  include(build_submodule)
+  # Find fArgParse first so that gFTL and gFTL-shared are consistent
+  build_submodule(${PROJECT_SOURCE_DIR}/extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse)
+
+  if (NOT TARGET GFTL::gftl)
+    message(FATAL_ERROR "Could not find gFTL. This should not happen.")
+  endif ()
+
+  if (NOT TARGET GFTL_SHARED::gftl-shared)
+    message(FATAL_ERROR "Could not find gFTL-shared. This should not happen.")
+  endif ()
+
+  target_link_libraries (${funit_target} PUBLIC GFTL::gftl GFTL_SHARED::gftl-shared FARGPARSE::fargparse)
   target_include_directories(${funit_target} PUBLIC
     $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
     )
@@ -58,9 +70,11 @@ endforeach()
 
 # Create exported funit libraries
 add_library (funit)
+add_library (PFUNIT::funit ALIAS funit)
 set(funit_targets funit)
 if (BUILD_SHARED)
   add_library (funit_shared SHARED)
+  add_library (PFUNIT::funit_shared ALIAS funit_shared)
   set_target_properties(funit_shared PROPERTIES OUTPUT_NAME funit)
   list(APPEND funit_targets funit_shared)
 endif()

@@ -5,6 +5,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2021-02-06
+
+This release fixes some instability in the build that is related to the switch
+to using namespaces and exporting targets.
+
+### Added
+
+ - Improved ability to embed pFUnit in the source tree of other projects.
+
+### Changed
+
+ - pFUnit now uses CMake namespaces.  Upstream projects should now link
+   against `PFUNIT::funit` (or `PFUNIT::pfunit`) rather than just `funit`.  Users that
+   build test suites using the `add_pfunit_ctest()` macro should not see an impact.
+
+### Fixed
+
+ - The `add_pfunit_ctest()` macro could fail under several not-so-rare
+   circumstances.  One way is for CMake to fail to build
+   `OTHER_SOURCES` before the driver as it cannot correctly analyze
+   the indirect Fortran `USE PFUNIT_EXTRA_INITIALIZE` statement.  The
+   other is when using paralle builds with multiple test suites using
+   Intel and the `-save-temps` flag.  Here the compiler would overwrite the 
+   `driver.i90` in the build directory and produce confusing results.
+   
+   The solution is to use Cmake `configure_file()` to preprocess the driver
+   directly on a per-suite basis.   This will allow CMake+FPP to corretly 
+   analyze dependencies and avoid reuse of `driver.i90`.
+
+## [4.1.15] - 2021-01-06
+
+### Added
+
+- Enabled use off `add_subdirectory` and build directory directly.
+  This improves the ability to build pFUnit when embedded within
+  another project instead of building it as a separate project.
+
+### Fixed
+
+- Bug in assert for relatively equal.  Incorrect index for location of of first
+  failing element.
+- Workaround for WSL issue in driver.
+
+
+## [4.1.14]	
+
+### Added
+- Flag for position independent code.
+
 ## [4.1.13]	
 
 There is a ticket opened against Intel Fortran 19.2 which breaks some

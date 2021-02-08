@@ -43,11 +43,11 @@
 include (add_pfunit_sources)
 
 if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
-  set(_PFUNIT_LIBRARIES pfunit_shared)
-  set(_FUNIT_LIBRARIES funit_shared)
+  set(_PFUNIT_LIBRARIES PFUNIT::pfunit_shared)
+  set(_FUNIT_LIBRARIES PFUNIT::funit_shared)
 else()
-  set(_PFUNIT_LIBRARIES pfunit)
-  set(_FUNIT_LIBRARIES funit)
+  set(_PFUNIT_LIBRARIES PFUNIT::pfunit)
+  set(_FUNIT_LIBRARIES PFUNIT::funit)
 endif()
 
 function (add_pfunit_ctest test_package_name)
@@ -67,10 +67,17 @@ function (add_pfunit_ctest test_package_name)
 
   endforeach()
 
+  
+  if (PF_TEST_EXTRA_USE)
+    set(PFUNIT_EXTRA_USE ${PF_TEST_EXTRA_USE})
+  endif()
+  set(driver "${test_package_name}_driver.F90")
+  configure_file(${PFUNIT_DRIVER}.in ${driver})
+
   add_executable (${test_package_name}
     ${test_sources_f90}
     ${PF_TEST_OTHER_SOURCES}
-    ${PFUNIT_DRIVER}
+    ${driver}
     )
 
   if (PF_TEST_REGISTRY)

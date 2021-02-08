@@ -14,6 +14,7 @@
 ! runs the user links with FUnit _and_ pFUnit.
 !---------------------------------------------------------------------------
 
+#cmakedefine PFUNIT_EXTRA_USE @PFUNIT_EXTRA_USE@
 module loader
    use FUnit, only: TestSuite
    implicit none
@@ -53,7 +54,7 @@ program main
    use loader
 #ifdef PFUNIT_EXTRA_USE
       ! Use external code for whatever suite-wide fixture is in use.
-      use PFUNIT_EXTRA_USE
+      use @PFUNIT_EXTRA_USE@
 #endif
    implicit none
 

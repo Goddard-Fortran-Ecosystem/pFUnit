@@ -3,9 +3,10 @@ name: CI Tests
 on: [pull_request]
 
 jobs:
-  build:
+  GNU:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15]
         compiler: [gfortran-8, gfortran-9, gfortran-10]
@@ -15,13 +16,6 @@ jobs:
           - os: macos-10.15
             compiler: gfortran-10
 
-      # fail-fast is set to 'true' here which is good for production, but when
-      # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
-      # GitHub Actions will stop any other test immediately. So good for production, bad
-      # when trying to figure something out. For more info see:
-      # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html
-
-      fail-fast: true
     env:
       FC: ${{ matrix.compiler }}
       LANGUAGE: en_US.UTF-8
@@ -76,7 +70,53 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake .. -DCMAKE_Fortran_COMPILER=${FC}
+          cmake ..
+          make -j$(nproc)
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) build-tests
+      - name: Run Tests
+        run: |
+          cd build
+          ctest -j1 --output-on-failure --repeat until-pass:4
+
+  Intel:
+    runs-on: ubuntu-20.04
+
+    env:
+      FC: ifort
+      CC: icc
+      LANGUAGE: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LC_TYPE: en_US.UTF-8
+
+    name: Intel Fortran
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Intel compilers
+        run: |
+          cd /tmp
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
+          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+          sudo apt install --no-install-recommends intel-oneapi-compiler-fortran intel-oneapi-mpi \
+            intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
+          source /opt/intel/oneapi/setvars.sh
+          printenv >> $GITHUB_ENV
+      - name: Versions
+        run: |
+          ${FC} --version
+          ${CC} --version
+          mpirun --version
+      - name: Build pFUnit
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
           make -j$(nproc)
       - name: Build Tests
         run: |
