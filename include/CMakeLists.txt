@@ -12,7 +12,6 @@
 #   @echo VERSION ?= `cat VERSION` >> include/configuration.mk
 
 function(file_compile_configuration)
-   file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/../VERSION" BUILD_VERSION)
    file(WRITE  ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "# include/configuration.mk generated automatically during build\n")
    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "COMPILER  ?= ${CMAKE_Fortran_COMPILER_ID}\n")
    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "USEOPENMP ?= ${OPENMP}\n")
@@ -22,7 +21,7 @@ function(file_compile_configuration)
    ELSE()
       file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "BUILDROBUST ?= \n")
    ENDIF()
-   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "VERSION = \"${BUILD_VERSION}\"\n")
+   file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/include/configuration.mk "VERSION = \"${CMAKE_PROJECT_VERSION}\"\n")
 endfunction()
 
 # message("***--- COMPILER:   ${COMPILER}")
