@@ -67,10 +67,17 @@ function (add_pfunit_ctest test_package_name)
 
   endforeach()
 
+  
+  if (PF_TEST_EXTRA_USE)
+    set(PFUNIT_EXTRA_USE ${PF_TEST_EXTRA_USE})
+  endif()
+  set(driver "${test_package_name}_driver.F90")
+  configure_file(${PFUNIT_DRIVER}.in ${driver})
+
   add_executable (${test_package_name}
     ${test_sources_f90}
     ${PF_TEST_OTHER_SOURCES}
-    ${PFUNIT_DRIVER}
+    ${driver}
     )
 
   if (PF_TEST_REGISTRY)
