@@ -9,7 +9,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-10.15]
-        compiler: [gfortran-8, gfortran-9]
+        compiler: [gfortran-8, gfortran-9, gfortran-10]
+        exclude:
+          - os: macos-10.15
+            compiler: gfortran-8
+          - os: macos-10.15
+            compiler: gfortran-10
 
     env:
       FC: ${{ matrix.compiler }}
@@ -23,6 +28,9 @@ jobs:
 
     name: ${{ matrix.os }} / ${{ matrix.compiler }}
     steps:
+      - name: Compiler Versions
+        run: |
+          ${FC} --version
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -33,6 +41,17 @@ jobs:
         with:
           path: ~/local/openmpi
           key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
+
+      # For some reason the GitHub Actions macOS image seems to have triggered
+      # a 7-year old bug: https://github.com/Homebrew/legacy-homebrew/issues/19046
+      # For now we only fix if MPI isn't cached already as it only seems important
+      # for OpenMPI
+
+      - name: Fix gmp and mpfr on macOS if MPI isn't cached
+        if: steps.cache-mpi.outputs.cache-hit != 'true' && matrix.os == 'macos-10.15'
+        run: |
+          brew reinstall --build-from-source gmp mpfr
+
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
@@ -42,7 +61,7 @@ jobs:
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
           echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
-      - name: Versions
+      - name: MPI Versions
         run: |
           ${FC} --version
           mpirun --version
