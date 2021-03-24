@@ -5,6 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.1] - 2021-03-24
+
+This release fixes a CMake race condition in cmake when multiple ctests are
+build in parallel in the same direcory.
+
+### Fixed
+
+ - race condition in CMake build of multiple ctests in same directory
+
+
 ## [4.2.0] - 2021-02-06
 
 This release fixes some instability in the build that is related to the switch

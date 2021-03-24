@@ -79,6 +79,9 @@ function (add_pfunit_ctest test_package_name)
     ${PF_TEST_OTHER_SOURCES}
     ${driver}
     )
+  set (mod_dir ${CMAKE_CURRENT_BINARY_DIR}/mod/${test_package_name})
+  set_target_properties (${test_package_name} PROPERTIES Fortran_MODULE_DIRECTORY ${mod_dir})
+  target_include_directories(${test_package_name} PRIVATE ${mod_dir})
 
   if (PF_TEST_REGISTRY)
     set (test_suite_inc_file ${PF_TEST_REGISTRY})
