@@ -256,6 +256,7 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#ifdef _ISO_REAL128
     type is (real(kind=REAL128))
        select type(a => actual_value)
        type is (real(kind=REAL128))
@@ -263,6 +264,7 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
     type is (complex(kind=REAL32))
        select type(a => actual_value)
        type is (complex(kind=REAL32))
@@ -277,6 +279,7 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#ifdef _ISO_REAL128
     type is (complex(kind=REAL128))
        select type(a => actual_value)
        type is (complex(kind=REAL128))
@@ -284,6 +287,7 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
     type is (character(*))
        select type(a => actual_value)
        type is (character(*))

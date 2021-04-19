@@ -40,10 +40,12 @@ module pf_BaseDescription
       module procedure description_of_int64
       module procedure description_of_real32
       module procedure description_of_real64
-      module procedure description_of_real128
       module procedure description_of_complex32
       module procedure description_of_complex64
+#ifdef _ISO_REAL128
+      module procedure description_of_real128
       module procedure description_of_complex128
+#endif
    end interface description_of
    
 contains
@@ -304,7 +306,7 @@ contains
       string = trim(buffer)
     end function description_of_real64
 
-
+#ifdef _ISO_REAL128
     function description_of_real128(value) result(string)
       use pf_Matchable
       character(:), allocatable :: string
@@ -314,6 +316,7 @@ contains
       write(buffer,'(g0)') value
       string = trim(buffer)
     end function description_of_real128
+#endif
 
     function description_of_complex32(value) result(string)
       use pf_Matchable
@@ -331,7 +334,7 @@ contains
       string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex64
 
-
+#ifdef _ISO_REAL128
     function description_of_complex128(value) result(string)
       use pf_Matchable
       character(:), allocatable :: string
@@ -339,6 +342,6 @@ contains
 
       string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex128
-
+#endif
 
 end module pf_BaseDescription
