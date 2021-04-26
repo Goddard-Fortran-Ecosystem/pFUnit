@@ -212,4 +212,5 @@ if (NOT MAIN_PROJECT)
   endif()
 
   include(add_pfunit_test)
+  include(add_pfunit_ctest)
 endif()
