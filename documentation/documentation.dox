@@ -4,12 +4,12 @@
 \page page_ObtainingPFUNIT Obtaining pFUnit
 
 The best way to obtain pFUnit is to <a
-href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">clone
+href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit">clone
 pFUnit from the git repository</a> from SourceForge as follows.
 
 \code
 # Read Only Access
-git clone git://git.code.sf.net/p/pfunit/code pFUnit\endcode
+git clone git@github.com:Goddard-Fortran-Ecosystem/pFUnit.git pFUnit\endcode
 
 This will create the directory pFUnit in the current working
 directory.  
@@ -17,19 +17,19 @@ directory.
 You may also visit the project page at SourceForge and
 download the source tarfile "pFUnit.tar.gz" there.
 
-http://sourceforge.net/projects/pfunit/
+https://github.com/Goddard-Fortran-Ecosystem/pFUnit
 or
-http://sourceforge.net/projects/pfunit/files/latest/download
+https://github.com/Goddard-Fortran-Ecosystem/pFUnit/releases
 
 Extracting this tarfile via a command like
 
-`$ tar zxf ./pFUnit.tar.gz`
+`$ tar zxf ./pFUnit-4.2.1.tar.gz`
 
 will place the pFUnit files into the current working directory.
 
 For other ways to acquire the code visit
 
-https://sourceforge.net/p/pfunit/code/ci/master/tree/
+https://github.com/Goddard-Fortran-Ecosystem/pFUnit
 
 or contact the pFUnit team.
 
@@ -506,15 +506,15 @@ user's paths.
 
 \section sec_Feedback Feedback
 
-Feedback is welcome, please use the facilities at <a href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a> to share your views.  
+Feedback is welcome, please use the facilities at <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues">oddard-Fortran-Ecosystem/pFUnit/issues</a> to share your views.  
 
-Open a <a href="https://sourceforge.net/p/pfunit/_list/tickets?source=navbar">ticket</a> for bugs, features, and patch recommendations. 
+Open a <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues/new">issue</a> for bugs, features, and patch recommendations. 
 
 If you use pFUnit, please let us know by leaving a note in our <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a> forum, or email <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., NASA Goddard Space Flight Center.  Letting us know about your application helps us seek support for pFUnit's continued development and improvement.
 
 \section sec_Support Support
 
-Please open a <a href="https://sourceforge.net/p/pfunit/_list/tickets?source=navbar">ticket</a> for bugs, features, and patch recommendations. For longer term needs or considerations, please visit our <a href="https://sourceforge.net/p/pfunit/discussion/?source=navbar">discussion forums</a> or contact <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., NASA Goddard Space Flight Center.
+Please open a <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues/new">issue</a> for bugs, features, and patch recommendations. For longer term needs or considerations, please visit our <a href="https://sourceforge.net/p/pfunit/discussion/?source=navbar">discussion forums</a> or contact <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., NASA Goddard Space Flight Center.
 
 You may also find some help at \ref page_FAQAndTips.
 
