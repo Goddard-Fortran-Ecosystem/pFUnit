@@ -809,7 +809,7 @@ class Parser():
         self.outputFile.write('\nend function ' + self.suiteName + '\n\n')
 
     def addSimpleTestMethod(self, testMethod):
-        args = "'" + testMethod['name'] + "', " + testMethod['name']
+        args = "'" + testMethod['name'] + "', &\n      " + testMethod['name']
         if 'setUp' in testMethod:
             args += ', ' + 'setUp='+testMethod['setUp']
         elif 'setUp' in self.userTestCase:
@@ -833,7 +833,7 @@ class Parser():
 
     def addMpiTestMethod(self, testMethod):
         for npes in testMethod['npRequests']:
-            args = "'" + testMethod['name'] + "', " + testMethod['name'] + ", " + str(npes)
+            args = "'" + testMethod['name'] + "', &\n      " + testMethod['name'] + ", " + str(npes)
             if 'setUp' in testMethod:
                 args += ', ' + testMethod['setUp']
             elif 'setUp' in self.userTestCase:
