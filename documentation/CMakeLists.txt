@@ -208,7 +208,7 @@ if (${DOXYGEN_FOUND})
   message(WARNING "Doxygen not found. To enable auto-generation of API documenation install Doxygen ")
 endif ()
 
-if (BUILD_DOXYGEN)
+if (ENABLE_BUILD_DOXYGEN)
 doxygen_add_docs(docs-internal
   "${CMAKE_SOURCE_DIR}/bin"
   "${CMAKE_SOURCE_DIR}/documentation"
