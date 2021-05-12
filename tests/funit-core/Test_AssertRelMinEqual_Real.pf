@@ -43,6 +43,7 @@ contains
      @assertRelMinEqual(1, 1.1, 0.2, 0.2)
      @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
      @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
+     @assertRelMinEqual(0.005, 0.006, 0.1, 0.01)
 
 #ifdef _REAL32
      @assertRelMinEqual(1, 1.1_REAL32, 0.2, 0.2)
