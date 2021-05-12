@@ -1,0 +1,13 @@
+module Test_DisableFirstTest
+  use FUnit
+  implicit none
+
+  @suite(name='DisableFirst_suite')
+
+contains
+
+  @disable
+  subroutine first_test_disable_annotation()
+  end subroutine first_test_disable_annotation
+
+end module Test_DisableFirstTest
