@@ -1,0 +1,165 @@
+! Goal is not to exhaustively test all combinations, but rather at least
+! one variant along each axis:
+! Reference comparison:  default real scalar
+
+
+module Test_assertRelMinEqual_Real
+  use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+  use, intrinsic :: iso_fortran_env, only: REAL128
+  use pf_StringUtilities
+  use pf_SourceLocation
+  use pf_Exceptionlist
+  use FUnit, only: SourceLocation, throw, anyExceptions, AssertExceptionRaised
+  use pf_AssertBasic
+  use pf_AssertReal_0d
+  use pf_AssertReal_1d
+  use pf_AssertReal_2d
+  use pf_AssertReal_3d
+#ifdef _REAL32_IEEE_SUPPORT
+     use MakeInf, only:  makeInf_32
+#endif
+#ifdef _REAL64_IEEE_SUPPORT
+     use MakeInf, only:  makeInf_64
+#endif
+#ifdef _REAL128_IEEE_SUPPORT
+     use MakeInf, only:  makeInf_128
+#endif
+  implicit none
+     
+  @suite(name='assertRelMinEqual_Real_suite')
+
+  real(kind=REAL32), parameter :: good = 1
+  real(kind=REAL32), parameter :: bad  = -999
+
+  character(len=1), parameter :: NL = new_line('a')
+contains
+
+
+  ! First a series of tests that should not raise exceptions.
+
+
+  @test
+  subroutine test_relatively_equal_scalar()
+     @assertRelMinEqual(1, 1.1, 0.2, 0.2)
+     @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
+     @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
+
+#ifdef _REAL32
+     @assertRelMinEqual(1, 1.1_REAL32, 0.2, 0.2)
+     @assertRelMinEqual(1.0, 1.1_REAL32, 0.2, 0.2)
+     @assertRelMinEqual(1.0_REAL32, 1.1_REAL32, 0.2, 0.2)
+
+     @assertRelMinEqual(1, 1.1_REAL32, 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual(1.0, 1.1_REAL32, 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual(1.0_REAL32, 1.1_REAL32, 0.2_REAL32, 0.2_REAL32)
+#endif
+     
+#ifdef _REAL64
+     @assertRelMinEqual(1, 1.1_REAL64, 0.2, 0.2)
+     @assertRelMinEqual(1.0, 1.1_REAL64, 0.2, 0.2)
+     @assertRelMinEqual(1.0_REAL64, 1.1_REAL64, 0.2, 0.2)
+
+     @assertRelMinEqual(1, 1.1_REAL64, 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual(1.0, 1.1_REAL64, 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual(1.0_REAL64, 1.1_REAL64, 0.2_REAL64, 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+     @assertRelMinEqual(1, 1.1_REAL128, 0.2, 0.2)
+     @assertRelMinEqual(1.0, 1.1_REAL128, 0.2, 0.2)
+     @assertRelMinEqual(1.0_REAL128, 1.1_REAL128, 0.2, 0.2)
+
+     @assertRelMinEqual(1, 1.1_REAL128, 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual(1.0, 1.1_REAL128, 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual(1.0_REAL128, 1.1_REAL128, 0.2_REAL128, 0.2_REAL128)
+#endif
+
+  end subroutine test_relatively_equal_scalar
+
+  @test
+  subroutine test_relatively_equal_1D_actual
+
+     @assertRelMinEqual(1, [1.1], 0.2, 0.2)
+     @assertRelMinEqual(1.0, [1.1,1.1,1.1], 0.2, 0.2)
+     @assertRelMinEqual(1.1, [1.1,1.1,1.1],0.2,0.2)
+     @assertRelMinEqual([1,2], [1.1,2.1], 0.2, 0.2)
+     @assertRelMinEqual([1.0,2.0], [1.1,2.1], 0.2, 0.2)
+     @assertRelMinEqual([1.1,2.1], [1.1,2.1], 0.2, 0.2)
+
+#ifdef _REAL32      
+     @assertRelMinEqual(1, [1.1_REAL32], 0.2, 0.2)
+     @assertRelMinEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2, 0.2)
+     @assertRelMinEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2,0.2)
+     @assertRelMinEqual([1,2], [1.1_REAL32,2.1_REAL32], 0.2, 0.2)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL32,2.1_REAL32], 0.2, 0.2)
+     @assertRelMinEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2, 0.2)
+
+     @assertRelMinEqual(1, [1.1_REAL32], 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2_REAL32,0.2_REAL32)
+     @assertRelMinEqual([1,2], [1.1_REAL32,2.1_REAL32], 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL32,2.1_REAL32], 0.2_REAL32, 0.2_REAL32)
+     @assertRelMinEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2_REAL32, 0.2_REAL32)
+#endif
+
+#ifdef _REAL64
+     @assertRelMinEqual(1, [1.1_REAL64], 0.2, 0.2)
+     @assertRelMinEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2, 0.2)
+     @assertRelMinEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2,0.2)
+     @assertRelMinEqual([1,2], [1.1_REAL64,2.1_REAL64], 0.2, 0.2)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL64,2.1_REAL64], 0.2, 0.2)
+     @assertRelMinEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2, 0.2)
+
+     @assertRelMinEqual(1, [1.1_REAL64], 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2_REAL64,0.2_REAL64)
+     @assertRelMinEqual([1,2], [1.1_REAL64,2.1_REAL64], 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL64,2.1_REAL64], 0.2_REAL64, 0.2_REAL64)
+     @assertRelMinEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2_REAL64, 0.2_REAL64)
+#endif
+
+#ifdef _REAL128
+     @assertRelMinEqual(1, [1.1_REAL128], 0.2, 0.2)
+     @assertRelMinEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2, 0.2)
+     @assertRelMinEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2,0.2)
+     @assertRelMinEqual([1,2], [1.1_REAL128,2.1_REAL128], 0.2, 0.2)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL128,2.1_REAL128], 0.2, 0.2)
+     @assertRelMinEqual([1.1_REAL128,2.1_REAL128], [1.1_REAL128,2.1_REAL128], 0.2, 0.2)
+
+     @assertRelMinEqual(1, [1.1_REAL128], 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2_REAL128,0.2_REAL128)
+     @assertRelMinEqual([1,2], [1.1_REAL128,2.1_REAL128], 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual([1.0,2.0], [1.1_REAL128,2.1_REAL128], 0.2_REAL128, 0.2_REAL128)
+     @assertRelMinEqual([1.1_REAL128,2.1_REAL128], [1.1_REAL128,2.1_REAL128], 0.2_REAL128, 0.2_REAL128)
+#endif
+     
+  end subroutine test_relatively_equal_1D_actual
+
+
+  @test
+  subroutine test_rel_equal_fail_scalar_with_tolerance()
+     ! This should succeed.
+     call assertRelMinEqual(10.0, 11.0, 0.2, 0.2)
+     ! But this should fail
+     call assertRelMinEqual(10.0, 12.0, 0.1, 0.1)
+     call assertExceptionRaised(&
+          & 'assertRelMinEqual failure:' // NL // &
+          & '           Expected: <'//to_string(10.)//'>' // NL // &
+          & '             Actual: <'//to_string(12.)//'>' // NL // &
+          & '    Rel. difference: <'//to_string(0.2)//'> (greater than calculated tolerance of '//to_string(1.0)//')' &
+          & )
+  end subroutine test_rel_equal_fail_scalar_with_tolerance
+
+function to_string(x) result(str)
+   real, intent(in) :: x
+   character(len=:), allocatable :: str
+
+   character(255) :: buffer
+   write(buffer,'(g0)') x
+   str = trim(buffer)
+
+end function to_string
+
+end module Test_assertRelMinEqual_Real
+  

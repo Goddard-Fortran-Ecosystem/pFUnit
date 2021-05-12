@@ -21,7 +21,8 @@ assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
                    'relativelyequal': 2, 'isinfinite': 1, 'isfinite': 1,
                    'isnan': 1, 'ismemberof': 2, 'contains': 2, 'any': 1,
                    'all': 1, 'notall': 1, 'none': 1, 'ispermutationof': 2,
-                   'exceptionraised': 0, 'sameshape': 2, 'that': 2, '_that': 2}
+                   'exceptionraised': 0, 'sameshape': 2, 'that': 2, '_that': 2,
+                   'relminequal': 2}
 
 def cppSetLineAndFile(line, file):
     if sysconfig.get_platform() == 'mingw':

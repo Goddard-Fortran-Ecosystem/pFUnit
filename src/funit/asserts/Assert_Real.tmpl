@@ -122,6 +122,79 @@
 [(real,  128, 0), (real,  128, rank), (real, 128, 0)]
 @end tkr_parameters
 
+@tkr_parameters with_rel_tol
+! Tolerance is default real
+[(integer,  default, rank), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, rank), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(real,  double, rank), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, rank), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(real, default, rank), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(real,  32, rank), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, rank), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(real, default, rank), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(real,  64, rank), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, rank), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(real, default, rank), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(real,  80, rank), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, rank), (real,  128, rank), (real, default, 0), (real, default, 0)]
+[(real, default, rank), (real,  128, rank), (real, default, 0), (real, default, 0)]
+[(real,  128, rank), (real,  128, rank), (real, default, 0), (real, default, 0)]
+! Tolerance is same kind as actual
+[(integer,  default, rank), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, rank), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(integer,  default, rank), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(real,  default, rank), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(real,  double, rank), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(integer, default, rank), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(real, default, rank), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(real,  32, rank), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(integer, default, rank), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(real, default, rank), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(real,  64, rank), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(integer, default, rank), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(real, default, rank), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(real,  80, rank), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(integer, default, rank), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+[(real, default, rank), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+[(real,  128, rank), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+! And again with conformable rank 0
+[(integer,  default, 0), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, 0), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(real,  double, 0), (real,  double, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, 0), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(real, default, 0), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(real,  32, 0), (real,  32, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, 0), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(real, default, 0), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(real,  64, 0), (real,  64, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, 0), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(real, default, 0), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(real,  80, 0), (real,  80, rank), (real, default, 0), (real, default, 0)]
+[(integer, default, 0), (real,  128, rank), (real, default, 0), (real, default, 0)]
+[(real, default, 0), (real,  128, rank), (real, default, 0), (real, default, 0)]
+[(real,  128, 0), (real,  128, rank), (real, default, 0), (real, default, 0)]
+[(integer,  default, 0), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(real,  default, 0), (real,  default, rank), (real, default, 0), (real, default, 0)]
+[(integer,  default, 0), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(real,  default, 0), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(real,  double, 0), (real,  double, rank), (real, double, 0), (real, double, 0)]
+[(integer, default, 0), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(real, default, 0), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(real,  32, 0), (real,  32, rank), (real, 32, 0), (real, 32, 0)]
+[(integer, default, 0), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(real, default, 0), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(real,  64, 0), (real,  64, rank), (real, 64, 0), (real, 64, 0)]
+[(integer, default, 0), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(real, default, 0), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(real,  80, 0), (real,  80, rank), (real, 80, 0), (real, 80, 0)]
+[(integer, default, 0), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+[(real, default, 0), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+[(real,  128, 0), (real,  128, rank), (real, 128, 0), (real, 128, 0)]
+@end tkr_parameters
 
 #include "unused_dummy.fh"
 
@@ -176,6 +249,7 @@ module pf_AssertReal_{rank}d
    @overload(AssertGreaterThanOrEqual, no_tol)
 
    @overload(AssertRelativelyEqual, with_tol)
+   @overload(assertRelMinEqual, with_rel_tol)
    @overload(AssertAssociated, minimal)
 
    @overload(assert_equal, minimal)
@@ -185,6 +259,7 @@ module pf_AssertReal_{rank}d
    @overload(assert_greater_than, minimal)
    @overload(assert_greater_than_or_equal, minimal)
    @overload(assert_relatively_equal, minimal)
+   @overload(assert_rel_min_equal, minimal)
 
 
    integer, parameter :: MAX_LEN_REAL_AS_STRING = 40
@@ -981,7 +1056,97 @@ contains
    end subroutine {name}
    @end template
 
+   @template(assertRelMinEqual,[expected,actual,rel_tolerance,tolerance])
+   subroutine {name}(expected, actual, rel_tolerance, tolerance, message, location)
+      {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {rel_tolerance.type} (kind={rel_tolerance.kind}), intent(in) :: rel_tolerance
+      {tolerance.type} (kind={tolerance.kind}), intent(in) :: tolerance
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: rel_t
+      real(kind=kind(actual)) :: t
+      real(kind=kind(actual)), allocatable :: e {actual.dims}
+
+      if (.not. conformable(shape(expected), shape(actual))) then
+         call fail_not_conformable(shape(expected), shape(actual), message=message, location=location)
+         return
+      end if
+
+      ! Trick to get e to have the right shape even if "expected" is a scalar.
+      e = 0*actual + expected
+
+      if (any([e] == 0)) then
+         call fail_generic('Zero denominator detected in assertRelMinEqual.',message=message, location=location)
+         return
+      end if
+
+      rel_t = real(rel_tolerance, kind(actual))
+      t = real(tolerance, kind(actual))
+
+      call assert_rel_min_equal(e, actual, rel_t, t, message=message, location=location)
+
+   end subroutine {name}
+   @end template
    
+   @template(assert_rel_min_equal,[actual])
+   subroutine {name}(expected, actual, rel_tolerance, tolerance, unused, message, location)
+      {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
+      {actual.type} (kind={actual.kind}), intent(in) :: rel_tolerance
+      {actual.type} (kind={actual.kind}), intent(in) :: tolerance
+      class (KeywordEnforcer), optional, intent(in) :: unused
+      character(*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      real(kind=kind(actual)) :: e, a, rd, calc_eps
+
+#if {actual.rank} != 0
+      integer, allocatable :: i(:)
+#endif
+      character(len=MAX_LEN_REAL_AS_STRING) :: expected_str
+      character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
+      character(len=3*MAX_LEN_REAL_AS_STRING) :: diff_str
+
+      _UNUSED_DUMMY(unused)
+
+#if {actual.rank} == 0
+      ! scalar
+      if (.not. (abs(actual - expected) <= max(rel_tolerance*abs(expected), tolerance))) then
+         e = expected
+         a = actual
+      else
+         return
+      end if
+         
+#else
+      if (.not. all(abs(actual - expected) <= max(rel_tolerance*abs(expected), tolerance))) then
+         ! index of first difference is
+         i = maxloc(merge(1,0, .not. abs(actual-expected) <= max(rel_tolerance*abs(expected), tolerance)))
+         e = expected({actual.multi_index})
+         a = actual({actual.multi_index})
+      else
+         return
+      end if
+#endif
+      calc_eps = max(rel_tolerance*abs(e), tolerance)
+      rd = (a - e)/e
+
+      ! Wish: allocatable strings were useful as internal files ...
+      write(expected_str,'(g0)') e
+      write(actual_str,'(g0)') a
+      write(diff_str,'("<",g0,"> (greater than calculated tolerance of ",g0,")")') rd, calc_eps
+      
+#if {actual.rank} == 0
+      call fail_not_relatively_min_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+           & message=message, location=location)
+#else
+      call fail_not_relatively_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+           & message=message, location=location)
+#endif
+   end subroutine {name}
+   @end template 
 
    @instantiate(AssertEqual, with_tol)
    @instantiate(AssertNotEqual, with_tol)
@@ -990,6 +1155,7 @@ contains
    @instantiate(AssertGreaterThan, with_tol)
    @instantiate(AssertGreaterThanOrEqual, with_tol)
    @instantiate(AssertRelativelyEqual, with_tol)
+   @instantiate(assertRelMinEqual, with_rel_tol)
 
    @instantiate(AssertEqual, no_tol)
    @instantiate(AssertNotEqual, no_tol)
@@ -1007,6 +1173,7 @@ contains
    @instantiate(assert_greater_than, minimal)
    @instantiate(assert_greater_than_or_equal, minimal)
    @instantiate(assert_relatively_equal, minimal)
+   @instantiate(assert_rel_min_equal, minimal)
    
 end module pf_AssertReal_{rank}d
 
