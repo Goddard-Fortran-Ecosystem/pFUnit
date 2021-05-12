@@ -249,7 +249,7 @@ module pf_AssertReal_{rank}d
    @overload(AssertGreaterThanOrEqual, no_tol)
 
    @overload(AssertRelativelyEqual, with_tol)
-   @overload(assertRelMinEqual, with_rel_tol)
+   @overload(AssertRelMinEqual, with_rel_tol)
    @overload(AssertAssociated, minimal)
 
    @overload(assert_equal, minimal)
@@ -1056,7 +1056,7 @@ contains
    end subroutine {name}
    @end template
 
-   @template(assertRelMinEqual,[expected,actual,rel_tolerance,tolerance])
+   @template(AssertRelMinEqual,[expected,actual,rel_tolerance,tolerance])
    subroutine {name}(expected, actual, rel_tolerance, tolerance, message, location)
       {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
@@ -1077,10 +1077,10 @@ contains
       ! Trick to get e to have the right shape even if "expected" is a scalar.
       e = 0*actual + expected
 
-      if (any([e] == 0)) then
-         call fail_generic('Zero denominator detected in assertRelMinEqual.',message=message, location=location)
-         return
-      end if
+      !if (any([e] == 0)) then
+      !   call fail_generic('Small denominator detected in AssertRelMinEqual.',message=message, location=location)
+      !   return
+      !end if
 
       rel_t = real(rel_tolerance, kind(actual))
       t = real(tolerance, kind(actual))
@@ -1131,7 +1131,11 @@ contains
       end if
 #endif
       calc_eps = max(rel_tolerance*abs(e), tolerance)
-      rd = (a - e)/e
+      if ( e > 0) then
+         rd = (a - e)/e
+      else
+         rd = HUGE(e)
+      end if
 
       ! Wish: allocatable strings were useful as internal files ...
       write(expected_str,'(g0)') e
@@ -1155,7 +1159,7 @@ contains
    @instantiate(AssertGreaterThan, with_tol)
    @instantiate(AssertGreaterThanOrEqual, with_tol)
    @instantiate(AssertRelativelyEqual, with_tol)
-   @instantiate(assertRelMinEqual, with_rel_tol)
+   @instantiate(AssertRelMinEqual, with_rel_tol)
 
    @instantiate(AssertEqual, no_tol)
    @instantiate(AssertNotEqual, no_tol)

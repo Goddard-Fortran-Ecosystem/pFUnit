@@ -3,7 +3,7 @@
 ! Reference comparison:  default real scalar
 
 
-module Test_assertRelMinEqual_Real
+module Test_AssertRelMinEqual_Real
   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
   use, intrinsic :: iso_fortran_env, only: REAL128
   use pf_StringUtilities
@@ -26,7 +26,7 @@ module Test_assertRelMinEqual_Real
 #endif
   implicit none
      
-  @suite(name='assertRelMinEqual_Real_suite')
+  @suite(name='AssertRelMinEqual_Real_suite')
 
   real(kind=REAL32), parameter :: good = 1
   real(kind=REAL32), parameter :: bad  = -999
@@ -44,6 +44,7 @@ contains
      @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
      @assertRelMinEqual(1.0, 1.1, 0.2, 0.2)
      @assertRelMinEqual(0.005, 0.006, 0.1, 0.01)
+     @assertRelMinEqual(0.0, 0.0, 0.1, 0.01)
 
 #ifdef _REAL32
      @assertRelMinEqual(1, 1.1_REAL32, 0.2, 0.2)
@@ -145,7 +146,7 @@ contains
      ! But this should fail
      call assertRelMinEqual(10.0, 12.0, 0.1, 0.1)
      call assertExceptionRaised(&
-          & 'assertRelMinEqual failure:' // NL // &
+          & 'AssertRelMinEqual failure:' // NL // &
           & '           Expected: <'//to_string(10.)//'>' // NL // &
           & '             Actual: <'//to_string(12.)//'>' // NL // &
           & '    Rel. difference: <'//to_string(0.2)//'> (greater than calculated tolerance of '//to_string(1.0)//')' &
@@ -162,5 +163,5 @@ function to_string(x) result(str)
 
 end function to_string
 
-end module Test_assertRelMinEqual_Real
+end module Test_AssertRelMinEqual_Real
   
