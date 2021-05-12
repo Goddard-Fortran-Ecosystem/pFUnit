@@ -622,6 +622,8 @@ class AtDisable(Action):
 
     def action(self, m, line):
         print("Processing disable:")
+        if not hasattr(self.parser,'current_method'):
+            self.parser.current_method = {}
         self.parser.current_method['disable'] = True
         self.parser.commentLine(line)
                 
