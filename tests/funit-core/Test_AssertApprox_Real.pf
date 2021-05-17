@@ -149,7 +149,7 @@ contains
           & 'AssertApprox failure:' // NL // &
           & '           Expected: <'//to_string(10.)//'>' // NL // &
           & '             Actual: <'//to_string(12.)//'>' // NL // &
-          & '    Rel. difference: <'//to_string(2.0)//'> (greater than calculated tolerance of '//to_string(1.0)//')' &
+          & '         Difference: <'//to_string(2.0)//'> (greater than calculated tolerance of '//to_string(1.0)//')' &
           & )
   end subroutine test_rel_equal_fail_scalar_with_tolerance
 

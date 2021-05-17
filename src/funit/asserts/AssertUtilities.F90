@@ -362,7 +362,7 @@ contains
       fail_message = base_message('AssertApprox', message, index)
       fail_message = fail_message // new_line('A')    // '           Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A')    // '             Actual: <' // actual // '>'
-      fail_message = fail_message // new_line('A')    // '    Rel. difference: ' // difference
+      fail_message = fail_message // new_line('A')    // '         Difference: ' // difference
       if (present(index)) then
          fail_message = fail_message // new_line('A') // '      at index: ' // toString(index)
       end if
