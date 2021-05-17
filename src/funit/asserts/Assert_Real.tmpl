@@ -249,7 +249,7 @@ module pf_AssertReal_{rank}d
    @overload(AssertGreaterThanOrEqual, no_tol)
 
    @overload(AssertRelativelyEqual, with_tol)
-   @overload(AssertRelMinEqual, with_rel_tol)
+   @overload(AssertApprox, with_rel_tol)
    @overload(AssertAssociated, minimal)
 
    @overload(assert_equal, minimal)
@@ -259,7 +259,7 @@ module pf_AssertReal_{rank}d
    @overload(assert_greater_than, minimal)
    @overload(assert_greater_than_or_equal, minimal)
    @overload(assert_relatively_equal, minimal)
-   @overload(assert_rel_min_equal, minimal)
+   @overload(assert_approx, minimal)
 
 
    integer, parameter :: MAX_LEN_REAL_AS_STRING = 40
@@ -1056,7 +1056,7 @@ contains
    end subroutine {name}
    @end template
 
-   @template(AssertRelMinEqual,[expected,actual,rel_tolerance,tolerance])
+   @template(AssertApprox,[expected,actual,rel_tolerance,tolerance])
    subroutine {name}(expected, actual, rel_tolerance, tolerance, message, location)
       {expected.type} (kind={expected.kind}), intent(in) :: expected {expected.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
@@ -1078,19 +1078,19 @@ contains
       e = 0*actual + expected
 
       !if (any([e] == 0)) then
-      !   call fail_generic('Small denominator detected in AssertRelMinEqual.',message=message, location=location)
+      !   call fail_generic('Small denominator detected in AssertApprox.',message=message, location=location)
       !   return
       !end if
 
       rel_t = real(rel_tolerance, kind(actual))
       t = real(tolerance, kind(actual))
 
-      call assert_rel_min_equal(e, actual, rel_t, t, message=message, location=location)
+      call assert_approx(e, actual, rel_t, t, message=message, location=location)
 
    end subroutine {name}
    @end template
    
-   @template(assert_rel_min_equal,[actual])
+   @template(assert_approx,[actual])
    subroutine {name}(expected, actual, rel_tolerance, tolerance, unused, message, location)
       {actual.type} (kind={actual.kind}), intent(in) :: expected {actual.dims}
       {actual.type} (kind={actual.kind}), intent(in) :: actual {actual.dims}
@@ -1100,10 +1100,11 @@ contains
       character(*), optional, intent(in) :: message
       type (SourceLocation), optional, intent(in) :: location
 
-      real(kind=kind(actual)) :: e, a, rd, calc_eps
+      real(kind=kind(actual)) :: e, a, d, calc_eps
 
 #if {actual.rank} != 0
       integer, allocatable :: i(:)
+      logical, allocatable :: within_tolerance {actual.dims}
 #endif
       character(len=MAX_LEN_REAL_AS_STRING) :: expected_str
       character(len=MAX_LEN_REAL_AS_STRING) :: actual_str
@@ -1112,7 +1113,11 @@ contains
       _UNUSED_DUMMY(unused)
 
 #if {actual.rank} == 0
-      ! scalar
+      ! Scalar
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+      if (actual == expected) return
+
       if (.not. (abs(actual - expected) <= max(rel_tolerance*abs(expected), tolerance))) then
          e = expected
          a = actual
@@ -1121,32 +1126,38 @@ contains
       end if
          
 #else
-      if (.not. all(abs(actual - expected) <= max(rel_tolerance*abs(expected), tolerance))) then
-         ! index of first difference is
-         i = maxloc(merge(1,0, .not. abs(actual-expected) <= max(rel_tolerance*abs(expected), tolerance)))
-         e = expected({actual.multi_index})
-         a = actual({actual.multi_index})
-      else
-         return
-      end if
+      ! Handle exact equality separately to avoid subtracting Inf values.
+      ! (Inf - Inf is undefined.)
+
+      allocate(within_tolerance, mold=(actual==actual))
+      where (actual == expected)
+         within_tolerance = .true.
+      elsewhere (abs(actual-expected) <= max(rel_tolerance*abs(expected), tolerance))
+         within_tolerance = .true.
+      elsewhere
+         within_tolerance = .false.
+      end where
+
+      if (all(within_tolerance)) return
+
+      ! index of first difference is
+      i = maxloc(merge(1,0, .not. abs(actual-expected) <= max(rel_tolerance*abs(expected), tolerance)))
+      e = expected({actual.multi_index})
+      a = actual({actual.multi_index})
 #endif
       calc_eps = max(rel_tolerance*abs(e), tolerance)
-      if ( e > 0) then
-         rd = (a - e)/e
-      else
-         rd = HUGE(e)
-      end if
+      d = (a - e)
 
       ! Wish: allocatable strings were useful as internal files ...
       write(expected_str,'(g0)') e
       write(actual_str,'(g0)') a
-      write(diff_str,'("<",g0,"> (greater than calculated tolerance of ",g0,")")') rd, calc_eps
+      write(diff_str,'("<",g0,"> (greater than calculated tolerance of ",g0,")")') d, calc_eps
       
 #if {actual.rank} == 0
-      call fail_not_relatively_min_equal(trim(expected_str), trim(actual_str), trim(diff_str), &
+      call fail_not_approx(trim(expected_str), trim(actual_str), trim(diff_str), &
            & message=message, location=location)
 #else
-      call fail_not_relatively_equal(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
+      call fail_not_approx(trim(expected_str), trim(actual_str), trim(diff_str), index=i, &
            & message=message, location=location)
 #endif
    end subroutine {name}
@@ -1159,7 +1170,7 @@ contains
    @instantiate(AssertGreaterThan, with_tol)
    @instantiate(AssertGreaterThanOrEqual, with_tol)
    @instantiate(AssertRelativelyEqual, with_tol)
-   @instantiate(AssertRelMinEqual, with_rel_tol)
+   @instantiate(AssertApprox, with_rel_tol)
 
    @instantiate(AssertEqual, no_tol)
    @instantiate(AssertNotEqual, no_tol)
@@ -1177,7 +1188,7 @@ contains
    @instantiate(assert_greater_than, minimal)
    @instantiate(assert_greater_than_or_equal, minimal)
    @instantiate(assert_relatively_equal, minimal)
-   @instantiate(assert_rel_min_equal, minimal)
+   @instantiate(assert_approx, minimal)
    
 end module pf_AssertReal_{rank}d
 

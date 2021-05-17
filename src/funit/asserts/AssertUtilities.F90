@@ -21,7 +21,7 @@ module pf_AssertUtilities
    public :: fail_not_greater_than
    public :: fail_not_greater_than_or_equal
    public :: fail_not_relatively_equal
-   public :: fail_not_relatively_min_equal
+   public :: fail_not_approx
 
 contains
 
@@ -344,7 +344,7 @@ contains
       
    end subroutine fail_not_relatively_equal
 
-   subroutine fail_not_relatively_min_equal(expected, actual, difference, unused, index, message, location)
+   subroutine fail_not_approx(expected, actual, difference, unused, index, message, location)
       character(*), intent(in) :: expected
       character(*), intent(in) :: actual
       character(*), intent(in) :: difference
@@ -359,7 +359,7 @@ contains
 
       _UNUSED_DUMMY(unused)
 
-      fail_message = base_message('AssertRelMinEqual', message, index)
+      fail_message = base_message('AssertApprox', message, index)
       fail_message = fail_message // new_line('A')    // '           Expected: <' // expected // '>' 
       fail_message = fail_message // new_line('A')    // '             Actual: <' // actual // '>'
       fail_message = fail_message // new_line('A')    // '    Rel. difference: ' // difference
@@ -369,7 +369,7 @@ contains
 
       call throw(fail_message, location)
       
-   end subroutine fail_not_relatively_min_equal
+   end subroutine fail_not_approx
 
    function base_message(failure_type, user_message, index) result(message)
       character(:), allocatable :: message
