@@ -43,7 +43,8 @@ set(pf_tests
   Test_TapListener.pf
   Test_NameFilter.pf
   Test_RegularExpression.pf
-  Test_TestMethod_before.pf)
+  Test_TestMethod_before.pf
+  Test_Long_Subroutine_Name.pf)
 
 set (new_test_srcs)
 set (test_srcs
