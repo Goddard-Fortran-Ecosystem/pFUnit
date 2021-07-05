@@ -1,0 +1,27 @@
+
+module Test_Long_Subroutine_Name
+   use FUnit
+   implicit none
+   
+   @suite(name='AssertLongSubroutine_suite')
+
+contains
+
+   real function add(x, y) result (sum)
+      implicit none
+      real, intent(in) :: x
+      real, intent(in) :: y
+
+      sum = x + y
+
+   end function add
+
+   @test
+   subroutine test_Really_Really_Really_Really_Really_Really_LongLongName_max()
+      implicit none
+
+      @assertEqual(3., add(1.,2.))
+      
+   end subroutine test_Really_Really_Really_Really_Really_Really_LongLongName_max
+
+end module Test_Long_Subroutine_Name

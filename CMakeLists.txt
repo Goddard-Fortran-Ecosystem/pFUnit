@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.1.15
+  VERSION 4.2.1
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using
@@ -56,6 +56,7 @@ option (SKIP_FHAMCREST "Skip building fHamcrest support" NO)
 option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
 option (ENABLE_TESTS "Build pFUnit tests" ${MAIN_PROJECT})
+option (ENABLE_BUILD_DOXYGEN "Attempt to build doxygen documentation" NO)
 
 
 
@@ -88,8 +89,6 @@ if (NOT SKIP_MPI)
     message (STATUS "MPI not found; building without MPI")
   endif()    
 endif()
-
-
 
 
 # Fortran OpenMP support is not yet integrated into the CMake distribution.
@@ -134,6 +133,10 @@ endif ()
 add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (bin)
+
+if (ENABLE_BUILD_DOXYGEN)
+  add_subdirectory(documentation)
+endif()
 
 if (ENABLE_TESTS)
   enable_testing()
@@ -212,4 +215,5 @@ if (NOT MAIN_PROJECT)
   endif()
 
   include(add_pfunit_test)
+  include(add_pfunit_ctest)
 endif()
