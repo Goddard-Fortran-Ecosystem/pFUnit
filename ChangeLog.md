@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
+is deprecated, but preserved to keep backwards compatibility.
+
 ## [4.2.1] - 2021-03-24
 
 This release fixes a CMake race condition in cmake when multiple ctests are

@@ -10,18 +10,9 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-10.15]
         compiler: [gfortran-9, gfortran-10]
-        exclude:
-          - os: macos-10.15
-            compiler: gfortran-8
-          - os: macos-10.15
-            compiler: gfortran-10
 
     env:
       FC: ${{ matrix.compiler }}
-      LANGUAGE: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-      LANG: en_US.UTF-8
-      LC_TYPE: en_US.UTF-8
       OMPI_ALLOW_RUN_AS_ROOT: 1
       OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
       OMPI_MCA_btl_vader_single_copy_mechanism: none
@@ -87,10 +78,6 @@ jobs:
     env:
       FC: ifort
       CC: icc
-      LANGUAGE: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-      LANG: en_US.UTF-8
-      LC_TYPE: en_US.UTF-8
 
     name: Intel Fortran
     steps:

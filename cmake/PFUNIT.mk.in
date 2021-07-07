@@ -1,7 +1,7 @@
 # Include file for external  projects using Unix Make instead of cmake.
 # Usage:
 
-# $(call make_pfunit_test name, tests, other_srcs)
+# $(call make_pfunit_test name, tests, other_sources)
 # FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
 # LFLAGS += $(PFUNIT_LIBRARIES)
 
@@ -56,7 +56,7 @@ define make_pfunit_test
 
    $(1)_test_srcs := $$(foreach test,$$($(1)_TESTS),$$(basename $$(test)).F90)
    $(1)_test_objs := $$(foreach test,$$($(1)_TESTS),$$(basename $$(test)).o)
-   $(1)_other_objs := $$(foreach src,$$($(1)_OTHER_SRCS),$$(basename $$(src)).o)
+   $(1)_other_objs := $$(foreach src,$$($(1)_OTHER_SRCS) $$($(1)_OTHER_SOURCES),$$(basename $$(src)).o)
 
    ifneq (,$$($(1)_REGISTRY))
       $(1)_inc := $(1)_REGISTRY
