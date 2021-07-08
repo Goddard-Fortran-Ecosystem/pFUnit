@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+When any tests fail, the driver now invokes Fortran `STOP` instead of
+Fortran `ERROR STOP`.  This suppresses annoying back traces from
+GFortran.
+
 ## [4.2.1] - 2021-03-24
 
 This release fixes a CMake race condition in cmake when multiple ctests are
