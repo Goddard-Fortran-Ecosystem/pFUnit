@@ -1,7 +1,7 @@
 set(pfunit_targets pfunit)
 add_library (pfunit)
 add_library (PFUNIT::pfunit ALIAS pfunit)
-if (BUILD_SHARED)
+if (BUILD_SHARED_LIBS)
   add_library (pfunit_shared SHARED)
   add_library (PFUNIT::pfunit_shared ALIAS pfunit_shared)
   set_target_properties(pfunit_shared PROPERTIES OUTPUT_NAME pfunit)

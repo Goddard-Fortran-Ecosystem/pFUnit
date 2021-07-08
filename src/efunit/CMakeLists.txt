@@ -17,7 +17,7 @@ target_include_directories (efunit PUBLIC ${ESMF_INCLUDE} ${NETCDF_INCLUDE})
 target_link_libraries (efunit PUBLIC pfunit ${ESMF_LIBRARIES})
 
 
-if (BUILD_SHARED)
+if (BUILD_SHARED_LIBS)
   add_library (efunit_shared SHARED EXCLUDE_FROM_ALL ${srcs})
   add_library (PFUNIT::efunit_shared ALIAS efunit_shared)
   target_link_libraries (efunit_shared PUBLIC pfunit ${ESMF_LIBRARIES})
