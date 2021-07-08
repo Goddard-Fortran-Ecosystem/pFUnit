@@ -1,9 +1,9 @@
 
 /*!
 
-\mainpage pFUnit 3 - Documentation - Version 3.1.1 development 2015-1210-1447-48-EST MLR
+\mainpage pFUnit 3 - Documentation - Version 4.2.1 development
 
-Quick links to the <a href="https://sourceforge.net/p/pfunit/code/ci/master/tree/">code</a> or the project's <a href="http://sourceforge.net/projects/pfunit">SourceForge site</a>.
+Quick links to the project's <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit">Github site</a>.
 
 \section sec_Overview Overview
 
@@ -15,9 +15,9 @@ offering a convenient, lightweight mechanism for Fortran developers to
 create and run software tests that specify the desired behavior for a
 given piece of code.  The framework was originally created by
 developers from NASA and NGC TASC.  The project is hosted at <a
-href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>.
+href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit">Goddard-Fortran-Ecosystem/pFUnit</a>.
 
-If you are using pFUnit, please leave a note/topic at <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a>, or send a note to <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., Advanced Software Technology Group, NASA Goddard Space Flight Center.
+If you are using pFUnit, please leave a note/topic at <a href="Goddard-Fortran-Ecosystem/pFUnit">Applications of pFUnit</a>, or send a note to <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., Advanced Software Technology Group, NASA Goddard Space Flight Center.
 
 Please refer revisions and comments about the documentation to <a href="mailto:mike@rilee.net">Mike Rilee</a>, Ph.D., Rilee Systems Technologies.
 
@@ -40,7 +40,7 @@ Please refer revisions and comments about the documentation to <a href="mailto:m
 
 \section sec_SeeAlso See Also
 
-\li <a href="http://sourceforge.net/projects/pfunit">sourceforge/projects/pfunit</a>
+\li <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit">Goddard-Fortran-Ecosystem/pFUnit</a>
 \li <a href="https://modelingguru.nasa.gov/index.jspa">NASA Modeling Guru</a>
 \li <a href="http://JUnit.org">JUnit.org</a>
 
