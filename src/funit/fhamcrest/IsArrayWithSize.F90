@@ -77,7 +77,7 @@ contains
 
 
   function empty_array()
-    class(DescribedAs), allocatable :: empty_array
+    type(DescribedAs) :: empty_array
 
     empty_array = described_as("an empty array", array_with_size(0))
 

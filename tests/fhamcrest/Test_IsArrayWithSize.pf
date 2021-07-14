@@ -1,5 +1,6 @@
 
 module Test_IsArrayWithSize
+   use pf_BaseMatcher
   use funit
   implicit none
 
@@ -25,8 +26,11 @@ contains
   
   @test
   subroutine test_array_is_empty()
+
     call assert_that([1,2],is(empty_array()))
+    print*,__FILE__,__LINE__
     @assertExceptionRaised(new_line("a")//"Expected: is an empty array" // new_line("a") // "     but: array size was <2>")
+    print*,__FILE__,__LINE__
   end subroutine test_array_is_empty
   
 end module Test_IsArrayWithSize

@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
 - is deprecated, but preserved to keep backwards compatibility.
 
+### Fixed
+
+- Modified test that was crashing under gfortran 11.1.   Workaround is 
+  actually a bit cleaner, so a win-win.
+  
+
 
 ## [4.2.1] - 2021-03-24
 
