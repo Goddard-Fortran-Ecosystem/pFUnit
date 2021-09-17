@@ -5,10 +5,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.2] - 2021-09-17
+
+### Fixed
+
+ - Fix for OpenMP handling in `PFUNITCmake.cmake`. If you skip OpenMP, it is no
+   longer a dependency
+
 ### Changed
 
-Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
-is deprecated, but preserved to keep backwards compatibility.
+ - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
+   is deprecated, but preserved to keep backwards compatibility.
 
 ## [4.2.1] - 2021-03-24
 
