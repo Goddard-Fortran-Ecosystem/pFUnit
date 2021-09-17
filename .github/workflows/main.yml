@@ -19,6 +19,10 @@ jobs:
 
     name: ${{ matrix.os }} / ${{ matrix.compiler }}
     steps:
+      - name: Install GCC 11 on Ubuntu 20
+        if: matrix.os == 'ubuntu-20.04' && matrix.compiler == 'gfortran-11'
+        run: |
+          sudo apt-get install gfortran-11 -y
       - name: Compiler Versions
         run: |
           ${FC} --version
