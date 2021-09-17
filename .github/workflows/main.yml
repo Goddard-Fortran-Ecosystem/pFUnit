@@ -8,8 +8,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-10.15]
-        compiler: [gfortran-9, gfortran-10]
+        os: [ubuntu-20.04, macos-10.15, macos-11]
+        compiler: [gfortran-9, gfortran-10, gfortran-11]
 
     env:
       FC: ${{ matrix.compiler }}
@@ -46,7 +46,7 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.5
+          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.6
       - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
