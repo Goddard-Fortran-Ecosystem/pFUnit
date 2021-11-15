@@ -5,12 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.2.2] - 2021-09-17
+## [4.2.2] - 2021-11-15
 
 ### Fixed
-
  - Fix for OpenMP handling in `PFUNITCmake.cmake`. If you skip OpenMP, it is no
    longer a dependency
+ - Updated external modules that contain bugfixes.
+ - Fixed cmake logic that fails on enabling tests if using submodules.
+ - Allow GFortran to use longer lines.  (Impacts some upstream use cases.)
 
 ### Changed
 
