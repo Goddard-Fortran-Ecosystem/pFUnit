@@ -165,10 +165,10 @@ contains
       call extra() ! user-specific finalize
 
       if (.not. successful) then
-#if defined(NAG) || defined(PGI)
+#if defined(PGI)
          call exit(-1)
 #else
-         error stop '*** Encountered 1 or more failures/errors during testing. ***'
+         stop '*** Encountered 1 or more failures/errors during testing. ***'
 #endif
       end if
 
