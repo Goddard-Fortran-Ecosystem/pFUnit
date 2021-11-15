@@ -13,7 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   GFortran.
 
 - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
-- is deprecated, but preserved to keep backwards compatibility.
+  is deprecated, but preserved to keep backwards compatibility.
+
+- Update the CI to use GCC 11
 
 
 ## [4.2.1] - 2021-03-24
