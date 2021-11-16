@@ -7,13 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-
 - When any tests fail, the driver now invokes Fortran `STOP` instead of
   Fortran `ERROR STOP`.  This suppresses annoying back traces from
   GFortran.
 
 - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
-- is deprecated, but preserved to keep backwards compatibility.
+  is deprecated, but preserved to keep backwards compatibility.
+  
+- Add GitHub Action to automatically generate release tarball
 
 
 ## [4.2.1] - 2021-03-24
