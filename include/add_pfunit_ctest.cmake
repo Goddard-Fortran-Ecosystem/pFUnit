@@ -16,6 +16,7 @@
 #                   EXTRA_INITIALIZE ...
 #                   EXTRA_FINALIZE ...
 #                   MAX_PES 5
+#                   SKIP_ADD_TEST 0  
 #                   )
 #
 # TEST_SOURCES items with relative paths are treated as relative to
@@ -51,7 +52,7 @@ else()
 endif()
 
 function (add_pfunit_ctest test_package_name)
-  set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
+  set (oneValueArgs REGISTRY SKIP_ADD_TEST MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -133,20 +134,25 @@ function (add_pfunit_ctest test_package_name)
     if (MPIEXEC MATCHES ".*openmpi*")
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
-    add_test (NAME ${test_package_name}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
-      )
+    if (NOT PF_TEST_SKIP_ADD_TEST)
+      add_test (NAME ${test_package_name}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
+        )
+    endif (NOT PF_TEST_SKIP_ADD_TEST)
   else()
     target_link_libraries (${test_package_name} ${_FUNIT_LIBRARIES})
-    add_test (NAME ${test_package_name}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-      COMMAND ${test_package_name}
-      )
+    if (NOT PF_TEST_SKIP_ADD_TEST)
+      add_test (NAME ${test_package_name}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${test_package_name}
+        )
+    endif (NOT PF_TEST_SKIP_ADD_TEST)
   endif()
 
-  set_property (TEST ${test_package_name}
-    PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
-    )
-
+  if (NOT PF_TEST_SKIP_ADD_TEST)
+    set_property (TEST ${test_package_name}
+      PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
+      )
+  endif (NOT PF_TEST_SKIP_ADD_TEST)
 endfunction()
