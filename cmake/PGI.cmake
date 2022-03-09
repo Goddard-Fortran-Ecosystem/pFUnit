@@ -2,7 +2,7 @@
 # (or is this now NVIDIA?)
 
 set(traceback "-traceback")
-set(check_all "-Mbounds -Mchkfpstk -Mchkstk")
+set(check_all "-Mbounds -Mchkstk")
 
 set(CMAKE_Fortran_FLAGS_DEBUG  "-O0")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3")

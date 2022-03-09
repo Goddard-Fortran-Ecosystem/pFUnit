@@ -5,6 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.2] - 2022-03-09
+
+
+
+### Fixed
+
+ - Incorrect treatment of 128 bit real support for compilers that do not support REAL128.
+ - Incorrect compilel flags for PGI
+ 
 ### Changed
 
  - When any tests fail, the driver now invokes Fortran `STOP` instead of
