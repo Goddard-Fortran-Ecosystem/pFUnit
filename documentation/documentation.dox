@@ -23,7 +23,7 @@ https://github.com/Goddard-Fortran-Ecosystem/pFUnit/releases
 
 Extracting this tarfile via a command like
 
-`$ tar zxf ./pFUnit-4.2.1.tar.gz`
+`$ tar zxf ./pFUnit-4.2.2.tar.gz`
 
 will place the pFUnit files into the current working directory.
 

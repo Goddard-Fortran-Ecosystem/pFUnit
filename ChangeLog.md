@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-
 - When any tests fail, the driver now invokes Fortran `STOP` instead of
   Fortran `ERROR STOP`.  This suppresses annoying back traces from
   GFortran.
@@ -17,6 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update the CI to use GCC 11
 
+## [4.2.2] - 2021-11-15
+
+### Fixed
+ - Fix for OpenMP handling in `PFUNITCmake.cmake`. If you skip OpenMP, it is no
+   longer a dependency
+ - Updated external modules that contain bugfixes.
+ - Fixed cmake logic that fails on enabling tests if using submodules.
+ - Allow GFortran to use longer lines.  (Impacts some upstream use cases.)
+
+### Changed
+
+ - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
+   is deprecated, but preserved to keep backwards compatibility.
 
 ## [4.2.1] - 2021-03-24
 
