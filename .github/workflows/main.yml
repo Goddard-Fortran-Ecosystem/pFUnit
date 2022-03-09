@@ -46,7 +46,7 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.0.5
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.2
       - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
@@ -99,6 +99,55 @@ jobs:
           ${FC} --version
           ${CC} --version
           mpirun --version
+      - name: Build pFUnit
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          make -j$(nproc)
+      - name: Build Tests
+        run: |
+          cd build
+          make -j$(nproc) build-tests
+      - name: Run Tests
+        run: |
+          cd build
+          ctest -j1 --output-on-failure --repeat until-pass:4
+
+  NVHPC:
+    runs-on: ubuntu-20.04
+    container: nvcr.io/nvidia/nvhpc:22.2-devel-cuda_multi-ubuntu20.04
+
+    env:
+      FC: nvfortran
+      CC: nvc
+
+    name: NVIDIA Fortran
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compiler Versions
+        run: |
+          ${FC} --version
+      - name: Cache MPI
+        id: cache-mpi
+        uses: actions/cache@v2
+        with:
+          path: ~/local/openmpi
+          key: mpi-ubuntu20.04-ubuntu20.0.4-nvhpc
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        run: |
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.2
+      - name: Set MPI Environment
+        run: |
+          echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+      - name: MPI Versions
+        run: |
+          mpirun --version
+          mpifort --show
       - name: Build pFUnit
         run: |
           mkdir -p build
