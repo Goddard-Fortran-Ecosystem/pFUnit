@@ -334,7 +334,7 @@ contains
     end function description_of_complex64
 
 
-#if (defined(_ISO_REAL128) && (_ISO_REAL64 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
     function description_of_complex128(value) result(string)
       use pf_Matchable
       character(:), allocatable :: string
