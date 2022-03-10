@@ -220,6 +220,8 @@ contains
     class(IsEqual), intent(in) :: this
     class(*), target, intent(in) :: actual_value
 
+     integer, parameter :: DP = kind(1.d0)
+
     select type (e => this%expected_value)
     type is (logical)
        select type(a => actual_value)
@@ -242,6 +244,21 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+    type is (real)
+       select type(a => actual_value)
+       type is (real)
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+    type is (real(kind=DP))
+       select type(a => actual_value)
+       type is (real(kind=DP))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+#if (defined(_ISO_REAL32) && (_ISO_REAL32 != _REAL_DEFAULT_KIND) && (_ISO_REAL32 != _DOUBLE_DEFAULT_KIND))
     type is (real(kind=REAL32))
        select type(a => actual_value)
        type is (real(kind=REAL32))
@@ -249,6 +266,8 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
+#if (defined(_ISO_REAL64) && (_ISO_REAL64 != _REAL_DEFAULT_KIND) && (_ISO_REAL64 != _DOUBLE_DEFAULT_KIND))
     type is (real(kind=REAL64))
        select type(a => actual_value)
        type is (real(kind=REAL64))
@@ -256,6 +275,8 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
     type is (real(kind=REAL128))
        select type(a => actual_value)
        type is (real(kind=REAL128))
@@ -263,6 +284,22 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
+    type is (complex)
+       select type(a => actual_value)
+       type is (complex)
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+     type is (complex(kind=DP))
+       select type(a => actual_value)
+       type is (complex(kind=DP))
+          matches_intrinsic = (e == a)
+       class default
+          matches_intrinsic = .false.
+       end select
+#if (defined(_ISO_REAL32) && (_ISO_REAL32 != _REAL_DEFAULT_KIND) && (_ISO_REAL32 != _DOUBLE_DEFAULT_KIND))
     type is (complex(kind=REAL32))
        select type(a => actual_value)
        type is (complex(kind=REAL32))
@@ -270,6 +307,8 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
+#if (defined(_ISO_REAL64) && (_ISO_REAL64 != _REAL_DEFAULT_KIND) && (_ISO_REAL64 != _DOUBLE_DEFAULT_KIND))
     type is (complex(kind=REAL64))
        select type(a => actual_value)
        type is (complex(kind=REAL64))
@@ -277,6 +316,8 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
     type is (complex(kind=REAL128))
        select type(a => actual_value)
        type is (complex(kind=REAL128))
@@ -284,6 +325,7 @@ contains
        class default
           matches_intrinsic = .false.
        end select
+#endif
     type is (character(*))
        select type(a => actual_value)
        type is (character(*))
