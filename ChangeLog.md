@@ -5,14 +5,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.2.2] - 2022-03-09
+## [4.2.4] - 2022-03-18
 
+### Fixed
 
+- Fixed MPI find logic issue exposed by CI testing. Was including PFUNIT::pfunit even if MPI was not found
+
+## [4.2.3] - 2022-03-09
 
 ### Fixed
 
  - Incorrect treatment of 128 bit real support for compilers that do not support REAL128.
- - Incorrect compilel flags for PGI
+ - Incorrect compile flags for PGI
  
 ### Changed
 
