@@ -42,14 +42,6 @@
 
 include (add_pfunit_sources)
 
-if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
-  set(_PFUNIT_LIBRARIES PFUNIT::pfunit_shared)
-  set(_FUNIT_LIBRARIES PFUNIT::funit_shared)
-else()
-  set(_PFUNIT_LIBRARIES PFUNIT::pfunit)
-  set(_FUNIT_LIBRARIES PFUNIT::funit)
-endif()
-
 function (add_pfunit_ctest test_package_name)
   set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
@@ -124,8 +116,8 @@ function (add_pfunit_ctest test_package_name)
   #################################################
   # Define test in CTest system                   #
   #################################################
-  if (PF_TEST_MAX_PES AND NOT PFUNIT_SKIP_MPI)
-    target_link_libraries (${test_package_name} ${_PFUNIT_LIBRARIES})
+  target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
+  if (PF_TEST_MAX_PES AND PFUNIT_MPI_FOUND)
     if (NOT PFUNIT_MPI_USE_MPIEXEC)
       set(MPIEXEC mpirun)
       set(MPIEXEC_NUMPROC_FLAG "-np")
@@ -138,7 +130,6 @@ function (add_pfunit_ctest test_package_name)
       COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
-    target_link_libraries (${test_package_name} ${_FUNIT_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMAND ${test_package_name}
