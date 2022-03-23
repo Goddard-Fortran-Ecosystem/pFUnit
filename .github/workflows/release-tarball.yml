@@ -1,0 +1,35 @@
+name: Create Complete Release Tarball
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+          submodules: recursive
+
+      - name: Checkout git-archive-all.sh
+        uses: actions/checkout@v2
+        with:
+          repository: fabacab/git-archive-all.sh
+          path: git-archive-all.sh
+
+      - name: Run git-archive-all.sh
+        run : |
+          cd ${GITHUB_WORKSPACE}/${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+          ${GITHUB_WORKSPACE}/git-archive-all.sh/git-archive-all.sh --prefix ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}/ ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.tar
+
+      - name: Upload tarball
+        run: |
+          cd ${GITHUB_WORKSPACE}/${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
+          gh release upload ${{ github.event.release.tag_name }} ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}.tar -R ${{ github.repository_owner }}/${{ github.event.repository.name }}
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
