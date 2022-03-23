@@ -115,7 +115,7 @@ contains
         call this%append(description_of(value))
         call this%append('_real64>')
 #endif
-#if (defined(_ISO_REAL128) && (_ISO_REAL64 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
      type is (real(kind=REAL128))
         call this%append('<')
         call this%append(description_of(value))
@@ -305,6 +305,7 @@ contains
     end function description_of_real64
 
 
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
     function description_of_real128(value) result(string)
       use pf_Matchable
       character(:), allocatable :: string
@@ -314,6 +315,7 @@ contains
       write(buffer,'(g0)') value
       string = trim(buffer)
     end function description_of_real128
+#endif
 
     function description_of_complex32(value) result(string)
       use pf_Matchable
@@ -332,6 +334,7 @@ contains
     end function description_of_complex64
 
 
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
     function description_of_complex128(value) result(string)
       use pf_Matchable
       character(:), allocatable :: string
@@ -339,6 +342,7 @@ contains
 
       string = "(" // description_of(real(value)) // "," // description_of(aimag(value)) // ")"
     end function description_of_complex128
+#endif
 
 
 end module pf_BaseDescription
