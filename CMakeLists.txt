@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.2.4
+  VERSION 4.2.5
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using
@@ -206,12 +206,12 @@ if (NOT MAIN_PROJECT)
 
   if (BUILD_SHARED_LIBS)
     set (PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
-    if (NOT MPI_Fortran_FOUND)
+    if (MPI_Fortran_FOUND)
       set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit_shared PARENT_SCOPE)
     endif()
   else()
     set (PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
-    if (NOT MPI_Fortran_FOUND)
+    if (MPI_Fortran_FOUND)
       set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit PARENT_SCOPE)
     endif()
   endif()
