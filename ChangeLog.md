@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated fArgParse submodule
 
+## [4.2.5] - 2022-04-06
+
+### Fixed
+
+- Fix erroneous CMake MPI found logic from 4.2.4
+
 ## [4.2.4] - 2022-03-18
 
 ### Fixed
