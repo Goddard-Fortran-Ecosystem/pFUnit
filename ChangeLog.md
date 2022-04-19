@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.7] - 2022-04-19
+
+### Fixed
+
+- Fixed unintended dependency on MPI in serial tests using `add_pfunit_ctest` macro
+
 ## [4.2.6] - 2022-04-19
 
 ### Fixed

@@ -116,8 +116,8 @@ function (add_pfunit_ctest test_package_name)
   #################################################
   # Define test in CTest system                   #
   #################################################
-  target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
   if (PF_TEST_MAX_PES AND PFUNIT_MPI_FOUND)
+    target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
     if (NOT PFUNIT_MPI_USE_MPIEXEC)
       set(MPIEXEC mpirun)
       set(MPIEXEC_NUMPROC_FLAG "-np")
@@ -130,6 +130,7 @@ function (add_pfunit_ctest test_package_name)
       COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
+    target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       COMMAND ${test_package_name}
