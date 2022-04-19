@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.6] - 2022-04-19
+
+### Fixed
+
+- Fix erroneous library order in PFUNITconfig.cmake.in
+
 ## [4.2.5] - 2022-04-06
 
 ### Fixed
