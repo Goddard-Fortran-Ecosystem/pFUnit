@@ -5,9 +5,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2022-04-20
+
+### Fixed
+
+- Bug in AssertNotEqual() for integers.  A return clause was missing.  This bug is 
+  ancient - apparentyl this routine is not used often.
+
 ### Changed
 
-- Updated fArgParse submodule
+- Automated archive of full tar ball
+
+## [4.2.7] - 2022-04-19
+
+### Fixed
+
+- Fixed unintended dependency on MPI in serial tests using `add_pfunit_ctest` macro
+
+## [4.2.6] - 2022-04-19
+
+### Fixed
+
+- Fix erroneous library order in PFUNITconfig.cmake.in
 
 ## [4.2.5] - 2022-04-06
 
