@@ -200,6 +200,8 @@ contains
       ! scalar
       if (.not. (expected /= actual)) then
          a = actual
+      else
+         return
       end if
          
 #else
@@ -207,6 +209,8 @@ contains
          ! index of first difference is
          i = maxloc(merge(1,0, .not. (expected /= actual)))
          a = actual({actual.multi_index})
+      else
+         return
       end if
 #endif
 

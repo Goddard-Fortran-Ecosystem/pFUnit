@@ -237,5 +237,10 @@ contains
    subroutine testAssertGreaterThanOrEqual_trueB()
       call assertGreaterThanOrEqual(2, 1)
    end subroutine testAssertGreaterThanOrEqual_trueB
+
+   @test
+   subroutine testAssertNotEqual()
+      call assertNotEqual(2, 1)
+   end subroutine testAssertNotEqual
    
 end module Test_Assert_Integer

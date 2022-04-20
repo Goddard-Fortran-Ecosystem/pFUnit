@@ -5,6 +5,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2022-04-20
+
+### Fixed
+
+- Bug in AssertNotEqual() for integers.  A return clause was missing.  This bug is 
+  ancient - apparentyl this routine is not used often.
+
+### Changed
+
+- Automated archive of full tar ball
 
 ## [4.2.7] - 2022-04-19
 
