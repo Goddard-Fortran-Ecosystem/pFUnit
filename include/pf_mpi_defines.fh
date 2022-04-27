@@ -1,0 +1,11 @@
+! Compatibility macros for `mpi` and `mpi_f08` modules
+
+#if PF_USE_MPI_F08
+#  define PF_MPI_MODULE mpi_f08
+#  define PF_MPI_COMM_TYPE MPI_Comm
+#  define PF_MPI_GROUP_TYPE MPI_Group
+#else
+#  define PF_MPI_MODULE mpi
+#  define PF_MPI_COMM_TYPE integer
+#  define PF_MPI_GROUP_TYPE integer
+#endif

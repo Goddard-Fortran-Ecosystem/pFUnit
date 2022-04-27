@@ -1,4 +1,5 @@
 #include "unused_dummy.fh"
+#include "pf_mpi_defines.fh"
 
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
@@ -24,7 +25,7 @@
 !-------------------------------------------------------------------------------
 
 module PF_MpiTestCase
-   use mpi
+   use PF_MPI_MODULE
    use PF_MpiContext
    use PF_TestCase
    use PF_AbstractTestParameter
@@ -112,7 +113,7 @@ contains
    end subroutine runBare
 
    function getMpiCommunicator(this) result(mpiCommunicator)
-      integer :: mpiCommunicator
+      type (PF_MPI_COMM_TYPE) :: mpiCommunicator
       class (MpiTestCase), intent(in) :: this
       mpiCommunicator = this%context%getMpiCommunicator()
    end function getMpiCommunicator

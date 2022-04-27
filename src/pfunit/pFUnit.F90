@@ -1,3 +1,5 @@
+#include "pf_mpi_defines.fh"
+
 !-------------------------------------------------------------------------------
 ! NASA/GSFC Advanced Software Technology Group
 !-------------------------------------------------------------------------------
@@ -69,7 +71,7 @@ module pFUnit
    use FUnit, funit_context => get_context
    use FUnit, funit_stub => stub
    use pFUnit_private
-   use mpi
+   use PF_MPI_MODULE
    implicit none
    
    public :: initialize
@@ -119,7 +121,7 @@ contains
 
 
    subroutine finalize(extra_finalize, successful)
-      use mpi
+      use PF_MPI_MODULE
 #ifdef NAG
       use f90_unix_proc, only: exit
 #endif

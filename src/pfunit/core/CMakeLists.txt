@@ -7,6 +7,7 @@ set (srcs
 
 add_library (pfunit-core OBJECT ${srcs})
 target_link_libraries (pfunit-core PUBLIC funit ${MPI_Fortran_LIBRARIES})
+target_link_libraries (pfunit-core PRIVATE pfunit-mpi-defines)
 
 target_include_directories (pfunit-core PUBLIC ${MPI_Fortran_INCLUDE_PATH})
 
@@ -21,4 +22,3 @@ set_target_properties (pfunit-core PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_C
 if (mismatch)
   set_source_files_properties(MpiContext.F90 PROPERTIES COMPILE_FLAGS ${mismatch})
 endif()
-
