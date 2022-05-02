@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Added
+
+- CMake option to use `mpi_f08` interfaces:
+```
+    option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
+```
+
 ## [4.3.0] - 2022-04-20
 
 ### Fixed
