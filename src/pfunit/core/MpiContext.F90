@@ -21,17 +21,19 @@
 ! 07 Nov 2013 - Added the prologue for the compliance with Doxygen. 
 !
 !-------------------------------------------------------------------------------
+#include "pf_mpi_defines.fh"
+
 module PF_MpiContext
    use PF_ParallelContext
    use PF_ExceptionList, only: throw
-   use mpi
+   use PF_MPI_MODULE
    implicit none
    private
    public :: MpiContext
 
    type, extends(ParallelContext) :: MpiContext
       private
-      integer :: mpiCommunicator = MPI_COMM_NULL
+      type (PF_MPI_COMM_TYPE) :: mpiCommunicator = MPI_COMM_NULL
       integer :: root = 0
    contains
       procedure :: isActive
@@ -69,7 +71,7 @@ contains
    ! Make a duplicate of the communicator for internal use
    function newMpiContext_comm(communicator) result(context)
       type (MpiContext) :: context
-      integer, intent(in) :: communicator
+      type (PF_MPI_COMM_TYPE), intent(in) :: communicator
       integer :: ier
 
       call MPI_Comm_dup(communicator, context%mpiCommunicator, ier)
@@ -119,8 +121,8 @@ contains
 
       integer, parameter :: NUM_SUBGROUPS = 1
       integer :: ranges(3,1)
-      integer :: originalGroup, newGroup
-      integer :: newCommunicator
+      type (PF_MPI_GROUP_TYPE) :: originalGroup, newGroup
+      type (PF_MPI_COMM_TYPE) :: newCommunicator
       integer :: ier
       integer npes
 
@@ -165,7 +167,7 @@ contains
    end subroutine barrier
 
    function getMpiCommunicator(this) result(mpiCommunicator)
-      integer :: mpiCommunicator
+      type (PF_MPI_COMM_TYPE) :: mpiCommunicator
       class (MpiContext), intent(in) :: this
       mpiCommunicator = this%mpiCommunicator
    end function getMpiCommunicator

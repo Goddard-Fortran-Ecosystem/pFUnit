@@ -57,7 +57,7 @@ option (SKIP_ROBUST "Skip building RobustRunner" NO)
 option (SKIP_ESMF "Skip building ESMF support" YES)
 option (ENABLE_TESTS "Build pFUnit tests" ${MAIN_PROJECT})
 option (ENABLE_BUILD_DOXYGEN "Attempt to build doxygen documentation" NO)
-
+option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
 
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake" "${PROJECT_SOURCE_DIR}/include")
@@ -85,9 +85,16 @@ if (NOT SKIP_MPI)
   find_package (MPI QUIET)
   if (MPI_Fortran_FOUND)
     message (STATUS "MPI enabled")
+    if (ENABLE_MPI_F08)
+      if (NOT MPI_Fortran_HAVE_F08_MODULE)
+        message (FATAL_ERROR "MPI F08 module requested but not available")
+      else()
+        message (STATUS "MPI F08 module enabled")
+      endif()
+    endif()
   else ()
     message (STATUS "MPI not found; building without MPI")
-  endif()    
+  endif()
 endif()
 
 
