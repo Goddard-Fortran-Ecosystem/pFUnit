@@ -13,6 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
 ```
 
+## Changed
+
+- Updated GitHub Actions
+  - OSs
+    - Remove macos-10.15
+    - Add ubuntu-22.04 and macos-12
+  - Compilers
+   - Removed gfortran-8
+   - Added gfortran-11
+   - Added gfortran-12 (for ubuntu-22.04)
+
 ## [4.3.0] - 2022-04-20
 
 ### Fixed
