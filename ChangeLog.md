@@ -5,13 +5,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.3.1] - 2022-06-01
+## [4.4.0] - 2022-06-01
+
+### Added
+
+- CMake option to use `mpi_f08` interfaces:
+```
+    option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
+```
+
+### Changed
+
+- Updated GitHub Actions
+  - OSs
+    - Remove macos-10.15
+    - Add ubuntu-22.04 and macos-12
+  - Compilers
+   - Removed gfortran-8
+   - Added gfortran-11
+   - Added gfortran-12 (for ubuntu-22.04)
+- Updated how `collections` from Python is imported due to change in package
 
 ### Fixed
 
 - Corrected (undetected?) failing test that incorrectly spelled its expected exception.
-
 - Implemented small workaround for gfortran-11 for test to check if an array is empty. (Related to previous item.)
+
 
 ## [4.3.0] - 2022-04-20
 

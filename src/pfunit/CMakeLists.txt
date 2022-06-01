@@ -8,6 +8,16 @@ if (BUILD_SHARED_LIBS)
   list(APPEND pfunit_targets pfunit_shared)
 endif ()
 
+# Header-only target so we can add MPI defines to both pfunit-core and
+# pfunit. These are definitions that allow compatibility between the
+# `mpi` and `mpi_f08` modules.
+add_library (pfunit-mpi-defines INTERFACE)
+target_include_directories (pfunit-mpi-defines INTERFACE
+  $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:${dest}/include>
+)
+target_compile_definitions (pfunit-mpi-defines INTERFACE PF_USE_MPI_F08=${ENABLE_MPI_F08})
+
 add_subdirectory (core)
 
 foreach(pfunit_target ${pfunit_targets})
@@ -24,7 +34,8 @@ foreach(pfunit_target ${pfunit_targets})
   target_sources (${pfunit_target} PRIVATE $<TARGET_OBJECTS:pfunit-core>)
   target_sources (${pfunit_target} PRIVATE pFUnit.F90 pfunit_main.F90)
   target_link_libraries (${pfunit_target} PUBLIC funit ${MPI_Fortran_LIBRARIES})
+  target_link_libraries (${pfunit_target} PRIVATE pfunit-mpi-defines)
 
   install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
-  install (TARGETS ${pfunit_target} EXPORT PFUNIT DESTINATION ${dest}/lib)
+  install (TARGETS ${pfunit_target} pfunit-mpi-defines EXPORT PFUNIT DESTINATION ${dest}/lib)
 endforeach()

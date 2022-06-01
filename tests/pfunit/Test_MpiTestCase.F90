@@ -1,3 +1,5 @@
+#include "pf_mpi_defines.fh"
+
 !#include "reflection.h"
 !-------------------------------------------------------------------------------
 ! NASA/GSFC, Advanced Software Technology Group
@@ -22,7 +24,7 @@
 !
 !-------------------------------------------------------------------------------
 module Test_MpiTestCase
-   use mpi
+   use PF_MPI_MODULE
    use PF_Test
    use PF_TestCase
    use PF_MpiTestCase
@@ -255,7 +257,7 @@ contains
 
    subroutine wasRun(runLog, mpiCommunicator)
       character(len=:), allocatable, intent(inout) :: runLog
-      integer, intent(in) :: mpiCommunicator
+      type (PF_MPI_COMM_TYPE), intent(in) :: mpiCommunicator
       
       integer :: ier
 
