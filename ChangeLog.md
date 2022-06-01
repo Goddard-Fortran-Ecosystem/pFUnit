@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.1] - 2022-06-01
+
+### Fixed
+
+- Corrected (undetected?) failing test that incorrectly spelled its expected exception.
+
+- Implemented small workaround for gfortran-11 for test to check if an array is empty. (Related to previous item.)
+
 ## [4.3.0] - 2022-04-20
 
 ### Fixed

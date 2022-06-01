@@ -79,7 +79,7 @@ contains
   function empty_array()
     class(DescribedAs), allocatable :: empty_array
 
-    empty_array = described_as("an empty array", array_with_size(0))
+    allocate(empty_array, source = described_as("an empty array", array_with_size(0)))
 
   end function empty_array
 
