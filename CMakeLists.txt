@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.3.0
+  VERSION 4.3.1
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using
@@ -58,7 +58,6 @@ option (SKIP_ESMF "Skip building ESMF support" YES)
 option (ENABLE_TESTS "Build pFUnit tests" ${MAIN_PROJECT})
 option (ENABLE_BUILD_DOXYGEN "Attempt to build doxygen documentation" NO)
 option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
-
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake" "${PROJECT_SOURCE_DIR}/include")
 include(BuildType)
@@ -147,7 +146,10 @@ endif()
 
 if (ENABLE_TESTS)
   enable_testing()
-  add_custom_target(build-tests)
+  if (NOT TARGET build-tests)
+    add_custom_target(build-tests)
+    add_dependencies(tests build-tests)
+  endif()
 
   if (NOT TARGET tests)
     add_custom_target(tests

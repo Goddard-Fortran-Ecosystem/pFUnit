@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2022-06-01
 
 ### Added
 
@@ -13,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     option (ENABLE_MPI_F08 "Use the 'mpi_f08' module." NO)
 ```
 
-## Changed
+### Changed
 
 - Updated GitHub Actions
   - OSs
@@ -24,6 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Added gfortran-11
    - Added gfortran-12 (for ubuntu-22.04)
 - Updated how `collections` from Python is imported due to change in package
+
+### Fixed
+
+- Corrected (undetected?) failing test that incorrectly spelled its expected exception.
+- Implemented small workaround for gfortran-11 for test to check if an array is empty. (Related to previous item.)
+
 
 ## [4.3.0] - 2022-04-20
 
