@@ -148,16 +148,14 @@ if (ENABLE_TESTS)
   enable_testing()
   if (NOT TARGET build-tests)
     add_custom_target(build-tests)
-    add_dependencies(tests build-tests)
   endif()
 
   if (NOT TARGET tests)
     add_custom_target(tests
       COMMAND ${CMAKE_CTEST_COMMAND}
       EXCLUDE_FROM_ALL)
-    add_dependencies(tests build-tests)
   endif ()
-
+  add_dependencies(tests build-tests)
   add_subdirectory (tests EXCLUDE_FROM_ALL)
 
   # The following forces tests to be built when using "make ctest" even if some targets
