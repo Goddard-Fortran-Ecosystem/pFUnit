@@ -5,6 +5,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.1] - 2022-06-01
+
+### Fixed
+- Corrected CMake logic in previous release.  Passed self CI tests but broke CI for other packages that use pFUnit.
+
 ## [4.4.0] - 2022-06-01
 
 ### Added
