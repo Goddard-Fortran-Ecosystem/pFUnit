@@ -2,15 +2,21 @@
 
 import re
 import unittest
-import collections
+
+# collections changed as of Python 3.8
+# https://stackoverflow.com/q/53978542/1876449
+try:
+    from collections.abc import Iterable  # noqa
+except ImportError:
+    from collections import Iterable  # noqa
 
 def flatten(l):
     "http://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists-in-python"
     if l:
         for el in l:
-            if isinstance(el, collections.Iterable) and not isinstance(el, (str,bytes)):
+            if isinstance(el, Iterable) and not isinstance(el, (str,bytes)):
 # The following is incompatible with python 3.
-#            if isinstance(el, collections.Iterable) and not isinstance(el, basestring):
+#            if isinstance(el, Iterable) and not isinstance(el, basestring):
                 for sub in flatten(el):
                     yield sub
             else:
