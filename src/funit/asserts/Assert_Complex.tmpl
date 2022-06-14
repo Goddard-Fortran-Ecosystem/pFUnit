@@ -94,9 +94,15 @@
 #include "unused_dummy.fh"
 
 module pf_AssertComplex_{rank}d
+#ifdef _ISO_REAL32
    use, intrinsic :: iso_fortran_env, only: REAL32
+#endif
+#ifdef _ISO_REAL64
    use, intrinsic :: iso_fortran_env, only: REAL64
+#endif
+#ifdef _ISO_REAL128
    use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
    use pf_KeywordEnforcer
    use pf_SourceLocation
    use pf_AssertUtilities
@@ -347,4 +353,3 @@ end module pf_AssertComplex_{rank}d
 
 
    
-

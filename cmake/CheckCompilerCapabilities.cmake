@@ -50,7 +50,7 @@ foreach (kind 32 64 80 128 256)
   try_compile (
     code_compiles
     ${CMAKE_BINARY_DIR}
-    ${PROJECT_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND.F90
+    ${PROJECT_SOURCE_DIR}/cmake/Trial_sources/REAL_KIND_IEEE_SUPPORT.F90
     CMAKE_FLAGS "-DCOMPILE_DEFINITIONS=${CMAKE_REQUIRED_DEFINITIONS}")
   
   if (code_compiles)
@@ -61,6 +61,3 @@ foreach (kind 32 64 80 128 256)
   endif ()
 
 endforeach()
-
-
-
