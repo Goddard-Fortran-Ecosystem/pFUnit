@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.2] - 2022-08-06
+
+### Fixed
+
+- Corrected CMake logic related to activating F08 support. (#366)  Previously only
+  `-DENABLE_MPI_F08=1` would work, but other settings such as `-DENABLE_MPI_F08=YES` would
+  not activate F08.
+
 ## [4.4.1] - 2022-06-01
 
 ### Fixed

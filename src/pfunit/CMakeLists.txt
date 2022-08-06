@@ -15,8 +15,10 @@ add_library (pfunit-mpi-defines INTERFACE)
 target_include_directories (pfunit-mpi-defines INTERFACE
   $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${dest}/include>
-)
-target_compile_definitions (pfunit-mpi-defines INTERFACE PF_USE_MPI_F08=${ENABLE_MPI_F08})
+  )
+if (ENABLE_MPI_F08)
+  target_compile_definitions (pfunit-mpi-defines INTERFACE PF_USE_MPI_F08)
+endif()
 
 add_subdirectory (core)
 
