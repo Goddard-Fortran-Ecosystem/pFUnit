@@ -18,7 +18,7 @@ set (pf_tests
 
 
 add_library (pfunittests EXCLUDE_FROM_ALL STATIC ${test_srcs})
-target_link_libraries (pfunittests pfunit funit)
+target_link_libraries (pfunittests pfunit pfunit-mpi-defines funit)
 
 configure_file (${PROJECT_SOURCE_DIR}/include/driver.F90 driver.F90)
 set_source_files_properties (driver.F90 PROPERTIES COMPILE_DEFINITIONS _TEST_SUITES="testSuites.inc")
