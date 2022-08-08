@@ -11,7 +11,7 @@ on:
       - "COPYRIGHT"
   # This is a weekly run to try and keep the MPI caches ... cached
   schedule:
-    - cron: '00 09 * * 1'
+    - cron: '00 13 * * 1'
 
 jobs:
   GNU:
