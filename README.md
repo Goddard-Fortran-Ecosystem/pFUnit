@@ -53,7 +53,6 @@ maintain features.
 
 **Note that support for Python 2.7 my soon disappear.**
 
-
 ## Obtaining pFUnit
 
 The best way to obtain pFUnit is to clone the git repository from
