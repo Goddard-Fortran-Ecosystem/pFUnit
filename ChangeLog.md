@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `PFUNIT::pfunit-mpi-defines` ALIAS target
 
+### Changed
+
+- Updated GitHub Actions
+  - Moved to latest versions of "base" actions
+  - Removed stale code
+
 ## [4.4.2] - 2022-08-06
 
 ### Fixed
