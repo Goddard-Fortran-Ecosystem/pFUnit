@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `PFUNIT::pfunit-mpi-defines` ALIAS target
+
 ## [4.4.2] - 2022-08-06
 
 ### Fixed
@@ -49,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Bug in AssertNotEqual() for integers.  A return clause was missing.  This bug is 
+- Bug in AssertNotEqual() for integers.  A return clause was missing.  This bug is
   ancient - apparentyl this routine is not used often.
 
 ### Changed
@@ -86,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  - Incorrect treatment of 128 bit real support for compilers that do not support REAL128.
  - Incorrect compile flags for PGI
- 
+
 ### Changed
 
 
@@ -96,7 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed `OTHER_SRCS` to `OTHER_SOURCES` in PFUNIT.mk.  The previous spelling
   is deprecated, but preserved to keep backwards compatibility.
-  
+
 - Add GitHub Action to automatically generate release tarball
 
 ## [4.2.2] - 2021-11-15
@@ -145,11 +149,11 @@ to using namespaces and exporting targets.
    `OTHER_SOURCES` before the driver as it cannot correctly analyze
    the indirect Fortran `USE PFUNIT_EXTRA_INITIALIZE` statement.  The
    other is when using paralle builds with multiple test suites using
-   Intel and the `-save-temps` flag.  Here the compiler would overwrite the 
+   Intel and the `-save-temps` flag.  Here the compiler would overwrite the
    `driver.i90` in the build directory and produce confusing results.
-   
+
    The solution is to use Cmake `configure_file()` to preprocess the driver
-   directly on a per-suite basis.   This will allow CMake+FPP to corretly 
+   directly on a per-suite basis.   This will allow CMake+FPP to corretly
    analyze dependencies and avoid reuse of `driver.i90`.
 
 ## [4.1.15] - 2021-01-06
@@ -167,19 +171,19 @@ to using namespaces and exporting targets.
 - Workaround for WSL issue in driver.
 
 
-## [4.1.14]	
+## [4.1.14]
 
 ### Added
 - Flag for position independent code.
 
-## [4.1.13]	
+## [4.1.13]
 
 There is a ticket opened against Intel Fortran 19.2 which breaks some
 fHamcrest functionality.  A failing test has been added to the test
 suite.  19.1.3 still has this bug.  (I have not checked if earlier
 compilers also had this problem, but quite possibly they do as
 fHamcrest is still under development.)
-	
+
 ## Changed
 
 - Separated tests related to RobustRunner into separate test suite.  This is to
@@ -209,10 +213,10 @@ fHamcrest is still under development.)
 - Problem with FHamcrest `equal_to` where when the expected value is a numeric
   array and the actual value is any type except a numeric array the test still
   passes, such as: ` @assert_that(1, is(equal_to([2, 3, 4])))` passes.
-  
+
 - Problem with FHamcrest tests causing a segment fault when a test fails that
   involves a complex number.
-  
+
 ### Added
 - Tests for FHamcrest `equal_to` functionality.
 
@@ -233,7 +237,7 @@ fHamcrest is still under development.)
 
 ### Fixed
 - Fixed problem under WSL+Gfortran-9 in which -O0 crashed pFUnit self tests.
-	
+
 ## [4.1.9] - 2020-05-29
 
 ### Fixed
@@ -241,7 +245,7 @@ fHamcrest is still under development.)
   tests.   The tests and test executables are intentionally EXCLUDE_FROM_OLL
   which interferes with some canonical ways of driving cmake projects.
   "make tests" will continue to work as before.
-  
+
 
 ## [4.1.8] - 2020-05-12
 
@@ -249,7 +253,7 @@ fHamcrest is still under development.)
   - Changes in gFTL maps to allow IBM XLF to compile
   - Workaround for GFortran regression in 10.1 release
 - Submodule updates
-	
+
 ## [4.1.7] - 2020-03-06
 
 ### Added
@@ -283,24 +287,24 @@ fHamcrest is still under development.)
 
 - Fix bug in add_pfunit_ctest() macro involving path
   Only affects using with Intel MPI
-	
+
 ## [4.1.2] - 2019-12-07
 
 - Fix minor bug related to OpenMP propagation
-	
+
 ## [4.1.1] - 2019-11-10
 
 - Fix for #122 (allow add_pfunit_test() with abs path)
 
-	
+
 ## [4.1.0] - November 08, 2019
 
 - Major correction to README to reflect changes from v3.0
 - Expansion of hamcrest capabilities
 - Completed TAP listener
 - Fixes for self-tests that were failing due to Python-3 support
-		
-	
+
+
 ## [4.0.1] - September 01, 2019
 
 - various (still incomplete) improvements to the README instructions.
@@ -319,7 +323,7 @@ fHamcrest is still under development.)
 
 - Fix 3.2.7 broke the NAG 6.0 compiler (internal compiler error).
   Workaround is to simply not use -C=all during the build for now.
-	
+
 ## [3.2.6] - May 24, 2016
 
 - Bug fix for several issues identified by the latest NAG compiler
@@ -327,21 +331,21 @@ fHamcrest is still under development.)
   attributes that are unsafe for copyin/copyout.  Many thanks to NAG
   for helping to identify the problems.  Note: these bugs are
   innocuous under most circumstances/compilers.
-	
+
 ## [3.2.5] - April 27, 2016
 
 - Another bug that prevented the compiler version workaround from
           being handled correctly.
-	
+
 ## [3.2.4] - April 27, 2016
 
 - Bug fix - earlier merge broke unix test for Intel compiler
           version.  This prevented fix in 3.2.2 from being used.
-	
+
 ## [3.2.3] - April 25, 2016
 
 - Fixed mistake in OpenMP introduced during previous bug fix.
-	
+
 ## [3.2.2] - April 24, 2016
 
 - Workaround for ifort 16.0.2 bug with openmp
@@ -351,11 +355,11 @@ fHamcrest is still under development.)
   - RemoteProxy now ignores output starting with "DEBUG:" - useful
    for debugging self tests.
 
-	
+
 ## [3.2.1] - April 21, 2016
 
 - Trivial bug fix in include/driver.F90.   Missed in rush to do release 3.2.1.
-	
+
 ## [3.2.0] - April 21, 2016
 
 - Extension: support test to run on "all available" pes.
@@ -377,7 +381,7 @@ fHamcrest is still under development.)
 - Cleanup to reduce/eliminate compiler warnings when building.
 - There is a regression in NAG 6.1, so NAG users should continue to use 6.0 until a
   fix or a workaround are found
-	
+
 ## [3.1.1]
 
 - PGI 15.7 appears to be working robustly

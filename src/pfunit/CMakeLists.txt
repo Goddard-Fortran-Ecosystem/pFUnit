@@ -12,6 +12,7 @@ endif ()
 # pfunit. These are definitions that allow compatibility between the
 # `mpi` and `mpi_f08` modules.
 add_library (pfunit-mpi-defines INTERFACE)
+add_library (PFUNIT::pfunit-mpi-defines ALIAS pfunit-mpi-defines)
 target_include_directories (pfunit-mpi-defines INTERFACE
   $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${dest}/include>
