@@ -61,12 +61,12 @@ jobs:
           ${FC} --version
           cmake --version
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/local/openmpi
           key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
@@ -110,7 +110,7 @@ jobs:
           cd build
           ctest -j1 --output-on-failure --repeat until-pass:4
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: logfiles
@@ -128,7 +128,7 @@ jobs:
     name: Intel Fortran
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Intel compilers
         run: |
           cd /tmp
@@ -160,7 +160,7 @@ jobs:
           cd build
           ctest -j1 --output-on-failure --repeat until-pass:4
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: logfiles
