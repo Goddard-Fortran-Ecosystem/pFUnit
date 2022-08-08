@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated GitHub Actions
   - Moved to latest versions of "base" actions
   - Removed stale code
+  - Added weekly run to try to keep MPI caches live
 
 ## [4.4.2] - 2022-08-06
 
