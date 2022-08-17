@@ -14,7 +14,9 @@
 #                set (TEST_SOURCES
 #                   testMyLib.pf
 #                    )
-#                add_pfunit_test (myTests "${TEST_SOURCES} "" "")
+#                set (TEST_ARGS --xml --output ${CMAKE_BINARY_DIR}/testMyLib.xml)
+#
+#                add_pfunit_test (myTests "${TEST_SOURCES} "" "" TEST_ARGS ${TEST_ARGS})
 #                target_link_libraries (myTests myLibrary) #Assuming "myLibrary" is already defined
 #
 #                Compile the tests:   make myTests
@@ -26,6 +28,8 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
         message (WARNING "No test sources defined for '${test_package_name}', ignoring...")
         return ()
     endif (NOT test_sources)
+
+    cmake_parse_arguments(PF_TEST "" "" TEST_ARGS ${ARGN})
 
     #################################################
     # Preprocessing                                 #
@@ -125,7 +129,7 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     #################################################
     add_test (NAME ${test_package_name}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMAND ${test_package_name}
+        COMMAND ${test_package_name} ${PF_TEST_TEST_ARGS}
         )
     set_property (TEST ${test_package_name}
         PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
