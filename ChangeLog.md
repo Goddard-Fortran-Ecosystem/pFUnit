@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `PFUNIT::pfunit-mpi-defines` ALIAS target
+- Added option to `add_pfunit_ctest()` macro to specify `WORKING_DIRECTORY`.  This is
+  the directory in which the specified test suite will _execute_. (Not where it is _built_).
 
 ### Changed
 

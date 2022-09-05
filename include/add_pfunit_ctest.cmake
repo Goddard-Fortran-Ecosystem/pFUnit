@@ -16,6 +16,7 @@
 #                   EXTRA_INITIALIZE ...
 #                   EXTRA_FINALIZE ...
 #                   MAX_PES 5
+#                   WORKING_DIRECTORY working_directory
 #                   )
 #
 # TEST_SOURCES items with relative paths are treated as relative to
@@ -43,7 +44,7 @@
 include (add_pfunit_sources)
 
 function (add_pfunit_ctest test_package_name)
-  set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE)
+  set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE WORKING_DIRECTORY)
   set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -113,6 +114,12 @@ function (add_pfunit_ctest test_package_name)
     target_link_libraries (${test_package_name} ${PF_TEST_LINK_LIBRARIES})
   endif ()
 
+  if (PF_TEST_WORKING_DIRECTORY)
+    set(workdir ${PF_TEST_WORKING_DIRECTORY})
+  else ()
+    set(workdir ${CMAKE_CURRENT_BINARY_DIR})
+  endif ()
+
   #################################################
   # Define test in CTest system                   #
   #################################################
@@ -126,13 +133,13 @@ function (add_pfunit_ctest test_package_name)
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
     add_test (NAME ${test_package_name}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      WORKING_DIRECTORY ${workdir}
       COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
     target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
     add_test (NAME ${test_package_name}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      WORKING_DIRECTORY ${workdir}
       COMMAND ${test_package_name}
       )
   endif()
