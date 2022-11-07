@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.0] - 2022-11-22
+
+### Changed
+
+- Updated fArgParse submodule
+
 ## [4.4.2] - 2022-08-06
 
 ### Fixed
