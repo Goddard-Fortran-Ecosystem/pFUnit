@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.0] 2022-11-07
+
 ### Added
 
 - Added `PFUNIT::pfunit-mpi-defines` ALIAS target
@@ -17,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Moved to latest versions of "base" actions
   - Removed stale code
   - Added weekly run to try to keep MPI caches live
+
+## [4.5.0] - 2022-11-07
+
+### Changed
+
+- Updated fArgParse submodule
+
 
 ## [4.4.2] - 2022-08-06
 
