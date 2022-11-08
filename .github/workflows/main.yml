@@ -9,6 +9,9 @@ on:
       - "**.MD"
       - "LICENCE"
       - "COPYRIGHT"
+  # This is a weekly run to try and keep the MPI caches ... cached
+  schedule:
+    - cron: '00 13 * * 1'
 
 jobs:
   GNU:
@@ -61,30 +64,19 @@ jobs:
           ${FC} --version
           cmake --version
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/local/openmpi
           key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
-
-      # For some reason the GitHub Actions macOS image seems to have triggered
-      # a 7-year old bug: https://github.com/Homebrew/legacy-homebrew/issues/19046
-      # For now we only fix if MPI isn't cached already as it only seems important
-      # for OpenMPI
-
-      - name: Fix gmp and mpfr on macOS if MPI isn't cached
-        if: steps.cache-mpi.outputs.cache-hit != 'true' && matrix.os == 'macos-10.15'
-        run: |
-          brew reinstall --build-from-source gmp mpfr
-
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.1.3
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
       - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
@@ -110,7 +102,7 @@ jobs:
           cd build
           ctest -j1 --output-on-failure --repeat until-pass:4
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: logfiles
@@ -128,7 +120,7 @@ jobs:
     name: Intel Fortran
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install Intel compilers
         run: |
           cd /tmp
@@ -160,7 +152,7 @@ jobs:
           cd build
           ctest -j1 --output-on-failure --repeat until-pass:4
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: failure()
         with:
           name: logfiles
