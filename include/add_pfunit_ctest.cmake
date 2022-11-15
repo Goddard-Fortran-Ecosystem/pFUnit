@@ -135,13 +135,13 @@ function (add_pfunit_ctest test_package_name)
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
+      COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name} --verbose
       )
   else()
     target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${test_package_name}
+      COMMAND ${test_package_name} --verbose
       )
   endif()
 
