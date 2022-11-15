@@ -8,7 +8,6 @@ import posixpath
 import re
 # from parseBrackets import parseBrackets
 from .parseDirectiveArgs import parseDirectiveArguments
-from pathlib import Path
 
 class MyError(Exception):
     def __init__(self, value):
@@ -700,8 +699,9 @@ class Parser():
         if (not self.suiteName):
             self.suiteName = self.defaultSuiteName
             mname = self.userModuleName
-            base = Path(self.fileName).stem
-            if mname != base:
+            base = splitext(basename(self.fileName))[0]
+            # As Fortran is not case-sensitive with module names, we use a case-insensitive match
+            if mname.lower() != base.lower():
                 raise Exception("pFUnit preprocessor: module name (" + mname + ") and file name (" + base + ") do not match.")
 
         if ('testParameterType' in self.userTestCase and (not 'constructor' in self.userTestCase)):
