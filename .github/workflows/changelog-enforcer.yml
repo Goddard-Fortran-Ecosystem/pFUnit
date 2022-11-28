@@ -17,6 +17,6 @@ jobs:
             entry to it describing your change.  Please note that the
             keepachangelog (https://keepachangelog.com) format is
             used. If your change is very trivial not applicable for a
-            changelog entry, add a 'Skip Changelog' label to the pull
+            changelog entry, add a 'skip changelog' label to the pull
             request to skip the changelog enforcer.
 
