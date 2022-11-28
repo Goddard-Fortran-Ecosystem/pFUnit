@@ -127,6 +127,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      # There is a bug between pFUnit and CMake 3.25.0 which is in ubuntu-latest.
+      # For now, we grab CMake 3.24.3
+      - name: Get specific version CMake, v3.24.3
+        uses: lukka/get-cmake@v3.24.3
       - name: Install Intel compilers
         run: |
           cd /tmp
@@ -143,6 +147,7 @@ jobs:
           ${FC} --version
           ${CC} --version
           mpirun --version
+          cmake --version
       - name: Build pFUnit
         run: |
           mkdir -p build
