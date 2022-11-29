@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added IntelLLVM.cmake to support ifx
+
 ### Fixed
 
 - Fix GitHub CI workflow by pinning to CMake 3.24.3
