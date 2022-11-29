@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added option to set labels to ctests
+
 ### Fixed
 
 - Fix GitHub CI workflow by pinning to CMake 3.24.3
