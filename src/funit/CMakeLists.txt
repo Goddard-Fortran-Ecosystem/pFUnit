@@ -79,7 +79,7 @@ if (BUILD_SHARED_LIBS)
   list(APPEND funit_targets funit_shared)
 endif()
 
-foreach(funit_target ${funit_targets})
+foreach(funit_target IN LISTS funit_targets)
   set_funit_target_properties(${funit_target})
   funit_target_link_pfunit(${funit_target})
 

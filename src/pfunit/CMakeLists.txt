@@ -23,8 +23,8 @@ endif()
 
 add_subdirectory (core)
 
-foreach(pfunit_target ${pfunit_targets})
-  set_target_properties (${pfunit_target} PROPERTIES Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod)
+foreach(pfunit_target IN LISTS pfunit_targets)
+  set_property (TARGET ${pfunit_target} PROPERTY Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod)
 
   target_include_directories (${pfunit_target} PUBLIC ${MPI_Fortran_INCLUDE_PATH})
 

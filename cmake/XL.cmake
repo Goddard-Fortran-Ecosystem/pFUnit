@@ -8,5 +8,4 @@ set(CMAKE_Fortran_FLAGS_DEBUG  "-O0")
 set(CMAKE_Fortran_FLAGS_RELEASE "-O3")
 set(CMAKE_Fortran_FLAGS "-g ${cpp} ${check_all}")
 
-add_definitions(-DIBM)
-
+add_compile_definitions(IBM)
