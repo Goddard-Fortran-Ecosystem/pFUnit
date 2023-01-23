@@ -131,6 +131,7 @@ function (add_pfunit_ctest test_package_name)
       else() # best guess
         set(MPIEXEC mpirun)
       endif()
+    endif()
     if (NOT MPIEXEC_NUMPROC_FLAG)
       if (PFUNIT_MPI_USE_MPIEXEC)
         set(MPIEXEC ${PFUNIT_MPI_USE_MPIEXEC})
