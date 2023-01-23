@@ -5,6 +5,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added option to set labels to ctests
+
+### Fixed
+
+- `--verbose option` is now passed through by ctest runner
+- Converted GitHub CI to use cmake abstract build commands
+
+### Added
+
+- Added changelog enforcer GitHub Action
+
 ## [4.6.2] - 2023-01-23
 
 ### Fixed

@@ -1,0 +1,22 @@
+name: "Enforce Changelog"
+on:
+  pull_request:
+      types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled]
+
+jobs:
+  # Enforces the update of a changelog file on every pull request
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dangoslen/changelog-enforcer@v3
+      with:
+        changeLogPath: 'ChangeLog.md'
+        skipLabels: 'skip changelog'
+        missingUpdateErrorMessage: >
+            No update to ChangeLog.md found! Please add a changelog
+            entry to it describing your change.  Please note that the
+            keepachangelog (https://keepachangelog.com) format is
+            used. If your change is very trivial not applicable for a
+            changelog entry, add a 'skip changelog' label to the pull
+            request to skip the changelog enforcer.
+
