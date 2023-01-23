@@ -23,7 +23,7 @@ function (CHECK_FORTRAN_SOURCE_RUN file var)
     set(${var} ${${var}} CACHE STRING "" FORCE)
 
   endif()
-  add_definitions(-D${var}=${${var}})
+  add_compile_definitions(${var}=${${var}})
 endfunction (CHECK_FORTRAN_SOURCE_RUN)
 
 
@@ -50,5 +50,5 @@ function (CHECK_FORTRAN_SOURCE_COMPILE file var)
 
     set(${var} ${${var}} CACHE STRING "" FORCE)
   endif()
-  add_definitions(-D${var})
+  add_compile_definitions(${var})
 endfunction (CHECK_FORTRAN_SOURCE_COMPILE)

@@ -106,7 +106,7 @@ if (NOT SKIP_OPENMP)
     message (STATUS "OpenMP not found - skipping openmp support.")
   endif()
   # Kludge to workaround cmake+NAG+openmp linkage problem
-  if (CMAKE_Fortran_COMPILER_ID MATCHES NAG)
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "NAG")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY
       INTERFACE_LINK_LIBRARIES "")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY INTERFACE_LINK_OPTIONS "-openmp")
