@@ -125,26 +125,26 @@ function (add_pfunit_ctest test_package_name)
   #################################################
   if (PF_TEST_MAX_PES AND PFUNIT_MPI_FOUND)
     target_link_libraries (${test_package_name} ${PFUNIT_LIBRARIES})
-    if (NOT MPIEXEC)
+    if (NOT MPIEXEC_EXECUTABLE)
       if (PFUNIT_MPI_USE_MPIEXEC)
-        set(MPIEXEC ${PFUNIT_MPI_USE_MPIEXEC})
+        set(MPIEXEC_EXECUTABLE ${PFUNIT_MPI_USE_MPIEXEC})
       else() # best guess
-        set(MPIEXEC mpirun)
+        set(MPIEXEC_EXECUTABLE mpirun)
       endif()
     endif()
     if (NOT MPIEXEC_NUMPROC_FLAG)
       if (PFUNIT_MPI_USE_MPIEXEC)
-        set(MPIEXEC ${PFUNIT_MPI_USE_MPIEXEC})
+        set(MPIEXEC_EXECUTABLE ${PFUNIT_MPI_USE_MPIEXEC})
       else() # best guess
         set(MPIEXEC_NUMPROC_FLAG "-np")
       endif()
     endif()
-    if (MPIEXEC MATCHES ".*openmpi*")
+    if (MPIEXEC_EXECUTABLE MATCHES ".*openmpi*")
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
+      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
       )
   else()
     target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
