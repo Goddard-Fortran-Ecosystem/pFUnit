@@ -5,10 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.2] - 2023-01-23
+
 ### Fixed
 
 - Fix CMake logic in `add_pfunit_ctest.cmake` for `MPIEXEC_EXECUTABLE`.  Problem not exposed by common MPI flavors which use `mpirun`
 - Fix GitHub CI workflow by pinning to CMake 3.24.3
+- Fixes for GNU Make builds
+- Update fArgParse submodule to v1.4.2
 
 ## [4.6.1] - 2022-11-15
 
