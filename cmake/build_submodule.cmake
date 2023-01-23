@@ -22,7 +22,7 @@ macro (build_submodule submodule)
         if (GIT_SUBMODULE)
           execute_process (
             COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             RESULT_VARIABLE GIT_SUBMODULE_RESULT
             )
           if (NOT GIT_SUBMODULE_RESULT EQUAL "0")
