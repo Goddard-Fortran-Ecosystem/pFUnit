@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.6.1
+  VERSION 4.6.2
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using
@@ -136,6 +136,10 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
 
+include(build_submodule)
+# Find fArgParse first so that gFTL and gFTL-shared are consistent
+build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse)
+
 add_subdirectory (src)
 add_subdirectory (include)
 add_subdirectory (bin)
@@ -166,6 +170,11 @@ if (ENABLE_TESTS)
   file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 endif()
 
+# The following is needed for external projects using *nix make when
+# parent project builds pFUnit as a subproject.
+set (top_dir PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR})
+set (PFUNIT_TOP_DIR "${CMAKE_INSTALL_PREFIX}/${top_dir}" CACHE PATH "")
+
 # Packaging
 include(CMakePackageConfigHelpers)
 include (cmake/packaging.cmake)
@@ -185,7 +194,6 @@ configure_file(cmake/PFUNIT.mk.in
   "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
 # Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
-set (top_dir PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR})
 install(FILES
   "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake"
   "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake"
