@@ -699,10 +699,11 @@ class Parser():
         if (not self.suiteName):
             self.suiteName = self.defaultSuiteName
             mname = self.userModuleName
-            base = splitext(basename(self.fileName))[0]
-            # As Fortran is not case-sensitive with module names, we use a case-insensitive match
-            if mname.lower() != base.lower():
-                raise Exception("pFUnit preprocessor: module name (" + mname + ") and file name (" + base + ") do not match (ignoring case).")
+            if mname:
+                base = splitext(basename(self.fileName))[0]
+                # As Fortran is not case-sensitive with module names, we use a case-insensitive match
+                if mname.lower() != base.lower():
+                    raise Exception("pFUnit preprocessor: module name (" + mname + ") and file name (" + base + ") do not match (ignoring case).")
 
         if ('testParameterType' in self.userTestCase and (not 'constructor' in self.userTestCase)):
             self.userTestCase['constructor'] = self.userTestCase['testParameterType']
