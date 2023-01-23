@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `--verbose option` is now passed through by ctest runner
 - Converted GitHub CI to use cmake abstract build commands
 
 ### Added
