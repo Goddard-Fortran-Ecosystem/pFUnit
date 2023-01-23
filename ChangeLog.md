@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `--verbose option` is now passed through by ctest runner
 - Converted GitHub CI to use cmake abstract build commands
 
+### Added
+
+- Added changelog enforcer GitHub Action
+
 ## [4.6.1] - 2022-11-15
 
 ### Fixed
