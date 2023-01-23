@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed build_submodule for old git versions
+- Fix CMake logic in `add_pfunit_ctest.cmake` for `MPIEXEC_EXECUTABLE`.  Problem not exposed by common MPI flavors which use `mpirun`
 - Fix GitHub CI workflow by pinning to CMake 3.24.3
 
 ## [4.6.1] - 2022-11-15
