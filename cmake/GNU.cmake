@@ -14,4 +14,4 @@ endif ()
 set(CMAKE_Fortran_FLAGS_DEBUG "-g ${common_flags} ${traceback}")
 set(CMAKE_Fortran_FLAGS_RELEASE "${common_flags}")
 
-add_definitions(-D_GNU)
+add_compile_definitions(_GNU)
