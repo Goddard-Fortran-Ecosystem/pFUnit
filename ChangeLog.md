@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix GitHub CI workflow by pinning to CMake 3.24.3
+- Converted GitHub CI to use cmake abstract build commands
 
 ### Added
 
