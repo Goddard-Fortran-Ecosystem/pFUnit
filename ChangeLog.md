@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.3] - 2023-02-07
+
+### Fixed
+
+- Fix for compilers that do not support 128 bit reals
+
 ## [4.6.2] - 2023-01-23
 
 ### Fixed
