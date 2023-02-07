@@ -40,10 +40,14 @@ module pf_BaseDescription
       module procedure description_of_int64
       module procedure description_of_real32
       module procedure description_of_real64
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
       module procedure description_of_real128
+#endif
       module procedure description_of_complex32
       module procedure description_of_complex64
+#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))      
       module procedure description_of_complex128
+#endif
    end interface description_of
    
 contains
