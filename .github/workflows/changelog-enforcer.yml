@@ -11,12 +11,12 @@ jobs:
     - uses: dangoslen/changelog-enforcer@v3
       with:
         changeLogPath: 'ChangeLog.md'
-        skipLabels: 'skip changelog'
+        skipLabels: 'Skip Changelog,0 diff trivial,automatic,dependencies,github_actions'
         missingUpdateErrorMessage: >
             No update to ChangeLog.md found! Please add a changelog
             entry to it describing your change.  Please note that the
             keepachangelog (https://keepachangelog.com) format is
             used. If your change is very trivial not applicable for a
-            changelog entry, add a 'skip changelog' label to the pull
+            changelog entry, add a 'Skip Changelog' label to the pull
             request to skip the changelog enforcer.
 

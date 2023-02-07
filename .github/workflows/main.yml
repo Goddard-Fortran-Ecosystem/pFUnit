@@ -33,8 +33,6 @@ jobs:
             compiler: gfortran-9
           - os: macos-12
             compiler: gfortran-10
-          - os: macos-12
-            compiler: gfortran-12
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
