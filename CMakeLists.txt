@@ -215,6 +215,8 @@ export(EXPORT PFUNIT
 # Set some variables needed by add_pfunit_test in the parent scope so
 # that the build directory can be used directly
 if (NOT MAIN_PROJECT)
+  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" PARENT_SCOPE)
+  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" PARENT_SCOPE)
   set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
   set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
   set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
