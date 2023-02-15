@@ -28,6 +28,8 @@ project (PFUNIT
   VERSION 4.6.3
   LANGUAGES Fortran C)
 
+cmake_policy(SET CMP0077 NEW)
+
 # Determine if pFUnit is built as a subproject (using
 # add_subdirectory) or if it is the main project. Snippet taken from
 # fmt: https://github.com/fmtlib/fmt/blob/eb52ac7/CMakeLists.txt
