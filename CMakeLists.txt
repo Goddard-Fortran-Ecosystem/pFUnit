@@ -83,7 +83,7 @@ endif ()
 
 
 if (NOT SKIP_MPI)
-  find_package (MPI QUIET)
+  find_package (MPI QUIET COMPONENTS Fortran)
   if (MPI_Fortran_FOUND)
     message (STATUS "MPI enabled")
     if (ENABLE_MPI_F08)
