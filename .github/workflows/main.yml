@@ -28,13 +28,11 @@ jobs:
           - os: ubuntu-22.04
             compiler: gfortran-9
           - os: macos-11
-            compiler: gfortran-12
+            compiler: gfortran-9
           - os: macos-12
             compiler: gfortran-9
           - os: macos-12
             compiler: gfortran-10
-          - os: macos-12
-            compiler: gfortran-12
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
@@ -67,6 +65,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
       - name: Cache MPI
         id: cache-mpi
         uses: actions/cache@v3
@@ -103,7 +104,6 @@ jobs:
           path: |
             build/**/*.log
 
-
   Intel:
     runs-on: ubuntu-20.04
 
@@ -115,6 +115,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
       - name: Install Intel compilers
         run: |
           cd /tmp
@@ -132,6 +137,65 @@ jobs:
           ${CC} --version
           mpirun --version
           cmake --version
+      - name: Configure pFUnit
+        run: cmake -Bbuild
+      - name: Build pfUnit
+        run: cmake --build build --parallel
+      - name: Build Tests
+        run: cmake --build build --parallel -t build-tests
+      - name: Run Tests
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Archive log files on failure
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: logfiles
+          path: |
+            build/**/*.log
+
+  Nvidia:
+    runs-on: ubuntu-20.04
+    container: nvcr.io/nvidia/nvhpc:23.3-devel-cuda12.0-ubuntu20.04
+    env:
+      FC: nvfortran
+
+    name: Nvidia HPC
+    steps:
+      - name: Versions
+        run: |
+          ${FC} --version
+          cmake --version
+      - name: Install Python3
+        run: |
+          apt-get update
+          apt-get install python3 python-is-python3 -y
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
+      - name: Cache MPI
+        id: cache-mpi
+        uses: actions/cache@v3
+        with:
+          path: ~/local/openmpi
+          key: mpi-${{ runner.os }}-nvfortran
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        run: |
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
+      - name: Set MPI Environment
+        run: |
+          echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+      - name: MPI Versions
+        run: |
+          ${FC} --version
+          mpirun --version
+          mpifort --show
       - name: Configure pFUnit
         run: cmake -Bbuild
       - name: Build pfUnit
