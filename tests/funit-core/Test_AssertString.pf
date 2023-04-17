@@ -261,6 +261,31 @@ contains
      call assertEqual(expected=" ", found="      ", &
           & whitespace=IGNORE_ALL )
    end subroutine testAssertEqualNonzeroBlanks4
-   
+
+   @test
+   subroutine testAssertEqualArray
+      call assertEqual(expected=['a','b'], found=['a','b'])
+      call assertEqual(expected='a', found=['a','a','a'])
+      call assertEqual(expected='a', found=['a','a','a'])
+   end subroutine testAssertEqualArray
+
+   @test
+   subroutine testAssertEqualArray_fail_nonconformable
+      call assertEqual(expected=['a'], found=['a','a'])
+      call assertExceptionRaised( &
+           'Arrays not conformable failure:' // new_line('A') // &
+           '    Expected shape: [1]' // new_line('A')  // &
+           '      Actual shape: [2]')
+   end subroutine testAssertEqualArray_fail_nonconformable
+
+   @test
+   subroutine testAssertEqualArray_fail_mismatch
+      call assertEqual(expected=['a','b'], found=['a','c'])
+      call assertExceptionRaised( &
+           'String assertion failed:' // new_line('A') // &
+           '    expected: <"b">' // new_line('A') // &
+           '   but found: <"c">' // new_line('A') // &
+           '  first diff:   ^')
+   end subroutine testAssertEqualArray_fail_mismatch
 
 end module Test_AssertString

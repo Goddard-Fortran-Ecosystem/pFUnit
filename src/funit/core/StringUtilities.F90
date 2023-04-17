@@ -47,6 +47,7 @@ module PF_StringUtilities
    public :: nullTerminate
    public :: unlessScalar
    public :: WhitespaceOptions, IGNORE_ALL, TRIM_ALL, KEEP_ALL, IGNORE_DIFFERENCES
+   public :: operator(==)
    public :: whitespacep, trimAll, trimTrailingWhitespace
    public :: to_lower
 
@@ -83,6 +84,11 @@ module PF_StringUtilities
         & TRIM_ALL  =WhitespaceOptions(TRIM_ALL_), &
         & KEEP_ALL  =WhitespaceOptions(KEEP_ALL_), &
         & IGNORE_DIFFERENCES =WhitespaceOptions(IGNORE_DIFFERENCES_)
+
+
+   interface operator(==)
+      module procedure equal_whitespace_options
+   end interface operator(==)
 
 contains
 
@@ -315,4 +321,9 @@ contains
     end do
   end function to_lower
 
+  elemental logical function equal_whitespace_options(lhs, rhs)
+     type(WhitespaceOptions), intent(in) :: lhs, rhs
+     equal_whitespace_options = (lhs%value == rhs%value)
+  end function equal_whitespace_options
+     
 end module PF_StringUtilities
