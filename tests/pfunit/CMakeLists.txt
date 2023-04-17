@@ -36,10 +36,10 @@ target_link_libraries(new_ptests.x new_ptests)
 
 # Fix for openmpi 1.8.8 which complains about forking due to selftests of
 # robust runner.
-if (MPIEXEC MATCHES ".*openmpi*")
+if (MPIEXEC_EXECUTABLE MATCHES ".*openmpi*")
   list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
 endif()
-if (MPIEXEC MATCHES ".*openmpi/1.8.8/.*")
+if (MPIEXEC_EXECUTABLE MATCHES ".*openmpi/1.8.8/.*")
   set (MPIEXEC_PREFLAGS ${MPIEXEC_PREFLAGS} --mca mpi_warn_on_fork 0)
 endif ()
 
@@ -55,18 +55,18 @@ if (NOT DEFINED MPI_USE_MPIEXEC)
 endif()
 
 if (NOT MPI_USE_MPIEXEC)
-  set(MPIEXEC mpirun)
+  set(MPIEXEC_EXECUTABLE mpirun)
   set(MPIEXEC_NUMPROC_FLAG "-np")
 endif()
 
 add_test(NAME mpi-tests
-  COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 $<TARGET_FILE:parallel_tests.x>
+  COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 $<TARGET_FILE:parallel_tests.x>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 add_dependencies(build-tests parallel_tests.x)
 
 add_test(NAME new_ptests
-  COMMAND ${MPIEXEC} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 $<TARGET_FILE:new_ptests.x>
+  COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} 4 $<TARGET_FILE:new_ptests.x>
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 set_property (TEST new_ptests
