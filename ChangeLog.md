@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added IntelLLVM.cmake to support ifx
 - Added interface for `@asertEquals` for arrays of strings.   Previously only string scalars could be compared.
 - Added check in pFUnit preprocessor that raises an exception if the module name and filename do not agree unless `@suite` is used to override default assumptions.
 - Added option to set labels to ctests
