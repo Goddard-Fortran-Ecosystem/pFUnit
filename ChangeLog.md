@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.7.0] - 2023-04-17
+
+### Changed
+
+- Update fArgParse submodule to v1.5.0
+
 ### Added
 
 - Added IntelLLVM.cmake to support ifx
