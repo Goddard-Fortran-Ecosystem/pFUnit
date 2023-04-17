@@ -76,7 +76,7 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/travis-install-mpi.sh openmpi 4.1.3
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
       - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
@@ -87,20 +87,14 @@ jobs:
           ${FC} --version
           mpirun --version
           mpifort --show
-      - name: Build pFUnit
-        run: |
-          mkdir -p build
-          cd build
-          cmake ..
-          make -j$(nproc)
+      - name: Configure pFUnit
+        run: cmake -Bbuild
+      - name: Build pfUnit
+        run: cmake --build build --parallel
       - name: Build Tests
-        run: |
-          cd build
-          make -j$(nproc) build-tests
+        run: cmake --build build --parallel -t build-tests
       - name: Run Tests
-        run: |
-          cd build
-          ctest -j1 --output-on-failure --repeat until-pass:4
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
       - name: Archive log files on failure
         uses: actions/upload-artifact@v3
         if: failure()
@@ -137,20 +131,15 @@ jobs:
           ${FC} --version
           ${CC} --version
           mpirun --version
-      - name: Build pFUnit
-        run: |
-          mkdir -p build
-          cd build
-          cmake ..
-          make -j$(nproc)
+          cmake --version
+      - name: Configure pFUnit
+        run: cmake -Bbuild
+      - name: Build pfUnit
+        run: cmake --build build --parallel
       - name: Build Tests
-        run: |
-          cd build
-          make -j$(nproc) build-tests
+        run: cmake --build build --parallel -t build-tests
       - name: Run Tests
-        run: |
-          cd build
-          ctest -j1 --output-on-failure --repeat until-pass:4
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
       - name: Archive log files on failure
         uses: actions/upload-artifact@v3
         if: failure()

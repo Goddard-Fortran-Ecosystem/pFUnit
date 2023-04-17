@@ -9,6 +9,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added interface for `@asertEquals` for arrays of strings.   Previously only string scalars could be compared.
 - Added check in pFUnit preprocessor that raises an exception if the module name and filename do not agree unless `@suite` is used to override default assumptions.
+- Added option to set labels to ctests
+- Added changelog enforcer GitHub Action
+
+### Fixed
+
+- `--verbose option` is now passed through by ctest runner
+- Converted GitHub CI to use cmake abstract build commands
+
+## [4.6.3] - 2023-02-07
+
+### Fixed
+
+- Fix for compilers that do not support 128 bit reals
+
+## [4.6.2] - 2023-01-23
+
+### Fixed
+
+- Fixed build_submodule for old git versions
+- Fixed for use with FetchContent
+- Fix CMake logic in `add_pfunit_ctest.cmake` for `MPIEXEC_EXECUTABLE`.  Problem not exposed by common MPI flavors which use `mpirun`
+- Fix GitHub CI workflow by pinning to CMake 3.24.3
+- Fixes for GNU Make builds
+- Update fArgParse submodule to v1.4.2
+- Fix `pFUnitParser.py` in cases where there is no module name
+
+## [4.6.1] - 2022-11-15
+
+### Fixed
+
+- Restore Python2 compatibility in `pFUnitParser.py` script
+
+## [4.6.0] - 2022-11-07
+
+### Added
+
 - Added `PFUNIT::pfunit-mpi-defines` ALIAS target
 - Added option to `add_pfunit_ctest()` macro to specify `WORKING_DIRECTORY`.  This is
   the directory in which the specified test suite will _execute_. (Not where it is _built_).
@@ -19,6 +55,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Moved to latest versions of "base" actions
   - Removed stale code
   - Added weekly run to try to keep MPI caches live
+
+## [4.5.0] - 2022-11-07
+
+### Changed
+
+- Updated fArgParse submodule
+
 
 ## [4.4.2] - 2022-08-06
 

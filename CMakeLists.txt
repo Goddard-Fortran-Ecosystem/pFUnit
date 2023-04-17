@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.4.2
+  VERSION 4.6.3
   LANGUAGES Fortran C)
 
 # Determine if pFUnit is built as a subproject (using
@@ -106,7 +106,7 @@ if (NOT SKIP_OPENMP)
     message (STATUS "OpenMP not found - skipping openmp support.")
   endif()
   # Kludge to workaround cmake+NAG+openmp linkage problem
-  if (CMAKE_Fortran_COMPILER_ID MATCHES NAG)
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "NAG")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY
       INTERFACE_LINK_LIBRARIES "")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY INTERFACE_LINK_OPTIONS "-openmp")
@@ -135,6 +135,10 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
+
+include(build_submodule)
+# Find fArgParse first so that gFTL and gFTL-shared are consistent
+build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse)
 
 add_subdirectory (src)
 add_subdirectory (include)
@@ -166,6 +170,11 @@ if (ENABLE_TESTS)
   file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 endif()
 
+# The following is needed for external projects using *nix make when
+# parent project builds pFUnit as a subproject.
+set (top_dir PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR})
+set (PFUNIT_TOP_DIR "${CMAKE_INSTALL_PREFIX}/${top_dir}" CACHE PATH "")
+
 # Packaging
 include(CMakePackageConfigHelpers)
 include (cmake/packaging.cmake)
@@ -185,7 +194,6 @@ configure_file(cmake/PFUNIT.mk.in
   "${PROJECT_BINARY_DIR}/PFUNIT.mk" @ONLY)
 
 # Install the pFUnitConfig.cmake and pFUnitConfigVersion.cmake
-set (top_dir PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR})
 install(FILES
   "${PROJECT_BINARY_DIR}/PFUNITConfig.cmake"
   "${PROJECT_BINARY_DIR}/PFUNITConfig-version.cmake"
@@ -212,14 +220,18 @@ if (NOT MAIN_PROJECT)
   set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
 
   if (BUILD_SHARED_LIBS)
-    set (PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit_shared PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit_shared PARENT_SCOPE)
+    else()
+      set(PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
     endif()
   else()
-    set (PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit PARENT_SCOPE)
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES ${PFUNIT_LIBRARIES} PFUNIT::pfunit PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit PARENT_SCOPE)
+    else()
+      set(PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
     endif()
   endif()
 

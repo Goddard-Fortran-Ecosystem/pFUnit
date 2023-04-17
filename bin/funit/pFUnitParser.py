@@ -260,11 +260,16 @@ class AtBegin(Action):
         return m
 
     def action(self, m, line):
+        self.parser.outputFile.write(line)
+
         self.parser.userModuleName = m.groups()[0]
         self.parser.wrapModuleName = 'Wrap' + self.parser.userModuleName
-        if not self.parser.suiteName:
-            self.parser.suiteName = self.parser.userModuleName + "_suite"
-        self.parser.outputFile.write(line)
+
+        if self.parser.suiteName:
+            return None
+
+        self.parser.defaultSuiteName = self.parser.userModuleName + "_suite"
+            
 
 
 class AtAssert(Action):
@@ -691,9 +696,18 @@ class Parser():
             if  not line: break
             parse(line)
 
-        if (not self.suiteName): self.suiteName = self.defaultSuiteName
+        if (not self.suiteName):
+            self.suiteName = self.defaultSuiteName
+            mname = self.userModuleName
+            if mname:
+                base = splitext(basename(self.fileName))[0]
+                # As Fortran is not case-sensitive with module names, we use a case-insensitive match
+                if mname.lower() != base.lower():
+                    raise Exception("pFUnit preprocessor: module name (" + mname + ") and file name (" + base + ") do not match (ignoring case).")
+
         if ('testParameterType' in self.userTestCase and (not 'constructor' in self.userTestCase)):
             self.userTestCase['constructor'] = self.userTestCase['testParameterType']
+
         self.makeWrapperModule()
 
     def isComment(self, line):

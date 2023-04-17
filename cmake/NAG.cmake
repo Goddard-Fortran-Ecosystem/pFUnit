@@ -12,4 +12,4 @@ set(common_flags "${cpp} -w=x95")
 set(CMAKE_Fortran_FLAGS_DEBUG "${common_flags} -O0 ${check_all} ${traceback}")
 set(CMAKE_Fortran_FLAGS_RELEASE ${common_flags})
 
-add_definitions(-D_NAG)
+add_compile_definitions(_NAG)
