@@ -15,6 +15,7 @@
 #                   EXTRA_USE ...
 #                   EXTRA_INITIALIZE ...
 #                   EXTRA_FINALIZE ...
+#                   LABELS ...
 #                   MAX_PES 5
 #                   WORKING_DIRECTORY working_directory
 #                   )
@@ -45,7 +46,7 @@ include (add_pfunit_sources)
 
 function (add_pfunit_ctest test_package_name)
   set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE WORKING_DIRECTORY)
-  set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES)
+  set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES LABELS)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   set (test_sources_f90)
@@ -144,18 +145,24 @@ function (add_pfunit_ctest test_package_name)
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}
+      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name} --verbose
       )
   else()
     target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${test_package_name}
+      COMMAND ${test_package_name} --verbose
       )
   endif()
 
   set_property (TEST ${test_package_name}
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
+
+  if (PF_TEST_LABELS)
+    set_property (TEST ${test_package_name}
+      PROPERTY LABELS ${PF_TEST_LABELS}
+    )
+  endif()
 
 endfunction()

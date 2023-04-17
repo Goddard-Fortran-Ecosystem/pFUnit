@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.6.3
+  VERSION 4.7.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -108,7 +108,7 @@ if (NOT SKIP_OPENMP)
     message (STATUS "OpenMP not found - skipping openmp support.")
   endif()
   # Kludge to workaround cmake+NAG+openmp linkage problem
-  if (CMAKE_Fortran_COMPILER_ID MATCHES NAG)
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "NAG")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY
       INTERFACE_LINK_LIBRARIES "")
     set_property(TARGET OpenMP::OpenMP_Fortran PROPERTY INTERFACE_LINK_OPTIONS "-openmp")

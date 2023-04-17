@@ -9,6 +9,8 @@ module pf_AssertString
 
    interface assertEqual
       module procedure assertEqual_string
+      module procedure assertEqual_string_0d1d
+      module procedure assertEqual_string_1d1d
    end interface assertEqual
 
 
@@ -48,26 +50,27 @@ contains
 
       if(present(whitespace))then
          whitespace_ = whitespace
+         if (.not. any(whitespace_ == [TRIM_ALL, IGNORE_ALL, IGNORE_DIFFERENCES, KEEP_ALL])) then
+            throwMessage = & 
+                 & 'assertEqualString_InternalError: ' &
+                 & // 'Unknown case for handling Whitespace'
+            call throw(appendWithSpace(message_,throwMessage), location)
+            return
+      end if
+         
       else
          ! This is the default whitespace option.  TRIM_ALL is the legacy behavior.
          ! TODO:  Change default behavior to IGNORE_DIFFERENCES.
          whitespace_ = TRIM_ALL
       end if
 
-      select case (whitespace_%value)
-      case (TRIM_ALL%value)
-         expected_ = trimAll(expected)
-         found_    = trimAll(found)
-      case (IGNORE_ALL%value)
-         expected_ = trimAll(expected)
-         found_    = trimAll(found)
-      case (IGNORE_DIFFERENCES%value)
-         expected_ = trimAll(expected)
-         found_    = trimAll(found)
-      case (KEEP_ALL%value)
+      if (whitespace_ == KEEP_ALL) then
          expected_ = expected
          found_    = found
-      end select
+      else
+         expected_ = trimAll(expected)
+         found_    = trimAll(found)
+      end if
 
       ! Determine if we need to iterate through the characters in the strings.
       ! Trim: ignore leading & trailing white space.  
@@ -75,58 +78,20 @@ contains
       ! Keep: white space is significant.
       ! Worry:  Original code written to !print out trimmed strings.  Not sure what effect
       ! Keep will have.
-      !print *,1000
-      checkCharacterByCharacter = .true.
-      select case (whitespace_%value)
-      case (TRIM_ALL%value)
-         ! Check to see if we have to do more work.
-            checkCharacterByCharacter = expected_ /= found_
-            numI = len(expected_); numJ = len(found_)
+      checkCharacterByCharacter = expected_ /= found_
+      numI = len(expected_); numJ = len(found_)
 
-         case (IGNORE_ALL%value)
-            checkCharacterByCharacter = expected_ /= found_
-            numI = len(expected_); numJ = len(found_)
-
-         case (IGNORE_DIFFERENCES%value)
-            checkCharacterByCharacter = expected_ /= found_
-            numI = len(expected_); numJ = len(found_)
-            !print *,1001,whitespace_%value
-            !print *,1002,'e="',expected_,'"'
-            !print *,1003,'f="',found_,'"'
-
-         case (KEEP_ALL%value)
-            checkCharacterByCharacter = expected_ /= found_
-            numI = len(expected_); numJ = len(found_)
-
-         case default
-            throwMessage = & 
-                 & 'assertEqualString_InternalError: ' &
-                 & // 'Unknown case for handling Whitespace'
-            call throw(appendWithSpace(message_,throwMessage), location)
-         end select
-
-         ! Flag a check if zero-length arrays are involved.
-         if ((numI .eq. 0) .or. (numJ .eq. 0)) then
-            checkCharacterByCharacter = .true.
-         end if
-
-         ! Fortran implicitly pads strings of different lengths with spaces
-         ! when comparing using /= or ==.  Detect them and compare carefully.
-         if (numI .ne. numJ) then
-            checkCharacterByCharacter = .true.
-         end if
-         
-         !if (numI .eq. 0) then
-         !   print *,'e: "'//expected_//'"'
-         !   print *,'f: "'//found_//'"'
-         !   print *,'?: ',checkCharacterByCharacter
-         !   print *,'!: ',expected_ /= found_
-         !   print *,'z: ',expected_ == found_
-         !end if
-
-      !print *,2000,whitespace_%value
-
-!      if (trim(expected) /= trim(found)) then
+      ! Flag a check if zero-length arrays are involved.
+      if ((numI .eq. 0) .or. (numJ .eq. 0)) then
+         checkCharacterByCharacter = .true.
+      end if
+      
+      ! Fortran implicitly pads strings of different lengths with spaces
+      ! when comparing using /= or ==.  Detect them and compare carefully.
+      if (numI .ne. numJ) then
+         checkCharacterByCharacter = .true.
+      end if
+      
       if (checkCharacterByCharacter) then
          numSameCharacters = 0
 
@@ -221,46 +186,30 @@ contains
             end if
 
             ! Fail if a traverse is complete.
-            !print *,2500,i,numI
-            !print *,2501,j,numJ
             if ( i .gt. numI .or. j .gt. numJ ) then
-               !print *,2502
                throwException = .true. ; exit
             end if
 
             ! A character is not white space!
 
             ! Both characters are not whitespace:  fail if unequal.
-            !print *,3001,i,j,whitespace_%value,expected_,found_
-            !print *,3002,expected_(i:i),found_(j:j)
-            !print *,3003,expected_(i:i) /= found_(j:j)
             if (expected_(i:i) /= found_(j:j)) then
-               !print *,3004,'x'
                throwException = .true. ; exit
             end if
-            !print *,3005
 
             ! Consume both of the equal characters.
             i=i+1; j=j+1; numSameCharacters = numSameCharacters + 1
 
          end do countNumSameCharacters
 
-         !print *,4000
          if (throwException) then
-            select case (whitespace_%value)
-            case (TRIM_ALL%value)
-               expected_ = trimTrailingWhitespace(expected)
-               found_    = trimTrailingWhitespace(found)
-            case (IGNORE_ALL%value)
-               expected_ = trimTrailingWhitespace(expected)
-               found_    = trimTrailingWhitespace(found)
-            case (IGNORE_DIFFERENCES%value)
-               expected_ = trimTrailingWhitespace(expected)
-               found_    = trimTrailingWhitespace(found)
-            case (KEEP_ALL%value)
+            if (whitespace_ == KEEP_ALL) then
                expected_ = expected
                found_    = found
-            end select
+            else
+               expected_ = trimTrailingWhitespace(expected)
+               found_    = trimTrailingWhitespace(found)
+            end if
 
             throwMessage = &
                  & 'String assertion failed:' // new_line('A') // &
@@ -277,5 +226,46 @@ contains
       end if
 
    end subroutine assertEqual_string
+
+
+   subroutine assertEqual_string_0d1d(expected, found, message, location, &
+        & whitespace)
+
+      character(len=*), intent(in) :: expected
+      character(len=*), intent(in) :: found(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (WhitespaceOptions), optional, intent(in) :: whitespace
+
+      integer :: i
+
+      do i = 1, size(found)
+         call assertEqual(expected, found(i), message=message, location=location, whitespace=whitespace)
+      end do
+
+   end subroutine assertEqual_string_0d1d
+
+   subroutine assertEqual_string_1d1d(expected, found, message, location, &
+        whitespace)
+      use PF_AssertUtilities
+
+      character(len=*), intent(in) :: expected(:)
+      character(len=*), intent(in) :: found(:)
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      type (WhitespaceOptions), optional, intent(in) :: whitespace
+
+      integer :: i
+
+      if (.not. size(expected) == size(found)) then
+         call fail_not_conformable(shape(expected), shape(found), message=message, location=location)
+         return
+      end if
+      
+      do i = 1, min(size(found),size(expected))
+         call assertEqual(expected(i), found(i), message=message, location=location, whitespace=whitespace)
+      end do
+
+   end subroutine assertEqual_string_1d1d
 
 end module pf_AssertString
