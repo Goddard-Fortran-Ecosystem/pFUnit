@@ -18,7 +18,7 @@ function (expand in out)
     )
 endfunction()
 
-foreach(type Logical Integer Real Complex)
+foreach(type IN ITEMS Logical Integer Real Complex)
   foreach(rank RANGE ${MAX_ASSERT_RANK})
     expand (${CMAKE_CURRENT_SOURCE_DIR}/Assert_${type}.tmpl Assert${type}_${rank}d.F90)
   endforeach()

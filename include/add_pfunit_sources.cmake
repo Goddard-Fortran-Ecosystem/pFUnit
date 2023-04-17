@@ -27,13 +27,13 @@
 function( ADD_PFUNIT_SOURCES out_var )
 
   set( out_files )
-  foreach( file ${ARGN} )
+  foreach( file IN LISTS ARGN )
 
     get_filename_component (basename "${file}" NAME_WE)
     get_filename_component( abs_file "${file}" ABSOLUTE )
-    
+
     # replace the extension with .F90 to determine the output file name
-  
+
     if (IS_ABSOLUTE ${file}) # it is in build tree, and out_file is sibling
 
       get_filename_component (file_dir "${file}" DIRECTORY BASE_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -56,19 +56,17 @@ function( ADD_PFUNIT_SOURCES out_var )
 
     # append the output file to the list of outputs
     list( APPEND out_files "${out_file}" )
-    
+
     # now add the custom command to generate the output file
     add_custom_command( OUTPUT "${out_file}"
       COMMAND ${PFUNIT_PARSER} "${abs_file}" "${out_file}"
       DEPENDS "${abs_file}"
       WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
       )
-    
+
   endforeach ( )
-  
+
   # set the output list in the calling scope
   set( ${out_var} ${${out_var}} ${out_files} PARENT_SCOPE )
 
 endfunction( ADD_PFUNIT_SOURCES )
-
-
