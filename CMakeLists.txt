@@ -28,6 +28,8 @@ project (PFUNIT
   VERSION 4.7.0
   LANGUAGES Fortran C)
 
+cmake_policy(SET CMP0077 NEW)
+
 # Determine if pFUnit is built as a subproject (using
 # add_subdirectory) or if it is the main project. Snippet taken from
 # fmt: https://github.com/fmtlib/fmt/blob/eb52ac7/CMakeLists.txt
@@ -81,7 +83,7 @@ endif ()
 
 
 if (NOT SKIP_MPI)
-  find_package (MPI QUIET)
+  find_package (MPI QUIET COMPONENTS Fortran)
   if (MPI_Fortran_FOUND)
     message (STATUS "MPI enabled")
     if (ENABLE_MPI_F08)
@@ -215,6 +217,8 @@ export(EXPORT PFUNIT
 # Set some variables needed by add_pfunit_test in the parent scope so
 # that the build directory can be used directly
 if (NOT MAIN_PROJECT)
+  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" PARENT_SCOPE)
+  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" PARENT_SCOPE)
   set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
   set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
   set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
