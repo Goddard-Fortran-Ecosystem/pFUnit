@@ -72,7 +72,7 @@ endif ()
 add_library (funit_tests STATIC ${test_srcs})
 target_link_libraries(funit_tests other_shared)
 
-#add_pfunit_sources (new_test_srcs ${pf_tests})
+add_pfunit_sources (new_test_srcs ${pf_tests})
 
 #add_library(new_stests EXCLUDE_FROM_ALL ${new_test_srcs})
 #target_link_libraries(new_stests other_shared)
