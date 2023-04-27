@@ -34,7 +34,7 @@ contains
 
    @test
    subroutine testAssertEqual_equal()
-      call assertEqual(2,3)
+      call assertEqual(2,2)
    end subroutine testAssertEqual_equal
 
    @test
