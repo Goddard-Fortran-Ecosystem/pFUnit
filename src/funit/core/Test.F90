@@ -30,7 +30,9 @@ module PF_Test
    public :: Test
    
    ! Abstract class from which other Test classes inherit
-   type, abstract, extends(StringTestAnnotationMap) :: Test
+   type, abstract :: Test
+      private
+      type(StringTestAnnotationMap) :: annotations
       integer :: placeholder
    contains
       procedure(countTestCases), deferred :: countTestCases
@@ -39,6 +41,7 @@ module PF_Test
       procedure :: setName
 
       procedure :: is_disabled
+      procedure :: get_annotations
    end type Test
 
    abstract interface
@@ -80,8 +83,16 @@ contains
    logical function is_disabled(this)
       class (Test), intent(in) :: this
 
-      is_disabled = (this%count(Disable%type_name()) == 1)
+      is_disabled = (this%annotations%count(Disable%type_name()) == 1)
 
    end function is_disabled
 
+
+   function get_annotations(this) result(annotations)
+      type(StringTestAnnotationMap), pointer :: annotations
+      class(Test), target, intent(in) :: this
+
+      annotations => this%annotations
+   end function get_annotations
+      
 end module PF_Test

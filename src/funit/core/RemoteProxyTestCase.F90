@@ -31,6 +31,7 @@ module PF_RemoteProxyTestCase
    use pf_Posix
    use pf_File
    use pf_TestAnnotation
+   use pf_StringTestAnnotationMap
    use pf_TimeoutAnnotation
    use pf_TestTimer
    implicit none
@@ -60,10 +61,13 @@ contains
       type(File), intent(in) :: f
       real, intent(in) :: max_time
 
+      class(StringTestAnnotationMap), pointer :: annotations
       class(TestAnnotation), pointer :: annotation
+      integer :: status
 
-      if (a_test%count('Timeout') == 1) then
-         annotation => a_test%at('Timeout')
+      annotations => a_test%get_annotations()
+      if (annotations%count('Timeout') == 1) then
+         annotation => annotations%at('Timeout', rc=status)
          ! cast
          select type (annotation)
          class is (TimeoutAnnotation)
@@ -77,7 +81,7 @@ contains
       call proxy%setName(a_test%getName())
 
       if(a_test%is_disabled()) then
-         call proxy%insert(Disable%type_name(),Disable)
+         call annotations%insert(Disable%type_name(),Disable)
       end if
       
    end function newRemoteProxyTestCase

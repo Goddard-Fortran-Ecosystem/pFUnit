@@ -5,6 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+	
+### Fixed
+
+- Eliminated small memory leak for @disable tests.   Accomplished by switching to gFTL v2 implementation of Map.
+
+### Changed
+
+- Made annotation map a component of Test rather than using inheritance from StringTestAnnotationMap.  Arguably looser coupling, and was explored as part of chasing small memory leak mentioned above.
+	
 ## [4.7.0] - 2023-04-17
 
 ### Changed
