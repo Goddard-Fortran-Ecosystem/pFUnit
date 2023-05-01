@@ -23,6 +23,7 @@
 !-------------------------------------------------------------------------------
 module robustTestSuite
    use FUnit
+   use pf_StringTestAnnotationMap
    implicit none
    private
 
@@ -35,8 +36,9 @@ contains
       use PF_TestMethod, only: TestMethod
       type (TestSuite) :: suite
 
-      class (Test), allocatable :: t
+      class (Test), target, allocatable :: t
       type(TimeoutAnnotation) :: timeout
+      type(StringTestAnnotationMap), pointer :: annotations
 
       suite = TestSuite('robustTestSuite')
 
@@ -45,7 +47,8 @@ contains
 
       t = TestMethod('testRunHangs', testRunHangs)
       timeout = TimeoutAnnotation(0.1)
-      call t%insert(timeout%type_name(), timeout)
+      annotations => t%get_annotations()
+      call annotations%insert(timeout%type_name(), timeout)
       call suite%addTest( t )
 
       call suite%addTest( TestMethod('testRunStops', testRunStops) )
