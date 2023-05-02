@@ -23,7 +23,6 @@
 !-------------------------------------------------------------------------------
 module robustTestSuite
    use FUnit
-   use pf_StringTestAnnotationMap
    implicit none
    private
 
