@@ -5,6 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.7.1] - 2023-06-26
+
+### Fixed
+
+- Increased size of buffer for reporting real values in asserts.   Previous length was not quite enough for some 128 bit values, which resulted in EOR failures during execution.
+
 ## [4.7.0] - 2023-04-17
 
 ### Changed
