@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.7.1
+  VERSION 4.7.2
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
