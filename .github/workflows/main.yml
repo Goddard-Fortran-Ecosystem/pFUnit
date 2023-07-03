@@ -165,10 +165,10 @@ jobs:
         run: |
           ${FC} --version
           cmake --version
-      - name: Install Python3
+      - name: Install Python3 and iberty
         run: |
           apt-get update
-          apt-get install python3 python-is-python3 -y
+          apt-get install python3 python-is-python3 libiberty-dev -y
       - name: Checkout
         uses: actions/checkout@v3
         with:
