@@ -155,7 +155,7 @@ jobs:
 
   Nvidia:
     runs-on: ubuntu-20.04
-    container: nvcr.io/nvidia/nvhpc:23.3-devel-cuda12.0-ubuntu20.04
+    container: nvcr.io/nvidia/nvhpc:23.5-devel-cuda12.1-ubuntu20.04
     env:
       FC: nvfortran
 
@@ -165,10 +165,10 @@ jobs:
         run: |
           ${FC} --version
           cmake --version
-      - name: Install Python3 and iberty
+      - name: Install Python3
         run: |
           apt-get update
-          apt-get install python3 python-is-python3 libiberty-dev -y
+          apt-get install python3 python-is-python3 -y
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -176,21 +176,6 @@ jobs:
       - name: Set all directories as git safe
         run: |
           git config --global --add safe.directory '*'
-      - name: Cache MPI
-        id: cache-mpi
-        uses: actions/cache@v3
-        with:
-          path: ~/local/openmpi
-          key: mpi-${{ runner.os }}-nvfortran
-      - name: Build MPI
-        if: steps.cache-mpi.outputs.cache-hit != 'true'
-        run: |
-          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
-      - name: Set MPI Environment
-        run: |
-          echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
-          echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
-          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
       - name: MPI Versions
         run: |
           ${FC} --version
