@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added NVHPC test to CI
 
+### Changed
+
+- Updated CI to remove gcc-9 from macOS11 and add gcc-12
+
 ## [4.7.0] - 2023-04-17
 
 ### Changed
