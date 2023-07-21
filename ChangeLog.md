@@ -5,7 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.7.3] - 2023-07-21
+
 ### Fixed
+- Fixed cmake issue where target "pfunit-mpi-defines" is defined more than once
 - Missing variable declaration in parameterized test case boiler plate code.
   
 ## [4.7.2] - 2023-06-26
