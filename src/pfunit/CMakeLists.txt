@@ -40,5 +40,7 @@ foreach(pfunit_target IN LISTS pfunit_targets)
   target_link_libraries (${pfunit_target} PRIVATE pfunit-mpi-defines)
 
   install (DIRECTORY  ${CMAKE_CURRENT_BINARY_DIR}/mod/ DESTINATION ${dest}/include)
-  install (TARGETS ${pfunit_target} pfunit-mpi-defines EXPORT PFUNIT DESTINATION ${dest}/lib)
+  install (TARGETS ${pfunit_target} EXPORT PFUNIT DESTINATION ${dest}/lib)
 endforeach()
+
+install (TARGETS pfunit-mpi-defines EXPORT PFUNIT DESTINATION ${dest}/lib)
