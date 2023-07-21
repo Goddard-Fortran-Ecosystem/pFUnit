@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.7.2] - 2023-06-26
 
 ### Fixed
-- Restored consistent behaviour for file paths between `add_pfunit_ctest` amd `add_pfunit_sources`.
+- Restored consistent behaviour for file paths between `add_pfunit_ctest` and `add_pfunit_sources`.
   Now the `add_pfunit_ctest` handles relative filepaths (e.g. `./path/to/source.pf`) as described
   in the script documentation.
 
