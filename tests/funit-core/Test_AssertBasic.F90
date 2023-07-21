@@ -135,7 +135,7 @@ contains
    end subroutine testAssertTrueT
 
    subroutine testAssertTrueT1()
-      call assertTrue([.true.,.true.].eqv.[.true.,.true.])
+      call assertTrue([.true.,.true.].eqv.[.true.,.false.])
    end subroutine testAssertTrueT1
 
    subroutine testAssertFalseF()
