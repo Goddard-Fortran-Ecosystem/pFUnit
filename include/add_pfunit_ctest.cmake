@@ -51,17 +51,18 @@ function (add_pfunit_ctest test_package_name)
 
   set (test_sources_f90)
   set (test_suites_inc "")
-  foreach (pf_file ${PF_TEST_TEST_SOURCES})
 
+  # Create contents of the test_suites files
+  foreach (pf_file ${PF_TEST_TEST_SOURCES})
     get_filename_component (basename ${pf_file} NAME_WE)
-    set (f90_file "${basename}.F90")
-    list (APPEND test_sources_f90 ${f90_file})
     set (test_suites_inc "${test_suites_inc}ADD_TEST_SUITE(${basename}_suite)\n")
-    add_pfunit_sources(test_sources_f90 ${PF_TEST_TEST_SOURCES})
 
   endforeach()
 
-  
+  # Preprocess test files
+  # F90 files are set in test_sources_f90
+  add_pfunit_sources(test_sources_f90 ${PF_TEST_TEST_SOURCES})
+
   if (PF_TEST_EXTRA_USE)
     set(PFUNIT_EXTRA_USE ${PF_TEST_EXTRA_USE})
   endif()
