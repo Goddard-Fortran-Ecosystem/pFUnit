@@ -106,12 +106,15 @@ jobs:
 
   Intel:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        build_shared: [OFF, ON]
 
     env:
       FC: ifort
       CC: icc
 
-    name: Intel Fortran
+    name: Intel Fortran Shared Build: ${{ matrix.build_shared }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -138,7 +141,7 @@ jobs:
           mpirun --version
           cmake --version
       - name: Configure pFUnit
-        run: cmake -Bbuild
+        run: cmake -Bbuild -DBUILD_SHARED_LIBS=${{ matrix.build_shared }}
       - name: Build pfUnit
         run: cmake --build build --parallel
       - name: Build Tests
