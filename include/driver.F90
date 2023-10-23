@@ -14,7 +14,7 @@
 ! runs the user links with FUnit _and_ pFUnit.
 !---------------------------------------------------------------------------
 
-module loader
+module pf_loader
    use FUnit, only: TestSuite
    implicit none
 
@@ -46,11 +46,11 @@ contains
 
    end function load_tests
 
-end module loader
+end pf_module loader
 
 program main
    use FUnit, only : stub
-   use loader
+   use pf_loader
 #ifdef PFUNIT_EXTRA_USE
       ! Use external code for whatever suite-wide fixture is in use.
       use PFUNIT_EXTRA_USE
