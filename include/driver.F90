@@ -46,7 +46,7 @@ contains
 
    end function load_tests
 
-end pf_module loader
+end module pf_loader
 
 program main
    use FUnit, only : stub
