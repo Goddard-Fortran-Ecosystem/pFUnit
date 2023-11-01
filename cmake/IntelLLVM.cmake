@@ -5,7 +5,7 @@ if(WIN32)
   set(check_all "-check:all")
 else()
   set(no_optimize "-O0")
-  set(check_all "-check all")
+  set(check_all "-check all,nouninit")
 endif()
   
 
