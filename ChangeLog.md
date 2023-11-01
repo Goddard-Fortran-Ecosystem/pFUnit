@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.7.4] - 2023-11-01
 
 ### Fixed
 - Several workarounds added to enable building with gfortran 13.2.   Polymorphic assignment is broken, and must be replaced by `ALLOCATE(obj,source=...)`.  But apparently not everywhere?
