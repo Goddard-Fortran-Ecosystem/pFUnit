@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.7.4] - 2023-11-01
 
 ### Fixed
+
 - Several workarounds added to enable building with gfortran 13.2.   Polymorphic assignment is broken, and must be replaced by `ALLOCATE(obj,source=...)`.  But apparently not everywhere?
+- Add `-check nouninit` for Intel LLVM to work around [`ifx` bug](https://github.com/HPC-Bugs/reproducers/tree/main/compiler/Fortran/ifx/allocatable).
 
 ### Changed
+
 - Updated CI to remove gcc-9 from macOS11 and add gcc-12
 
 ## [4.7.3] - 2023-07-21
