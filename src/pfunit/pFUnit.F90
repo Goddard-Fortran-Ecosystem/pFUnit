@@ -104,16 +104,8 @@ contains
       type(TestResult) :: r
       class(ParallelContext), allocatable :: c
 
-      c = get_context()
+      allocate(c, source=get_context())
       status = generic_run(load_tests, c)
-
-!!!  !!$      options = parse()
-
-!!$      suite = load_tests()
-!!$      allocate(runner, source=TestRunner(ResultPrinter(OUTPUT_UNIT)))
-!!$      c = get_context()
-!!$      r = runner%run(suite, c)
-!!$      status = r%wasSuccessful()
 
    end function run
 
