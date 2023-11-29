@@ -117,7 +117,7 @@ jobs:
           ls /opt/intel/oneapi/*
           ls /opt/intel/oneapi/compiler/*
           ls /opt/intel/oneapi/compiler/latest/*
-          ls /opt/intel/oneapi/compiler/latest/bin/*
+          ls /opt/intel/oneapi/compiler/latest/linux/bin/*
       - name: Versions
         run: |
           ${FC} --version
