@@ -114,6 +114,10 @@ jobs:
             intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
           source /opt/intel/oneapi/setvars.sh
           printenv >> $GITHUB_ENV
+          ls /opt/intel/oneapi/*
+          ls /opt/intel/oneapi/compiler/*
+          ls /opt/intel/oneapi/compiler/latest/*
+          ls /opt/intel/oneapi/compiler/latest/bin/*
       - name: Versions
         run: |
           ${FC} --version
