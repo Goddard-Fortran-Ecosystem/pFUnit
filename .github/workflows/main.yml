@@ -118,6 +118,7 @@ jobs:
           ls /opt/intel/oneapi/compiler/*
           ls /opt/intel/oneapi/compiler/latest/*
           ls /opt/intel/oneapi/compiler/latest/linux/bin/*
+          find /opt/intel -iname '*ifort*'
       - name: Versions
         run: |
           ${FC} --version
