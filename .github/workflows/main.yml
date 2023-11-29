@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      FC: ifort
+      FC: /opt/intel/oneapi/compiler/2024.0/bin/ifort
       CC: icc
 
     name: Intel Fortran
@@ -114,11 +114,7 @@ jobs:
             intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
           source /opt/intel/oneapi/setvars.sh
           printenv >> $GITHUB_ENV
-          ls /opt/intel/oneapi/*
-          ls /opt/intel/oneapi/compiler/*
-          ls /opt/intel/oneapi/compiler/latest/*
-          ls /opt/intel/oneapi/compiler/latest/linux/bin/*
-          find /opt/intel -iname '*ifort*'
+          printenv | grep intel
       - name: Versions
         run: |
           ${FC} --version
