@@ -50,7 +50,7 @@ jobs:
           ${FC} --version
           cmake --version
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - name: Set all directories as git safe
@@ -96,13 +96,13 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      FC: /opt/intel/oneapi/compiler/latest/bin/ifort
-      CC: /opt/intel/oneapi/compiler/latest/bin/icc
+      FC: ifort
+      CC: icc
 
     name: Intel Fortran
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Intel compilers
         run: |
           cd /tmp
@@ -110,7 +110,7 @@ jobs:
           sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
           rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
           sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-          sudo apt install --no-install-recommends intel-oneapi-compiler-fortran intel-oneapi-mpi \
+          sudo apt install intel-oneapi-compiler-fortran intel-oneapi-mpi \
             intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
           source /opt/intel/oneapi/setvars.sh
           printenv >> $GITHUB_ENV
