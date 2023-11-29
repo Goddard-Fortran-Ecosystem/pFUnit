@@ -18,19 +18,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
-        compiler: [gfortran-9, gfortran-10, gfortran-11, gfortran-12]
+        os: [ubuntu-22.04, macos-11, macos-12]
+        compiler: [gfortran-10, gfortran-11, gfortran-12, gfortran-13]
         exclude:
-          - os: ubuntu-20.04
-            compiler: gfortran-11
-          - os: ubuntu-20.04
-            compiler: gfortran-12
-          - os: ubuntu-22.04
-            compiler: gfortran-9
           - os: macos-11
-            compiler: gfortran-9
-          - os: macos-12
-            compiler: gfortran-9
+            compiler: gfortran-13
           - os: macos-12
             compiler: gfortran-10
 
@@ -53,10 +45,6 @@ jobs:
 
     name: ${{ matrix.os }} / ${{ matrix.compiler }}
     steps:
-      - name: Install GCC 12 on Ubuntu 22.04
-        if: matrix.os == 'ubuntu-22.04' && matrix.compiler == 'gfortran-12'
-        run: |
-          sudo apt-get install gfortran-12 -y
       - name: Compiler Versions
         run: |
           ${FC} --version
@@ -108,8 +96,8 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      FC: ifort
-      CC: icc
+      FC: /opt/intel/oneapi/compiler/latest/bin/ifort
+      CC: /opt/intel/oneapi/compiler/latest/bin/icc
 
     name: Intel Fortran
     steps:
