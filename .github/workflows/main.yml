@@ -105,32 +105,48 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Intel compilers
+
+      - name: Setup Intel oneAPI repository
         run: |
-          cd /tmp
           wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
           sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
-          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB
           sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-          sudo apt install intel-oneapi-compiler-fortran intel-oneapi-mpi \
-            intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-mpi-devel
+          sudo apt-get update
+
+      - name: Install Intel oneAPI compilers
+        timeout-minutes: 5
+        run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic 
+
+      # optional
+      - name: Install Intel MPI
+        timeout-minutes: 5
+        run: intel-oneapi-mpi intel-oneapi-mpi-devel
+
+      - name: Setup Intel oneAPI environment
+        run: |
           source /opt/intel/oneapi/setvars.sh
           printenv >> $GITHUB_ENV
           printenv | grep intel
+
       - name: Versions
         run: |
           ${FC} --version
           ${CC} --version
           mpirun --version
           cmake --version
+
       - name: Configure pFUnit
-        run: cmake -Bbuild
+        run: cmake -B build
+
       - name: Build pfUnit
         run: cmake --build build --parallel
+
       - name: Build Tests
         run: cmake --build build --parallel -t build-tests
+
       - name: Run Tests
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+
       - name: Archive log files on failure
         uses: actions/upload-artifact@v3
         if: failure()
