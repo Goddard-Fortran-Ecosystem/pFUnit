@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      FC: /opt/intel/oneapi/compiler/2024.0/bin/ifort
+      FC: ifx
       CC: icc
 
     name: Intel Fortran
