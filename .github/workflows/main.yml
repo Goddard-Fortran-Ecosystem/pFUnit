@@ -120,7 +120,7 @@ jobs:
       # optional
       - name: Install Intel MPI
         timeout-minutes: 5
-        run: intel-oneapi-mpi intel-oneapi-mpi-devel
+        run: sudo apt-get install intel-oneapi-mpi intel-oneapi-mpi-devel
 
       - name: Setup Intel oneAPI environment
         run: |
