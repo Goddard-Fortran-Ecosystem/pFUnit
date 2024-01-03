@@ -128,12 +128,12 @@ jobs:
           printenv >> $GITHUB_ENV
           printenv | grep intel
 
-      #- name: Versions
-        #run: |
-          #${FC} --version
-          #${CC} --version
-          #mpirun --version
-          #cmake --version
+      - name: Versions
+        run: |
+          ${FC} --version
+          ${CC} --version
+          mpirun --version
+          cmake --version
 
       - name: Configure pFUnit
         run: cmake -B build
