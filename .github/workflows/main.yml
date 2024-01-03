@@ -115,7 +115,7 @@ jobs:
 
       - name: Install Intel oneAPI compilers
         timeout-minutes: 5
-        run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic 
+        run: sudo apt-get install intel-oneapi-compiler-fortran intel-oneapi-compiler-dpcpp-cpp
 
       # optional
       - name: Install Intel MPI
