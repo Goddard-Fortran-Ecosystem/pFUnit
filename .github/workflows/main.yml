@@ -14,85 +14,94 @@ on:
     - cron: '00 13 * * 1'
 
 jobs:
-  ##############################################################################################################
-  # GNU:                                                                                                       #
-  #   runs-on: ${{ matrix.os }}                                                                                #
-  #   strategy:                                                                                                #
-  #     matrix:                                                                                                #
-  #       os: [ubuntu-22.04, macos-11, macos-12]                                                               #
-  #       compiler: [gfortran-10, gfortran-11, gfortran-12, gfortran-13]                                       #
-  #       exclude:                                                                                             #
-  #         - os: macos-11                                                                                     #
-  #           compiler: gfortran-13                                                                            #
-  #         - os: macos-12                                                                                     #
-  #           compiler: gfortran-10                                                                            #
-  #                                                                                                            #
-  #     # fail-fast if set to 'true' here is good for production, but when                                     #
-  #     # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails                      #
-  #     # GitHub Actions will stop any other test immediately. So good for production, bad                     #
-  #     # when trying to figure something out. For more info see:                                              #
-  #     # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html                  #
-  #                                                                                                            #
-  #     fail-fast: false                                                                                       #
-  #   env:                                                                                                     #
-  #     FC: ${{ matrix.compiler }}                                                                             #
-  #     LANGUAGE: en_US.UTF-8                                                                                  #
-  #     LC_ALL: en_US.UTF-8                                                                                    #
-  #     LANG: en_US.UTF-8                                                                                      #
-  #     LC_TYPE: en_US.UTF-8                                                                                   #
-  #     OMPI_ALLOW_RUN_AS_ROOT: 1                                                                              #
-  #     OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1                                                                      #
-  #     OMPI_MCA_btl_vader_single_copy_mechanism: none                                                         #
-  #                                                                                                            #
-  #   name: ${{ matrix.os }} / ${{ matrix.compiler }}                                                          #
-  #   steps:                                                                                                   #
-  #     - name: Compiler Versions                                                                              #
-  #       run: |                                                                                               #
-  #         ${FC} --version                                                                                    #
-  #         cmake --version                                                                                    #
-  #     - name: Checkout                                                                                       #
-  #       uses: actions/checkout@v4                                                                            #
-  #       with:                                                                                                #
-  #         fetch-depth: 1                                                                                     #
-  #     - name: Set all directories as git safe                                                                #
-  #       run: |                                                                                               #
-  #         git config --global --add safe.directory '*'                                                       #
-  #     - name: Cache MPI                                                                                      #
-  #       id: cache-mpi                                                                                        #
-  #       uses: actions/cache@v3                                                                               #
-  #       with:                                                                                                #
-  #         path: ~/local/openmpi                                                                              #
-  #         key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}                                  #
-  #     - name: Build MPI                                                                                      #
-  #       if: steps.cache-mpi.outputs.cache-hit != 'true'                                                      #
-  #       run: |                                                                                               #
-  #         sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4                                       #
-  #     - name: Set MPI Environment                                                                            #
-  #       run: |                                                                                               #
-  #         echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH                                                   #
-  #         echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV                                    #
-  #         echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV                                  #
-  #     - name: MPI Versions                                                                                   #
-  #       run: |                                                                                               #
-  #         ${FC} --version                                                                                    #
-  #         mpirun --version                                                                                   #
-  #         mpifort --show                                                                                     #
-  #     - name: Configure pFUnit                                                                               #
-  #       run: cmake -Bbuild                                                                                   #
-  #     - name: Build pfUnit                                                                                   #
-  #       run: cmake --build build --parallel                                                                  #
-  #     - name: Build Tests                                                                                    #
-  #       run: cmake --build build --parallel -t build-tests                                                   #
-  #     - name: Run Tests                                                                                      #
-  #       run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random #
-  #     - name: Archive log files on failure                                                                   #
-  #       uses: actions/upload-artifact@v3                                                                     #
-  #       if: failure()                                                                                        #
-  #       with:                                                                                                #
-  #         name: logfiles                                                                                     #
-  #         path: |                                                                                            #
-  #           build/**/*.log                                                                                   #
-  ##############################################################################################################
+  GNU:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, macos-11, macos-12]
+        compiler: [gfortran-10, gfortran-11, gfortran-12, gfortran-13]
+        exclude:
+          - os: macos-11
+            compiler: gfortran-13
+          - os: macos-12
+            compiler: gfortran-10
+
+      # fail-fast if set to 'true' here is good for production, but when
+      # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
+      # GitHub Actions will stop any other test immediately. So good for production, bad
+      # when trying to figure something out. For more info see:
+      # https://www.edwardthomson.com/blog/github_actions_6_fail_fast_matrix_workflows.html
+
+      fail-fast: false
+    env:
+      FC: ${{ matrix.compiler }}
+      LANGUAGE: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LC_TYPE: en_US.UTF-8
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      OMPI_MCA_btl_vader_single_copy_mechanism: none
+
+    name: ${{ matrix.os }} / ${{ matrix.compiler }}
+    steps:
+      - name: Compiler Versions
+        run: |
+          ${FC} --version
+          cmake --version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
+
+      - name: Cache MPI
+        id: cache-mpi
+        uses: actions/cache@v3
+        with:
+          path: ~/local/openmpi
+          key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
+
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
+        run: |
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
+
+      - name: Set MPI Environment
+        run: |
+          echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
+          echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+
+      - name: MPI Versions
+        run: |
+          ${FC} --version
+          mpirun --version
+          mpifort --show
+
+      - name: Configure pFUnit
+        run: cmake -B build
+
+      - name: Build pfUnit
+        run: cmake --build build --parallel
+
+      - name: Build Tests
+        run: cmake --build build --parallel -t build-tests
+
+      - name: Run Tests
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+
+      - name: Archive log files on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: logfiles
+          path: |
+            build/**/*.log
 
   Intel:
     runs-on: ubuntu-20.04
@@ -148,7 +157,7 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: logfiles

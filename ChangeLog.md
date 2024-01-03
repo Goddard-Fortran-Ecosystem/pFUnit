@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated the CI to use Intel LLVM compilers
+
 ## [4.8.0] -2023-11-29
 
 ### Changed
