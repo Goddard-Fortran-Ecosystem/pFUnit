@@ -814,6 +814,18 @@ contains
    end subroutine assertIsFinite_real64
 #endif
 
+#ifdef _REAL80_IEEE_SUPPORT
+   subroutine assertIsFinite_real80(x, message, location)
+      use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
+      real(kind=REAL80), intent(in) :: x
+      character(len=*), optional, intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+      
+      call assertTrue(ieee_is_finite(x), message, location)
+
+   end subroutine assertIsFinite_real80
+#endif
+
 #ifdef _REAL128_IEEE_SUPPORT
    subroutine assertIsFinite_real128(x, message, location)
       use, intrinsic :: ieee_arithmetic, only: ieee_is_finite
