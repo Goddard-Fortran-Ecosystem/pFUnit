@@ -192,6 +192,11 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
 
+      - name: Add python-is-python3 package
+        run: |
+          apt-get update
+          apt-get install -y python-is-python3
+
       - name: Configure pFUnit
         run: cmake -B build
 
