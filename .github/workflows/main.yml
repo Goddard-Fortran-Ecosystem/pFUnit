@@ -172,7 +172,7 @@ jobs:
 
   Nvidia:
     runs-on: ubuntu-20.04
-    container: nvcr.io/nvidia/nvhpc:24.1-devel-cuda12.3-ubuntu20.04
+    container: nvcr.io/nvidia/nvhpc:24.1-devel-cuda12.3-ubuntu22.04
     env:
       FC: nvfortran
 
