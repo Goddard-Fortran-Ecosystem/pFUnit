@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
+
 ### Changed
 
 - Updated the CI to use Intel LLVM compilers
