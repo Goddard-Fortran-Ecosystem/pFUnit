@@ -30,7 +30,7 @@ function(funit_target_link_pfunit funit_target)
     message(FATAL_ERROR "Could not find gFTL-shared. This should not happen.")
   endif ()
 
-  target_link_libraries (${funit_target} PUBLIC GFTL::gftl GFTL_SHARED::gftl-shared FARGPARSE::fargparse)
+  target_link_libraries (${funit_target} PUBLIC GFTL::gftl GFTL::gftl-v2 GFTL_SHARED::gftl-shared FARGPARSE::fargparse)
   target_include_directories(${funit_target} PUBLIC
     $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
     )

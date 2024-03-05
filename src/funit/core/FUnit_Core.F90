@@ -32,6 +32,7 @@ module FUnit_Core
    use PF_SerialContext
 
    use Pf_TestAnnotation
+   use pf_StringTestAnnotationMap
    use Pf_DisableAnnotation
    use Pf_TimeoutAnnotation
 
@@ -87,6 +88,7 @@ module FUnit_Core
    end interface
 
    public :: TestAnnotation
+   public :: StringTestAnnotationMap
    public :: Disable
    public :: TimeoutAnnotation
 

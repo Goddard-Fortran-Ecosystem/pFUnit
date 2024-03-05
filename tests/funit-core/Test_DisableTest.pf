@@ -11,13 +11,20 @@ contains
       type (TestSuite) :: s
       type (TestRunner) :: r
       type (TestResult) :: rslt
-      class (Test), allocatable :: t
+      class (Test), target, allocatable :: t
       integer :: unit
+      type(StringTestAnnotationMap), pointer :: annotations
       
       s = TestSuite()
-      t = TestMethod('test_is_disabled',test_is_disabled)
-      call t%insert(Disable%type_name(), Disable)
+      print*,__FILE__,__LINE__
+      allocate(t, source= TestMethod('test_is_disabled',test_is_disabled))
+      print*,__FILE__,__LINE__
+      annotations => t%get_annotations()
+      print*,__FILE__,__LINE__
+      call annotations%insert(Disable%type_name(), Disable)
+      print*,__FILE__,__LINE__
       call s%addTest(t)
+      print*,__FILE__,__LINE__
 
       t = TestMethod('test_is_not_igored',test_is_not_disabled)
       call s%addTest(t)

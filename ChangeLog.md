@@ -5,17 +5,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-
+	
 ### Added
 
 - Fujitsu compiler support
 
 ### Fixed
 
-This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
+- Eliminated small memory leak for @disable tests.   Accomplished by switching to gFTL v2 implementation of Map.
+- This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
 
 ### Changed
 
+- Made annotation map a component of Test rather than using inheritance from StringTestAnnotationMap.  Arguably looser coupling, and was explored as part of chasing small memory leak mentioned above.
 - Updated the CI to use Intel LLVM compilers
 - Removed obsolete documentation
 
@@ -53,7 +55,6 @@ This fixes a small CMake bug which can lead to posix_predefined.x being built in
 
 ### Fixed
 - Increased size of buffer for reporting real values in asserts.   Previous length was not quite enough for some 128 bit values, which resulted in EOR failures during execution.
-
 
 ## [4.7.0] - 2023-04-17
 

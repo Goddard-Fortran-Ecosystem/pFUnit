@@ -780,7 +780,8 @@ class Parser():
         self.outputFile.write('   use '+ self.wrapModuleName + '\n')
         self.outputFile.write('   implicit none'+ '\n')
         self.outputFile.write('   type (TestSuite) :: suite\n\n')
-        self.outputFile.write('   class (Test), allocatable :: t\n\n')
+        self.outputFile.write('   class (Test), allocatable :: t\n')
+        self.outputFile.write('   type(StringTestAnnotationMap), pointer :: annotations\n\n')
 
         if not self.userModuleName:
             for testMethod in self.userTestMethods:
@@ -842,7 +843,8 @@ class Parser():
         self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
         self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
         if ('disable' in testMethod):
-            self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
+            self.outputFile.write('   annotations => t%get_annotations()\n')
+            self.outputFile.write('   call annotations%insert(Disable%type_name(),Disable)\n')
         self.outputFile.write('   call suite%addTest(t)\n')
 
     def addMpiTestMethod(self, testMethod):
