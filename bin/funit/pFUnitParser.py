@@ -768,7 +768,7 @@ class Parser():
     def printParameterHeader(self, type):
         self.outputFile.write('   type (' + type + '), allocatable :: testParameters(:)\n')
         self.outputFile.write('   type (' + type + ') :: testParameter\n')
-        self.outputFile.write('   integer :: iParam \n')
+        self.outputFile.write('   integer :: iParam, iCase \n')
         self.outputFile.write('   integer, allocatable :: cases(:) \n')
         self.outputFile.write(' \n')
 

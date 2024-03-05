@@ -6,14 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 	
+### Added
+
+- Fujitsu compiler support
+
 ### Fixed
 
 - Eliminated small memory leak for @disable tests.   Accomplished by switching to gFTL v2 implementation of Map.
+- This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
 
 ### Changed
 
 - Made annotation map a component of Test rather than using inheritance from StringTestAnnotationMap.  Arguably looser coupling, and was explored as part of chasing small memory leak mentioned above.
-	
+- Updated the CI to use Intel LLVM compilers
+- Removed obsolete documentation
+
+## [4.8.0] -2023-11-29
+
+### Changed
+
+- Updated submodule for fArgparse [v1.6.0]
+
+## [4.7.4] - 2023-11-01
+
+### Fixed
+
+- Several workarounds added to enable building with gfortran 13.2.   Polymorphic assignment is broken, and must be replaced by `ALLOCATE(obj,source=...)`.  But apparently not everywhere?
+- Add `-check nouninit` for Intel LLVM to work around [`ifx` bug](https://github.com/HPC-Bugs/reproducers/tree/main/compiler/Fortran/ifx/allocatable).
+
+### Changed
+
+- Updated CI to remove gcc-9 from macOS11 and add gcc-12
+
+## [4.7.3] - 2023-07-21
+
+### Fixed
+- Fixed cmake issue where target "pfunit-mpi-defines" is defined more than once
+- Missing variable declaration in parameterized test case boiler plate code.
+  
+## [4.7.2] - 2023-06-26
+
+### Fixed
+- Restored consistent behaviour for file paths between `add_pfunit_ctest` and `add_pfunit_sources`.
+  Now the `add_pfunit_ctest` handles relative filepaths (e.g. `./path/to/source.pf`) as described
+  in the script documentation.
+
+## [4.7.1] - 2023-06-26
+
+### Fixed
+- Increased size of buffer for reporting real values in asserts.   Previous length was not quite enough for some 128 bit values, which resulted in EOR failures during execution.
+
 ## [4.7.0] - 2023-04-17
 
 ### Changed
