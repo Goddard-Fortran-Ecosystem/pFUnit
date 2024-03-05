@@ -114,6 +114,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
 
       - name: Setup Intel oneAPI repository
         run: |
@@ -163,3 +169,51 @@ jobs:
           name: logfiles
           path: |
             build/**/*.log
+
+  Nvidia:
+    runs-on: ubuntu-20.04
+    container: nvcr.io/nvidia/nvhpc:24.1-devel-cuda12.3-ubuntu22.04
+    env:
+      FC: nvfortran
+
+    name: Nvidia HPC
+    steps:
+      - name: Versions
+        run: |
+          ${FC} --version
+          cmake --version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
+
+      - name: Add python-is-python3 package
+        run: |
+          apt-get update
+          apt-get install -y python-is-python3
+
+      - name: Configure pFUnit
+        run: cmake -B build
+
+      - name: Build pfUnit
+        run: cmake --build build --parallel
+
+      - name: Build Tests
+        run: cmake --build build --parallel -t build-tests
+
+      - name: Run Tests
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+
+      - name: Archive log files on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: logfiles
+          path: |
+            build/**/*.log
+
