@@ -58,6 +58,9 @@ set(srcs
 if (NOT SKIP_ROBUST)
 
   add_executable(posix_predefined.x posix_predefined.c)
+  set_target_properties(posix_predefined.x PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+    )
   set_source_files_properties(posix_predefined.inc PROPERTIES GENERATED TRUE)
   add_custom_command(
     OUTPUT posix_predefined.inc
