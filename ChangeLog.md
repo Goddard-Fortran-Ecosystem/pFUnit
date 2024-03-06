@@ -5,21 +5,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-
 ### Added
 
 - Fujitsu compiler support
 
 ### Fixed
 
-This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
+- This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
+- Missing implementation of `assertIsFinite_real80()`.  Apparently undetected until recent attempt to port to flang.
 
 ### Changed
 
 - Updated the CI to use Intel LLVM compilers
 - Removed obsolete documentation
 
-## [4.8.0] -2023-11-29
+## [4.8.0] - 2023-11-29
 
 ### Changed
 
