@@ -70,14 +70,20 @@ contains
       double precision, parameter :: a_d = 1.d0
       double precision, parameter :: b_d = 2.d0
 
+#ifdef _REAL32
       real(kind=REAL32), parameter :: a_32 = 1.0_REAL32
       real(kind=REAL32), parameter :: b_32 = 2.0_REAL32
+#endif
 
+#ifdef _REAL64
       real(kind=REAL64), parameter :: a_64 = 1.0_REAL64
       real(kind=REAL64), parameter :: b_64 = 2.0_REAL64
+#endif
 
+#ifdef _REAL128
       real(kind=REAL128), parameter :: a_128 = 1.0_REAL128
       real(kind=REAL128), parameter :: b_128 = 2.0_REAL128
+#endif
 
       ! real
       @assert_that(a_s, is(equal_to(a_s)))
@@ -93,26 +99,29 @@ contains
       @assert_that(a_d, is(not(equal_to(b_d))))
       @assert_that(b_d, is(not(equal_to(a_d))))
 
-      ! REAL32
+#ifdef _REAL32      
       @assert_that(a_32, is(equal_to(a_32)))
       @assert_that(b_32, is(equal_to(b_32)))
 
       @assert_that(a_32, is(not(equal_to(b_32))))
       @assert_that(b_32, is(not(equal_to(a_32))))
+#endif
 
-      ! REAL64
+#ifdef _REAL64
       @assert_that(a_64, is(equal_to(a_64)))
       @assert_that(b_64, is(equal_to(b_64)))
 
       @assert_that(a_64, is(not(equal_to(b_64))))
       @assert_that(b_64, is(not(equal_to(a_64))))
+#endif
 
-      ! REAL128
+#ifdef _REAL128      
       @assert_that(a_128, is(equal_to(a_128)))
       @assert_that(b_128, is(equal_to(b_128)))
 
       @assert_that(a_128, is(not(equal_to(b_128))))
       @assert_that(b_128, is(not(equal_to(a_128))))
+#endif
    end subroutine test_is_equal_intrinsic_real
 
    @test
@@ -123,14 +132,20 @@ contains
       double complex, parameter :: a_d = (1.d0, 2.d0)
       double complex, parameter :: b_d = (3.d0, 4.d0)
 
+#ifdef _REAL32
       complex(kind=REAL32), parameter :: a_32 = (1.0_REAL32, 2.0_REAL32)
       complex(kind=REAL32), parameter :: b_32 = (3.0_REAL32, 4.0_REAL32)
+#endif
 
+#ifdef _REAL64
       complex(kind=REAL64), parameter :: a_64 = (1.0_REAL64, 2.0_REAL64)
       complex(kind=REAL64), parameter :: b_64 = (3.0_REAL64, 4.0_REAL64)
+#endif
 
+#ifdef _REAL128
       complex(kind=REAL128), parameter :: a_128 = (1.0_REAL128, 2.0_REAL128)
       complex(kind=REAL128), parameter :: b_128 = (3.0_REAL128, 4.0_REAL128)
+#endif
 
       ! complex single
       @assert_that(a_s, is(equal_to(a_s)))
@@ -146,34 +161,43 @@ contains
       @assert_that(a_d, is(not(equal_to(b_d))))
       @assert_that(b_d, is(not(equal_to(a_d))))
 
-      ! complex REAL32
+#ifdef _REAL32
       @assert_that(a_32, is(equal_to(a_32)))
       @assert_that(b_32, is(equal_to(b_32)))
 
       @assert_that(a_32, is(not(equal_to(b_32))))
       @assert_that(b_32, is(not(equal_to(a_32))))
+#endif
 
-      ! complex REAL64
+#ifdef _REAL64
       @assert_that(a_64, is(equal_to(a_64)))
       @assert_that(b_64, is(equal_to(b_64)))
 
       @assert_that(a_64, is(not(equal_to(b_64))))
       @assert_that(b_64, is(not(equal_to(a_64))))
-
-      ! complex REAL128
+#endif
+      
+#ifdef _REAL128
       @assert_that(a_128, is(equal_to(a_128)))
       @assert_that(b_128, is(equal_to(b_128)))
 
       @assert_that(a_128, is(not(equal_to(b_128))))
       @assert_that(b_128, is(not(equal_to(a_128))))
+#endif
 
       !! Below specifically tests that issue #234 no longer occurs
+#ifdef _REAL32
       call assert_that(a_32, is(equal_to(b_32)))
       @assertExceptionRaised()
+#endif
+#ifdef _REAL64     
       call assert_that(a_64, is(equal_to(b_64)))
       @assertExceptionRaised()
+#endif
+#ifdef _REAL128
       call assert_that(a_128, is(equal_to(b_128)))
       @assertExceptionRaised()
+#endif
    end subroutine test_is_equal_intrinsic_complex
 
    @test
