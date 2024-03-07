@@ -121,7 +121,7 @@ contains
 
       @assert_that(a_128, is(not(equal_to(b_128))))
       @assert_that(b_128, is(not(equal_to(a_128))))
-#ifdef _REAL128      
+#endif
    end subroutine test_is_equal_intrinsic_real
 
    @test
