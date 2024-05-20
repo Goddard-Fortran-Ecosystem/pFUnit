@@ -246,7 +246,7 @@ contains
       iter = values%begin()
       do while (iter /= values%end())
          if (separate) call this%append(separator)
-         call this%append_description_of(iter%get())
+         call this%append_description_of(iter%of())
          separate = .true.
          call iter%next()
       end do

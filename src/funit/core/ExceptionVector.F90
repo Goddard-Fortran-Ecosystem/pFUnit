@@ -1,10 +1,10 @@
 module PF_ExceptionVector
    use PF_Exception
    
-#define _type class(Exception)
-#define _allocatable
-#define _vector ExceptionVector
-#define _iterator ExceptionVectorIterator
-#include "templates/vector.inc"
+#define T Exception
+#define T_polymorphic
+#define Vector ExceptionVector
+#define VectorIterator ExceptionVectorIterator
+#include "vector/template.inc"
 
 end module PF_ExceptionVector

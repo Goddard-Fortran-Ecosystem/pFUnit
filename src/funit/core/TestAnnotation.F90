@@ -24,13 +24,12 @@ end module pf_TestAnnotation
 module pf_StringTestAnnotationMap
    use pf_TestAnnotation
 
-#define _map StringTestAnnotationMap
-#define _iterator StringTestAnnotationMapIterator
-#define _pair StringTestAnnotationPair
-#include "types/key_deferredLengthString.inc"
-#define _value_allocatable
-#define _value class(TestAnnotation)
-#define _alt
-#include "templates/map.inc"
+#define Map StringTestAnnotationMap
+#define MapIterator StringTestAnnotationMapIterator
+#define Pair StringTestAnnotationPair
+#define Key __CHARACTER_DEFERRED
+#define T TestAnnotation
+#define T_polymorphic
+#include "map/template.inc"
 
 end module pf_StringTestAnnotationMap

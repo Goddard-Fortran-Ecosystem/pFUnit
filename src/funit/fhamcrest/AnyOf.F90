@@ -93,7 +93,7 @@ contains
 
     iter = this%matchers%begin()
     do while (iter /= this%matchers%end())
-       matcher => iter%get()
+       matcher => iter%of()
        if (matcher%matches(actual_value)) then
           matches = .true.
           return
@@ -125,7 +125,7 @@ contains
     allocate(matchers_as_SelfDescribing) ! ensure empty at each iteration
     iter = this%matchers%begin()
     do while (iter /= this%matchers%end())
-       call matchers_as_SelfDescribing%push_back(iter%get())
+       call matchers_as_SelfDescribing%push_back(iter%of())
        call iter%next()
     end do
 

@@ -102,10 +102,10 @@ contains
 
       iter = this%begin()
       do while (iter /= this%end())
-         e => iter%get()
+         e => iter%of()
          if (e%getMessage() == message) then
             found = .true.
-            if (.not. preserveMessage(preserve)) call this%erase(iter)
+            if (.not. preserveMessage(preserve)) iter = this%erase(iter)
             return
          end if
          call iter%next()
@@ -119,6 +119,7 @@ contains
       class (ExceptionList), intent(inOut) :: this
       logical, optional, intent(in) :: preserve
       type (Exception) :: anException
+      type (ExceptionVectorIterator) :: iter
 
       
       if (.not. this%empty()) then
@@ -134,7 +135,7 @@ contains
 #endif
          if (preserveMessage(preserve)) return
          
-         call this%erase(this%begin())
+         iter = this%erase(this%begin())
       end if
 
    end function catch_next

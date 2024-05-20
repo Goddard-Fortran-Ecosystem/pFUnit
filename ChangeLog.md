@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated pFUnit to use v2 template interfaces
 - Added `-quiet` flag for NAG Fortran
 
 ### Added
