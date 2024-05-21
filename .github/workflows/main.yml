@@ -93,10 +93,10 @@ jobs:
         run: cmake -B build
 
       - name: Build pfUnit
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel 4
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: cmake --build build --parallel 4 -t build-tests
 
       - name: Run Tests
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
