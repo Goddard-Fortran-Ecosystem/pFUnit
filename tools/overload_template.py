@@ -138,7 +138,7 @@ class Action:
         return m
 
 class TKR_begin(Action):
-    regexp = re.compile("\s*@tkr_parameters\s*(\w*)")
+    regexp = re.compile(r"\s*@tkr_parameters\s*(\w*)")
     def action(self, m, line, state):
         state.current_tkr = m.group(1)
         state.tkr_dictionaries[state.current_tkr] = []
@@ -147,13 +147,13 @@ class TKR_inside(Action):
     def match(self, line, state):
         return state.current_tkr # empty string?
     def action(self, m, line, state):
-        rexp = re.compile("\s*\!.*")
+        rexp = re.compile(r"\s*\!.*")
         if re.match(rexp, line):
             return
-        inside = re.compile("\s*\[(.*)\]\s*").match(line).groups(0)[0]
+        inside = re.compile(r"\s*\[(.*)\]\s*").match(line).groups(0)[0]
         params = re.split(r',\s*(?![^()]*\))', inside)
-        tkrs = [x for x in params if re.compile("\s*\(.*\)\s*").match(x)]
-        elements = [(re.compile("\((.*)\)").match(x.strip()).groups(0)[0]).split(',') for x in tkrs]
+        tkrs = [x for x in params if re.compile(r"\s*\(.*\)\s*").match(x)]
+        elements = [(re.compile(r"\((.*)\)").match(x.strip()).groups(0)[0]).split(',') for x in tkrs]
 
         hash = ''
         d = {}
@@ -170,7 +170,7 @@ class TKR_inside(Action):
 
     
 class TKR_end(Action):
-    regexp = re.compile("\s*@end tkr_parameters")
+    regexp = re.compile(r"\s*@end tkr_parameters")
     def action(self, m, line, state):
         state.current_tkr = ''
 
@@ -181,7 +181,7 @@ def name_mangle(base, items):
     return mangle
         
 class Overload(Action):
-    regexp = re.compile("(\s*)@overload\((\w+),\s*(\w+)\s*\)")
+    regexp = re.compile(r"(\s*)@overload\((\w+),\s*(\w+)\s*\)")
     def action(self, m, line, state):
         generic_name =  m.group(2)
         indent = m.group(1)
@@ -192,7 +192,7 @@ class Overload(Action):
 
 
 class Module(Action):
-    regexp = re.compile("\s*(end)?\s*module\s+\w*\s*")
+    regexp = re.compile(r"\s*(end)?\s*module\s+\w*\s*")
     def action(self, m, line, state):
         if state.current_template:
             state.templates[state.current_template]['text'] += line
@@ -201,7 +201,7 @@ class Module(Action):
 
 
 class Template_begin(Action):        
-    regexp = re.compile("\s*@template\s*\(\s*(\w+)\s*,\s*\[(.*)\]\s*")
+    regexp = re.compile(r"\s*@template\s*\(\s*(\w+)\s*,\s*\[(.*)\]\s*")
     def action(self, m, line, state):
         state.current_template = m.group(1)
         parameters = [x.strip() for x in m.group(2).split(',')]
@@ -214,12 +214,12 @@ class Template_inside(Action):
         state.templates[state.current_template]['text'] += line
 
 class Template_end(Action):        
-    regexp = re.compile("\s*@end template")
+    regexp = re.compile(r"\s*@end template")
     def action(self, m, line, state):
         state.current_template = ''
         
 class Instantiate(Action):
-    regexp = re.compile("\s*@instantiate\(\s*(\w*)\s*,\s*(\w*)\s*\)")
+    regexp = re.compile(r"\s*@instantiate\(\s*(\w*)\s*,\s*(\w*)\s*\)")
     def action(self, m, line, state):
         template_name = m.group(1)
         template =  state.templates[template_name]['text']
