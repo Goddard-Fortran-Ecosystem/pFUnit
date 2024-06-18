@@ -19,14 +19,15 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        compiler: [gfortran-10, gfortran-11, gfortran-12, gfortran-13]
-        exclude:
-          - os: macos-13
-            compiler: gfortran-10
-          - os: macos-14
+        compiler: [gfortran-11, gfortran-12, gfortran-13]
+        # gfortran-10 is only on ubuntu-22.04
+        # gfortran-14 is available on ubuntu-24.04
+        include:
+          - os: ubuntu-22.04
             compiler: gfortran-10
           - os: ubuntu-24.04
-            compiler: gfortran-10
+            compiler: gfortran-14
+        exclude:
           - os: ubuntu-24.04
             compiler: gfortran-11
           - os: ubuntu-22.04
