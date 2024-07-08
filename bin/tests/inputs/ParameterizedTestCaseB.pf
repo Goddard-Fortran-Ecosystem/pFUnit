@@ -1,4 +1,4 @@
-module TestCaseB_mod
+module ParameterizedTestCaseB
    use pfunit_mod
    implicit none
 
@@ -64,6 +64,6 @@ contains
 
    end function toString
 
-end module TestCaseB_mod
+end module ParameterizedTestCaseB
 
 

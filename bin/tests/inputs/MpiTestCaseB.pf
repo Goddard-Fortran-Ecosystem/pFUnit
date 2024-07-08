@@ -1,4 +1,4 @@
-module MpiTestCaseB_mod
+module MpiTestCaseB
    use pfunit_mod
    implicit none
 
@@ -35,6 +35,6 @@ contains
       class (MpiTestCaseB), intent(inout) :: this
    end subroutine testB
 
-end module MpiTestCaseB_mod
+end module MpiTestCaseB
 
 

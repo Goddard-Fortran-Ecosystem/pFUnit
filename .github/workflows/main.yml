@@ -97,10 +97,12 @@ jobs:
         run: cmake --build build --parallel 4
 
       - name: Build Tests
-        run: cmake --build build --parallel 4 -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
@@ -111,7 +113,7 @@ jobs:
             build/**/*.log
 
   Intel:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     env:
       FC: ifx
@@ -164,10 +166,12 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
@@ -211,10 +215,12 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
