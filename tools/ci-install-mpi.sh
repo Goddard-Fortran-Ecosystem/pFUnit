@@ -15,7 +15,7 @@ then
    tar xjf ${MPI_IMPL}-${MPI_VER}.tar.bz2 && rm ${MPI_IMPL}-${MPI_VER}.tar.bz2
    cd ${MPI_IMPL}-${MPI_VER}
    ./configure --prefix=${HOME}/local/${MPI_IMPL} --disable-wrapper-rpath --disable-wrapper-runpath --with-hwloc=internal --with-libevent=internal
-   make -j $(nproc)
+   make -j 4
    make install-strip
    cd .. && rm -r ${MPI_IMPL}-${MPI_VER}
    exit 0
