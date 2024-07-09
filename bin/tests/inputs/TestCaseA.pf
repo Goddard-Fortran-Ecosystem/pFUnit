@@ -1,4 +1,4 @@
-module TestCaseA_mod
+module TestCaseA
    use pfunit_mod
    implicit none
 
@@ -35,4 +35,4 @@ contains
       class (TestCaseA), intent(inout) :: this
    end subroutine testB
 
-end module TestCaseA_mod
+end module TestCaseA
