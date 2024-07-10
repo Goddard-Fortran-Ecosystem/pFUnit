@@ -3,11 +3,11 @@
 macro (build_submodule submodule)
 
   set(options)
-  set(oneValueArgs TARGET PROJECT)
+  set(oneValueArgs TARGET PROJECT VERSION)
   set(multiValueArgs)
   cmake_parse_arguments(build_submodule "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-  find_package(${build_submodule_PROJECT} QUIET)
+  find_package(${build_submodule_PROJECT} ${build_submodule_VERSION} QUIET)
 
   if (${build_submodule_PROJECT}_FOUND)
     message(STATUS "Using package '${build_submodule_PROJECT}'")
