@@ -1,16 +1,17 @@
 module pf_MatcherVector
   use pf_AbstractMatcher
 
-#define _type class(AbstractMatcher)
-#define _vector MatcherVector
-#define _vectorIterator MatcherVectorIterator
-#define _allocatable
+#define T AbstractMatcher
+#define T_polymorphic
+#define Vector MatcherVector
+#define VectorIterator MatcherVectorIterator
 
-#include "templates/vector.inc"
+#include "vector/template.inc"
 
-#undef _allocatable
-#undef _vectorIterator
-#undef _vector
-#undef _type
-  
+#undef VectorIterator
+#undef Vector
+#undef T_polymorphic
+#undef T
+
+
 end module pf_MatcherVector

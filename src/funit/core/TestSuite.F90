@@ -189,7 +189,7 @@ contains
       
       iter = this%tests%begin()
       do while (iter /= this%tests%end())
-         t => iter%get()
+         t => iter%of()
 
          select type (t)
          class is (TestSuite)

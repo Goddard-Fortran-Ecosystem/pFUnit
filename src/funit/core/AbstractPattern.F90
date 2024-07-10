@@ -25,11 +25,11 @@ end module PF_AbstractPattern
 
 module PF_AbstractPatternVector
    use PF_AbstractPattern
-#define _type class (AbstractPattern)
-#define _allocatable
-#define _vector AbstractPatternVector
-#define _iterator AbstractPatternVectorIterator
+#define T AbstractPattern
+#define T_polymorphic
+#define Vector AbstractPatternVector
+#define VectorIterator AbstractPatternVectorIterator
 
-#include "templates/vector.inc"
+#include "vector/template.inc"
 
 end module PF_AbstractPatternVector

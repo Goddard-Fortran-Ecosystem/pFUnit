@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated pFUnit to use v2 template interfaces
 - Added `-quiet` flag for NAG Fortran
 - Remove `macos-11` from GitHub Actions, add `macos-12` and `gfortran-14` to Ubuntu 24.04
+- Updated fArgParse to v1.8.0
 
 ### Added
 
