@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Removes numerous SyntaxWarning messages during compilation and parsing when working with python >= 3.12 by using raw strings to hold all regular expressions.
 - This fixes a small CMake bug which can lead to posix_predefined.x being built in the wrong build subdirectory when CMAKE_RUNTIME_OUTPUT_DIRECTORY is set*.
 - Missing implementation of `assertIsFinite_real80()`.  Apparently undetected until recent attempt to port to flang.
 - Made support for REAL128 optional.  (Port to nvfortran)
