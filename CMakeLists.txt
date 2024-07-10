@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
-  VERSION 4.9.0
+  VERSION 4.10.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -138,9 +138,15 @@ if (APPLE)
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
 
+# Enable testing before adding subdirectories
+# to catch any tests in the main project
+if (ENABLE_TESTS)
+  enable_testing()
+endif ()
+
 include(build_submodule)
 # Find fArgParse first so that gFTL and gFTL-shared are consistent
-build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse)
+build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse VERSION 1.8.0)
 
 add_subdirectory (src)
 add_subdirectory (include)
@@ -150,27 +156,24 @@ if (ENABLE_BUILD_DOXYGEN)
   add_subdirectory(documentation)
 endif()
 
-if (ENABLE_TESTS)
-  enable_testing()
-  if (NOT TARGET build-tests)
-    add_custom_target(build-tests)
-  endif()
-
-  if (NOT TARGET tests)
-    add_custom_target(tests
-      COMMAND ${CMAKE_CTEST_COMMAND}
-      EXCLUDE_FROM_ALL)
-  endif ()
-  add_dependencies(tests build-tests)
-  add_subdirectory (tests EXCLUDE_FROM_ALL)
-
-  # The following forces tests to be built when using "make ctest" even if some targets
-  # are EXCLUDE_FROM_ALL
-  # From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
-  build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
-  string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
-  file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
+if (NOT TARGET build-tests)
+  add_custom_target(build-tests)
 endif()
+
+if (NOT TARGET tests)
+  add_custom_target(tests
+    COMMAND ${CMAKE_CTEST_COMMAND}
+    EXCLUDE_FROM_ALL)
+endif ()
+add_dependencies(tests build-tests)
+add_subdirectory (tests EXCLUDE_FROM_ALL)
+
+# The following forces tests to be built when using "make ctest" even if some targets
+# are EXCLUDE_FROM_ALL
+# From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
+build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
+file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 
 # The following is needed for external projects using *nix make when
 # parent project builds pFUnit as a subproject.

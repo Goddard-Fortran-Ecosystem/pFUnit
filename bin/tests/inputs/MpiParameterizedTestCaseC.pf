@@ -1,4 +1,4 @@
-module TestCaseC_mod
+module MpiParameterizedTestCaseC
    use pfunit_mod
    implicit none
 
@@ -117,6 +117,6 @@ contains
 
    end function toString
 
-end module TestCaseC_mod
+end module MpiParameterizedTestCaseC
 
 

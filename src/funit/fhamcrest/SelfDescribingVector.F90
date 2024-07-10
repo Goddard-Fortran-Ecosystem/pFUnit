@@ -1,16 +1,16 @@
 module pf_SelfDescribingVector
   use pf_SelfDescribing
 
-#define _type class(SelfDescribing)
-#define _vector SelfDescribingVector
-#define _vectorIterator SelfDescribingVectorIterator
-#define _allocatable
+#define T SelfDescribing
+#define T_polymorphic
+#define Vector SelfDescribingVector
+#define VectorIterator SelfDescribingVectorIterator
 
-#include "templates/vector.inc"
+#include "vector/template.inc"
 
-#undef _allocatable
-#undef _vectorIterator
-#undef _vector
-#undef _type
-  
+#undef VectorIterator
+#undef Vector
+#undef T_polymorphic
+#undef T
+
 end module pf_SelfDescribingVector

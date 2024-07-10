@@ -1,4 +1,4 @@
-module TestA_mod
+module TestA
    use pfunit_mod
    implicit none
 
@@ -19,6 +19,6 @@ contains
       class (MpiTestMethod), intent(inout) :: this
    end subroutine testMethodC
 
-end module TestA_mod
+end module TestA
 
 

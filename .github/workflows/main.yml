@@ -18,13 +18,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-11, macos-12]
-        compiler: [gfortran-10, gfortran-11, gfortran-12, gfortran-13]
-        exclude:
-          - os: macos-11
-            compiler: gfortran-13
-          - os: macos-12
+        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
+        compiler: [gfortran-11, gfortran-12, gfortran-13]
+        # gfortran-10 is only on ubuntu-22.04
+        # gfortran-14 is available on ubuntu-24.04
+        include:
+          - os: ubuntu-22.04
             compiler: gfortran-10
+          - os: ubuntu-24.04
+            compiler: gfortran-14
+        exclude:
+          - os: ubuntu-24.04
+            compiler: gfortran-11
+          - os: ubuntu-22.04
+            compiler: gfortran-13
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
@@ -69,7 +76,7 @@ jobs:
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 4.1.4
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 5.0.2
 
       - name: Set MPI Environment
         run: |
@@ -87,13 +94,15 @@ jobs:
         run: cmake -B build
 
       - name: Build pfUnit
-        run: cmake --build build --parallel
+        run: cmake --build build --parallel 4
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
@@ -104,7 +113,7 @@ jobs:
             build/**/*.log
 
   Intel:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     env:
       FC: ifx
@@ -157,10 +166,12 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
@@ -204,10 +215,12 @@ jobs:
         run: cmake --build build --parallel
 
       - name: Build Tests
-        run: cmake --build build --parallel -t build-tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
 
-      - name: Run Tests
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4 --schedule-random
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
         uses: actions/upload-artifact@v4
