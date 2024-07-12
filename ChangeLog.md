@@ -5,9 +5,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Fixed
 
-- support for llvm flang
+- Workaround for flang quad precision support. Note that flang also
+  requires use of `-DSKIP_ROBUST` for now.
+
+
 
 ## [4.10.0] - 2024-07-10
 
