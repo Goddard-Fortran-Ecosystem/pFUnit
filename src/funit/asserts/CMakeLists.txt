@@ -5,6 +5,7 @@ set(python_defs)
 foreach (def ${dir_defs})
   list(APPEND python_defs "-${def}")
 endforeach()
+message(STATUS "python defs ${python_defs}")
 
 function (expand in out)
   set_source_files_properties (${CMAKE_CURRENT_BINARY_DIR}/${out} PROPERTIES GENERATED 1)

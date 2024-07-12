@@ -30,7 +30,13 @@ CHECK_FORTRAN_SOURCE_RUN (
   _DOUBLE_DEFAULT_KIND
   )
 
-foreach (kind 32 64 80 128 256)
+if (CMAKE_Fortran_COMPILER_ID MATCHES LLVMFlang)
+  set (real_kinds 32 64)
+else()
+  set (real_kinds 32 64 80 128 256)
+endif ()
+  
+foreach (kind ${real_kinds})
   set(CMAKE_REQUIRED_FLAGS = -fpp)
   set(CMAKE_REQUIRED_DEFINITIONS -D_KIND=REAL${kind})
 

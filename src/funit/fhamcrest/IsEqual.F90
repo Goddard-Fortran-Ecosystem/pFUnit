@@ -17,14 +17,14 @@ module pf_IsEqual
      private
      class(*), allocatable :: expected_value
    contains
-     procedure :: matches
+     procedure :: matches => matches_
      procedure :: describe_to
      procedure :: describe_mismatch
 
      procedure :: matches_array_1d
      procedure :: matches_array_2d
      procedure :: matches_array_3d
-     procedure :: matches_intrinsic
+     procedure :: matches_intrinsic => matches_intrinsic_
   end type IsEqual
 
   interface equal_to
@@ -94,7 +94,7 @@ contains
   ! Derived types are expected to have type-bound OPERATOR(==) that
   ! allows CLASS(*) on RHS.
   ! Intrinsics are checked case by case.
-  recursive logical function matches(this, actual_value)
+  recursive logical function matches_(this, actual_value) result(matches)
     use pf_Matchable
     class(IsEqual), intent(in) :: this
     class(*), intent(in) :: actual_value
@@ -112,7 +112,7 @@ contains
        matches = this%matches_intrinsic(actual_value)
     end select
        
-  end function matches
+  end function matches_
 
 
   logical function matches_array_1d(this, expected_items, actual_value)
@@ -216,7 +216,7 @@ contains
 
 
 
-  logical function matches_intrinsic(this, actual_value)
+  logical function matches_intrinsic_(this, actual_value) result(matches_intrinsic)
     class(IsEqual), intent(in) :: this
     class(*), target, intent(in) :: actual_value
 
@@ -271,15 +271,6 @@ contains
     type is (real(kind=REAL64))
        select type(a => actual_value)
        type is (real(kind=REAL64))
-          matches_intrinsic = (e == a)
-       class default
-          matches_intrinsic = .false.
-       end select
-#endif
-#if (defined(_ISO_REAL128) && (_ISO_REAL128 != _REAL_DEFAULT_KIND) && (_ISO_REAL128 != _DOUBLE_DEFAULT_KIND))
-    type is (real(kind=REAL128))
-       select type(a => actual_value)
-       type is (real(kind=REAL128))
           matches_intrinsic = (e == a)
        class default
           matches_intrinsic = .false.
@@ -341,6 +332,6 @@ contains
        matches_intrinsic = .false. ! unsupported intrinsic?
     end select
 
-  end function matches_intrinsic
+ end function matches_intrinsic_
 
 end module pf_IsEqual
