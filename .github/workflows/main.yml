@@ -19,19 +19,19 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        compiler: [gfortran-11, gfortran-12, gfortran-13]
-        # gfortran-10 is only on ubuntu-22.04
-        # gfortran-14 is available on ubuntu-24.04
+        compiler: [gfortran-12, gfortran-13, gfortran-14]
+        # gfortran-10 and -11 are only on ubuntu-22.04
+        # gfortran-13 and -14 are not on ubuntu-22.04
         include:
           - os: ubuntu-22.04
             compiler: gfortran-10
-          - os: ubuntu-24.04
-            compiler: gfortran-14
-        exclude:
-          - os: ubuntu-24.04
+          - os: ubuntu-22.04
             compiler: gfortran-11
+        exclude:
           - os: ubuntu-22.04
             compiler: gfortran-13
+          - os: ubuntu-22.04
+            compiler: gfortran-14
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
@@ -113,7 +113,7 @@ jobs:
             build/**/*.log
 
   Intel:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     env:
       FC: ifx
@@ -182,8 +182,8 @@ jobs:
             build/**/*.log
 
   Nvidia:
-    runs-on: ubuntu-20.04
-    container: nvcr.io/nvidia/nvhpc:24.1-devel-cuda12.3-ubuntu22.04
+    runs-on: ubuntu-22.04
+    container: nvcr.io/nvidia/nvhpc:24.7-devel-cuda12.5-ubuntu22.04
     env:
       FC: nvfortran
 
