@@ -68,7 +68,7 @@ jobs:
 
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/local/openmpi
           key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
