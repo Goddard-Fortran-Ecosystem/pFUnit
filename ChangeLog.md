@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update CI to have `gfortran-10` and `gfortran-11` only on `ubuntu-22.04`
 - Update CI NVIDIA to NVHPC 24.7
+- Add Flang to CI
 
 ## [4.10.0] - 2024-07-10
 

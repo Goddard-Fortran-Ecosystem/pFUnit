@@ -230,3 +230,52 @@ jobs:
           path: |
             build/**/*.log
 
+  Flang:
+    runs-on: ubuntu-latest
+    container: gmao/llvm-flang-openmpi:latest
+    env:
+      FC: flang-new
+
+    name: Flang
+    steps:
+      - name: Versions
+        run: |
+          ${FC} --version
+          cmake --version
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set all directories as git safe
+        run: |
+          git config --global --add safe.directory '*'
+
+      - name: Add python-is-python3 package
+        run: |
+          apt-get update
+          apt-get install -y python-is-python3
+
+      - name: Configure pFUnit
+        run: cmake -B build
+
+      - name: Build pfUnit
+        run: cmake --build build --parallel
+
+      - name: Build Tests
+        run: |
+          cmake --build build --parallel 4 --target build-tests
+          cmake --build build --parallel 4 --target tests
+
+      - name: Run Ctest
+        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
+
+      - name: Archive log files on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: logfiles
+          path: |
+            build/**/*.log
+
