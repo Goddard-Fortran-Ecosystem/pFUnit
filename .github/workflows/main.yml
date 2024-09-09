@@ -209,7 +209,7 @@ jobs:
           apt-get install -y python-is-python3
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DSKIP_ROBUST=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
