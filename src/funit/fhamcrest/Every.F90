@@ -96,24 +96,35 @@ contains
     class(MatcherDescription), intent(inout) :: description
     integer, allocatable, intent(inout) :: index(:)
 
-    integer :: i
+    call describe_with_target(this, actuals, description, index)
 
-    class(*), allocatable :: item    
-    do i = 1, size(actuals)
-       item = actuals(i)
-       if (.not. this%matches(item)) then
-          select type (item)
-          class is (AbstractArrayWrapper)
-             call this%describe_first_mismatch(item%get(), description, index)
-             index = [index, i]
-          class default ! scalar
-             call this%item_matcher%describe_mismatch(actuals(i), description)
-             index = [i]
-          end select
-          return
-       end if
-    end do
+  contains
 
+    subroutine describe_with_target(this, actuals, description, index)
+      class(Every), intent(in) :: this
+      class(*), target, intent(in) :: actuals(:)
+      class(MatcherDescription), intent(inout) :: description
+      integer, allocatable, intent(inout) :: index(:)
+      
+      integer :: i
+      
+      class(*), pointer :: item    
+
+      do i = 1, size(actuals)
+         item => actuals(i)
+         if (.not. this%matches(item)) then
+            select type (item)
+            class is (AbstractArrayWrapper)
+               call this%describe_first_mismatch(item%get(), description, index)
+               index = [index, i]
+            class default ! scalar
+               call this%item_matcher%describe_mismatch(actuals(i), description)
+               index = [i]
+            end select
+            return
+         end if
+      end do
+    end subroutine describe_with_target
   end subroutine describe_first_mismatch
 
   subroutine describe_to(this, description)
