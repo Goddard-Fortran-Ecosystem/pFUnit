@@ -75,7 +75,7 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     # Define executable and any auxiliary library   #
     #################################################
 
-    message(STATUS "include/add_pfunit_test_cmake: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
+    message(STATUS "MATMAT include/add_pfunit_test_cmake: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
     # Main executable
     add_executable (${test_package_name}
         ${test_sources_f90}

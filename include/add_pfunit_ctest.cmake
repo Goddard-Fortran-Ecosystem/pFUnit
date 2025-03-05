@@ -67,7 +67,7 @@ function (add_pfunit_ctest test_package_name)
     set(PFUNIT_EXTRA_USE ${PF_TEST_EXTRA_USE})
   endif()
   set(driver "${test_package_name}_driver.F90")
-  message(STATUS "include/add_pfunit_ctest_cmake: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
+  message(STATUS "MATMAT include/add_pfunit_ctest_cmake: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
   configure_file(${PFUNIT_DRIVER}.in ${driver})
 
   add_executable (${test_package_name}
