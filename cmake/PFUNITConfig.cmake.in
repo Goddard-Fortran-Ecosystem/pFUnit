@@ -79,7 +79,7 @@ else()
   endif()
 endif()
 set (PFUNIT_PARSER "${Python_EXECUTABLE}" "${CMAKE_CURRENT_LIST_DIR}/../bin/funitproc")
-set (PFUNIT_DRIVER "${CMAKE_CURRENT_LIST_DIR}/../include/driver.F90")
+set (PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90")
 set (PFUNIT_TESTUTILS "${CMAKE_CURRENT_LIST_DIR}/../include/TestUtil.F90")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/../include")
