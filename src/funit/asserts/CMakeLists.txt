@@ -14,7 +14,7 @@ function (expand in out)
     COMMAND ${Python_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${in} -o ${out} ${python_defs}
     DEPENDS ${in} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT Generating ${out}
+    COMMENT "Generating ${out}"
     )
 endfunction()
 
