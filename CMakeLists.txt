@@ -22,7 +22,7 @@
 #   cmake <path-to-source> [<options>]
 #
 # ------------------------------------------------------------------------ #
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.12)
 
 project (PFUNIT
   VERSION 4.11.0
@@ -223,12 +223,7 @@ if (NOT MAIN_PROJECT)
   set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" CACHE INTERNAL "")
   set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" CACHE INTERNAL "")
   set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" CACHE INTERNAL "")
-  message(STATUS "MATMAT Main CMakeLists.txt: PFUNIT_PARSER: ${PFUNIT_PARSER}")
-
-  message(STATUS "MATMAT Main Before CMakeLists.txt: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
   set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" CACHE INTERNAL "")
-  message(STATUS "MATMAT Main After CMakeLists.txt: PROJECT_SOURCE_DIR: ${PROJECT_SOURCE_DIR}")
-  message(STATUS "MATMAT Main After CMakeLists.txt: PFUNIT_DRIVER: ${PFUNIT_DRIVER}")
   set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" CACHE INTERNAL "")
 
   if (BUILD_SHARED_LIBS)

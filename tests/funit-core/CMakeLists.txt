@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.12)
 
 #include_directories (${PFUNIT_SOURCE_DIR}/include)
 #include_directories (${PFUNIT_BINARY_DIR}/src)
