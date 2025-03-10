@@ -12,6 +12,8 @@ on:
   # This is a weekly run to try and keep the MPI caches ... cached
   schedule:
     - cron: '00 13 * * 1'
+  # Allow us to trigger it manually
+  workflow_dispatch:
 
 jobs:
   GNU:
@@ -182,6 +184,9 @@ jobs:
             build/**/*.log
 
   Nvidia:
+    # Nvidia builds do not currently work, so we can exclude if
+    # we are running with schedule or workflow_dispatch
+    if: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-22.04
     container: nvcr.io/nvidia/nvhpc:24.7-devel-cuda12.5-ubuntu22.04
     env:
