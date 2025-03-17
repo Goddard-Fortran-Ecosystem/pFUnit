@@ -93,7 +93,7 @@ jobs:
           mpifort --show
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel 4
@@ -162,7 +162,7 @@ jobs:
           cmake --version
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
@@ -214,7 +214,7 @@ jobs:
           apt-get install -y python-is-python3
 
       - name: Configure pFUnit
-        run: cmake -B build -DSKIP_ROBUST=ON
+        run: cmake -B build -DSKIP_ROBUST=ON -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
@@ -270,7 +270,7 @@ jobs:
           apt-get install -y python-is-python3
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
