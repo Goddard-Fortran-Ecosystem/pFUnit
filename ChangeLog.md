@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.12.0] - 2025-04-07
+
 ### Changed
 
 - Updated minimum required CMake version to 3.12 in tests/ to match main CMakeLists.txt and documentation. Previously set to 3.0 which is now deprecated and was causing build issues.
