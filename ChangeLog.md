@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update CMake minimum version to 3.24 to match other GFE repos
+
 ## [4.12.0] - 2025-04-07
 
 ### Changed
