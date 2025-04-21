@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
         compiler: [gfortran-12, gfortran-13, gfortran-14]
         # gfortran-10 and -11 are only on ubuntu-22.04
         # gfortran-13 and -14 are not on ubuntu-22.04
