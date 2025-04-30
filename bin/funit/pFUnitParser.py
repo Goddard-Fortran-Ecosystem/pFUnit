@@ -24,7 +24,7 @@ assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
                    'exceptionraised': 0, 'sameshape': 2, 'that': 2, '_that': 2}
 
 def cppSetLineAndFile(line, file):
-    if sysconfig.get_platform() == 'mingw':
+    if sysconfig.get_platform() == 'mingw' or sysconfig.get_platform().startswith('win-'):
         return "#line " + str(line) + ' "' + file.replace(sep,posixpath.sep) + '"\n'
     else:
         return "#line " + str(line) + ' "' + file + '"\n'
