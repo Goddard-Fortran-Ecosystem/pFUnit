@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Fix handling of forward/backward slashes in the parser on Windows when using the usual Python Windows release (worked only with Python through MinGW before)
+
 ## [4.12.0] - 2025-04-07
 
 ### Changed
