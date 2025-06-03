@@ -63,6 +63,9 @@ end module pFUnit_private
 !
 !-------------------------------------------------------------------------------
 module pFUnit
+
+   ise intrinsic :: iso_fortran_env, only : error_unit
+
    use FUnit_private
    use pFUnit_private
    use PF_MPI_MODULE
@@ -82,7 +85,10 @@ contains
       integer :: error
 
       call mpi_init(error)
-      if (error /= MPI_SUCCESS) stop
+      if (error /= MPI_SUCCESS) then
+         write( error_unit, '("MPI failed to initialise.")' )
+         stop 1
+      end if
 
       call funit_initialize(extra_initialize)
 
@@ -135,7 +141,7 @@ contains
          print*,'THIS NEEDS FIXING - must call extra_finalize() on all ranks.'
          call funit_finalize(extra_finalize, allSuccessful)
       else
-         stop
+         stop 0
       end if
 
    end subroutine finalize
