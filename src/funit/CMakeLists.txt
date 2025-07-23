@@ -56,18 +56,14 @@ endif ()
 
 set_funit_target_properties(funit-main)
 funit_target_link_pfunit(funit-main)
-add_dependencies(funit-main ${funit_deps})
-list(APPEND funit_deps funit-main)
 
-# Create list of objects to be added to libraries
-foreach (funit_dep ${funit_deps})
-  list(APPEND funit_target_objects "$<TARGET_OBJECTS:${funit_dep}>")
-endforeach()
+target_include_directories(funit-main INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 # Create exported funit libraries
 add_library (funit)
 add_library (PFUNIT::funit ALIAS funit)
 set(funit_targets funit)
+
 if (BUILD_SHARED_LIBS)
   add_library (funit_shared SHARED)
   add_library (PFUNIT::funit_shared ALIAS funit_shared)
@@ -81,8 +77,7 @@ foreach(funit_target IN LISTS funit_targets)
 
   # Subdirectories declare simple OBJECT directories to capture sources
   # funit is the "real" library.
-  add_dependencies(${funit_target} ${funit_deps})
-  target_sources(${funit_target} PRIVATE ${funit_target_objects})
+  target_link_libraries(${funit_target} PRIVATE funit-main ${funit_deps})
 
   install (TARGETS ${funit_target} EXPORT PFUNIT DESTINATION ${dest}/lib)
 endforeach ()
