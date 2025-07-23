@@ -14,7 +14,7 @@ function (expand in out)
     COMMAND ${Python_EXECUTABLE} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py --rank=${rank} -i ${in} -o ${out} ${python_defs}
     DEPENDS ${in} ${PFUNIT_SOURCE_DIR}/tools/overload_template.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT Generating ${out}
+    COMMENT "Generating ${out}"
     )
 endfunction()
 
@@ -60,7 +60,7 @@ set_funit_target_properties (asserts)
 target_sources (asserts PRIVATE ${generated_sources})
 target_link_libraries (asserts funit-core)
 
-target_include_directories(funit-core INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(asserts INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 
 target_include_directories (asserts PUBLIC
   $<BUILD_INTERFACE:${PFUNIT_SOURCE_DIR}/include>
