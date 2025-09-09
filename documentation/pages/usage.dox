@@ -1,0 +1,130 @@
+
+/*!
+
+\page page_Usage Usage
+
+\li \ref sec_UsageConfiguration
+\li \ref sec_CmakeIntegration
+\li \ref sec_UsageHelloWorld
+\li \ref sec_UsagePreprocessor
+\li \ref sec_UsageExecutingTheTest
+
+\section sec_UsageConfiguration Usage - Configuration
+
+For regular use, after installation, the same compiler/MPI development
+configuration that was used to build pFUnit should be used.  Once the
+environment variables and paths associated with the environment are
+set, to configure pFUnit, please set the following.
+
+`PFUNIT` - set to the directory into which pFUnit was installed.
+
+`F90_VENDOR` - set to Intel, GNU, NAG, or PGI accordingly.
+
+\section sec_UsageHelloWorld Usage - Hello World
+
+For an example of a simple usage of pFUnit, see Examples/Simple/tests.
+
+The simplest way to write a test is to write a preprocessor input file (extension ".pf"), which is a Fortran free format file with preprocessor directives added.  An example from "helloWorld.pf" follows.
+\code{.f90}
+! from helloWorld.pf
+@test
+subroutine testHelloWorld()
+   use pfunit_mod
+   implicit none
+   @assertEqual("Hello World!","Hello World!")
+end subroutine testHelloWorld
+\endcode
+
+One then instructs the preprocessor to construct a suite to execute these tests via the "testSuites.inc" file as follows.
+\code
+! from testSuites.inc
+ADD_TEST_SUITE(helloWorld_suite)
+\endcode
+
+At this point, one can invoke the preprocessor to generate a Fortran file that when compiled and linked with pFUnit will execute the tests. For more information please see \ref page_funitproc or try out the examples in Example/Simple.
+
+\section sec_UsagePreprocessor Usage - Preprocessor
+Please see \ref page_funitproc.
+
+\section sec_UsageExecutingTheTest Compiling and Executing The Test
+
+An example of a GNU make rule for for the final step of compiling a test follows.
+
+\code
+# This step presumes "include $(PFUNIT)/include/base.mk" earlier in the makefile.
+tests.x: testSuites.inc myTests.pf
+         $(F90) -o $@ -I$(PFUNIT)/mod -I$(PFUNIT)/include \
+                $(PFUNIT)/include/driver.F90 \
+                ./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+\endcode
+
+To execute the tests, one invokes "./tests.x" with the appropriate command line options (see below).
+
+In some cases, since include/driver.F90 is "implicit none," it may be
+necessary to insert a "use" clause to identify external suite-wide
+fixture code to the compiler.  As a convenience, the CPP macro
+PFUNIT_EXTRA_USAGE can be set to a module of fixture code via a
+compiler command line argument turning on a "use PFUNIT_EXTRA_USAGE"
+line at the beginning of include/driver.F90.
+
+\section ss_UsageExecutingTheTestParallel - Compiling and Executing the Tests (MPI PARALLEL)
+
+One invokes MPI-based parallel tests according to the MPI framework being used.  For example:
+
+\code
+$ mpirun -np 4 tests.x\endcode
+
+
+\section ss_CommandLineOptions Command Line Options
+
+The executable test program provides several command line options,
+when "include/driver.F90" is used, as it is automatically when using
+the PFUNIT preprocessor.
+
+<table border="0" >
+<tr><td>-v or -verbose        </td><td>Verbose execution.</td></tr>
+<tr><td>-d or -debug  </td><td>Provide debugging information.</td></tr>
+<tr><td>-h            </td><td>Print help message.</td></tr>
+<tr><td>-o \<outputfile\> </td><td>Direct pFUnit messages to a file.
+<tr><td>-robust       </td><td>Use the robust runner. Runs tests as processes so failures do not halt testing.</td></tr>
+<tr><td>-max-timeout-duration <duration> Limit detection time for robust runner.</td></tr>
+<tr><td>-max-launch-duration  <duration> Limit detection time for robust runner.</td></tr>
+<tr><td>-skip \<number of tests to skip\></td><td>Use the subset runner, which runs a subset of the tests in a suite.</td></tr>
+<tr><td>-xml \<xmlfile\></td><td>Generate XML output in JUnit
+compatible format, write it to given file. This XML output can be used
+in integration with e.g. Jenkins. To ensure the XML file is written
+correctly, it is recommended to also use the -robust flag.</td></tr>
+<tr><td>-name \<name\></td><td>Give the set of tests an identifying
+name, which is used in the XML output.</td></tr>
+</table>
+
+An example from Examples/Robust:
+
+\code
+$ ./tests.x -robust\endcode
+
+\subsection ss_XML XML output
+
+To output JUnit XML, execute tests with the -xml flag:
+\code
+$ ./tests.x -robust -xml test.xml -name my_suite_name\endcode
+
+This creates a file named test.xml. As an example, the output may look like this:
+
+\code
+<testsuite name="my_suite_name" errors="1" failures="1" tests="3" time="2.1020">
+<testcase name="test_math_suite.test_addition"/>
+<testcase name="test_math_suite.test_division">
+<error message="Location: [[unknown location]], RUNTIME-ERROR: terminated during execution "/>
+</testcase>
+<testcase name="test_other_suite.test_foo">
+<failure message="Location: [ test_other.pf:24],  "/>
+</testcase>
+</testsuite>
+\endcode
+
+Output explained: The test suite took 2.1020 seconds to execute. One
+test (test_addition) succeeded, one (test_division) crashed for some
+reason, and one test (test_foo) failed at line 24 of test_other.pf.
+
+*/

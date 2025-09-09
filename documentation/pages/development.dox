@@ -1,0 +1,13 @@
+
+/*!
+
+\page page_Development Development
+
+Generally pFUnit development is performed in the build directory
+structure.  Care should be taken to make clean or distclean in between
+configuration changes.  As stated in \ref sec_Installation, it is best
+to set INSTALL_DIR and "make install" pFUnit to another directory that
+can be placed in a
+user's paths.
+
+*/
