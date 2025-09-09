@@ -1,0 +1,23 @@
+
+/*!
+
+\page page_RevisionNotes Revision Notes
+
+<ul>
+<li>2015-0508 Some PGI workarounds removed for PGI 15.4. MLR</li>
+<li>2015-0320 PGI port workarounds, including examples. 3.1. MLR</li>
+<li>2014-1211 Minor updates for 3.0.2. MLR</li>
+<li>2014-1110, 2014-1031 Minor edits. MLR</li>
+<li>2014-0915 Minor updates for 3.0.1. MLR</li>
+<li>2014-0404 Updated for release of 3.0. TLC</li>
+<li>2014-0131, 2014-0205. Updated. MLR</li>
+<li>2013-1227. First note of OPENMP additions by T. Clune.  MLR.</li>
+<li>2013-1212. Initial draft of Doxygen version. MLR</li>
+<li>2013-1107. Minor edits. MLR</li>
+<li>2013-1031. Added user contributed code for Windows/CYGWIN & IBM's XLF. MLR</li>
+<li>2013-0830-1359. Minor corrections and added MPIF90 to 6.2. MLR</li>
+<li>2013-0806-1345. Corrected git reference. Was using old URL.  MLR</li>
+<li>2013-0805. Initial draft. MLR</li>
+</ul>
+
+*/

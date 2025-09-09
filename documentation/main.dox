@@ -37,6 +37,7 @@ Please refer revisions and comments about the documentation to <a href="mailto:m
 \li \ref page_TODO
 \li \ref page_pFUnitParser
 \li \ref page_RevisionNotes
+\li \ref sec_CmakeIntegration
 
 \section sec_SeeAlso See Also
 
