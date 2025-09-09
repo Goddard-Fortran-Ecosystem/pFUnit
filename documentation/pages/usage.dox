@@ -73,6 +73,19 @@ add_pfunit_ctest (test_something_specific   # Give your test a name
   )
 \endcode
 
+\subsection sec_CmakeIntegrationParallel Enabling MPI parallel testing via CMake
+
+To enable building a parallel pFUnit test with CMake and ctest you must add one extra input into
+the `add_pfunit_ctest` function - `MAX_PES`
+
+\code{cmake}
+add_pfunit_ctest (test_something_specific   # Give your test a name
+  TEST_SOURCES ${specific_test_files}       # Specify the .pf files for this test
+  LINK_LIBRARIES src_lib                    # Link to your src application library
+  MAX_PES <max_number_of_ranks>             # Set the maximum number of allowed MPI ranks for this test
+  )
+\endcode
+
 \section sec_UsageHelloWorld Usage - Hello World
 
 For an example of a simple usage of pFUnit, see Examples/Simple/tests.
