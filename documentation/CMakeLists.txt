@@ -209,7 +209,7 @@ if (${DOXYGEN_FOUND})
 endif ()
 
 if (ENABLE_BUILD_DOXYGEN)
-doxygen_add_docs(docs-internal
+doxygen_add_docs(documentation
   "${CMAKE_SOURCE_DIR}/bin"
   "${CMAKE_SOURCE_DIR}/documentation"
   "${CMAKE_SOURCE_DIR}/Examples"
@@ -217,5 +217,6 @@ doxygen_add_docs(docs-internal
   "${CMAKE_SOURCE_DIR}/include"
   "${CMAKE_SOURCE_DIR}/tests"
   COMMENT "Generate pFUnit Fortran documentation"
+  CONFIG_FILE "${CMAKE_SOURCE_DIR}/documentation/doxygen.conf"
   )
 endif()
