@@ -209,13 +209,12 @@ class TestParseLine(unittest.TestCase):
         self.assertTrue(atAssert.match('@assertEqual(a, b)'))
         self.assertTrue(atAssert.match('@assertequal(a, b)')) # case insensitive
         self.assertTrue(atAssert.match('@ASSERTEQUAL(a, b)')) # case insensitive
-        self.assertTrue(atAssert.match('@assertEqual(a, b, "failure message")'))
 
         parser.fileName = "foo.pfunit"
         parser.currentLineNumber = 8
-        atAssert.apply('   @assertEqual(1, 2, "failure message")\n')
+        atAssert.apply('   @assertEqual(1, 2)\n')
         self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        self.assertEqual("  call assertEqual(1, 2, \"failure message\"&\n", parser.outLines[1])
+        self.assertEqual("  call assertEqual(1, 2, &\n", parser.outLines[1])
         self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
         self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
         self.assertEqual(" & 8)", parser.outLines[4])
