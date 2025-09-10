@@ -31,6 +31,27 @@
 \section sec_AssertPreprocessorDirectivesReference @Assert Preprocessor Directives Reference
 
 \subsection ss_assertEqual @assertEqual
+
+A generic comparison function which allows comparison of expected (a) and actual (b) values
+of various types.
+
+\subsubsection sss_assertEqualReference Reference
+
+Registers a test failure if the inputs are not equal.
+
+\code
+@assertEqual(T expected, T actual)
+@assertEqual(T expected, T actual, character(:) failure_message)
+\endcode
+
+Where T is one of
+
+<ul>
+   <li>integer scalar</li>
+   <li>integer N-Dimensional array</li>
+   <li>character array (string)</li>
+</ul>
+
 \subsection ss_assertTrue @assertTrue
 \subsection ss_assertEqualUserDefined @assertEqualUserDefined
 
