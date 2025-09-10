@@ -1,0 +1,24 @@
+
+/*!
+
+\page page_FeedbackAndSupport Feedback & Support
+
+\li \ref sec_Feedback \li \ref sec_Support
+
+\section sec_Feedback Feedback
+
+Feedback is welcome, please use the facilities at <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues">oddard-Fortran-Ecosystem/pFUnit/issues</a> to share your views.  
+
+Open a <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues/new">issue</a> for bugs, features, and patch recommendations. 
+
+If you use pFUnit, please let us know by leaving a note in our <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a> forum, or email <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., NASA Goddard Space Flight Center.  Letting us know about your application helps us seek support for pFUnit's continued development and improvement.
+
+\section sec_Support Support
+
+Please open a <a href="https://github.com/Goddard-Fortran-Ecosystem/pFUnit/issues/new">issue</a> for bugs, features, and patch recommendations. For longer term needs or considerations, please visit our <a href="https://sourceforge.net/p/pfunit/discussion/?source=navbar">discussion forums</a> or contact <a href="mailto:Thomas.L.Clune@nasa.gov">Tom Clune</a>, Ph.D., NASA Goddard Space Flight Center.
+
+You may also find some help at \ref page_FAQAndTips.
+
+pFUnit supports the software development of several weather and climate simulations efforts.  We constantly seek to improve and correct pFUnit for our users' benefit, granting priority to the needs of our major users.  Please share with us information about your application on our <a href="https://sourceforge.net/p/pfunit/discussion/pfunitinaction/">Applications of pFUnit</a> forum.
+
+*/

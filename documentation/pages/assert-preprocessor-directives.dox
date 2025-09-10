@@ -1,0 +1,124 @@
+
+/*!
+
+\page page_Assert @Assert Preprocessor Directives
+
+<ul>
+   <li>\ref ss_assertEqual</li>
+   <li>\ref ss_assertTrue</li>
+   <li>\ref ss_assertEqualUserDefined</li>
+   <li>\ref ss_assertFalse</li>
+   <li>\ref ss_assertLessThan</li>
+   <li>\ref ss_assertLessThanOrEqual</li>
+   <li>\ref ss_assertGreaterThan</li>
+   <li>\ref ss_assertGreaterThanOrEqual</li>
+   <li>\ref ss_assertIsMemberOf</li>
+   <li>\ref ss_assertContains</li>
+   <li>\ref ss_assertAny</li>
+   <li>\ref ss_assertAll</li>
+   <li>\ref ss_assertNotAll</li>
+   <li>\ref ss_assertNone</li>
+   <li>\ref ss_assertIsPermutationOf</li>
+   <li>\ref ss_assertExceptionRaised</li>
+   <li>\ref ss_assertSameShape</li>
+   <li>\ref ss_assertIsNaN</li>
+   <li>\ref ss_assertIsFinite</li>
+   <li>\ref ss_assertAssociated</li>
+   <li>\ref ss_assertNotAssociated</li>
+   <li>\ref ss_assertEquivalent</li>
+</ul>
+
+\section sec_AssertPreprocessorDirectivesReference @Assert Preprocessor Directives Reference
+
+\subsection ss_assertEqual @assertEqual
+\subsection ss_assertTrue @assertTrue
+\subsection ss_assertEqualUserDefined @assertEqualUserDefined
+
+A convenience function that allows a user to write
+
+\code
+@assertEqualUserDefined(a, b)
+\endcode
+
+instead of 
+
+\code
+call assertTrue(a==b,...)
+\endcode
+
+while a more instructive error message about the arguments and
+source code position is added by the preprocessor.  The user may
+add an error message as follows.
+
+\code
+@assertEqualUserDefined(a,b,message='a and b should be equal here.')
+\endcode
+
+\subsection ss_assertFalse @assertFalse
+\subsection ss_assertLessThan @assertLessThan
+\subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
+\subsection ss_assertGreaterThan @assertGreaterThan
+\subsection ss_assertGreaterThanOrEqual @assertGreaterThanOrEqual
+\subsection ss_assertIsMemberOf @assertIsMemberOf
+\subsection ss_assertContains @assertContains
+\subsection ss_assertAny @assertAny
+\subsection ss_assertAll @assertAll
+\subsection ss_assertNotAll @assertNotAll
+\subsection ss_assertNone @assertNone
+\subsection ss_assertIsPermutationOf @assertIsPermutationOf
+\subsection ss_assertExceptionRaised @assertExceptionRaised
+\subsection ss_assertSameShape @assertSameShape
+\subsection ss_assertIsNaN @assertIsNaN
+\subsection ss_assertIsFinite @assertIsFinite
+\subsection ss_assertAssociated @assertAssociated
+@assertAssociated maps to a call to the logical intrinsic function associated.
+
+\code
+@assertAssociated(a)
+\endcode
+
+becomes
+\code
+call assertTrue(associated(a))
+\endcode
+
+The directive also handles the two-argument pointer-target case.
+
+\code
+@assertAssociated(pointer,target)
+\endcode
+
+becomes
+
+\code
+call assertTrue(associated(pointer,target))
+\endcode
+
+neglecting message and source location information.
+
+A message may be passed as follows.
+
+\code
+@assertAssociated(a,message="A message.")
+\endcode
+
+\code
+@assertAssociated(pointer,target,message="A message.")
+\endcode
+
+\subsection ss_assertNotAssociated @assertNotAssociated
+
+This directive is the same as assertAssociated, except that it maps to assertFalse.  This directive was originally released as assertUnAssociated.
+
+\subsection ss_assertEquivalent @assertEquivalent
+This directive compares two logical values and throws an exception annotated with some useful information.
+We get a special directive for this one because comparing logicals uses the .eqv. infix operator in standard
+Fortran. The arguments a and b below may be 1d arrays.
+\code
+@assertEquivalent(a,b)\endcode
+becomes
+\code
+call assertTrue(a.eqv.b)\endcode
+neglecting the specification of message and source location information.
+
+*/
