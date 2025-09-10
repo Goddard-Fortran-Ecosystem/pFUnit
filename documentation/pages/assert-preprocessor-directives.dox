@@ -32,7 +32,7 @@
 
 \subsection ss_assertEqual @assertEqual
 
-A generic comparison function which allows comparison of expected (a) and actual (b) values
+A generic comparison function which allows comparison of expected and actual values
 of various types.
 
 \subsubsection sss_assertEqualReference Reference
@@ -53,6 +53,19 @@ Where T is one of
 </ul>
 
 \subsection ss_assertTrue @assertTrue
+
+Allows the verification of a logical's state.
+
+\subsubsection sss_assertTrueReference Reference
+
+Registers a test failure if input
+is `.False.`.
+
+\code
+@assertTrue(logical input)
+@assertTrue(logical input, character(:) failure_message)
+\endcode
+
 \subsection ss_assertEqualUserDefined @assertEqualUserDefined
 
 A convenience function that allows a user to write
