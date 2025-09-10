@@ -41,22 +41,31 @@ in a .pf file, i.e. the preprocessor will define the module, one
 can set up a "testSuites.inc" as follows.
 \code
 ! To load "exampleTestsNoModule.pf".
-ADD_TEST_SUITE(exampleTestsNoModule_suite)\endcode
+ADD_TEST_SUITE(exampleTestsNoModule_suite)
+\endcode
+
 For a .pf file that contains a module associated with a test suite the
 syntax is as follows.
+
 \code
 ! To load "exampleTests.pf" implementing the module exampleTests_mod.
-ADD_TEST_SUITE(exampleTests_mod_suite)\endcode
+ADD_TEST_SUITE(exampleTests_mod_suite)
+\endcode
 
 \subsection ss_Invocation Invocation
 
 To run the preprocessor on on a preprocessor input file "exampleTests.pf", invoke:
+
 \code
-$ ${PFUNIT}/bin/funitproc exampleTests.pf exampleTests.F90 \endcode
+$ ${PFUNIT}/bin/funitproc exampleTests.pf exampleTests.F90
+\endcode
+
 A convenient GNUmakefile rule is as follows.
+
 \code
 %.F90: %.pf
-       $(PFUNIT)/bin/funitproc $<  $@ \endcode
+       $(PFUNIT)/bin/funitproc $<  $@
+\endcode
 
 \subsection ss_PreprocessorInput Preprocessor Input File (.pf)
 
@@ -88,14 +97,14 @@ follows.
 </ul>
 
 
-\subsection ss_Directives Directives
+\section ss_Directives Directives
 
 Preprocessor "@" directives, which in keeping with Fortran style are
 not case sensitive, instruct the preprocessor how to interpret parts
 of the code relevant to the generation of the test suite.  The most
 important directives follow.
 
-\subsubsection s3_atTest @Test
+\subsection s3_atTest @Test
 
 This directive is used to indicate a test routine to the preprocessor,
 which then includes it in the test suite.  There may be multiple
@@ -116,10 +125,11 @@ An example, from Examples/Fixture:
    subroutine testInterpolateAtNode(this)
       class (Test_LinearInterpolator), intent(inout) :: this
       @assertEqual(2., this%interpolator%interpolate(at=3.))
-   end subroutine testInterpolateAtNode\endcode
+   end subroutine testInterpolateAtNode
+\endcode
 
 
-\subsubsection s3_atMPITest @MPITest
+\subsection s3_atMPITest @MPITest
 
 \ref s3_atMPITest is deprecated as \@Test now handles this case.
 
@@ -152,16 +162,18 @@ subroutine testHaloInterior(this)
    @assertEqual(real(p), a(1,2))
    @assertEqual(real(p), a(2,2))
 
-end subroutine testHaloInterior\endcode
+end subroutine testHaloInterior
+\endcode
 
-\subsubsection s3_atAssert @Assert
+\subsection s3_atAssert @Assert
 
 The \@Assert directives are expanded into calls to similarly named
 pFUnit library routines.  The syntax for the directives follows the
 pattern for \@assertEqual below.
 
 \code
-@assertEqual(expected,found,'An identifying or explanatory message.')\endcode
+@assertEqual(expected,found,'An identifying or explanatory message.')
+\endcode
 
 The preprocessor will automatically add information about source
 location (file & line number) to the call emitted to the test suite
@@ -195,7 +207,7 @@ For more information about \@assert directives, please refer to the following.
 </ul>
 
 
-\subsubsection s3_atParameters @Parameters
+\subsection s3_atParameters @Parameters
 
 The \@Parameter directive indicates the declaration of the
 parameterized type used to generate the iteration over the multiple
@@ -212,9 +224,10 @@ example:
   type, extends(AbstractTestParameter) :: exampleCase
      integer :: i
      real :: x
-  end type exampleCase\endcode
+  end type exampleCase
+\endcode
 
-\subsubsection s3_atTestCase @TestCase
+\subsection s3_atTestCase @TestCase
 
 This directive identifies to the preprocessor the TestCase
 declaration.  The type declared at this point extends TestCase (or its
@@ -233,6 +246,7 @@ getParameterString.  For example:
      procedure, nopass :: getParameters
      procedure :: getParameterString => getParameterString_
      procedure :: runMethod
-  end type Test_Parameters\endcode
+  end type Test_Parameters
+\endcode
 
 */

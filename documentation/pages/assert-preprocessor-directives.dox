@@ -28,21 +28,31 @@
    <li>\ref ss_assertEquivalent</li>
 </ul>
 
-\section sec_AssertPreprocessorDirectives @Assert Preprocessor Directives
+\section sec_AssertPreprocessorDirectivesReference @Assert Preprocessor Directives Reference
+
 \subsection ss_assertEqual @assertEqual
 \subsection ss_assertTrue @assertTrue
 \subsection ss_assertEqualUserDefined @assertEqualUserDefined
+
 A convenience function that allows a user to write
+
 \code
-@assertEqualUserDefined(a,b)\endcode
+@assertEqualUserDefined(a, b)
+\endcode
+
 instead of 
+
 \code
-call assertTrue(a==b,...)\endcode
+call assertTrue(a==b,...)
+\endcode
+
 while a more instructive error message about the arguments and
 source code position is added by the preprocessor.  The user may
 add an error message as follows.
+
 \code
-@assertEqualUserDefined(a,b,message='a and b should be equal here.')\endcode
+@assertEqualUserDefined(a,b,message='a and b should be equal here.')
+\endcode
 
 \subsection ss_assertFalse @assertFalse
 \subsection ss_assertLessThan @assertLessThan
@@ -62,26 +72,39 @@ add an error message as follows.
 \subsection ss_assertIsFinite @assertIsFinite
 \subsection ss_assertAssociated @assertAssociated
 @assertAssociated maps to a call to the logical intrinsic function associated.
+
 \code
-@assertAssociated(a)\endcode
+@assertAssociated(a)
+\endcode
+
 becomes
 \code
-call assertTrue(associated(a))\endcode
+call assertTrue(associated(a))
+\endcode
 
 The directive also handles the two-argument pointer-target case.
+
 \code
-@assertAssociated(pointer,target)\endcode
+@assertAssociated(pointer,target)
+\endcode
+
 becomes
+
 \code
-call assertTrue(associated(pointer,target))\endcode
+call assertTrue(associated(pointer,target))
+\endcode
+
 neglecting message and source location information.
 
 A message may be passed as follows.
-\code
-@assertAssociated(a,message="A message.")\endcode
 
 \code
-@assertAssociated(pointer,target,message="A message.")\endcode
+@assertAssociated(a,message="A message.")
+\endcode
+
+\code
+@assertAssociated(pointer,target,message="A message.")
+\endcode
 
 \subsection ss_assertNotAssociated @assertNotAssociated
 
