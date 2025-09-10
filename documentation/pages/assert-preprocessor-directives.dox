@@ -37,7 +37,7 @@ of various types.
 
 \subsubsection sss_assertEqualReference Reference
 
-Registers a test failure if the inputs are not equal.
+Registers a test failure if `expected` does not equal `actual`.
 
 \code
 @assertEqual(T expected, T actual)
@@ -58,8 +58,7 @@ Allows the verification of a logical's state.
 
 \subsubsection sss_assertTrueReference Reference
 
-Registers a test failure if input
-is `.False.`.
+Registers a test failure if `input` is `.False.`.
 
 \code
 @assertTrue(logical input)
@@ -89,6 +88,18 @@ add an error message as follows.
 \endcode
 
 \subsection ss_assertFalse @assertFalse
+
+Allows the verification of a logical's state.
+
+\subsubsection sss_assertFalseReference Reference
+
+Registers a test failure if `input` is `.True.`.
+
+\code
+@assertFalse(logical input)
+@assertFalse(logical input, character(:) failure_message)
+\endcode
+
 \subsection ss_assertLessThan @assertLessThan
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
 \subsection ss_assertGreaterThan @assertGreaterThan
