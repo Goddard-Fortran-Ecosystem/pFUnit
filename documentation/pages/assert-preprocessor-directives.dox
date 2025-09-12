@@ -38,68 +38,76 @@ Performs an exact match comparison of expected and actual values of various type
 
 Registers a test failure if `expected` does not equal `actual`.
 
-<strong>Integer scalar comparison</strong>
+<details open>
+   <summary><strong>Integer scalar comparison</strong></summary>
+   \code{fortran}
+   @assertEqual(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
 
-\code{fortran}
-@assertEqual(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
-\endcode
 
-<strong>Integer array comparison</strong>
+<details>
+   <summary><strong>Integer array comparison</strong></summary>
 
-\code{fortran}
-@assertEqual(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT8)    expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT16)   expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT32)   expected(<shape>), INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=INT64)   expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-@assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
-\endcode
+   \code{fortran}
+   @assertEqual(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT8)    expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT16)   expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT32)   expected(<shape>), INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=INT64)   expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertEqual(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+   
+   Where `<shape>` is one of
 
-Where `<shape>` is one of
+   <ul>
+      <li>`(:)`</li>
+      <li>`(:,:)`</li>
+      <li>`(:,:,:)`</li>
+      <li>`(:,:,:,:)`</li>
+      <li>`(:,:,:,:,:)`</li>
+   </ul>
 
-<ul>
-   <li>`(:)`</li>
-   <li>`(:,:)`</li>
-   <li>`(:,:,:)`</li>
-   <li>`(:,:,:,:)`</li>
-   <li>`(:,:,:,:,:)`</li>
-</ul>
+   For scalar to array comparisons, the scalar expected value is converted to an array of shape
+   equal to the actual value before comparison.
 
-For scalar to array comparisons, the scalar expected value is Convert to an array of shape
-equal to the actual value before comparison.
+</details>
 
-<strong>Character Array comparison</strong>
 
-\code{fortran}
-@assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual,    CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
-@assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
-@assertEqual(CHARACTER(len=*) expected(:), CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
-\endcode
+<details>
+   <summary><strong>Character Array comparison</strong></summary>
+   \code{fortran}
+   @assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual,    CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
+   @assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
+   @assertEqual(CHARACTER(len=*) expected(:), CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
+   \endcode
 
-Where `WhitespaceOptions` can be one of
-<ul>
-   <li><strong>IGNORE_DIFFERENCES</strong> ignores whitespace differences (number and value).</li>
-   <li><strong>IGNORE_ALL</strong> strictly ignores all whitespace (spaces & tabs).</li>
-   <li><strong>TRIM_ALL</strong> strictly ignores leading and trailing whitespace.  </li>
-   <li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating between tabs and spaces.</li>
-</ul>
+   Where `WhitespaceOptions` can be one of
+   <ul>
+      <li><strong>IGNORE_DIFFERENCES</strong> ignores whitespace differences (number and value).</li>
+      <li><strong>IGNORE_ALL</strong> strictly ignores all whitespace (spaces & tabs).</li>
+      <li><strong>TRIM_ALL</strong> strictly ignores leading and trailing whitespace.  </li>
+      <li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating between tabs and spaces.</li>
+   </ul>
 
-For the comparison of a 1D expected character array to 2D actual character array, each element
-of the actual array is compared to the expected array.
+   For the comparison of a 1D expected character array to 2D actual character array, each element
+   of the actual array is compared to the expected array.
+   
+</details>
 
 \subsection ss_assertTrue @assertTrue
 
