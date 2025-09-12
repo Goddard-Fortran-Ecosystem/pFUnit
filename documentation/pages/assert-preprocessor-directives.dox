@@ -103,16 +103,18 @@ of the actual array is compared to the expected array.
 
 \subsection ss_assertTrue @assertTrue
 
-Allows the verification of a logical's state.
+Verifies a provided condition is true.
 
 \subsubsection sss_assertTrueReference Reference
 
-Registers a test failure if `input` is `.False.`.
+Registers a test failure if `condition` is `.False.`.
 
 \code
-@assertTrue(logical input)
-@assertTrue(logical input, character(:) failure_message)
+@assertTrue(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
+@assertTrue(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
+
+When verifying an array of logicals, all elements of the condition array must be true.
 
 \subsection ss_assertEqualUserDefined @assertEqualUserDefined
 
