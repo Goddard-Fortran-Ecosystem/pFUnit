@@ -140,16 +140,18 @@ add an error message as follows.
 
 \subsection ss_assertFalse @assertFalse
 
-Allows the verification of a logical's state.
+Verifies a provided condition is false.
 
 \subsubsection sss_assertFalseReference Reference
 
-Registers a test failure if `input` is `.True.`.
+Registers a test failure if `condition` is `.True.`.
 
 \code
-@assertFalse(logical input)
-@assertFalse(logical input, character(:) failure_message)
+@assertFalse(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
+@assertFalse(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
+
+When verifying an array of logicals, all elements of the condition array must be false.
 
 \subsection ss_assertLessThan @assertLessThan
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
