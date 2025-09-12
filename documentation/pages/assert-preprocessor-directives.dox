@@ -109,7 +109,7 @@ Verifies a provided condition is true.
 
 Registers a test failure if `condition` is `.False.`.
 
-\code
+\code{fortran}
 @assertTrue(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
 @assertTrue(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
@@ -120,13 +120,13 @@ When verifying an array of logicals, all elements of the condition array must be
 
 A convenience function that allows a user to write
 
-\code
+\code{fortran}
 @assertEqualUserDefined(a, b)
 \endcode
 
 instead of 
 
-\code
+\code{fortran}
 call assertTrue(a==b,...)
 \endcode
 
@@ -134,7 +134,7 @@ while a more instructive error message about the arguments and
 source code position is added by the preprocessor.  The user may
 add an error message as follows.
 
-\code
+\code{fortran}
 @assertEqualUserDefined(a,b,message='a and b should be equal here.')
 \endcode
 
@@ -146,7 +146,7 @@ Verifies a provided condition is false.
 
 Registers a test failure if `condition` is `.True.`.
 
-\code
+\code{fortran}
 @assertFalse(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
 @assertFalse(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
