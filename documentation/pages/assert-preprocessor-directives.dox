@@ -33,10 +33,7 @@
 \subsection ss_assertEqual @assertEqual
 
 Performs an exact match comparison of expected and actual values of various types.
-
-\subsubsection sss_assertEqualReference Reference
-
-Registers a test failure if `expected` does not equal `actual`.
+Will register a test failure if `expected` does not equal `actual`.
 
 <details open>
    <summary><strong>Integer scalar comparison</strong></summary>
@@ -111,11 +108,7 @@ Registers a test failure if `expected` does not equal `actual`.
 
 \subsection ss_assertTrue @assertTrue
 
-Verifies a provided condition is true.
-
-\subsubsection sss_assertTrueReference Reference
-
-Registers a test failure if `condition` is `.False.`.
+Verifies a provided condition is true. Will register a test failure if `condition` is `.False.`.
 
 \code{fortran}
 @assertTrue(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
@@ -148,11 +141,8 @@ add an error message as follows.
 
 \subsection ss_assertFalse @assertFalse
 
-Verifies a provided condition is false.
-
-\subsubsection sss_assertFalseReference Reference
-
-Registers a test failure if `condition` is `.True.`.
+Verifies a provided condition is false. Will registers a test failure if
+`condition` is `.True.`.
 
 \code{fortran}
 @assertFalse(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
@@ -163,11 +153,8 @@ When verifying an array of logicals, all elements of the condition array must be
 
 \subsection ss_assertLessThan @assertLessThan
 
-Performs a less than comparison of expected and actual values of various types.
-
-\subsubsection ss_assertLessThanReference Reference
-
-Registers a test failure if the `expected` value is more than or equal to the `actual`
+Performs a less than comparison of expected and actual values of various types. Will
+register a test failure if the `expected` value is more than or equal to the `actual`
 value
 
 <details open>
