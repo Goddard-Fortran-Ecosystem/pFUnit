@@ -162,6 +162,153 @@ Registers a test failure if `condition` is `.True.`.
 When verifying an array of logicals, all elements of the condition array must be false.
 
 \subsection ss_assertLessThan @assertLessThan
+
+Performs a less than comparison of expected and actual values of various types.
+
+\subsubsection ss_assertLessThanReference Reference
+
+Registers a test failure if the `expected` value is more than or equal to the `actual`
+value
+
+<details open>
+   <summary><strong>Integer scalar comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual,          CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual,          CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
+<details>
+   <summary><strong>Integer array comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(INTEGER(KIND=INT8)    expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT16)   expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT32)   expected,          INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT64)   expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected,          INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT8)    expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT16)   expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT32)   expected(<shape>), INTEGER(KIND=INT32) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=INT64)   expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT8)  actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT16) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1)) expected(<shape>), INTEGER(KIND=INT64) actual(<shape>), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+
+   Where `<shape>` is one of
+
+   <ul>
+      <li>`(:)`</li>
+      <li>`(:,:)`</li>
+      <li>`(:,:,:)`</li>
+      <li>`(:,:,:,:)`</li>
+      <li>`(:,:,:,:,:)`</li>
+   </ul>
+
+   For scalar to array comparisons, the scalar expected value is converted to an array of shape
+   equal to the actual value before comparison.
+</details>
+
+<details>
+   <summary><strong>Real scalar comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected, REAL(KIND=KIND(1.0))     actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected, REAL(KIND=KIND(1.d0))    actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected, REAL(KIND=KIND(1.d0))    actual, REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected, REAL(KIND=KIND(REAL128)) actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected, REAL(KIND=KIND(REAL128)) actual, REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected, REAL(KIND=KIND(1.d0))    actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected, REAL(KIND=KIND(1.d0))    actual, REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected, REAL(KIND=KIND(REAL128)) actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected, REAL(KIND=KIND(REAL128)) actual, REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
+<details>
+   <summary><strong>Real array comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected,          REAL(KIND=KIND(1.0))     actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected,          REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected,          REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected,          REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected,          REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected,          REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected,          REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected,          REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected,          REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected(<shape>), REAL(KIND=KIND(1.0))     actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected(<shape>), REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected(<shape>), REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected(<shape>), REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.0))     expected(<shape>), REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected(<shape>), REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(1.d0))    expected(<shape>), REAL(KIND=KIND(1.d0))    actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected(<shape>), REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(REAL(KIND=KIND(REAL128)) expected(<shape>), REAL(KIND=KIND(REAL128)) actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   \endcode
+
+   Where `<shape>` is one of
+
+   <ul>
+      <li>`(:)`</li>
+      <li>`(:,:)`</li>
+      <li>`(:,:,:)`</li>
+      <li>`(:,:,:,:)`</li>
+      <li>`(:,:,:,:,:)`</li>
+   </ul>
+
+   For scalar to array comparisons, the scalar expected value is converted to an array of shape
+   equal to the actual value before comparison.
+</details>
+
+<details>
+   <summary><strong>Mixed type scalar comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected, REAL(KIND=(1.0))         actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected, REAL(KIND=(1.d0))        actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected, REAL(KIND=(1.d0))        actual, REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected, REAL(KIND=(REAL128))     actual, REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected, REAL(KIND=(REAL128))     actual, REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
+<details>
+   <summary><strong>Mixed type array comparison</strong></summary>
+   \code{fortran}
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected,          REAL(KIND=(1.0))         actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected,          REAL(KIND=(1.d0))        actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected,          REAL(KIND=(1.d0))        actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected,          REAL(KIND=(REAL128))     actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected,          REAL(KIND=(REAL128))     actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected(<shape>), REAL(KIND=(1.0))         actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected(<shape>), REAL(KIND=(1.d0))        actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected(<shape>), REAL(KIND=(1.d0))        actual(<shape>), REAL(KIND=KIND(1.d0))    OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected(<shape>), REAL(KIND=(REAL128))     actual(<shape>), REAL(KIND=KIND(1.0))     OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER(KIND=KIND(1))    expected(<shape>), REAL(KIND=(REAL128))     actual(<shape>), REAL(KIND=KIND(REAL128)) OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   \endcode
+
+   Where `<shape>` is one of
+
+   <ul>
+      <li>`(:)`</li>
+      <li>`(:,:)`</li>
+      <li>`(:,:,:)`</li>
+      <li>`(:,:,:,:)`</li>
+      <li>`(:,:,:,:,:)`</li>
+   </ul>
+
+   For scalar to array comparisons, the scalar expected value is converted to an array of shape
+   equal to the actual value before comparison.
+</details>
+
+
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
 \subsection ss_assertGreaterThan @assertGreaterThan
 \subsection ss_assertGreaterThanOrEqual @assertGreaterThanOrEqual
