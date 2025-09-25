@@ -102,7 +102,7 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
     target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/include/${test_package_name})
 
     # Define TestSuites
-    target_compile_definitions (${test_package_name} PRIVATE -D_TEST_SUITES="${TEST_SUITE_INC_FILE}")
+    target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${TEST_SUITE_INC_FILE}\>)
 
     # Test utility preprocessing
     set_property ( SOURCE ${PFUNIT_TESTUTILS}

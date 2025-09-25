@@ -97,7 +97,7 @@ function (add_pfunit_ctest test_package_name)
     endif (${should_write_inc_file})
   endif ()
 
-  target_compile_definitions (${test_package_name} PRIVATE -D_TEST_SUITES="${test_suite_inc_file}")
+  target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${test_suite_inc_file}\>)
   target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
   if (PF_TEST_EXTRA_USE)

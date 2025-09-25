@@ -20,10 +20,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-13, macos-14]
-        compiler: [gfortran-12, gfortran-13, gfortran-14]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
+        compiler: [gfortran-12, gfortran-13, gfortran-14, gfortran-15]
         # gfortran-10 and -11 are only on ubuntu-22.04
-        # gfortran-13 and -14 are not on ubuntu-22.04
+        # gfortran-13, -14, and -15 are not on ubuntu-22.04
+        # gfortran-15 is only on macos
         include:
           - os: ubuntu-22.04
             compiler: gfortran-10
@@ -34,6 +35,10 @@ jobs:
             compiler: gfortran-13
           - os: ubuntu-22.04
             compiler: gfortran-14
+          - os: ubuntu-22.04
+            compiler: gfortran-15
+          - os: ubuntu-24.04
+            compiler: gfortran-15
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
