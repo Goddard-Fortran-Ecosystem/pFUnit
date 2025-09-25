@@ -22,10 +22,10 @@
 #   cmake <path-to-source> [<options>]
 #
 # ------------------------------------------------------------------------ #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.11.1
+  VERSION 4.12.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
