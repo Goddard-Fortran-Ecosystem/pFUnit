@@ -5,6 +5,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ### Fixed
 
 - Alter CMake in `add_pfunit_test.cmake` and `add_pfunit_ctest.cmake` to workaround ifx 2025.2 preprocessor bug
@@ -14,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update CMake minimum version to 3.24 to match other GFE repos
 - Remove `macos-13` from CI, add `macos-15`
 - Add `gfortran-15` for macOS CI
+- Change CMake from using `PARENT_SCOPE` to `CACHE INTERNAL` as it seems in some setups using
+  pFUnit via `FetchContent` the former does not work as expected.
+- Update some `COMMENT` lines in functions with double-quotes to avoid warnings
+
 
 ## [4.12.0] - 2025-04-07
 
