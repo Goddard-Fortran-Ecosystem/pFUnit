@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Add an enclosing `<testsuites>` element an xml version/encoding element in the funit xml output. Makes the output readable by more CI systems (Jenkins, GitLab-CI).
 - Update CMake minimum version to 3.24 to match other GFE repos
 - Remove `macos-13` from CI, add `macos-15`
 - Add `gfortran-15` for macOS CI
