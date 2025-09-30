@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update CMake minimum version to 3.24 to match other GFE repos
 - Remove `macos-13` from CI, add `macos-15`
 - Add `gfortran-15` for macOS CI
+- Fix handling of forward/backward slashes in the parser on Windows when using the usual Python Windows release (worked only with Python through MinGW before)
+- Ensure testing returns non-zero value when tests fail or are in error.
 
 ## [4.12.0] - 2025-04-07
 
