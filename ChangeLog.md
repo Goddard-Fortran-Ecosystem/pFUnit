@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Update object library dependency handline (see #495)
 - Alter CMake in `add_pfunit_test.cmake` and `add_pfunit_ctest.cmake` to workaround ifx 2025.2 preprocessor bug
 
 ### Changed
