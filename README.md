@@ -37,14 +37,15 @@ are able to correctly build pFUnit.  The list below is not
 comprehensive, and earlier compilers may work for some user code.
 
 - Fortran compilers:
-  - Intel v18.0.5, v19.0.3
-  - NAG v6.2
-  - GFortran v8.3, v9.2
-- CMake v3.12+
+  - Intel ifort v19.0.3, 2021+
+  - Intel ifx 2025.2.0
+  - NAG v7.2
+  - GFortran v12+
+- CMake v3.24+
 - Python v2.7* or v3.x
 - make (or ninja or ...)
 - Optional
-  - MPI (tested with OpenMPI and iMPI)
+  - MPI (tested with OpenMPI and Intel MPI)
   - OpenMP
   
 Doxygen was used to generate documention for pFUnit 3, but is not being
