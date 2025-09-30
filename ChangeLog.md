@@ -5,8 +5,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.13.0] - 2025-09-30
+
+### Fixed
+
+- Alter CMake in `add_pfunit_test.cmake` and `add_pfunit_ctest.cmake` to workaround ifx 2025.2 preprocessor bug
+
 ### Changed
 
+- Update fArgParse submodule to v1.10.0
+- Update CMake minimum version to 3.24 to match other GFE repos
+- Remove `macos-13` from CI, add `macos-15`
+- Add `gfortran-15` for macOS CI
 - Fix handling of forward/backward slashes in the parser on Windows when using the usual Python Windows release (worked only with Python through MinGW before)
 - Ensure testing returns non-zero value when tests fail or are in error.
 

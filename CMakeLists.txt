@@ -22,10 +22,10 @@
 #   cmake <path-to-source> [<options>]
 #
 # ------------------------------------------------------------------------ #
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.12.0
+  VERSION 4.13.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -146,7 +146,7 @@ endif ()
 
 include(build_submodule)
 # Find fArgParse first so that gFTL and gFTL-shared are consistent
-build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse VERSION 1.8.0)
+build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse VERSION 1.10.0)
 
 add_subdirectory (src)
 add_subdirectory (include)
