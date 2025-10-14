@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.14.0] - 2025-10-14
+
 ### Changed
 
 - Add an enclosing `<testsuites>` element an xml version/encoding element in the funit xml output. Makes the output readable by more CI systems (Jenkins, GitLab-CI).
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updates for CMake versions newer than 3.30.
 - Update NVHPC CI (build only)
 - Fix CMake for LLVM Flang
+- Update object library dependency handling (see #495)
 
 ## [4.13.0] - 2025-09-30
 

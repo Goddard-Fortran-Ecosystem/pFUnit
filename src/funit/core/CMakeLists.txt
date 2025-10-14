@@ -91,6 +91,9 @@ set_funit_target_properties (funit-core)
 # Link libraries and set compile definitions
 funit_target_link_pfunit (funit-core)
 
+# This is for dependency tracking
+target_include_directories(funit-core INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
+
 if (NOT SKIP_ROBUST)
   add_dependencies (funit-core generate_posix_parameters)
   target_include_directories (funit-core PUBLIC
