@@ -18,12 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updates for CMake versions newer than 3.30.
 - Update NVHPC CI (build only)
 - Fix CMake for LLVM Flang
+- Update object library dependency handling (see #495)
 
 ## [4.13.0] - 2025-09-30
 
 ### Fixed
 
-- Update object library dependency handline (see #495)
 - Alter CMake in `add_pfunit_test.cmake` and `add_pfunit_ctest.cmake` to workaround ifx 2025.2 preprocessor bug
 
 ### Changed
