@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add an enclosing `<testsuites>` element an xml version/encoding element in the funit xml output. Makes the output readable by more CI systems (Jenkins, GitLab-CI).
+- Change CMake from using `PARENT_SCOPE` to `CACHE INTERNAL` as it seems in some setups using
+  pFUnit via `FetchContent` the former does not work as expected.
+- Update some `COMMENT` lines in functions with double-quotes to avoid warnings
 
 ### Fixed
 
