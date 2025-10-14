@@ -63,6 +63,9 @@ end module pFUnit_private
 !
 !-------------------------------------------------------------------------------
 module pFUnit
+
+   use, intrinsic :: iso_fortran_env, only : error_unit
+
    ! Rename overlapping entities to avoid name conflicts
    ! Cannot use ONLY, because the list will change over time.
    use FUnit, funit_initialize => initialize
@@ -88,7 +91,10 @@ contains
       integer :: error
 
       call mpi_init(error)
-      if (error /= MPI_SUCCESS) stop
+      if (error /= MPI_SUCCESS) then
+         write( error_unit, '("MPI failed to initialise")' )
+         stop 1
+      end if
 
       call funit_initialize(extra_initialize)
 

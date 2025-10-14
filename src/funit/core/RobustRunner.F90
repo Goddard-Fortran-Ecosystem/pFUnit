@@ -23,6 +23,9 @@
 !
 !-------------------------------------------------------------------------------
 module PF_RobustRunner
+
+   use, intrinsic :: iso_fortran_env, only : error_unit
+
    use PF_Test
    use PF_TestCase
    use PF_BaseTestRunner
@@ -164,7 +167,9 @@ contains
       class is (TestCase)
          call testCases%push_back(aTest)
       class default
-         stop
+         write( error_unit, &
+                '("Unexpected child passed to RobustRunner%runWithResult")' )
+         stop 1
       end select
 
       needs_launch = .true.

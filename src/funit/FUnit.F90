@@ -168,7 +168,11 @@ contains
 #if defined(PGI)
          call exit(-1)
 #else
-         stop '*** Encountered 1 or more failures/errors during testing. ***'
+         write( &
+            output_unit, &
+            '("*** Encountered 1 or more failures/errors during testing ***")' &
+         )
+         stop 2
 #endif
       end if
 
@@ -180,7 +184,7 @@ contains
 
       if (use_mpi) then
          print*,'Cannot use MPI - need to link with pFUnit not FUnit.'
-         stop
+         stop 1
       end if
       context = SerialContext()
    end function get_context
