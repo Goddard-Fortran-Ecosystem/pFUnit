@@ -5,6 +5,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.14.0] - 2025-10-14
+
+### Changed
+
+- Add an enclosing `<testsuites>` element an xml version/encoding element in the funit xml output. Makes the output readable by more CI systems (Jenkins, GitLab-CI).
+- Change CMake from using `PARENT_SCOPE` to `CACHE INTERNAL` as it seems in some setups using
+  pFUnit via `FetchContent` the former does not work as expected.
+- Update some `COMMENT` lines in functions with double-quotes to avoid warnings
+
+### Fixed
+
+- Fix parser on Windows for paths with different drive letters
+- Updates for CMake versions newer than 3.30.
+- Update NVHPC CI (build only)
+- Fix CMake for LLVM Flang
+- Update object library dependency handling (see #495)
+
 ## [4.13.0] - 2025-09-30
 
 ### Fixed

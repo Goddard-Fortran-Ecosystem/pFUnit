@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.13.0
+  VERSION 4.14.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -220,25 +220,25 @@ export(EXPORT PFUNIT
 # Set some variables needed by add_pfunit_test in the parent scope so
 # that the build directory can be used directly
 if (NOT MAIN_PROJECT)
-  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" PARENT_SCOPE)
-  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" PARENT_SCOPE)
-  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
-  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
-  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
+  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" CACHE INTERNAL "")
+  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" CACHE INTERNAL "")
+  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" CACHE INTERNAL "")
+  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" CACHE INTERNAL "")
+  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" CACHE INTERNAL "")
 
   if (BUILD_SHARED_LIBS)
-    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared CACHE INTERNAL "")
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES PFUNIT::pfunit_shared PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit_shared CACHE INTERNAL "")
     else()
-      set(PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::funit_shared CACHE INTERNAL "")
     endif()
   else()
-    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit CACHE INTERNAL "")
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES PFUNIT::pfunit PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit CACHE INTERNAL "")
     else()
-      set(PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::funit CACHE INTERNAL "")
     endif()
   endif()
 

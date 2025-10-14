@@ -97,7 +97,13 @@ function (add_pfunit_ctest test_package_name)
     endif (${should_write_inc_file})
   endif ()
 
-  target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${test_suite_inc_file}\>)
+  # LLVM Flang apparently does not like the <...> syntax for includes?
+  if (CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
+    target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES="${test_suite_inc_file}")
+  else()
+    target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${test_suite_inc_file}\>)
+  endif()
+
   target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
   if (PF_TEST_EXTRA_USE)
