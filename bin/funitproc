@@ -12,6 +12,14 @@ import os.path
 import funit.pFUnitParser
 
 
+def _relpath(p):
+    '''return os.path.relpath if possible (same drive on Windows) and the absolute path otherwise'''
+    try:
+        return os.path.relpath(p)
+    except ValueError:
+        return p
+
+
 def main():
     '''
     Handles command-line arguments and sets up logging. Then invokes the
@@ -43,14 +51,14 @@ def main():
         logger.setLevel(logging.INFO)
 
     logger.info('Processing file %s',
-                os.path.relpath(arguments.pf_filename))
+                _relpath(arguments.pf_filename))
     processor = funit.pFUnitParser.Parser(arguments.pf_filename,
                                           arguments.f90_filename)
     processor.looking_for_test_name = False
     processor.run()
     processor.final()
     logger.info(' ... Done.  Results in %s',
-                os.path.relpath(arguments.f90_filename))
+                _relpath(arguments.f90_filename))
 
 
 if __name__ == '__main__':
