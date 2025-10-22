@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Undo accidental case change in `add_pfunit_test` (introduced in #509) which led to empty `_TEST_SUITES`
+ 
 ## [4.14.0] - 2025-10-14
 
 ### Changed
