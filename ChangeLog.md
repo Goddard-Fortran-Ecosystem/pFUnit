@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+ - Workaround for complex flang use case.  Modified an internal interface so that `load_tests` is now a subroutine. 
+
 ## [4.14.0] - 2025-10-14
 
 ### Changed

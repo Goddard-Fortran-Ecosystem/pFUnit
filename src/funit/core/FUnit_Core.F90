@@ -80,10 +80,10 @@ module FUnit_Core
    public :: LoadTests_interface
 
    abstract interface
-      function LoadTests_interface() result(suite)
+      subroutine LoadTests_interface(suite)
          import TestSuite
-         type (TestSuite) :: suite
-      end function LoadTests_interface
+         type (TestSuite), intent(inout) :: suite
+      end subroutine LoadTests_interface
    end interface
 
    public :: TestAnnotation

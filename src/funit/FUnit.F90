@@ -108,7 +108,9 @@ contains
       end if
          
 
-      suite = load_tests()
+      suite = TestSuite()
+      call load_tests(suite)
+
       option => options%at('filter')
       if (associated(option)) then
          call cast(option, pattern)
