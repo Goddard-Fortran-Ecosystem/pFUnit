@@ -103,9 +103,9 @@ function (add_pfunit_test test_package_name test_sources extra_sources extra_sou
 
     # Define TestSuites
     if (CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
-      target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES="${test_suite_inc_file}")
+      target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES="${TEST_SUITE_INC_FILE}")
     else()
-      target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${test_suite_inc_file}\>)
+      target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${TEST_SUITE_INC_FILE}\>)
     endif()
 
     # Test utility preprocessing
