@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Enable `build-tests` and `tests` targets only if `ENABLE_TESTS` is `ON`.
+
 ## [4.14.0] - 2025-10-14
 
 ### Changed

@@ -25,6 +25,7 @@ jobs:
         # gfortran-10 and -11 are only on ubuntu-22.04
         # gfortran-13, -14, and -15 are not on ubuntu-22.04
         # gfortran-15 is only on macos
+        # gfortran-12 is not on macos
         include:
           - os: ubuntu-22.04
             compiler: gfortran-10
@@ -39,6 +40,10 @@ jobs:
             compiler: gfortran-15
           - os: ubuntu-24.04
             compiler: gfortran-15
+          - os: macos-14
+            compiler: gfortran-12
+          - os: macos-15
+            compiler: gfortran-12
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
