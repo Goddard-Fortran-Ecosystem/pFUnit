@@ -44,6 +44,7 @@ module PF_Assert
    public :: assertLessThan, assertLessThanOrEqual
    public :: assertGreaterThan, assertGreaterThanOrEqual
    public :: assertRelativelyEqual
+   public :: assertApprox
 
    public :: assertIsNan, assertIsFinite
 
