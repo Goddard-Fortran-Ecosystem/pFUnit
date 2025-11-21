@@ -13,13 +13,13 @@
 !!
 !! @date
 !! 21 Mar 2015
-!! 
+!!
 !! @note <A note here.>
 !! <Or starting here...>
 !
 ! REVISION HISTORY:
 !
-! 21 Mar 2015 - Added the prologue for the compliance with Doxygen. 
+! 21 Mar 2015 - Added the prologue for the compliance with Doxygen.
 !
 !-------------------------------------------------------------------------------
 module Test_TestSuite
@@ -215,7 +215,7 @@ contains
 
      filtered_tests = all_tests%filter(NameFilter('a1'))
      call assertEqual(1, filtered_tests%countTestCases())
-     
+
      filtered_tests = all_tests%filter(NameFilter('a'))
      call assertEqual(2, filtered_tests%countTestCases())
 
@@ -223,6 +223,30 @@ contains
      call assertEqual(0, filtered_tests%countTestCases())
 
    end subroutine test_filter_simple
+
+   subroutine test_filter_simple_sub()
+     use pf_NameFilter
+     use pf_TestMethod, only: TestMethod
+     type (TestSuite) :: all_tests
+     type (TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+     call all_tests%addTest(TestMethod('a1',myTestMethod))
+     call all_tests%addTest(TestMethod('a2',myTestMethod))
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('a1'), filtered_tests)
+     call assertEqual(1, filtered_tests%countTestCases())
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('a'), filtered_tests)
+     call assertEqual(2, filtered_tests%countTestCases())
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('b'), filtered_tests)
+     call assertEqual(0, filtered_tests%countTestCases())
+
+   end subroutine test_filter_simple_sub
 
    subroutine test_filter_nested()
      use pf_NameFilter
@@ -252,11 +276,49 @@ contains
 
      filtered_tests = all_tests%filter(NameFilter('sub_A.a2'))
      call assertEqual(1, filtered_tests%countTestCases())
-     
+
      filtered_tests = all_tests%filter(NameFilter('sub_'))
      call assertEqual(5, filtered_tests%countTestCases())
 
    end subroutine test_filter_nested
+
+   subroutine test_filter_nested_sub()
+     use pf_NameFilter
+     use pf_TestMethod, only: TestMethod
+     type(TestSuite) :: all_tests
+     type(TestSuite) :: subsuite
+     type(TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+
+     subsuite = TestSuite('sub_A')
+     call subsuite%addTest(TestMethod('a1',myTestMethod))
+     call subsuite%addTest(TestMethod('a2',myTestMethod))
+     call subsuite%addTest(TestMethod('x',myTestMethod))
+     call all_tests%addTest(subsuite)
+
+     subsuite = TestSuite('sub_B')
+     call subsuite%addTest(TestMethod('b1',myTestMethod))
+     call subsuite%addTest(TestMethod('b2',myTestMethod))
+     call all_tests%addTest(subsuite)
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('sub_A.'), filtered_tests)
+     call assertEqual(3, filtered_tests%countTestCases())
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('sub_A.a'), filtered_tests)
+     call assertEqual(2, filtered_tests%countTestCases())
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('sub_A.a2'), filtered_tests)
+     call assertEqual(1, filtered_tests%countTestCases())
+
+     filtered_tests = TestSuite('filtered')
+     call all_tests%filter_sub(NameFilter('sub_'), filtered_tests)
+     call assertEqual(5, filtered_tests%countTestCases())
+
+   end subroutine test_filter_nested_sub
 
    subroutine myTestMethod()
    end subroutine myTestMethod

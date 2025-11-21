@@ -120,7 +120,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-${{ matrix.compiler }}-${{ matrix.os }}
           path: |
             build/**/*.log
 
@@ -189,7 +189,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-Intel
           path: |
             build/**/*.log
 
@@ -276,7 +276,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: logfiles
+          name: logfiles-Nvidia
           path: |
             build/**/*.log
 
@@ -332,7 +332,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-Flang
           path: |
             build/**/*.log
 
