@@ -176,14 +176,15 @@ contains
     end subroutine getTestCases
 
 
-    recursive function filter(this, a_filter) result(new_suite)
+    recursive subroutine filter(this, a_filter, new_suite) 
       use pf_TestFilter
-      type(TestSuite) :: new_suite
+      type(TestSuite), intent(inout) :: new_suite
       class(TestSuite), intent(in) :: this
       class(TestFilter), intent(in) :: a_filter
 
       type (TestVectorIterator) :: iter
       class(Test), pointer :: t
+      type(TestSuite) :: inner_suite
 
       new_suite = TestSuite(this%name)
       
@@ -193,7 +194,9 @@ contains
 
          select type (t)
          class is (TestSuite)
-            call new_suite%tests%push_back(t%filter(a_filter))
+            inner_suite = TestSuite()
+            call t%filter(a_filter, inner_suite)
+            call new_suite%tests%push_back(inner_suite)
          class default
             if (a_filter%filter(t)) then
                call new_suite%tests%push_back(t)
@@ -202,7 +205,7 @@ contains
          call iter%next()
       end do
 
-    end function filter
+    end subroutine filter
 
 
  end module PF_TestSuite

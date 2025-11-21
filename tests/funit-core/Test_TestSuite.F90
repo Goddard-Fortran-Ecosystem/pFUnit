@@ -213,13 +213,14 @@ contains
      call all_tests%addTest(TestMethod('a1',myTestMethod))
      call all_tests%addTest(TestMethod('a2',myTestMethod))
 
-     filtered_tests = all_tests%filter(NameFilter('a1'))
+     filtered_tests = TestSuite()
+     call all_tests%filter(NameFilter('a1'), filtered_tests)
      call assertEqual(1, filtered_tests%countTestCases())
      
-     filtered_tests = all_tests%filter(NameFilter('a'))
+     call all_tests%filter(NameFilter('a'), filtered_tests)
      call assertEqual(2, filtered_tests%countTestCases())
 
-     filtered_tests = all_tests%filter(NameFilter('b'))
+     call all_tests%filter(NameFilter('b'), filtered_tests)
      call assertEqual(0, filtered_tests%countTestCases())
 
    end subroutine test_filter_simple
@@ -244,16 +245,17 @@ contains
      call subsuite%addTest(TestMethod('b2',myTestMethod))
      call all_tests%addTest(subsuite)
 
-     filtered_tests = all_tests%filter(NameFilter('sub_A.'))
+     filtered_tests = TestSuite()
+     call all_tests%filter(NameFilter('sub_A.'), filtered_tests)
      call assertEqual(3, filtered_tests%countTestCases())
 
-     filtered_tests = all_tests%filter(NameFilter('sub_A.a'))
+     call all_tests%filter(NameFilter('sub_A.a'), filtered_tests)
      call assertEqual(2, filtered_tests%countTestCases())
 
-     filtered_tests = all_tests%filter(NameFilter('sub_A.a2'))
+     call all_tests%filter(NameFilter('sub_A.a2'), filtered_tests)
      call assertEqual(1, filtered_tests%countTestCases())
      
-     filtered_tests = all_tests%filter(NameFilter('sub_'))
+     call all_tests%filter(NameFilter('sub_'), filtered_tests)
      call assertEqual(5, filtered_tests%countTestCases())
 
    end subroutine test_filter_nested
