@@ -41,7 +41,7 @@ contains
       procedure(LoadTests_interface) :: load_tests
       class(ParallelContext), intent(in) :: context
 
-      type (TestSuite), target :: suite
+      type (TestSuite), target :: suite, unfiltered
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
       type(ArgParser), target :: parser
@@ -108,13 +108,16 @@ contains
       end if
 
 
-      suite = TestSuite()
-      call load_tests(suite)
 
       option => options%at('filter')
+      suite = TestSuite()
       if (associated(option)) then
          call cast(option, pattern)
-         call suite%filter_sub(NameFilter(pattern), suite)
+         unfiltered = TestSuite()
+         call load_tests(unfiltered)
+         call unfiltered%filter_sub(NameFilter(pattern), suite)
+      else
+         call load_tests(suite)
       end if
 
       r = runner%run(suite, context)

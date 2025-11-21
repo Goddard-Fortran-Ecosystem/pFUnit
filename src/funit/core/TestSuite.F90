@@ -192,7 +192,7 @@ contains
 
          select type (t)
          class is (TestSuite)
-            inner_suite = TestSuite()
+            inner_suite = TestSuite(t%name)
             call t%filter_sub(a_filter, inner_suite)
             call new_suite%tests%push_back(inner_suite)
          class default
@@ -212,7 +212,6 @@ contains
       class(TestFilter), intent(in) :: a_filter
 
       new_suite = TestSuite(this%name)
-
       call this%filter_sub(a_filter, new_suite)
 
     end function filter
