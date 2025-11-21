@@ -27,7 +27,7 @@ contains
 
    logical function run(load_tests) result(status)
       procedure(LoadTests_interface) :: load_tests
-      
+
       type (SerialContext) :: c
 
       status = generic_run(load_tests, c)
@@ -91,8 +91,8 @@ contains
       case default
          ERROR STOP 'unsupported runner'
       end select
-         
-      
+
+
       option => options%at('debug')
       if (associated(option)) then
          call cast(option, debug)
@@ -106,7 +106,7 @@ contains
             call runner%add_listener(TapListener(tap_file))
          end if
       end if
-         
+
 
       suite = TestSuite()
       call load_tests(suite)
@@ -114,9 +114,9 @@ contains
       option => options%at('filter')
       if (associated(option)) then
          call cast(option, pattern)
-         suite = suite%filter(NameFilter(pattern))
+         call suite%filter_sub(NameFilter(pattern), suite)
       end if
-      
+
       r = runner%run(suite, context)
       status = r%wasSuccessful()
 
@@ -155,7 +155,7 @@ contains
 #endif
       end subroutine set_command_line_options
    end function generic_run
-   
+
 
    subroutine finalize(extra, successful)
 #ifdef NAG
