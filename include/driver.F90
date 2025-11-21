@@ -36,7 +36,6 @@ contains
 #undef ADD_TEST_SUITE
 #undef ADDULE_TEST_SUITE
 
-
 #define ADD_TEST_SUITE(s) call suite%addTest(s())
 #define ADDULE_TEST_SUITE(m,s) call suite%addTest(s())
 #  include _TEST_SUITES
