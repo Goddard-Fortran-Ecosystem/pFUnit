@@ -114,7 +114,7 @@ contains
       option => options%at('filter')
       if (associated(option)) then
          call cast(option, pattern)
-         suite = suite%filter(NameFilter(pattern))
+         call suite%filter(NameFilter(pattern), suite)
       end if
       
       r = runner%run(suite, context)

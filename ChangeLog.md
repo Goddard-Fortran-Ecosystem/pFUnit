@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Extend workaround for complex flang use case to include driver.F90
+- Workaround for intel v2021/2. Modified TestSuite::filter to be a subroutine to prevent implicit copying of the test suite. 
 - Workaround for complex flang use case.  Modified an internal interface so that `load_tests` is now a subroutine. 
 - Remove `gfortran-12` from macos CI tests
 
