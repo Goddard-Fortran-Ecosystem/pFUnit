@@ -283,6 +283,16 @@ call assertSameShape(INTEGER expected(:), INTEGER actual(:), CHARACTER(len=*) OP
 \endcode
 
 \subsection ss_assertIsNaN @assertIsNaN
+
+> Not impelemented as a preprocessor assertion but available as a subroutine.
+
+Verifies if a provided real `value` is Not-a-Number (NaN). Will register a test failure if
+`value` is NaN.
+
+\code
+call assertIsNaN(REAL value, CHARACTER(len=*) OPTIONAL message)
+\endcode
+
 \subsection ss_assertIsFinite @assertIsFinite
 \subsection ss_assertAssociated @assertAssociated
 @assertAssociated maps to a call to the logical intrinsic function associated.
