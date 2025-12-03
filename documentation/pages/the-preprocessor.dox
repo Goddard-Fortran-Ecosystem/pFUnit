@@ -179,33 +179,7 @@ The preprocessor will automatically add information about source
 location (file & line number) to the call emitted to the test suite
 code.  It also adds the check for exceptions.
 
-For more information about \@assert directives, please refer to the following.
-
-<ul>
-   <li>\ref ss_assertEqual</li>
-   <li>\ref ss_assertTrue</li>
-   <li>\ref ss_assertEqualUserDefined</li>
-   <li>\ref ss_assertFalse</li>
-   <li>\ref ss_assertLessThan</li>
-   <li>\ref ss_assertLessThanOrEqual</li>
-   <li>\ref ss_assertGreaterThan</li>
-   <li>\ref ss_assertGreaterThanOrEqual</li>
-   <li>\ref ss_assertIsMemberOf</li>
-   <li>\ref ss_assertContains</li>
-   <li>\ref ss_assertAny</li>
-   <li>\ref ss_assertAll</li>
-   <li>\ref ss_assertNotAll</li>
-   <li>\ref ss_assertNone</li>
-   <li>\ref ss_assertIsPermutationOf</li>
-   <li>\ref ss_assertExceptionRaised</li>
-   <li>\ref ss_assertSameShape</li>
-   <li>\ref ss_assertIsNaN</li>
-   <li>\ref ss_assertIsFinite</li>
-   <li>\ref ss_assertAssociated</li>
-   <li>\ref ss_assertNotAssociated</li>
-   <li>\ref ss_assertEquivalent</li>
-</ul>
-
+For more information about \@assert directives, please refer to the \ref page_Assert.
 
 \subsection s3_atParameters @Parameters
 
