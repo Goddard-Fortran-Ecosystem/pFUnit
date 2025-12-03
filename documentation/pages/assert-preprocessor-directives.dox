@@ -191,6 +191,28 @@ Will register a test failure if `expected` is less than or equal to `actual`.
 </details>
 
 \subsection ss_assertGreaterThanOrEqual @assertGreaterThanOrEqual
+
+Performs a greater than or equal comparison of expected and actual values of real and integer types.
+Will register a test failure if `expected` is less than `actual`.
+
+<details open>
+   <summary><strong>Integer comparison</strong></summary>
+   \code
+   @assertGreaterThanOrEqual(INTEGER expected,    INTEGER actual,    CHARACTER(len=*) OPTIONAL message)
+   @assertGreaterThanOrEqual(INTEGER expected,    INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
+   @assertGreaterThanOrEqual(INTEGER expected(*), INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
+<details open>
+   <summary><strong>Real comparison</strong></summary>
+   \code
+   @assertGreaterThanOrEqual(REAL expected,    REAL actual,    CHARACTER(len=*) OPTIONAL message)
+   @assertGreaterThanOrEqual(REAL expected,    REAL actual(*), CHARACTER(len=*) OPTIONAL message)
+   @assertGreaterThanOrEqual(REAL expected(*), REAL actual(*), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
 \subsection ss_assertIsMemberOf @assertIsMemberOf
 \subsection ss_assertContains @assertContains
 \subsection ss_assertAny @assertAny
