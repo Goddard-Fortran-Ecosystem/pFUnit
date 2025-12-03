@@ -221,7 +221,7 @@ Will register a test failure if `expected` is less than `actual`.
 
 > Not currently implemented
 
-\subsection ss_assertAny @assertAny
+\subsection ss_assertAny assertAny
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
@@ -232,7 +232,7 @@ if all elements of `conditions` are `.false.`.
 call assertAny(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
 
-\subsection ss_assertAll @assertAll
+\subsection ss_assertAll assertAll
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
@@ -243,7 +243,7 @@ if any element of `conditions` is `.false.`.
 call assertAll(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
 
-\subsection ss_assertNotAll @assertNotAll
+\subsection ss_assertNotAll assertNotAll
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
@@ -254,7 +254,7 @@ a test failure if all element of `conditions` are `.true.`.
 call assertNotAll(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
 
-\subsection ss_assertNone @assertNone
+\subsection ss_assertNone assertNone
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
@@ -270,7 +270,7 @@ call assertNone(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
 > Not currently implemented
 
 \subsection ss_assertExceptionRaised @assertExceptionRaised
-\subsection ss_assertSameShape @assertSameShape
+\subsection ss_assertSameShape assertSameShape
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
@@ -282,7 +282,7 @@ not exactly match the `actual` shape.
 call assertSameShape(INTEGER expected(:), INTEGER actual(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
 
-\subsection ss_assertIsNaN @assertIsNaN
+\subsection ss_assertIsNaN assertIsNaN
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
 
