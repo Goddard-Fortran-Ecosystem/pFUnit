@@ -4,6 +4,7 @@
 \page page_Assert Assertion Reference
 
 <ul>
+<li></li> \ref ss_customfailuremessages
    <li>
       \ref sec_AssertPreprocessorDirectivesReference
       <ul>
@@ -39,7 +40,18 @@
 </ul>
 
 > Note that for all assertions in which a scalar is compared with an array, the scalar expected
-> value is converted to an array of shape equal to the actual value before comparison.
+value is converted to an array of shape equal to the actual value before comparison.
+
+\section ss_customfailuremessages Custom Failure Messages
+
+For each assert preprocessor directive documented below, an instructive error message about
+the arguments and source code position is added by the preprocessor. However, for both
+directives and subroutines, the user may add an error message as follows (using \ref ss_assertEqual
+as an example).
+
+\code
+@assertEqual(a,b,message='a and b should be equal here.')
+\endcode
 
 \section sec_AssertPreprocessorDirectivesReference Assert Preprocessor Directives Reference
 
