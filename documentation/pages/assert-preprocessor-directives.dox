@@ -145,6 +145,28 @@ value
 
 
 \subsection ss_assertLessThanOrEqual @assertLessThanOrEqual
+
+Performs a less than or equal comparison of expected and actual values of real and integer types.
+Will register a test failure if `expected` is more than `actual`.
+
+<details open>
+   <summary><strong>Integer comparison</strong></summary>
+   \code
+   @assertLessThanOrEqual(INTEGER expected,    INTEGER actual,    CHARACTER(len=*) OPTIONAL message)
+   @assertLessThanOrEqual(INTEGER expected,    INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThanOrEqual(INTEGER expected(*), INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
+<details open>
+   <summary><strong>Real comparison</strong></summary>
+   \code
+   @assertLessThanOrEqual(REAL expected,    REAL actual,    CHARACTER(len=*) OPTIONAL message)
+   @assertLessThanOrEqual(REAL expected,    REAL actual(*), CHARACTER(len=*) OPTIONAL message)
+   @assertLessThanOrEqual(REAL expected(*), REAL actual(*), CHARACTER(len=*) OPTIONAL message)
+   \endcode
+</details>
+
 \subsection ss_assertGreaterThan @assertGreaterThan
 \subsection ss_assertGreaterThanOrEqual @assertGreaterThanOrEqual
 \subsection ss_assertIsMemberOf @assertIsMemberOf
