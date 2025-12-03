@@ -216,9 +216,49 @@ Will register a test failure if `expected` is less than `actual`.
 \subsection ss_assertIsMemberOf @assertIsMemberOf
 \subsection ss_assertContains @assertContains
 \subsection ss_assertAny @assertAny
+
+> Not impelemented as a preprocessor assertion but available as a subroutine.
+
+Verifies an array of conditions contains at least one `.true.`. Will register a test failure
+if all elements of `conditions` are `.false.`. 
+
+\code
+call assertAny(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
+\endcode
+
 \subsection ss_assertAll @assertAll
+
+> Not impelemented as a preprocessor assertion but available as a subroutine.
+
+Verifies every element of an array of conditions are `.true.`. Will register a test failure
+if any element of `conditions` is `.false.`. 
+
+\code
+call assertAll(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
+\endcode
+
 \subsection ss_assertNotAll @assertNotAll
+
+> Not impelemented as a preprocessor assertion but available as a subroutine.
+
+Verifies that an array of conditions does not solely contain values of `.true.`. Will register
+a test failure if all element of `conditions` are `.true.`. 
+
+\code
+call assertNotAll(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
+\endcode
+
 \subsection ss_assertNone @assertNone
+
+> Not impelemented as a preprocessor assertion but available as a subroutine.
+
+Verifies that an array of conditions does not contain `.true.` values. Will register
+a test failure if any element of `conditions` is `.true.`. 
+
+\code
+call assertNone(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
+\endcode
+
 \subsection ss_assertIsPermutationOf @assertIsPermutationOf
 \subsection ss_assertExceptionRaised @assertExceptionRaised
 \subsection ss_assertSameShape @assertSameShape
