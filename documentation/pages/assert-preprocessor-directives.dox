@@ -214,7 +214,13 @@ Will register a test failure if `expected` is less than `actual`.
 </details>
 
 \subsection ss_assertIsMemberOf @assertIsMemberOf
+
+> Not currently implemented
+
 \subsection ss_assertContains @assertContains
+
+> Not currently implemented
+
 \subsection ss_assertAny @assertAny
 
 > Not impelemented as a preprocessor assertion but available as a subroutine.
@@ -260,6 +266,9 @@ call assertNone(LOGICAL conditions(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
 
 \subsection ss_assertIsPermutationOf @assertIsPermutationOf
+
+> Not currently implemented
+
 \subsection ss_assertExceptionRaised @assertExceptionRaised
 \subsection ss_assertSameShape @assertSameShape
 \subsection ss_assertIsNaN @assertIsNaN
