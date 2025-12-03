@@ -39,17 +39,9 @@ Performs an exact match comparison of expected and actual values of various type
 Will register a test failure if `expected` does not equal `actual`.
 
 <details open>
-   <summary><strong>Integer scalar comparison</strong></summary>
-   \code{fortran}
-   @assertEqual(INTEGER  expected,  INTEGER actual,  CHARACTER(len=*) OPTIONAL message)
-   \endcode
-</details>
-
-
-<details>
-   <summary><strong>Integer array comparison</strong></summary>
-
-   \code{fortran}
+   <summary><strong>Integer comparison</strong></summary>
+   \code
+   @assertEqual(INTEGER  expected,    INTEGER actual,      CHARACTER(len=*) OPTIONAL message)
    @assertEqual(INTEGER  expected,    INTEGER  actual(*),  CHARACTER(len=*) OPTIONAL message)
    @assertEqual(INTEGER  expected(*), INTEGER  actual(*),  CHARACTER(len=*) OPTIONAL message)
    \endcode
@@ -58,7 +50,7 @@ Will register a test failure if `expected` does not equal `actual`.
 
 <details>
    <summary><strong>Character Array comparison</strong></summary>
-   \code{fortran}
+   \code
    @assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual,    CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
    @assertEqual(CHARACTER(len=*) expected,    CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
    @assertEqual(CHARACTER(len=*) expected(:), CHARACTER(len=*) actual(:), CHARACTER(len=*) OPTIONAL message, TYPE(WhitespaceOptions) OPTIONAL whitespace)
@@ -77,7 +69,7 @@ Will register a test failure if `expected` does not equal `actual`.
 
 Verifies a provided condition is true. Will register a test failure if `condition` is `.False.`.
 
-\code{fortran}
+\code
 @assertTrue(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
 @assertTrue(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
@@ -88,13 +80,13 @@ When verifying an array of logicals, all elements of the condition array must be
 
 A convenience function that allows a user to write
 
-\code{fortran}
+\code
 @assertEqualUserDefined(a, b)
 \endcode
 
 instead of 
 
-\code{fortran}
+\code
 call assertTrue(a==b,...)
 \endcode
 
@@ -102,7 +94,7 @@ while a more instructive error message about the arguments and
 source code position is added by the preprocessor.  The user may
 add an error message as follows.
 
-\code{fortran}
+\code
 @assertEqualUserDefined(a,b,message='a and b should be equal here.')
 \endcode
 
@@ -111,7 +103,7 @@ add an error message as follows.
 Verifies a provided condition is false. Will registers a test failure if
 `condition` is `.True.`.
 
-\code{fortran}
+\code
 @assertFalse(LOGICAL condition,    CHARACTER(len=*) OPTIONAL message)
 @assertFalse(LOGICAL condition(:), CHARACTER(len=*) OPTIONAL message)
 \endcode
@@ -125,47 +117,29 @@ register a test failure if the `expected` value is more than or equal to the `ac
 value
 
 <details open>
-   <summary><strong>Integer scalar comparison</strong></summary>
-   \code{fortran}
-   @assertLessThan(INTEGER expected, INTEGER actual, CHARACTER(len=*) OPTIONAL message)
-   \endcode
-</details>
-
-<details>
-   <summary><strong>Integer array comparison</strong></summary>
-   \code{fortran}
+   <summary><strong>Integer comparison</strong></summary>
+   \code
+   @assertLessThan(INTEGER expected,    INTEGER actual,    CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(INTEGER expected,    INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(INTEGER expected(*), INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
    \endcode
 </details>
 
 <details>
-   <summary><strong>Real scalar comparison</strong></summary>
-   \code{fortran}
-   @assertLessThan(REAL expected, REAL actual, REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
-   \endcode
-</details>
-
-<details>
-   <summary><strong>Real array comparison</strong></summary>
-   \code{fortran}
+   <summary><strong>Real comparison</strong></summary>
+   \code
+   @assertLessThan(REAL expected,    REAL actual,    REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(REAL expected,    REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(REAL expected(*), REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    \endcode
 </details>
 
 <details>
-   <summary><strong>Mixed type scalar comparison</strong></summary>
-   \code{fortran}
-   @assertLessThan(INTEGER expected, REAL actual, REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
-   \endcode
-</details>
-
-<details>
-   <summary><strong>Mixed type array comparison</strong></summary>
-   \code{fortran}
-   @assertLessThan(INTEGER expected,          REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
-   @assertLessThan(INTEGER expected(<shape>), REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   <summary><strong>Mixed type comparison</strong></summary>
+   \code
+   @assertLessThan(INTEGER expected,    REAL actual,    REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER expected,    REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
+   @assertLessThan(INTEGER expected(*), REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    \endcode
 </details>
 
