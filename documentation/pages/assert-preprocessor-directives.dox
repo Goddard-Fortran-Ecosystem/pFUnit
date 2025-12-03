@@ -30,6 +30,9 @@
 
 \section sec_AssertPreprocessorDirectivesReference @Assert Preprocessor Directives Reference
 
+> Note that for all assertions in which a scalar is compared with an array, the scalar expected
+> value is converted to an array of shape equal to the actual value before comparison.
+
 \subsection ss_assertEqual @assertEqual
 
 Performs an exact match comparison of expected and actual values of various types.
@@ -50,10 +53,6 @@ Will register a test failure if `expected` does not equal `actual`.
    @assertEqual(INTEGER  expected,    INTEGER  actual(*),  CHARACTER(len=*) OPTIONAL message)
    @assertEqual(INTEGER  expected(*), INTEGER  actual(*),  CHARACTER(len=*) OPTIONAL message)
    \endcode
-   
-   For scalar to array comparisons, the scalar expected value is converted to an array of shape
-   equal to the actual value before comparison.
-
 </details>
 
 
@@ -72,10 +71,6 @@ Will register a test failure if `expected` does not equal `actual`.
       <li><strong>TRIM_ALL</strong> strictly ignores leading and trailing whitespace.  </li>
       <li><strong>KEEP_ALL</strong> keeps all whitespace as significant, even discriminating between tabs and spaces.</li>
    </ul>
-
-   For the comparison of a 1D expected character array to 2D actual character array, each element
-   of the actual array is compared to the expected array.
-   
 </details>
 
 \subsection ss_assertTrue @assertTrue
@@ -142,9 +137,6 @@ value
    @assertLessThan(INTEGER expected,    INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(INTEGER expected(*), INTEGER actual(*), CHARACTER(len=*) OPTIONAL message)
    \endcode
-
-   For scalar to array comparisons, the scalar expected value is converted to an array of shape
-   equal to the actual value before comparison.
 </details>
 
 <details>
@@ -160,9 +152,6 @@ value
    @assertLessThan(REAL expected,    REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(REAL expected(*), REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    \endcode
-
-   For scalar to array comparisons, the scalar expected value is converted to an array of shape
-   equal to the actual value before comparison.
 </details>
 
 <details>
@@ -178,9 +167,6 @@ value
    @assertLessThan(INTEGER expected,          REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    @assertLessThan(INTEGER expected(<shape>), REAL actual(*), REAL OPTIONAL tolerance, CHARACTER(len=*) OPTIONAL message)
    \endcode
-
-   For scalar to array comparisons, the scalar expected value is converted to an array of shape
-   equal to the actual value before comparison.
 </details>
 
 
