@@ -266,10 +266,10 @@ jobs:
               cmake --build build --parallel 4
 
               echo "== Build Tests (CURRENTLY TURNED OFF DUE TO PFUNIT ISSUES) =="
-              #cmake --build build --parallel 4 --target build-tests
+              cmake --build build --parallel 4 --target build-tests
 
               echo "== Run Tests (CURRENTLY TURNED OFF DUE TO PFUNIT ISSUES) =="
-              #ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
+              ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
             '
 
       - name: Archive log files on failure
