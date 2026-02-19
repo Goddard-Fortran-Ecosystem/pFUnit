@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix CMake build system to properly track test file dependencies (issue #380)
+- Fix `add_pfunit_ctest` to properly track test file dependencies (issue #380)
   - Adding new `.pf` files to `TEST_SOURCES` now triggers automatic rebuild without `make clean`
   - Test suite registry (`.inc` file) generation moved from configure-time to build-time
   - Added build-time dependency tracking between `.pf` files and generated registry
