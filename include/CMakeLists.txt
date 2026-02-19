@@ -38,7 +38,7 @@ file_compile_configuration()
 # Perform the install.
 #
 install(
-  FILES driver.F90 driver.F90.in add_pfunit_sources.cmake add_pfunit_ctest.cmake add_pfunit_test.cmake
+  FILES driver.F90 driver.F90.in add_pfunit_sources.cmake add_pfunit_ctest.cmake add_pfunit_test.cmake generate_test_suite_inc.cmake
   DESTINATION ${dest}/include
   )
 

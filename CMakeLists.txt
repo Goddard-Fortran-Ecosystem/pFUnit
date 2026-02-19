@@ -247,3 +247,16 @@ if (NOT MAIN_PROJECT)
   include(add_pfunit_test)
   include(add_pfunit_ctest)
 endif()
+
+# https://www.scivision.dev/cmake-auto-gitignore-build-dir/
+# --- auto-ignore build directory
+if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
+  file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+endif()
+
+# Piggyback that file into install
+install(
+   FILES ${PROJECT_BINARY_DIR}/.gitignore
+   DESTINATION ${CMAKE_INSTALL_PREFIX}
+   )
+
