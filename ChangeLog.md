@@ -5,6 +5,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Advanced test filtering with regex and glob patterns (issue #523)
+  - `-f`/`--filter` flag supports POSIX regex on Unix/Linux/macOS, glob patterns on Windows
+  - `-e`/`--exclude` flag for anti-filtering using glob patterns on all platforms
+  - Multiple space-separated patterns supported (OR logic)
+  - New modules: `RegexFilter`, `GlobFilter`, and C wrapper for POSIX regex
+  - Backward compatible with existing simple substring filtering
+
 ### Changed
 
 - Minor cleanup to CI

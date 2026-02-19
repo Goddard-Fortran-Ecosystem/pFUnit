@@ -50,9 +50,19 @@ set(srcs
 
   TestFilter.F90
   NameFilter.F90
+  GlobFilter.F90
   FUnit_Core.F90
   get_errno.c
   )
+
+# Add regex support for Unix/Linux/macOS only
+if(NOT WIN32)
+  list(APPEND srcs
+    regex_F.c
+    regex_module.F90
+    RegexFilter.F90
+  )
+endif()
 
 # Support for RobustRunner
 if (NOT SKIP_ROBUST)

@@ -37,6 +37,7 @@ set(pf_tests
 #  Test_AssertRelativelyEqual_Real.pf
   Test_Norms.pf
   Test_GlobPattern.pf
+  Test_GlobFilter.pf
   Test_LiteralPattern.pf
   Test_DotPattern.pf
   Test_RepeatPattern.pf
@@ -45,6 +46,11 @@ set(pf_tests
   Test_RegularExpression.pf
   Test_TestMethod_before.pf
   Test_Long_Subroutine_Name.pf)
+
+# Add regex filter tests for non-Windows platforms
+if(NOT WIN32)
+  list(APPEND pf_tests Test_RegexFilter.pf)
+endif()
 
 set (new_test_srcs)
 set (test_srcs
@@ -121,6 +127,22 @@ add_dependencies(build-tests new_tests.x)
 set_property (TEST old_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
+
+# Command-line filtering tests
+add_pfunit_ctest (filter_cmdline_tests.x
+  TEST_SOURCES FilterCommandLineTests.pf
+  LINK_LIBRARIES other_shared
+)
+add_dependencies(build-tests filter_cmdline_tests.x)
+
+add_test(NAME command_line_filtering
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_command_line_filtering.sh 
+          ${CMAKE_CURRENT_BINARY_DIR}/filter_cmdline_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+set_tests_properties(command_line_filtering PROPERTIES
+  DEPENDS filter_cmdline_tests.x
+)
 
 
 
