@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Minor cleanup to CI
 - Turned off NVHPC CI test as it seems the image is too large for Github Actions.  Will investigate further and re-enable when possible.
+- Removed some unneeded debugging prints in `pFUnitParser.py`
 
 ### Fixed
 

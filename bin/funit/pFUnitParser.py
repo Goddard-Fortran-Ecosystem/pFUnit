@@ -163,7 +163,6 @@ class AtTest(Action):
 
             matchType = re.match(r'.*type\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
             if matchType:
-                print ('Type', matchType.groups()[0])
                 self.parser.current_method['type'] = matchType.groups()[0]
 
             paramOption = re.search(r'testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
@@ -349,9 +348,6 @@ class AtAssertAssociated(Action):
         # args = parseArgsFirstRest('@assertassociated',line)
         args = parseArgsFirstSecondRest('@assertassociated',line)
 
-        # print(9000,line)
-        # print(9001,args)
-        
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*',args[1],re.IGNORECASE):
@@ -411,9 +407,6 @@ class AtAssertNotAssociated(Action):
         #ok args = parseArgsFirstSecondRest('@assertassociated',line)
         args = parseArgsFirstSecondRest(self.name,line)
 
-        # print(9000,line)
-        # print(9001,args)
-        
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
             if re.match('.*message=.*',args[1],re.IGNORECASE):
@@ -626,7 +619,6 @@ class AtDisable(Action):
         return m
 
     def action(self, m, line):
-        print("Processing disable:")
         self.parser.current_method['disable'] = True
         self.parser.commentLine(line)
                 
