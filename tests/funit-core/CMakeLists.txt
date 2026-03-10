@@ -68,6 +68,7 @@ set (test_srcs
   Test_TestResult.F90
   Test_XmlPrinter.F90
   Test_TestSuite.F90
+  Test_TestSuite_Shuffle.F90
   )
 
 if (OPENMP_FORTRAN_FOUND)
@@ -142,6 +143,22 @@ add_test(NAME command_line_filtering
 )
 set_tests_properties(command_line_filtering PROPERTIES
   DEPENDS filter_cmdline_tests.x
+)
+
+# Shuffle integration tests
+add_pfunit_ctest (shuffle_int_tests.x
+  TEST_SOURCES ShuffleIntegrationTests.pf
+  LINK_LIBRARIES other_shared
+)
+add_dependencies(build-tests shuffle_int_tests.x)
+
+add_test(NAME shuffle_integration
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_shuffle.sh
+          ${CMAKE_CURRENT_BINARY_DIR}/shuffle_int_tests.x
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+set_tests_properties(shuffle_integration PROPERTIES
+  DEPENDS shuffle_int_tests.x
 )
 
 

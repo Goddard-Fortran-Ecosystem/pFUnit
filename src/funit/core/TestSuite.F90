@@ -37,6 +37,8 @@ module PF_TestSuite
 !!$      private
       character(:), allocatable  :: name
       type (TestVector) :: tests
+      logical :: shuffle_enabled = .false.
+      integer :: shuffle_seed = 0
    contains
       procedure :: getName
       procedure :: setName
@@ -49,6 +51,8 @@ module PF_TestSuite
       procedure :: getTestCases
       procedure :: filter
       procedure :: filter_sub
+      procedure :: set_shuffle
+      procedure :: shuffle_tests
    end type TestSuite
 
    interface TestSuite
@@ -77,6 +81,8 @@ contains
 
       this%name = b%name
       this%tests = b%tests
+      this%shuffle_enabled = b%shuffle_enabled
+      this%shuffle_seed = b%shuffle_seed
 
    end subroutine copy
 
@@ -103,6 +109,11 @@ contains
 
       class (Test), pointer :: t
       integer :: i
+
+      ! Shuffle tests if enabled
+      if (this%shuffle_enabled) then
+         call this%shuffle_tests()
+      end if
 
       do i = 1, this%tests%size()
          t => this%tests%at(i)
@@ -215,6 +226,83 @@ contains
       call this%filter_sub(a_filter, new_suite)
 
     end function filter
+
+
+   subroutine set_shuffle(this, seed)
+      class(TestSuite), intent(inout) :: this
+      integer, intent(in) :: seed
+
+      this%shuffle_enabled = .true.
+      this%shuffle_seed = seed
+   end subroutine set_shuffle
+
+
+   subroutine shuffle_tests(this)
+      class(TestSuite), intent(inout) :: this
+      integer :: i, j, n
+      integer, allocatable :: seed_array(:)
+      integer :: seed_size
+      real :: rnd
+      class(Test), allocatable :: temp_test
+      type(TestVector) :: shuffled_tests
+      type(TestReference), allocatable :: temp_array(:)
+
+      n = this%tests%size()
+      if (n <= 1) return
+
+      ! Initialize random seed
+      call random_seed(size=seed_size)
+      allocate(seed_array(seed_size))
+
+      if (this%shuffle_seed == 0) then
+         ! Time-based seed using system_clock
+         call system_clock(seed_array(1))
+         if (seed_size > 1) then
+            ! Fill remaining with derived values
+            do i = 2, seed_size
+               seed_array(i) = seed_array(1) + i * 1000
+            end do
+         end if
+      else
+         ! User-specified seed
+         seed_array(:) = this%shuffle_seed
+      end if
+
+      call random_seed(put=seed_array)
+
+      ! Fisher-Yates shuffle algorithm
+      ! Build shuffled vector by copying tests in random order
+      ! First, copy all tests to temp array for random access
+      allocate(temp_array(n))
+      
+      do i = 1, n
+         allocate(temp_array(i)%pTest, source=this%tests%at(i))
+      end do
+
+      ! Now shuffle using Fisher-Yates
+      do i = n, 2, -1
+         call random_number(rnd)
+         j = int(rnd * i) + 1
+         if (i /= j) then
+            ! Swap temp_array(i) and temp_array(j) using move_alloc
+            call move_alloc(temp_array(i)%pTest, temp_test)
+            call move_alloc(temp_array(j)%pTest, temp_array(i)%pTest)
+            call move_alloc(temp_test, temp_array(j)%pTest)
+         end if
+      end do
+
+      ! Rebuild tests vector in shuffled order
+      shuffled_tests = TestVector()
+      do i = 1, n
+         call shuffled_tests%push_back(temp_array(i)%pTest)
+      end do
+
+      ! Replace original tests with shuffled tests
+      this%tests = shuffled_tests
+
+      deallocate(temp_array)
+      deallocate(seed_array)
+   end subroutine shuffle_tests
 
 
  end module PF_TestSuite

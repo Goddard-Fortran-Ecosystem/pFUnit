@@ -54,6 +54,8 @@ contains
       type(ArgParser), target :: parser
       logical :: debug
       logical :: xml
+      logical :: shuffle
+      integer :: random_seed
       type (StringUnlimitedMap) :: options
       class(*), pointer :: option
       integer :: unit
@@ -131,6 +133,24 @@ contains
       option => options%at('exclude')
       if (associated(option)) then
          call apply_exclude_filters(option, suite, unit)
+      end if
+
+      ! Apply shuffle if requested
+      shuffle = .false.
+      option => options%at('shuffle')
+      if (associated(option)) then
+         call cast(option, shuffle)
+      end if
+
+      random_seed = 0
+      option => options%at('random_seed')
+      if (associated(option)) then
+         call cast(option, random_seed)
+         if (random_seed /= 0) shuffle = .true.  ! Seed implies shuffle
+      end if
+
+      if (shuffle) then
+         call suite%set_shuffle(random_seed)
       end if
 
       r = runner%run(suite, context)
@@ -376,8 +396,15 @@ contains
               & dest='tap_file', action='store', default=0, &
               & help='add a TAP listener and send results to file name')
 
-         call parser%add_argument('-x', '--xml', action='store_true', &
-              & help='print results with XmlPrinter')
+      call parser%add_argument('-x', '--xml', action='store_true', &
+           & help='print results with XmlPrinter')
+
+      call parser%add_argument('--shuffle', action='store_true', &
+           & help='randomize test execution order within each suite')
+
+      call parser%add_argument('--seed', type='integer', &
+           & dest='random_seed', action='store', default=0, &
+           & help='random seed for test shuffling (0=time-based, implies --shuffle)')
 
 #ifndef _GNU
          options = parser%parse_args()

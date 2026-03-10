@@ -1,0 +1,57 @@
+module ShuffleIntegrationTests
+   use FUnit
+   implicit none
+
+contains
+
+   @test
+   subroutine test_01()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_02()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_03()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_04()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_05()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_06()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_07()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_08()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_09()
+      @assertTrue(.true.)
+   end subroutine
+
+   @test
+   subroutine test_10()
+      @assertTrue(.true.)
+   end subroutine
+
+end module ShuffleIntegrationTests
