@@ -249,10 +249,7 @@ contains
       call initialize_random_seed(this%shuffle_seed)
 
       ! Create shuffled index array
-      allocate(indices(n))
-      do i = 1, n
-         indices(i) = i
-      end do
+      indices = [(i, i=1, n)]
       call shuffle_indices(indices)
 
       ! Build new vector in shuffled order
@@ -262,7 +259,6 @@ contains
       end do
 
       this%tests = shuffled_tests
-      deallocate(indices)
    end subroutine shuffle_tests
 
 
@@ -274,17 +270,17 @@ contains
       call random_seed(size=seed_size)
       allocate(seed_array(seed_size))
 
+      seed_array(:) = user_seed
       if (user_seed == 0) then
+         ! Time-based seed - use system clock for first element
+         ! and derive remaining elements to ensure variety
          call system_clock(seed_array(1))
          do i = 2, seed_size
-            seed_array(i) = seed_array(1) + i * 1000
+            seed_array(i) = seed_array(1) + i * 997  ! Prime offset for variety
          end do
-      else
-         seed_array(:) = user_seed
       end if
 
       call random_seed(put=seed_array)
-      deallocate(seed_array)
    end subroutine initialize_random_seed
 
 
