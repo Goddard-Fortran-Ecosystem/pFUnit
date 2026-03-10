@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Test shuffling support to detect hidden test dependencies (issue #530)
+  - `--shuffle` flag to randomize test execution order within each suite
+  - `--seed=N` option to specify random seed for reproducibility (0 uses time-based seed, implies --shuffle)
+  - Fisher-Yates shuffle algorithm implemented in `TestSuite` module
+  - Both unit tests and integration tests included
+
 ## [4.16.0] - 2026-02-23
 
 ### Added
