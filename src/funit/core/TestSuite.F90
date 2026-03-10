@@ -290,11 +290,10 @@ contains
       do i = n, 2, -1
          call random_number(rnd)
          j = int(rnd * i) + 1
-         if (i /= j) then
-            temp = indices(i)
-            indices(i) = indices(j)
-            indices(j) = temp
-         end if
+         if (i == j) cycle
+         temp = indices(i)
+         indices(i) = indices(j)
+         indices(j) = temp
       end do
    end subroutine shuffle_indices
 
