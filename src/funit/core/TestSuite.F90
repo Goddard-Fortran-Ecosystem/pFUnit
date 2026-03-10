@@ -270,13 +270,13 @@ contains
       if (user_seed == 0) then
          ! Use compiler's default random initialization
          call random_seed()
-      else
-         ! Use user-provided seed
-         call random_seed(size=seed_size)
-         allocate(seed_array(seed_size))
-         seed_array(:) = user_seed
-         call random_seed(put=seed_array)
+         return
       end if
+
+      ! Use user-provided seed
+      call random_seed(size=seed_size)
+      seed_array = spread(user_seed, 1, seed_size)
+      call random_seed(put=seed_array)
    end subroutine initialize_random_seed
 
 
