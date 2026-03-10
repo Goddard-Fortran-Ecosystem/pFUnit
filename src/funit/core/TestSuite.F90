@@ -240,8 +240,6 @@ contains
    subroutine shuffle_tests(this)
       class(TestSuite), intent(inout) :: this
       integer :: i, j, n
-      integer, allocatable :: seed_array(:)
-      integer :: seed_size
       real :: rnd
       class(Test), allocatable :: temp_test
       type(TestVector) :: shuffled_tests
@@ -250,45 +248,19 @@ contains
       n = this%tests%size()
       if (n <= 1) return
 
-      ! Initialize random seed
-      call random_seed(size=seed_size)
-      allocate(seed_array(seed_size))
+      call initialize_random_seed(this%shuffle_seed)
 
-      if (this%shuffle_seed == 0) then
-         ! Time-based seed using system_clock
-         call system_clock(seed_array(1))
-         if (seed_size > 1) then
-            ! Fill remaining with derived values
-            do i = 2, seed_size
-               seed_array(i) = seed_array(1) + i * 1000
-            end do
-         end if
-      else
-         ! User-specified seed
-         seed_array(:) = this%shuffle_seed
-      end if
-
-      call random_seed(put=seed_array)
-
-      ! Fisher-Yates shuffle algorithm
-      ! Build shuffled vector by copying tests in random order
-      ! First, copy all tests to temp array for random access
+      ! Copy tests to temp array for random access
       allocate(temp_array(n))
-      
       do i = 1, n
          allocate(temp_array(i)%pTest, source=this%tests%at(i))
       end do
 
-      ! Now shuffle using Fisher-Yates
+      ! Fisher-Yates shuffle
       do i = n, 2, -1
          call random_number(rnd)
          j = int(rnd * i) + 1
-         if (i /= j) then
-            ! Swap temp_array(i) and temp_array(j) using move_alloc
-            call move_alloc(temp_array(i)%pTest, temp_test)
-            call move_alloc(temp_array(j)%pTest, temp_array(i)%pTest)
-            call move_alloc(temp_test, temp_array(j)%pTest)
-         end if
+         if (i /= j) call swap_tests(temp_array(i)%pTest, temp_array(j)%pTest, temp_test)
       end do
 
       ! Rebuild tests vector in shuffled order
@@ -297,12 +269,39 @@ contains
          call shuffled_tests%push_back(temp_array(i)%pTest)
       end do
 
-      ! Replace original tests with shuffled tests
       this%tests = shuffled_tests
-
       deallocate(temp_array)
-      deallocate(seed_array)
    end subroutine shuffle_tests
+
+
+   subroutine initialize_random_seed(user_seed)
+      integer, intent(in) :: user_seed
+      integer, allocatable :: seed_array(:)
+      integer :: seed_size, i
+
+      call random_seed(size=seed_size)
+      allocate(seed_array(seed_size))
+
+      if (user_seed == 0) then
+         call system_clock(seed_array(1))
+         do i = 2, seed_size
+            seed_array(i) = seed_array(1) + i * 1000
+         end do
+      else
+         seed_array(:) = user_seed
+      end if
+
+      call random_seed(put=seed_array)
+      deallocate(seed_array)
+   end subroutine initialize_random_seed
+
+
+   subroutine swap_tests(test_a, test_b, temp)
+      class(Test), allocatable, intent(inout) :: test_a, test_b, temp
+      call move_alloc(test_a, temp)
+      call move_alloc(test_b, test_a)
+      call move_alloc(temp, test_b)
+   end subroutine swap_tests
 
 
  end module PF_TestSuite
