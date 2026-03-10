@@ -265,22 +265,18 @@ contains
    subroutine initialize_random_seed(user_seed)
       integer, intent(in) :: user_seed
       integer, allocatable :: seed_array(:)
-      integer :: seed_size, i
+      integer :: seed_size
 
-      call random_seed(size=seed_size)
-      allocate(seed_array(seed_size))
-
-      seed_array(:) = user_seed
       if (user_seed == 0) then
-         ! Time-based seed - use system clock for first element
-         ! and derive remaining elements to ensure variety
-         call system_clock(seed_array(1))
-         do i = 2, seed_size
-            seed_array(i) = seed_array(1) + i * 997  ! Prime offset for variety
-         end do
+         ! Use compiler's default random initialization
+         call random_seed()
+      else
+         ! Use user-provided seed
+         call random_seed(size=seed_size)
+         allocate(seed_array(seed_size))
+         seed_array(:) = user_seed
+         call random_seed(put=seed_array)
       end if
-
-      call random_seed(put=seed_array)
    end subroutine initialize_random_seed
 
 
