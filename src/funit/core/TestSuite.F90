@@ -239,38 +239,30 @@ contains
 
    subroutine shuffle_tests(this)
       class(TestSuite), intent(inout) :: this
-      integer :: i, j, n
-      real :: rnd
-      class(Test), allocatable :: temp_test
+      integer :: i, n
+      integer, allocatable :: indices(:)
       type(TestVector) :: shuffled_tests
-      type(TestReference), allocatable :: temp_array(:)
 
       n = this%tests%size()
       if (n <= 1) return
 
       call initialize_random_seed(this%shuffle_seed)
 
-      ! Copy tests to temp array for random access
-      allocate(temp_array(n))
+      ! Create shuffled index array
+      allocate(indices(n))
       do i = 1, n
-         allocate(temp_array(i)%pTest, source=this%tests%at(i))
+         indices(i) = i
       end do
+      call shuffle_indices(indices)
 
-      ! Fisher-Yates shuffle
-      do i = n, 2, -1
-         call random_number(rnd)
-         j = int(rnd * i) + 1
-         if (i /= j) call swap_tests(temp_array(i)%pTest, temp_array(j)%pTest, temp_test)
-      end do
-
-      ! Rebuild tests vector in shuffled order
+      ! Build new vector in shuffled order
       shuffled_tests = TestVector()
       do i = 1, n
-         call shuffled_tests%push_back(temp_array(i)%pTest)
+         call shuffled_tests%push_back(this%tests%at(indices(i)))
       end do
 
       this%tests = shuffled_tests
-      deallocate(temp_array)
+      deallocate(indices)
    end subroutine shuffle_tests
 
 
@@ -296,12 +288,23 @@ contains
    end subroutine initialize_random_seed
 
 
-   subroutine swap_tests(test_a, test_b, temp)
-      class(Test), allocatable, intent(inout) :: test_a, test_b, temp
-      call move_alloc(test_a, temp)
-      call move_alloc(test_b, test_a)
-      call move_alloc(temp, test_b)
-   end subroutine swap_tests
+   subroutine shuffle_indices(indices)
+      integer, intent(inout) :: indices(:)
+      integer :: i, j, n, temp
+      real :: rnd
+
+      n = size(indices)
+      ! Fisher-Yates shuffle
+      do i = n, 2, -1
+         call random_number(rnd)
+         j = int(rnd * i) + 1
+         if (i /= j) then
+            temp = indices(i)
+            indices(i) = indices(j)
+            indices(j) = temp
+         end if
+      end do
+   end subroutine shuffle_indices
 
 
  end module PF_TestSuite
