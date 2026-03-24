@@ -33,7 +33,7 @@ class TestParserAssertions(unittest.TestCase):
         parser.currentLineNumber = 8
         atAssert.apply("   @assertEqual(1, 2, \"failure message\")\n")
         self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
-        self.assertEqual("  call assertEqual(1, 2, \"failure message\"&\n", parser.outLines[1])
+        self.assertEqual("  call assertEqual(1, 2, \"failure message\", &\n", parser.outLines[1])
         self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
         self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
         self.assertEqual(" & 8)", parser.outLines[4])
