@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-line continuation support for pFUnit macros (issue #532)
   - Assertion macros (e.g., `@assertEqual`) now support Fortran `&` line continuation
   - Whitespace is preserved exactly as written when joining continued lines
+- Fix documentation generation with Doxygen.
+  - Split single documentation file into pages for easier management.
+  - Add documentation missing for assertions.
+  - Added a failure message to the assertEqual test.
 
 ## [4.16.0] - 2026-02-23
 
