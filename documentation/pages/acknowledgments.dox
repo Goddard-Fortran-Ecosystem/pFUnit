@@ -1,0 +1,18 @@
+
+/*!
+
+\page page_Acknowledgments Acknowledgments
+
+Thanks to the follwing for their review and comments: B. Van Aartsen, T. Clune.
+
+Windows/CYGWIN contributions from E. Lezar.
+
+PGI port contributions from M. Leair (PG Group).
+
+Other acknowledgments:  S.P. Santos (NCAR), M. Hambley (UK Met Office)., J. Krishna (ANL).
+
+The design of pFUnit is strongly influenced by <a href="http://junit.org">JUnit</a>.
+
+Initial pFUnit 2 documentation by Michael Rilee (Rilee Systems Technologies).
+
+*/

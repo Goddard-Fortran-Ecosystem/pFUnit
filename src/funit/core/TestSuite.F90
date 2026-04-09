@@ -37,6 +37,8 @@ module PF_TestSuite
 !!$      private
       character(:), allocatable  :: name
       type (TestVector) :: tests
+      logical :: shuffle_enabled = .false.
+      integer :: shuffle_seed = 0
    contains
       procedure :: getName
       procedure :: setName
@@ -49,6 +51,8 @@ module PF_TestSuite
       procedure :: getTestCases
       procedure :: filter
       procedure :: filter_sub
+      procedure :: set_shuffle
+      procedure :: shuffle_tests
    end type TestSuite
 
    interface TestSuite
@@ -77,6 +81,8 @@ contains
 
       this%name = b%name
       this%tests = b%tests
+      this%shuffle_enabled = b%shuffle_enabled
+      this%shuffle_seed = b%shuffle_seed
 
    end subroutine copy
 
@@ -103,6 +109,11 @@ contains
 
       class (Test), pointer :: t
       integer :: i
+
+      ! Shuffle tests if enabled
+      if (this%shuffle_enabled) then
+         call this%shuffle_tests()
+      end if
 
       do i = 1, this%tests%size()
          t => this%tests%at(i)
@@ -215,6 +226,76 @@ contains
       call this%filter_sub(a_filter, new_suite)
 
     end function filter
+
+
+   subroutine set_shuffle(this, seed)
+      class(TestSuite), intent(inout) :: this
+      integer, intent(in) :: seed
+
+      this%shuffle_enabled = .true.
+      this%shuffle_seed = seed
+   end subroutine set_shuffle
+
+
+   subroutine shuffle_tests(this)
+      class(TestSuite), intent(inout) :: this
+      integer :: i, n
+      integer, allocatable :: indices(:)
+      type(TestVector) :: shuffled_tests
+
+      n = this%tests%size()
+      if (n <= 1) return
+
+      call initialize_random_seed(this%shuffle_seed)
+
+      ! Create shuffled index array
+      indices = [(i, i=1, n)]
+      call shuffle_indices(indices)
+
+      ! Build new vector in shuffled order
+      shuffled_tests = TestVector()
+      do i = 1, n
+         call shuffled_tests%push_back(this%tests%at(indices(i)))
+      end do
+
+      this%tests = shuffled_tests
+   end subroutine shuffle_tests
+
+
+   subroutine initialize_random_seed(user_seed)
+      integer, intent(in) :: user_seed
+      integer, allocatable :: seed_array(:)
+      integer :: seed_size
+
+      if (user_seed == 0) then
+         ! Use compiler's default random initialization
+         call random_seed()
+         return
+      end if
+
+      ! Use user-provided seed
+      call random_seed(size=seed_size)
+      seed_array = spread(user_seed, 1, seed_size)
+      call random_seed(put=seed_array)
+   end subroutine initialize_random_seed
+
+
+   subroutine shuffle_indices(indices)
+      integer, intent(inout) :: indices(:)
+      integer :: i, j, n, temp
+      real :: rnd
+
+      n = size(indices)
+      ! Fisher-Yates shuffle
+      do i = n, 2, -1
+         call random_number(rnd)
+         j = int(rnd * i) + 1
+         if (i == j) cycle
+         temp = indices(i)
+         indices(i) = indices(j)
+         indices(j) = temp
+      end do
+   end subroutine shuffle_indices
 
 
  end module PF_TestSuite

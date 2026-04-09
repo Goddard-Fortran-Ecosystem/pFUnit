@@ -5,9 +5,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.0] - 2026-04-08
+
 ### Changed
 
+- Updated license to Apache-2.0
+  - Renamed and retained old NOSA license as `LICENSE-NOSA` for historical reference
+
+### Added
+
+- Test shuffling support to detect hidden test dependencies (issue #530)
+  - `--shuffle` flag to randomize test execution order within each suite
+  - `--seed=N` option to specify random seed for reproducibility (0 uses time-based seed, implies --shuffle)
+  - Fisher-Yates shuffle algorithm implemented in `TestSuite` module
+  - Both unit tests and integration tests included
+- Multi-line continuation support for pFUnit macros (issue #532)
+  - Assertion macros (e.g., `@assertEqual`) now support Fortran `&` line continuation
+  - Whitespace is preserved exactly as written when joining continued lines
+- Fix documentation generation with Doxygen.
+  - Split single documentation file into pages for easier management.
+  - Add documentation missing for assertions.
+  - Added a failure message to the assertEqual test.
+
+## [4.16.0] - 2026-02-23
+
+### Added
+
+- Advanced test filtering with regex and glob patterns (issue #523)
+  - `-f`/`--filter` flag supports POSIX regex on Unix/Linux/macOS, glob patterns on Windows
+  - `-e`/`--exclude` flag for anti-filtering using glob patterns on all platforms
+  - Multiple space-separated patterns supported (OR logic)
+  - New modules: `RegexFilter`, `GlobFilter`, and C wrapper for POSIX regex
+  - Backward compatible with existing simple substring filtering
+
+### Changed
+
+- Update submodule (fArgParse v1.11.0)
 - Minor cleanup to CI
+- Turned off NVHPC CI test as it seems the image is too large for Github Actions.  Will investigate further and re-enable when possible.
+- Removed some unneeded debugging prints in `pFUnitParser.py`
+
+### Fixed
+
+- Fix `add_pfunit_ctest` to properly track test file dependencies (issue #380)
+  - Adding new `.pf` files to `TEST_SOURCES` now triggers automatic rebuild without `make clean`
+  - Test suite registry (`.inc` file) generation moved from configure-time to build-time
+  - Added build-time dependency tracking between `.pf` files and generated registry
+  - Driver recompilation now triggered automatically when registry changes
+  - New helper script: `include/generate_test_suite_inc.cmake`
 
 ## [4.15.0] - 2025-11-24
 

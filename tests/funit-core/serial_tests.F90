@@ -26,6 +26,7 @@ contains
 
       use Test_TestResult, only: testResultSuite => suite              ! (6)
       use Test_TestSuite, only: testTestSuiteSuite => suite                ! (7)
+      use Test_TestSuite_Shuffle, only: testTestSuiteShuffleSuite => suite ! (7b)
 
       use Test_TestMethod, only: testTestMethodSuite => suite  ! (8)
       use Test_SimpleTestCase, only: testSimpleTestCaseSuite => suite          ! (9)
@@ -56,6 +57,7 @@ contains
 
       ADD(testResultSuite)
       ADD(testTestSuiteSuite)
+      ADD(testTestSuiteShuffleSuite)
 
       ADD(testTestMethodSuite)
       ADD(testSimpleTestCaseSuite)

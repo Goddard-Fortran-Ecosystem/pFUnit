@@ -71,6 +71,14 @@ contains
       call suite%addTest( &
            &   TestMethod('test_filter_nested', &
            &                  test_filter_nested))
+      call suite%addTest( &
+           &   TestMethod('test_glob_filter', &
+           &                  test_glob_filter))
+#ifndef _WIN32
+      call suite%addTest( &
+           &   TestMethod('test_regex_filter', &
+           &                  test_regex_filter))
+#endif
 
    end function suite
 
@@ -319,6 +327,78 @@ contains
      call assertEqual(5, filtered_tests%countTestCases())
 
    end subroutine test_filter_nested_sub
+
+   subroutine test_glob_filter()
+     use pf_GlobFilter
+     use pf_TestMethod, only: TestMethod
+     type(TestSuite) :: all_tests
+     type(TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+     call all_tests%addTest(TestMethod('test_foo',myTestMethod))
+     call all_tests%addTest(TestMethod('test_bar',myTestMethod))
+     call all_tests%addTest(TestMethod('other_test',myTestMethod))
+
+     ! Test wildcard * with specific suite name
+     filtered_tests = all_tests%filter(GlobFilter('all.test_*'))
+     call assertEqual(2, filtered_tests%countTestCases(), 'all.test_* should match 2')
+
+     ! Test wildcard * with wildcard suite
+     filtered_tests = all_tests%filter(GlobFilter('*.test_*'))
+     call assertEqual(2, filtered_tests%countTestCases(), '*.test_* should match 2')
+
+     ! Test wildcard ? with specific suite name
+     filtered_tests = all_tests%filter(GlobFilter('all.test_fo?'))
+     call assertEqual(1, filtered_tests%countTestCases(), 'all.test_fo? should match 1')
+
+     ! Test wildcard ? with wildcard suite
+     filtered_tests = all_tests%filter(GlobFilter('*.test_fo?'))
+     call assertEqual(1, filtered_tests%countTestCases(), '*.test_fo? should match 1')
+
+     ! Test no match
+     filtered_tests = all_tests%filter(GlobFilter('nomatch*'))
+     call assertEqual(0, filtered_tests%countTestCases(), 'nomatch* should match 0')
+
+   end subroutine test_glob_filter
+
+#ifndef _WIN32
+   subroutine test_regex_filter()
+     use pf_RegexFilter
+     use pf_TestMethod, only: TestMethod
+     type(TestSuite) :: all_tests
+     type(TestSuite) :: filtered_tests
+
+     all_tests = TestSuite('all')
+     call all_tests%addTest(TestMethod('test_123',myTestMethod))
+     call all_tests%addTest(TestMethod('test_456',myTestMethod))
+     call all_tests%addTest(TestMethod('test_abc',myTestMethod))
+
+     ! Test regex with digits - specific suite name
+     filtered_tests = all_tests%filter(RegexFilter('all\.test_[0-9]+'))
+     call assertEqual(2, filtered_tests%countTestCases(), 'all\.test_[0-9]+ should match 2')
+
+     ! Test regex with digits - wildcard suite
+     filtered_tests = all_tests%filter(RegexFilter('.*\.test_[0-9]+'))
+     call assertEqual(2, filtered_tests%countTestCases(), '.*\.test_[0-9]+ should match 2')
+
+     ! Test regex anchor - specific suite name
+     filtered_tests = all_tests%filter(RegexFilter('^all\.test_abc$'))
+     call assertEqual(1, filtered_tests%countTestCases(), '^all\.test_abc$ should match 1')
+
+     ! Test regex anchor - wildcard suite
+     filtered_tests = all_tests%filter(RegexFilter('^.*\.test_abc$'))
+     call assertEqual(1, filtered_tests%countTestCases(), '^.*\.test_abc$ should match 1')
+
+     ! Test regex alternation - specific suite name
+     filtered_tests = all_tests%filter(RegexFilter('all\.test_(123|abc)'))
+     call assertEqual(2, filtered_tests%countTestCases(), 'all\.test_(123|abc) should match 2')
+
+     ! Test regex alternation - wildcard suite
+     filtered_tests = all_tests%filter(RegexFilter('.*\.test_(123|abc)'))
+     call assertEqual(2, filtered_tests%countTestCases(), '.*\.test_(123|abc) should match 2')
+
+   end subroutine test_regex_filter
+#endif
 
    subroutine myTestMethod()
    end subroutine myTestMethod

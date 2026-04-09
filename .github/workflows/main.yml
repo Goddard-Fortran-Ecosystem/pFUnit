@@ -197,9 +197,12 @@ jobs:
   #      we have to do some tricks to get it to run in GitHub Actions.
   Nvidia-Build-Only:
     runs-on: ubuntu-24.04
+    # Turned off for now because NVHPC image is too large for free
+    # GitHub Actions runners, but leaving here for when we can run it again
+    if: false
     env:
       FC: nvfortran
-      NVHPC_IMAGE: nvcr.io/nvidia/nvhpc:25.11-devel-cuda13.0-ubuntu24.04
+      NVHPC_IMAGE: nvcr.io/nvidia/nvhpc:26.1-devel-cuda13.1-ubuntu24.04
 
     steps:
       # Reclaim lots of space
@@ -234,8 +237,21 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Pull NVHPC image
-        run: docker pull "$NVHPC_IMAGE"
+      - name: Pull NVHPC image (retry)
+        env:
+          DOCKER_CLIENT_TIMEOUT: 600
+          COMPOSE_HTTP_TIMEOUT: 600
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: docker pull $NVHPC_IMAGE"
+            if docker pull "$NVHPC_IMAGE"; then
+              exit 0
+            fi
+            sleep $((i*20))
+          done
+          echo "Docker pull failed after retries"
+          exit 1
 
       # Run everything inside the NVHPC container
       - name: Build (inside NVHPC)

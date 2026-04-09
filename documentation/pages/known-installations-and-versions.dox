@@ -1,0 +1,14 @@
+
+/*!
+
+\page page_KnownInstallationsAndVersions Known Installations & Versions
+
+master - The current release.
+
+development - The cutting edge of pFUnit development.
+
+mock_services - Experimental support for mocking.
+
+pfunit_2.1.0 - A feature freeze prior to a major upgrade of the preprocessor.
+
+*/

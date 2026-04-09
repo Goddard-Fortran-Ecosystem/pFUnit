@@ -1,0 +1,25 @@
+
+/*!
+
+\page page_PlatformSpecific Platform Specific Notes
+
+\section sec_MacOSX Mac OSX
+
+The MacPorts package management system is a convenient way to install
+and maintain many packages, including gcc which includes gfortran.
+
+\section sec_WindowsCYGWIN Windows/CYGWIN
+
+User contributed code for Windows/CYGWIN has been added, but is
+currently not tested and supported by the pFUnit team. At this
+writing, 2013-1031, serial Examples and MPI are not known to be
+supported.  Please contact us if you wish to either contribute or
+otherwise discuss this port.
+
+\section sec_Intel13 Intel Fortran Version 13: -DINTEL_13
+To make pFUnit work with Intel Fortran Version 13, please ensure that
+<code>-DINTEL_13</code> is passed to the compiler when building or
+using pFUnit. In the build process for pFUnit, this is added to the
+make variables CPPFLAGS and FPPFLAGS.
+
+*/
