@@ -576,6 +576,8 @@ contains
     end if
 
     select type (actual_value)
+    type is (real(kind=REAL32))
+       matches_safely_64 = this%delta(real(actual_value, kind=REAL64)) <= this%tolerance
     type is (real(kind=REAL64))
        matches_safely_64 = this%delta(actual_value) <= this%tolerance
     end select
@@ -779,6 +781,13 @@ contains
     real(kind=REAL64) :: d
 
     select type (actual)
+    type is (real(kind=REAL32))
+       d = this%delta(real(actual, kind=REAL64))
+       call description%append_value(actual)
+       call description%append_text(" has a relative error of ")
+       call description%append_value(d)
+       call description%append_text(" which exceeds the tolerance by ")
+       call description%append_value(d - this%tolerance)
     type is (real(kind=REAL64))
        d = this%delta(actual)
        call description%append_value(actual)
@@ -798,6 +807,8 @@ contains
     _UNUSED_DUMMY(this)
 
     select type (actual)
+    type is (real(kind=REAL32))
+       supported = .true.
     type is (real(kind=REAL64))
        supported = .true.
     class is (ArrayWrapper_1d)
