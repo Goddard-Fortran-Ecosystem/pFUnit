@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extended `near()` and `relatively_near()` Hamcrest matchers to support `REAL64` and array ranks 1–4 (issue #542)
   - New typed matcher types: `IsNear_32`, `IsNear_64`, `IsRelativelyNear_32`, `IsRelativelyNear_64`
   - Tolerance precision matches the expected value's precision
-  - The actual value may be of a different precision (upcast internally)
+  - For arrays, the actual value may be of higher precision than expected (e.g. `real(REAL64)` actual with default-real expected and tolerance), as a convenience to the test writer
+  - For scalars, both precision directions are accepted to preserve backward compatibility
 - Extended `equal_to()` Hamcrest matcher and `assert_that()` to support rank-4 arrays
 
 ## [4.17.1] - 2026-04-09

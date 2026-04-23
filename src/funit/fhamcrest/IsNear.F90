@@ -306,6 +306,8 @@ contains
              select type (av => a%items(i))
              type is (real(kind=REAL32))
                 a_val = av
+             type is (real(kind=REAL64))
+                a_val = real(av, kind=REAL32)
              class default
                 matches_array_1d_32 = .false.
                 return
@@ -349,6 +351,8 @@ contains
                 select type (av => a%items(i,j))
                 type is (real(kind=REAL32))
                    a_val = av
+                type is (real(kind=REAL64))
+                   a_val = real(av, kind=REAL32)
                 class default
                    matches_array_2d_32 = .false.
                    return
@@ -394,6 +398,8 @@ contains
                    select type (av => a%items(i,j,k))
                    type is (real(kind=REAL32))
                       a_val = av
+                   type is (real(kind=REAL64))
+                      a_val = real(av, kind=REAL32)
                    class default
                       matches_array_3d_32 = .false.
                       return
@@ -441,6 +447,8 @@ contains
                       select type (av => a%items(i,j,k,l))
                       type is (real(kind=REAL32))
                          a_val = av
+                      type is (real(kind=REAL64))
+                         a_val = real(av, kind=REAL32)
                       class default
                          matches_array_4d_32 = .false.
                          return
@@ -567,8 +575,6 @@ contains
     end if
 
     select type (actual_value)
-    type is (real(kind=REAL32))
-       matches_safely_64 = abs(real(actual_value, kind=REAL64) - this%value) <= this%tolerance
     type is (real(kind=REAL64))
        matches_safely_64 = abs(actual_value - this%value) <= this%tolerance
     end select
@@ -597,8 +603,6 @@ contains
                 return
              end select
              select type (av => a%items(i))
-             type is (real(kind=REAL32))
-                a_val = real(av, kind=REAL64)
              type is (real(kind=REAL64))
                 a_val = av
              class default
@@ -642,8 +646,6 @@ contains
                    return
                 end select
                 select type (av => a%items(i,j))
-                type is (real(kind=REAL32))
-                   a_val = real(av, kind=REAL64)
                 type is (real(kind=REAL64))
                    a_val = av
                 class default
@@ -689,8 +691,6 @@ contains
                       return
                    end select
                    select type (av => a%items(i,j,k))
-                   type is (real(kind=REAL32))
-                      a_val = real(av, kind=REAL64)
                    type is (real(kind=REAL64))
                       a_val = av
                    class default
@@ -738,8 +738,6 @@ contains
                          return
                       end select
                       select type (av => a%items(i,j,k,l))
-                      type is (real(kind=REAL32))
-                         a_val = real(av, kind=REAL64)
                       type is (real(kind=REAL64))
                          a_val = av
                       class default
@@ -780,13 +778,6 @@ contains
     real(kind=REAL64) :: d
 
     select type (actual)
-    type is (real(kind=REAL32))
-       d = this%delta(real(actual, kind=REAL64))
-       call description%append_value(actual)
-       call description%append_text(" differed by ")
-       call description%append_value(d)
-       call description%append_text(" which exceeds the tolerance by ")
-       call description%append_value(d - this%tolerance)
     type is (real(kind=REAL64))
        d = this%delta(actual)
        call description%append_value(actual)
@@ -806,8 +797,6 @@ contains
     _UNUSED_DUMMY(this)
 
     select type (actual)
-    type is (real(kind=REAL32))
-       supported = .true.
     type is (real(kind=REAL64))
        supported = .true.
     class is (ArrayWrapper_1d)
