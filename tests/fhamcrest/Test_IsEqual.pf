@@ -381,11 +381,51 @@ contains
       @assert_that(int_2D, is(not(equal_to(complex32_array))))
       @assert_that(int_2D, is(not(equal_to(complex64_array))))
 
-      @assert_that(int32_array, is(not(equal_to(int_2D))))
-      @assert_that(int64_array, is(not(equal_to(int_2D))))
-      @assert_that(real32_array, is(not(equal_to(int_2D))))
-      @assert_that(real64_array, is(not(equal_to(int_2D))))
-      @assert_that(complex32_array, is(not(equal_to(int_2D))))
-      @assert_that(complex64_array, is(not(equal_to(int_2D))))
-   end subroutine test_is_equal_array_3d
+       @assert_that(int32_array, is(not(equal_to(int_2D))))
+       @assert_that(int64_array, is(not(equal_to(int_2D))))
+       @assert_that(real32_array, is(not(equal_to(int_2D))))
+       @assert_that(real64_array, is(not(equal_to(int_2D))))
+       @assert_that(complex32_array, is(not(equal_to(int_2D))))
+       @assert_that(complex64_array, is(not(equal_to(int_2D))))
+    end subroutine test_is_equal_array_3d
+
+   @test
+   subroutine test_is_equal_array_4d()
+      integer              :: int32_array(2,2,2,2)
+      integer(kind=INT64)  :: int64_array(2,2,2,2)
+      real(kind=REAL32)    :: real32_array(2,2,2,2)
+      real(kind=REAL64)    :: real64_array(2,2,2,2)
+      complex(kind=REAL32) :: complex32_array(2,2,2,2)
+      complex(kind=REAL64) :: complex64_array(2,2,2,2)
+
+      integer :: int_3D(2,2,2)
+      integer :: i
+
+      int32_array     = reshape([(i, i=1,16)], shape(int32_array))
+      int64_array     = int32_array
+      real32_array    = int32_array
+      real64_array    = int32_array
+      complex32_array = int32_array
+      complex64_array = int32_array
+
+      int_3D = reshape([1, 2, 3, 4, 5, 6, 7, 8], shape(int_3D))
+
+      @assert_that(int32_array, is(equal_to(int32_array)))
+      @assert_that(int64_array, is(equal_to(int64_array)))
+      @assert_that(real32_array, is(equal_to(real32_array)))
+      @assert_that(real64_array, is(equal_to(real64_array)))
+      @assert_that(complex32_array, is(equal_to(complex32_array)))
+      @assert_that(complex64_array, is(equal_to(complex64_array)))
+
+      !! rank mismatch
+      @assert_that(int_3D, is(not(equal_to(int32_array))))
+      @assert_that(int_3D, is(not(equal_to(int64_array))))
+      @assert_that(int_3D, is(not(equal_to(real32_array))))
+      @assert_that(int_3D, is(not(equal_to(real64_array))))
+
+      @assert_that(int32_array, is(not(equal_to(int_3D))))
+      @assert_that(int64_array, is(not(equal_to(int_3D))))
+      @assert_that(real32_array, is(not(equal_to(int_3D))))
+      @assert_that(real64_array, is(not(equal_to(int_3D))))
+   end subroutine test_is_equal_array_4d
 end module Test_IsEqual
