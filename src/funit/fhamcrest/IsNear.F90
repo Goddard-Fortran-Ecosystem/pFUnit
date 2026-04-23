@@ -289,23 +289,28 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, n_items
-    type(IsNear_32) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL32) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_1d)
        n_items = size(expected_items)
        if (size(a%items) == n_items) then
-           do i = 1, n_items
+          do i = 1, n_items
              select type (e => expected_items(i))
              type is (real(kind=REAL32))
-                m = near(e, this%tolerance)
+                e_val = e
              class default
                 matches_array_1d_32 = .false.
                 return
              end select
-             if (.not. m%matches_safely(a%items(i))) then
+             select type (av => a%items(i))
+             type is (real(kind=REAL32))
+                a_val = av
+             class default
+                matches_array_1d_32 = .false.
+                return
+             end select
+             if (abs(a_val - e_val) > this%tolerance) then
                 matches_array_1d_32 = .false.
                 return
              end if
@@ -327,23 +332,28 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j
-    type(IsNear_32) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL32) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_2d)
        if (all(shape(a%items) == shape(expected_items))) then
           do j = 1, size(a%items,2)
-              do i = 1, size(a%items,1)
+             do i = 1, size(a%items,1)
                 select type (e => expected_items(i,j))
                 type is (real(kind=REAL32))
-                   m = near(e, this%tolerance)
+                   e_val = e
                 class default
                    matches_array_2d_32 = .false.
                    return
                 end select
-                if (.not. m%matches_safely(a%items(i,j))) then
+                select type (av => a%items(i,j))
+                type is (real(kind=REAL32))
+                   a_val = av
+                class default
+                   matches_array_2d_32 = .false.
+                   return
+                end select
+                if (abs(a_val - e_val) > this%tolerance) then
                    matches_array_2d_32 = .false.
                    return
                 end if
@@ -366,24 +376,29 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j, k
-    type(IsNear_32) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL32) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_3d)
        if (all(shape(a%items) == shape(expected_items))) then
           do k = 1, size(a%items,3)
              do j = 1, size(a%items,2)
-                 do i = 1, size(a%items,1)
+                do i = 1, size(a%items,1)
                    select type (e => expected_items(i,j,k))
                    type is (real(kind=REAL32))
-                      m = near(e, this%tolerance)
+                      e_val = e
                    class default
                       matches_array_3d_32 = .false.
                       return
                    end select
-                   if (.not. m%matches_safely(a%items(i,j,k))) then
+                   select type (av => a%items(i,j,k))
+                   type is (real(kind=REAL32))
+                      a_val = av
+                   class default
+                      matches_array_3d_32 = .false.
+                      return
+                   end select
+                   if (abs(a_val - e_val) > this%tolerance) then
                       matches_array_3d_32 = .false.
                       return
                    end if
@@ -407,9 +422,7 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j, k, l
-    type(IsNear_32) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL32) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_4d)
@@ -417,15 +430,22 @@ contains
           do l = 1, size(a%items,4)
              do k = 1, size(a%items,3)
                 do j = 1, size(a%items,2)
-                    do i = 1, size(a%items,1)
+                   do i = 1, size(a%items,1)
                       select type (e => expected_items(i,j,k,l))
                       type is (real(kind=REAL32))
-                         m = near(e, this%tolerance)
+                         e_val = e
                       class default
                          matches_array_4d_32 = .false.
                          return
                       end select
-                      if (.not. m%matches_safely(a%items(i,j,k,l))) then
+                      select type (av => a%items(i,j,k,l))
+                      type is (real(kind=REAL32))
+                         a_val = av
+                      class default
+                         matches_array_4d_32 = .false.
+                         return
+                      end select
+                      if (abs(a_val - e_val) > this%tolerance) then
                          matches_array_4d_32 = .false.
                          return
                       end if
@@ -508,10 +528,16 @@ contains
     class(IsNear_32), intent(in) :: this
     class(MatcherDescription), intent(inout) :: description
 
-    call description%append_text("a numeric value within ")
-    call description%append_value(this%tolerance)
-    call description%append_text(" of ")
-    call description%append_value(this%value)
+    if (allocated(this%array_value)) then
+       call description%append_text("an array where each element is within ")
+       call description%append_value(this%tolerance)
+       call description%append_text(" of the expected element")
+    else
+       call description%append_text("a numeric value within ")
+       call description%append_value(this%tolerance)
+       call description%append_text(" of ")
+       call description%append_value(this%value)
+    end if
 
   end subroutine describe_to_32
 
@@ -556,23 +582,30 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, n_items
-    type(IsNear_64) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL64) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_1d)
        n_items = size(expected_items)
        if (size(a%items) == n_items) then
-           do i = 1, n_items
+          do i = 1, n_items
              select type (e => expected_items(i))
              type is (real(kind=REAL64))
-                m = near(e, this%tolerance)
+                e_val = e
              class default
                 matches_array_1d_64 = .false.
                 return
              end select
-             if (.not. m%matches_safely(a%items(i))) then
+             select type (av => a%items(i))
+             type is (real(kind=REAL32))
+                a_val = real(av, kind=REAL64)
+             type is (real(kind=REAL64))
+                a_val = av
+             class default
+                matches_array_1d_64 = .false.
+                return
+             end select
+             if (abs(a_val - e_val) > this%tolerance) then
                 matches_array_1d_64 = .false.
                 return
              end if
@@ -594,23 +627,30 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j
-    type(IsNear_64) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL64) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_2d)
        if (all(shape(a%items) == shape(expected_items))) then
           do j = 1, size(a%items,2)
-              do i = 1, size(a%items,1)
+             do i = 1, size(a%items,1)
                 select type (e => expected_items(i,j))
                 type is (real(kind=REAL64))
-                   m = near(e, this%tolerance)
+                   e_val = e
                 class default
                    matches_array_2d_64 = .false.
                    return
                 end select
-                if (.not. m%matches_safely(a%items(i,j))) then
+                select type (av => a%items(i,j))
+                type is (real(kind=REAL32))
+                   a_val = real(av, kind=REAL64)
+                type is (real(kind=REAL64))
+                   a_val = av
+                class default
+                   matches_array_2d_64 = .false.
+                   return
+                end select
+                if (abs(a_val - e_val) > this%tolerance) then
                    matches_array_2d_64 = .false.
                    return
                 end if
@@ -633,24 +673,31 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j, k
-    type(IsNear_64) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL64) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_3d)
        if (all(shape(a%items) == shape(expected_items))) then
           do k = 1, size(a%items,3)
              do j = 1, size(a%items,2)
-                 do i = 1, size(a%items,1)
+                do i = 1, size(a%items,1)
                    select type (e => expected_items(i,j,k))
                    type is (real(kind=REAL64))
-                      m = near(e, this%tolerance)
+                      e_val = e
                    class default
                       matches_array_3d_64 = .false.
                       return
                    end select
-                   if (.not. m%matches_safely(a%items(i,j,k))) then
+                   select type (av => a%items(i,j,k))
+                   type is (real(kind=REAL32))
+                      a_val = real(av, kind=REAL64)
+                   type is (real(kind=REAL64))
+                      a_val = av
+                   class default
+                      matches_array_3d_64 = .false.
+                      return
+                   end select
+                   if (abs(a_val - e_val) > this%tolerance) then
                       matches_array_3d_64 = .false.
                       return
                    end if
@@ -674,9 +721,7 @@ contains
     class(*), intent(in) :: actual_value
 
     integer :: i, j, k, l
-    type(IsNear_64) :: m
-
-    _UNUSED_DUMMY(this)
+    real(kind=REAL64) :: e_val, a_val
 
     select type (a => actual_value)
     type is (ArrayWrapper_4d)
@@ -684,15 +729,24 @@ contains
           do l = 1, size(a%items,4)
              do k = 1, size(a%items,3)
                 do j = 1, size(a%items,2)
-                    do i = 1, size(a%items,1)
+                   do i = 1, size(a%items,1)
                       select type (e => expected_items(i,j,k,l))
                       type is (real(kind=REAL64))
-                         m = near(e, this%tolerance)
+                         e_val = e
                       class default
                          matches_array_4d_64 = .false.
                          return
                       end select
-                      if (.not. m%matches_safely(a%items(i,j,k,l))) then
+                      select type (av => a%items(i,j,k,l))
+                      type is (real(kind=REAL32))
+                         a_val = real(av, kind=REAL64)
+                      type is (real(kind=REAL64))
+                         a_val = av
+                      class default
+                         matches_array_4d_64 = .false.
+                         return
+                      end select
+                      if (abs(a_val - e_val) > this%tolerance) then
                          matches_array_4d_64 = .false.
                          return
                       end if
@@ -775,10 +829,16 @@ contains
     class(IsNear_64), intent(in) :: this
     class(MatcherDescription), intent(inout) :: description
 
-    call description%append_text("a numeric value within ")
-    call description%append_value(this%tolerance)
-    call description%append_text(" of ")
-    call description%append_value(this%value)
+    if (allocated(this%array_value)) then
+       call description%append_text("an array where each element is within ")
+       call description%append_value(this%tolerance)
+       call description%append_text(" of the expected element")
+    else
+       call description%append_text("a numeric value within ")
+       call description%append_value(this%tolerance)
+       call description%append_text(" of ")
+       call description%append_value(this%value)
+    end if
 
   end subroutine describe_to_64
 
