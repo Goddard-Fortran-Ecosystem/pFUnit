@@ -5,6 +5,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Allow for larger integer value comparisons greater than 20 digits (issue #540)
+  - Previously, a large but valid `_int64` based integer would fail to be written
+    to a string because of being hard coded to only be allocated 20 characters
+  - Now supports up to 45 digits including potential `-` sign matching
+    supported real value digit count
+
 ## [4.17.1] - 2026-04-09
 
 ### Fixed
