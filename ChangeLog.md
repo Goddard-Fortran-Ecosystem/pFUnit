@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Extended `equal_to()` Hamcrest matcher and `assert_that()` to support rank-4 arrays
 
 ### Fixed
+- `@assertExceptionRaised` no longer short-circuits after catching one exception (issue #543)
+  - Previously, the generated code emitted `if (anyExceptions()) return` after every
+    `@assertExceptionRaised`, preventing successive calls from catching additional exceptions
+  - Multiple exceptions can now each be caught with successive `@assertExceptionRaised` directives
 - Allow for larger integer value comparisons greater than 20 digits (issue #540)
   - Previously, a large but valid `_int64` based integer would fail to be written
     to a string because of being hard coded to only be allocated 20 characters
