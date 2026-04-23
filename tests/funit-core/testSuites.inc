@@ -12,6 +12,7 @@
    ADD_TEST_SUITE(Disable_suite)
    ADD_TEST_SUITE(TapListener_suite)
    ADD_TEST_SUITE(ExceptionList_suite)
+   ADD_TEST_SUITE(AssertExceptionRaised_suite)
    ADD_TEST_SUITE(GlobPattern_suite)
    ADD_TEST_SUITE(LiteralPattern_suite)
    ADD_TEST_SUITE(DotPattern_suite)

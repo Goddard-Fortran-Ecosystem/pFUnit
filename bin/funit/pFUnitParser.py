@@ -412,7 +412,11 @@ class AtAssert(Action):
             parser.outputFile, parser.fileName, parser.currentLineNumber
         )
         parser.outputFile.write(" )\n")
-        parser.outputFile.write("  if (anyExceptions()) return\n")
+        # For assertExceptionRaised, do NOT check anyExceptions() after the call.
+        # Multiple exceptions may have been raised and the user should be able to
+        # catch each one with successive @assertExceptionRaised directives.
+        if match.group(1).lower() != "exceptionraised":
+            parser.outputFile.write("  if (anyExceptions()) return\n")
         parser.outputFile.write(
             cppSetLineAndFile(parser.currentLineNumber + 1, parser.fileName)
         )
