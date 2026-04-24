@@ -23,7 +23,8 @@ jobs:
         os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
         compiler: [gfortran-12, gfortran-13, gfortran-14, gfortran-15]
         # gfortran-10 and -11 are only on ubuntu-22.04
-        # gfortran-13, -14, and -15 are not on ubuntu-22.04
+        # gfortran-13 and -14 and -15 are not on ubuntu-22.04
+        # gfortran-12 is not on macos
         # gfortran-15 is only on macos
         include:
           - os: ubuntu-22.04
@@ -39,6 +40,10 @@ jobs:
             compiler: gfortran-15
           - os: ubuntu-24.04
             compiler: gfortran-15
+          - os: macos-14
+            compiler: gfortran-12
+          - os: macos-15
+            compiler: gfortran-12
 
       # fail-fast if set to 'true' here is good for production, but when
       # debugging, set to 'false'. fail-fast means if *any* ci test in the matrix fails
@@ -65,7 +70,7 @@ jobs:
           cmake --version
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
@@ -75,7 +80,7 @@ jobs:
 
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/local/openmpi
           key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
@@ -112,10 +117,10 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-${{ matrix.compiler }}-${{ matrix.os }}
           path: |
             build/**/*.log
 
@@ -129,7 +134,7 @@ jobs:
     name: Intel Fortran
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
@@ -181,62 +186,113 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-Intel
           path: |
             build/**/*.log
 
-  Nvidia:
-    # Nvidia builds do not currently work, so we can exclude if
-    # we are running with schedule or workflow_dispatch
-    if: ${{ github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
-    runs-on: ubuntu-22.04
-    container: nvcr.io/nvidia/nvhpc:24.7-devel-cuda12.5-ubuntu22.04
+  # NOTE: This is weird because the NVHPC image is so large (~8GB) that
+  #      we have to do some tricks to get it to run in GitHub Actions.
+  Nvidia-Build-Only:
+    runs-on: ubuntu-24.04
+    # Turned off for now because NVHPC image is too large for free
+    # GitHub Actions runners, but leaving here for when we can run it again
+    if: false
     env:
       FC: nvfortran
+      NVHPC_IMAGE: nvcr.io/nvidia/nvhpc:26.1-devel-cuda13.1-ubuntu24.04
 
-    name: Nvidia HPC
     steps:
-      - name: Versions
+      # Reclaim lots of space
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+
+      # Move /var/lib/docker onto the larger ephemeral disk (do this before any docker pulls)
+      - name: Maximize build space (move Docker storage)
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 4096
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          build-mount-path: '/var/lib/docker'
+
+      - name: Reset Docker daemon & prune
         run: |
-          ${FC} --version
-          cmake --version
+          sudo systemctl restart docker
+          docker system prune -af || true
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
-      - name: Set all directories as git safe
+      - name: Pull NVHPC image (retry)
+        env:
+          DOCKER_CLIENT_TIMEOUT: 600
+          COMPOSE_HTTP_TIMEOUT: 600
         run: |
-          git config --global --add safe.directory '*'
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: docker pull $NVHPC_IMAGE"
+            if docker pull "$NVHPC_IMAGE"; then
+              exit 0
+            fi
+            sleep $((i*20))
+          done
+          echo "Docker pull failed after retries"
+          exit 1
 
-      - name: Add python-is-python3 package
+      # Run everything inside the NVHPC container
+      - name: Build (inside NVHPC)
         run: |
-          apt-get update
-          apt-get install -y python-is-python3
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -e FC="$FC" \
+            "$NVHPC_IMAGE" \
+            bash -lc '
+              set -euo pipefail
 
-      - name: Configure pFUnit
-        run: cmake -B build -DSKIP_ROBUST=ON -DENABLE_MPI_F08=ON
+              echo "== Versions =="
+              ${FC} --version || true
 
-      - name: Build pfUnit
-        run: cmake --build build --parallel
+              # Base NVHPC images are minimal; install what you need
+              apt-get update
+              DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+                cmake git python-is-python3 ca-certificates pkg-config make
 
-      - name: Build Tests
-        run: |
-          cmake --build build --parallel 4 --target build-tests
-          cmake --build build --parallel 4 --target tests
+              cmake --version
 
-      - name: Run Ctest
-        run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
+              echo "== Git safe.directory =="
+              git config --global --add safe.directory "*"
+
+              echo "== Build pFUnit =="
+              cmake -B build -DSKIP_ROBUST=ON -DENABLE_MPI_F08=ON
+              cmake --build build --parallel 4
+
+              echo "== Build Tests (CURRENTLY TURNED OFF DUE TO PFUNIT ISSUES) =="
+              #cmake --build build --parallel 4 --target build-tests
+
+              echo "== Run Tests (CURRENTLY TURNED OFF DUE TO PFUNIT ISSUES) =="
+              #ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
+            '
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v4
         if: failure()
+        uses: actions/upload-artifact@v6
         with:
-          name: logfiles
+          name: logfiles-Nvidia
           path: |
             build/**/*.log
 
@@ -261,7 +317,7 @@ jobs:
           cmake --version
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
@@ -289,10 +345,10 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
-          name: logfiles
+          name: logfiles-Flang
           path: |
             build/**/*.log
 

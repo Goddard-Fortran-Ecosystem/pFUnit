@@ -5,15 +5,129 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Extended `near()` and `relatively_near()` Hamcrest matchers to support `REAL64` and array ranks 1–4 (issue #542)
+  - New typed matcher types: `IsNear_32`, `IsNear_64`, `IsRelativelyNear_32`, `IsRelativelyNear_64`
+  - Tolerance precision matches the expected value's precision
+  - For arrays, the actual value may be of higher precision than expected (e.g. `real(REAL64)` actual with default-real expected and tolerance), as a convenience to the test writer
+  - For scalars, both precision directions are accepted to preserve backward compatibility
+- Extended `equal_to()` Hamcrest matcher and `assert_that()` to support rank-4 arrays
+
+### Fixed
+- `@assertExceptionRaised` no longer short-circuits after catching one exception (issue #543)
+  - Previously, the generated code emitted `if (anyExceptions()) return` after every
+    `@assertExceptionRaised`, preventing successive calls from catching additional exceptions
+  - Multiple exceptions can now each be caught with successive `@assertExceptionRaised` directives
+- Allow for larger integer value comparisons greater than 20 digits (issue #540)
+  - Previously, a large but valid `_int64` based integer would fail to be written
+    to a string because of being hard coded to only be allocated 20 characters
+  - Now supports up to 45 digits including potential `-` sign matching
+    supported real value digit count
+
+## [4.17.1] - 2026-04-09
+
+### Fixed
+
+- Ordinary Fortran `&` continuation lines are now passed through unchanged (issue #537)
+  - Previously, the preprocessor incorrectly joined all `&`-continued lines, breaking
+    multi-line array constructors and embedding Fortran comments mid-statement
+  - Continuation joining now only applies to pFUnit `@`-directive lines
+
+## [4.17.0] - 2026-04-08
+
+### Changed
+
+- Updated license to Apache-2.0
+  - Renamed and retained old NOSA license as `LICENSE-NOSA` for historical reference
+
+### Added
+
+- Test shuffling support to detect hidden test dependencies (issue #530)
+  - `--shuffle` flag to randomize test execution order within each suite
+  - `--seed=N` option to specify random seed for reproducibility (0 uses time-based seed, implies --shuffle)
+  - Fisher-Yates shuffle algorithm implemented in `TestSuite` module
+  - Both unit tests and integration tests included
+- Multi-line continuation support for pFUnit macros (issue #532)
+  - Assertion macros (e.g., `@assertEqual`) now support Fortran `&` line continuation
+  - Whitespace is preserved exactly as written when joining continued lines
+- Fix documentation generation with Doxygen.
+  - Split single documentation file into pages for easier management.
+  - Add documentation missing for assertions.
+  - Added a failure message to the assertEqual test.
+
+## [4.16.0] - 2026-02-23
+
+### Added
+
+- Advanced test filtering with regex and glob patterns (issue #523)
+  - `-f`/`--filter` flag supports POSIX regex on Unix/Linux/macOS, glob patterns on Windows
+  - `-e`/`--exclude` flag for anti-filtering using glob patterns on all platforms
+  - Multiple space-separated patterns supported (OR logic)
+  - New modules: `RegexFilter`, `GlobFilter`, and C wrapper for POSIX regex
+  - Backward compatible with existing simple substring filtering
+
+### Changed
+
+- Update submodule (fArgParse v1.11.0)
+- Minor cleanup to CI
+- Turned off NVHPC CI test as it seems the image is too large for Github Actions.  Will investigate further and re-enable when possible.
+- Removed some unneeded debugging prints in `pFUnitParser.py`
+
+### Fixed
+
+- Fix `add_pfunit_ctest` to properly track test file dependencies (issue #380)
+  - Adding new `.pf` files to `TEST_SOURCES` now triggers automatic rebuild without `make clean`
+  - Test suite registry (`.inc` file) generation moved from configure-time to build-time
+  - Added build-time dependency tracking between `.pf` files and generated registry
+  - Driver recompilation now triggered automatically when registry changes
+  - New helper script: `include/generate_test_suite_inc.cmake`
+
+## [4.15.0] - 2025-11-24
+
+### Changed
+
+- Workaround for complex flang use case.
+  - Modified an internal interface so that `load_tests` is now a subroutine. 
+  - Also added a subroutine version of `TestSuite::filter()` (called `filter_sub()`
+- Remove `gfortran-12` from macos CI tests
+
+### Fixed
+
+- Undo accidental case change in `add_pfunit_test` (introduced in #509) which led to empty `_TEST_SUITES`
+- Enable `build-tests` and `tests` targets only if `ENABLE_TESTS` is `ON`.
+
+## [4.14.0] - 2025-10-14
+
+### Changed
+
+- Add an enclosing `<testsuites>` element an xml version/encoding element in the funit xml output. Makes the output readable by more CI systems (Jenkins, GitLab-CI).
+- Change CMake from using `PARENT_SCOPE` to `CACHE INTERNAL` as it seems in some setups using
+  pFUnit via `FetchContent` the former does not work as expected.
+- Update some `COMMENT` lines in functions with double-quotes to avoid warnings
+
+### Fixed
+
+- Fix parser on Windows for paths with different drive letters
+- Updates for CMake versions newer than 3.30.
+- Update NVHPC CI (build only)
+- Fix CMake for LLVM Flang
+- Update object library dependency handling (see #495)
+
+## [4.13.0] - 2025-09-30
+
 ### Fixed
 
 - Alter CMake in `add_pfunit_test.cmake` and `add_pfunit_ctest.cmake` to workaround ifx 2025.2 preprocessor bug
 
 ### Changed
 
+- Update fArgParse submodule to v1.10.0
 - Update CMake minimum version to 3.24 to match other GFE repos
 - Remove `macos-13` from CI, add `macos-15`
 - Add `gfortran-15` for macOS CI
+- Fix handling of forward/backward slashes in the parser on Windows when using the usual Python Windows release (worked only with Python through MinGW before)
+- Ensure testing returns non-zero value when tests fail or are in error.
 
 ## [4.12.0] - 2025-04-07
 

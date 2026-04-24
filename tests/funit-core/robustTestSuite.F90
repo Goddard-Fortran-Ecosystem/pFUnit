@@ -78,7 +78,7 @@ contains
    ! This will stop the framework cold.  The robust runner
    ! should detect this - reporting it as an Error.
    subroutine runStops()
-      stop
+      stop 0
    end subroutine runStops
 
    ! This test will hang.  The robust runner

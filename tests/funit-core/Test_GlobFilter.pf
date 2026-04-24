@@ -1,0 +1,143 @@
+module Test_GlobFilter
+   use FUnit
+   use pf_GlobFilter
+   use pf_TestMethod
+   implicit none
+
+   @suite(name='GlobFilter_suite')
+
+contains
+
+   @test
+   subroutine test_exact_match()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = GlobFilter('test_foo')
+      test = TestMethod('test_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test))
+   end subroutine test_exact_match
+
+   @test
+   subroutine test_no_match()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = GlobFilter('test_foo')
+      test = TestMethod('test_bar', dummy_method)
+      
+      @assertFalse(filter%filter(test))
+   end subroutine test_no_match
+
+   @test
+   subroutine test_star_wildcard()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = GlobFilter('test_*')
+      test1 = TestMethod('test_foo', dummy_method)
+      test2 = TestMethod('test_bar_baz', dummy_method)
+      test3 = TestMethod('other_test', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match test_foo')
+      @assertTrue(filter%filter(test2), 'Should match test_bar_baz')
+      @assertFalse(filter%filter(test3), 'Should not match other_test')
+   end subroutine test_star_wildcard
+
+   @test
+   subroutine test_star_middle()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test1, test2
+
+      filter = GlobFilter('test_*_end')
+      test1 = TestMethod('test_middle_end', dummy_method)
+      test2 = TestMethod('test_middle_other', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match with star in middle')
+      @assertFalse(filter%filter(test2), 'Should not match different ending')
+   end subroutine test_star_middle
+
+   @test
+   subroutine test_question_wildcard()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = GlobFilter('test_?_foo')
+      test1 = TestMethod('test_a_foo', dummy_method)
+      test2 = TestMethod('test_X_foo', dummy_method)
+      test3 = TestMethod('test_ab_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match single char a')
+      @assertTrue(filter%filter(test2), 'Should match single char X')
+      @assertFalse(filter%filter(test3), 'Should not match two chars')
+   end subroutine test_question_wildcard
+
+   @test
+   subroutine test_multiple_wildcards()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = GlobFilter('test_*_??_*')
+      test = TestMethod('test_foo_ab_bar', dummy_method)
+      
+      @assertTrue(filter%filter(test))
+   end subroutine test_multiple_wildcards
+
+   @test
+   subroutine test_case_sensitive()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test1, test2
+
+      filter = GlobFilter('Test_Foo')
+      test1 = TestMethod('Test_Foo', dummy_method)
+      test2 = TestMethod('test_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match exact case')
+      @assertFalse(filter%filter(test2), 'Should not match different case')
+   end subroutine test_case_sensitive
+
+   @test
+   subroutine test_with_nested_suite_name()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = GlobFilter('Suite1.Suite2.test_*')
+      test = TestMethod('test_foo', dummy_method)
+      call test%setName('Suite1.Suite2.test_foo')
+      
+      @assertTrue(filter%filter(test))
+   end subroutine test_with_nested_suite_name
+
+   @test
+   subroutine test_wildcard_matches_empty()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = GlobFilter('test*')
+      test = TestMethod('test', dummy_method)
+      
+      @assertTrue(filter%filter(test), 'Star should match zero characters')
+   end subroutine test_wildcard_matches_empty
+
+   @test
+   subroutine test_complex_pattern()
+      type(GlobFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      ! Match test suites from Test_GlobPattern.pf
+      filter = GlobFilter('*issip*ss*')
+      test1 = TestMethod('mississipissippi', dummy_method)
+      test2 = TestMethod('missiSIPpi', dummy_method)
+      test3 = TestMethod('other', dummy_method)
+      
+      @assertTrue(filter%filter(test1))
+      @assertFalse(filter%filter(test2), 'Case sensitive should not match')
+      @assertFalse(filter%filter(test3))
+   end subroutine test_complex_pattern
+
+   subroutine dummy_method()
+      ! Empty dummy method for TestMethod constructor
+   end subroutine dummy_method
+
+end module Test_GlobFilter

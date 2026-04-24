@@ -1,0 +1,153 @@
+#ifndef _WIN32
+module Test_RegexFilter
+   use FUnit
+   use pf_RegexFilter
+   use pf_TestMethod
+   implicit none
+
+   @suite(name='RegexFilter_suite')
+
+contains
+
+   @test
+   subroutine test_exact_match()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = RegexFilter('^test_foo$')
+      test = TestMethod('test_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test))
+   end subroutine test_exact_match
+
+   @test
+   subroutine test_no_match()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test
+
+      filter = RegexFilter('^test_foo$')
+      test = TestMethod('test_bar', dummy_method)
+      
+      @assertFalse(filter%filter(test))
+   end subroutine test_no_match
+
+   @test
+   subroutine test_character_class()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = RegexFilter('test_[0-9]+')
+      test1 = TestMethod('test_123', dummy_method)
+      test2 = TestMethod('test_456', dummy_method)
+      test3 = TestMethod('test_abc', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match test_123')
+      @assertTrue(filter%filter(test2), 'Should match test_456')
+      @assertFalse(filter%filter(test3), 'Should not match test_abc')
+   end subroutine test_character_class
+
+   @test
+   subroutine test_anchors()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = RegexFilter('^test_')
+      test1 = TestMethod('test_foo', dummy_method)
+      test2 = TestMethod('my_test_foo', dummy_method)
+      test3 = TestMethod('test_bar', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match starting with test_')
+      @assertFalse(filter%filter(test2), 'Should not match with prefix')
+      @assertTrue(filter%filter(test3), 'Should match another test_')
+   end subroutine test_anchors
+
+   @test
+   subroutine test_alternation()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = RegexFilter('test_(foo|bar)')
+      test1 = TestMethod('test_foo', dummy_method)
+      test2 = TestMethod('test_bar', dummy_method)
+      test3 = TestMethod('test_baz', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match test_foo')
+      @assertTrue(filter%filter(test2), 'Should match test_bar')
+      @assertFalse(filter%filter(test3), 'Should not match test_baz')
+   end subroutine test_alternation
+
+   @test
+   subroutine test_dot_wildcard()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2
+
+      filter = RegexFilter('test.foo')
+      test1 = TestMethod('test_foo', dummy_method)
+      test2 = TestMethod('testXfoo', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Dot should match underscore')
+      @assertTrue(filter%filter(test2), 'Dot should match X')
+   end subroutine test_dot_wildcard
+
+   @test
+   subroutine test_quantifiers()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = RegexFilter('test_a+b')
+      test1 = TestMethod('test_ab', dummy_method)
+      test2 = TestMethod('test_aaab', dummy_method)
+      test3 = TestMethod('test_b', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match one a')
+      @assertTrue(filter%filter(test2), 'Should match multiple a')
+      @assertFalse(filter%filter(test3), 'Should not match zero a')
+   end subroutine test_quantifiers
+
+   @test
+   subroutine test_case_sensitive()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2
+
+      filter = RegexFilter('Test_Foo')
+      test1 = TestMethod('Test_Foo', dummy_method)
+      test2 = TestMethod('test_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Should match exact case')
+      @assertFalse(filter%filter(test2), 'Should not match different case')
+   end subroutine test_case_sensitive
+
+   @test
+   subroutine test_escaped_dot()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2
+
+      filter = RegexFilter('Suite\.test_foo')
+      test1 = TestMethod('Suite.test_foo', dummy_method)
+      test2 = TestMethod('SuiteXtest_foo', dummy_method)
+      
+      @assertTrue(filter%filter(test1), 'Escaped dot should match literal dot')
+      @assertFalse(filter%filter(test2), 'Escaped dot should not match other chars')
+   end subroutine test_escaped_dot
+
+   @test
+   subroutine test_complex_pattern()
+      type(RegexFilter) :: filter
+      type(TestMethod) :: test1, test2, test3
+
+      filter = RegexFilter('^[A-Z][a-z]+\.[a-z_]+[0-9]*$')
+      test1 = TestMethod('Suite.test_123', dummy_method)
+      test2 = TestMethod('Suite.test_abc', dummy_method)
+      test3 = TestMethod('suite.Test', dummy_method)
+      
+      @assertTrue(filter%filter(test1))
+      @assertTrue(filter%filter(test2))
+      @assertFalse(filter%filter(test3))
+   end subroutine test_complex_pattern
+
+   subroutine dummy_method()
+      ! Empty dummy method for TestMethod constructor
+   end subroutine dummy_method
+
+end module Test_RegexFilter
+#endif

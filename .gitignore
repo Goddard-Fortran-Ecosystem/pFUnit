@@ -15,5 +15,6 @@
 /mpi_pFUnit.x
 /nag
 *.zip
-build/
+/build*/
+/install*/
 Testing/

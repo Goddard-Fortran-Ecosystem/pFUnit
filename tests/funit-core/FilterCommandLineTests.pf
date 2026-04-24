@@ -1,0 +1,37 @@
+module FilterCommandLineTests
+   use FUnit
+   implicit none
+
+contains
+
+   @test
+   subroutine test_alpha_one()
+      @assertTrue(.true.)
+   end subroutine test_alpha_one
+
+   @test
+   subroutine test_alpha_two()
+      @assertTrue(.true.)
+   end subroutine test_alpha_two
+
+   @test
+   subroutine test_beta_one()
+      @assertTrue(.true.)
+   end subroutine test_beta_one
+
+   @test
+   subroutine test_beta_two()
+      @assertTrue(.true.)
+   end subroutine test_beta_two
+
+   @test
+   subroutine other_test()
+      @assertTrue(.true.)
+   end subroutine other_test
+
+   @test
+   subroutine slow_test()
+      @assertTrue(.true.)
+   end subroutine slow_test
+
+end module FilterCommandLineTests

@@ -38,6 +38,9 @@
 ! -----------------------------------------------------------------------
 
 module PF_RemoteRunner
+
+   use, intrinsic :: iso_fortran_env, only : error_unit
+
    use PF_Test
    use PF_BaseTestRunner
    use, intrinsic :: iso_c_binding, only: C_NULL_CHAR
@@ -111,7 +114,9 @@ contains
       class is (TestCase)
          call testCaseList%push_back(aTest)
       class default
-         stop
+         write( error_unit, &
+                '("Unexpected child passsed to RemotetRunner%run")' )
+         stop 1
       end select
 
       result = TestResult()

@@ -51,7 +51,7 @@ function (expand in out rank)
     COMMAND ${Python_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/multirank.py -i ${in} -o ${out} --rank=${rank}
     DEPENDS ${in} ${CMAKE_CURRENT_SOURCE_DIR}/multirank.py
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT Generating ${out}
+    COMMENT "Generating ${out}"
     )
 endfunction()
 

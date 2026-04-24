@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.12.0
+  VERSION 4.17.1
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -146,7 +146,7 @@ endif ()
 
 include(build_submodule)
 # Find fArgParse first so that gFTL and gFTL-shared are consistent
-build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse VERSION 1.8.0)
+build_submodule(extern/fArgParse PROJECT FARGPARSE TARGET FARGPARSE::fargparse VERSION 1.10.0)
 
 add_subdirectory (src)
 add_subdirectory (include)
@@ -156,24 +156,26 @@ if (ENABLE_BUILD_DOXYGEN)
   add_subdirectory(documentation)
 endif()
 
-if (NOT TARGET build-tests)
-  add_custom_target(build-tests)
+if (ENABLE_TESTS)
+  if (NOT TARGET build-tests)
+    add_custom_target(build-tests)
+  endif()
+
+  if (NOT TARGET tests)
+    add_custom_target(tests
+      COMMAND ${CMAKE_CTEST_COMMAND}
+      EXCLUDE_FROM_ALL)
+  endif ()
+  add_dependencies(tests build-tests)
+  add_subdirectory (tests EXCLUDE_FROM_ALL)
+
+  # The following forces tests to be built when using "make ctest" even if some targets
+  # are EXCLUDE_FROM_ALL
+  # From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
+  build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+  string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
+  file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 endif()
-
-if (NOT TARGET tests)
-  add_custom_target(tests
-    COMMAND ${CMAKE_CTEST_COMMAND}
-    EXCLUDE_FROM_ALL)
-endif ()
-add_dependencies(tests build-tests)
-add_subdirectory (tests EXCLUDE_FROM_ALL)
-
-# The following forces tests to be built when using "make ctest" even if some targets
-# are EXCLUDE_FROM_ALL
-# From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
-build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
-string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
-file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 
 # The following is needed for external projects using *nix make when
 # parent project builds pFUnit as a subproject.
@@ -220,28 +222,41 @@ export(EXPORT PFUNIT
 # Set some variables needed by add_pfunit_test in the parent scope so
 # that the build directory can be used directly
 if (NOT MAIN_PROJECT)
-  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" PARENT_SCOPE)
-  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" PARENT_SCOPE)
-  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" PARENT_SCOPE)
-  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" PARENT_SCOPE)
-  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" PARENT_SCOPE)
+  set(PFUNIT_MPI_FOUND "${MPI_Fortran_FOUND}" CACHE INTERNAL "")
+  set(PFUNIT_MPI_USE_MPIEXEC "${MPI_USE_MPIEXEC}" CACHE INTERNAL "")
+  set(PFUNIT_PARSER "${Python_EXECUTABLE}" "${PROJECT_SOURCE_DIR}/bin/funitproc" CACHE INTERNAL "")
+  set(PFUNIT_DRIVER "${PROJECT_SOURCE_DIR}/include/driver.F90" CACHE INTERNAL "")
+  set(PFUNIT_TESTUTILS "${PROJECT_SOURCE_DIR}/include/TestUtil.F90" CACHE INTERNAL "")
 
   if (BUILD_SHARED_LIBS)
-    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared CACHE INTERNAL "")
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES PFUNIT::pfunit_shared PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit_shared CACHE INTERNAL "")
     else()
-      set(PFUNIT_LIBRARIES PFUNIT::funit_shared PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::funit_shared CACHE INTERNAL "")
     endif()
   else()
-    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+    set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit CACHE INTERNAL "")
     if (MPI_Fortran_FOUND)
-      set(PFUNIT_LIBRARIES PFUNIT::pfunit PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::pfunit CACHE INTERNAL "")
     else()
-      set(PFUNIT_LIBRARIES PFUNIT::funit PARENT_SCOPE)
+      set(PFUNIT_LIBRARIES PFUNIT::funit CACHE INTERNAL "")
     endif()
   endif()
 
   include(add_pfunit_test)
   include(add_pfunit_ctest)
 endif()
+
+# https://www.scivision.dev/cmake-auto-gitignore-build-dir/
+# --- auto-ignore build directory
+if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
+  file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+endif()
+
+# Piggyback that file into install
+install(
+   FILES ${PROJECT_BINARY_DIR}/.gitignore
+   DESTINATION ${CMAKE_INSTALL_PREFIX}
+   )
+

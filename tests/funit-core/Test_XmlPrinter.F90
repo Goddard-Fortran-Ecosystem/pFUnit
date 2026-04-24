@@ -130,9 +130,11 @@ contains
      integer :: iostat, xmlUnit, iExpectedLine
 
      character(len=100) :: xmlFileLine
-     character(len=100), dimension(9) :: expected 
+     character(len=100), dimension(12) :: expected
 
      expected=(/ character(len=100) :: &
+'<?xml version="1.0" encoding="UTF-8"?>', &
+'<testsuites>', &
 #ifndef PGI
 '<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0" time=".0000">', &
 #else
@@ -146,7 +148,8 @@ contains
 '<testcase name="failtest[]''">', &
 '<failure message="Location: [[unknown location]], ''test'' "/>', &
 '</testcase>', &
-'</testsuite>' /)
+'</testsuite>', &
+'</testsuites>' /)
 
      open(newunit=xmlUnit, file=xmlFile, iostat=iostat, &
           & status='old', action='read')

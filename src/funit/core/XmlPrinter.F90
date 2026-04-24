@@ -134,6 +134,8 @@ contains
       class (XmlPrinter), intent(in) :: this
       class (AbstractTestResult), intent(in) :: result
 
+      write(this%unit,'(a)') '<?xml version="1.0" encoding="UTF-8"?>'
+      write(this%unit,'(a)') '<testsuites>'
       write(this%unit,'(a,a,a,i0,a,i0,a,i0,a,f0.4,a)') &
            '<testsuite name="', cleanXml(trim(result%getName())), &
            '" errors="', result%errorCount(),&
@@ -294,6 +296,7 @@ contains
       _UNUSED_DUMMY(result)
 
       write(this%unit,'(a)') '</testsuite>'
+      write(this%unit,'(a)') '</testsuites>'
       flush(this%unit)
 
    end subroutine printFooter
