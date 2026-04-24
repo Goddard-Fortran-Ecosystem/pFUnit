@@ -80,30 +80,23 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
 
-      # On macOS, use Homebrew's OpenMPI which is patched for platform compatibility.
-      # On Linux, build from source and cache the result.
-      - name: Install MPI (macOS via Homebrew)
-        if: runner.os == 'macOS'
-        run: brew install open-mpi
-
-      - name: Cache MPI (Linux)
+      - name: Cache MPI
         id: cache-mpi
-        if: runner.os == 'Linux'
         uses: actions/cache@v5
         with:
           path: ~/local/openmpi
           key: mpi-${{ matrix.os }}-openmpi-5.0.10
 
-      - name: Build MPI (Linux)
-        if: runner.os == 'Linux' && steps.cache-mpi.outputs.cache-hit != 'true'
+      - name: Build MPI
+        if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
           sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 5.0.10
 
-      - name: Set MPI Environment (Linux)
-        if: runner.os == 'Linux'
+      - name: Set MPI Environment
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
+          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
 
       - name: MPI Versions
         run: |

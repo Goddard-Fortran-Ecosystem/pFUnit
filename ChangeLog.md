@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated CI workflow to use OpenMPI 5.0.10 (previously 5.0.2) on Linux
-- On macOS, switched from building OpenMPI from source to using Homebrew's `open-mpi` package for better platform compatibility
+- Updated CI workflow to use OpenMPI 5.0.10 (previously 5.0.2) on all platforms
 - Simplified CI MPI cache key to be per-OS only (previously per-OS and per-compiler), reducing redundant cache entries
 - Added `concurrency` group to CI workflow to cancel in-progress runs when a new commit is pushed to the same PR
 - Removed `macos-14` (Sonoma) from the CI runner matrix; it is deprecated upstream and two OS releases behind
