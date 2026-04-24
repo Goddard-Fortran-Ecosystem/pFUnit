@@ -1,4 +1,4 @@
-# pFUnit 4.0
+# pFUnit
 
 pFUnit is a unit testing framework enabling JUnit-like testing of
 serial and MPI-parallel software written in Fortran.  Limited support
@@ -42,17 +42,14 @@ comprehensive, and earlier compilers may work for some user code.
   - NAG v7.2
   - GFortran v12+
 - CMake v3.24+
-- Python v2.7* or v3.x
+- Python v3.x
 - make (or ninja or ...)
 - Optional
   - MPI (tested with OpenMPI and Intel MPI)
   - OpenMP
   
 Doxygen was used to generate documention for pFUnit 3, but is not being
-maintained.   My intent instead is to leverage the GitHub wiki to better
-maintain features.
-
-**Note that support for Python 2.7 my soon disappear.**
+maintained.
 
 
 ## Obtaining pFUnit
@@ -103,18 +100,15 @@ files.
 - `COPYRIGHT` - Contains information pertaining to the use and
   distribution of pFUnit.
   
-- `ChangeLog` - history of changes
+- `ChangeLog.md` - history of changes
 
 - `Examples` - Contains examples of how to use pFUnit once it is
   installed.   These are deprecated.  Users should instead go to the
   [pFUnit-demos](https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos) repository.
 
-- `LICENSE` - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT,
-  also known as pFUnit.
+- `LICENSE` - Apache-2.0 license (as of v4.17.0). (The original NASA Open Source Agreement is retained as `LICENSE-NOSA` for historical reference.)
 
 - `README.md` - This file.
-
-- `VERSION` - Contains a string describing the current version of the framework.
 
 - `bin` - Executables used to construct and perform unit tests.
 

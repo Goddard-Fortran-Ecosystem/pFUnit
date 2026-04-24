@@ -22,13 +22,11 @@ jobs:
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
         compiler: [gfortran-12, gfortran-13, gfortran-14, gfortran-15]
-        # gfortran-10 and -11 are only on ubuntu-22.04
+        # gfortran-11 is only on ubuntu-22.04
         # gfortran-13 and -14 and -15 are not on ubuntu-22.04
         # gfortran-12 is not on macos
         # gfortran-15 is only on macos
         include:
-          - os: ubuntu-22.04
-            compiler: gfortran-10
           - os: ubuntu-22.04
             compiler: gfortran-11
         exclude:
@@ -83,12 +81,12 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/local/openmpi
-          key: mpi-${{ runner.os }}-${{ matrix.os }}-${{ matrix.compiler }}
+          key: mpi-${{ matrix.os }}-openmpi-5.0.10
 
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
-          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 5.0.2
+          sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 5.0.10
 
       - name: Set MPI Environment
         run: |
@@ -117,7 +115,7 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: logfiles-${{ matrix.compiler }}-${{ matrix.os }}
@@ -186,7 +184,7 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: logfiles-Intel
@@ -290,7 +288,7 @@ jobs:
 
       - name: Archive log files on failure
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: logfiles-Nvidia
           path: |
@@ -345,7 +343,7 @@ jobs:
         run: ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
 
       - name: Archive log files on failure
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: logfiles-Flang

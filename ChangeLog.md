@@ -5,6 +5,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.18.0] - 2026-04-24
+
+### Changed
+
+- Updated CI workflow to use OpenMPI 5.0.10 (previously 5.0.2)
+- Simplified CI MPI cache key to be per-OS only (previously per-OS and per-compiler), reducing redundant cache entries
+- Removed gfortran-10 from the GNU CI compiler matrix
+- Updated `actions/upload-artifact` from v6 to v7 in `main.yml`
+- Updated `actions/checkout` from v2 to v6 in `release-tarball.yml`
+- Updated `README.md`: removed stale `pFUnit 4.0` title, updated LICENSE description to Apache-2.0 (as of v4.17.0), fixed `ChangeLog` reference to `ChangeLog.md`, removed non-existent `VERSION` file entry, removed Python 2.7 references
+
 ### Added
 
 - Extended `near()` and `relatively_near()` Hamcrest matchers to support `REAL64` and array ranks 1–4 (issue #542)
