@@ -21,6 +21,9 @@ module pf_MatcherAssert
 
      module procedure :: assert_that_3d_no_reason
      module procedure :: assert_that_3d_reason
+
+     module procedure :: assert_that_4d_no_reason
+     module procedure :: assert_that_4d_reason
   end interface assert_that
 
 contains
@@ -119,5 +122,26 @@ contains
     call assert_that(reason, ArrayWrapper(actual), matcher, location)
 
   end subroutine assert_that_3d_reason
+
+  subroutine assert_that_4d_no_reason(actual, matcher, location)
+    use pf_StringDescription
+    class(*), intent(in) :: actual(:,:,:,:)
+    class(AbstractMatcher), intent(in) :: matcher
+    type (SourceLocation), optional, intent(in) :: location
+
+    call assert_that('', actual, matcher, location)
+
+  end subroutine assert_that_4d_no_reason
+
+  subroutine assert_that_4d_reason(reason, actual, matcher, location)
+    use pf_StringDescription
+    character(*), intent(in) :: reason
+    class(*), intent(in) :: actual(:,:,:,:)
+    class(AbstractMatcher), intent(in) :: matcher
+    type (SourceLocation), optional, intent(in) :: location
+
+    call assert_that(reason, ArrayWrapper(actual), matcher, location)
+
+  end subroutine assert_that_4d_reason
 
 end module pf_MatcherAssert

@@ -412,7 +412,11 @@ class AtAssert(Action):
             parser.outputFile, parser.fileName, parser.currentLineNumber
         )
         parser.outputFile.write(" )\n")
-        parser.outputFile.write("  if (anyExceptions()) return\n")
+        # For assertExceptionRaised, do NOT check anyExceptions() after the call.
+        # Multiple exceptions may have been raised and the user should be able to
+        # catch each one with successive @assertExceptionRaised directives.
+        if match.group(1).lower() != "exceptionraised":
+            parser.outputFile.write("  if (anyExceptions()) return\n")
         parser.outputFile.write(
             cppSetLineAndFile(parser.currentLineNumber + 1, parser.fileName)
         )
@@ -835,6 +839,9 @@ class Parser:
 
         self.userTestMethods = []  # each entry is a dictionary
 
+        self.looking_for_test_name = False
+        self.current_method = {}
+
         self.wrapModuleName = "Wrap" + getBaseName(inputFileName)
         self.currentLineNumber = 0
 
@@ -864,8 +871,47 @@ class Parser:
     def commentLine(self, line):
         self.outputFile.write(re.sub("@", "!@", line))
 
+    def isDirectiveLine(self, line):
+        """Return True if line begins a pFUnit @-directive (ignoring leading whitespace)."""
+        return bool(re.match(r"\s*@", line))
+
+    def joinContinuationLines(self, line):
+        """Join Fortran & continuation lines for a single @-directive.
+
+        Reads additional physical lines from the input file as long as the
+        current logical line ends with '&' (before any inline comment).
+        Returns the complete logical line with a single trailing newline.
+        Only called for lines that start a pFUnit @-directive.
+        """
+        logical = line.rstrip("\r\n")
+        while True:
+            stripped = logical.rstrip()
+            amp_pos = stripped.rfind("&")
+            comment_pos = stripped.find("!")
+            is_continued = (
+                amp_pos != -1
+                and (comment_pos == -1 or amp_pos < comment_pos)
+                and amp_pos == len(stripped) - 1
+            )
+            if not is_continued:
+                break
+            prefix = logical[:amp_pos]
+            self.currentLineNumber += 1
+            next_raw = self.inputFile.readline()
+            if not next_raw:
+                break
+            tail = next_raw.lstrip()
+            if tail.startswith("&"):
+                tail = tail[1:]
+            logical = prefix + tail.rstrip("\r\n")
+        return logical + "\n"
+
     def run(self):
         def parse(line):
+            # Join & continuation lines only for @-directive lines so that
+            # ordinary Fortran code is passed through unchanged (issue #537).
+            if self.isDirectiveLine(line):
+                line = self.joinContinuationLines(line)
             for action in self.actions:
                 if action.apply(line):
                     return
@@ -903,9 +949,6 @@ class Parser:
         return re.match(r"\s*(!.*|)$", line)
 
     def nextLine(self):
-        # Loop until we get a non-comment, non-blank (possibly continued) line
-        logical_line = ""
-        start_line_number = None
         while True:
             self.currentLineNumber += 1
             line = self.inputFile.readline()
@@ -913,48 +956,9 @@ class Parser:
                 break
             if self.isComment(line):
                 self.outputFile.write(line)
-                continue
             else:
-                # Start tracking line number for multi-line error reporting
-                if start_line_number is None:
-                    start_line_number = self.currentLineNumber
-
-                candidate_line = line.rstrip("\r\n")
-                # New logic for multi-line Fortran with ampersand continuation:
-                while True:
-                    # Fortran-style continuation, check trailing '&' before any comment
-                    stripped = candidate_line.rstrip()
-                    comment_pos = stripped.find("!")
-                    amp_pos = stripped.rfind("&")
-                    is_continued = (
-                        amp_pos != -1
-                        and (comment_pos == -1 or amp_pos < comment_pos)
-                        and amp_pos == len(stripped) - 1
-                    )
-                    if is_continued:
-                        # Keep everything before the '&', preserving whitespace
-                        prefix = candidate_line[:amp_pos]
-                        logical_line += prefix
-                        # Get the next physical line
-                        self.currentLineNumber += 1
-                        continuation = self.inputFile.readline()
-                        if not continuation:
-                            break
-                        # Remove leading whitespace up to and including a leading '&'
-                        # but preserve any whitespace after the '&'
-                        tail = continuation.lstrip()
-                        if tail.startswith("&"):
-                            tail = tail[1:]  # Remove only the '&', keep spaces after it
-                        candidate_line = tail.rstrip("\r\n")
-                        continue
-                    else:
-                        logical_line += candidate_line
-                        break
                 break
-        # Add newline back since readline() includes it and callers expect it
-        if logical_line:
-            logical_line += "\n"
-        return logical_line
+        return line
 
     def printHeader(self):
         self.outputFile.write("\n")

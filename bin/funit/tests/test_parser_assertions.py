@@ -378,5 +378,29 @@ class TestParserAssertions(unittest.TestCase):
         self.assertTrue("#line 9 'foo.pfunit'\n", parser.outLines[7])
 
 
+    def testAssertExceptionRaisedNoAnyExceptionsCheck(self):
+        """assertExceptionRaised should NOT emit 'if (anyExceptions()) return'.
+        Multiple exceptions may be raised and the user should be able to catch
+        each one with successive @assertExceptionRaised directives."""
+        parser = MockParser([" \n"])
+        atAssert = AtAssert(parser)
+
+        self.assertTrue(atAssert.match("@assertExceptionRaised()"))
+        self.assertTrue(atAssert.match("@assertExceptionRaised('some message')"))
+
+        parser.fileName = "foo.pfunit"
+        parser.currentLineNumber = 8
+        atAssert.apply("   @assertExceptionRaised('msg_x')\n")
+        self.assertEqual('#line 8 "foo.pfunit"\n', parser.outLines[0])
+        self.assertEqual("  call assertExceptionRaised('msg_x', &\n", parser.outLines[1])
+        self.assertEqual(" & location=SourceLocation( &\n", parser.outLines[2])
+        self.assertEqual(" & 'foo.pfunit', &\n", parser.outLines[3])
+        self.assertEqual(" & 8)", parser.outLines[4])
+        self.assertEqual(" )\n", parser.outLines[5])
+        # No 'if (anyExceptions()) return' should be emitted
+        self.assertEqual('#line 9 "foo.pfunit"\n', parser.outLines[6])
+        self.assertEqual(6, len(parser.outLines) - 1)  # only 7 lines total (0-6)
+
+
 if __name__ == "__main__":
     unittest.main()

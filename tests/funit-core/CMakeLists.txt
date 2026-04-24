@@ -21,6 +21,7 @@ target_link_libraries(other_shared PUBLIC funit)
 
 set(pf_tests
   Test_ExceptionList.pf
+  Test_AssertExceptionRaised.pf
   Test_DisableTest.pf
   Test_AssertString.pf
   Test_Assert_Integer.pf
