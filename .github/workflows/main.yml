@@ -201,10 +201,10 @@ jobs:
     runs-on: ubuntu-24.04
     # Turned off for now because NVHPC image is too large for free
     # GitHub Actions runners, but leaving here for when we can run it again
-    if: false
+    if: true
     env:
       FC: nvfortran
-      NVHPC_IMAGE: nvcr.io/nvidia/nvhpc:26.1-devel-cuda13.1-ubuntu24.04
+      NVHPC_IMAGE: nvcr.io/nvidia/nvhpc:26.3-devel-cuda13.1-ubuntu24.04
 
     steps:
       # Reclaim lots of space
