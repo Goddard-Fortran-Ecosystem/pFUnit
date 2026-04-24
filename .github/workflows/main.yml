@@ -20,12 +20,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-15, macos-26]
         compiler: [gfortran-12, gfortran-13, gfortran-14, gfortran-15]
         # gfortran-11 is only on ubuntu-22.04
         # gfortran-13 and -14 and -15 are not on ubuntu-22.04
         # gfortran-12 is not on macos
-        # gfortran-15 is only on macos
+        # gfortran-15 is only on macos (and ubuntu-24.04+ does not have it)
         include:
           - os: ubuntu-22.04
             compiler: gfortran-11
@@ -38,9 +38,9 @@ jobs:
             compiler: gfortran-15
           - os: ubuntu-24.04
             compiler: gfortran-15
-          - os: macos-14
-            compiler: gfortran-12
           - os: macos-15
+            compiler: gfortran-12
+          - os: macos-26
             compiler: gfortran-12
 
       # fail-fast if set to 'true' here is good for production, but when
@@ -76,23 +76,30 @@ jobs:
         run: |
           git config --global --add safe.directory '*'
 
-      - name: Cache MPI
+      # On macOS, use Homebrew's OpenMPI which is patched for platform compatibility.
+      # On Linux, build from source and cache the result.
+      - name: Install MPI (macOS via Homebrew)
+        if: runner.os == 'macOS'
+        run: brew install open-mpi
+
+      - name: Cache MPI (Linux)
         id: cache-mpi
+        if: runner.os == 'Linux'
         uses: actions/cache@v5
         with:
           path: ~/local/openmpi
           key: mpi-${{ matrix.os }}-openmpi-5.0.10
 
-      - name: Build MPI
-        if: steps.cache-mpi.outputs.cache-hit != 'true'
+      - name: Build MPI (Linux)
+        if: runner.os == 'Linux' && steps.cache-mpi.outputs.cache-hit != 'true'
         run: |
           sh ${GITHUB_WORKSPACE}/tools/ci-install-mpi.sh openmpi 5.0.10
 
-      - name: Set MPI Environment
+      - name: Set MPI Environment (Linux)
+        if: runner.os == 'Linux'
         run: |
           echo "${HOME}/local/openmpi/bin" >> $GITHUB_PATH
           echo "LD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
-          echo "DYLD_LIBRARY_PATH=${HOME}/local/openmpi/lib" >> $GITHUB_ENV
 
       - name: MPI Versions
         run: |
