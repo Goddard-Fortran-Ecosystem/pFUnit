@@ -10,13 +10,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           path: ${{ github.event.repository.name }}-${{ github.event.release.tag_name }}
           submodules: recursive
 
       - name: Checkout git-archive-all.sh
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           repository: fabacab/git-archive-all.sh
           path: git-archive-all.sh

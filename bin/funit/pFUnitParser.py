@@ -6,44 +6,77 @@ from os.path import *
 import sysconfig
 import posixpath
 import re
+
 # from parseBrackets import parseBrackets
 from .parseDirectiveArgs import parseDirectiveArguments
+
 
 class MyError(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         return repr(self.value)
 
-assert_operands = {'fail': 0, 'equal': 2, 'notequal': 2, 'true': 1, 'false': 1,
-                   'lessthan': 2, 'lessthanorequal': 2, 'greaterthan': 2,
-                   'greaterthanorequal': 2, 'notequal': 2,
-                   'relativelyequal': 2, 'isinfinite': 1, 'isfinite': 1,
-                   'isnan': 1, 'ismemberof': 2, 'contains': 2, 'any': 1,
-                   'all': 1, 'notall': 1, 'none': 1, 'ispermutationof': 2,
-                   'exceptionraised': 0, 'sameshape': 2, 'that': 2, '_that': 2}
+
+assert_operands = {
+    "fail": 0,
+    "equal": 2,
+    "notequal": 2,
+    "true": 1,
+    "false": 1,
+    "lessthan": 2,
+    "lessthanorequal": 2,
+    "greaterthan": 2,
+    "greaterthanorequal": 2,
+    "notequal": 2,
+    "relativelyequal": 2,
+    "isinfinite": 1,
+    "isfinite": 1,
+    "isnan": 1,
+    "ismemberof": 2,
+    "contains": 2,
+    "any": 1,
+    "all": 1,
+    "notall": 1,
+    "none": 1,
+    "ispermutationof": 2,
+    "exceptionraised": 0,
+    "sameshape": 2,
+    "that": 2,
+    "_that": 2,
+}
+
 
 def cppSetLineAndFile(line, file):
-    if sysconfig.get_platform() == 'mingw' or sysconfig.get_platform().startswith('win-'):
-        return "#line " + str(line) + ' "' + file.replace(sep,posixpath.sep) + '"\n'
+    if sysconfig.get_platform() == "mingw" or sysconfig.get_platform().startswith(
+        "win-"
+    ):
+        return "#line " + str(line) + ' "' + file.replace(sep, posixpath.sep) + '"\n'
     else:
         return "#line " + str(line) + ' "' + file + '"\n'
 
+
 def getSubroutineName(line):
     try:
-        m = re.match(r'\s*subroutine\s+(\w*)\s*(\([\w\s,]*\))?\s*(!.*)*$', line, re.IGNORECASE)
+        m = re.match(
+            r"\s*subroutine\s+(\w*)\s*(\([\w\s,]*\))?\s*(!.*)*$", line, re.IGNORECASE
+        )
         return m.groups()[0]
     except:
-        raise MyError('Improper format in declaration of test procedure.')
+        raise MyError("Improper format in declaration of test procedure.")
 
-def parseArgsFirstRest(directiveName,line):
+
+def parseArgsFirstRest(directiveName, line):
     """If the @-directive has more than one argument, parse into first and rest strings.
     Added for assertAssociated.
     """
 
-    argStr = ''; 
-    if directiveName != '':
-        m = re.match(r'\s*'+directiveName+r'\s*\((.*\w.*)\)\s*$',line,re.IGNORECASE)
+    argStr = ""
+    if directiveName != "":
+        m = re.match(
+            r"\s*" + directiveName + r"\s*\((.*\w.*)\)\s*$", line, re.IGNORECASE
+        )
         if m:
             argStr = m.groups()[0]
         else:
@@ -58,16 +91,16 @@ def parseArgsFirstRest(directiveName,line):
     elif len(args) == 1:
         returnArgs = [args[0]]
     else:
-        returnArgs = [args[0],','.join(args[1:])]
-        
+        returnArgs = [args[0], ",".join(args[1:])]
+
     return returnArgs
 
 
-def parseArgsFirstSecondRest(directiveName,line):
+def parseArgsFirstSecondRest(directiveName, line):
     """If the @-directive must have at least two arguments, parse into first, second,
     and rest strings. Added for assertAssociated.
     """
-    args1 = parseArgsFirstRest(directiveName,line)
+    args1 = parseArgsFirstRest(directiveName, line)
 
     returnArgs = None
 
@@ -75,33 +108,40 @@ def parseArgsFirstSecondRest(directiveName,line):
         if len(args1) == 1:
             returnArgs = args1
         elif len(args1) == 2:
-            args2 = parseArgsFirstRest('',args1[1])
+            args2 = parseArgsFirstRest("", args1[1])
             returnArgs = [args1[0]] + args2
         elif len(args1) == 3:
-            print(-999,'parseArgsFirstSecondRest::error!')
+            print(-999, "parseArgsFirstSecondRest::error!")
             returnArgs = None
 
     return returnArgs
 
 
 def getSelfObjectName(line):
-    m = re.match(r'\s*subroutine\s+\w*\s*\(\s*(\w+)\s*(,\s*\w+\s*)*\)\s*$', line, re.IGNORECASE)
+    m = re.match(
+        r"\s*subroutine\s+\w*\s*\(\s*(\w+)\s*(,\s*\w+\s*)*\)\s*$", line, re.IGNORECASE
+    )
     if m:
         return m.groups()[0]
     else:
         return m
 
+
 def getTypeName(line):
-    m = re.match(r'\s*type(.*::\s*|\s+)(\w*)\s*$', line, re.IGNORECASE)
+    m = re.match(r"\s*type(.*::\s*|\s+)(\w*)\s*$", line, re.IGNORECASE)
     return m.groups()[1]
- 
-class Action():
+
+
+class Action:
     def apply(self, line):
         m = self.match(line)
-        if m: self.action(m, line)
+        if m:
+            self.action(m, line)
         return m
 
-#------------------
+
+# ------------------
+
 
 # If parser is in the state of looking for a test method name, then
 # check the current line to see if it defines a subroutine.
@@ -111,17 +151,21 @@ class IsTestMethod(Action):
         self.parser = parser
 
     def match(self, line):
-        if (self.parser.looking_for_test_name):
-            m = re.match(r'\s*subroutine\s+(\w*)\s*(\([\w\s,]*\))?\s*(!.*)*$', line, re.IGNORECASE)
+        if self.parser.looking_for_test_name:
+            m = re.match(
+                r"\s*subroutine\s+(\w*)\s*(\([\w\s,]*\))?\s*(!.*)*$",
+                line,
+                re.IGNORECASE,
+            )
             return m
         else:
             return False
-        
+
     def action(self, m, line):
-        self.parser.current_method['name'] = m.groups()[0]
+        self.parser.current_method["name"] = m.groups()[0]
         dummyArgument = getSelfObjectName(line)
         if dummyArgument:
-            self.parser.current_method['selfObjectName'] = dummyArgument
+            self.parser.current_method["selfObjectName"] = dummyArgument
         self.parser.looking_for_test_name = False
         self.parser.userTestMethods.append(self.parser.current_method)
         self.parser.outputFile.write(line)
@@ -132,108 +176,131 @@ class IsTestMethod(Action):
 class AtTest(Action):
     def __init__(self, parser):
         self.parser = parser
-        self.keyword = '@test'
+        self.keyword = "@test"
 
     def match(self, line):
-        m = re.match(r'\s*'+self.keyword+r'(\s*(\(.*\))?\s*$)', line, re.IGNORECASE)
+        m = re.match(r"\s*" + self.keyword + r"(\s*(\(.*\))?\s*$)", line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
-        options = re.match(r'\s*'+self.keyword+r'\s*\((.*)\)\s*$', line, re.IGNORECASE)
+        options = re.match(
+            r"\s*" + self.keyword + r"\s*\((.*)\)\s*$", line, re.IGNORECASE
+        )
         self.parser.current_method = {}
 
         if options:
-
-            npesOption = re.search(r'npes\s*=\s*\[([0-9,\s]+)\]', options.groups()[0], re.IGNORECASE)
+            npesOption = re.search(
+                r"npes\s*=\s*\[([0-9,\s]+)\]", options.groups()[0], re.IGNORECASE
+            )
             if npesOption:
                 npesString = npesOption.groups()[0]
-                npes = list(map(int, npesString.split(',')))
-                self.parser.current_method['npRequests'] = npes
+                npes = list(map(int, npesString.split(",")))
+                self.parser.current_method["npRequests"] = npes
 
-            #ifdef is optional
-            matchIfdef = re.match(r'.*ifdef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
-            if matchIfdef: 
+            # ifdef is optional
+            matchIfdef = re.match(
+                r".*ifdef\s*=\s*(\w+)", options.groups()[0], re.IGNORECASE
+            )
+            if matchIfdef:
                 ifdef = matchIfdef.groups()[0]
-                self.parser.current_method['ifdef'] = ifdef
+                self.parser.current_method["ifdef"] = ifdef
 
-            matchIfndef = re.match(r'.*ifndef\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
-            if matchIfndef: 
+            matchIfndef = re.match(
+                r".*ifndef\s*=\s*(\w+)", options.groups()[0], re.IGNORECASE
+            )
+            if matchIfndef:
                 ifndef = matchIfndef.groups()[0]
-                self.parser.current_method['ifndef'] = ifndef
+                self.parser.current_method["ifndef"] = ifndef
 
-            matchType = re.match(r'.*type\s*=\s*(\w+)', options.groups()[0], re.IGNORECASE)
+            matchType = re.match(
+                r".*type\s*=\s*(\w+)", options.groups()[0], re.IGNORECASE
+            )
             if matchType:
-                print ('Type', matchType.groups()[0])
-                self.parser.current_method['type'] = matchType.groups()[0]
+                self.parser.current_method["type"] = matchType.groups()[0]
 
-            paramOption = re.search(r'testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
+            paramOption = re.search(
+                r"testParameters\s*=\s*[{](.*)[}]", options.groups()[0], re.IGNORECASE
+            )
             if paramOption:
                 paramExpr = paramOption.groups()[0]
-                self.parser.current_method['testParameters'] = paramExpr
+                self.parser.current_method["testParameters"] = paramExpr
 
-            casesOption = re.search(r'cases\s*=\s*(\[[0-9,\s]+\])', options.groups()[0], re.IGNORECASE)
+            casesOption = re.search(
+                r"cases\s*=\s*(\[[0-9,\s]+\])", options.groups()[0], re.IGNORECASE
+            )
             if casesOption:
-                self.parser.current_method['cases'] = casesOption.groups()[0]
+                self.parser.current_method["cases"] = casesOption.groups()[0]
 
-
-#        nextLine = self.parser.nextLine()
+        #        nextLine = self.parser.nextLine()
         self.parser.looking_for_test_name = True
-#        method['name'] = getSubroutineName(nextLine)
+        #        method['name'] = getSubroutineName(nextLine)
         # save "self" name for use with @mpiAssert
-#        self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
+        #        self.parser.currentSelfObjectName = getSelfObjectName(nextLine)
 
         # save "self" name for use with @mpiAssert
-#        dummyArgument = getSelfObjectName(nextLine)
-#        if dummyArgument:
-#            self.parser.current_method['selfObjectName'] = dummyArgument
+        #        dummyArgument = getSelfObjectName(nextLine)
+        #        if dummyArgument:
+        #            self.parser.current_method['selfObjectName'] = dummyArgument
 
-#        self.parser.userTestMethods.append(method)
-#        self.parser.current_method = method # for subsequent annotations
+        #        self.parser.userTestMethods.append(method)
+        #        self.parser.current_method = method # for subsequent annotations
         self.parser.commentLine(line)
+
+
 #        self.parser.outputFile.write(nextLine)
 
-#------------------
+
+# ------------------
 # deprecated - should now just use @test
 # @mpitest
 class AtMpiTest(AtTest):
     def __init__(self, parser):
         self.parser = parser
-        self.keyword = '@mpitest'
+        self.keyword = "@mpitest"
 
-# @testcase        
+
+# @testcase
 class AtTestCase(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*@testcase\s*(|\(.*\))\s*$', line, re.IGNORECASE)
+        m = re.match(r"\s*@testcase\s*(|\(.*\))\s*$", line, re.IGNORECASE)
         return m
-    
-    def action(self, m, line):
-        options = re.match(r'\s*@testcase\s*\((.*)\)\s*$', line, re.IGNORECASE)
-        if options:
-            value = re.search(r'constructor\s*=\s*(\w*)', options.groups()[0], re.IGNORECASE)
-            if value:
-                self.parser.userTestCase['constructor'] = value.groups()[0]
 
-            value = re.search(r'npes\s*=\s*\[([0-9,\s]+)\]', options.groups()[0], re.IGNORECASE)
+    def action(self, m, line):
+        options = re.match(r"\s*@testcase\s*\((.*)\)\s*$", line, re.IGNORECASE)
+        if options:
+            value = re.search(
+                r"constructor\s*=\s*(\w*)", options.groups()[0], re.IGNORECASE
+            )
+            if value:
+                self.parser.userTestCase["constructor"] = value.groups()[0]
+
+            value = re.search(
+                r"npes\s*=\s*\[([0-9,\s]+)\]", options.groups()[0], re.IGNORECASE
+            )
             if value:
                 npesString = value.groups()[0]
-                npes = list(map(int,npesString.split(',')))
-                self.parser.userTestCase['npRequests'] = npes
+                npes = list(map(int, npesString.split(",")))
+                self.parser.userTestCase["npRequests"] = npes
 
-            value = re.search(r'cases\s*=\s*(\[[0-9,\s]+\])', options.groups()[0], re.IGNORECASE)
+            value = re.search(
+                r"cases\s*=\s*(\[[0-9,\s]+\])", options.groups()[0], re.IGNORECASE
+            )
             if value:
                 cases = value.groups()[0]
-                self.parser.userTestCase['cases'] = cases
+                self.parser.userTestCase["cases"] = cases
 
-            value = re.search(r'testParameters\s*=\s*[{](.*)[}]', options.groups()[0], re.IGNORECASE)
+            value = re.search(
+                r"testParameters\s*=\s*[{](.*)[}]", options.groups()[0], re.IGNORECASE
+            )
             if value:
                 paramExpr = value.groups()[0]
-                self.parser.userTestCase['testParameters'] = paramExpr
+                self.parser.userTestCase["testParameters"] = paramExpr
 
         nextLine = self.parser.nextLine()
-        self.parser.userTestCase['type']=getTypeName(nextLine)
+        self.parser.userTestCase["type"] = getTypeName(nextLine)
         self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
 
@@ -241,14 +308,19 @@ class AtTestCase(Action):
 class AtSuite(Action):
     def __init__(self, parser):
         self.parser = parser
+
     def match(self, line):
         nameRe = r"'\w+'|" + r"""\w+"""
-        m = re.match(r"\s*@suite\s*\(\s*name\s*=\s*("+nameRe+r")\s*\)\s*$", line, re.IGNORECASE)
+        m = re.match(
+            r"\s*@suite\s*\(\s*name\s*=\s*(" + nameRe + r")\s*\)\s*$",
+            line,
+            re.IGNORECASE,
+        )
         return m
 
     def action(self, m, line):
-        self.parser.suiteName=m.groups()[0][1:-1]
-        self.parser.wrapModuleName = 'Wrap' + self.parser.suiteName
+        self.parser.suiteName = m.groups()[0][1:-1]
+        self.parser.wrapModuleName = "Wrap" + self.parser.suiteName
 
 
 class AtBegin(Action):
@@ -256,34 +328,33 @@ class AtBegin(Action):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*module\s+(\w*)\s*$', line, re.IGNORECASE)
+        m = re.match(r"\s*module\s+(\w*)\s*$", line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
         self.parser.outputFile.write(line)
 
         self.parser.userModuleName = m.groups()[0]
-        self.parser.wrapModuleName = 'Wrap' + self.parser.userModuleName
+        self.parser.wrapModuleName = "Wrap" + self.parser.userModuleName
 
         if self.parser.suiteName:
             return None
 
         self.parser.defaultSuiteName = self.parser.userModuleName + "_suite"
-            
 
 
 class AtAssert(Action):
     def __init__(self, parser):
         self.parser = parser
-        self.assert_variants = '|'.join(assert_operands.keys())
+        self.assert_variants = "|".join(assert_operands.keys())
 
     def match(self, line):
-#        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
-        pattern = r'\s*@assert(' + self.assert_variants + r')\s*\((.*)\)\s*$'
+        #        m = re.match('\s*@assert('+assertVariants+')\s*\\((.*\w.*)\\)\s*$', line, re.IGNORECASE)
+        pattern = r"\s*@assert(" + self.assert_variants + r")\s*\((.*)\)\s*$"
         match = re.match(pattern, line, re.IGNORECASE)
 
         if match:
-            num_operands = match.group(2).count(',')
+            num_operands = match.group(2).count(",")
             # The test is required to solve the fence post/panel problem.
             # In particular isspace returns false if the string is empty.
             if (len(match.group(2)) > 0) and not match.group(2).isspace():
@@ -303,39 +374,75 @@ class AtAssert(Action):
 
     def action(self, match, line):
         parser = self.parser
-        
-        parser.outputFile.write(cppSetLineAndFile(parser.currentLineNumber,
-                                                  parser.fileName))
+
+        # Reconstitute logical assertion in case of Fortran continuation (&)
+        # Note: nextLine() already handles continuation, so this loop typically won't execute.
+        # Kept for safety if action is called directly with a raw line.
+        logical_line = line.rstrip("\n")
+        while logical_line.rstrip().endswith("&"):
+            amp_index = logical_line.rstrip().rfind("&")
+            # Keep everything before the '&', preserving whitespace
+            before_amp = logical_line[:amp_index]
+            # Read and attach the next source line
+            next_line = parser.inputFile.readline()
+            if not next_line:
+                break  # EOF
+            parser.currentLineNumber += 1
+            # Remove leading whitespace up to and including a leading '&'
+            # but preserve any whitespace after the '&'
+            after_amp = next_line.lstrip()
+            if after_amp.startswith("&"):
+                after_amp = after_amp[1:]  # Remove only the '&', keep spaces after it
+            logical_line = before_amp + after_amp.rstrip("\n")
+
+        # Now match the logical_line instead of just 'line'
+        match = self.match(logical_line)
+        if not match:
+            raise MyError(f"Could not parse logical assertion: {logical_line}")
+
+        parser.outputFile.write(
+            cppSetLineAndFile(parser.currentLineNumber, parser.fileName)
+        )
         fragment = "  call assert{}({}"
         if (len(match.group(2)) > 0) and not match.group(2).isspace():
             fragment += ", "
         fragment += "&\n"
         parser.outputFile.write(fragment.format(match.group(1), match.group(2)))
-        self.appendSourceLocation(parser.outputFile,
-                                  parser.fileName,
-                                  parser.currentLineNumber)
+        self.appendSourceLocation(
+            parser.outputFile, parser.fileName, parser.currentLineNumber
+        )
         parser.outputFile.write(" )\n")
-        parser.outputFile.write("  if (anyExceptions()) return\n")
-        parser.outputFile.write(cppSetLineAndFile(parser.currentLineNumber + 1,
-                                                  parser.fileName))
+        # For assertExceptionRaised, do NOT check anyExceptions() after the call.
+        # Multiple exceptions may have been raised and the user should be able to
+        # catch each one with successive @assertExceptionRaised directives.
+        if match.group(1).lower() != "exceptionraised":
+            parser.outputFile.write("  if (anyExceptions()) return\n")
+        parser.outputFile.write(
+            cppSetLineAndFile(parser.currentLineNumber + 1, parser.fileName)
+        )
+
 
 class AtAssertAssociated(Action):
-    def __init__(self,parser):
+    def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*@assertassociated\s*\((.*\w.*)\)\s*$', line, re.IGNORECASE)
+        m = re.match(r"\s*@assertassociated\s*\((.*\w.*)\)\s*$", line, re.IGNORECASE)
 
         if not m:
-            m  = re.match( \
-                r'\s*@assertassociated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$', \
-                line, re.IGNORECASE)
+            m = re.match(
+                r"\s*@assertassociated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
-            m  = re.match( \
-                r'\s*@assertassociated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$', \
-                line, re.IGNORECASE)
+            m = re.match(
+                r"\s*@assertassociated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -347,56 +454,74 @@ class AtAssertAssociated(Action):
         p = self.parser
 
         # args = parseArgsFirstRest('@assertassociated',line)
-        args = parseArgsFirstSecondRest('@assertassociated',line)
+        args = parseArgsFirstSecondRest("@assertassociated", line)
 
-        # print(9000,line)
-        # print(9001,args)
-        
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
-            if re.match('.*message=.*',args[1],re.IGNORECASE):
-                p.outputFile.write("  call assertTrue(associated(" + args[0] + "), " + args[1] + ", &\n")
+            if re.match(".*message=.*", args[1], re.IGNORECASE):
+                p.outputFile.write(
+                    "  call assertTrue(associated("
+                    + args[0]
+                    + "), "
+                    + args[1]
+                    + ", &\n"
+                )
             elif len(args) > 2:
-                p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
+                p.outputFile.write(
+                    "  call assertTrue(associated("
+                    + args[0]
+                    + ","
+                    + args[1]
+                    + "), "
+                    + args[2]
+                    + ", &\n"
+                )
             else:
-                p.outputFile.write("  call assertTrue(associated(" + args[0] + "," + args[1] + "), &\n")
+                p.outputFile.write(
+                    "  call assertTrue(associated(" + args[0] + "," + args[1] + "), &\n"
+                )
         else:
             p.outputFile.write("  call assertTrue(associated(" + args[0] + "), &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber + 1, p.fileName))
 
 
 class AtAssertNotAssociated(Action):
-    def __init__(self,parser):
+    def __init__(self, parser):
         self.parser = parser
-        self.name='@assertnotassociated'
+        self.name = "@assertnotassociated"
 
     def match(self, line):
-        m = re.match(r'\s*@assert(not|un)associated\s*\((.*\w.*)\)\s*$', line, re.IGNORECASE)
+        m = re.match(
+            r"\s*@assert(not|un)associated\s*\((.*\w.*)\)\s*$", line, re.IGNORECASE
+        )
         if m:
-            self.name='@assert'+m.groups()[0]+'associated'
+            self.name = "@assert" + m.groups()[0] + "associated"
         else:
-            self.name='@assertnotassociated'
+            self.name = "@assertnotassociated"
 
         if not m:
-            m  = re.match( \
-                r'\s*@assert(not|un)associated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$', \
-                line, re.IGNORECASE)
+            m = re.match(
+                r"\s*@assert(not|un)associated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
-            m  = re.match( \
-                r'\s*@assert(not|un)associated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$', \
-                line, re.IGNORECASE)
+            m = re.match(
+                r"\s*@assert(not|un)associated\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
 
         if m:
-            self.name='@assert'+m.groups()[0]+'associated'
+            self.name = "@assert" + m.groups()[0] + "associated"
         else:
-            self.name='@assertnotassociated'
+            self.name = "@assertnotassociated"
 
-                                
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -407,47 +532,69 @@ class AtAssertNotAssociated(Action):
     def action(self, m, line):
         p = self.parser
 
-        #-- args = parseArgsFirstRest('@assertassociated',line)
-        #ok args = parseArgsFirstSecondRest('@assertassociated',line)
-        args = parseArgsFirstSecondRest(self.name,line)
+        # -- args = parseArgsFirstRest('@assertassociated',line)
+        # ok args = parseArgsFirstSecondRest('@assertassociated',line)
+        args = parseArgsFirstSecondRest(self.name, line)
 
-        # print(9000,line)
-        # print(9001,args)
-        
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 1:
-            if re.match('.*message=.*',args[1],re.IGNORECASE):
-                p.outputFile.write("  call assertFalse(associated(" + args[0] + "), " + args[1] + ", &\n")
+            if re.match(".*message=.*", args[1], re.IGNORECASE):
+                p.outputFile.write(
+                    "  call assertFalse(associated("
+                    + args[0]
+                    + "), "
+                    + args[1]
+                    + ", &\n"
+                )
             elif len(args) > 2:
-                p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), " + args[2] + ", &\n")
+                p.outputFile.write(
+                    "  call assertFalse(associated("
+                    + args[0]
+                    + ","
+                    + args[1]
+                    + "), "
+                    + args[2]
+                    + ", &\n"
+                )
             else:
-                p.outputFile.write("  call assertFalse(associated(" + args[0] + "," + args[1] + "), &\n")
+                p.outputFile.write(
+                    "  call assertFalse(associated("
+                    + args[0]
+                    + ","
+                    + args[1]
+                    + "), &\n"
+                )
         else:
             p.outputFile.write("  call assertFalse(associated(" + args[0] + "), &\n")
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber + 1, p.fileName))
 
 
 class AtAssertEqualUserDefined(Action):
     """Convenience directive replacing (a,b) with a call to assertTrue(a==b)
     and an error message, if none is provided when invoked.
     """
-    def __init__(self,parser):
+
+    def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m  = re.match( \
-            r'\s*@assertequaluserdefined\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$', \
-            line, re.IGNORECASE)
+        m = re.match(
+            r"\s*@assertequaluserdefined\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$",
+            line,
+            re.IGNORECASE,
+        )
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
-            m  = re.match( \
-                r'\s*@assertequaluserdefined\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$', \
-                line, re.IGNORECASE)
-                    
+            m = re.match(
+                r"\s*@assertequaluserdefined\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
+
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -458,41 +605,56 @@ class AtAssertEqualUserDefined(Action):
     def action(self, m, line):
         p = self.parser
 
-        args = parseArgsFirstSecondRest('@assertequaluserdefined',line)
-        
+        args = parseArgsFirstSecondRest("@assertequaluserdefined", line)
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 2:
-            p.outputFile.write("  call assertTrue(" \
-                               + args[0] + "==" + args[1] + ", " + args[2] + ", &\n")
+            p.outputFile.write(
+                "  call assertTrue("
+                + args[0]
+                + "=="
+                + args[1]
+                + ", "
+                + args[2]
+                + ", &\n"
+            )
         else:
-            p.outputFile.write("  call assertTrue(" \
-                               + args[0] + "==" + args[1] + ", &\n")
-        if not re.match('.*message=.*',line,re.IGNORECASE):
-            p.outputFile.write(" & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n")
+            p.outputFile.write(
+                "  call assertTrue(" + args[0] + "==" + args[1] + ", &\n"
+            )
+        if not re.match(".*message=.*", line, re.IGNORECASE):
+            p.outputFile.write(
+                " & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n"
+            )
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber + 1, p.fileName))
 
 
 class AtAssertEquivalent(Action):
     """Convenience directive replacing (a,b) with a call to assertTrue(a.eqv.b)
     and an error message, if none is provided when invoked.
     """
-    def __init__(self,parser):
+
+    def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m  = re.match( \
-            r'\s*@assertequivalent\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$', \
-            line, re.IGNORECASE)
+        m = re.match(
+            r"\s*@assertequivalent\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*),(.*\w*.*))\)\s*$",
+            line,
+            re.IGNORECASE,
+        )
 
         # How to get both (a,b) and (a,b,c) to match?
         if not m:
-            m  = re.match( \
-                r'\s*@assertequivalent\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$', \
-                line, re.IGNORECASE)
-                    
+            m = re.match(
+                r"\s*@assertequivalent\s*\((\s*([^,]*\w.*),\s*([^,]*\w.*))\)\s*$",
+                line,
+                re.IGNORECASE,
+            )
+
         return m
 
     def appendSourceLocation(self, fileHandle, fileName, lineNumber):
@@ -503,34 +665,44 @@ class AtAssertEquivalent(Action):
     def action(self, m, line):
         p = self.parser
 
-        args = parseArgsFirstSecondRest('@assertequivalent',line)
-        
+        args = parseArgsFirstSecondRest("@assertequivalent", line)
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
         if len(args) > 2:
-            p.outputFile.write("  call assertTrue(" \
-                               + args[0] + ".eqv." + args[1] + ", " + args[2] + ", &\n")
+            p.outputFile.write(
+                "  call assertTrue("
+                + args[0]
+                + ".eqv."
+                + args[1]
+                + ", "
+                + args[2]
+                + ", &\n"
+            )
         else:
-            p.outputFile.write("  call assertTrue(" \
-                               + args[0] + ".eqv." + args[1] + ", &\n")
-        if not re.match('.*message=.*',line,re.IGNORECASE):
-            p.outputFile.write(" & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n")
+            p.outputFile.write(
+                "  call assertTrue(" + args[0] + ".eqv." + args[1] + ", &\n"
+            )
+        if not re.match(".*message=.*", line, re.IGNORECASE):
+            p.outputFile.write(
+                " & message='<" + args[0] + "> not equal to <" + args[1] + ">', &\n"
+            )
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
         p.outputFile.write("  if (anyExceptions()) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
-                            
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber + 1, p.fileName))
+
 
 class AtMpiAssert(Action):
     def __init__(self, parser):
         self.parser = parser
-        self.assert_variants = '|'.join(assert_operands.keys())
+        self.assert_variants = "|".join(assert_operands.keys())
 
     def match(self, line):
-        pattern = r'\s*@mpiassert(' + self.assert_variants + r')\s*\((.*\w.*)\)\s*$'
+        pattern = r"\s*@mpiassert(" + self.assert_variants + r")\s*\((.*\w.*)\)\s*$"
         match = re.match(pattern, line, re.IGNORECASE)
 
         if match:
-            num_operands = match.group(2).count(',')
+            num_operands = match.group(2).count(",")
             # The test is required to solve the fence post/panel problem.
             # In particular isspace returns false if the string is empty.
             if (len(match.group(2)) > 0) and not match.group(2).isspace():
@@ -550,75 +722,86 @@ class AtMpiAssert(Action):
 
     def action(self, m, line):
         p = self.parser
-        
+
         p.outputFile.write(cppSetLineAndFile(p.currentLineNumber, p.fileName))
-        p.outputFile.write("  call assert"+m.groups()[0]+"(" + m.groups()[1] + ", &\n")
+        p.outputFile.write(
+            "  call assert" + m.groups()[0] + "(" + m.groups()[1] + ", &\n"
+        )
         self.appendSourceLocation(p.outputFile, p.fileName, p.currentLineNumber)
         p.outputFile.write(" )\n")
 
         # 'this' object may not exist if test is commented out.
-        if hasattr(p,'currentSelfObjectName'):
-            p.outputFile.write("  if (anyExceptions("+p.currentSelfObjectName+"%context)) return\n")
-        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber+1, p.fileName))
+        if hasattr(p, "currentSelfObjectName"):
+            p.outputFile.write(
+                "  if (anyExceptions(" + p.currentSelfObjectName + "%context)) return\n"
+            )
+        p.outputFile.write(cppSetLineAndFile(p.currentLineNumber + 1, p.fileName))
+
 
 class AtBefore(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*@before\s*$', line, re.IGNORECASE)
-        return m 
+        m = re.match(r"\s*@before\s*$", line, re.IGNORECASE)
+        return m
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
-        self.parser.userTestCase['setUp'] = getSubroutineName(nextLine)
+        self.parser.userTestCase["setUp"] = getSubroutineName(nextLine)
         self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
+
 
 class AtAfter(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*@after\s*$', line, re.IGNORECASE)
-        return m 
+        m = re.match(r"\s*@after\s*$", line, re.IGNORECASE)
+        return m
 
     def action(self, m, line):
         nextLine = self.parser.nextLine()
-        self.parser.userTestCase['tearDown'] = getSubroutineName(nextLine)
+        self.parser.userTestCase["tearDown"] = getSubroutineName(nextLine)
         self.parser.commentLine(line)
         self.parser.outputFile.write(nextLine)
+
 
 class AtTestParameter(Action):
     def __init__(self, parser):
         self.parser = parser
 
     def match(self, line):
-        m = re.match(r'\s*@testParameter\s*(|.*)$', line, re.IGNORECASE)
+        m = re.match(r"\s*@testParameter\s*(|.*)$", line, re.IGNORECASE)
         return m
 
     def action(self, m, line):
-        options = re.match(r'\s*@testParameter\s*\((.*)\)\s*$', line, re.IGNORECASE)
+        options = re.match(r"\s*@testParameter\s*\((.*)\)\s*$", line, re.IGNORECASE)
 
         self.parser.commentLine(line)
         nextLine = self.parser.nextLine()
-        if not 'testParameterType' in self.parser.userTestCase:
-            self.parser.userTestCase['testParameterType'] = getTypeName(nextLine)
+        if not "testParameterType" in self.parser.userTestCase:
+            self.parser.userTestCase["testParameterType"] = getTypeName(nextLine)
         self.parser.outputFile.write(nextLine)
 
         if options:
-            value = re.search(r'constructor\s*=\s*(\w*)', options.groups()[0], re.IGNORECASE)
+            value = re.search(
+                r"constructor\s*=\s*(\w*)", options.groups()[0], re.IGNORECASE
+            )
             if value:
-                self.parser.userTestCase['testParameterConstructor'] = value.groups()[0]
+                self.parser.userTestCase["testParameterConstructor"] = value.groups()[0]
             else:
-                self.parser.userTestCase['testParameterConstructor'] = self.parser.userTestCase['testParameterType']
+                self.parser.userTestCase["testParameterConstructor"] = (
+                    self.parser.userTestCase["testParameterType"]
+                )
 
 
 # @disable
 class AtDisable(Action):
     def __init__(self, parser):
         self.parser = parser
-        self.keyword = '@disable'
+        self.keyword = "@disable"
 
     def match(self, line):
         nameRe = r"'\w+'|" + r"""\w+"""
@@ -626,39 +809,43 @@ class AtDisable(Action):
         return m
 
     def action(self, m, line):
-        print("Processing disable:")
-        self.parser.current_method['disable'] = True
+        self.parser.current_method["disable"] = True
         self.parser.commentLine(line)
-                
-class Parser():
+
+
+class Parser:
     def __init__(self, inputFileName, outputFileName):
         def getBaseName(fileName):
             from os.path import basename, splitext
+
             base = basename(fileName)
             return splitext(base)[0]
 
         self.fileName = inputFileName
-        self.inputFile = open(inputFileName, 'r')
-        self.outputFile = open(outputFileName, 'w')
+        self.inputFile = open(inputFileName, "r")
+        self.outputFile = open(outputFileName, "w")
         self.defaultSuiteName = getBaseName(inputFileName) + "_suite"
-        self.suiteName = ''
+        self.suiteName = ""
 
         self.currentLineNumber = 0
-        self.userModuleName = '' # if any
+        self.userModuleName = ""  # if any
 
         self.userTestCase = {}
-        self.userTestCase['setUpMethod'] = ''
-        self.userTestCase['tearDownMethod'] = ''
-        self.userTestCase['defaultTestParameterNpes'] = [] # is MPI if not empty
-        self.userTestCase['defaultTestParametersExpr'] = ''
-        self.userTestCase['defaultTestParameterCases'] = [] 
+        self.userTestCase["setUpMethod"] = ""
+        self.userTestCase["tearDownMethod"] = ""
+        self.userTestCase["defaultTestParameterNpes"] = []  # is MPI if not empty
+        self.userTestCase["defaultTestParametersExpr"] = ""
+        self.userTestCase["defaultTestParameterCases"] = []
 
-        self.userTestMethods = [] # each entry is a dictionary
+        self.userTestMethods = []  # each entry is a dictionary
+
+        self.looking_for_test_name = False
+        self.current_method = {}
 
         self.wrapModuleName = "Wrap" + getBaseName(inputFileName)
         self.currentLineNumber = 0
 
-        self.actions=[]
+        self.actions = []
         self.actions.append(AtTest(self))
         self.actions.append(IsTestMethod(self))
         self.actions.append(AtMpiTest(self))
@@ -669,318 +856,405 @@ class Parser():
 
         self.actions.append(AtAssert(self))
         self.actions.append(AtAssertAssociated(self))
-#        self.actions.append(AtAssertAssociatedWith(self))
+        #        self.actions.append(AtAssertAssociatedWith(self))
         self.actions.append(AtAssertNotAssociated(self))
-#        self.actions.append(AtAssertNotAssociatedWith(self))
+        #        self.actions.append(AtAssertNotAssociatedWith(self))
 
         self.actions.append(AtAssertEqualUserDefined(self))
         self.actions.append(AtAssertEquivalent(self))
-        
+
         self.actions.append(AtMpiAssert(self))
         self.actions.append(AtBefore(self))
         self.actions.append(AtAfter(self))
         self.actions.append(AtTestParameter(self))
 
-
     def commentLine(self, line):
-        self.outputFile.write(re.sub('@','!@',line))
+        self.outputFile.write(re.sub("@", "!@", line))
+
+    def isDirectiveLine(self, line):
+        """Return True if line begins a pFUnit @-directive (ignoring leading whitespace)."""
+        return bool(re.match(r"\s*@", line))
+
+    def joinContinuationLines(self, line):
+        """Join Fortran & continuation lines for a single @-directive.
+
+        Reads additional physical lines from the input file as long as the
+        current logical line ends with '&' (before any inline comment).
+        Returns the complete logical line with a single trailing newline.
+        Only called for lines that start a pFUnit @-directive.
+        """
+        logical = line.rstrip("\r\n")
+        while True:
+            stripped = logical.rstrip()
+            amp_pos = stripped.rfind("&")
+            comment_pos = stripped.find("!")
+            is_continued = (
+                amp_pos != -1
+                and (comment_pos == -1 or amp_pos < comment_pos)
+                and amp_pos == len(stripped) - 1
+            )
+            if not is_continued:
+                break
+            prefix = logical[:amp_pos]
+            self.currentLineNumber += 1
+            next_raw = self.inputFile.readline()
+            if not next_raw:
+                break
+            tail = next_raw.lstrip()
+            if tail.startswith("&"):
+                tail = tail[1:]
+            logical = prefix + tail.rstrip("\r\n")
+        return logical + "\n"
 
     def run(self):
         def parse(line):
+            # Join & continuation lines only for @-directive lines so that
+            # ordinary Fortran code is passed through unchanged (issue #537).
+            if self.isDirectiveLine(line):
+                line = self.joinContinuationLines(line)
             for action in self.actions:
-                if (action.apply(line)): return
+                if action.apply(line):
+                    return
             self.outputFile.write(line)
 
         while True:
             line = self.nextLine()
-            if  not line: break
+            if not line:
+                break
             parse(line)
 
-        if (not self.suiteName):
+        if not self.suiteName:
             self.suiteName = self.defaultSuiteName
             mname = self.userModuleName
             if mname:
                 base = splitext(basename(self.fileName))[0]
                 # As Fortran is not case-sensitive with module names, we use a case-insensitive match
                 if mname.lower() != base.lower():
-                    raise Exception("pFUnit preprocessor: module name (" + mname + ") and file name (" + base + ") do not match (ignoring case).")
+                    raise Exception(
+                        "pFUnit preprocessor: module name ("
+                        + mname
+                        + ") and file name ("
+                        + base
+                        + ") do not match (ignoring case)."
+                    )
 
-        if ('testParameterType' in self.userTestCase and (not 'constructor' in self.userTestCase)):
-            self.userTestCase['constructor'] = self.userTestCase['testParameterType']
+        if "testParameterType" in self.userTestCase and (
+            not "constructor" in self.userTestCase
+        ):
+            self.userTestCase["constructor"] = self.userTestCase["testParameterType"]
 
         self.makeWrapperModule()
 
     def isComment(self, line):
-        return re.match(r'\s*(!.*|)$', line)
+        return re.match(r"\s*(!.*|)$", line)
 
     def nextLine(self):
         while True:
             self.currentLineNumber += 1
             line = self.inputFile.readline()
-            if not line: break
-            if (self.isComment(line)):
+            if not line:
+                break
+            if self.isComment(line):
                 self.outputFile.write(line)
-                pass
             else:
                 break
         return line
 
-
     def printHeader(self):
-        self.outputFile.write('\n')
-        self.outputFile.write('module ' + self.wrapModuleName + '\n')
-        self.outputFile.write('   use FUnit\n')
-        if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
-        self.outputFile.write('   implicit none\n')
-        self.outputFile.write('   private\n\n')
-
-
+        self.outputFile.write("\n")
+        self.outputFile.write("module " + self.wrapModuleName + "\n")
+        self.outputFile.write("   use FUnit\n")
+        if self.userModuleName:
+            self.outputFile.write("   use " + self.userModuleName + "\n")
+        self.outputFile.write("   implicit none\n")
+        self.outputFile.write("   private\n\n")
 
     def printTail(self):
-        self.outputFile.write('\n')
-        self.outputFile.write('end module ' + self.wrapModuleName + '\n\n')
+        self.outputFile.write("\n")
+        self.outputFile.write("end module " + self.wrapModuleName + "\n\n")
 
     def printWrapUserTestCase(self):
-        self.outputFile.write('   public :: WrapUserTestCase\n')
-        self.outputFile.write('   public :: makeCustomTest\n')
-        self.outputFile.write('   type, extends(' + self.userTestCase['type'] + ') :: WrapUserTestCase\n')
-        self.outputFile.write('      procedure(userTestMethod), nopass, pointer :: testMethodPtr\n')
-        self.outputFile.write('   contains\n')
-        self.outputFile.write('      procedure :: runMethod\n')
-        self.outputFile.write('   end type WrapUserTestCase\n\n')
-        
-        self.outputFile.write('   abstract interface\n')
-        self.outputFile.write('     subroutine userTestMethod(this)\n')
+        self.outputFile.write("   public :: WrapUserTestCase\n")
+        self.outputFile.write("   public :: makeCustomTest\n")
+        self.outputFile.write(
+            "   type, extends(" + self.userTestCase["type"] + ") :: WrapUserTestCase\n"
+        )
+        self.outputFile.write(
+            "      procedure(userTestMethod), nopass, pointer :: testMethodPtr\n"
+        )
+        self.outputFile.write("   contains\n")
+        self.outputFile.write("      procedure :: runMethod\n")
+        self.outputFile.write("   end type WrapUserTestCase\n\n")
+
+        self.outputFile.write("   abstract interface\n")
+        self.outputFile.write("     subroutine userTestMethod(this)\n")
         if self.userModuleName:
-            self.outputFile.write('        use ' + self.userModuleName + '\n')
-        if 'type' in self.userTestCase:
-            self.outputFile.write('        class (' + self.userTestCase['type'] + '), intent(inout) :: this\n')
-        self.outputFile.write('     end subroutine userTestMethod\n')
-        self.outputFile.write('   end interface\n\n')
+            self.outputFile.write("        use " + self.userModuleName + "\n")
+        if "type" in self.userTestCase:
+            self.outputFile.write(
+                "        class ("
+                + self.userTestCase["type"]
+                + "), intent(inout) :: this\n"
+            )
+        self.outputFile.write("     end subroutine userTestMethod\n")
+        self.outputFile.write("   end interface\n\n")
 
     def printRunMethod(self):
-        self.outputFile.write('   subroutine runMethod(this)\n')
-        self.outputFile.write('      class (WrapUserTestCase), intent(inout) :: this\n\n')
-        self.outputFile.write('      call this%testMethodPtr(this)\n')
-        self.outputFile.write('   end subroutine runMethod\n\n')
+        self.outputFile.write("   subroutine runMethod(this)\n")
+        self.outputFile.write(
+            "      class (WrapUserTestCase), intent(inout) :: this\n\n"
+        )
+        self.outputFile.write("      call this%testMethodPtr(this)\n")
+        self.outputFile.write("   end subroutine runMethod\n\n")
 
-            
     def printParameterHeader(self, type):
-        self.outputFile.write('   type (' + type + '), allocatable :: testParameters(:)\n')
-        self.outputFile.write('   type (' + type + ') :: testParameter\n')
-        self.outputFile.write('   integer :: iParam, iCase \n')
-        self.outputFile.write('   integer, allocatable :: cases(:) \n')
-        self.outputFile.write(' \n')
-
+        self.outputFile.write(
+            "   type (" + type + "), allocatable :: testParameters(:)\n"
+        )
+        self.outputFile.write("   type (" + type + ") :: testParameter\n")
+        self.outputFile.write("   integer :: iParam, iCase \n")
+        self.outputFile.write("   integer, allocatable :: cases(:) \n")
+        self.outputFile.write(" \n")
 
     def printMakeSuite(self):
-        self.outputFile.write('function ' + self.suiteName + '() result(suite)\n')
-        self.outputFile.write('   use FUnit\n')
-        if (self.userModuleName): self.outputFile.write('   use ' + self.userModuleName + '\n')
-        self.outputFile.write('   use '+ self.wrapModuleName + '\n')
-        self.outputFile.write('   implicit none'+ '\n')
-        self.outputFile.write('   type (TestSuite) :: suite\n\n')
-        self.outputFile.write('   class (Test), allocatable :: t\n\n')
+        self.outputFile.write("function " + self.suiteName + "() result(suite)\n")
+        self.outputFile.write("   use FUnit\n")
+        if self.userModuleName:
+            self.outputFile.write("   use " + self.userModuleName + "\n")
+        self.outputFile.write("   use " + self.wrapModuleName + "\n")
+        self.outputFile.write("   implicit none" + "\n")
+        self.outputFile.write("   type (TestSuite) :: suite\n\n")
+        self.outputFile.write("   class (Test), allocatable :: t\n\n")
 
         if not self.userModuleName:
             for testMethod in self.userTestMethods:
-                if ('ifdef' in testMethod):
-                    self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
-                elif ('ifndef' in testMethod):
-                    self.outputFile.write('#ifndef ' + testMethod['ifndef'] + '\n')
-                self.outputFile.write('   external ' + testMethod['name'] + '\n')
-                if ('ifdef' in testMethod or 'ifndef' in testMethod):
-                    self.outputFile.write('#endif\n')
-            self.outputFile.write('\n')
-            if 'setUp' in self.userTestCase:
-                self.outputFile.write('   external ' + self.userTestCase['setUp'] + '\n')
-            if 'tearDown' in self.userTestCase:
-                self.outputFile.write('   external ' + self.userTestCase['tearDown'] + '\n')
-            self.outputFile.write('\n')
+                if "ifdef" in testMethod:
+                    self.outputFile.write("#ifdef " + testMethod["ifdef"] + "\n")
+                elif "ifndef" in testMethod:
+                    self.outputFile.write("#ifndef " + testMethod["ifndef"] + "\n")
+                self.outputFile.write("   external " + testMethod["name"] + "\n")
+                if "ifdef" in testMethod or "ifndef" in testMethod:
+                    self.outputFile.write("#endif\n")
+            self.outputFile.write("\n")
+            if "setUp" in self.userTestCase:
+                self.outputFile.write(
+                    "   external " + self.userTestCase["setUp"] + "\n"
+                )
+            if "tearDown" in self.userTestCase:
+                self.outputFile.write(
+                    "   external " + self.userTestCase["tearDown"] + "\n"
+                )
+            self.outputFile.write("\n")
 
-        if 'testParameterType' in self.userTestCase:
-            type = self.userTestCase['testParameterType']
+        if "testParameterType" in self.userTestCase:
+            type = self.userTestCase["testParameterType"]
             self.printParameterHeader(type)
 
         self.outputFile.write("   suite = TestSuite('" + self.suiteName + "')\n\n")
 
         for testMethod in self.userTestMethods:
-            if ('ifdef' in testMethod):
-                self.outputFile.write('#ifdef ' + testMethod['ifdef'] + '\n')
-            elif ('ifndef' in testMethod):
-                self.outputFile.write('#ifndef ' + testMethod['ifndef'] + '\n')
-            if 'type' in self.userTestCase:
+            if "ifdef" in testMethod:
+                self.outputFile.write("#ifdef " + testMethod["ifdef"] + "\n")
+            elif "ifndef" in testMethod:
+                self.outputFile.write("#ifndef " + testMethod["ifndef"] + "\n")
+            if "type" in self.userTestCase:
                 self.addUserTestMethod(testMethod)
             else:
-                if 'npRequests' in testMethod:
+                if "npRequests" in testMethod:
                     self.addMpiTestMethod(testMethod)
-                else: # vanilla
+                else:  # vanilla
                     self.addSimpleTestMethod(testMethod)
-            self.outputFile.write('\n')
-            if ('ifdef' in testMethod or 'ifndef' in testMethod):
-                self.outputFile.write('#endif\n')
+            self.outputFile.write("\n")
+            if "ifdef" in testMethod or "ifndef" in testMethod:
+                self.outputFile.write("#endif\n")
 
-        self.outputFile.write('\nend function ' + self.suiteName + '\n\n')
+        self.outputFile.write("\nend function " + self.suiteName + "\n\n")
 
     def addSimpleTestMethod(self, testMethod):
-        args = "'" + testMethod['name'] + "', &\n      " + testMethod['name']
-        if 'setUp' in testMethod:
-            args += ', ' + 'setUp='+testMethod['setUp']
-        elif 'setUp' in self.userTestCase:
-            args += ', ' + 'setUp='+self.userTestCase['setUp']
+        args = "'" + testMethod["name"] + "', &\n      " + testMethod["name"]
+        if "setUp" in testMethod:
+            args += ", " + "setUp=" + testMethod["setUp"]
+        elif "setUp" in self.userTestCase:
+            args += ", " + "setUp=" + self.userTestCase["setUp"]
 
-        if 'tearDown' in testMethod:
-            args += ', ' + 'tearDown='+testMethod['tearDown']
-        elif 'tearDown' in self.userTestCase:
-            args += ', ' + 'tearDown='+self.userTestCase['tearDown']
+        if "tearDown" in testMethod:
+            args += ", " + "tearDown=" + testMethod["tearDown"]
+        elif "tearDown" in self.userTestCase:
+            args += ", " + "tearDown=" + self.userTestCase["tearDown"]
 
-        if 'type' in testMethod:
-            type =  testMethod['type']
+        if "type" in testMethod:
+            type = testMethod["type"]
         else:
-            type = 'TestMethod'
+            type = "TestMethod"
 
-        self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
-        self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
-        if ('disable' in testMethod):
-            self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
-        self.outputFile.write('   call suite%addTest(t)\n')
+        self.outputFile.write("   if(allocated(t)) deallocate(t)\n")
+        self.outputFile.write("   allocate(t, source=" + type + "(" + args + "))\n")
+        if "disable" in testMethod:
+            self.outputFile.write("   call t%insert(Disable%type_name(),Disable)\n")
+        self.outputFile.write("   call suite%addTest(t)\n")
 
     def addMpiTestMethod(self, testMethod):
-        for npes in testMethod['npRequests']:
-            args = "'" + testMethod['name'] + "', &\n      " + testMethod['name'] + ", " + str(npes)
-            if 'setUp' in testMethod:
-                args += ', ' + testMethod['setUp']
-            elif 'setUp' in self.userTestCase:
-                args += ', ' + self.userTestCase['setUp']
+        for npes in testMethod["npRequests"]:
+            args = (
+                "'"
+                + testMethod["name"]
+                + "', &\n      "
+                + testMethod["name"]
+                + ", "
+                + str(npes)
+            )
+            if "setUp" in testMethod:
+                args += ", " + testMethod["setUp"]
+            elif "setUp" in self.userTestCase:
+                args += ", " + self.userTestCase["setUp"]
 
-            if 'tearDown' in testMethod:
-                args += ', ' + testMethod['tearDown']
-            elif 'tearDown' in self.userTestCase:
-                args += ', ' + self.userTestCase['tearDown']
+            if "tearDown" in testMethod:
+                args += ", " + testMethod["tearDown"]
+            elif "tearDown" in self.userTestCase:
+                args += ", " + self.userTestCase["tearDown"]
 
-            if 'type' in testMethod:
-                type =  testMethod['type']
+            if "type" in testMethod:
+                type = testMethod["type"]
             else:
-                type = 'MpiTestMethod'
-                    
-            self.outputFile.write('   if(allocated(t)) deallocate(t)\n')
-            self.outputFile.write('   allocate(t, source=' + type + '(' + args + '))\n')
-            if ('disable' in testMethod):
-                self.outputFile.write('   call t%insert(Disable%type_name(),Disable)\n')
-            self.outputFile.write('   call suite%addTest(t)\n')
+                type = "MpiTestMethod"
 
+            self.outputFile.write("   if(allocated(t)) deallocate(t)\n")
+            self.outputFile.write("   allocate(t, source=" + type + "(" + args + "))\n")
+            if "disable" in testMethod:
+                self.outputFile.write("   call t%insert(Disable%type_name(),Disable)\n")
+            self.outputFile.write("   call suite%addTest(t)\n")
 
-    
     def addUserTestMethod(self, testMethod):
 
-        args = "'" + testMethod['name'] + "', " + testMethod['name']
-        if 'npRequests' in testMethod:
-            npRequests = testMethod['npRequests']
+        args = "'" + testMethod["name"] + "', " + testMethod["name"]
+        if "npRequests" in testMethod:
+            npRequests = testMethod["npRequests"]
         else:
-            if 'npRequests' in self.userTestCase:
-                npRequests = self.userTestCase['npRequests']
+            if "npRequests" in self.userTestCase:
+                npRequests = self.userTestCase["npRequests"]
             else:
                 npRequests = [1]
 
-        if 'cases' in testMethod:
-            cases = testMethod['cases']
-        elif 'cases' in self.userTestCase:
-            cases = self.userTestCase['cases']
+        if "cases" in testMethod:
+            cases = testMethod["cases"]
+        elif "cases" in self.userTestCase:
+            cases = self.userTestCase["cases"]
 
-        testParameterArg = '' # unless
+        testParameterArg = ""  # unless
 
-        if 'cases' in locals():
-            testParameterArg = ', testParameter'
-            self.outputFile.write('   cases = ' + testMethod['cases'] + '\n')
-            self.outputFile.write('   testParameters = [(' + 
-                                  self.userTestCase['testParameterConstructor'] + 
-                                  '(cases(iCase)), iCase = 1, size(cases))]\n\n')
+        if "cases" in locals():
+            testParameterArg = ", testParameter"
+            self.outputFile.write("   cases = " + testMethod["cases"] + "\n")
+            self.outputFile.write(
+                "   testParameters = [("
+                + self.userTestCase["testParameterConstructor"]
+                + "(cases(iCase)), iCase = 1, size(cases))]\n\n"
+            )
 
-        if 'testParameterType' in self.userTestCase:
-            if 'testParameters' in testMethod:
-                testParameters = testMethod['testParameters']
-            elif 'testParameters' in self.userTestCase:
-                testParameters = self.userTestCase['testParameters']
+        if "testParameterType" in self.userTestCase:
+            if "testParameters" in testMethod:
+                testParameters = testMethod["testParameters"]
+            elif "testParameters" in self.userTestCase:
+                testParameters = self.userTestCase["testParameters"]
 
-        isMpiTestCase = 'npRequests' in self.userTestCase
-        isMpiTestCase = isMpiTestCase or any('npRequests' in testMethod for testMethod in self.userTestMethods)
+        isMpiTestCase = "npRequests" in self.userTestCase
+        isMpiTestCase = isMpiTestCase or any(
+            "npRequests" in testMethod for testMethod in self.userTestMethods
+        )
 
-        if 'testParameters' in locals():
-            testParameterArg = ', testParameter'
-            self.outputFile.write('   testParameters = ' + testParameters + '\n\n')
+        if "testParameters" in locals():
+            testParameterArg = ", testParameter"
+            self.outputFile.write("   testParameters = " + testParameters + "\n\n")
         elif isMpiTestCase:
-            testParameterArg = ', testParameter'
-        
+            testParameterArg = ", testParameter"
 
         for npes in npRequests:
-
-            if 'testParameters' in locals() or 'cases' in locals():
-                self.outputFile.write('   do iParam = 1, size(testParameters)\n')
-                self.outputFile.write('      testParameter = testParameters(iParam)\n')
+            if "testParameters" in locals() or "cases" in locals():
+                self.outputFile.write("   do iParam = 1, size(testParameters)\n")
+                self.outputFile.write("      testParameter = testParameters(iParam)\n")
 
             if isMpiTestCase:
-                self.outputFile.write('   call testParameter%setNumProcessesRequested(' + str(npes) + ')\n')
+                self.outputFile.write(
+                    "   call testParameter%setNumProcessesRequested("
+                    + str(npes)
+                    + ")\n"
+                )
 
-            self.outputFile.write('   call suite%addTest(makeCustomTest(' + 
-                                  args + testParameterArg + '))\n')
-            if 'cases' in locals() or 'testParameters' in locals():
-                self.outputFile.write('   end do\n')
-
-                
+            self.outputFile.write(
+                "   call suite%addTest(makeCustomTest("
+                + args
+                + testParameterArg
+                + "))\n"
+            )
+            if "cases" in locals() or "testParameters" in locals():
+                self.outputFile.write("   end do\n")
 
     def printMakeCustomTest(self, isMpiTestCase):
-        args = 'methodName, testMethod'
-        declareArgs = '      type (WrapUserTestCase) :: aTest\n'
-        declareArgs += '      character(len=*), intent(in) :: methodName\n'
-        declareArgs += '      procedure(userTestMethod) :: testMethod\n'
-        
-        if 'testParameterType' in self.userTestCase:
-            args += ', testParameter'
-            declareArgs += '      type (' + self.userTestCase['testParameterType'] + '), intent(in) :: testParameter\n'
+        args = "methodName, testMethod"
+        declareArgs = "      type (WrapUserTestCase) :: aTest\n"
+        declareArgs += "      character(len=*), intent(in) :: methodName\n"
+        declareArgs += "      procedure(userTestMethod) :: testMethod\n"
 
-        self.outputFile.write('   function makeCustomTest(' + args + ') result(aTest)\n')
+        if "testParameterType" in self.userTestCase:
+            args += ", testParameter"
+            declareArgs += (
+                "      type ("
+                + self.userTestCase["testParameterType"]
+                + "), intent(in) :: testParameter\n"
+            )
+
+        self.outputFile.write(
+            "   function makeCustomTest(" + args + ") result(aTest)\n"
+        )
         self.outputFile.write(declareArgs)
 
-        if 'constructor' in self.userTestCase:
-            if 'testParameterType' in self.userTestCase:
-                constructor = self.userTestCase['constructor'] + '(testParameter)'
+        if "constructor" in self.userTestCase:
+            if "testParameterType" in self.userTestCase:
+                constructor = self.userTestCase["constructor"] + "(testParameter)"
             else:
-                constructor = self.userTestCase['constructor'] + '()'
-            self.outputFile.write('      aTest%' + self.userTestCase['type'] + ' = ' + constructor + '\n\n')
+                constructor = self.userTestCase["constructor"] + "()"
+            self.outputFile.write(
+                "      aTest%"
+                + self.userTestCase["type"]
+                + " = "
+                + constructor
+                + "\n\n"
+            )
 
-        self.outputFile.write('      aTest%testMethodPtr => testMethod\n')
-        
-        self.outputFile.write('#ifdef INTEL_13\n')
-        self.outputFile.write('      p => aTest\n')
-        self.outputFile.write('      call p%setName(methodName)\n')
-        self.outputFile.write('#else\n')
-        self.outputFile.write('      call aTest%setName(methodName)\n')
-        self.outputFile.write('#endif\n')
+        self.outputFile.write("      aTest%testMethodPtr => testMethod\n")
 
-        if 'testParameterType' in self.userTestCase:
-            self.outputFile.write('      call aTest%setTestParameter(testParameter)\n')
-        
+        self.outputFile.write("#ifdef INTEL_13\n")
+        self.outputFile.write("      p => aTest\n")
+        self.outputFile.write("      call p%setName(methodName)\n")
+        self.outputFile.write("#else\n")
+        self.outputFile.write("      call aTest%setName(methodName)\n")
+        self.outputFile.write("#endif\n")
 
-        self.outputFile.write('   end function makeCustomTest\n')
+        if "testParameterType" in self.userTestCase:
+            self.outputFile.write("      call aTest%setTestParameter(testParameter)\n")
+
+        self.outputFile.write("   end function makeCustomTest\n")
 
     def makeWrapperModule(self):
-        #-----------------------------------------------------------
+        # -----------------------------------------------------------
         # ! Start here
         self.printHeader()
 
-        if 'type' in self.userTestCase:
+        if "type" in self.userTestCase:
             self.printWrapUserTestCase()
-        
-        self.outputFile.write('contains\n\n')
 
-        if 'type' in self.userTestCase:
+        self.outputFile.write("contains\n\n")
+
+        if "type" in self.userTestCase:
             self.printRunMethod()
 
-        if 'type' in self.userTestCase:
-            isMpiTestCase = 'npRequests' in self.userTestCase
-            isMpiTestCase = isMpiTestCase or any('npRequests' in testMethod for testMethod in self.userTestMethods)
-            if isMpiTestCase and not 'testParameterType' in self.userTestCase:
-                self.userTestCase['testParameterType'] = 'MpiTestParameter'
+        if "type" in self.userTestCase:
+            isMpiTestCase = "npRequests" in self.userTestCase
+            isMpiTestCase = isMpiTestCase or any(
+                "npRequests" in testMethod for testMethod in self.userTestMethods
+            )
+            if isMpiTestCase and not "testParameterType" in self.userTestCase:
+                self.userTestCase["testParameterType"] = "MpiTestParameter"
 
             self.printMakeCustomTest(isMpiTestCase)
 

@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.14.0
+  VERSION 4.18.1
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -156,24 +156,26 @@ if (ENABLE_BUILD_DOXYGEN)
   add_subdirectory(documentation)
 endif()
 
-if (NOT TARGET build-tests)
-  add_custom_target(build-tests)
+if (ENABLE_TESTS)
+  if (NOT TARGET build-tests)
+    add_custom_target(build-tests)
+  endif()
+
+  if (NOT TARGET tests)
+    add_custom_target(tests
+      COMMAND ${CMAKE_CTEST_COMMAND}
+      EXCLUDE_FROM_ALL)
+  endif ()
+  add_dependencies(tests build-tests)
+  add_subdirectory (tests EXCLUDE_FROM_ALL)
+
+  # The following forces tests to be built when using "make ctest" even if some targets
+  # are EXCLUDE_FROM_ALL
+  # From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
+  build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+  string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
+  file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 endif()
-
-if (NOT TARGET tests)
-  add_custom_target(tests
-    COMMAND ${CMAKE_CTEST_COMMAND}
-    EXCLUDE_FROM_ALL)
-endif ()
-add_dependencies(tests build-tests)
-add_subdirectory (tests EXCLUDE_FROM_ALL)
-
-# The following forces tests to be built when using "make ctest" even if some targets
-# are EXCLUDE_FROM_ALL
-# From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
-build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
-string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
-file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 
 # The following is needed for external projects using *nix make when
 # parent project builds pFUnit as a subproject.
@@ -245,3 +247,16 @@ if (NOT MAIN_PROJECT)
   include(add_pfunit_test)
   include(add_pfunit_ctest)
 endif()
+
+# https://www.scivision.dev/cmake-auto-gitignore-build-dir/
+# --- auto-ignore build directory
+if(NOT EXISTS ${PROJECT_BINARY_DIR}/.gitignore)
+  file(WRITE ${PROJECT_BINARY_DIR}/.gitignore "*")
+endif()
+
+# Piggyback that file into install
+install(
+   FILES ${PROJECT_BINARY_DIR}/.gitignore
+   DESTINATION ${CMAKE_INSTALL_PREFIX}
+   )
+

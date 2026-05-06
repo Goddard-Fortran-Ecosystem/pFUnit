@@ -27,7 +27,7 @@ contains
 
    logical function run(load_tests) result(status)
       procedure(LoadTests_interface) :: load_tests
-      
+
       type (SerialContext) :: c
 
       status = generic_run(load_tests, c)
@@ -38,18 +38,26 @@ contains
       use fArgParse
       use pf_StringUtilities
       use pf_AbstractPrinter
+      use gFTL2_StringVector, only: gFTL2_SV => StringVector
+      use pf_Test
+      use pf_TestVector
+      use pf_GlobFilter
+#ifndef _WIN32
+      use pf_RegexFilter
+#endif
       procedure(LoadTests_interface) :: load_tests
       class(ParallelContext), intent(in) :: context
 
-      type (TestSuite), target :: suite
+      type (TestSuite), target :: suite, unfiltered
       class(BaseTestRunner), allocatable :: runner
       type (TestResult) :: r
       type(ArgParser), target :: parser
       logical :: debug
       logical :: xml
+      logical :: shuffle
+      integer :: random_seed
       type (StringUnlimitedMap) :: options
       class(*), pointer :: option
-      character(:), allocatable :: pattern
       integer :: unit
       integer :: n_skip
       character(:), allocatable :: ofile
@@ -91,8 +99,8 @@ contains
       case default
          ERROR STOP 'unsupported runner'
       end select
-         
-      
+
+
       option => options%at('debug')
       if (associated(option)) then
          call cast(option, debug)
@@ -108,17 +116,257 @@ contains
       end if
 
 
-      suite = load_tests()
+
+      ! Load all tests first
+      unfiltered = TestSuite()
+      call load_tests(unfiltered)
+
+      ! Apply include filters (-f)
       option => options%at('filter')
       if (associated(option)) then
-         call cast(option, pattern)
-         suite = suite%filter(NameFilter(pattern))
+         call apply_include_filters(option, unfiltered, suite, unit)
+      else
+         suite = unfiltered
       end if
-      
+
+      ! Apply exclude filters (-e)
+      option => options%at('exclude')
+      if (associated(option)) then
+         call apply_exclude_filters(option, suite, unit)
+      end if
+
+      ! Apply shuffle if requested
+      shuffle = .false.
+      option => options%at('shuffle')
+      if (associated(option)) then
+         call cast(option, shuffle)
+      end if
+
+      random_seed = 0
+      option => options%at('random_seed')
+      if (associated(option)) then
+         call cast(option, random_seed)
+         if (random_seed /= 0) shuffle = .true.  ! Seed implies shuffle
+      end if
+
+      if (shuffle) then
+         call suite%set_shuffle(random_seed)
+      end if
+
       r = runner%run(suite, context)
       status = r%wasSuccessful()
 
    contains
+
+
+      logical function is_regex_pattern(pattern)
+         character(*), intent(in) :: pattern
+         ! Check for regex metacharacters that don't exist in glob
+         is_regex_pattern = index(pattern, '^') > 0 .or. &
+                            index(pattern, '$') > 0 .or. &
+                            index(pattern, '[') > 0 .or. &
+                            index(pattern, ']') > 0 .or. &
+                            index(pattern, '(') > 0 .or. &
+                            index(pattern, ')') > 0 .or. &
+                            index(pattern, '|') > 0 .or. &
+                            index(pattern, '+') > 0 .or. &
+                            index(pattern, '{') > 0 .or. &
+                            index(pattern, '}') > 0
+      end function is_regex_pattern
+
+
+       subroutine apply_include_filters(option, unfiltered, suite, unit)
+          class(*), pointer :: option
+          type(TestSuite), intent(in) :: unfiltered
+          type(TestSuite), intent(inout) :: suite
+          integer, intent(in) :: unit
+
+          type(gFTL2_SV) :: patterns
+          type(TestSuite) :: temp_suite
+          character(:), allocatable :: pattern
+          integer :: i
+
+          ! Check if patterns are provided
+          select type (option)
+          type is (character(*))
+             ! Single pattern as string - convert to vector with one element
+             patterns = gFTL2_SV()
+             call patterns%push_back(option)
+          class is (gFTL2_SV)
+             patterns = option
+          class default
+             ! Try to cast
+             call cast(option, patterns)
+          end select
+
+          if (patterns%size() == 0) then
+            ! No patterns specified, include all tests
+            suite = unfiltered
+            return
+         end if
+
+         ! Initialize empty suite
+         suite = TestSuite()
+
+          ! OR logic: include if matches ANY pattern
+          do i = 1, patterns%size()
+             pattern = trim(adjustl(patterns%at(i)))
+             temp_suite = TestSuite()
+
+#ifndef _WIN32
+             ! Unix: use regex
+             call unfiltered%filter_sub(RegexFilter(pattern), temp_suite)
+#else
+            ! Windows: use glob, warn if regex syntax detected
+            if (is_regex_pattern(pattern)) then
+               write(unit, '(a)') 'WARNING: Regex syntax detected but not supported on Windows.'
+               write(unit, '(a)') '         Using glob pattern matching instead.'
+            end if
+            call unfiltered%filter_sub(GlobFilter(pattern), temp_suite)
+#endif
+
+            ! Merge temp_suite into suite (union)
+            call merge_suites(suite, temp_suite)
+         end do
+      end subroutine apply_include_filters
+
+
+      subroutine apply_exclude_filters(option, suite, unit)
+         class(*), pointer :: option
+         type(TestSuite), intent(inout) :: suite
+         integer, intent(in) :: unit
+
+         type(gFTL2_SV) :: patterns
+         type(TestSuite) :: excluded
+         character(:), allocatable :: pattern
+         integer :: i
+
+          ! Check if patterns are provided
+          select type (option)
+          type is (character(*))
+             ! Single pattern as string
+             patterns = gFTL2_SV()
+             call patterns%push_back(option)
+             write(unit,'(a,i0,a)') 'DEBUG EXCLUDE: Got single pattern, size=', patterns%size()
+          class is (gFTL2_SV)
+             patterns = option
+          class default
+             call cast(option, patterns)
+          end select
+
+          if (patterns%size() == 0) then
+             ! No exclusions
+             return
+          end if
+
+          ! OR logic: exclude if matches ANY pattern
+          do i = 1, patterns%size()
+             pattern = trim(adjustl(patterns%at(i)))
+             excluded = TestSuite()
+
+             ! Always use glob for exclude (simpler, works everywhere)
+             call suite%filter_sub(GlobFilter(pattern), excluded)
+
+             ! Remove matches from suite
+             call subtract_suite(suite, excluded)
+          end do
+      end subroutine apply_exclude_filters
+
+
+      subroutine merge_suites(target_suite, source_suite)
+         use PF_Test, only: Test
+         use PF_TestVector, only: TestVector
+         type(TestSuite), intent(inout) :: target_suite
+         type(TestSuite), intent(in) :: source_suite
+
+         type(TestVector) :: test_list
+         class(Test), pointer :: t
+         integer :: i
+
+         ! Get all test cases from source suite
+         call source_suite%getTestCases(test_list)
+
+         ! Add each test to target suite if not already present
+         do i = 1, test_list%size()
+            t => test_list%at(i)
+            if (.not. suite_contains_test(target_suite, t)) then
+               call target_suite%tests%push_back(t)
+            end if
+         end do
+      end subroutine merge_suites
+
+
+      logical function suite_contains_test(suite, aTest) result(contains)
+         use PF_Test, only: Test
+         use PF_TestVector, only: TestVector
+         type(TestSuite), intent(in) :: suite
+         class(Test), pointer, intent(in) :: aTest
+
+         type(TestVector) :: test_list
+         class(Test), pointer :: t
+         integer :: i
+
+         contains = .false.
+
+         call suite%getTestCases(test_list)
+         do i = 1, test_list%size()
+            t => test_list%at(i)
+            if (t%getName() == aTest%getName()) then
+               contains = .true.
+               return
+            end if
+         end do
+      end function suite_contains_test
+
+
+       subroutine subtract_suite(target_suite, exclude_suite)
+          use PF_Test, only: Test
+          use PF_TestVector, only: TestVector
+          type(TestSuite), intent(inout) :: target_suite
+          type(TestSuite), intent(in) :: exclude_suite
+
+          type(TestVector) :: exclude_list, new_list, target_list
+          class(Test), pointer :: t
+          integer :: i
+
+          ! Get list of tests to exclude
+          call exclude_suite%getTestCases(exclude_list)
+          
+          ! Get current tests from target
+          call target_suite%getTestCases(target_list)
+
+          ! Build new test vector without excluded tests
+          new_list = TestVector()
+          do i = 1, target_list%size()
+             t => target_list%at(i)
+             if (.not. is_in_exclude_list(t, exclude_list)) then
+                call new_list%push_back(t)
+             end if
+          end do
+
+          ! Replace target's test vector
+          target_suite%tests = new_list
+       end subroutine subtract_suite
+
+
+       logical function is_in_exclude_list(aTest, exclude_list) result(excluded)
+          use PF_Test, only: Test
+          use PF_TestVector, only: TestVector
+          class(Test), pointer, intent(in) :: aTest
+          type(TestVector), intent(in) :: exclude_list
+
+          class(Test), pointer :: t
+          integer :: i
+
+          excluded = .false.
+          do i = 1, exclude_list%size()
+             t => exclude_list%at(i)
+             if (t%getName() == aTest%getName()) then
+                excluded = .true.
+                return
+             end if
+          end do
+       end function is_in_exclude_list
 
 
       subroutine set_command_line_options()
@@ -127,7 +375,12 @@ contains
               & help='make output more verbose')
 
          call parser%add_argument('-f', '--filter', action='store', &
-              & help='only run tests that match pattern')
+              & n_arguments='*', &
+              & help='run tests matching pattern(s) (regex on Unix, glob on Windows)')
+
+         call parser%add_argument('-e', '--exclude', action='store', &
+              & n_arguments='*', &
+              & help='skip tests matching glob pattern(s)')
 
          call parser%add_argument('-o', '--output', action='store', &
               & help='only run tests that match pattern')
@@ -143,8 +396,15 @@ contains
               & dest='tap_file', action='store', default=0, &
               & help='add a TAP listener and send results to file name')
 
-         call parser%add_argument('-x', '--xml', action='store_true', &
-              & help='print results with XmlPrinter')
+      call parser%add_argument('-x', '--xml', action='store_true', &
+           & help='print results with XmlPrinter')
+
+      call parser%add_argument('--shuffle', action='store_true', &
+           & help='randomize test execution order within each suite')
+
+      call parser%add_argument('--seed', type='integer', &
+           & dest='random_seed', action='store', default=0, &
+           & help='random seed for test shuffling (0=time-based, implies --shuffle)')
 
 #ifndef _GNU
          options = parser%parse_args()
@@ -153,7 +413,7 @@ contains
 #endif
       end subroutine set_command_line_options
    end function generic_run
-   
+
 
    subroutine finalize(extra, successful)
 #ifdef NAG

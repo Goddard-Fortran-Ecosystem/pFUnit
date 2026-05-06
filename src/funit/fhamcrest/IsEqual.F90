@@ -21,18 +21,20 @@ module pf_IsEqual
      procedure :: describe_to
      procedure :: describe_mismatch
 
-     procedure :: matches_array_1d
-     procedure :: matches_array_2d
-     procedure :: matches_array_3d
-     procedure :: matches_intrinsic
-  end type IsEqual
+      procedure :: matches_array_1d
+      procedure :: matches_array_2d
+      procedure :: matches_array_3d
+      procedure :: matches_array_4d
+      procedure :: matches_intrinsic
+   end type IsEqual
 
-  interface equal_to
-     module procedure :: equal_to_scalar
-     module procedure :: equal_to_array_1d
-     module procedure :: equal_to_array_2d
-     module procedure :: equal_to_array_3d
-  end interface equal_to
+   interface equal_to
+      module procedure :: equal_to_scalar
+      module procedure :: equal_to_array_1d
+      module procedure :: equal_to_array_2d
+      module procedure :: equal_to_array_3d
+      module procedure :: equal_to_array_4d
+   end interface equal_to
 
 contains
 
@@ -72,6 +74,15 @@ contains
   end function equal_to_array_3d
 
 
+  function equal_to_array_4d(operand) result(matcher)
+    type (IsEqual) :: matcher
+    class(*), intent(in) :: operand(:,:,:,:)
+
+    matcher%expected_value = ArrayWrapper(operand)
+
+  end function equal_to_array_4d
+
+
   subroutine describe_to(this, description)
     class(IsEqual), intent(in):: this
     class(MatcherDescription), intent(inout) :: description
@@ -106,6 +117,8 @@ contains
        matches = this%matches_array_2d(e%items, actual_value)
     type is (ArrayWrapper_3d)
        matches = this%matches_array_3d(e%items, actual_value)
+    type is (ArrayWrapper_4d)
+       matches = this%matches_array_4d(e%items, actual_value)
     class is (Matchable)
        matches = (e == actual_value)
     class default ! intrinsics
@@ -213,6 +226,44 @@ contains
     end select
 
   end function matches_array_3d
+
+
+
+  logical function matches_array_4d(this, expected_items, actual_value)
+    class(IsEqual), intent(in) :: this
+    class(*), intent(in) :: expected_items(:,:,:,:)
+    class(*), intent(in) :: actual_value
+
+    integer :: i, j, k, l
+    type (IsEqual) :: m
+
+    _UNUSED_DUMMY(this)
+
+    select type (a => actual_value)
+    type is (ArrayWrapper_4d)
+       if (all(shape(a%items) == shape(expected_items))) then
+          do l = 1, size(a%items,4)
+             do k = 1, size(a%items,3)
+                do j = 1, size(a%items,2)
+                   do i = 1, size(a%items,1)
+                      m = equal_to(expected_items(i,j,k,l))
+                      if (.not. m%matches(a%items(i,j,k,l))) then
+                         matches_array_4d = .false.
+                         return
+                      end if
+                   end do
+                end do
+             end do
+          end do
+          matches_array_4d = .true.
+       else
+          matches_array_4d = .false. ! differing shape/size
+       end if
+    class default
+       matches_array_4d = .false. ! differing types
+    end select
+
+  end function matches_array_4d
 
 
 

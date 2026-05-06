@@ -1,0 +1,39 @@
+module Test_AssertExceptionRaised
+   use FUnit
+
+   @suite(name='AssertExceptionRaised_suite')
+
+contains
+
+   ! Verify that two successive @assertExceptionRaised directives can each
+   ! catch their own exception when two exceptions have been raised.
+   ! Prior to fix for GH-543, the first @assertExceptionRaised would emit
+   ! 'if (anyExceptions()) return', short-circuiting before the second
+   ! exception could be caught.
+   @test
+   subroutine test_catch_two_exceptions()
+      call throw('msg_x')
+      call throw('msg_y')
+
+      @assertExceptionRaised('msg_x')
+      @assertExceptionRaised('msg_y')
+
+   end subroutine test_catch_two_exceptions
+
+
+   ! Sanity check: a single @assertExceptionRaised still works as before.
+   @test
+   subroutine test_catch_single_exception()
+      call throw('some error')
+      @assertExceptionRaised('some error')
+   end subroutine test_catch_single_exception
+
+
+   ! Verify that @assertExceptionRaised() (no message) clears any exception.
+   @test
+   subroutine test_catch_any_exception()
+      call throw('anything')
+      @assertExceptionRaised()
+   end subroutine test_catch_any_exception
+
+end module Test_AssertExceptionRaised

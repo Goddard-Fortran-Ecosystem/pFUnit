@@ -3,7 +3,123 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.18.1] - 2026-05-05
+
+### Fixed
+
+- Workaround GCC 16.1.0 regression in `TestResult%getName()` (issue #548)
+  - GCC 16.1.0 incorrectly copies only padding spaces (or garbage for
+    polymorphic dispatch) when assigning a `character(len=N)` component to a
+    `character(:), allocatable` function result variable
+  - Fixed by using `trim(this%name)` in the assignment, which avoids the
+    compiler bug and is also semantically correct
+  - A standalone reproducer and GCC Bugzilla report have been filed for the
+    upstream compiler bug
+
+## [4.18.0] - 2026-04-24
+
+### Changed
+
+- Updated CI workflow to use OpenMPI 5.0.10 (previously 5.0.2) on all platforms
+- Simplified CI MPI cache key to be per-OS only (previously per-OS and per-compiler), reducing redundant cache entries
+- Added `concurrency` group to CI workflow to cancel in-progress runs when a new commit is pushed to the same PR
+- Removed `macos-14` (Sonoma) from the CI runner matrix; it is deprecated upstream and two OS releases behind
+- Added `macos-26` (macOS Tahoe) to the GNU CI runner matrix
+- Updated `actions/upload-artifact` from v6 to v7 in `main.yml`
+- Updated `actions/checkout` from v2 to v6 in `release-tarball.yml`
+- Updated `README.md`: removed stale `pFUnit 4.0` title, updated LICENSE description to Apache-2.0 (as of v4.17.0), fixed `ChangeLog` reference to `ChangeLog.md`, removed non-existent `VERSION` file entry, removed Python 2.7 references
+
+### Added
+
+- Extended `near()` and `relatively_near()` Hamcrest matchers to support `REAL64` and array ranks 1–4 (issue #542)
+  - New typed matcher types: `IsNear_32`, `IsNear_64`, `IsRelativelyNear_32`, `IsRelativelyNear_64`
+  - Tolerance precision matches the expected value's precision
+  - For arrays, the actual value may be of higher precision than expected (e.g. `real(REAL64)` actual with default-real expected and tolerance), as a convenience to the test writer
+  - For scalars, both precision directions are accepted to preserve backward compatibility
+- Extended `equal_to()` Hamcrest matcher and `assert_that()` to support rank-4 arrays
+
+### Fixed
+- `@assertExceptionRaised` no longer short-circuits after catching one exception (issue #543)
+  - Previously, the generated code emitted `if (anyExceptions()) return` after every
+    `@assertExceptionRaised`, preventing successive calls from catching additional exceptions
+  - Multiple exceptions can now each be caught with successive `@assertExceptionRaised` directives
+- Allow for larger integer value comparisons greater than 20 digits (issue #540)
+  - Previously, a large but valid `_int64` based integer would fail to be written
+    to a string because of being hard coded to only be allocated 20 characters
+  - Now supports up to 45 digits including potential `-` sign matching
+    supported real value digit count
+
+## [4.17.1] - 2026-04-09
+
+### Fixed
+
+- Ordinary Fortran `&` continuation lines are now passed through unchanged (issue #537)
+  - Previously, the preprocessor incorrectly joined all `&`-continued lines, breaking
+    multi-line array constructors and embedding Fortran comments mid-statement
+  - Continuation joining now only applies to pFUnit `@`-directive lines
+
+## [4.17.0] - 2026-04-08
+
+### Changed
+
+- Updated license to Apache-2.0
+  - Renamed and retained old NOSA license as `LICENSE-NOSA` for historical reference
+
+### Added
+
+- Test shuffling support to detect hidden test dependencies (issue #530)
+  - `--shuffle` flag to randomize test execution order within each suite
+  - `--seed=N` option to specify random seed for reproducibility (0 uses time-based seed, implies --shuffle)
+  - Fisher-Yates shuffle algorithm implemented in `TestSuite` module
+  - Both unit tests and integration tests included
+- Multi-line continuation support for pFUnit macros (issue #532)
+  - Assertion macros (e.g., `@assertEqual`) now support Fortran `&` line continuation
+  - Whitespace is preserved exactly as written when joining continued lines
+- Fix documentation generation with Doxygen.
+  - Split single documentation file into pages for easier management.
+  - Add documentation missing for assertions.
+  - Added a failure message to the assertEqual test.
+
+## [4.16.0] - 2026-02-23
+
+### Added
+
+- Advanced test filtering with regex and glob patterns (issue #523)
+  - `-f`/`--filter` flag supports POSIX regex on Unix/Linux/macOS, glob patterns on Windows
+  - `-e`/`--exclude` flag for anti-filtering using glob patterns on all platforms
+  - Multiple space-separated patterns supported (OR logic)
+  - New modules: `RegexFilter`, `GlobFilter`, and C wrapper for POSIX regex
+  - Backward compatible with existing simple substring filtering
+
+### Changed
+
+- Update submodule (fArgParse v1.11.0)
+- Minor cleanup to CI
+- Turned off NVHPC CI test as it seems the image is too large for Github Actions.  Will investigate further and re-enable when possible.
+- Removed some unneeded debugging prints in `pFUnitParser.py`
+
+### Fixed
+
+- Fix `add_pfunit_ctest` to properly track test file dependencies (issue #380)
+  - Adding new `.pf` files to `TEST_SOURCES` now triggers automatic rebuild without `make clean`
+  - Test suite registry (`.inc` file) generation moved from configure-time to build-time
+  - Added build-time dependency tracking between `.pf` files and generated registry
+  - Driver recompilation now triggered automatically when registry changes
+  - New helper script: `include/generate_test_suite_inc.cmake`
+
+## [4.15.0] - 2025-11-24
+
+### Changed
+
+- Workaround for complex flang use case.
+  - Modified an internal interface so that `load_tests` is now a subroutine. 
+  - Also added a subroutine version of `TestSuite::filter()` (called `filter_sub()`
+- Remove `gfortran-12` from macos CI tests
+
+### Fixed
+
+- Undo accidental case change in `add_pfunit_test` (introduced in #509) which led to empty `_TEST_SUITES`
+- Enable `build-tests` and `tests` targets only if `ENABLE_TESTS` is `ON`.
 
 ## [4.14.0] - 2025-10-14
 

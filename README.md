@@ -1,4 +1,4 @@
-# pFUnit 4.0
+# pFUnit
 
 pFUnit is a unit testing framework enabling JUnit-like testing of
 serial and MPI-parallel software written in Fortran.  Limited support
@@ -42,17 +42,14 @@ comprehensive, and earlier compilers may work for some user code.
   - NAG v7.2
   - GFortran v12+
 - CMake v3.24+
-- Python v2.7* or v3.x
+- Python v3.x
 - make (or ninja or ...)
 - Optional
   - MPI (tested with OpenMPI and Intel MPI)
   - OpenMP
   
 Doxygen was used to generate documention for pFUnit 3, but is not being
-maintained.   My intent instead is to leverage the GitHub wiki to better
-maintain features.
-
-**Note that support for Python 2.7 my soon disappear.**
+maintained.
 
 
 ## Obtaining pFUnit
@@ -103,18 +100,15 @@ files.
 - `COPYRIGHT` - Contains information pertaining to the use and
   distribution of pFUnit.
   
-- `ChangeLog` - history of changes
+- `ChangeLog.md` - history of changes
 
 - `Examples` - Contains examples of how to use pFUnit once it is
   installed.   These are deprecated.  Users should instead go to the
   [pFUnit-demos](https://github.com/Goddard-Fortran-Ecosystem/pFUnit_demos) repository.
 
-- `LICENSE` - The NASA Open Source Agreement for GSC-15,137-1 F-UNIT,
-  also known as pFUnit.
+- `LICENSE` - Apache-2.0 license (as of v4.17.0). (The original NASA Open Source Agreement is retained as `LICENSE-NOSA` for historical reference.)
 
 - `README.md` - This file.
-
-- `VERSION` - Contains a string describing the current version of the framework.
 
 - `bin` - Executables used to construct and perform unit tests.
 
@@ -270,11 +264,63 @@ the pFUnit preprocessor.
 
     -h or --help                    Prints this help message
     -d or -debug or --verbose       Provide debugging information.  Useful when a test crashes.
-    -f or --filter <pattern>        Only run tests that match the specified substring
+    -f or --filter <pattern>...     Only run tests matching pattern(s) (regex on Unix, glob on Windows)
+    -e or --exclude <pattern>...    Skip tests matching glob pattern(s)
     -h or --help                    Print help message.
     -o or --output <outputfile>     Direct pFUnit messages to a file.
     -r or --runner <runner>         Specify a non default test runner. (Advanced)
     -s or -skip  <n>                Used internally.
+
+#### Filtering Tests
+
+**Include Filters (`-f`/`--filter`):**
+- **Unix/Linux/macOS**: Uses POSIX regular expressions for powerful pattern matching
+- **Windows**: Uses glob patterns (supports `*` and `?` wildcards)
+- **Multiple patterns**: Space-separated within a single `-f` flag (OR logic - includes tests matching ANY pattern)
+- **Backward compatible**: Simple test names work as before
+
+**Exclude Filters (`-e`/`--exclude`):**
+- Uses glob patterns on all platforms
+- **Multiple patterns**: Space-separated within a single `-e` flag (OR logic - excludes tests matching ANY pattern)
+- Can be combined with `-f` for include/exclude logic
+
+**Examples:**
+
+Simple substring (backward compatible):
+```bash
+$ ./tests.x -f test_ABC
+```
+
+Glob patterns (all platforms):
+```bash
+$ ./tests.x -f "test_*"              # All tests starting with "test_"
+$ ./tests.x -f "*_fast" "*_quick"    # Tests ending with "_fast" OR "_quick" (space-separated)
+```
+
+Exclude patterns:
+```bash
+$ ./tests.x -e "test_slow_*"         # Skip slow tests
+$ ./tests.x -f "test_*" -e "test_slow_*"  # All tests except slow ones
+```
+
+Regex patterns (Unix/Linux/macOS only):
+```bash
+$ ./tests.x -f "^test_.*_fast$"      # Anchored pattern
+$ ./tests.x -f "test_[0-9]+"         # Tests with numbers
+$ ./tests.x -f "test_(foo|bar)_.*"   # Alternation
+```
+
+**Filter Logic:**
+- Multiple patterns with `-f`: Include if matches ANY pattern (OR logic)
+- Space-separated patterns within a single flag, not multiple flags
+- Multiple patterns with `-e`: Exclude if matches ANY pattern (OR logic)
+- Combined: `(matches any -f) AND NOT (matches any -e)`
+- No `-f` specified: Include all tests (then apply `-e` exclusions)
+
+**Platform Notes:**
+- **Regex support** (Unix/Linux/macOS only): Full POSIX extended regex
+- **Glob support** (all platforms): `*` (any chars), `?` (single char)
+- **Case sensitivity**: Filters are case-sensitive by default
 
 For example to run all tests whose names start with "test_ABC":
 

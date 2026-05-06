@@ -105,7 +105,8 @@ contains
       class(ParallelContext), allocatable :: c
 
 !!$      options = parse()
-      suite = load_tests()
+      suite = TestSuite()
+      call load_tests(suite)
       allocate(runner, source=TestRunner(ResultPrinter(OUTPUT_UNIT)))
       c = get_context()
       r = runner%run(suite, c)

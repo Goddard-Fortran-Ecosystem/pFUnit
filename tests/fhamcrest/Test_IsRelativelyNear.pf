@@ -1,9 +1,9 @@
 module Test_IsRelativelyNear
+  use iso_fortran_env, only: REAL32, REAL64
   use funit
   implicit none
 
 contains
-
 
   @test
   subroutine test_relatively_near_self()
@@ -17,27 +17,174 @@ contains
 
   @test
   subroutine test_not_relatively_near()
+    real :: expected, actual, tol, d
     character(:), allocatable :: error
-    call assert_that(30., is(relatively_near(10., 1.0)))
-
+    expected = 10.
+    actual   = 30.
+    tol      = 1.0
+    d        = abs(actual - expected) / abs(expected)
+    call assert_that(actual, is(relatively_near(expected, tol)))
     error = new_line('a') &
          & // 'Expected: is a numeric value whose relative error from <' &
-         & // str(10.) // '> is less than <' // str(1.0) // '>' &
+         & // str32(expected) // '> is less than <' // str32(tol) // '>' &
          & // new_line('a') &
-         & // '     but: <' // str(30.) // '> has a relative error of <' // str((30.-10.)/10.) &
-         & // '> which exceeds the tolerance by <' &
-         & // str((30.-10.)/10. - 1.0) // '>'
+         & // '     but: <' // str32(actual) // '> has a relative error of <' &
+         & // str32(d) // '> which exceeds the tolerance by <' &
+         & // str32(d - tol) // '>'
     @assertExceptionRaised(error)
   end subroutine test_not_relatively_near
-  
-  function str(x)
-    character(:), allocatable :: str
+
+  ! --- double precision scalar ---
+
+  @test
+  subroutine test_relatively_near_double_self()
+    call assert_that(2.d0, is(relatively_near(2.d0, 0.d0)))
+  end subroutine test_relatively_near_double_self
+
+  @test
+  subroutine test_relatively_near_double()
+    call assert_that(9.d0, is(relatively_near(10.d0, 0.2d0)))
+  end subroutine test_relatively_near_double
+
+  @test
+  subroutine test_not_relatively_near_double()
+    call assert_that(30.d0, is(relatively_near(10.d0, 1.0d0)))
+    @assertExceptionRaised()
+  end subroutine test_not_relatively_near_double
+
+  ! --- REAL64 scalar ---
+
+  @test
+  subroutine test_relatively_near_real64()
+    real(kind=REAL64) :: x
+    x = 7.0_REAL64
+    call assert_that(x * (1.0_REAL64 + 1.e-8_REAL64), is(relatively_near(x, 1.e-7_REAL64)))
+  end subroutine test_relatively_near_real64
+
+  @test
+  subroutine test_not_relatively_near_real64()
+    real(kind=REAL64) :: x
+    x = 7.0_REAL64
+    call assert_that(x * 2.0_REAL64, is(relatively_near(x, 1.e-10_REAL64)))
+    @assertExceptionRaised()
+  end subroutine test_not_relatively_near_real64
+
+  ! --- actual kind differs from expected kind ---
+
+  @test
+  subroutine test_relatively_near_actual_single_expected_double()
+    real :: actual
+    actual = 9.0
+    call assert_that(actual, is(relatively_near(10.0_REAL64, 0.2_REAL64)))
+  end subroutine test_relatively_near_actual_single_expected_double
+
+  ! --- array rank 1 (default real) ---
+
+  @test
+  subroutine test_relatively_near_real_array_1d()
+    real :: a(3)
+    a = [1., 2., 3.]
+    call assert_that(a, is(relatively_near(a, 0.0)))
+  end subroutine test_relatively_near_real_array_1d
+
+  @test
+  subroutine test_relatively_near_real_array_1d_within_tolerance()
+    real :: a(3), b(3)
+    a = [1., 2., 3.]
+    b = a * (1.0 + 1.e-5)
+    call assert_that(b, is(relatively_near(a, 1.e-4)))
+  end subroutine test_relatively_near_real_array_1d_within_tolerance
+
+  @test
+  subroutine test_relatively_near_real_array_1d_not_within_tolerance()
+    real :: a(3), b(3)
+    a = [1., 2., 3.]
+    b = a * 2.0
+    call assert_that(b, is(relatively_near(a, 1.e-4)))
+    @assertExceptionRaised()
+  end subroutine test_relatively_near_real_array_1d_not_within_tolerance
+
+  ! --- array rank 1 (double precision) ---
+
+  @test
+  subroutine test_relatively_near_double_array_1d()
+    real(kind=REAL64) :: a(3)
+    a = [1.d0, 2.d0, 3.d0]
+    call assert_that(a, is(relatively_near(a, 0.d0)))
+  end subroutine test_relatively_near_double_array_1d
+
+  @test
+  subroutine test_relatively_near_double_array_1d_within_tolerance()
+    real(kind=REAL64) :: a(3), b(3)
+    a = [1.d0, 2.d0, 3.d0]
+    b = a * (1.d0 + 1.d-8)
+    call assert_that(b, is(relatively_near(a, 1.d-7)))
+  end subroutine test_relatively_near_double_array_1d_within_tolerance
+
+  @test
+  subroutine test_relatively_near_double_array_1d_not_within_tolerance()
+    real(kind=REAL64) :: a(3), b(3)
+    a = [1.d0, 2.d0, 3.d0]
+    b = a * 2.d0
+    call assert_that(b, is(relatively_near(a, 1.d-10)))
+    @assertExceptionRaised()
+  end subroutine test_relatively_near_double_array_1d_not_within_tolerance
+
+  ! --- actual kind differs from expected in array case ---
+
+  @test
+  subroutine test_relatively_near_real_array_actual_double()
+    ! expected default real, actual double — test writer convenience
+    real :: expected(3)
+    real(kind=REAL64) :: actual(3)
+    expected = [1., 2., 3.]
+    actual   = real(expected, kind=REAL64) * (1.d0 + 1.d-8)
+    call assert_that(actual, is(relatively_near(expected, 1.e-4)))
+  end subroutine test_relatively_near_real_array_actual_double
+
+  ! --- array rank 2 ---
+
+  @test
+  subroutine test_relatively_near_double_array_2d()
+    real(kind=REAL64) :: a(2,2)
+    a = reshape([1.d0, 2.d0, 3.d0, 4.d0], shape(a))
+    call assert_that(a, is(relatively_near(a, 0.d0)))
+  end subroutine test_relatively_near_double_array_2d
+
+  ! --- array rank 3 ---
+
+  @test
+  subroutine test_relatively_near_double_array_3d()
+    real(kind=REAL64) :: a(2,2,2)
+    a = reshape([1.d0, 2.d0, 3.d0, 4.d0, 5.d0, 6.d0, 7.d0, 8.d0], shape(a))
+    call assert_that(a, is(relatively_near(a, 0.d0)))
+  end subroutine test_relatively_near_double_array_3d
+
+  ! --- array rank 4 ---
+
+  @test
+  subroutine test_relatively_near_double_array_4d()
+    real(kind=REAL64) :: a(2,2,2,2)
+    integer :: i
+    a = reshape([(real(i, REAL64), i=1,16)], shape(a))
+    call assert_that(a, is(relatively_near(a, 0.d0)))
+  end subroutine test_relatively_near_double_array_4d
+
+  ! helpers
+  function str32(x)
+    character(:), allocatable :: str32
     real, intent(in) :: x
-
     character(32) :: buffer
-
     write(buffer,'(g0)') x
-    str = trim(buffer)
-  end function str
-  
+    str32 = trim(buffer)
+  end function str32
+
+  function str64(x)
+    character(:), allocatable :: str64
+    real(kind=REAL64), intent(in) :: x
+    character(32) :: buffer
+    write(buffer,'(g0)') x
+    str64 = trim(buffer)
+  end function str64
+
 end module Test_IsRelativelyNear

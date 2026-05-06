@@ -1,3 +1,7 @@
+# Capture the directory where this file is located at inclusion time
+# This is needed for finding generate_test_suite_inc.cmake when building pFUnit itself
+set(_PFUNIT_ADD_CTEST_SCRIPT_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Directory containing add_pfunit_ctest.cmake")
+
 # Function     : add_pfunit_ctest
 #
 # Description : Helper function for compiling and adding pFUnit tests
@@ -79,22 +83,51 @@ function (add_pfunit_ctest test_package_name)
   target_include_directories(${test_package_name} PRIVATE ${mod_dir})
 
   if (PF_TEST_REGISTRY)
-    set (test_suite_inc_file ${PF_TEST_REGISTRY})
-  else ()
-    set (should_write_inc_file True)
-    set (test_suite_inc_file "${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}.inc")
-    # Check if .inc file already has been generated. If so, only write new
-    # file if contents has changed. This avoid tests recompiling after reconfiguring cmake.
-    if (EXISTS ${test_suite_inc_file})
-      file (READ ${test_suite_inc_file} existing_file)
-      if (${existing_file} STREQUAL ${test_suites_inc})
-	set (should_write_inc_file False)
-      endif (${existing_file} STREQUAL ${test_suites_inc})
+    # Handle user-provided registry file (could be relative or absolute path)
+    if (IS_ABSOLUTE ${PF_TEST_REGISTRY})
+      set (test_suite_inc_file ${PF_TEST_REGISTRY})
+    else ()
+      set (test_suite_inc_file "${CMAKE_CURRENT_SOURCE_DIR}/${PF_TEST_REGISTRY}")
     endif ()
-
-    if (${should_write_inc_file})
-      file (WRITE ${test_suite_inc_file} ${test_suites_inc})
-    endif (${should_write_inc_file})
+  else ()
+    set (test_suite_inc_file "${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}.inc")
+    
+    # Add a custom command to generate the .inc file at build time
+    # This ensures proper dependency tracking when .pf files are added/removed
+    # 
+    # Write the list of .pf files to a temporary file to avoid shell escaping issues
+    set(pf_files_list "${CMAKE_CURRENT_BINARY_DIR}/${test_package_name}_pf_files.txt")
+    string(REPLACE ";" "\n" pf_files_content "${PF_TEST_TEST_SOURCES}")
+    file(WRITE "${pf_files_list}" "${pf_files_content}")
+    
+    # Determine where generate_test_suite_inc.cmake is located
+    # When building pFUnit itself (PROJECT_NAME is "PFUNIT"), use captured script directory
+    # When using installed pFUnit, use PFUNIT_TOP_DIR  
+    if (PROJECT_NAME STREQUAL "PFUNIT")
+      set(_gen_script "${_PFUNIT_ADD_CTEST_SCRIPT_DIR}/generate_test_suite_inc.cmake")
+    else()
+      set(_gen_script "${PFUNIT_TOP_DIR}/include/generate_test_suite_inc.cmake")
+    endif()
+    
+    add_custom_command(
+      OUTPUT ${test_suite_inc_file}
+      COMMAND ${CMAKE_COMMAND}
+        "-DPF_FILES_LIST=${pf_files_list}"
+        "-DOUTPUT_FILE=${test_suite_inc_file}"
+        -P "${_gen_script}"
+      DEPENDS ${PF_TEST_TEST_SOURCES} ${pf_files_list}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMENT "Generating test suite registry ${test_package_name}.inc"
+    )
+    
+    # Create a custom target for the .inc file generation
+    # This ensures it's built before the executable
+    add_custom_target(${test_package_name}_registry
+      DEPENDS ${test_suite_inc_file}
+    )
+    
+    # Make the test executable depend on the registry generation
+    add_dependencies(${test_package_name} ${test_package_name}_registry)
   endif ()
 
   # LLVM Flang apparently does not like the <...> syntax for includes?
@@ -103,6 +136,11 @@ function (add_pfunit_ctest test_package_name)
   else()
     target_compile_definitions (${test_package_name} PRIVATE _TEST_SUITES=\<${test_suite_inc_file}\>)
   endif()
+
+  # Ensure driver recompiles when .inc file changes
+  set_source_files_properties(${driver}
+    PROPERTIES OBJECT_DEPENDS ${test_suite_inc_file}
+  )
 
   target_include_directories (${test_package_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 

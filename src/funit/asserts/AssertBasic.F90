@@ -13,7 +13,7 @@
 !! @date
 !! 07 Nov 2013
 !! 
-!! @note For assertions on strings whitespace may or may not be
+!! For assertions on strings whitespace may or may not be
 !! significant to a test.  We now have several options for dealing
 !! with whitespace via the optional argument
 !! <code>Whitespace</code>.  These options are

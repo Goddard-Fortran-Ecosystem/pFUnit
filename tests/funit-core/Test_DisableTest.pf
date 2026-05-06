@@ -15,11 +15,12 @@ contains
       integer :: unit
       
       s = TestSuite()
-      t = TestMethod('test_is_disabled',test_is_disabled)
+      allocate(t, source=TestMethod('test_is_disabled',test_is_disabled))
       call t%insert(Disable%type_name(), Disable)
       call s%addTest(t)
 
-      t = TestMethod('test_is_not_igored',test_is_not_disabled)
+      deallocate(t)
+      allocate(t, source=TestMethod('test_is_not_igored',test_is_not_disabled))
       call s%addTest(t)
 
       ! Do not send any output to STDOUT

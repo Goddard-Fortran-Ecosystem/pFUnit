@@ -352,7 +352,9 @@ contains
    function getName(this) result(name)
       class (TestResult), intent(in) :: this
       character(:), allocatable :: name
-      name = this%name
+      ! Use trim() to avoid a GCC 16 bug where assigning a fixed-length
+      ! character variable to an allocatable result copies only padding spaces.
+      name = trim(this%name)
    end function getName
 
    subroutine setName(this, name)
