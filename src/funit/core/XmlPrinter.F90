@@ -33,6 +33,14 @@ module PF_XmlPrinter
 
    public :: XmlPrinter
 
+   type :: SuiteInfo
+      character(len=80) :: name = ''
+      integer :: numTests = 0
+      integer :: numErrors = 0
+      integer :: numFailures = 0
+      real :: totalTime = 0.0
+   end type SuiteInfo
+
    type, extends(AbstractPrinter) :: XmlPrinter
       integer :: unit
       integer :: privateUnit
@@ -52,8 +60,7 @@ module PF_XmlPrinter
       procedure :: printSuccesses
       procedure :: printFooter
       procedure :: addSuccess
-      procedure :: extractSuiteNames
-      procedure :: printSuites
+      procedure :: buildSuiteInfo
       procedure :: printOneSuite
    end type XmlPrinter
 
@@ -128,22 +135,23 @@ contains
       real, intent(in) :: elapsed_time
 
       type(TestFailureVector) :: successes, errors, failures
-      character(:), dimension(:), allocatable :: suiteNames
-      integer :: numSuites
+      type(SuiteInfo), dimension(:), allocatable :: suites
+      integer :: numSuites, i
 
       _UNUSED_DUMMY(elapsed_time)
 
-      ! Get all test results
       successes = result%getSuccesses()
       errors = result%getErrors()
       failures = result%getFailures()
 
-      ! Extract unique suite names from all tests
-      call this%extractSuiteNames(successes, errors, failures, suiteNames, numSuites)
+      call this%buildSuiteInfo(successes, errors, failures, suites, numSuites)
 
       call this%printHeader(result)
-      call this%printSuites(suiteNames, numSuites, successes, errors, failures)
+      do i = 1, numSuites
+         call this%printOneSuite(suites(i), successes, errors, failures)
+      end do
       call this%printFooter(result)
+      flush(this%unit)
 
    end subroutine print
 
@@ -156,7 +164,6 @@ contains
 
       write(this%unit,'(a)') '<?xml version="1.0" encoding="UTF-8"?>'
       write(this%unit,'(a)') '<testsuites>'
-      flush(this%unit)
 
    end subroutine printHeader
 
@@ -172,7 +179,6 @@ contains
            '" failures="', numFailures, &
            '" tests="', numTests, &
            '" time="', totalTime, '">'
-      flush(this%unit)
 
    end subroutine printTestsuiteHeader
 
@@ -224,45 +230,7 @@ contains
       end do
       write(this%unit,'(a)') '</testcase>'
 
-      flush(this%unit)
-
    end subroutine printExceptions
-
-
-!mlr old version
-   subroutine printFailure1(this, label, aFailedTest)
-      use PF_TestFailure
-      use PF_SourceLocation
-      class (XmlPrinter), intent(in) :: this
-      character(len=*), intent(in) :: label
-      type (TestFailure), intent(in) :: aFailedTest
-      class (Exception), pointer :: pException
-
-      integer :: j
-      character(len=80) :: locationString
-
-!mlr testcase should likely be testname or testmethod or maybe test
-!mlr Q?  What does JUnit do?
-!mlr  Ask Halvor -- good for 3.0
-      write(this%unit,'(a,a,a)') '<testcase name="', &
-           cleanXml(trim(aFailedTest%testName)), '">'
-      do j= 1, aFailedTest%exceptions%size()
-        pException => aFailedTest%exceptions%at(j)
-        locationString = pException%location%toString()
-
-        write(this%unit,'(a,a,a)',advance='no') &
-             '<', cleanXml(label), ' message="'
-        write(this%unit,'(a,a,a)',advance='no') &
-             'Location: ', cleanXml(trim(locationString)), ', '
-        write(this%unit,'(a)',advance='no') &
-             cleanXml(trim(pException%getMessage()))
-        write(this%unit,*) '"/>'
-      end do
-      write(this%unit,'(a)') '</testcase>'
-
-      flush(this%unit)
-
-   end subroutine printFailure1
 
    subroutine printFailures(this, label, failures, suiteName)
       use PF_TestFailure
@@ -312,8 +280,6 @@ contains
       write(this%unit,'(a,a,a,f0.4,a)') '<testcase name="',&
            cleanXml(trim(methodName)), '" time="', aSuccessTest%time, '"/>'
 
-      flush(this%unit)
-
    end subroutine printSuccess
 
    subroutine printSuccesses(this, successes, suiteName)
@@ -347,149 +313,94 @@ contains
       _UNUSED_DUMMY(result)
 
       write(this%unit,'(a)') '</testsuites>'
-      flush(this%unit)
 
    end subroutine printFooter
 
-   ! Extract unique suite names from all test results
-   subroutine extractSuiteNames(this, successes, errors, failures, suiteNames, numSuites)
+   ! Build per-suite statistics in a single pass over all test vectors
+   subroutine buildSuiteInfo(this, successes, errors, failures, suites, numSuites)
       use PF_TestFailureVector
       use PF_TestFailure
       class(XmlPrinter), intent(in) :: this
       type(TestFailureVector), intent(in) :: successes, errors, failures
-      character(:), dimension(:), allocatable, intent(out) :: suiteNames
+      type(SuiteInfo), dimension(:), allocatable, intent(out) :: suites
       integer, intent(out) :: numSuites
 
-      character(len=80), dimension(:), allocatable :: tempNames
-      integer :: totalTests
+      integer :: totalTests, i, idx
+      type(TestFailure) :: aTest
+      character(len=80) :: sName
 
       _UNUSED_DUMMY(this)
 
       totalTests = successes%size() + errors%size() + failures%size()
-      if (totalTests == 0) then
-         numSuites = 0
-         return
-      end if
-
-      allocate(tempNames(totalTests))
+      allocate(suites(max(totalTests, 1)))
       numSuites = 0
 
-      ! Extract suite names from all test result types
-      call addSuiteNamesFromVector(successes, tempNames, numSuites)
-      call addSuiteNamesFromVector(errors, tempNames, numSuites)
-      call addSuiteNamesFromVector(failures, tempNames, numSuites)
-
-      ! Copy to output array
-      if (numSuites > 0) then
-         allocate(character(len=80) :: suiteNames(numSuites))
-         suiteNames(1:numSuites) = tempNames(1:numSuites)
-      end if
-
-      deallocate(tempNames)
-
-   contains
-
-      subroutine addSuiteNamesFromVector(testVector, uniqueNames, count)
-         type(TestFailureVector), intent(in) :: testVector
-         character(len=80), dimension(:), intent(inout) :: uniqueNames
-         integer, intent(inout) :: count
-
-         character(len=80) :: suiteName
-         integer :: i, j
-         logical :: found
-         type(TestFailure) :: aTest
-
-         do i = 1, testVector%size()
-            aTest = testVector%at(i)
-            suiteName = getClassname(aTest%testName)
-            if (len_trim(suiteName) > 0) then
-               found = .false.
-               do j = 1, count
-                  if (trim(uniqueNames(j)) == trim(suiteName)) then
-                     found = .true.
-                     exit
-                  end if
-               end do
-               if (.not. found) then
-                  count = count + 1
-                  uniqueNames(count) = suiteName
-               end if
-            end if
-         end do
-
-      end subroutine addSuiteNamesFromVector
-
-   end subroutine extractSuiteNames
-
-   ! Print multiple testsuite elements
-   subroutine printSuites(this, suiteNames, numSuites, successes, errors, failures)
-      use PF_TestFailureVector
-      use PF_TestFailure
-      class(XmlPrinter), intent(in) :: this
-      character(len=*), dimension(:), intent(in) :: suiteNames
-      integer, intent(in) :: numSuites
-      type(TestFailureVector), intent(in) :: successes, errors, failures
-
-      integer :: i
-
-      do i = 1, numSuites
-         call this%printOneSuite(trim(suiteNames(i)), successes, errors, failures)
-      end do
-
-   end subroutine printSuites
-
-   ! Print one testsuite element for a specific suite
-   subroutine printOneSuite(this, suiteName, successes, errors, failures)
-      use PF_TestFailureVector
-      use PF_TestFailure
-      class(XmlPrinter), intent(in) :: this
-      character(len=*), intent(in) :: suiteName
-      type(TestFailureVector), intent(in) :: successes, errors, failures
-
-      integer :: i, suiteTests, suiteErrors, suiteFailures
-      real :: suiteTime
-      type(TestFailure) :: aTest
-
-      ! Count tests, errors, and failures for this suite
-      suiteTests = 0
-      suiteErrors = 0
-      suiteFailures = 0
-      suiteTime = 0.0
+      if (totalTests == 0) return
 
       do i = 1, successes%size()
          aTest = successes%at(i)
-         if (trim(getClassname(aTest%testName)) == trim(suiteName)) then
-            suiteTests = suiteTests + 1
-            suiteTime = suiteTime + aTest%time
-         end if
+         sName = getClassname(aTest%testName)
+         idx = findOrAddSuite(suites, numSuites, sName)
+         suites(idx)%numTests = suites(idx)%numTests + 1
+         suites(idx)%totalTime = suites(idx)%totalTime + aTest%time
       end do
 
       do i = 1, errors%size()
          aTest = errors%at(i)
-         if (trim(getClassname(aTest%testName)) == trim(suiteName)) then
-            suiteTests = suiteTests + 1
-            suiteErrors = suiteErrors + 1
-            suiteTime = suiteTime + aTest%time
-         end if
+         sName = getClassname(aTest%testName)
+         idx = findOrAddSuite(suites, numSuites, sName)
+         suites(idx)%numTests = suites(idx)%numTests + 1
+         suites(idx)%numErrors = suites(idx)%numErrors + 1
+         suites(idx)%totalTime = suites(idx)%totalTime + aTest%time
       end do
 
       do i = 1, failures%size()
          aTest = failures%at(i)
-         if (trim(getClassname(aTest%testName)) == trim(suiteName)) then
-            suiteTests = suiteTests + 1
-            suiteFailures = suiteFailures + 1
-            suiteTime = suiteTime + aTest%time
-         end if
+         sName = getClassname(aTest%testName)
+         idx = findOrAddSuite(suites, numSuites, sName)
+         suites(idx)%numTests = suites(idx)%numTests + 1
+         suites(idx)%numFailures = suites(idx)%numFailures + 1
+         suites(idx)%totalTime = suites(idx)%totalTime + aTest%time
       end do
 
-      call this%printTestsuiteHeader(suiteName, suiteTests, suiteErrors, suiteFailures, suiteTime)
+   contains
 
-      call this%printSuccesses(successes, suiteName)
-      call this%printFailures('error', errors, suiteName)
-      call this%printFailures('failure', failures, suiteName)
+      function findOrAddSuite(suites, numSuites, name) result(idx)
+         type(SuiteInfo), dimension(:), intent(inout) :: suites
+         integer, intent(inout) :: numSuites
+         character(len=*), intent(in) :: name
+         integer :: idx, j
+
+         do j = 1, numSuites
+            if (trim(suites(j)%name) == trim(name)) then
+               idx = j
+               return
+            end if
+         end do
+
+         numSuites = numSuites + 1
+         idx = numSuites
+         suites(idx)%name = name
+      end function findOrAddSuite
+
+   end subroutine buildSuiteInfo
+
+   ! Print one testsuite element using pre-computed stats
+   subroutine printOneSuite(this, suite, successes, errors, failures)
+      use PF_TestFailureVector
+      use PF_TestFailure
+      class(XmlPrinter), intent(in) :: this
+      type(SuiteInfo), intent(in) :: suite
+      type(TestFailureVector), intent(in) :: successes, errors, failures
+
+      call this%printTestsuiteHeader(trim(suite%name), suite%numTests, &
+           suite%numErrors, suite%numFailures, suite%totalTime)
+
+      call this%printSuccesses(successes, trim(suite%name))
+      call this%printFailures('error', errors, trim(suite%name))
+      call this%printFailures('failure', failures, trim(suite%name))
 
       write(this%unit,'(a)') '</testsuite>'
-      flush(this%unit)
 
    end subroutine printOneSuite
 
