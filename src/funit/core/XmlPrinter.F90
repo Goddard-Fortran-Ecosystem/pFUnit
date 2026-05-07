@@ -316,7 +316,7 @@ contains
 
    end subroutine printFooter
 
-   ! Build per-suite statistics in a single pass over all test vectors
+   ! Build per-suite statistics from all test vectors
    subroutine buildSuiteInfo(this, successes, errors, failures, suites, numSuites)
       use PF_TestFailureVector
       use PF_TestFailure
@@ -385,7 +385,7 @@ contains
 
    end subroutine buildSuiteInfo
 
-   ! Print one testsuite element using pre-computed stats
+   ! Print one testsuite element
    subroutine printOneSuite(this, suite, successes, errors, failures)
       use PF_TestFailureVector
       use PF_TestFailure
