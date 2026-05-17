@@ -210,7 +210,7 @@ contains
       integer :: j
       character(len=80) :: locationString
 
-      methodName = getMethodName(testName)
+      methodName = getTestName(testName)
 
       ! Write testcase opening tag
       write(this%unit,'(a,a,a,f0.4,a)') '<testcase name="', &
@@ -247,7 +247,7 @@ contains
       do i = 1, failures%size()
          aTest = failures%at(i)
          if (present(suiteName)) then
-            if (trim(getClassname(aTest%testName)) == trim(suiteName)) then
+            if (trim(getSuiteName(aTest%testName)) == trim(suiteName)) then
                call this%printFailure(label, aTest)
             end if
          else
@@ -275,7 +275,7 @@ contains
       type (TestFailure) :: aSuccessTest
       character(:), allocatable :: methodName
 
-      methodName = getMethodName(aSuccessTest%testName)
+      methodName = getTestName(aSuccessTest%testName)
 
       write(this%unit,'(a,a,a,f0.4,a)') '<testcase name="',&
            cleanXml(trim(methodName)), '" time="', aSuccessTest%time, '"/>'
@@ -295,7 +295,7 @@ contains
       do i = 1, successes%size()
          aTest = successes%at(i)
          if (present(suiteName)) then
-            if (trim(getClassname(aTest%testName)) == trim(suiteName)) then
+            if (trim(getSuiteName(aTest%testName)) == trim(suiteName)) then
                call this%printSuccess(aTest)
             end if
          else
@@ -316,7 +316,15 @@ contains
 
    end subroutine printFooter
 
-   ! Build per-suite statistics from all test vectors
+   !> Collects per-suite information from all test result vectors.
+   !! Suite names are extracted from the portion of the test name preceding the
+   !! final dot ("suiteName.testName").
+   !!
+   !! @param[in]  successes  TestFailureVector of passing test results
+   !! @param[in]  errors     TestFailureVector of errored test results
+   !! @param[in]  failures   TestFailureVector of failed test results
+   !! @param[out] suites     Array of SuiteInfo, one entry per unique suite
+   !! @param[out] numSuites  Number of unique suites found
    subroutine buildSuiteInfo(this, successes, errors, failures, suites, numSuites)
       use PF_TestFailureVector
       use PF_TestFailure
@@ -339,7 +347,7 @@ contains
 
       do i = 1, successes%size()
          aTest = successes%at(i)
-         sName = getClassname(aTest%testName)
+         sName = getSuiteName(aTest%testName)
          idx = findOrAddSuite(suites, numSuites, sName)
          suites(idx)%numTests = suites(idx)%numTests + 1
          suites(idx)%totalTime = suites(idx)%totalTime + aTest%time
@@ -347,7 +355,7 @@ contains
 
       do i = 1, errors%size()
          aTest = errors%at(i)
-         sName = getClassname(aTest%testName)
+         sName = getSuiteName(aTest%testName)
          idx = findOrAddSuite(suites, numSuites, sName)
          suites(idx)%numTests = suites(idx)%numTests + 1
          suites(idx)%numErrors = suites(idx)%numErrors + 1
@@ -356,7 +364,7 @@ contains
 
       do i = 1, failures%size()
          aTest = failures%at(i)
-         sName = getClassname(aTest%testName)
+         sName = getSuiteName(aTest%testName)
          idx = findOrAddSuite(suites, numSuites, sName)
          suites(idx)%numTests = suites(idx)%numTests + 1
          suites(idx)%numFailures = suites(idx)%numFailures + 1
@@ -385,7 +393,13 @@ contains
 
    end subroutine buildSuiteInfo
 
-   ! Print one testsuite element
+   !> Writes a single `<testsuite>` XML element and its child `<testcase>` elements,
+   !! filtering the relevant tests by suite name from the full result vectors.
+   !!
+   !! @param[in] suite     SuiteInfo containing pre-computed suite name and info
+   !! @param[in] successes TestFailureVector of passing test results
+   !! @param[in] errors    TestFailureVector of errored test results
+   !! @param[in] failures  TestFailureVector of failed test results
    subroutine printOneSuite(this, suite, successes, errors, failures)
       use PF_TestFailureVector
       use PF_TestFailure
@@ -404,34 +418,39 @@ contains
 
    end subroutine printOneSuite
 
-   ! Helper function to extract classname from test name
-   ! Test names are formatted as "suite.testmethod"
-   function getClassname(testName) result(classname)
+   !> Extracts the suite name from a dot-qualified test name.
+   !!
+   !! @param[in] testName  Full test name in "suiteName.testName" format
+   !! @return              Suite name, or empty string if no dot is present
+   function getSuiteName(testName) result(name)
       character(len=*), intent(in) :: testName
-      character(:), allocatable :: classname
+      character(:), allocatable :: name
       integer :: dot_pos
 
       dot_pos = index(testName, '.', back=.true.)
       if (dot_pos > 0) then
-         classname = testName(1:dot_pos-1)
+         name = testName(1:dot_pos-1)
       else
-         classname = ''
+         name = ''
       end if
-   end function getClassname
+   end function getSuiteName
 
-   ! Helper function to extract test method name from full test name
-   function getMethodName(testName) result(methodName)
+   !> Extracts the test name from a dot-qualified test name.
+   !!
+   !! @param[in] testName  Full test name in "suiteName.testName" format
+   !! @return              Test name, or the full input if no dot is present
+   function getTestName(testName) result(name)
       character(len=*), intent(in) :: testName
-      character(:), allocatable :: methodName
+      character(:), allocatable :: name
       integer :: dot_pos
 
       dot_pos = index(testName, '.', back=.true.)
       if (dot_pos > 0) then
-         methodName = testName(dot_pos+1:)
+         name = testName(dot_pos+1:)
       else
-         methodName = testName
+         name = testName
       end if
-   end function getMethodName
+   end function getTestName
 
    function cleanXml(string_in) result(out)
       character(len=*), intent(in) :: string_in
