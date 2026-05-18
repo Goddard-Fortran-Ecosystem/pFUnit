@@ -80,9 +80,9 @@ contains
       printer = XmlPrinter(xmlUnit)
 
       call aTest%setSurrogate()
-      call aTest%setName('failtest<>"')
+      call aTest%setName('TestXmlPrinterSuite.failtest<>"')
       call aTest2%setSurrogate()
-      call aTest2%setName('successtest<>"')
+      call aTest2%setName('TestXmlPrinterSuite.successtest<>"')
 
       aResult = TestResult()
       call list%throw(Exception('<invalid>'))
@@ -129,23 +129,19 @@ contains
      character(len=200), intent(in) :: xmlFile
      integer :: iostat, xmlUnit, iExpectedLine
 
-     character(len=100) :: xmlFileLine
-     character(len=100), dimension(12) :: expected
+     character(len=200) :: xmlFileLine
+     character(len=200), dimension(12) :: expected
 
-     expected=(/ character(len=100) :: &
+     expected=(/ character(len=200) :: &
 '<?xml version="1.0" encoding="UTF-8"?>', &
 '<testsuites>', &
-#ifndef PGI
-'<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0" time=".0000">', &
-#else
-'<testsuite name="suitename[[]]''''" errors="0" failures="2" tests="0"&
-& time="0.0000">', &
-#endif
-'<testcase name="successtest[]''"/>', &
-'<testcase name="failtest[]''">', &
+! Note: testsuite and testcase lines have dynamic time - check key attributes only
+'<testsuite name="TestXmlPrinterSuite" errors="0" failures="2" tests="3" time="', &
+'<testcase name="successtest[]''" time="', &
+'<testcase name="failtest[]''" time="', &
 '<failure message="Location: [[unknown location]], [invalid] "/>', &
 '</testcase>', &
-'<testcase name="failtest[]''">', &
+'<testcase name="failtest[]''" time="', &
 '<failure message="Location: [[unknown location]], ''test'' "/>', &
 '</testcase>', &
 '</testsuite>', &
@@ -168,8 +164,15 @@ contains
         call assertTrue(iExpectedLine .le. size(expected), &
              &'Too many lines in XMLFile.')
         if (iExpectedLine .le. size(expected)) then
-           call assertEqual(expected(iExpectedLine),xmlFileLine, &
-                & 'XML output file error.')
+           ! Lines with time=" have dynamic content - check prefix match
+           if (index(trim(expected(iExpectedLine)), 'time="') > 0) then
+              call assertTrue( &
+                   index(xmlFileLine, trim(expected(iExpectedLine))) == 1, &
+                   'XML line does not start with expected content.')
+           else
+              call assertEqual(expected(iExpectedLine),xmlFileLine, &
+                   'XML output file error.')
+           end if
         end if
      end do
      close(xmlUnit, status='delete')
