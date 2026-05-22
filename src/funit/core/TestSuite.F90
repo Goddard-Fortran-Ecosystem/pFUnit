@@ -87,6 +87,8 @@ contains
       ! polymorphic allocatable components (e.g. testParameter) at depth >= 3.
       ! Use explicit push_back instead, which uses allocate(item, source=t) per
       ! element and correctly preserves all allocatable components.
+      ! Ends up being equivalent to:
+      !       this%tests = b%tests
       do i = 1, b%tests%size()
          t => b%tests%at(i)
          call this%tests%push_back(t)
