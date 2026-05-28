@@ -42,7 +42,6 @@ contains
       use pf_Test
       use pf_TestVector
       use pf_GlobFilter
-      use iso_fortran_env, only: error_unit
 #ifndef _WIN32
       use pf_RegexFilter
 #endif
@@ -63,7 +62,6 @@ contains
       integer :: n_skip
       character(:), allocatable :: ofile
       character(:), allocatable :: runner_class
-      character(:), allocatable :: tap_file
       class(AbstractPrinter), allocatable :: printer
 
       call set_command_line_options()
@@ -113,15 +111,7 @@ contains
          use_tap = .false.
          option => options%at('use_tap')
          if (associated(option)) call cast(option, use_tap)
-         ! --tapfile alone also implies TAP output
-         tap_file = 'tap_output.tap'
-         option => options%at('tapfile')
-         if (associated(option)) then
-            call cast(option, tap_file)
-            write(error_unit,'(a,a,a)') 'DEBUG: tap_file=[',tap_file,']'
-            if (tap_file /= '') use_tap = .true.
-         end if
-         if (use_tap) call runner%add_listener(TapListener(tap_file))
+         if (use_tap) call runner%add_listener(TapListener('tap_output.tap'))
       end block
 
 
@@ -403,10 +393,7 @@ contains
 
          call parser%add_argument('-t', '--tap', action='store_true', &
               & dest='use_tap', &
-              & help='add a TAP listener (writes to tap_output.tap by default)')
-         call parser%add_argument('--tapfile', type='string', &
-              & dest='tapfile', action='store', &
-              & help='filename for TAP output (default: tap_output.tap; implies --tap)')
+              & help='add a TAP listener; results written to tap_output.tap')
 
       call parser%add_argument('-x', '--xml', action='store_true', &
            & help='print results with XmlPrinter')

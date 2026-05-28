@@ -11,9 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Avoids an issue in Flang where intrinsic assignment of TestVector loses nested polymorphic allocatable components (e.g. testParameter) after a certain nesting depth. This pathway for Flang instead explicitly
   loops through and uses a `push_back` to correctly preserves all allocatable components.
 - Fix `--tap`/`-t` option crashing with memory allocation failure in fArgParse (issue #556)
-  - The option was registered as `action='store'` with an integer default, causing a type mismatch crash when no filename argument followed the flag
-  - Split into two arguments: `-t`/`--tap` (boolean, no filename required) and `--tap-file <file>` (optional filename, defaults to `tap_output.tap`)
-  - Either flag enables TAP output; `--tap-file` alone implies `--tap`
+  - The option was registered as `action='store'` with an integer default, causing a type mismatch crash
+  - Replaced with `action='store_true'` boolean flag; TAP output is always written to `tap_output.tap`
 
 ### Added
 
