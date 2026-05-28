@@ -113,12 +113,11 @@ contains
          option => options%at('use_tap')
          if (associated(option)) call cast(option, use_tap)
          ! --tap-file alone also implies TAP output
+         tap_file = 'tap_output.tap'
          option => options%at('tap_file')
          if (associated(option)) then
             call cast(option, tap_file)
-            use_tap = .true.
-         else
-            tap_file = 'tap_output.tap'
+            if (tap_file /= '') use_tap = .true.
          end if
          if (use_tap) call runner%add_listener(TapListener(tap_file))
       end block
