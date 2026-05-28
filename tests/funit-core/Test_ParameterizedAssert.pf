@@ -40,7 +40,7 @@ contains
   @test(testParameters={get_parameters_simple()})
   subroutine test_sanity(this)
     class(TestCaseType), intent(inout) :: this
-    @assertEqual(1, 1)
+    @assertEqual(1, 1) ! basic check
   end subroutine test_sanity
 
 end module Test_ParameterizedAssert
