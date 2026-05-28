@@ -270,6 +270,8 @@ the pFUnit preprocessor.
     -o or --output <outputfile>     Direct pFUnit messages to a file.
     -r or --runner <runner>         Specify a non default test runner. (Advanced)
     -s or -skip  <n>                Used internally.
+    -t or --tap                     Write results in TAP format to tap_output.tap.
+    -x or --xml                     Print results in JUnit-compatible XML format.
 
 #### Filtering Tests
 
