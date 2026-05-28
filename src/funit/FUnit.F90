@@ -404,7 +404,7 @@ contains
               & dest='use_tap', &
               & help='add a TAP listener (writes to tap_output.tap by default)')
          call parser%add_argument('--tap-file', type='string', &
-              & dest='tap_file', action='store', default='tap_output.tap', &
+              & dest='tap_file', action='store', &
               & help='filename for TAP output (default: tap_output.tap; implies --tap)')
 
       call parser%add_argument('-x', '--xml', action='store_true', &
