@@ -79,8 +79,24 @@ contains
       class (TestSuite), intent(out) :: this
       type (TestSuite), intent(in) :: b
 
+#ifdef __flang__
+      class (Test), pointer :: t
+      integer :: i
+#endif
+
       this%name = b%name
+#ifdef __flang__
+      ! Workaround for Flang bug: intrinsic assignment of TestVector loses nested
+      ! polymorphic allocatable components (e.g. testParameter) at depth >= 3.
+      ! Use explicit push_back instead, which uses allocate(item, source=t) per
+      ! element and correctly preserves all allocatable components.
+      do i = 1, b%tests%size()
+         t => b%tests%at(i)
+         call this%tests%push_back(t)
+      end do
+#else
       this%tests = b%tests
+#endif
       this%shuffle_enabled = b%shuffle_enabled
       this%shuffle_seed = b%shuffle_seed
 

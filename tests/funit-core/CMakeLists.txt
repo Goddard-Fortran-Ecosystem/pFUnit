@@ -46,7 +46,8 @@ set(pf_tests
   Test_NameFilter.pf
   Test_RegularExpression.pf
   Test_TestMethod_before.pf
-  Test_Long_Subroutine_Name.pf)
+  Test_Long_Subroutine_Name.pf
+  Test_ParameterizedAssert.pf)
 
 # Add regex filter tests for non-Windows platforms
 if(NOT WIN32)

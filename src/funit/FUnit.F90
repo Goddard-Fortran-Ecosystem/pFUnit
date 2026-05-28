@@ -34,7 +34,7 @@ contains
 
    end function run
 
-   logical function generic_run(load_tests, context) result(status)
+    logical function generic_run(load_tests, context) result(status)
       use fArgParse
       use pf_StringUtilities
       use pf_AbstractPrinter
@@ -62,7 +62,6 @@ contains
       integer :: n_skip
       character(:), allocatable :: ofile
       character(:), allocatable :: runner_class
-      character(:), allocatable :: tap_file
       class(AbstractPrinter), allocatable :: printer
 
       call set_command_line_options()
@@ -107,13 +106,13 @@ contains
          if (debug) call runner%add_listener(DebugListener(unit))
       end if
 
-      option => options%at('tap_file')
-      if (associated(option)) then
-         call cast(option, tap_file)
-         if (tap_file /= '') then
-            call runner%add_listener(TapListener(tap_file))
-         end if
-      end if
+      block
+         logical :: use_tap
+         use_tap = .false.
+         option => options%at('use_tap')
+         if (associated(option)) call cast(option, use_tap)
+         if (use_tap) call runner%add_listener(TapListener('tap_output.tap'))
+      end block
 
 
 
@@ -392,9 +391,9 @@ contains
               & dest='n_skip', action='store', default=0, &
               & help='skip the first n_skip tests; only used with RemoteRunner')
 
-         call parser%add_argument('-t', '--tap', type='string', &
-              & dest='tap_file', action='store', default=0, &
-              & help='add a TAP listener and send results to file name')
+         call parser%add_argument('-t', '--tap', action='store_true', &
+              & dest='use_tap', &
+              & help='add a TAP listener; results written to tap_output.tap')
 
       call parser%add_argument('-x', '--xml', action='store_true', &
            & help='print results with XmlPrinter')
