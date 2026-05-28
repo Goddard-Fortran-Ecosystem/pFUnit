@@ -79,8 +79,10 @@ contains
       class (TestSuite), intent(out) :: this
       type (TestSuite), intent(in) :: b
 
+#ifdef __flang__
       class (Test), pointer :: t
       integer :: i
+#endif
 
       this%name = b%name
 #ifdef __flang__
