@@ -1,0 +1,46 @@
+module Test_ParameterizedAssert
+  ! Simple test to check that parameterized tests are working
+  ! correctly.
+  use FUnit
+  implicit none
+
+  @suite(name='ParameterizedAssert_suite')
+
+  @testParameter
+  type, extends(AbstractTestParameter) :: TestParametersType
+    integer :: dummy
+  contains
+    procedure :: toString
+  end type TestParametersType
+
+  @testCase(constructor=test_case_constructor)
+  type, extends(ParameterizedTestCase) :: TestCaseType
+    type(TestParametersType) :: param
+  end type TestCaseType
+
+contains
+
+  function test_case_constructor(param)
+    type(TestCaseType) :: test_case_constructor
+    type(TestParametersType), intent(in) :: param
+    test_case_constructor%param = param
+  end function test_case_constructor
+
+  function get_parameters_simple() result(params)
+    type(TestParametersType), allocatable :: params(:)
+    params = [ TestParametersType(0) ]
+  end function get_parameters_simple
+
+  function toString(this) result(string)
+    class(TestParametersType), intent(in) :: this
+    character(:), allocatable :: string
+    string = 'simple'
+  end function toString
+
+  @test(testParameters={get_parameters_simple()})
+  subroutine test_sanity(this)
+    class(TestCaseType), intent(inout) :: this
+    @assertEqual(1, 1)
+  end subroutine test_sanity
+
+end module Test_ParameterizedAssert
