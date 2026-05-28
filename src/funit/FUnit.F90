@@ -34,7 +34,7 @@ contains
 
    end function run
 
-   logical function generic_run(load_tests, context) result(status)
+    logical function generic_run(load_tests, context) result(status)
       use fArgParse
       use pf_StringUtilities
       use pf_AbstractPrinter
@@ -42,6 +42,7 @@ contains
       use pf_Test
       use pf_TestVector
       use pf_GlobFilter
+      use iso_fortran_env, only: error_unit
 #ifndef _WIN32
       use pf_RegexFilter
 #endif
@@ -117,6 +118,7 @@ contains
          option => options%at('tap_file')
          if (associated(option)) then
             call cast(option, tap_file)
+            write(error_unit,'(a,a,a)') 'DEBUG: tap_file=[',tap_file,']'
             if (tap_file /= '') use_tap = .true.
          end if
          if (use_tap) call runner%add_listener(TapListener(tap_file))
