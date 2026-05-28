@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [4.19.0] - 2026-05-28
+
+### Added
+
+- Improved XML output
+  - Test cases now group together by suites into separate `<testsuite>` elements in the XML output, compatible with standard JUnit and CI reporting
+  - Timing information recorded for individual tests via `system_clock` and reported in the XML `time` attribute for both `<testcase>` and `<testsuite>` elements
+
+### Changed
+
+- Cleaned up unused subroutine `printFailure1` in `XmlPrinter.F90`
+
 ## [4.18.2] - 2026-05-28
 
 ### Fixed

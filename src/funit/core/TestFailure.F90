@@ -31,6 +31,7 @@ module PF_TestFailure
    type TestFailure
       character(len=80) :: testName
       type (ExceptionList) :: exceptions
+      real :: time  ! Execution time in seconds
    end type TestFailure
 
 end module PF_TestFailure

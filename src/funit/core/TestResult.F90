@@ -95,17 +95,27 @@ contains
       end if
    end function new_TestResult
 
-   subroutine addFailure(this, aTest, exceptions)
+   subroutine addFailure(this, aTest, exceptions, test_time)
       use PF_ExceptionList
       use PF_TestFailure
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
+      real, intent(in), optional :: test_time
 
       integer :: i
       class (TestListener), pointer :: pListener
+      type (TestFailure) :: failure
 
-      call this%failures%push_back(TestFailure(aTest%getName(), exceptions))
+      failure%testName = aTest%getName()
+      failure%exceptions = exceptions
+      if (present(test_time)) then
+         failure%time = test_time
+      else
+         failure%time = 0.0
+      end if
+
+      call this%failures%push_back(failure)
 
       do i = 1, this%listeners%size()
          pListener => this%listeners%at(i)
@@ -114,17 +124,27 @@ contains
 
    end subroutine addFailure
 
-   subroutine addError(this, aTest, exceptions)
+   subroutine addError(this, aTest, exceptions, test_time)
       use PF_TestFailure
       use PF_ExceptionList
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
       type (ExceptionList), intent(in) :: exceptions
+      real, intent(in), optional :: test_time
 
       integer :: i
       class (TestListener), pointer :: pListener
+      type (TestFailure) :: error
 
-      call this%errors%push_back(TestFailure(aTest%getName(), exceptions))
+      error%testName = aTest%getName()
+      error%exceptions = exceptions
+      if (present(test_time)) then
+         error%time = test_time
+      else
+         error%time = 0.0
+      end if
+
+      call this%errors%push_back(error)
 
       do i = 1, this%listeners%size()
          pListener => this%listeners%at(i)
@@ -133,17 +153,27 @@ contains
 
    end subroutine addError
 
-   subroutine addSuccess(this, aTest)
+   subroutine addSuccess(this, aTest, test_time)
       use PF_TestFailure
       use PF_ExceptionList
       class (TestResult), intent(inout) :: this
       class (SurrogateTestCase), intent(in) :: aTest
+      real, intent(in), optional :: test_time
 
       type (ExceptionList) :: noExceptions ! empty
       class (TestListener), pointer :: pListener
       integer :: i
+      type (TestFailure) :: success
 
-      call this%successes%push_back(TestFailure(aTest%getName(), noExceptions))
+      success%testName = aTest%getName()
+      success%exceptions = noExceptions
+      if (present(test_time)) then
+         success%time = test_time
+      else
+         success%time = 0.0
+      end if
+
+      call this%successes%push_back(success)
       do i = 1, this%listeners%size()
          pListener => this%listeners%at(i)
          call pListener%addSuccess(aTest%getName())
@@ -222,10 +252,13 @@ contains
       use PF_Exception
       use PF_ExceptionList
       use PF_ParallelContext
+      use iso_fortran_env, only: INT64
       class (TestResult), intent(inout) :: this
-      class (SurrogateTestCase), intent(inout) :: test 
+      class (SurrogateTestCase), intent(inout) :: test
       class (ParallelContext), intent(in) :: context
 
+      integer(kind=INT64) :: start_count, end_count, count_rate
+      real :: test_time
 
       if (test%is_disabled()) then
          call this%disableTest(test)
@@ -234,15 +267,22 @@ contains
 
       if (context%isRootProcess()) call this%startTest(test)
 
+      ! Start timing the test
+      call system_clock(start_count, count_rate)
+
       call test%runBare()
+
+      ! End timing the test
+      call system_clock(end_count)
+      test_time = real(end_count - start_count) / real(count_rate)
 
       if (context%isRootProcess()) then
          if (anyErrors()) then
-            call this%addError(test, getExceptions())
+            call this%addError(test, getExceptions(), test_time)
          elseif (anyExceptions()) then
-            call this%addFailure(test, getExceptions())
+            call this%addFailure(test, getExceptions(), test_time)
          else
-            call this%addSuccess(test)
+            call this%addSuccess(test, test_time)
          end if
       end if
 
