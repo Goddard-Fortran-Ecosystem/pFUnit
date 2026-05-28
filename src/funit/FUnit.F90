@@ -113,9 +113,9 @@ contains
          use_tap = .false.
          option => options%at('use_tap')
          if (associated(option)) call cast(option, use_tap)
-         ! --tap-file alone also implies TAP output
+         ! --tapfile alone also implies TAP output
          tap_file = 'tap_output.tap'
-         option => options%at('tap_file')
+         option => options%at('tapfile')
          if (associated(option)) then
             call cast(option, tap_file)
             write(error_unit,'(a,a,a)') 'DEBUG: tap_file=[',tap_file,']'
@@ -404,8 +404,8 @@ contains
          call parser%add_argument('-t', '--tap', action='store_true', &
               & dest='use_tap', &
               & help='add a TAP listener (writes to tap_output.tap by default)')
-         call parser%add_argument('--tap-file', type='string', &
-              & dest='tap_file', action='store', &
+         call parser%add_argument('--tapfile', type='string', &
+              & dest='tapfile', action='store', &
               & help='filename for TAP output (default: tap_output.tap; implies --tap)')
 
       call parser%add_argument('-x', '--xml', action='store_true', &
