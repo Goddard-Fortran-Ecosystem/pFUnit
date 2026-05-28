@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.18.2] - 2026-05-28
 
+### Fixed
+
 - Workaround for Flang regression (issue #554)
   - Avoids an issue in Flang where intrinsic assignment of TestVector loses nested polymorphic allocatable components (e.g. testParameter) after a certain nesting depth. This pathway for Flang instead explicitly
   loops through and uses a `push_back` to correctly preserves all allocatable components.
