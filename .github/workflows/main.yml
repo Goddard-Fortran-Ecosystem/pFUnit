@@ -85,7 +85,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: ~/local/openmpi
-          key: mpi-${{ matrix.os }}-openmpi-5.0.10
+          key: mpi-${{ matrix.os }}-${{ matrix.compiler }}-openmpi-5.0.10
 
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
@@ -302,7 +302,7 @@ jobs:
     runs-on: ubuntu-latest
     container: gmao/llvm-flang-openmpi:latest
     env:
-      FC: flang-new
+      FC: flang-22
       LANGUAGE: en_US.UTF-8
       LC_ALL: en_US.UTF-8
       LANG: en_US.UTF-8
