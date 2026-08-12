@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update CI to match build matrix of GFE
+- Separate scheduled CI from pull-request CI
+- Update GitHub Actions to current major versions
 
 ## [4.19.0] - 2026-05-28
 
