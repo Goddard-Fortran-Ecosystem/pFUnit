@@ -138,14 +138,20 @@ add_pfunit_ctest (filter_cmdline_tests.x
 )
 add_dependencies(build-tests filter_cmdline_tests.x)
 
-add_test(NAME command_line_filtering
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_command_line_filtering.sh 
-          ${CMAKE_CURRENT_BINARY_DIR}/filter_cmdline_tests.x
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
-set_tests_properties(command_line_filtering PROPERTIES
-  DEPENDS filter_cmdline_tests.x
-)
+find_program(BASH_PROGRAM NAMES bash)
+
+if (BASH_PROGRAM)
+  add_test(NAME command_line_filtering
+    COMMAND ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/test_command_line_filtering.sh 
+            $<TARGET_FILE:filter_cmdline_tests.x>
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  set_tests_properties(command_line_filtering PROPERTIES
+    DEPENDS filter_cmdline_tests.x
+  )
+else()
+  message(STATUS "bash not found - skipping command_line_filtering test")
+endif()
 
 # Shuffle integration tests
 add_pfunit_ctest (shuffle_int_tests.x
@@ -154,14 +160,18 @@ add_pfunit_ctest (shuffle_int_tests.x
 )
 add_dependencies(build-tests shuffle_int_tests.x)
 
-add_test(NAME shuffle_integration
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test_shuffle.sh
-          ${CMAKE_CURRENT_BINARY_DIR}/shuffle_int_tests.x
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
-set_tests_properties(shuffle_integration PROPERTIES
-  DEPENDS shuffle_int_tests.x
-)
+if (BASH_PROGRAM)
+  add_test(NAME shuffle_integration
+    COMMAND ${BASH_PROGRAM} ${CMAKE_CURRENT_SOURCE_DIR}/test_shuffle.sh
+            $<TARGET_FILE:shuffle_int_tests.x>
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+  set_tests_properties(shuffle_integration PROPERTIES
+    DEPENDS shuffle_int_tests.x
+  )
+else()
+  message(STATUS "bash not found - skipping shuffle_integration test")
+endif()
 
 
 

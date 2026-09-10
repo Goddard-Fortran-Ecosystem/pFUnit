@@ -5,8 +5,15 @@
 set -e  # Exit on error
 
 TEST_EXE="$1"
-if [ -z "$TEST_EXE" ] || [ ! -x "$TEST_EXE" ]; then
-    echo "ERROR: Test executable not provided or not executable: $TEST_EXE"
+if [ -z "$TEST_EXE" ]; then
+    echo "ERROR: Test executable not provided"
+    exit 1
+fi
+if [ ! -f "$TEST_EXE" ] && [ -f "${TEST_EXE}.exe" ]; then
+    TEST_EXE="${TEST_EXE}.exe"
+fi
+if [ ! -f "$TEST_EXE" ]; then
+    echo "ERROR: Test executable not found: $TEST_EXE"
     exit 1
 fi
 
