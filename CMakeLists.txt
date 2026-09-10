@@ -173,6 +173,11 @@ if (ENABLE_TESTS)
   # are EXCLUDE_FROM_ALL
   # From https://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests/56448477#56448477
   build_command(CTEST_CUSTOM_PRE_TEST TARGET build-tests)
+  # build_command() returns native (backslash) paths on Windows; ESCAPE_QUOTES
+  # below only escapes embedded quotes, not backslashes, so double them first
+  # or a path like C:\Users\... produces an invalid \U escape once written
+  # into the quoted string below.
+  string(REPLACE "\\" "\\\\" CTEST_CUSTOM_PRE_TEST "${CTEST_CUSTOM_PRE_TEST}")
   string(CONFIGURE \"@CTEST_CUSTOM_PRE_TEST@\" CTEST_CUSTOM_PRE_TEST_QUOTED ESCAPE_QUOTES)
   file(WRITE "${CMAKE_BINARY_DIR}/CTestCustom.cmake" "set(CTEST_CUSTOM_PRE_TEST ${CTEST_CUSTOM_PRE_TEST_QUOTED})" "\n")
 endif()
