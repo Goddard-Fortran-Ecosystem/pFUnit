@@ -1,0 +1,11 @@
+name: Scheduled CI
+
+on:
+  # Run weekly to try and keep the MPI caches cached.
+  schedule:
+    - cron: '00 13 * * 1'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: ./.github/workflows/main.yml
