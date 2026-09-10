@@ -131,6 +131,12 @@ set_property (TEST old_tests
     PROPERTY FAIL_REGULAR_EXPRESSION "Encountered 1 or more failures/errors during testing"
     )
 
+# Command-line filtering and shuffle integration tests drive their
+# executables through a bash script; CreateProcess() cannot launch a
+# script directly on Windows (no shebang support), so skip them there,
+# as with Test_RegexFilter.pf above.
+if (NOT WIN32)
+
 # Command-line filtering tests
 add_pfunit_ctest (filter_cmdline_tests.x
   TEST_SOURCES FilterCommandLineTests.pf
@@ -162,6 +168,8 @@ add_test(NAME shuffle_integration
 set_tests_properties(shuffle_integration PROPERTIES
   DEPENDS shuffle_int_tests.x
 )
+
+endif ()
 
 
 
