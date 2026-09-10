@@ -9,9 +9,8 @@ on:
       - "**.MD"
       - "LICENCE"
       - "COPYRIGHT"
-  # This is a weekly run to try and keep the MPI caches ... cached
-  schedule:
-    - cron: '00 13 * * 1'
+  # Allow the scheduled workflow to reuse this test matrix.
+  workflow_call:
   # Allow us to trigger it manually
   workflow_dispatch:
 
@@ -72,7 +71,7 @@ jobs:
           cmake --version
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -82,10 +81,10 @@ jobs:
 
       - name: Cache MPI
         id: cache-mpi
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: ~/local/openmpi
-          key: mpi-${{ matrix.os }}-openmpi-5.0.10
+          key: mpi-${{ matrix.os }}-${{ matrix.compiler }}-openmpi-5.0.10
 
       - name: Build MPI
         if: steps.cache-mpi.outputs.cache-hit != 'true'
@@ -136,7 +135,7 @@ jobs:
     name: Intel Fortran
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -235,7 +234,7 @@ jobs:
           docker system prune -af || true
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
@@ -302,7 +301,7 @@ jobs:
     runs-on: ubuntu-latest
     container: gmao/llvm-flang-openmpi:latest
     env:
-      FC: flang-new
+      FC: flang-22
       LANGUAGE: en_US.UTF-8
       LC_ALL: en_US.UTF-8
       LANG: en_US.UTF-8
@@ -319,7 +318,7 @@ jobs:
           cmake --version
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
