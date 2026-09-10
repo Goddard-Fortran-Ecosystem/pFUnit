@@ -81,6 +81,15 @@ if (MINGW)
   set(SKIP_ROBUST YES)
 endif ()
 
+# gfortran does not predefine the _WIN32 preprocessor macro on any platform
+# (unlike MSVC/Intel), but Fortran sources such as FUnit.F90 use #ifndef
+# _WIN32 guards that need to agree with CMake's own WIN32-gated source
+# exclusions (e.g. src/funit/core/CMakeLists.txt). Define it explicitly so
+# both stay consistent regardless of compiler.
+if (WIN32)
+  add_compile_definitions(_WIN32)
+endif ()
+
 
 if (NOT SKIP_MPI)
   find_package (MPI QUIET COMPONENTS Fortran)

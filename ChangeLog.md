@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Define `_WIN32` via CMake's `WIN32` variable so `FUnit.F90`'s `#ifndef _WIN32` guard around `pf_RegexFilter` agrees with `core/CMakeLists.txt`'s CMake-driven exclusion of `RegexFilter.F90` on Windows, fixing a standalone Windows/gfortran build failure (issue #566)
+
 ## [4.20.0] - 2026-09-10
 
 ### Fixed
