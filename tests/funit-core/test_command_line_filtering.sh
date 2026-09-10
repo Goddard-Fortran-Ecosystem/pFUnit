@@ -80,7 +80,7 @@ test_filter "Filter test_* exclude test_alpha_* (glob)" 2 -f "FilterCommandLineT
 test_filter "Exclude slow* and other* (glob)" 4 -e "FilterCommandLineTests_suite.*slow*" "FilterCommandLineTests_suite.*other*"
 
 # Unix-specific regex tests
-if [ "$(uname)" != "MINGW"* ] && [ "$(uname)" != "MSYS"* ]; then
+if [[ "$(uname)" != MINGW* && "$(uname)" != MSYS* ]]; then
     echo ""
     echo "Running Unix/Linux/macOS-specific regex tests..."
     
