@@ -5,6 +5,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.1] - 2026-09-11
+
+### Added
+
+- Windows CI workflow for MinGW `gfortran` and Intel `ifx` (issue #568)
+
+### Fixed
+
+- Fix execution of `command_line_filtering` and `shuffle_integration` tests on Windows (issue #568)
+- Fix CMake syntax error in `CTestCustom.cmake` on Windows caused by unescaped backslashes in `build_command()` output
+
 ## [4.20.0] - 2026-09-10
 
 ### Fixed

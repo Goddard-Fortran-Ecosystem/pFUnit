@@ -5,8 +5,15 @@
 set -e  # Exit on error
 
 TEST_EXE="$1"
-if [ -z "$TEST_EXE" ] || [ ! -x "$TEST_EXE" ]; then
-    echo "ERROR: Test executable not provided or not executable: $TEST_EXE"
+if [ -z "$TEST_EXE" ]; then
+    echo "ERROR: Test executable not provided"
+    exit 1
+fi
+if [ ! -f "$TEST_EXE" ] && [ -f "${TEST_EXE}.exe" ]; then
+    TEST_EXE="${TEST_EXE}.exe"
+fi
+if [ ! -f "$TEST_EXE" ]; then
+    echo "ERROR: Test executable not found: $TEST_EXE"
     exit 1
 fi
 
@@ -73,7 +80,7 @@ test_filter "Filter test_* exclude test_alpha_* (glob)" 2 -f "FilterCommandLineT
 test_filter "Exclude slow* and other* (glob)" 4 -e "FilterCommandLineTests_suite.*slow*" "FilterCommandLineTests_suite.*other*"
 
 # Unix-specific regex tests
-if [ "$(uname)" != "MINGW"* ] && [ "$(uname)" != "MSYS"* ]; then
+if [[ "$(uname)" != MINGW* && "$(uname)" != MSYS* ]]; then
     echo ""
     echo "Running Unix/Linux/macOS-specific regex tests..."
     
