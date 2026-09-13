@@ -44,19 +44,19 @@ contains
       @assertNotEqual(1.0, 1.1)
       @assertNotEqual(1.0, 1.1)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertNotEqual(1, 1.1_REAL32)
       @assertNotEqual(1.0, 1.1_REAL32)
       @assertNotEqual(1.0_REAL32, 1.1_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, 1.1_REAL64)
       @assertNotEqual(1.0, 1.1_REAL64)
       @assertNotEqual(1.0_REAL64, 1.1_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, 1.1_REAL128)
       @assertNotEqual(1.0, 1.1_REAL128)
       @assertNotEqual(1.0_REAL128, 1.1_REAL128)
@@ -69,7 +69,7 @@ contains
       @assertNotEqual(1.0, 1.1, 0.05)
       @assertNotEqual(1.0, 1.1, 0.05)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertNotEqual(1, 1.1_REAL32, 0.05)
       @assertNotEqual(1.0, 1.1_REAL32, 0.05)
       @assertNotEqual(1.0_REAL32, 1.1_REAL32, 0.05)
@@ -79,7 +79,7 @@ contains
       @assertNotEqual(1.0_REAL32, 1.1_REAL32, 0.05_REAL32)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, 1.1_REAL64, 0.05)
       @assertNotEqual(1.0, 1.1_REAL64, 0.05)
       @assertNotEqual(1.0_REAL64, 1.1_REAL64, 0.05)
@@ -89,7 +89,7 @@ contains
       @assertNotEqual(1.0_REAL64, 1.1_REAL64, 0.05_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, 1.1_REAL128, 0.05)
       @assertNotEqual(1.0, 1.1_REAL128, 0.05)
       @assertNotEqual(1.0_REAL128, 1.1_REAL128, 0.05)
@@ -105,15 +105,15 @@ contains
    subroutine test_notEqual_1D_actual
       real :: off1 = nearest(1.0,-1.)
       real :: off2 = nearest(2.0,+1.)
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       real(kind=REAL32) :: off1_32 = nearest(1.0_REAL32,-1.)
       real(kind=REAL32) :: off2_32 = nearest(2.0_REAL32,+1.)
 #endif
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       real(kind=REAL64) :: off1_64 = nearest(1.0_REAL64,-1.)
       real(kind=REAL64) :: off2_64 = nearest(2.0_REAL64,+1.)
 #endif
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       real(kind=REAL128) :: off1_128 = nearest(1.0_REAL128,-1.)
       real(kind=REAL128) :: off2_128 = nearest(2.0_REAL128,+1.)
 #endif
@@ -125,7 +125,7 @@ contains
       @assertNotEqual([1.0,2.0], [off1,off2])
       @assertNotEqual([1.0,2.0], [off1,off2])
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertNotEqual(1, [off1_32])
       @assertNotEqual(1.0, [off1_32,off1_32,off1_32])
       @assertNotEqual(1.0_REAL32, [off1_32,off1_32,off1_32])
@@ -134,7 +134,7 @@ contains
       @assertNotEqual([1.0_REAL32,2.0_REAL32], [off1_32,off2_32])
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, [off1_64])
       @assertNotEqual(1.0, [off1_64,off1_64,off1_64])
       @assertNotEqual(1.0_REAL64, [off1_64,off1_64,off1_64])
@@ -144,7 +144,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, [off1_128])
       @assertNotEqual(1.0, [off1_128,off1_128,off1_128])
       @assertNotEqual(1.0_REAL128, [off1_128,off1_128,off1_128])
@@ -163,7 +163,7 @@ contains
       @assertNotEqual([1,2], [1.1,2.1], 0.05)
       @assertNotEqual([1.0,2.0], [1.1,2.1], 0.05)
 
-#ifdef _REAL32      
+#ifdef _ISO_REAL32
       @assertNotEqual(1, [1.1_REAL32], 0.05)
       @assertNotEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.05)
       @assertNotEqual([1,2], [1.1_REAL32,2.1_REAL32], 0.05)
@@ -175,7 +175,7 @@ contains
       @assertNotEqual([1.0,2.0], [1.1_REAL32,2.1_REAL32], 0.05_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, [1.1_REAL64], 0.05)
       @assertNotEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.05)
       @assertNotEqual([1,2], [1.1_REAL64,2.1_REAL64], 0.05)
@@ -187,7 +187,7 @@ contains
       @assertNotEqual([1.0,2.0], [1.1_REAL64,2.1_REAL64], 0.05_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, [1.1_REAL128], 0.05)
       @assertNotEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.05)
       @assertNotEqual([1,2], [1.1_REAL128,2.1_REAL128], 0.05)
@@ -213,7 +213,7 @@ contains
       @assertNotEqual(array, real(array) + 0.1)
       @assertNotEqual(real(array), real(array) +0.1)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertNotEqual(1, real(const,kind=REAL32) + 0.1)
       @assertNotEqual(1.0, real(const,kind=REAL32) + 0.1)
       @assertNotEqual(1.0_REAL32, real(const,kind=REAL32) + 0.1)
@@ -223,7 +223,7 @@ contains
       @assertNotEqual(real(array,kind=REAL32), real(array,kind=REAL32) + 0.1)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, real(const,kind=REAL64) + 0.1)
       @assertNotEqual(1.0, real(const,kind=REAL64) + 0.1)
       @assertNotEqual(1.0_REAL64, real(const,kind=REAL64) + 0.1)
@@ -234,7 +234,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, real(const,kind=REAL128) + 0.1)
       @assertNotEqual(1.0, real(const,kind=REAL128) + 0.1)
       @assertNotEqual(1.0_REAL128, real(const,kind=REAL128) + 0.1)
@@ -257,7 +257,7 @@ contains
       @assertNotEqual(array, real(array)+1, 0.5)
       @assertNotEqual(real(array), real(array)+1,0.5)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertNotEqual(1, real(const,kind=REAL32)+1, 0.5_REAL32)
       @assertNotEqual(1.0, real(const,kind=REAL32)+1, 0.5_REAL32)
       @assertNotEqual(1.0_REAL32, real(const,kind=REAL32)+1, 0.5_REAL32)
@@ -275,7 +275,7 @@ contains
       @assertNotEqual(real(array,kind=REAL32), real(array,kind=REAL32)+1, 0.5)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertNotEqual(1, real(const,kind=REAL64)+1, 0.5_REAL64)
       @assertNotEqual(1.0, real(const,kind=REAL64)+1, 0.5_REAL64)
       @assertNotEqual(1.0_REAL64, real(const,kind=REAL64)+1, 0.5_REAL64)
@@ -294,7 +294,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertNotEqual(1, real(const,kind=REAL128)+1, 0.5_REAL128)
       @assertNotEqual(1.0, real(const,kind=REAL128)+1, 0.5_REAL128)
       @assertNotEqual(1.0_REAL128, real(const,kind=REAL128)+1, 0.5_REAL128)

@@ -45,19 +45,19 @@ contains
       @assertLessThan(1.0, 1.1)
       @assertLessThan(1.0, 1.1)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, 1.1_REAL32)
       @assertLessThan(1.0, 1.1_REAL32)
       @assertLessThan(1.0_REAL32, 1.1_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, 1.1_REAL64)
       @assertLessThan(1.0, 1.1_REAL64)
       @assertLessThan(1.0_REAL64, 1.1_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, 1.1_REAL128)
       @assertLessThan(1.0, 1.1_REAL128)
       @assertLessThan(1.0_REAL128, 1.1_REAL128)
@@ -70,7 +70,7 @@ contains
       @assertLessThan(1.0, 1.1, 0.2)
       @assertLessThan(1.0, 1.1, 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, 1.1_REAL32, 0.2)
       @assertLessThan(1.0, 1.1_REAL32, 0.2)
       @assertLessThan(1.0_REAL32, 1.1_REAL32, 0.2)
@@ -80,7 +80,7 @@ contains
       @assertLessThan(1.0_REAL32, 1.1_REAL32, 0.2_REAL32)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, 1.1_REAL64, 0.2)
       @assertLessThan(1.0, 1.1_REAL64, 0.2)
       @assertLessThan(1.0_REAL64, 1.1_REAL64, 0.2)
@@ -90,7 +90,7 @@ contains
       @assertLessThan(1.0_REAL64, 1.1_REAL64, 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, 1.1_REAL128, 0.2)
       @assertLessThan(1.0, 1.1_REAL128, 0.2)
       @assertLessThan(1.0_REAL128, 1.1_REAL128, 0.2)
@@ -111,19 +111,19 @@ contains
       @assertLessThan(1.0, nearest(1.,1.))
       @assertLessThan(1.0, nearest(1.,1.))
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, nearest(1.1_REAL32, 1.))
       @assertLessThan(1.0, nearest(1.1_REAL32, 1.))
       @assertLessThan(1.0_REAL32, nearest(1.1_REAL32, 1.))
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, nearest(1._REAL64,1.))
       @assertLessThan(1.0, nearest(1._REAL64,1.))
       @assertLessThan(1.0_REAL64, nearest(1._REAL64,1.))
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, nearest(1._REAL128,1.))
       @assertLessThan(1.0, nearest(1._REAL128,1.))
       @assertLessThan(1.0_REAL128, nearest(1._REAL128,1.))
@@ -139,7 +139,7 @@ contains
       @assertLessThan([1.0,2.0], [1.1,2.1])
       @assertLessThan([1.0,2.0], [1.1,2.1])
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, [1.1_REAL32])
       @assertLessThan(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32])
       @assertLessThan(1.0_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32])
@@ -148,7 +148,7 @@ contains
       @assertLessThan([1.0_REAL32,2.0_REAL32], [1.1_REAL32,2.1_REAL32])
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, [1.1_REAL64])
       @assertLessThan(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64])
       @assertLessThan(1.0_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64])
@@ -158,7 +158,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, [1.1_REAL128])
       @assertLessThan(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128])
       @assertLessThan(1.0_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128])
@@ -179,7 +179,7 @@ contains
       @assertLessThan([1.0,2.0], [1.1,2.1], 0.2)
       @assertLessThan([1.1,2.1], [1.1,2.1], 0.2)
 
-#ifdef _REAL32      
+#ifdef _ISO_REAL32
       @assertLessThan(1, [1.1_REAL32], 0.2)
       @assertLessThan(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2)
       @assertLessThan(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2)
@@ -195,7 +195,7 @@ contains
       @assertLessThan([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, [1.1_REAL64], 0.2)
       @assertLessThan(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2)
       @assertLessThan(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2)
@@ -211,7 +211,7 @@ contains
       @assertLessThan([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, [1.1_REAL128], 0.2)
       @assertLessThan(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2)
       @assertLessThan(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2)
@@ -241,7 +241,7 @@ contains
       @assertLessThan(array, real(array) + 0.1)
       @assertLessThan(real(array), real(array) + 0.1)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, real(const,kind=REAL32) + 0.1_REAL32)
       @assertLessThan(1.0, real(const,kind=REAL32) + 0.1_REAL32)
       @assertLessThan(1.0_REAL32, real(const,kind=REAL32) + 0.1_REAL32)
@@ -251,7 +251,7 @@ contains
       @assertLessThan(real(array,kind=REAL32), real(array,kind=REAL32) + 0.1_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, real(const,kind=REAL64) + 0.1_REAL64)
       @assertLessThan(1.0, real(const,kind=REAL64) + 0.1_REAL64)
       @assertLessThan(1.0_REAL64, real(const,kind=REAL64) + 0.1_REAL64)
@@ -262,7 +262,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, real(const,kind=REAL128) + 0.1_REAL128)
       @assertLessThan(1.0, real(const,kind=REAL128) + 0.1_REAL128)
       @assertLessThan(1.0_REAL128, real(const,kind=REAL128) + 0.1_REAL128)
@@ -285,7 +285,7 @@ contains
       @assertLessThan(array, real(array)+1, 2.)
       @assertLessThan(real(array), real(array)+1,2.)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertLessThan(1, real(const,kind=REAL32)+1, 2._REAL32)
       @assertLessThan(1.0, real(const,kind=REAL32)+1, 2._REAL32)
       @assertLessThan(1.0_REAL32, real(const,kind=REAL32)+1, 2._REAL32)
@@ -303,7 +303,7 @@ contains
       @assertLessThan(real(array,kind=REAL32), real(array,kind=REAL32)+1, 2.)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertLessThan(1, real(const,kind=REAL64)+1, 2._REAL64)
       @assertLessThan(1.0, real(const,kind=REAL64)+1, 2._REAL64)
       @assertLessThan(1.0_REAL64, real(const,kind=REAL64)+1, 2._REAL64)
@@ -322,7 +322,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertLessThan(1, real(const,kind=REAL128)+1, 2._REAL128)
       @assertLessThan(1.0, real(const,kind=REAL128)+1, 2._REAL128)
       @assertLessThan(1.0_REAL128, real(const,kind=REAL128)+1, 2._REAL128)

@@ -44,19 +44,19 @@ contains
       @assertGreaterThanOrEqual(1.0, 1.0)
       @assertGreaterThanOrEqual(1.0, 1.0)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, 1.0_REAL32)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL32)
       @assertGreaterThanOrEqual(1.0_REAL32, 1.0_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, 1.0_REAL64)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL64)
       @assertGreaterThanOrEqual(1.0_REAL64, 1.0_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, 1.0_REAL128)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL128)
       @assertGreaterThanOrEqual(1.0_REAL128, 1.0_REAL128)
@@ -69,7 +69,7 @@ contains
       @assertGreaterThanOrEqual(1.0, 1.0, 0.2)
       @assertGreaterThanOrEqual(1.0, 1.0, 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, 1.0_REAL32, 0.2)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL32, 0.2)
       @assertGreaterThanOrEqual(1.0_REAL32, 1.0_REAL32, 0.2)
@@ -79,7 +79,7 @@ contains
       @assertGreaterThanOrEqual(1.0_REAL32, 1.0_REAL32, 0.2_REAL32)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, 1.0_REAL64, 0.2)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL64, 0.2)
       @assertGreaterThanOrEqual(1.0_REAL64, 1.0_REAL64, 0.2)
@@ -89,7 +89,7 @@ contains
       @assertGreaterThanOrEqual(1.0_REAL64, 1.0_REAL64, 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, 1.0_REAL128, 0.2)
       @assertGreaterThanOrEqual(1.0, 1.0_REAL128, 0.2)
       @assertGreaterThanOrEqual(1.0_REAL128, 1.0_REAL128, 0.2)
@@ -110,19 +110,19 @@ contains
       @assertGreaterThanOrEqual(1.0, nearest(1.,-1.))
       @assertGreaterThanOrEqual(1.0, nearest(1.,-1.))
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, nearest(1.0_REAL32, -1.))
       @assertGreaterThanOrEqual(1.0, nearest(1.0_REAL32, -1.))
       @assertGreaterThanOrEqual(1.0_REAL32, nearest(1.0_REAL32, -1.))
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, nearest(1._REAL64,-1.))
       @assertGreaterThanOrEqual(1.0, nearest(1._REAL64,-1.))
       @assertGreaterThanOrEqual(1.0_REAL64, nearest(1._REAL64,-1.))
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, nearest(1._REAL128,-1.))
       @assertGreaterThanOrEqual(1.0, nearest(1._REAL128,-1.))
       @assertGreaterThanOrEqual(1.0_REAL128, nearest(1._REAL128,-1.))
@@ -138,7 +138,7 @@ contains
       @assertGreaterThanOrEqual([1.0,2.0], [1.0,2.0])
       @assertGreaterThanOrEqual([1.0,2.0], [1.0,2.0])
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, [1.0_REAL32])
       @assertGreaterThanOrEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
       @assertGreaterThanOrEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
@@ -147,7 +147,7 @@ contains
       @assertGreaterThanOrEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32])
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, [1.0_REAL64])
       @assertGreaterThanOrEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
       @assertGreaterThanOrEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
@@ -157,7 +157,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, [1.0_REAL128])
       @assertGreaterThanOrEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
       @assertGreaterThanOrEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
@@ -178,7 +178,7 @@ contains
       @assertGreaterThanOrEqual([1.0,2.0], [1.0,2.0], 0.2)
       @assertGreaterThanOrEqual([1.0,2.0], [1.0,2.0], 0.2)
 
-#ifdef _REAL32      
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, [1.0_REAL32], 0.2)
       @assertGreaterThanOrEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32], 0.2)
       @assertGreaterThanOrEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32],0.2)
@@ -194,7 +194,7 @@ contains
       @assertGreaterThanOrEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32], 0.2_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, [1.0_REAL64], 0.2)
       @assertGreaterThanOrEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64], 0.2)
       @assertGreaterThanOrEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64],0.2)
@@ -210,7 +210,7 @@ contains
       @assertGreaterThanOrEqual([1.0_REAL64,2.0_REAL64], [1.0_REAL64,2.0_REAL64], 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, [1.0_REAL128], 0.2)
       @assertGreaterThanOrEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128], 0.2)
       @assertGreaterThanOrEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128],0.2)
@@ -240,7 +240,7 @@ contains
       @assertGreaterThanOrEqual(array, real(array))
       @assertGreaterThanOrEqual(real(array), real(array))
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, real(const,kind=REAL32))
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL32))
       @assertGreaterThanOrEqual(1.0_REAL32, real(const,kind=REAL32))
@@ -250,7 +250,7 @@ contains
       @assertGreaterThanOrEqual(real(array,kind=REAL32), real(array,kind=REAL32))
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, real(const,kind=REAL64))
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL64))
       @assertGreaterThanOrEqual(1.0_REAL64, real(const,kind=REAL64))
@@ -261,7 +261,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, real(const,kind=REAL128))
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL128))
       @assertGreaterThanOrEqual(1.0_REAL128, real(const,kind=REAL128))
@@ -284,7 +284,7 @@ contains
       @assertGreaterThanOrEqual(array, real(array)-2, 2.)
       @assertGreaterThanOrEqual(real(array), real(array)-2,2.)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertGreaterThanOrEqual(1, real(const,kind=REAL32)-2, 2._REAL32)
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL32)-2, 2._REAL32)
       @assertGreaterThanOrEqual(1.0_REAL32, real(const,kind=REAL32)-2, 2._REAL32)
@@ -302,7 +302,7 @@ contains
       @assertGreaterThanOrEqual(real(array,kind=REAL32), real(array,kind=REAL32)-2, 2.)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertGreaterThanOrEqual(1, real(const,kind=REAL64)-2, 2._REAL64)
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL64)-2, 2._REAL64)
       @assertGreaterThanOrEqual(1.0_REAL64, real(const,kind=REAL64)-2, 2._REAL64)
@@ -321,7 +321,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertGreaterThanOrEqual(1, real(const,kind=REAL128)-2, 2._REAL128)
       @assertGreaterThanOrEqual(1.0, real(const,kind=REAL128)-2, 2._REAL128)
       @assertGreaterThanOrEqual(1.0_REAL128, real(const,kind=REAL128)-2, 2._REAL128)

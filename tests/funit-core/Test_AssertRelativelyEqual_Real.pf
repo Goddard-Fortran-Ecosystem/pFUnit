@@ -44,7 +44,7 @@ contains
       @assertRelativelyEqual(1.0, 1.1, 0.2)
       @assertRelativelyEqual(1.0, 1.1, 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertRelativelyEqual(1, 1.1_REAL32, 0.2)
       @assertRelativelyEqual(1.0, 1.1_REAL32, 0.2)
       @assertRelativelyEqual(1.0_REAL32, 1.1_REAL32, 0.2)
@@ -54,7 +54,7 @@ contains
       @assertRelativelyEqual(1.0_REAL32, 1.1_REAL32, 0.2_REAL32)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertRelativelyEqual(1, 1.1_REAL64, 0.2)
       @assertRelativelyEqual(1.0, 1.1_REAL64, 0.2)
       @assertRelativelyEqual(1.0_REAL64, 1.1_REAL64, 0.2)
@@ -64,7 +64,7 @@ contains
       @assertRelativelyEqual(1.0_REAL64, 1.1_REAL64, 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertRelativelyEqual(1, 1.1_REAL128, 0.2)
       @assertRelativelyEqual(1.0, 1.1_REAL128, 0.2)
       @assertRelativelyEqual(1.0_REAL128, 1.1_REAL128, 0.2)
@@ -86,7 +86,7 @@ contains
       @assertRelativelyEqual([1.0,2.0], [1.1,2.1], 0.2)
       @assertRelativelyEqual([1.1,2.1], [1.1,2.1], 0.2)
 
-#ifdef _REAL32      
+#ifdef _ISO_REAL32
       @assertRelativelyEqual(1, [1.1_REAL32], 0.2)
       @assertRelativelyEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2)
       @assertRelativelyEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2)
@@ -102,7 +102,7 @@ contains
       @assertRelativelyEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertRelativelyEqual(1, [1.1_REAL64], 0.2)
       @assertRelativelyEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2)
       @assertRelativelyEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2)
@@ -118,7 +118,7 @@ contains
       @assertRelativelyEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertRelativelyEqual(1, [1.1_REAL128], 0.2)
       @assertRelativelyEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2)
       @assertRelativelyEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2)
