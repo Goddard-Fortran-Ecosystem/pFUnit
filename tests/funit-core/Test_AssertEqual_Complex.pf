@@ -41,17 +41,17 @@ module Test_AssertEqual_Complex
    complex(kind=REAL32), parameter :: a_d = (1.d0,0.d0)
    complex(kind=REAL32), parameter :: b_d = (1.d0,2.d0)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
    complex(kind=REAL32), parameter :: a_32 = (1._REAL32,0._REAL32)
    complex(kind=REAL32), parameter :: b_32 = (1._REAL32,2._REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
    complex(kind=REAL64), parameter :: a_64 = (1._REAL64,0._REAL64)
    complex(kind=REAL64), parameter :: b_64 = (1._REAL64,2._REAL64)
 #endif
    
-#ifdef _REAL128
+#ifdef _ISO_REAL128
    complex(kind=REAL128), parameter :: a_128 = (1._REAL128,0._REAL128)
    complex(kind=REAL128), parameter :: b_128 = (1._REAL128,2._REAL128)
 #endif
@@ -68,24 +68,22 @@ contains
       @assertEqual(1., a_s)
       @assertEqual(a_s, a_s)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, a_32)
       @assertEqual(1.0, a_32)
       @assertEqual(1.0_REAL32, a_32)
       @assertEqual(a_32, a_32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, a_64)
       @assertEqual(1.0, a_64)
-      @assertEqual(1.0_REAL64, a_64)
       @assertEqual(a_64, a_64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, a_128)
       @assertEqual(1.0, a_128)
-      @assertEqual(1.0_REAL128, a_128)
       @assertEqual(a_128, a_128)
 #endif
    end subroutine test_equal_scalar
@@ -96,24 +94,22 @@ contains
       @assertEqual(1.0, a_s, 0.2)
       @assertEqual(1.0, a_s, 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, a_32, 0.2)
       @assertEqual(1.0, a_32, 0.2)
       @assertEqual(1.0_REAL32, a_32, 0.2)
       @assertEqual(a_32, a_32, 0.2)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, a_64, 0.2)
       @assertEqual(1.0, a_64, 0.2)
-      @assertEqual(1.0_REAL64, a_64, 0.2)
       @assertEqual(a_64, a_64, 0.2)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, a_128, 0.2)
       @assertEqual(1.0, a_128, 0.2)
-      @assertEqual(1.0_REAL128, a_128, 0.2)
       @assertEqual(a_128, a_128, 0.2)
 #endif
 
@@ -128,7 +124,7 @@ contains
       @assertEqual([1.0,2.0], [a_s,2*a_s])
       @assertEqual([a_s,b_s], [a_s,b_s])
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, [a_32])
       @assertEqual(1.0, [a_32,a_32,a_32])
       @assertEqual(1.0_REAL32, [a_32,a_32,a_32])
@@ -139,26 +135,22 @@ contains
       @assertEqual([a_32,b_32], [a_32,b_32])
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, [a_64])
       @assertEqual(1.0, [a_64,a_64,a_64])
-      @assertEqual(1.0_REAL64, [a_64,a_64,a_64])
       @assertEqual([1,2], [a_64,2*a_64])
       @assertEqual([1.0,2.0], [a_64,2*a_64])
-      @assertEqual([1.0_REAL64,2.0_REAL64], [a_64,2*a_64])
       @assertEqual([a_s,b_s], [a_64,b_64])
       @assertEqual([a_32,b_32], [a_64,b_64])
       @assertEqual([a_64,b_64], [a_64,b_64])
       @assertEqual(a_64, [a_64,a_64])
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, [a_128])
       @assertEqual(1.0, [a_128,a_128,a_128])
-      @assertEqual(1.0_REAL128, [a_128,a_128,a_128])
       @assertEqual([1,2], [a_128,2*a_128])
       @assertEqual([1.0,2.0], [a_128,2*a_128])
-      @assertEqual([1.0_REAL128,2.0_REAL128], [a_128,2*a_128])
       @assertEqual([a_s,b_s], [a_128,b_128])
       @assertEqual([a_32,b_32], [a_128,b_128])
       @assertEqual([a_128,b_128], [a_128,b_128])
@@ -176,7 +168,7 @@ contains
       @assertEqual([1.0,2.0], [a_s,2*a_s], 0.2)
       @assertEqual([a_s,b_s], [a_s,b_s], 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, [a_32], 0.2)
       @assertEqual(1.0, [a_32,a_32,a_32], 0.2)
       @assertEqual(1.0_REAL32, [a_32,a_32,a_32], 0.2)
@@ -187,26 +179,22 @@ contains
       @assertEqual([a_32,b_32], [a_32,b_32], 0.2_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, [a_64], 0.2)
       @assertEqual(1.0, [a_64,a_64,a_64], 0.2)
-      @assertEqual(1.0_REAL64, [a_64,a_64,a_64], 0.2)
       @assertEqual([1,2], [a_64,2*a_64], 0.2)
       @assertEqual([1.0,2.0], [a_64,2*a_64], 0.2)
-      @assertEqual([1.0_REAL64,2.0_REAL64], [a_64,2*a_64], 0.2)
       @assertEqual([a_s,b_s], [a_64,b_64], 0.2)
       @assertEqual([a_32,b_32], [a_64,b_64], 0.2)
       @assertEqual([a_64,b_64], [a_64,b_64], 0.2)
       @assertEqual(a_64, [a_64,a_64], 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, [a_128], 0.2)
       @assertEqual(1.0, [a_128,a_128,a_128], 0.2)
-      @assertEqual(1.0_REAL128, [a_128,a_128,a_128], 0.2)
       @assertEqual([1,2], [a_128,2*a_128], 0.2)
       @assertEqual([1.0,2.0], [a_128,2*a_128], 0.2)
-      @assertEqual([1.0_REAL128,2.0_REAL128], [a_128,2*a_128], 0.2)
       @assertEqual([a_s,b_s], [a_128,b_128], 0.2)
       @assertEqual([a_32,b_32], [a_128,b_128], 0.2)
       @assertEqual([a_128,b_128], [a_128,b_128], 0.2)
