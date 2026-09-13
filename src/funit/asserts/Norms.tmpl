@@ -15,7 +15,10 @@
 @end tkr_parameters
 
 module pf_Norms_{rank}d
-   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64, REAL128
+   use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+#ifdef _ISO_REAL128
+   use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
    implicit none
    private
 

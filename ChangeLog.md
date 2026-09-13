@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Guard `use, intrinsic :: iso_fortran_env, only: REAL128` with `#ifdef _ISO_REAL128` everywhere it was missing, fixing a build failure on platforms/compilers without `REAL128` support (issue #338)
+
 ## [4.20.1] - 2026-09-11
 
 ### Added
