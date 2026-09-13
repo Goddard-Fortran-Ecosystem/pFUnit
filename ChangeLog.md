@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected several inaccuracies in `README.md`: grammar, table of contents numbering, minimum supported GFortran version, missing `--shuffle`/`--seed` command-line options, a duplicate `-h`/`--help` entry, a stale `PFUNIT-4.0` path in the GNU Make example, and missing entries (`CONTRIBUTING.md`, `cmake/`, `README-INSTALL-DEPRECATED`, `README-RELEASE-CHECKLIST`) in the "What's in the directory?" section
+
 ## [4.20.1] - 2026-09-11
 
 ### Added
