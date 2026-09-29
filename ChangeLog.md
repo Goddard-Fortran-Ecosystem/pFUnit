@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `add_pfunit_ctest` fallback for `MPIEXEC_NUMPROC_FLAG`, which mistakenly set `MPIEXEC_EXECUTABLE` (issue #584)
+
 ## [4.20.1] - 2026-09-11
 
 ### Added
