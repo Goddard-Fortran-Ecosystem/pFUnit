@@ -219,6 +219,9 @@ add_pfunit_ctest (my_tests
   )
 ```
 
+Extra command line arguments for the test executable can be given with
+`COMMAND_LINE_ARGS` (e.g., `COMMAND_LINE_ARGS --strict`).
+
 The make step should then produce a test executable.  In the example
 above it would be `my_tests`.   To run:
 ```script
