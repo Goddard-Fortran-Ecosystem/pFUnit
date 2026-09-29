@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Skip the macOS-specific Fortran archive rule overrides for LLVM Flang, since `llvm-ranlib` rejects `-no_warning_for_no_symbols` (issue #581)
+
 ## [4.20.1] - 2026-09-11
 
 ### Added
