@@ -22,6 +22,7 @@ set(_PFUNIT_ADD_CTEST_SCRIPT_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Dir
 #                   LABELS ...
 #                   MAX_PES 5
 #                   WORKING_DIRECTORY working_directory
+#                   COMMAND_LINE_ARGS --some-option value
 #                   )
 #
 # TEST_SOURCES items with relative paths are treated as relative to
@@ -32,6 +33,10 @@ set(_PFUNIT_ADD_CTEST_SCRIPT_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE INTERNAL "Dir
 # TEST_SOURCES items with absolute paths are trated as being within
 # the build tree, and the processed file is placed in the same directory.
 # (And with the .F90 suffix, of course.)
+#
+# COMMAND_LINE_ARGS are extra arguments appended to the command line of
+# the test executable in the ctest.  They are passed to the executable
+# as-is and are not otherwise processed by this function.
 #
 # Note: If REGISTRY is not provided, then a default testSuites.inc
 #       will be created based on the PFUNIT_SOURCES file names.  It is
@@ -50,7 +55,7 @@ include (add_pfunit_sources)
 
 function (add_pfunit_ctest test_package_name)
   set (oneValueArgs REGISTRY MAX_PES EXTRA_USE EXTRA_INITIALIZE EXTRA_FINALIZE WORKING_DIRECTORY)
-  set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES LABELS)
+  set (multiValueArgs TEST_SOURCES OTHER_SOURCES LINK_LIBRARIES LABELS COMMAND_LINE_ARGS)
   cmake_parse_arguments (PF_TEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
   set (test_sources_f90)
@@ -179,24 +184,20 @@ function (add_pfunit_ctest test_package_name)
       endif()
     endif()
     if (NOT MPIEXEC_NUMPROC_FLAG)
-      if (PFUNIT_MPI_USE_MPIEXEC)
-        set(MPIEXEC_EXECUTABLE ${PFUNIT_MPI_USE_MPIEXEC})
-      else() # best guess
-        set(MPIEXEC_NUMPROC_FLAG "-np")
-      endif()
+      set(MPIEXEC_NUMPROC_FLAG "-np")
     endif()
     if (MPIEXEC_EXECUTABLE MATCHES ".*openmpi*")
       list(APPEND MPIEXEC_PREFLAGS "--oversubscribe")
     endif()
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name} --verbose
+      COMMAND ${MPIEXEC_EXECUTABLE} ${MPIEXEC_PREFLAGS} ${MPIEXEC_NUMPROC_FLAG} ${PF_TEST_MAX_PES} ${CMAKE_CURRENT_BINARY_DIR}/${test_package_name} --verbose ${PF_TEST_COMMAND_LINE_ARGS}
       )
   else()
     target_link_libraries (${test_package_name} ${PFUNIT_SERIAL_LIBRARIES})
     add_test (NAME ${test_package_name}
       WORKING_DIRECTORY ${workdir}
-      COMMAND ${test_package_name} --verbose
+      COMMAND ${test_package_name} --verbose ${PF_TEST_COMMAND_LINE_ARGS}
       )
   endif()
 

@@ -86,6 +86,19 @@ add_pfunit_ctest (test_something_specific   # Give your test a name
   )
 \endcode
 
+\subsection sec_CmakeIntegrationArgs Passing extra command line arguments
+
+To pass extra arguments to the test executable when it is run by ctest, use `COMMAND_LINE_ARGS`.
+The arguments are appended to the command line as-is.
+
+\code{cmake}
+add_pfunit_ctest (test_something_specific
+  TEST_SOURCES ${specific_test_files}
+  LINK_LIBRARIES src_lib
+  COMMAND_LINE_ARGS --strict                # Extra arguments for the test executable
+  )
+\endcode
+
 \section sec_UsageHelloWorld Usage - Hello World
 
 For an example of a simple usage of pFUnit, see Examples/Simple/tests.
