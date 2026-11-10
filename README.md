@@ -19,15 +19,15 @@ TASC.
 2. [Obtaining pFUnit](#obtaining-pfunit)
 3. [What's in the directory?](#whats-in-the-directory)
 4. [Building and installing pFUnit](#building-and-installing-pfunit)
-6. [Using pFUnit in your application](#using-pfunit)
-5. [Command line options](#command-line-options)
-6. [Incompatibilities with pFUnit 3](#incompatibilities-with-pfunit-3)
-7. [Acknowledgments](#acknowledgments)
-8. [Revisions](#revisions-to-this-document)
+5. [Using pFUnit in your application](#using-pfunit)
+6. [Command line options](#command-line-options)
+7. [Incompatibilities with pFUnit 3](#incompatibilities-with-pfunit-3)
+8. [Acknowledgments](#acknowledgments)
+9. [Revisions](#revisions-to-this-document)
 
 ## Prerequisites
 
-pFUnit is has been ported to Linux and Apple OS X.  Users have also
+pFUnit has been ported to Linux and Apple OS X.  Users have also
 contributed support for Windows/CYGWIN, but please note that updates are
 not regularly verified in that environment.
 
@@ -40,7 +40,7 @@ comprehensive, and earlier compilers may work for some user code.
   - Intel ifort v19.0.3, 2021+
   - Intel ifx 2025.2.0
   - NAG v7.2
-  - GFortran v12+
+  - GFortran v11+
 - CMake v3.24+
 - Python v3.x
 - make (or ninja or ...)
@@ -48,7 +48,7 @@ comprehensive, and earlier compilers may work for some user code.
   - MPI (tested with OpenMPI and Intel MPI)
   - OpenMP
   
-Doxygen was used to generate documention for pFUnit 3, but is not being
+Doxygen was used to generate documentation for pFUnit 3, but is not being
 maintained.
 
 
@@ -97,6 +97,8 @@ files.
 
 - `CMakeLists.txt` - Initial support for cmake-based builds.
 
+- `CONTRIBUTING.md` - Guidelines for contributing to pFUnit.
+
 - `COPYRIGHT` - Contains information pertaining to the use and
   distribution of pFUnit.
   
@@ -108,9 +110,20 @@ files.
 
 - `LICENSE` - Apache-2.0 license (as of v4.17.0). (The original NASA Open Source Agreement is retained as `LICENSE-NOSA` for historical reference.)
 
+- `README-INSTALL-DEPRECATED` - The old pFUnit 3.x install guide
+  (GNU Make based). Superseded by this file; kept only for historical
+  reference.
+
+- `README-RELEASE-CHECKLIST` - Maintainer checklist for cutting a
+  release. Predates the project's move to GitHub and is flagged in the
+  file itself as needing review before use.
+
 - `README.md` - This file.
 
 - `bin` - Executables used to construct and perform unit tests.
+
+- `cmake` - CMake helper modules used by the build (compiler-specific
+  flags, submodule handling, package config templates, etc.)
 
 - `documentation` - Provides information about the pFUnit.  (Very out of date.)
 
@@ -180,7 +193,7 @@ the source) to generate the required makefiles.
 By default, pFUnit will put the installation in a subdirectory
 called `installed` inside the build directory.  This unusual
 default (from a CMake perspective) is due to the fact that
-many/most pFUnit users lack elevated priviliges for installing in the
+many/most pFUnit users lack elevated privileges for installing in the
 usual places.  Most users will want to explicitly override the
 default with CMake's `-DCMAKE_INSTALL_PREFIX=...`
 
@@ -228,11 +241,13 @@ $ ./my_tests
 
 ### Using pFUnit in a GNU make project
 
-Somewher in your Makefile you should add the lines
+Somewhere in your Makefile you should add the lines
 ```make
-include $(PFUNIT_DIR)/PFUNIT-4.0/include/PFUNIT.mk
+include $(PFUNIT_DIR)/PFUNIT-<version>/include/PFUNIT.mk
 FFLAGS += $(PFUNIT_EXTRA_FFLAGS)
 ```
+where `<version>` matches the major.minor version of the pFUnit release you
+installed (e.g. `PFUNIT-4.20`).
 
 Note that the path to `PFUNIT.mk` may change in the future.
 
@@ -262,16 +277,17 @@ The executable test program provides several command line options,
 when "include/driver.F90" is used, as it is automatically when using
 the pFUnit preprocessor.
 
-    -h or --help                    Prints this help message
-    -d or -debug or --verbose       Provide debugging information.  Useful when a test crashes.
+    -h or --help                    Print help message.
+    -d, -v, --debug, or --verbose   Provide debugging information.  Useful when a test crashes.
     -f or --filter <pattern>...     Only run tests matching pattern(s) (regex on Unix, glob on Windows)
     -e or --exclude <pattern>...    Skip tests matching glob pattern(s)
-    -h or --help                    Print help message.
     -o or --output <outputfile>     Direct pFUnit messages to a file.
     -r or --runner <runner>         Specify a non default test runner. (Advanced)
-    -s or -skip  <n>                Used internally.
+    -s or --skip <n>                Used internally.
     -t or --tap                     Write results in TAP format to tap_output.tap.
     -x or --xml                     Print results in JUnit-compatible XML format.
+    --shuffle                       Randomize test execution order within each suite.
+    --seed <n>                      Random seed for test shuffling (0=time-based, implies --shuffle).
 
 #### Filtering Tests
 
