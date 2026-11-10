@@ -257,8 +257,11 @@ jobs:
       # Run everything inside the NVHPC container
       - name: Build (inside NVHPC)
         run: |
+          # / has only ~100 MB free after the step above, so keep the build tree on the large volume
+          sudo mkdir -p /var/lib/docker/pfunit-build
           docker run --rm \
             -v "$GITHUB_WORKSPACE:/workspace" \
+            -v /var/lib/docker/pfunit-build:/workspace/build \
             -w /workspace \
             -e FC="$FC" \
             "$NVHPC_IMAGE" \
@@ -295,7 +298,7 @@ jobs:
         with:
           name: logfiles-Nvidia
           path: |
-            build/**/*.log
+            /var/lib/docker/pfunit-build/**/*.log
 
   Flang:
     runs-on: ubuntu-latest
