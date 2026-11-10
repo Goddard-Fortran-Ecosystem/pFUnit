@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Guard REAL32/64/128 assertion test bodies in `Test_AssertEqual_Complex.pf` with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs; also drop the handful of REAL64/REAL128 "explicit-kind literal expected" cases for which no matching `assertEqual` overload exists (unlike REAL32, whose default-kind coincidence on common platforms happened to mask the same gap), since a same-kind default-real literal immediately above already exercises the same axis (issue #576)
+- Guard `use, intrinsic :: iso_fortran_env, only: REAL128` with `#ifdef _ISO_REAL128` everywhere it was missing, fixing a build failure on platforms/compilers without `REAL128` support (issue #338)
 
 ## [4.20.1] - 2026-09-11
 
