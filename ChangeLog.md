@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Skip the macOS-specific Fortran archive rule overrides for LLVM Flang, since `llvm-ranlib` rejects `-no_warning_for_no_symbols` (issue #581)
 - Fix `add_pfunit_ctest` fallback for `MPIEXEC_NUMPROC_FLAG`, which mistakenly set `MPIEXEC_EXECUTABLE` (issue #584)
 
 ## [4.20.1] - 2026-09-11
