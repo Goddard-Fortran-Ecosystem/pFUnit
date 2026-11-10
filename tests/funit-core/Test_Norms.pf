@@ -3,7 +3,9 @@ module Test_Norms
    use pf_AssertReal_1d
    use pf_AssertReal_2d
    use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+#ifdef _ISO_REAL128
    use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
    use pf_StringUtilities
    use pf_SourceLocation
    use pf_Exceptionlist

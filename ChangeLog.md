@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Guard REAL32/64/128 assertion test bodies with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs (issue #574)
+- Guard `use, intrinsic :: iso_fortran_env, only: REAL128` with `#ifdef _ISO_REAL128` everywhere it was missing, fixing a build failure on platforms/compilers without `REAL128` support (issue #338)
 
 ## [4.20.1] - 2026-09-11
 
