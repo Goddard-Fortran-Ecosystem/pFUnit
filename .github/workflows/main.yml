@@ -104,7 +104,7 @@ jobs:
           mpifort --show
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel 4
@@ -173,7 +173,7 @@ jobs:
           cmake --version
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
@@ -279,7 +279,7 @@ jobs:
               git config --global --add safe.directory "*"
 
               echo "== Build pFUnit =="
-              cmake -B build -DSKIP_ROBUST=ON
+              cmake -B build -DSKIP_ROBUST=ON -DENABLE_MPI_F08=ON
               cmake --build build --parallel 4
 
               echo "== Build Tests (CURRENTLY TURNED OFF DUE TO PFUNIT ISSUES) =="
@@ -332,7 +332,7 @@ jobs:
           apt-get install -y python-is-python3
 
       - name: Configure pFUnit
-        run: cmake -B build
+        run: cmake -B build -DENABLE_MPI_F08=ON
 
       - name: Build pfUnit
         run: cmake --build build --parallel
