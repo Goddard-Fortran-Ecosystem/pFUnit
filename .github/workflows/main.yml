@@ -282,6 +282,7 @@ jobs:
               git config --global --add safe.directory "*"
 
               echo "== Build pFUnit =="
+              df -h / /workspace/build
               cmake -B build -DSKIP_ROBUST=ON
               cmake --build build --parallel 4
 
