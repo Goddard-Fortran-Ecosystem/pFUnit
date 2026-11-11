@@ -293,13 +293,21 @@ jobs:
               #ctest --test-dir build --parallel 1 --output-on-failure --repeat until-pass:4
             '
 
+      # /var/lib/docker is root-only, so copy the logs somewhere the runner user can read
+      - name: Collect log files on failure
+        if: failure()
+        run: |
+          mkdir -p "$RUNNER_TEMP/nvidia-logs"
+          sudo find /var/lib/docker/pfunit-build -name '*.log' -exec cp --parents {} "$RUNNER_TEMP/nvidia-logs" \;
+          sudo chown -R "$USER" "$RUNNER_TEMP/nvidia-logs"
+
       - name: Archive log files on failure
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: logfiles-Nvidia
           path: |
-            /var/lib/docker/pfunit-build/**/*.log
+            ${{ runner.temp }}/nvidia-logs/**/*.log
 
   Flang:
     runs-on: ubuntu-latest
