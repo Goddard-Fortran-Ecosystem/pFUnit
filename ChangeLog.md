@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.20.2] - 2026-11-10
 
+### Added
+
+- `find_package(PFUNIT)` now warns on Windows when the consumer's `CMAKE_MSVC_RUNTIME_LIBRARY` differs from the one pFUnit was built with
+
 ### Fixed
 
 - Corrected several inaccuracies in `README.md`: grammar, table of contents numbering, minimum supported GFortran version, missing `--shuffle`/`--seed` command-line options, a duplicate `-h`/`--help` entry, a stale `PFUNIT-4.0` path in the GNU Make example, and missing entries (`CONTRIBUTING.md`, `cmake/`, `README-INSTALL-DEPRECATED`, `README-RELEASE-CHECKLIST`) in the "What's in the directory?" section
