@@ -5,7 +5,9 @@
 
 module Test_AssertEqual_Real
    use, intrinsic :: iso_fortran_env, only: REAL32, REAL64
+#ifdef _ISO_REAL128
    use, intrinsic :: iso_fortran_env, only: REAL128
+#endif
    use pf_StringUtilities
    use pf_SourceLocation
    use pf_Exceptionlist
@@ -44,19 +46,19 @@ contains
       @assertEqual(1.0, 1.0)
       @assertEqual(1.0, 1.0)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, 1.0_REAL32)
       @assertEqual(1.0, 1.0_REAL32)
       @assertEqual(1.0_REAL32, 1.0_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, 1.0_REAL64)
       @assertEqual(1.0, 1.0_REAL64)
       @assertEqual(1.0_REAL64, 1.0_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, 1.0_REAL128)
       @assertEqual(1.0, 1.0_REAL128)
       @assertEqual(1.0_REAL128, 1.0_REAL128)
@@ -69,7 +71,7 @@ contains
       @assertEqual(1.0, 1.1, 0.2)
       @assertEqual(1.0, 1.1, 0.2)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, 1.1_REAL32, 0.2)
       @assertEqual(1.0, 1.1_REAL32, 0.2)
       @assertEqual(1.0_REAL32, 1.1_REAL32, 0.2)
@@ -79,7 +81,7 @@ contains
       @assertEqual(1.0_REAL32, 1.1_REAL32, 0.2_REAL32)
 #endif
       
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, 1.1_REAL64, 0.2)
       @assertEqual(1.0, 1.1_REAL64, 0.2)
       @assertEqual(1.0_REAL64, 1.1_REAL64, 0.2)
@@ -89,7 +91,7 @@ contains
       @assertEqual(1.0_REAL64, 1.1_REAL64, 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, 1.1_REAL128, 0.2)
       @assertEqual(1.0, 1.1_REAL128, 0.2)
       @assertEqual(1.0_REAL128, 1.1_REAL128, 0.2)
@@ -109,7 +111,7 @@ contains
       @assertEqual([1.0,2.0], [1.0,2.0])
       @assertEqual([1.0,2.0], [1.0,2.0])
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, [1.0_REAL32])
       @assertEqual(1.0, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
       @assertEqual(1.0_REAL32, [1.0_REAL32,1.0_REAL32,1.0_REAL32])
@@ -118,7 +120,7 @@ contains
       @assertEqual([1.0_REAL32,2.0_REAL32], [1.0_REAL32,2.0_REAL32])
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, [1.0_REAL64])
       @assertEqual(1.0, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
       @assertEqual(1.0_REAL64, [1.0_REAL64,1.0_REAL64,1.0_REAL64])
@@ -128,7 +130,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, [1.0_REAL128])
       @assertEqual(1.0, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
       @assertEqual(1.0_REAL128, [1.0_REAL128,1.0_REAL128,1.0_REAL128])
@@ -149,7 +151,7 @@ contains
       @assertEqual([1.0,2.0], [1.1,2.1], 0.2)
       @assertEqual([1.1,2.1], [1.1,2.1], 0.2)
 
-#ifdef _REAL32      
+#ifdef _ISO_REAL32
       @assertEqual(1, [1.1_REAL32], 0.2)
       @assertEqual(1.0, [1.1_REAL32,1.1_REAL32,1.1_REAL32], 0.2)
       @assertEqual(1.1_REAL32, [1.1_REAL32,1.1_REAL32,1.1_REAL32],0.2)
@@ -165,7 +167,7 @@ contains
       @assertEqual([1.1_REAL32,2.1_REAL32], [1.1_REAL32,2.1_REAL32], 0.2_REAL32)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, [1.1_REAL64], 0.2)
       @assertEqual(1.0, [1.1_REAL64,1.1_REAL64,1.1_REAL64], 0.2)
       @assertEqual(1.1_REAL64, [1.1_REAL64,1.1_REAL64,1.1_REAL64],0.2)
@@ -181,7 +183,7 @@ contains
       @assertEqual([1.1_REAL64,2.1_REAL64], [1.1_REAL64,2.1_REAL64], 0.2_REAL64)
 #endif
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, [1.1_REAL128], 0.2)
       @assertEqual(1.0, [1.1_REAL128,1.1_REAL128,1.1_REAL128], 0.2)
       @assertEqual(1.1_REAL128, [1.1_REAL128,1.1_REAL128,1.1_REAL128],0.2)
@@ -211,7 +213,7 @@ contains
       @assertEqual(array, real(array))
       @assertEqual(real(array), real(array))
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, real(const,kind=REAL32))
       @assertEqual(1.0, real(const,kind=REAL32))
       @assertEqual(1.0_REAL32, real(const,kind=REAL32))
@@ -221,7 +223,7 @@ contains
       @assertEqual(real(array,kind=REAL32), real(array,kind=REAL32))
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, real(const,kind=REAL64))
       @assertEqual(1.0, real(const,kind=REAL64))
       @assertEqual(1.0_REAL64, real(const,kind=REAL64))
@@ -232,7 +234,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, real(const,kind=REAL128))
       @assertEqual(1.0, real(const,kind=REAL128))
       @assertEqual(1.0_REAL128, real(const,kind=REAL128))
@@ -255,7 +257,7 @@ contains
       @assertEqual(array, real(array)+1, 2.)
       @assertEqual(real(array), real(array)+1,2.)
 
-#ifdef _REAL32
+#ifdef _ISO_REAL32
       @assertEqual(1, real(const,kind=REAL32)+1, 2._REAL32)
       @assertEqual(1.0, real(const,kind=REAL32)+1, 2._REAL32)
       @assertEqual(1.0_REAL32, real(const,kind=REAL32)+1, 2._REAL32)
@@ -273,7 +275,7 @@ contains
       @assertEqual(real(array,kind=REAL32), real(array,kind=REAL32)+1, 2.)
 #endif
 
-#ifdef _REAL64
+#ifdef _ISO_REAL64
       @assertEqual(1, real(const,kind=REAL64)+1, 2._REAL64)
       @assertEqual(1.0, real(const,kind=REAL64)+1, 2._REAL64)
       @assertEqual(1.0_REAL64, real(const,kind=REAL64)+1, 2._REAL64)
@@ -292,7 +294,7 @@ contains
 #endif
 
 
-#ifdef _REAL128
+#ifdef _ISO_REAL128
       @assertEqual(1, real(const,kind=REAL128)+1, 2._REAL128)
       @assertEqual(1.0, real(const,kind=REAL128)+1, 2._REAL128)
       @assertEqual(1.0_REAL128, real(const,kind=REAL128)+1, 2._REAL128)

@@ -63,6 +63,26 @@ set (PFUNIT_MPI_FOUND "@MPI_Fortran_FOUND@")
 set (PFUNIT_MPI_USE_MPIEXEC "@MPI_USE_MPIEXEC@")
 #set (PFUNIT_LINK_DIRS ${CMAKE_CURRENT_LIST_DIR}/lib)
 
+# Warn early if the consumer uses a different MSVC runtime than pFUnit was built with
+# (otherwise this only shows up as LNK2005/LNK4098 errors at link time).
+if (WIN32)
+  set (_pfunit_rt "@CMAKE_MSVC_RUNTIME_LIBRARY@")
+  set (_consumer_rt "${CMAKE_MSVC_RUNTIME_LIBRARY}")
+  if (_pfunit_rt STREQUAL "")
+    set (_pfunit_rt "MultiThreadedDLL")  # CMake default
+  endif ()
+  if (_consumer_rt STREQUAL "")
+    set (_consumer_rt "MultiThreadedDLL")
+  endif ()
+  if (NOT _pfunit_rt STREQUAL _consumer_rt)
+    message (WARNING "pFUnit was built with MSVC runtime '${_pfunit_rt}' but this project uses '${_consumer_rt}'. "
+      "This can cause link errors (LNK2005, LNK4098). Either set CMAKE_MSVC_RUNTIME_LIBRARY to '${_pfunit_rt}' in this project, "
+      "or rebuild pFUnit with -DCMAKE_POLICY_DEFAULT_CMP0091=NEW -DCMAKE_MSVC_RUNTIME_LIBRARY=${_consumer_rt}")
+  endif ()
+  unset (_pfunit_rt)
+  unset (_consumer_rt)
+endif ()
+
 if (PFUNIT_BUILD_SHARED AND BUILD_SHARED_LIBS)
   set (PFUNIT_SERIAL_LIBRARIES PFUNIT::funit_shared)
   if (PFUNIT_MPI_FOUND)
