@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.21.0] - 2026-11-10
+
 ### Added
 
 - Add `COMMAND_LINE_ARGS` option to `add_pfunit_ctest` to pass extra arguments to the test executable (issue #583)
@@ -13,6 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Skip the macOS-specific Fortran archive rule overrides for LLVM Flang, since `llvm-ranlib` rejects `-no_warning_for_no_symbols` (issue #581)
 - Fix `add_pfunit_ctest` fallback for `MPIEXEC_NUMPROC_FLAG`, which mistakenly set `MPIEXEC_EXECUTABLE` (issue #584)
+
+## [4.20.2] - 2026-11-10
+
+### Added
+
+- `find_package(PFUNIT)` now warns on Windows when the consumer's `CMAKE_MSVC_RUNTIME_LIBRARY` differs from the one pFUnit was built with
+
+### Fixed
+
+- Corrected several inaccuracies in `README.md`: grammar, table of contents numbering, minimum supported GFortran version, missing `--shuffle`/`--seed` command-line options, a duplicate `-h`/`--help` entry, a stale `PFUNIT-4.0` path in the GNU Make example, and missing entries (`CONTRIBUTING.md`, `cmake/`, `README-INSTALL-DEPRECATED`, `README-RELEASE-CHECKLIST`) in the "What's in the directory?" section
+- Guard REAL32/64/128 assertion test bodies in `Test_AssertEqual_Complex.pf` with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs; also drop the handful of REAL64/REAL128 "explicit-kind literal expected" cases for which no matching `assertEqual` overload exists (unlike REAL32, whose default-kind coincidence on common platforms happened to mask the same gap), since a same-kind default-real literal immediately above already exercises the same axis (issue #576)
+- Guard REAL32/64/128 assertion test bodies with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs (issue #574)
+- Guard `use, intrinsic :: iso_fortran_env, only: REAL128` with `#ifdef _ISO_REAL128` everywhere it was missing, fixing a build failure on platforms/compilers without `REAL128` support (issue #338)
 
 ## [4.20.1] - 2026-09-11
 
