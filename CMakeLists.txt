@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 project (PFUNIT
-  VERSION 4.20.2
+  VERSION 4.21.0
   LANGUAGES Fortran C)
 
 cmake_policy(SET CMP0077 NEW)
@@ -137,7 +137,7 @@ set (dest "PFUNIT-${PFUNIT_VERSION_MAJOR}.${PFUNIT_VERSION_MINOR}")
 
 # Code to silence warnings from RANLIB on OSX
 # From https://stackoverflow.com/questions/4929255/building-static-libraries-on-mac-using-cmake-and-gcc
-if (APPLE)
+if (APPLE AND NOT CMAKE_Fortran_COMPILER_ID STREQUAL "LLVMFlang")
   SET(CMAKE_Fortran_ARCHIVE_CREATE   "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
   SET(CMAKE_Fortran_ARCHIVE_FINISH   "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
 endif ()
