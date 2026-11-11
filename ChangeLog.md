@@ -5,6 +5,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.2] - 2026-11-10
+
 ### Added
 
 - `find_package(PFUNIT)` now warns on Windows when the consumer's `CMAKE_MSVC_RUNTIME_LIBRARY` differs from the one pFUnit was built with
