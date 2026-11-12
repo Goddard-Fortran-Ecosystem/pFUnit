@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Build the `Nvidia-Build-Only` CI job in a directory on the large Docker volume, since the runner's root filesystem has only ~100 MB free and the job failed with "No space left on device"
+
 ## [4.21.0] - 2026-11-10
 
 ### Added
@@ -24,7 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Build the `Nvidia-Build-Only` CI job in a directory on the large Docker volume, since the runner's root filesystem has only ~100 MB free and the job failed with "No space left on device"
 - Corrected several inaccuracies in `README.md`: grammar, table of contents numbering, minimum supported GFortran version, missing `--shuffle`/`--seed` command-line options, a duplicate `-h`/`--help` entry, a stale `PFUNIT-4.0` path in the GNU Make example, and missing entries (`CONTRIBUTING.md`, `cmake/`, `README-INSTALL-DEPRECATED`, `README-RELEASE-CHECKLIST`) in the "What's in the directory?" section
 - Guard REAL32/64/128 assertion test bodies in `Test_AssertEqual_Complex.pf` with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs; also drop the handful of REAL64/REAL128 "explicit-kind literal expected" cases for which no matching `assertEqual` overload exists (unlike REAL32, whose default-kind coincidence on common platforms happened to mask the same gap), since a same-kind default-real literal immediately above already exercises the same axis (issue #576)
 - Guard REAL32/64/128 assertion test bodies with `#ifdef _ISO_REAL32`/`_ISO_REAL64`/`_ISO_REAL128` instead of the never-defined `#ifdef _REAL32`/`_REAL64`/`_REAL128`, so this test coverage actually runs (issue #574)
