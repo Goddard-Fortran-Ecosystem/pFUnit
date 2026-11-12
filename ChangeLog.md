@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Build the `Nvidia-Build-Only` CI job in a directory on the large Docker volume, since the runner's root filesystem has only ~100 MB free and the job failed with "No space left on device"
+
 ## [4.21.0] - 2026-11-10
 
 ### Added
