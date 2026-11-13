@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `propagate(message, location)` for exceptions that pass up a call stack (issue #594).  If an exception is pending, `location` is appended to the traceback of the most recent one; otherwise `propagate` throws like `throw`.  Text, XML and TAP output list the traceback when one is present.  Behaviour is unchanged for code that does not call `propagate`.
 
+### Removed
+
+- Remove unused source files that were not part of any build: `src/funit/core/{Core,Arg,Mock}.F90`, `src/funit/core/{CodeUtilities,GeneratedSources,Utilities}.py`, and the stale `src/pfunit/core/{pFUnit,pfunit_main}.F90` copies
+
 ## [4.21.0] - 2026-11-10
 
 ### Added
