@@ -72,7 +72,7 @@ module FUnit_Core
    public :: SerialContext
 
 
-   public :: throw, catchNext, catch, anyExceptions
+   public :: throw, propagate, catchNext, catch, anyExceptions
 
    public :: Expectation, Subject, Predicate
    public :: wasCalled, wasNotCalled, wasCalledOnce

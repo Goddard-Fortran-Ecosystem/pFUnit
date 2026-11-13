@@ -54,6 +54,10 @@ contains
            &   MpiTestMethod('test_gather', &
            &                  test_gather,  &
            &                  numProcesses=3))
+      call suite%addTest( &
+           &   MpiTestMethod('test_gather_traceback', &
+           &                  test_gather_traceback,  &
+           &                  numProcesses=2))
 
    end function suite
 
@@ -133,5 +137,34 @@ contains
       end select
 
    end subroutine test_gather
+
+   subroutine test_gather_traceback(this)
+      use PF_Assert
+      use PF_Exception
+      use PF_SourceLocation
+      class (MpiTestMethod), intent(inout) :: this
+      type (Exception) :: e
+      type (SourceLocation), allocatable :: traceback(:)
+
+      if (this%getProcessRank() == 1) then
+         call throw('origin', SourceLocation('a.F90', 1))
+         call propagate('status=1', SourceLocation('b.F90', 2))
+      end if
+
+      call gatherExceptions(this%getContext())
+
+      if (this%getProcessRank() == 0) then
+         call assertEqual(1, getNumExceptions())
+         e = catchNext()
+         call assertEqual('origin (PE=1)', e%getMessage())
+         traceback = e%getTraceback()
+         call assertEqual(1, size(traceback))
+         call assertEqual('b.F90', trim(traceback(1)%fileName))
+         call assertEqual(2, traceback(1)%lineNumber)
+      else
+         call assertEqual(0, getNumExceptions())
+      end if
+
+   end subroutine test_gather_traceback
 
 end module Test_MpiException

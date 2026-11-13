@@ -93,5 +93,40 @@ contains
       
    end subroutine test_addFailure_withmessage
 
+   @test
+   subroutine test_addFailure_withtraceback()
+      type (TapListener) :: listener
+      integer :: unit
+      character(len=128) :: buffer
+
+      type (ExceptionList) :: exceptions
+
+      open(newunit=unit, file='tapListener.out', status='new', form='formatted')
+      listener = TapListener(unit)
+
+      call exceptions%throw('This is a failing message.', SourceLocation('foo.F90', 19))
+      call exceptions%propagate('status=1', SourceLocation('bar.F90', 7))
+      call listener%addFailure('test_that_fails', exceptions)
+      close(unit)
+
+      open(newunit=unit, file='tapListener.out', status='old', form='formatted')
+
+      read(unit,'(a)') buffer
+      @assertEqual('not ok - test_that_fails', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  ---', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  message: This is a failing message.', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  traceback:', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('    - [bar.F90:7]', trim(buffer))
+      read(unit,'(a)') buffer
+      @assertEqual('  ...', trim(buffer))
+
+      close(unit, status='delete')
+
+   end subroutine test_addFailure_withtraceback
+
    
 end module Test_TapListener

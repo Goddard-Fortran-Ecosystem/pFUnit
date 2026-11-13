@@ -9,6 +9,7 @@ module PF_ExceptionList
 
    ! global static methods
    public :: throw
+   public :: propagate
    public :: catch
    public :: catchNext
    public :: anyExceptions
@@ -28,6 +29,7 @@ module PF_ExceptionList
 
       procedure :: throw_exception
       procedure :: throw_message
+      procedure :: propagate => propagate_message
       procedure :: catch_message
       procedure :: catch_next
       procedure :: catch_any
@@ -41,6 +43,10 @@ module PF_ExceptionList
   interface throw
      module procedure throwMessage
   end interface
+
+  interface propagate
+     module procedure propagateMessage
+  end interface propagate
 
   interface catch
      module procedure catchAny
@@ -78,6 +84,31 @@ contains
       call this%throw(Exception(message, location))
 
    end subroutine throw_message
+
+
+   ! If an exception is pending, record location in the traceback of
+   ! the most recent one.  Otherwise the failure originated in code that
+   ! did not throw (e.g., a nonzero status from a library), so throw.
+   subroutine propagate_message(this, message, location)
+      class (ExceptionList), intent(inout) :: this
+      character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      class (Exception), pointer :: e
+
+      if (this%empty()) then
+         call this%throw(message, location)
+         return
+      end if
+
+      e => this%back()
+      if (present(location)) then
+         call e%addTraceback(location)
+      else
+         call e%addTraceback(UNKNOWN_SOURCE_LOCATION)
+      end if
+
+   end subroutine propagate_message
 
 
    ! Helper function
@@ -195,6 +226,17 @@ contains
       !$omp end critical
 
    end subroutine throwMessage
+
+
+   subroutine propagateMessage(message, location)
+      character(len=*), intent(in) :: message
+      type (SourceLocation), optional, intent(in) :: location
+
+      !$omp critical
+      call global_exception_list%propagate(message, location)
+      !$omp end critical
+
+   end subroutine propagateMessage
 
 
    function catchNext(preserve) result(anException)

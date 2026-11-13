@@ -169,6 +169,8 @@ contains
       character(len=:), allocatable :: locationString
 
       class (Exception), pointer :: e
+      type (SourceLocation), allocatable :: traceback(:)
+      integer :: k
 
       do i = 1, failures%size()
          aFailedTest => failures%at(i)
@@ -180,6 +182,11 @@ contains
             write(this%unit,'(a)') label,' in: ', trim(aFailedTest%testName)
             write(this%unit,'(a)') '  Location: ', trim(locationString)
             write(this%unit,'(a,1x,a)') e%getMessage()
+            traceback = e%getTraceback()
+            do k = 1, size(traceback)
+               locationString = traceback(k)%toString()
+               write(this%unit,'(a)') '  Propagated via: ' // trim(locationString)
+            end do
             write(this%unit,*)' '
          end do
       end do

@@ -2,6 +2,7 @@
 
 module PF_TapListener
    use PF_Exception
+   use PF_SourceLocation, only: SourceLocation
    use PF_TestListener
    implicit none
    private
@@ -54,12 +55,21 @@ contains
       type (ExceptionList), intent(in) :: exceptions
 
       type (Exception), pointer :: e
+      type (SourceLocation), allocatable :: traceback(:)
+      integer :: k
 
       write(this%unit,*)'not ok - ', testName
       if (exceptions%size() > 0) then
          write(this%unit,*)'  ---'
          e => exceptions%at(1)
          write(this%unit,*)'  message: ', e%message
+         traceback = e%getTraceback()
+         if (size(traceback) > 0) then
+            write(this%unit,*)'  traceback:'
+            do k = 1, size(traceback)
+               write(this%unit,*)'    - ', trim(traceback(k)%toString())
+            end do
+         end if
          write(this%unit,*)'  ...'
       end if
       flush(this%unit)

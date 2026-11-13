@@ -34,5 +34,116 @@ contains
       !EOC
    end subroutine test_catch_fail
    
-   
+
+   @test
+   subroutine test_propagate_none_pending_throws()
+      type (ExceptionList) :: list
+      type (Exception) :: e
+
+      call list%propagate('status=1', SourceLocation('f.F90', 10))
+      @assertEqual(1, list%size())
+
+      e = list%catch_next()
+      @assertEqual('status=1', e%getMessage())
+      @assertEqual(10, e%getLineNumber())
+      @assertEqual(0, size(e%getTraceback()))
+
+   end subroutine test_propagate_none_pending_throws
+
+
+   @test
+   subroutine test_propagate_adds_traceback()
+      type (ExceptionList) :: list
+      type (Exception) :: e
+      type (SourceLocation), allocatable :: traceback(:)
+
+      call list%throw('origin', SourceLocation('a.F90', 1))
+      call list%propagate('status=1', SourceLocation('b.F90', 2))
+      call list%propagate('status=1', SourceLocation('c.F90', 3))
+      @assertEqual(1, list%size())
+
+      e = list%catch_next()
+      @assertEqual('origin', e%getMessage())
+      traceback = e%getTraceback()
+      @assertEqual(2, size(traceback))
+      @assertEqual('b.F90', trim(traceback(1)%fileName))
+      @assertEqual(2, traceback(1)%lineNumber)
+      @assertEqual('c.F90', trim(traceback(2)%fileName))
+      @assertEqual(3, traceback(2)%lineNumber)
+
+   end subroutine test_propagate_adds_traceback
+
+
+   @test
+   subroutine test_propagate_most_recent()
+      type (ExceptionList) :: list
+      type (Exception) :: e
+
+      call list%throw('first')
+      call list%throw('second')
+      call list%propagate('status=1', SourceLocation('b.F90', 2))
+
+      e = list%catch_next()
+      @assertEqual('first', e%getMessage())
+      @assertEqual(0, size(e%getTraceback()))
+      e = list%catch_next()
+      @assertEqual('second', e%getMessage())
+      @assertEqual(1, size(e%getTraceback()))
+
+   end subroutine test_propagate_most_recent
+
+
+   @test
+   subroutine test_propagate_global()
+      integer :: n
+      logical :: caught, remaining
+
+      call throw('origin', SourceLocation('a.F90', 1))
+      call propagate('status=1', SourceLocation('b.F90', 2))
+      n = getNumExceptions()
+      caught = catch('origin')
+      remaining = anyExceptions()
+
+      @assertEqual(1, n)
+      @assertTrue(caught)
+      @assertFalse(remaining)
+
+   end subroutine test_propagate_global
+
+
+   @test
+   subroutine test_serialize_traceback()
+      type (Exception) :: e, e2
+      type (SourceLocation), allocatable :: traceback(:)
+
+      e = Exception('origin', SourceLocation('a.F90', 1))
+      call e%addTraceback(SourceLocation('b.F90', 2))
+      call e%addTraceback(SourceLocation('longer_name.F90', 345))
+
+      e2 = e%deserialize(e%serialize())
+      @assertEqual('origin', e2%getMessage())
+      @assertEqual('a.F90', e2%getFileName())
+      @assertEqual(1, e2%getLineNumber())
+      traceback = e2%getTraceback()
+      @assertEqual(2, size(traceback))
+      @assertEqual('b.F90', trim(traceback(1)%fileName))
+      @assertEqual(2, traceback(1)%lineNumber)
+      @assertEqual('longer_name.F90', trim(traceback(2)%fileName))
+      @assertEqual(345, traceback(2)%lineNumber)
+
+   end subroutine test_serialize_traceback
+
+
+   @test
+   subroutine test_serialize_no_traceback()
+      type (Exception) :: e, e2
+
+      e = Exception('origin', SourceLocation('a.F90', 1))
+      e2 = e%deserialize(e%serialize())
+      @assertEqual('origin', e2%getMessage())
+      @assertEqual(1, e2%getLineNumber())
+      @assertEqual(0, size(e2%getTraceback()))
+
+   end subroutine test_serialize_no_traceback
+
 end module newtest_Exception
