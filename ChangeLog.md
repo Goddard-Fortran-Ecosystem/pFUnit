@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove unused source files that were not part of any build: `src/funit/core/{Core,Arg,Mock}.F90`, `src/funit/core/{CodeUtilities,GeneratedSources,Utilities}.py`, and the stale `src/pfunit/core/{pFUnit,pfunit_main}.F90` copies
+
 ## [4.21.0] - 2026-11-10
 
 ### Added
