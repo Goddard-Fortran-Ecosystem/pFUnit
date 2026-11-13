@@ -73,6 +73,7 @@ module PF_AssertBasic
    public :: assertFalse
    public :: assertSameShape
    public :: assertExceptionRaised
+   public :: assertExceptionMatches
 
    public :: assertAny
    public :: assertAll
@@ -268,6 +269,34 @@ contains
       end if
 
    end subroutine assertExceptionRaisedMessage
+
+
+   ! Catch the first exception whose message matches pattern, a POSIX
+   ! extended regular expression searched anywhere in the message.
+   subroutine assertExceptionMatches(pattern, location)
+      use PF_ExceptionList, only: throw, catchMatch
+      character(len=*), intent(in) :: pattern
+      type (SourceLocation), optional, intent(in) :: location
+
+      integer :: status
+
+      if (catchMatch(pattern, status=status)) return
+
+      if (status == 0) then
+         call throw('Failed to throw exception matching: <' // trim(pattern) // '>', &
+              & location)
+#ifdef _WIN32
+      else
+         call throw('assertExceptionMatches: regular expressions are not supported on Windows', &
+              & location)
+#else
+      else
+         call throw('assertExceptionMatches: invalid regular expression: <' // trim(pattern) // '>', &
+              & location)
+#endif
+      end if
+
+   end subroutine assertExceptionMatches
 
 
    subroutine assertSameShape(shapeA, shapeB, message, location)

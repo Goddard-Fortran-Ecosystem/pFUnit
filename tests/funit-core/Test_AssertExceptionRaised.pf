@@ -36,4 +36,63 @@ contains
       @assertExceptionRaised()
    end subroutine test_catch_any_exception
 
+#ifndef _WIN32
+   @test
+   subroutine test_matches_substring()
+      call throw('standard_name required: FIELD "X" declares none (strict mode).')
+      @assertExceptionMatches('standard_name required')
+   end subroutine test_matches_substring
+
+
+   @test
+   subroutine test_matches_regex()
+      call throw('fieldIndex out of range: 7')
+      @assertExceptionMatches('^fieldIndex out of range: [0-9]+$')
+   end subroutine test_matches_regex
+
+
+   ! Only the first matching exception is caught.
+   @test
+   subroutine test_matches_first_only()
+      call throw('other')
+      call throw('error 1')
+      call throw('error 2')
+
+      @assertExceptionMatches('^error [0-9]$')
+      @assertExceptionRaised('other')
+      @assertExceptionRaised('error 2')
+
+   end subroutine test_matches_first_only
+
+
+   @test
+   subroutine test_matches_no_match()
+      logical :: caught, original
+
+      call throw('something else')
+      call assertExceptionMatches('^expected')
+
+      caught = catch('Failed to throw exception matching: <^expected>')
+      original = catch('something else')
+      @assertTrue(caught)
+      @assertTrue(original)
+
+   end subroutine test_matches_no_match
+
+
+   @test
+   subroutine test_matches_invalid_pattern()
+      logical :: caught, original
+
+      call throw('anything')
+      call assertExceptionMatches('[unclosed')
+
+      caught = catch('assertExceptionMatches: invalid regular expression: <[unclosed>')
+      original = catch('anything')
+      @assertTrue(caught)
+      @assertTrue(original)
+
+   end subroutine test_matches_invalid_pattern
+#endif
+
 end module Test_AssertExceptionRaised
