@@ -49,9 +49,9 @@ set(pf_tests
   Test_Long_Subroutine_Name.pf
   Test_ParameterizedAssert.pf)
 
-# Add regex filter tests for non-Windows platforms
+# Add regex tests for non-Windows platforms
 if(NOT WIN32)
-  list(APPEND pf_tests Test_RegexFilter.pf)
+  list(APPEND pf_tests Test_RegexFilter.pf Test_AssertExceptionMatches.pf)
 endif()
 
 set (new_test_srcs)
