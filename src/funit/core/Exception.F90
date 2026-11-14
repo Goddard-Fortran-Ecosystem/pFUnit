@@ -36,11 +36,16 @@ module PF_PrivateException
    type Exception
       character(len=:), allocatable :: message
       type (SourceLocation) :: location = UNKNOWN_SOURCE_LOCATION
+      ! Locations the exception propagated through, innermost first.
+      ! Kept last so that positional structure constructors are unaffected.
+      type (SourceLocation), allocatable :: traceback(:)
    contains
       procedure :: getMessage
       procedure :: getLineNumber
       procedure :: getFileName
       procedure :: isNull
+      procedure :: addTraceback
+      procedure :: getTraceback
       procedure :: serialize
       procedure, nopass :: deserialize
    end type Exception
@@ -93,13 +98,47 @@ contains
       isNull = .not. allocated(this%message)
    end function isNull
 
+   subroutine addTraceback(this, location)
+      class (Exception), intent(inout) :: this
+      type (SourceLocation), intent(in) :: location
+
+      if (allocated(this%traceback)) then
+         this%traceback = [this%traceback, location]
+      else
+         this%traceback = [location]
+      end if
+
+   end subroutine addTraceback
+
+   function getTraceback(this) result(traceback)
+      class (Exception), intent(in) :: this
+      type (SourceLocation), allocatable :: traceback(:)
+
+      if (allocated(this%traceback)) then
+         traceback = this%traceback
+      else
+         allocate(traceback(0))
+      end if
+
+   end function getTraceback
+
+   ! Layout: message, location, number of traceback entries, then
+   ! each traceback location.
    function serialize(this) result(buffer)
       class (Exception), intent(in) :: this
 
       integer, allocatable :: buffer(:)
+      type (SourceLocation), allocatable :: traceback(:)
+      integer :: i
 
       buffer = serialize_string(this%message)
       buffer = [buffer, this%location%serialize()]
+
+      traceback = this%getTraceback()
+      buffer = [buffer, size(traceback)]
+      do i = 1, size(traceback)
+         buffer = [buffer, traceback(i)%serialize()]
+      end do
 
    contains
 
@@ -116,15 +155,30 @@ contains
    function deserialize(buffer) result(e)
       type (Exception) :: e
       integer, intent(in) :: buffer(:)
-      integer :: n
+      integer :: n, i, num_traceback
       type (SourceLocation) :: sloc
 
       call deserialize_string(buffer, e%message)
 
       n = buffer(1)
       e%location = sloc%deserialize(buffer(n+1:))
-      
+      n = n + location_size(buffer(n+1:))
+
+      num_traceback = buffer(n+1)
+      n = n + 1
+      allocate(e%traceback(num_traceback))
+      do i = 1, num_traceback
+         e%traceback(i) = sloc%deserialize(buffer(n+1:))
+         n = n + location_size(buffer(n+1:))
+      end do
+
    contains
+
+      ! A serialized SourceLocation is a string block followed by the line number.
+      integer function location_size(buffer)
+         integer, intent(in) :: buffer(:)
+         location_size = buffer(1) + 1
+      end function location_size
 
       subroutine deserialize_string(buffer, str)
          integer, intent(in) :: buffer(:)

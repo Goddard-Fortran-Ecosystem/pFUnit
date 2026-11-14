@@ -207,8 +207,9 @@ contains
       class(Exception), pointer  :: pException
       character(:), allocatable :: methodName
 
-      integer :: j
+      integer :: j, k
       character(len=80) :: locationString
+      type (SourceLocation), allocatable :: traceback(:)
 
       methodName = getTestName(testName)
 
@@ -226,6 +227,12 @@ contains
               'Location: ', cleanXml(trim(locationString)), ', '
          write(this%unit,'(a)',advance='no') &
               cleanXml(trim(pException%getMessage()))
+         traceback = pException%getTraceback()
+         do k = 1, size(traceback)
+            locationString = traceback(k)%toString()
+            write(this%unit,'(a,a)',advance='no') &
+                 ', Propagated via: ', cleanXml(trim(locationString))
+         end do
          write(this%unit,*) '"/>'
       end do
       write(this%unit,'(a)') '</testcase>'

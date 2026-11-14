@@ -42,6 +42,7 @@ assert_operands = {
     "none": 1,
     "ispermutationof": 2,
     "exceptionraised": 0,
+    "exceptionmatches": 1,
     "sameshape": 2,
     "that": 2,
     "_that": 2,
@@ -412,10 +413,10 @@ class AtAssert(Action):
             parser.outputFile, parser.fileName, parser.currentLineNumber
         )
         parser.outputFile.write(" )\n")
-        # For assertExceptionRaised, do NOT check anyExceptions() after the call.
+        # For assertExceptionRaised/Matches, do NOT check anyExceptions() after the call.
         # Multiple exceptions may have been raised and the user should be able to
         # catch each one with successive @assertExceptionRaised directives.
-        if match.group(1).lower() != "exceptionraised":
+        if match.group(1).lower() not in ("exceptionraised", "exceptionmatches"):
             parser.outputFile.write("  if (anyExceptions()) return\n")
         parser.outputFile.write(
             cppSetLineAndFile(parser.currentLineNumber + 1, parser.fileName)
