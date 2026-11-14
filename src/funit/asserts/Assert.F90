@@ -33,6 +33,7 @@ module PF_Assert
    public :: assertFalse
    public :: assertEqual
    public :: assertExceptionRaised
+   public :: assertExceptionMatches
    public :: assertSameShape
 
    public :: assertAny

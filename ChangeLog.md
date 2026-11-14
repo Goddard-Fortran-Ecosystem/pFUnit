@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `propagate(message, location)` for exceptions that pass up a call stack (issue #594).  If an exception is pending, `location` is appended to the traceback of the most recent one; otherwise `propagate` throws like `throw`.  Text, XML and TAP output list the traceback when one is present.  Behaviour is unchanged for code that does not call `propagate`.
+- Add `@assertExceptionMatches(pattern)` and `catchMatch(pattern)` to catch the first exception whose message matches a POSIX extended regular expression, searched anywhere in the message (issue #595).  An invalid pattern is reported as a failure.  Not supported on Windows, where it reports a failure saying so.
 
 ### Removed
 
