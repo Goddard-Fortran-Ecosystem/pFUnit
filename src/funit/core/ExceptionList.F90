@@ -1,3 +1,5 @@
+#include "unused_dummy.fh"
+
 module PF_ExceptionList
    use PF_SourceLocation
    use PF_Exception, only: Exception
@@ -11,6 +13,7 @@ module PF_ExceptionList
    public :: throw
    public :: propagate
    public :: catch
+   public :: catchMatch
    public :: catchNext
    public :: anyExceptions
    public :: anyErrors
@@ -31,6 +34,7 @@ module PF_ExceptionList
       procedure :: throw_message
       procedure :: propagate => propagate_message
       procedure :: catch_message
+      procedure :: catch_match
       procedure :: catch_next
       procedure :: catch_any
 
@@ -52,6 +56,10 @@ module PF_ExceptionList
      module procedure catchAny
      module procedure catchMessage
   end interface catch
+
+  interface catchMatch
+     module procedure catchMatch_
+  end interface catchMatch
 
   interface anyExceptions
      module procedure anyExceptions_local
@@ -145,6 +153,55 @@ contains
       found = .false.
       
    end function catch_message
+
+   ! Catch the first exception whose message matches the POSIX extended
+   ! regular expression pattern (searched anywhere in the message).
+   ! status is nonzero if pattern is invalid or regex is unsupported.
+   logical function catch_match(this, pattern, preserve, status) result(found)
+#ifndef _WIN32
+      use pf_regex_module, only: regex_type, regcomp, regexec, regfree
+#endif
+      class (ExceptionList), intent(inout) :: this
+      character(len=*), intent(in) :: pattern
+      logical, optional, intent(in) :: preserve
+      integer, optional, intent(out) :: status
+
+#ifndef _WIN32
+      type (regex_type) :: regex
+      type (ExceptionVectorIterator) :: iter
+      class (Exception), pointer :: e
+      integer :: status_
+
+      found = .false.
+      call regcomp(regex, pattern, flags='x', status=status_)
+      if (present(status)) status = status_
+      if (status_ /= 0) then
+         call regfree(regex)
+         return
+      end if
+
+      iter = this%begin()
+      do while (iter /= this%end())
+         e => iter%of()
+         if (regexec(regex, e%getMessage())) then
+            found = .true.
+            if (.not. preserveMessage(preserve)) iter = this%erase(iter)
+            exit
+         end if
+         call iter%next()
+      end do
+
+      call regfree(regex)
+#else
+      _UNUSED_DUMMY(this)
+      _UNUSED_DUMMY(pattern)
+      _UNUSED_DUMMY(preserve)
+      found = .false.
+      if (present(status)) status = -1
+#endif
+
+   end function catch_match
+
 
    function catch_next(this, preserve) result(anException)
       class (ExceptionList), intent(inOut) :: this
@@ -277,6 +334,16 @@ contains
       catchMessage = global_exception_list%catch(message, preserve)
 
    end function catchMessage
+
+
+   logical function catchMatch_(pattern, preserve, status)
+      character(len=*), intent(in) :: pattern
+      logical, optional, intent(in) :: preserve
+      integer, optional, intent(out) :: status
+
+      catchMatch_ = global_exception_list%catch_match(pattern, preserve, status)
+
+   end function catchMatch_
 
 
    subroutine clearAll()
