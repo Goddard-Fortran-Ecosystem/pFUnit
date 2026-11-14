@@ -70,7 +70,7 @@ endforeach()
 list(APPEND funit_target_objects "$<TARGET_OBJECTS:funit-main>")
 
 # Create exported funit libraries
-add_library (funit)
+add_library (funit STATIC)
 add_library (PFUNIT::funit ALIAS funit)
 set(funit_targets funit)
 
